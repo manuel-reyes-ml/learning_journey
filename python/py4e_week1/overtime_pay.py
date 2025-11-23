@@ -1,43 +1,31 @@
-fail = 0
+#Creating function first to use it two or more times in the program - NOT REPEATING CODE
 
-while True:
- 
- shours = input("Enter hours: ").strip()
- try:
-    ihours = float(shours)
-    break
- except KeyboardInterrupt:
-    print("\nProgram terminated by user.\n")
-    quit()
- except ValueError:
-    fail += 1
-    if fail == 3:
-       print("\nTo many invalid attempts for hours. Exiting progam.\n")
-       quit()
-    else:
-     print(f"Value entered: {shours} is not a numerical value. Please re-enter")
-     continue
+def get_value(request):
 
-fail = 0
+    fail = 0
 
-while True:
- 
- srate = input ("Enter rate/hr: ").strip()
- try:
-    irate = float(srate)
-    break
- except KeyboardInterrupt: #When the user presses Ctrl+C
-    quit()
- except ValueError: #conversion problems, wrong value
-    fail += 1
-    if fail == 3:
-       print("\nTo many invalid attempts for rate/hr. Exiting progam.\n")
-       quit()
-    else:
-     print(f"Value entered: {srate} is not a numerical value. Please re-enter")
-     continue
- 
-fail = 0
+    while True:
+    
+        try:
+            sinput = input(f"Enter {request}: ").strip()
+            fvalue = float(sinput)
+            break
+        except KeyboardInterrupt:
+            print("\nProgram terminated by user.\n")
+            quit()
+        except ValueError:
+            fail += 1
+            if fail == 3:
+                print(f"\nToo many invalid attempts for {request}. Exiting program.\n")
+                quit()
+            else:
+                print(f"Value entered: {sinput} is not a numerical value. Please re-enter\n")
+                continue
+    return fvalue
+
+
+ihours = get_value("hours")
+irate = get_value("rate/hr")
 
 if ihours <= 40:
     tpay = ihours * irate
