@@ -28,22 +28,6 @@ I’m working on **trading algorithmic ideas** throughout the journey (data pipe
 
 ---
 
-## 🎯 Current Focus (Week 1)
-
-> Foundation first: tools, basics, and habits.
-
-- 🐍 **Python**
-  - Starting **Python for Everybody (Py4E)** and writing small scripts  
-  - Running Python from **VS Code** and the terminal
-- 🗄️ **SQL**
-  - Learning SQL basics with **Mode SQL**, **SQLZoo**, and **SQLite**  
-- 📊 **Excel**
-  - Refreshing formulas & pivot tables for analytics work
-- 🧰 **Tools**
-  - Setting up **Git & GitHub**, **Kaggle**, **HackerRank**, and a clean folder structure
-
----
-
 ## 🎓 Goals
 
 - Short term (next 6–9 months)
@@ -58,14 +42,18 @@ I’m working on **trading algorithmic ideas** throughout the journey (data pipe
 
 ## 📈 Progress Tracker
 
-- ✅ Week 1  
-  - Dev environment set up (Python, VS Code, Git, SQLite)  
-  - GitHub repo created and first scripts committed  
-  - SQL basics started (Mode SQL, SQLZoo)  
-- ⏳ Week 2  
-  - Continue Py4E (conditionals, files)  
-  - More SQL practice (HackerRank)  
-  - First small data mini-project (CSV → summary in Python)
+- ✅ Stage 1 - Data Analyst Foundations (Months 1-5)  
+  - CS50 Harvard: Computer Science Fundamentals 
+  - Python for Everybody specialization (University of Michigan)
+  - Google Data Analytics Certification
+  - IBM Data Analyst Professional Certification
+  - SQL with Mode, SQLZoo, HackerRank
+  - Statistics with Python (University of Michigan)
+
+- ⏳ Stage 2 - Data Engineer Professional  
+  - Coming soon...
+  - 
+  - 
 
 ---
 
@@ -73,3 +61,47 @@ I’m working on **trading algorithmic ideas** throughout the journey (data pipe
 
 Follow my journey and projects on LinkedIn:  
 👉 **[LinkedIn]** *(link coming soon)*
+
+---
+
+## 🐍 Python Environment Setup
+
+This project uses a local **virtual environment** stored in `.venv` inside the `python/` folder.
+
+Recommended structure:
+
+```text
+~/dev/learning_journey/
+  ├── python/
+  │   ├── .venv/          # virtual environment (NOT committed to git)
+  │   ├── check_env.py    # optional environment check script
+  │   ├── requirements.txt
+  │   └── ...your code...
+  └── ...
+
+cd ~/dev/learning_journey/python
+
+# Create the virtual environment (only once)
+python3 -m venv .venv
+
+# Activate it
+source .venv/bin/activate
+
+# Upgrade pip inside the venv
+python -m pip install --upgrade pip
+
+# If there is no requirements.txt yet, install a basic dev stack
+pip install numpy pandas matplotlib jupyter ipython
+pip freeze > requirements.txt
+
+#If requirements.txt already exists, just do:
+pip install -r requirements.txt
+
+#Each time you open a new terminal to work on this project:
+cd ~/dev/learning_journey/python
+source .venv/bin/activate
+#You should see (.venv) at the beginning of your shell prompt, meaning the environment is active.
+
+#When you are done working:
+deactivate
+
