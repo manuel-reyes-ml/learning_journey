@@ -23,15 +23,18 @@ def get_value(request):
                 continue
     return fvalue
 
+def main():
+    ihours = get_value("hours")
+    irate = get_value("rate/hr")
 
-ihours = get_value("hours")
-irate = get_value("rate/hr")
+    if ihours <= 40:
+        tpay = ihours * irate
 
-if ihours <= 40:
-    tpay = ihours * irate
+    else:
+        ehours = ihours - 40
+        tpay = (40 * irate) + (ehours * (irate * 1.5))
 
-else:
-    ehours = ihours - 40
-    tpay = (40 * irate) + (ehours * (irate * 1.5))
+    print(f"\nTotal Pay is ${tpay}\n")
 
-print(f"\nTotal Pay is ${tpay}\n")
+if __name__ == "__main__":
+    main()

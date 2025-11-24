@@ -50,3 +50,48 @@ try:
     value = my_dict[key] / number
 except (KeyError, ZeroDivisionError) as e:
     print("Problem accessing value or dividing:", e)
+
+## How does main() work in Python?
+
+In Python we usually use this pattern:
+
+def main():
+    # main program logic
+    ...
+
+if __name__ == "__main__":
+    main()
+
+🔍 What is __name__?
+
+Python sets a special variable called __name__ for every file.
+
+If you run the file directly:
+
+python overtime_pay.py
+
+
+then inside that file:
+
+__name__ == "__main__"
+
+
+If you import the file from somewhere else:
+
+import overtime_pay
+
+
+then inside overtime_pay.py:
+
+__name__ == "overtime_pay"
+
+
+So:
+
+if __name__ == "__main__":
+    main()
+
+
+means:
+
+“Only run main() if this file is being executed directly, not when it’s imported.”
