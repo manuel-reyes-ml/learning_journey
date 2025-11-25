@@ -1,5 +1,7 @@
 import time
+import statistics as stats
 
+# function to try to convert str to flt, if not = error
 def to_flt(step,svalue):
 
     fail = 0
@@ -53,7 +55,7 @@ print("\n\nCalculating Daily Returns now....\n")
 time.sleep(3)  #pauses for 3 seconds
 
 returns = list()
-for i, price in enumerate(price_lst):  #analyze another versions below
+for i, price in enumerate(price_lst):  #analyze other versions below
     if i > 0:
         daily_return = ((price_lst[i] - price_lst[i-1]) / price_lst[i-1]) * 100
         daily_return = round(daily_return, 2)
@@ -62,14 +64,15 @@ for i, price in enumerate(price_lst):  #analyze another versions below
 
 print("\n")
 
-avg_return = round(sum(returns) / len(returns), 2)
+#avg_return = round(sum(returns) / len(returns), 2)
+avg_return = round(stats.mean(returns), 2)
 max_return = max(returns)
 min_return = min(returns)
 
 print(f"Average Return: {avg_return}%\nMax Return: {max_return}%\nMin Return: {min_return}%\n")
 
 '''
-- Another version using rage() and enumerate() -
+- Other versions using rage() and enumerate() -
 
 for i in range(1, len(price_lst)):
     prev_price = price_lst[i - 1]
