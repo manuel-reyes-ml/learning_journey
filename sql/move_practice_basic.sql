@@ -54,6 +54,16 @@ SELECT *
 FROM tutorial.billboard_top_100_year_end  
 WHERE song_name ILIKE "%california%"   AND ( (year >= 1990 AND year <= 1999) OR (year >= 1970 AND year <= 1979));
 
+-- XOR operatior
+SELECT name as Country,
+       population as Population,
+       area as Size
+FROM world
+WHERE area > 3000000 XOR population > 250000000
+/*Exclusive OR (XOR). Show the countries that are big by area (more than 3 million) or big by population (
+more than 250 million) but not both. Show name, population and area. (SQLzoo.net practice)*/
+
+
 -- Version 5.2(simplified)
 SELECT *   
 FROM tutorial.billboard_top_100_year_end  
@@ -128,6 +138,12 @@ SELECT year AS Year,
   /* Write a query that returns all rows for which more units were produced in the West region than in 
   the Midwest and Northeast combined. */
 
+  SELECT name AS Country,
+       ROUND(gdp/population, -3) As "Per Capita GDP"
+  FROM world
+  WHERE gdp > 1000000000000
+  -- round to the nearest 1,000
+
   SELECT year AS Year,
     month_name AS "Month Name",
     ROUND((south / (south + west + midwest + northeast)) * 100, 2) AS "South %",
@@ -181,3 +197,22 @@ SELECT *
    WHERE artist IN ("Elvis Presley", "Hammer", "M.C. Hammer");
 /*Write a query that shows all of the entries for Elvis and M.C. Hammer.
 Hint: M.C. Hammer is actually on the list.*/
+
+
+ /* ======================
+    11. Function length()
+    ====================== */
+
+SELECT name,length(name)
+FROM world
+WHERE length(name)=5 and region='Europe'
+-- SQLzoo.net practice
+
+/* ======================
+    12. Select rows if where they are IN rows
+    ====================== */
+
+SELECT name, population
+FROM world
+WHERE name in ("France", "Germany", "Italy")
+-- Show the name and population for France, Germany, Italy (SQLzoo.net practice)

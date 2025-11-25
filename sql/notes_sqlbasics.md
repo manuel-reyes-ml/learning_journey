@@ -150,7 +150,7 @@ The % used above represents any character or set of characters. In this case, % 
 % = any sequence of 0 or more characters
 _ = exactly one character
 
-## The SQL OR operator
+## The SQL OR and XOR operator
 
 OR is a logical operator in SQL that allows you to select rows that satisfy either of two conditions.
 You can combine AND with OR using parenthesis. The following query will return rows that satisfy both of the following conditions:
@@ -161,6 +161,8 @@ SELECT *
   FROM tutorial.billboard_top_100_year_end
  WHERE year = 2013
    AND ("group_name" ILIKE '%macklemore%' OR "group_name" ILIKE '%timberlake%')
+  
+XOR is a logical operator in SL that allows you to select rows that satisfy either of two conditions BUT NOT BOTH.
 
 ## The SQL IN operator
 
@@ -271,3 +273,7 @@ SELECT year,
        COUNT(*) AS count
   FROM tutorial.aapl_historical_stock_price
  GROUP BY 1, 2
+
+ ## The length() function in SQL
+
+ Returns the number of characters in a string. 
