@@ -142,7 +142,13 @@ SELECT year AS Year,
        ROUND(gdp/population, -3) As "Per Capita GDP"
   FROM world
   WHERE gdp > 1000000000000
-  -- round to the nearest 1,000
+  --round to the nearest 1,000 - more examples below:
+
+  SELECT
+    ROUND(1234,  -3) AS r1, --1000 
+    ROUND(1499,  -3) AS r2, --1000
+    ROUND(1500,  -3) AS r3, --2000
+    ROUND(17890, -3) AS r4; --18000
 
   SELECT year AS Year,
     month_name AS "Month Name",
@@ -210,9 +216,20 @@ WHERE length(name)=5 and region='Europe'
 
 /* ======================
     12. Select rows if where they are IN rows
-    ====================== */
+   ====================== */
 
 SELECT name, population
 FROM world
 WHERE name in ("France", "Germany", "Italy")
 -- Show the name and population for France, Germany, Italy (SQLzoo.net practice)
+
+/* ======================
+    13. Slice String
+   ====================== */
+
+   SELECT name AS Country,
+       capital AS Capital
+    FROM world
+    WHERE LEFT(name, 1) = LEFT(capital, 1) AND name <> capital
+  /*LEFT(string_column, n) where n = number of characters to slice from the left
+    RIGHT(string_column, n) where n = number of characters to slice from the right*/

@@ -145,6 +145,7 @@ This is a string pattern with wildcards:
 'ludacris%' → starts with "ludacris"
 '%ludacris' → ends with "ludacris"
 '%ludacris%' → contains "ludacris" anywhere
+'% %' → contains " "(espace) in the string
 
 The % used above represents any character or set of characters. In this case, % is referred to as a "wildcard."
 % = any sequence of 0 or more characters
@@ -251,6 +252,25 @@ SELECT year,
        south,
        (west + south)/2 AS south_west_avg
   FROM tutorial.us_housing_units
+
+ROUND function:
+
+  ROUND(x, 2) → round to 2 decimal places (0.01)
+
+  ROUND(x, 0) → round to nearest integer
+
+  ROUND(x, -1) → round to nearest 10
+
+  ROUND(x, -2) → round to nearest 100
+
+  ROUND(x, -3) → round to nearest 1,000
+
+  Examples:
+    ROUND(1234, -1) → 1230
+
+    ROUND(1234, -2) → 1200
+
+    ROUND(1234, -3) → 1000
 
 ## The SQL GROUP BY clause
 
