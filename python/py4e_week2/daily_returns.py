@@ -1,14 +1,45 @@
 import time
 import statistics as stats
 
-# function to try to convert str to flt, if not = error
-def to_flt(step,svalue):
+#Custom function that will be called inside to_flt() to force user to use option 1 or 2 (only!)
+def entry_type(step, svalue, flt, faile):
+        
+    if flt not in (1, 2):
+        faile += 1
+        if faile == 3:
+                print(f"\nToo many invalid attempts for {step}. Exiting program.\n")
+                quit()
+        else:
+            svalue = input(f"""\nValue entered: {svalue} is not a valid entry; 
+                               Please enter 1 or 2.\n===>Re-enter here: """)
+            approved = False
+            
+    else:
+        approved = True
+        
+    return svalue, approved, faile
+
+
+#Function to try to convert str to flt (if not go to error), if flt we check the input number to force user
+#to use either 1 or 2 - we do this with a separate custom function entry_type()
+def to_flt(step,svalue, data_option = False):
 
     fail = 0
+    faile = 0
     while True:
         try:
             flt = float(svalue)
-            break
+            if not data_option:
+                break
+
+            else:
+                svalue, approved, faile = entry_type(step, svalue, flt, faile) #2nd custom function
+
+                if approved:
+                    break
+                else:
+                    continue
+
         except KeyboardInterrupt:
             print("\nProgram terminated by user.\n")
             quit()
@@ -18,19 +49,25 @@ def to_flt(step,svalue):
                 print(f"\nToo many invalid attempts for {step}. Exiting program.\n")
                 quit()
             else:
-                svalue = input(f"\nValue entered: {svalue} is not a valid or a numerical value.\n===>Please re-enter: ")
-                continue
-    return flt
+                svalue = input(f"\nValue entered: {svalue} is not a numerical value.\n===>Please re-enter: ")
+                continue 
+    return flt        
 
-format = input("""\nHow you like to enter data?\n
+# ----- PROGRAM STARTS HERE -----
+entry_format = input("""\nHow you like to enter data?\n
 1- By Day
 2- One line\n
 Enter option number: """)
 
+entry_format = to_flt("Entry Type", entry_format, data_option = True)
+
 price_lst = list()
-if format == "1":
+
+if entry_format == 1:
     days = input("\nHow many days of prices?: ")
     days = int(to_flt("days", days))
+
+    print("\n")
     
     #Build pice_lst from price per day, after converting them to numbers
     for day in range(days):
@@ -40,8 +77,8 @@ if format == "1":
         price_lst.append(price)
 
     
-elif format == "2":
-    svalues = input("\nEnter closing prices separated by commas (e.g 100, 101.5, 99.8): ").strip()
+elif entry_format == 2:
+    svalues = input("\nEnter closing prices separated by commas (e.g 100, 101.5, 99.8)\nReply here: ").strip()
     prices = svalues.split(",")
 
     #Build pice_lst from prices(1 input), after converting them to numbers
