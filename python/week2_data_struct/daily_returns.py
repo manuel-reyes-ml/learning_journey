@@ -73,9 +73,11 @@ def min_data(entry_format):
                 svalues = input("\nAlgorithm requires min 2 days of closing prices. Please re-enter \nclosing prices separated by commas: ").strip()
                 prices = svalues.split(",")
 
-                for svalue in prices: #Test list comprehesion method
-                    price = to_flt("Price", svalue)
-                    data_range.append(price)
+                data_range = [to_flt("Price", svalue) for svalue in prices] #Test list comprehesion method
+           
+                #for svalue in prices:
+                    #price = to_flt("Price", svalue)
+                    #data_range.append(price)
 
                 if len(data_range) >= 2:
                     break
@@ -85,8 +87,6 @@ def min_data(entry_format):
     return data_range
 
 
-
-# ----- PROGRAM STARTS HERE -----
 def main():
 
     try:
@@ -151,11 +151,20 @@ def main():
         print(f"Average Return: {avg_return}%\nMax Return: {max_return}%\nMin Return: {min_return}%\n")
     
     except KeyboardInterrupt:
-        print("\n\nProgram terminated by user.\n")
+        print("\n\nProgram terminated by user. Goodbye!\n")
         quit()
 
-if __name__ == "__main__":
-    main()
+# ----- PROGRAM STARTS HERE -----
+while True:
+    if __name__ == "__main__":
+        main()
+    next = input("Would you like to analize more data? Y/N: ").upper().strip()
+
+    if next == "Y":
+        continue
+    else:
+        print("\n\nProgram terminated by user. Goodbye!\n")
+        quit()
 
 '''
 - Other versions using rage() and enumerate() - line 96
