@@ -70,7 +70,7 @@ This project uses a local **virtual environment** stored in `.venv` inside the `
 
 Recommended structure:
 
-```text
+```
 ~/dev/learning_journey/
   ├── python/
   │   ├── .venv/          # virtual environment (NOT committed to git)
@@ -104,4 +104,36 @@ source .venv/bin/activate
 
 #When you are done working:
 deactivate
+```
 
+---
+
+## Prefixes for my learning repo commits
+
+- Environment & config
+    Config: add virtualenv setup instructions
+    Config: ignore .venv in git
+    Config: add initial requirements.txt
+
+- Python practice
+    Python: add check_env.py script
+    Python: implement hours calculator exercise
+    Python: add solution for regex assignment
+    Python: refactor file parsing into function
+
+- SQL practice
+    SQL: create mode_practice.sql with basic SELECTs
+    SQL: add JOIN and GROUP BY examples
+    SQL: add practice queries for 1970s and 1990s albums
+    SQL: clean up comments and formatting
+
+- Docs / notes
+    Docs: document daily workflow for venv
+    Docs: add notes on TRIM and COALESCE in SQL
+    Docs: summarize IBM course week 1 concepts
+
+- Mixed but same topic
+    If one commit touches multiple files but same topic, that’s fine:
+
+    Docs: explain Python env and update SQL notes
+    Python: add env checker and example script
