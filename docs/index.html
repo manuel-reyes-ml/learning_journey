@@ -1,9 +1,11 @@
-<!DOCTYPE html>
+🎨 UPDATED INDEX.HTML
+Here's the updated landing page with links opening in new tabs and complete career path:
+html<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Learning Journey</title>
+    <title>My Learning Journey - Manuel Reyes</title>
     <style>
         * {
             margin: 0;
@@ -23,7 +25,7 @@
             background: white;
             border-radius: 20px;
             padding: 60px 40px;
-            max-width: 600px;
+            max-width: 700px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             text-align: center;
         }
@@ -33,9 +35,15 @@
             margin-bottom: 20px;
         }
         .subtitle {
-            font-size: 1.2em;
+            font-size: 1.1em;
             color: #666;
             margin-bottom: 40px;
+            line-height: 1.6;
+        }
+        .career-path {
+            font-weight: 600;
+            color: #667eea;
+            margin-top: 10px;
         }
         .cta-button {
             display: inline-block;
@@ -58,6 +66,9 @@
             color: #667eea;
             border: 2px solid #667eea;
         }
+        .secondary-button:hover {
+            background: #f8f9ff;
+        }
         .stats {
             display: flex;
             justify-content: space-around;
@@ -78,20 +89,38 @@
             color: #999;
             margin-top: 5px;
         }
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #999;
+            font-size: 0.9em;
+        }
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>📚 My Learning Journey</h1>
         <p class="subtitle">
-            Bookkeeper → Data Analyst → ML Engineer → LLM Engineer
+            37-Month Transformation
+            <br>
+            <span class="career-path">
+                Bookkeeper → Data Analyst → Data Engineer → ML Engineer → LLM Engineer
+            </span>
         </p>
         
-        <a href="roadmap.html" class="cta-button">
+        <a href="roadmap.html" target="_blank" class="cta-button">
             📋 View 37-Month Roadmap
         </a>
         
-        <a href="https://github.com/manuel-reyes-ml/learning_journey" class="cta-button secondary-button">
+        <a href="https://github.com/manuel-reyes-ml/learning_journey" target="_blank" class="cta-button secondary-button">
             💻 View Repository
         </a>
         
@@ -108,6 +137,13 @@
                 <div class="stat-number">25</div>
                 <div class="stat-label">Hrs/Week</div>
             </div>
+        </div>
+        
+        <div class="footer">
+            Building in public | Finance + Tech + AI
+            <br>
+            <a href="https://github.com/manuel-reyes-ml" target="_blank">GitHub</a> • 
+            <a href="https://linkedin.com/in/your-profile" target="_blank">LinkedIn</a>
         </div>
     </div>
 </body>
