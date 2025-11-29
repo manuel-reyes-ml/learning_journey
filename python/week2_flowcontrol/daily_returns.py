@@ -121,9 +121,13 @@ def main():
             prices = svalues.split(",")
 
             #Build pice_lst from prices(1 input as list), after converting them to numbers
-            for svalue in prices:
-                price = to_flt("Price", svalue)
-                price_lst.append(price)
+            
+            price_lst = [to_flt("Price", svalue) for price in prices] #test list comprehension
+        
+            #Old version below
+            #for svalue in prices:
+                #price = to_flt("Price", svalue)
+                #price_lst.append(price)
             
             if len(price_lst) < 2:
                 price_lst = min_data(entry_format) #call function to force user to enter at least 2 closing prices

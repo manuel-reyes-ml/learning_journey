@@ -12,6 +12,9 @@
     TypeError        # wrong type, e.g. len(5)
     NameError        # using a variable that doesn't exist
 
+    Syntax
+    SyntaxError.     # wronf syntax (missing colon :)
+
     Collections & indexing
     IndexError       # list index out of range
     KeyError         # dict key not found
@@ -90,7 +93,6 @@ So:
 
 if __name__ == "__main__":
     main()
-
 
 means:
 
