@@ -1,8 +1,8 @@
-# 📚 Learning Journey: Bookkeeper → LLM Engineer
+# 📚 Learning Journey: Financial Services Professional → LLM Engineer
 
 **37-Month Public Documentation** | Week-by-week practice, experiments, and enhancements
 
-This repository documents my complete transition from **retirement bookkeeping & trading** to **Senior LLM Engineer** building AI-powered trading systems.
+This repository documents my complete transition from **financial services professional & independent trader** to **Senior LLM Engineer** building AI-powered trading systems.
 
 > 🎯 **Immediate Goal:** Land Data Analyst job (Month 5)  
 > 🚀 **Long-term Goal:** Build production AI Trading Assistant (Month 37)
@@ -661,7 +661,7 @@ While this is primarily a personal learning repository, I welcome:
 **This repo represents:**
 - 37 months of dedicated learning
 - 5,000+ hours of practice
-- Transition from bookkeeper to LLM engineer
+- Transition from Financial Services Professional to LLM engineer
 - Foundation for 6-figure career
 - Path to Spain citizenship
 - Potential for $400-700K/year by Month 37
