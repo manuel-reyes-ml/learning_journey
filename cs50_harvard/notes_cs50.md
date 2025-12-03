@@ -1,12 +1,21 @@
 # Notes from Computer Science Harvard:
 
+## Computational Thinking
+
+	•	What is an algorithm?
+            Series of orderly steps needed to solve a problem
+	•	Pseudocode examples.
+            Describe the steps needed to solve a problem in our own words (no code expressions)
+	•	Types of data: bool, int, string, etc.
+	•	High-level vs low-level languages.
+
 1 Byte = 8 Bits —> 1 bit can be only 0 and 1 (Binary) (transistor - on and off) = power of 2 — count until 256 (number)
 
 bits on the left has more weight:
  0    0    0    0    0    0    0    0
 256  128   64   32  16    8    4    2
 
-# Cmds in command line:
+## Cmds in command line:
 
 ls = list of files
 mv = move file (hello.c hello) or rename a file
@@ -39,6 +48,6 @@ binary search does not work if the data is not sorted first.
 
 the other option is linear search = going "door by door” searching until value is found (or not) -- takes more time. 
 
-A good Algorithm is efficient in terms of Running time - investigate (better engineers write better better algorithms with better Running time. 
+A good Algorithm is efficient in terms of Running time - investigate (better engineers write better better algorithms with better Running time.)
 
 Investigate more about recursive algorithms** Use print bricks (hashtags) as example
