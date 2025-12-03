@@ -87,11 +87,35 @@ def find_top_domain(**domains):
     bdomain_word = None
 
     for domain, dvalue in domains.items():
-        if bdomain_count == None or dvalue > bdomain_count:
+        if bdomain_count is None or dvalue > bdomain_count:
             bdomain_count = dvalue
             bdomain_word = domain
 
     return bdomain_word, bdomain_count
+
+#Write a human readable summary to disk so results can be reused without rerunning the script
+def write_summary_to_file(output_file, name, total_lines, unique_senders, bemail_word, bemail_count, bdomain_word, bdomain_count, rows):
+
+    summary_lines = [
+        "====================",
+        f"Email Summary\nfile: {name}",
+        "====================",
+        "",
+        f"Total Messages: {total_lines}",
+        f"Unique Senders: {unique_senders}",
+        "",
+        f"Top sender:     {bemail_word} ({bemail_count} messages)",
+        f"Top domain:     {bdomain_word} ({bdomain_count} messages)",
+        "",
+        "Senders list:",
+        tabulate(rows, headers=["Email Address", "Count"], tablefmt="fancy_grid"),
+        "",
+    ]
+
+    with open(output_file, "w", encoding="utf-8") as outfile: #open file for writing, create if doesn't exist
+        outfile.write("\n".join(summary_lines)) #join list items with newline and write to file
+
+    print(f"Summary saved to {output_file}\n")
 
 #In this function we flip tuples (after dict is unpacked) to sort by count, not email
 #reverse = True (default is False) to sort from largest to smallest
@@ -124,7 +148,7 @@ def main():
     time.sleep(1)
 
     bemail_word, bemail_count = find_top_email(**emails)
-    bdomain_word, bdomain_count = find_top_email(**domains)
+    bdomain_word, bdomain_count = find_top_domain(**domains)
     print("Calculations completed. Printing results below...\n\n")
     time.sleep(1)
 
@@ -139,10 +163,43 @@ def main():
     print(f"Top sender:     {bemail_word} ({bemail_count} messages)")
     print(f"Top domain:     {bdomain_word} ({bdomain_count} messages)")
     print("\n")
-    
+
     #use tabulate library for better output
     rows = sort_senders(**emails)
-    print(f"Senders list:\n\n{tabulate(rows, headers=["Email Address", "Count"], tablefmt="fancy_grid")}")
+    senders_table = tabulate(rows, headers=["Email Address", "Count"], tablefmt="fancy_grid")
+    print(f"Senders list:\n\n{senders_table}")
+
+    print("\n")
+
+    fwrite = input("Would like to save this report to a TXT file for later use? (Y/N): ").upper().strip()
+    if fwrite == "Y":
+        ofile = None
+        ofile = input("\nEnter file name you would like to use: ").strip()
+
+        #collapse multiple spaces and swap remaining spaces with underscores
+        if ofile:
+            ofile = "_".join(ofile.split()) # use join/split to collapse spaces
+            if not ofile.lower().endswith(".txt"): #append .txt if not provided
+                ofile = ofile + ".txt"
+
+        #Optionally persist results for later use
+        write_summary_to_file(
+            ofile if ofile else "email_summary.txt", #if ofile is not empty use it, else use default name
+            name,
+            total_lines,
+            unique_senders,
+            bemail_word,
+            bemail_count,
+            bdomain_word,
+            bdomain_count,
+            rows,
+        )
+
+    elif fwrite == "N":
+        print("\nOkay, no file will be created. Exiting now...\n")
+
+    else:
+        print("\nInvalid option selected. Exiting now...\n")
 
     print("\n")
 
