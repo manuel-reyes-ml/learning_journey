@@ -122,7 +122,7 @@ def write_summary_to_file(output_file, name, total_lines, unique_senders, bemail
 def sort_senders(**emails):
 
     #implement 'key=' and lambda in sorted() function
-    sorted_lst = sorted(emails.items(), key=lambda item: item[1], reverse=True)
+    esorted_lst = sorted(emails.items(), key=lambda item: item[1], reverse=True)
 
     """#For more compact use comprehension
     sorted_lst = [(count, email) for email, count in emails.items()]
@@ -133,7 +133,7 @@ def sort_senders(**emails):
     
         sorted_lst = sorted(sorted_lst, reverse = True)"""
 
-    return sorted_lst
+    return esorted_lst
 
 #Call custom functions to get data structurs and calculate results
 def main():
@@ -180,11 +180,11 @@ def main():
         if ofile:
             ofile = "_".join(ofile.split()) # use join/split to collapse spaces
             if not ofile.lower().endswith(".txt"): #append .txt if not provided
-                ofile = ofile + ".txt"
+                ofile = ofile + "v2.txt"
 
         #Optionally persist results for later use
         write_summary_to_file(
-            ofile if ofile else "email_summary.txt", #if ofile is not empty use it, else use default name
+            ofile if ofile else "email_summaryv2.txt", #if ofile is not empty use it, else use default name
             name,
             total_lines,
             unique_senders,
@@ -207,8 +207,11 @@ def main():
 
 #---PROGRAM STARTS HERE---
 if __name__ == "__main__":
+
     try:
+
         main()
+
     except KeyboardInterrupt:
-        print("\nProgram interrupted by user. Exiting now...\n")
+        print("\n\nProgram interrupted by user. Exiting now...\n")
         quit()
