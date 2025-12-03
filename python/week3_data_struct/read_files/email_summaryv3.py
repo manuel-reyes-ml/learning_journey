@@ -1,4 +1,5 @@
 #This program uses Dictionaries, Lists and Tuples to manage data through the flow.
+#We also give the option to save results to a TXT file for later use.
 
 import time
 from tabulate import tabulate
@@ -42,10 +43,11 @@ def read_file():
 
     return handle, fname
 
-def create_dict(handle, data):
+def create_dict(handle, data, unique_senders=0, unique_domains=0):
 
     total_lines = 0
-    unique_senders = 0
+    unique_senders = 0 if data == "email" else unique_senders  # protect variable initialization
+    unique_domains = 0 if data == "domain" else unique_domains
     datas = dict()
     
     #Read line by line to get from email and start counting assigning Key, Values to emails amd domains dictionary
@@ -60,9 +62,12 @@ def create_dict(handle, data):
            
             datas[value] = datas.get(value, 0) + 1
             if datas.get(value) == 1:
-                unique_senders += 1
+                if data == "domain":
+                    unique_domains += 1
+                else:
+                    unique_senders += 1
 
-    return datas, total_lines, unique_senders
+    return datas, total_lines, unique_senders, unique_domains
 
 #
 def count_senders(handle):
@@ -70,9 +75,11 @@ def count_senders(handle):
     return create_dict(handle, "email")
 
 #In this function we iterate through the emails dict to extract domain and emails' count and create domain dict
-def count_domains(handle):
+def count_domains(handle, unique_senders):
     
-    return create_dict(handle, "domain")
+    handle.seek(0)  # Reset file pointer to the beginning before re-reading
+
+    return create_dict(handle, "domain", unique_senders)
 
 #In this function we iterate through the dict to find the largest count and identigy its email
 def find_top_email(**emails):
@@ -104,35 +111,35 @@ def find_top_domain(**domains):
     return bdomain_word, bdomain_count
 
 #Write a human readable summary to disk so results can be reused without rerunning the script
-def write_summary_to_file(output_file, name, total_lines, unique_senders, bemail_word, bemail_count, bdomain_word, bdomain_count, rows):
+def write_summary_to_file(output_file, name, total_lines, unique_senders, unique_domains, bemail_word, bemail_count, bdomain_word, bdomain_count, senders_table, domains_table):
 
     summary_lines = [
         "====================",
         f"Email Summary\nfile: {name}",
         "====================",
         "",
-        f"Total Messages: {total_lines}",
+        f"Total Messages: {total_lines}\n",
         f"Unique Senders: {unique_senders}",
-        "",
-        f"Top sender:     {bemail_word} ({bemail_count} messages)",
-        f"Top domain:     {bdomain_word} ({bdomain_count} messages)",
-        "",
-        "Senders list:",
-        tabulate(rows, headers=["Email Address", "Count"], tablefmt="fancy_grid"),
+        f"Top sender:     {bemail_word} ({bemail_count} messages)\n",
+        f"Senders list:\n{senders_table}\n\n",
+        f"Unique Domains: {unique_domains}",
+        f"Top domain:     {bdomain_word} ({bdomain_count} messages)\n",
+        f"Domains list:\n{domains_table}\n",
         "",
     ]
 
     with open(output_file, "w", encoding="utf-8") as outfile: #open file for writing, create if doesn't exist
         outfile.write("\n".join(summary_lines)) #join list items with newline and write to file
 
-    print(f"Summary saved to {output_file}\n")
+    print(f"\nSummary saved to {output_file}\n")
+    print("Exit program now...\n")
 
 #In this function we flip tuples (after dict is unpacked) to sort by count, not email
 #reverse = True (default is False) to sort from largest to smallest
-def sort_senders(**emails):
+def sort_senders(**datas):
 
     #implement 'key=' and lambda in sorted() function
-    esorted_lst = sorted(emails.items(), key=lambda item: item[1], reverse=True)
+    esorted_lst = sorted(datas.items(), key=lambda item: item[1], reverse=True)
 
     """#For more compact use comprehension
     sorted_lst = [(count, email) for email, count in emails.items()]
@@ -158,9 +165,9 @@ def main(choice, menu_choice, *menu_functions):
         results = {}
         for func in func_list:
             if func == count_senders:
-                results['emails'], results['total_lines'], results['unique_senders'] = func(handle)
+                results['emails'], results['total_lines'], results['unique_senders'], results['unique_domains'] = func(handle)
             elif func == count_domains:
-                results['domains'], results['total_lines'], results['unique_senders'] = func(handle)
+                results['domains'], results['total_lines'], results['unique_senders'], results['unique_domains'] = func(handle, results.get('unique_senders', 0))
             elif func == find_top_email:
                 results['bemail_word'], results['bemail_count'] = func(**results['emails'])
             elif func == find_top_domain:
@@ -176,6 +183,7 @@ def main(choice, menu_choice, *menu_functions):
     emails = results.get('emails', {})
     total_lines = results.get('total_lines', 0)
     unique_senders = results.get('unique_senders', 0)
+    unique_domains = results.get('unique_domains', 0)
     domains = results.get('domains', {})
     bemail_word = results.get('bemail_word', '')
     bemail_count = results.get('bemail_count', 0)
@@ -191,34 +199,46 @@ def main(choice, menu_choice, *menu_functions):
     print("====================")
     print(f"\nReport: {choice}\n\n")
 
-    print(f"Total Messages: {total_lines}")
-    print(f"Unique Senders: {unique_senders}")
-    print("\n")
+    print(f"Total Messages: {total_lines}\n")
+
+    def sender_stats(unique_senders, bemail_word, bemail_count, **emails):
+        print(f"Unique Senders: {unique_senders}")
+        print(f"Top sender:     {bemail_word} ({bemail_count} messages)")
+        print("\n")
+
+        #use tabulate library for better output
+        rows_emails = sort_senders(**emails)
+        senders_table = tabulate(rows_emails, headers=["Email Address", "Count"], tablefmt="fancy_grid")
+        print(f"Senders list:\n\n{senders_table}")
+        print("\n")
+
+        return senders_table
+
+    def domain_stats(unique_domains, bdomain_word, bdomain_count, **domains):
+
+        print(f"Unique Domains: {unique_domains}")
+        print(f"Top domain:     {bdomain_word} ({bdomain_count} messages)")
+        print("\n")
+
+        rows_domains = sort_senders(**domains)
+        domains_table = tabulate(rows_domains, headers=["Domains", "Count"], tablefmt="fancy_grid")
+        print(f"Domains list:\n\n{domains_table}")
+        print("\n")
+
+        return domains_table
 
     if menu_choice == "1":
-        print(f"Top sender:     {bemail_word} ({bemail_count} messages)")
-        print("\n")
 
-        #use tabulate library for better output
-        rows = sort_senders(**emails)
-        senders_table = tabulate(rows, headers=["Email Address", "Count"], tablefmt="fancy_grid")
-        print(f"Senders list:\n\n{senders_table}")
-        print("\n")
+        sender_stats(unique_senders, bemail_word, bemail_count, **emails)
 
     elif menu_choice == "2":
-        print(f"Top domain:     {bdomain_word} ({bdomain_count} messages)")
-        print("\n")
+        
+        domain_stats(unique_domains, bdomain_word, bdomain_count, **domains) 
 
     elif menu_choice == "3":
-        print(f"Top sender:     {bemail_word} ({bemail_count} messages)")
-        print(f"Top domain:     {bdomain_word} ({bdomain_count} messages)")
-        print("\n")
-
-        #use tabulate library for better output
-        rows = sort_senders(**emails)
-        senders_table = tabulate(rows, headers=["Email Address", "Count"], tablefmt="fancy_grid")
-        print(f"Senders list:\n\n{senders_table}")
-
+      
+        senders_table = sender_stats(unique_senders, bemail_word, bemail_count, **emails)
+        domains_table = domain_stats(unique_domains, bdomain_word, bdomain_count, **domains)
         print("\n")
 
         fwrite = input("Would like to save this report to a TXT file for later use? (Y/N): ").upper().strip()
@@ -238,11 +258,13 @@ def main(choice, menu_choice, *menu_functions):
                 name,
                 total_lines,
                 unique_senders,
+                unique_domains,
                 bemail_word,
                 bemail_count,
                 bdomain_word,
                 bdomain_count,
-                rows,
+                senders_table,
+                domains_table,
             )
 
         elif fwrite == "N":
