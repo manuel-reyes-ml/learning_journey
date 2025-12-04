@@ -2,6 +2,7 @@
 #We also give the option to save results to a TXT file for later use.
 
 import time
+from pathlib import Path
 from tabulate import tabulate
 
 #In this funtion we validate user input for file name, we give 3 opportunities until program exits
@@ -252,9 +253,16 @@ def main(choice, menu_choice, *menu_functions):
                 if not ofile.lower().endswith(".txt"): #append .txt if not provided
                     ofile = ofile + "v3.txt"
 
+            #1) point to a reports/ subfolder next to this script
+            output_dir = Path(__file__).parent / "reports" #Path and .parent retrieves the directory of the current script and appends 'reports' folder
+            #2) create the folder if it does not exist
+            output_dir.mkdir(parents=True, exist_ok=True)
+            #3) build the full path for the output file
+            target_file = output_dir / (ofile if ofile else "email_summaryv3.txt")
+
             #Optionally persist results for later use
             write_summary_to_file(
-                ofile if ofile else "email_summaryv3.txt", #if ofile is not empty use it, else use default name
+                target_file, #write into the reports subfolder
                 name,
                 total_lines,
                 unique_senders,
