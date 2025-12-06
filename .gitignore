@@ -1,6 +1,23 @@
-# macOS system files
+# Virtual environments
+venv/
+env/
+.venv/
+.env/
+**/venv/
+**/env/
+
+# Python
+__pycache__/
+__pycache__
+*.pyc
+*.pyo
+*.egg-info/
+.pytest_cache/
+
+# IDEs
+.vscode/
+.idea/
+
+# OS
 .DS_Store
 **/.DS_Store
-python/.venv/
-__pycache__
-.pyc
