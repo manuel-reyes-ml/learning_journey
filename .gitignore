@@ -27,3 +27,19 @@ Thumbs.db
 
 # Jupyter
 .ipynb_checkpoints/
+
+# Output files (generated, don't commit)
+**/outputs/*.txt
+**/outputs/*.csv
+**/outputs/*.json
+
+# But keep .gitkeep
+!**/outputs/.gitkeep
+
+# Data files (too large or sensitive)
+**/data/*.txt
+**/data/*.csv
+!**/data/mbox*.txt  # Keep sample files
+
+# Quick testing and experiments
+experiments/scratch.py
