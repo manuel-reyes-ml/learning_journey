@@ -1,3 +1,12 @@
+**Course 1: Programming for Everybody (Getting Started with Python)**
+- Chapter 1: Why Program?
+- Chapter 2: Variables, Expressions, Statements
+- Chapter 3: Conditional Execution
+- Chapter 4: Functions
+- Chapter 5: Loops and Iteration
+
+
+
 # Py4E – Week 1 Notes
 
 - `input()` always returns a string.

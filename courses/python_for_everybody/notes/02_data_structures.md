@@ -1,3 +1,12 @@
+**Course 2: Python Data Structures**
+- Chapter 6: Strings
+- Chapter 7: Files
+- Chapter 8: Lists
+- Chapter 9: Dictionaries
+- Chapter 10: Tuples
+
+
+
 # Py4E – Week 2 Notes
 
 ## Loops and conditionals
