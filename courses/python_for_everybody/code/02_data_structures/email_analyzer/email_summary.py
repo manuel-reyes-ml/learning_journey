@@ -21,7 +21,14 @@ def read_file():
         
         try:
             #Open file to access data - in this case no need to decode it, since we see the file and is TXT
-            handle = open(f"data/{fname}")
+            
+            #determine the directory where the script is located
+            here = Path(__file__).parent
+
+            #build the full path to the data file
+            target = here / "data" / fname
+            handle = open(target)
+
             first_char = handle.read(1)  # Try reading the first character to ensure it's readable
             if not first_char:
                 raise ValueError("File is empty or unreadable. Exiting now.")
@@ -32,7 +39,7 @@ def read_file():
         except FileNotFoundError:
             fail += 1
             if fail == 3:
-                print(f"Ooops file: {fname} couldn't be opened. Looks like file is not in this directory.")
+                print(f"Ooops file: {fname} couldn't be opened. Looks like file is not in this directory = {target}.")
                 print("\nToo many attempts. Program will terminate now...\n")
                 quit()
             else:
