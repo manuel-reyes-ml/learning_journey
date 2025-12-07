@@ -26,7 +26,8 @@ def get_value(request):
                 continue
     return fvalue
 
-def main():
+def tpay():
+
     #Use custom functions to retrieve data from and converting to float, handling input validation
     ihours = get_value("hours")
     irate = get_value("rate/hr")
@@ -40,6 +41,11 @@ def main():
         tpay = (40 * irate) + (ehours * (irate * 1.5))
 
     print(f"\nTotal Pay is ${tpay}\n")
+
+def main():
+
+    #Call the function to execute the overtime pay calculation
+    tpay()
 
 #Program starts here, calling main() function
 if __name__ == "__main__":
