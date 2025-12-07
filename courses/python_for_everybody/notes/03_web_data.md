@@ -3,8 +3,8 @@
 **Course:** Using Python to Access Web Data  
 **Platform:** Coursera  
 **Instructor:** Dr. Charles Severance  
-**Started:** [Your date]  
-**Completed:** [Your date or "In Progress"]
+**Started:** Nov 2025  
+**Status:** Completed
 
 ---
 
@@ -212,18 +212,18 @@ import xml.etree.ElementTree as ET
 
 # Parse XML string
 xml_data = '''
-
-    
-        John
-        25
-        john@example.com
-    
-    
-        Mary
-        30
-        mary@example.com
-    
-
+<people>
+    <person>
+        <name>John</name>
+        <age>25</age>
+        <email>john@example.com</email>
+    </person>
+    <person>
+        <name>Mary</name>
+        <age>30</age>
+        <email>mary@example.com</email>
+    </person>
+</people>
 '''
 
 tree = ET.fromstring(xml_data)
