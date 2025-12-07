@@ -19,7 +19,8 @@ def read_file():
         
         try:
             #Open file to access data - in this case no need to decode it, since we see the file and is TXT
-            handle = open(fname)
+            base_dir = "/Users/manuelreyes/Desktop/dev/learning_journey/courses/python_for_everybody/code/02_data_structures/email_analyzer/data"
+            handle = open(f"{base_dir}/{fname}")
             break
         except FileNotFoundError:
             fail += 1
@@ -180,11 +181,11 @@ def main():
         if ofile:
             ofile = "_".join(ofile.split()) # use join/split to collapse spaces
             if not ofile.lower().endswith(".txt"): #append .txt if not provided
-                ofile = ofile + "v2.txt"
+                ofile = f"v2_{ofile}" + ".txt"
 
         #Optionally persist results for later use
         write_summary_to_file(
-            ofile if ofile else "email_summaryv2.txt", #if ofile is not empty use it, else use default name
+            ofile if ofile else "v2_email_summary.txt", #if ofile is not empty use it, else use default name
             name,
             total_lines,
             unique_senders,

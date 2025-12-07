@@ -21,7 +21,7 @@ def read_file():
         
         try:
             #Open file to access data - in this case no need to decode it, since we see the file and is TXT
-            handle = open(fname)
+            handle = open(f"data/{fname}")
             first_char = handle.read(1)  # Try reading the first character to ensure it's readable
             if not first_char:
                 raise ValueError("File is empty or unreadable. Exiting now.")
@@ -251,14 +251,14 @@ def main(choice, menu_choice, *menu_functions):
             if ofile:
                 ofile = "_".join(ofile.split()) # use join/split to collapse spaces
                 if not ofile.lower().endswith(".txt"): #append .txt if not provided
-                    ofile = ofile + "v3.txt"
+                    ofile = ofile + ".txt"
 
             #1) point to a reports/ subfolder next to this script
-            output_dir = Path(__file__).parent / "reports" #Path and .parent retrieves the directory of the current script and appends 'reports' folder
+            output_dir = Path(__file__).parent / "outputs" #Path and .parent retrieves the directory of the current script and appends 'reports' folder
             #2) create the folder if it does not exist
             output_dir.mkdir(parents=True, exist_ok=True)
             #3) build the full path for the output file
-            target_file = output_dir / (ofile if ofile else "email_summaryv3.txt")
+            target_file = output_dir / (ofile if ofile else "email_summary.txt")
 
             #Optionally persist results for later use
             write_summary_to_file(
