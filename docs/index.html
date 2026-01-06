@@ -23,7 +23,7 @@
             background: white;
             border-radius: 20px;
             padding: 60px 40px;
-            max-width: 700px;
+            max-width: 800px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             text-align: center;
         }
@@ -35,7 +35,7 @@
         .subtitle {
             font-size: 1.1em;
             color: #666;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             line-height: 1.6;
         }
         .career-path {
@@ -43,6 +43,121 @@
             color: #667eea;
             margin-top: 10px;
         }
+        
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+        .status-badge:before {
+            content: "🟢 ";
+        }
+        
+        /* Progress Section */
+        .progress-section {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 30px 0;
+            text-align: left;
+        }
+        .progress-section h2 {
+            font-size: 1.3em;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .progress-bar {
+            background: #e5e7eb;
+            border-radius: 10px;
+            height: 30px;
+            overflow: hidden;
+            margin: 15px 0;
+        }
+        .progress-fill {
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+            transition: width 0.5s ease;
+        }
+        .progress-text {
+            text-align: center;
+            color: #666;
+            font-size: 0.95em;
+            margin-top: 10px;
+        }
+        
+        /* Milestones */
+        .milestones {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .milestone {
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            text-align: left;
+        }
+        .milestone.done {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .milestone.current {
+            background: #fef3c7;
+            color: #92400e;
+            font-weight: 600;
+        }
+        .milestone.upcoming {
+            background: #e5e7eb;
+            color: #6b7280;
+        }
+        
+        /* Recent Activity */
+        .activity-section {
+            background: #fafafa;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .activity-section h3 {
+            font-size: 1.2em;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        .activity-list {
+            list-style: none;
+        }
+        .activity-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid #e5e7eb;
+            color: #666;
+            font-size: 0.95em;
+        }
+        .activity-list li:last-child {
+            border-bottom: none;
+        }
+        .activity-list li:before {
+            content: "→ ";
+            color: #667eea;
+            font-weight: bold;
+            margin-right: 8px;
+        }
+        
+        /* CTA Buttons */
         .cta-button {
             display: inline-block;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -67,15 +182,19 @@
         .secondary-button:hover {
             background: #f8f9ff;
         }
+        
+        /* Stats */
         .stats {
             display: flex;
             justify-content: space-around;
-            margin-top: 40px;
-            padding-top: 40px;
+            margin-top: 30px;
+            padding-top: 30px;
             border-top: 1px solid #eee;
+            flex-wrap: wrap;
         }
         .stat {
             text-align: center;
+            min-width: 100px;
         }
         .stat-number {
             font-size: 2em;
@@ -87,6 +206,8 @@
             color: #999;
             margin-top: 5px;
         }
+        
+        /* Footer */
         .footer {
             margin-top: 30px;
             padding-top: 20px;
@@ -101,11 +222,47 @@
         .footer a:hover {
             text-decoration: underline;
         }
+        .last-updated {
+            font-size: 0.85em;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .build-status {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-bottom: 10px;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 600px) {
+            .container {
+                padding: 40px 20px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            .cta-button {
+                padding: 15px 30px;
+                font-size: 1em;
+                display: block;
+                margin: 10px 0;
+            }
+            .milestones {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>📚 My Learning Journey</h1>
+        
+        <div class="status-badge">ACTIVE - Stage 1 in Progress</div>
+        
         <p class="subtitle">
             37-Month Transformation
             <br>
@@ -114,7 +271,40 @@
             </span>
         </p>
         
-        <a href="roadmap.html" target="_blank" class="cta-button">
+        <!-- Progress Dashboard -->
+        <div class="progress-section">
+            <h2>📊 Current Progress: Stage 1 - Week 7</h2>
+            <div class="progress-bar">
+                <div class="progress-fill" style="width: 35%">35% Complete</div>
+            </div>
+            <p class="progress-text">
+                <strong>7 weeks completed</strong> • 13 weeks remaining to Data Analyst job target
+            </p>
+            
+            <div class="milestones">
+                <div class="milestone done">✅ CS50 Week 0 Complete</div>
+                <div class="milestone done">✅ Python Setup & Basics</div>
+                <div class="milestone current">🔄 Python for Everybody (Week 2)</div>
+                <div class="milestone upcoming">⏳ SQL Fundamentals</div>
+                <div class="milestone upcoming">⏳ Google Analytics Cert</div>
+                <div class="milestone upcoming">⏳ First Portfolio Project</div>
+            </div>
+        </div>
+        
+        <!-- Recent Activity -->
+        <div class="activity-section">
+            <h3>🔥 Recent Activity</h3>
+            <ul class="activity-list">
+                <li><strong>Jan 6:</strong> Updated landing page with progress tracking</li>
+                <li><strong>Jan 5:</strong> Python loops and conditionals practice (CS50)</li>
+                <li><strong>Jan 4:</strong> Started SQL basics - SELECT, WHERE, ORDER BY</li>
+                <li><strong>Jan 3:</strong> Trading strategy research - technical indicators</li>
+                <li><strong>Jan 2:</strong> Repository structure optimization</li>
+            </ul>
+        </div>
+        
+        <!-- CTA Buttons -->
+        <a href="roadmap.html" class="cta-button" title="Interactive timeline with all 5 stages and detailed milestones">
             📋 View 37-Month Roadmap
         </a>
         
@@ -122,6 +312,7 @@
             💻 View Repository
         </a>
         
+        <!-- Stats -->
         <div class="stats">
             <div class="stat">
                 <div class="stat-number">37</div>
@@ -135,9 +326,19 @@
                 <div class="stat-number">25</div>
                 <div class="stat-label">Hrs/Week</div>
             </div>
+            <div class="stat">
+                <div class="stat-number">7</div>
+                <div class="stat-label">Weeks In</div>
+            </div>
         </div>
         
+        <!-- Footer -->
         <div class="footer">
+            <div class="last-updated">
+                📅 Last Updated: <strong>January 6, 2026</strong> | Week 7 of 37-month journey
+            </div>
+            <div class="build-status">🟢 Active • Learning in Public</div>
+            <br>
             Building in public | Finance + Tech + AI
             <br>
             <a href="https://github.com/manuel-reyes-ml" target="_blank">GitHub</a> • 
