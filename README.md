@@ -1,347 +1,310 @@
-# 📚 Learning Journey: Financial Services Professional → LLM Engineer
+# 🚀 37-Month Journey: Financial Services Professional → Senior LLM Engineer
 
-**37-Month Public Documentation** | Week-by-week practice, experiments, and enhancements
+**Building AI Trading Systems in Public** | Production code from Day 1 | Week-by-week documentation
 
-This repository documents my complete transition from **financial services professional & independent trader** to **Senior LLM Engineer** building AI-powered trading systems.
+> 📊 **Current:** Building Data Analyst foundations (Month 1, Week 1)  
+> 🎯 **Next:** Land Data Analyst role by Month 5  
+> 🚀 **Goal:** Senior LLM Engineer building production AI Trading Assistant (Month 37)  
+> 📋 **[View Complete 37-Month Roadmap →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
 
-> 🎯 **Immediate Goal:** Land Data Analyst job (Month 5)  
-> 🚀 **Long-term Goal:** Build production AI Trading Assistant (Month 37)
-> 📋 **[View Complete Roadmap](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
----
-
-## 👨‍💻 About This Repository
-
-**What makes this different from typical learning repos:**
-
-✅ **Not just homework** - Every exercise is enhanced, optimized, and tested with variations  
-✅ **Building in public** - Commit history shows real learning process, struggles, and breakthroughs  
-✅ **Finance + Tech fusion** - Applying data/ML/AI skills to trading and quantitative finance  
-✅ **Production mindset** - Writing code with best practices, documentation, and testing from day 1  
-✅ **37-month journey** - Complete transformation documented start to finish  
-
-**What you'll find here:**
-- Daily practice exercises (enhanced beyond course requirements)
-- Experiments and alternative solutions
-- Trading research and analysis
-- Course notes and summaries
-- Mini-projects and proof-of-concepts
-- Code optimizations and refactoring
+[![Current Stage](https://img.shields.io/badge/Stage-1%3A%20Data%20Analyst-green)]()
+[![Study Hours](https://img.shields.io/badge/Weekly%20Hours-25-orange)]()
+[![Timeline](https://img.shields.io/badge/Timeline-37%20Months-blue)]()
 
 ---
 
-## 🧭 The Roadmap
+## 🗺️ Quick Navigation
 
-Following a structured 37-month path from beginner to senior engineer:
+**👔 For Recruiters / Hiring Managers:**
+1. **[💼 Portfolio Projects →](./projects/)** - Production ETL system + learning projects ⭐ **START HERE**
+2. **[📜 Certifications →](./certifications/)** - Progress tracking & completed certs
+3. **[📊 Complete Roadmap →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)** - 37-month plan visualization
+4. **[🔗 LinkedIn Profile →](https://www.linkedin.com/in/mr410/)** - Professional presence
 
-### **Stage 1: Data Analyst (Months 1-5)** 🟢 *IN PROGRESS*
-**Goal: Land first tech job!**
+**🎓 For Fellow Learners:**
+1. **[🛠️ Getting Started →](./getting-started/)** - Setup guides & prerequisites
+2. **[📚 Course Materials →](./courses/)** - Organized learning materials
+3. **[📋 Activation Plans →](./docs/activation-plans/)** - Structured week-by-week guides
+4. **[📝 Weekly Summaries →](./notes/)** - Progress & learnings
 
-**Courses:**
-- ✅ CS50 (Harvard) - Computer Science fundamentals *(Week 1)*
-- 🔄 Python for Everybody (University of Michigan)
-- 🔄 Google Data Analytics Professional Certificate
-- 🔄 IBM Data Analyst Professional Certificate (11 courses)
-- ⏳ Statistics with Python (University of Michigan)
-- ⏳ SQL (Mode, SQLZoo, HackerRank)
+**🤝 For Contributors:**
+- Open an issue for discussion
+- See [Getting Started](./getting-started/) for setup
+- Connect on LinkedIn for collaboration
 
-**Trading Deliverable:**
-- 📈 Market Data Analysis Dashboard with 10+ technical indicators
+---
 
-**Skills Acquired:**
-- Python (Pandas, NumPy, Matplotlib, Plotly)
-- SQL (queries, joins, aggregations, window functions)
-- Statistics & probability
-- Data cleaning & EDA
-- Data visualization & storytelling
+## 💪 What Makes This Different
+
+### **Most Learning Repos:**
+```
+✓ Tutorial completions
+✓ Course exercises
+✓ Personal projects
+✗ Real business problems
+✗ Production code
+✗ Measurable impact
+```
+
+### **This Repository:**
+```
+✓ Tutorial completions (enhanced)
+✓ Course exercises (optimized)
+✓ Personal projects (production-grade)
+✓ Real business problems (1099 ETL pipeline - live in production)
+✓ Production code (publicly viewable, 95% efficiency gain)
+✓ Measurable impact (saving 20 hrs/month at current company)
+✓ 37-month strategic roadmap
+✓ Building in public with full transparency
+```
+
+**Key Differentiator:** I'm not just learning—I'm already delivering production value. And that code is public for review.
+
+---
+
+## 🏆 Featured: Production Project
+
+### **1099 Reconciliation ETL Pipeline** 🌟
+**Status:** ✅ Live in production at Daybright Financial  
+**Repository:** [1099_reconciliation_pipeline](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline) 🌐 Public
+
+**The Business Problem:**  
+Manual reconciliation of retirement plan distribution data took 4-6 hours every week, was error-prone, and blocked critical 1099-R tax reporting.
+
+**The Solution:**  
+Built automated Python ETL pipeline using pandas and openpyxl that extracts, transforms, validates, and reconciles data from two systems (Relius and Matrix).
+
+**The Impact:**  
+- ⚡ **95% time reduction** (4-6 hours → 15 minutes weekly)
+- ✅ **Error reduction** through automated validation  
+- 📊 **10x scalability** (handles 300+ accounts vs. 30 manual capacity)
+- 💰 **20 hours/month freed up** for higher-value work
+
+**Why It's Public:**  
+Uses synthetic test data (Python `faker` module) so the code is fully reviewable and runnable while maintaining client data privacy. This demonstrates both technical skill AND professional data governance.
+
+**→ [View all projects](./projects/)** including Trading Attention Tracker (learning capstone in progress)
+
+---
+
+## 🎯 The 37-Month Roadmap
+
+Structured progression from beginner to senior engineer with income at every stage:
+
+### **Stage 1: Data Analyst** (Months 1-5) - 🟢 **IN PROGRESS**
+**Goal:** Land first tech role ($60-75K)
+
+**Core Skills:**
+- Python (pandas, NumPy, Matplotlib)
+- SQL (queries, joins, window functions)
+- Statistics & data visualization
 - Excel & business intelligence
 
----
+**Deliverables:**
+- ✅ 1099 ETL Pipeline (production)
+- 🚧 Trading Attention Tracker (capstone)
+- 📅 Financial Dashboard (Month 2-3)
+- 📅 ML Trading Prototype (Month 3-4)
 
-### **Stage 2: Data Engineer (Months 6-15)** ⚪ *PLANNED*
-**Goal: Build production data systems**
+**Certifications:**
+- Python for Everybody (University of Michigan)
+- Google Data Analytics Professional
+- IBM Data Analyst Professional (11 courses)
 
-**Focus:**
-- AWS (Data Engineer Associate, Solutions Architect)
-- PostgreSQL, PySpark, Airflow
-- ETL pipelines, data warehousing
-- Cloud infrastructure
-
-**Trading Deliverable:**
-- 🔧 Real-time Trading Data Pipeline (production-grade)
-
----
-
-### **Stage 3: ML Engineer (Months 16-29)** ⚪ *PLANNED*
-**Goal: Apply ML to trading**
-
-**Focus:**
-- Mathematics for ML (Linear Algebra, Calculus)
-- ML Specialization (Andrew Ng)
-- Deep Learning, Neural Networks
-- Model training, evaluation, deployment
-
-**Trading Deliverable:**
-- 🤖 ML-Powered Trading Models & Portfolio Optimizer
+**Outcome:** Data Analyst job secured by Month 5
 
 ---
 
-### **Stage 4: LLM Engineer (Months 30-34)** ⚪ *PLANNED*
-**Goal: Build AI-powered systems**
+### **Stage 2: Data Engineer** (Months 6-15) - ⏳ PLANNED
+**Goal:** Upgrade skills & salary ($80-100K)
 
-**Focus:**
-- Prompt Engineering
+**Core Skills:**
+- AWS (S3, Glue, Redshift, EMR)
+- Data pipelines & ETL at scale
+- Apache Airflow orchestration
+- Big data (PySpark)
+
+**Deliverable:** Real-time Trading Data Pipeline (production-grade cloud infrastructure)
+
+---
+
+### **Stage 3: ML Engineer** (Months 16-29) - ⏳ PLANNED
+**Goal:** Break into ML/AI ($120-150K)
+
+**Core Skills:**
+- Mathematics for ML
+- scikit-learn, TensorFlow
+- Model deployment & MLOps
+- Feature engineering
+
+**Deliverable:** ML-Powered Trading Models with backtesting & production deployment
+
+---
+
+### **Stage 4: LLM Specialist** (Months 30-34) - ⏳ PLANNED
+**Goal:** Master cutting-edge AI ($150-200K)
+
+**Core Skills:**
+- Prompt engineering
 - RAG (Retrieval-Augmented Generation)
 - Vector databases
-- Fine-tuning LLMs
-- Multi-agent systems
+- LLM fine-tuning & agents
 
-**Trading Deliverable:**
-- 🚀 **AI Trading Assistant V1** (LLM-powered market analysis & signals)
+**Deliverable:** AI Trading Assistant V1 (LLM-powered analysis & signals)
 
 ---
 
-### **Stage 5: Senior Engineer (Months 35-37)** ⚪ *PLANNED*
-**Goal: Production deployment & monetization**
+### **Stage 5: Senior LLM Engineer** (Months 35-37) - 🎯 **ULTIMATE GOAL**
+**Goal:** Leadership & production deployment ($180-250K+)
 
-**Focus:**
-- Production systems & scalability
-- MLOps & monitoring
-- Thought leadership (blog, YouTube, courses)
-- Consulting & business development
+**Core Skills:**
+- Production AI systems
+- Thought leadership
+- Team mentorship
+- Open source contributions
 
-**Trading Deliverable:**
-- 💰 **AI Trading Assistant V2** (fully automated, production-deployed)
+**Deliverable:** AI Trading Assistant V2 (fully automated, production-ready, monetized)
+
+**→ [View interactive 37-month roadmap](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
 
 ---
 
-## 📁 Repository Structure
+## 📂 Repository Structure
 
 ```
 learning_journey/
 │
-├── 📄 README.md                  # Main documentation (you're reading this!)
+├── 📄 README.md                          # This file - Complete overview
 │
-├── 📂 docs/                      # GitHub Pages - Public website
-│   ├── index.html                # Landing page at manuel-reyes-ml.github.io/learning_journey/
-│   └── roadmap.html              # Interactive 37-month roadmap (v5.4)
+├── 📂 projects/                          # ⭐ Project directory (links to separate repos)
+│   └── README.md                         # Comprehensive project index
+│       ├── 1099 ETL Pipeline (production, public)
+│       ├── Trading Attention Tracker (capstone, in progress)
+│       └── Planned projects (dashboard, ML prototype)
 │
-├── 📂 cs50_harvard/              # CS50 problem sets & notes
-│   ├── scratch/                  # Week 0 - Scratch projects
-│   └── notes_cs50.md             # Course notes & key concepts
+├── 📂 getting-started/                   # For new visitors
+│   ├── README.md                         # Navigation & overview
+│   ├── SETUP_GUIDE.md                    # Complete dev environment setup
+│   ├── environment-verification.py       # Test your setup
+│   └── prerequisites.md                  # What you need to begin
 │
-├── 📂 python/                    # Python practice & experiments
-│   ├── .venv/                    # Virtual environment (not committed to git)
-│   ├── week1_basics/             # Variables, loops, functions
-│   ├── week2_flowcontrol/        # Conditionals, iterations
-│   ├── week3_data_struct/        # Lists, dicts, sets
-│   ├── experiments/              # My enhancements & tests
-│   ├── requirements.txt          # Python dependencies
-│   └── check_env.py              # Environment verification script
+├── 📂 courses/                           # Course-specific materials
+│   ├── cs50_harvard/                     # CS50 work & notes
+│   ├── python_for_everybody/             # Python course materials
+│   │   ├── code/                         # Practice scripts
+│   │   ├── experiments/                  # Enhanced exercises
+│   │   ├── notebooks/                    # Jupyter notebooks
+│   │   └── notes/                        # Course notes by module
+│   ├── ibm_data_analyst/                 # IBM course materials
+│   └── sql_mode_thoughtspot/             # SQL practice
 │
-├── 📂 sql/                       # SQL query practice
-│   ├── basics/                   # SELECT, WHERE, ORDER BY
-│   ├── intermediate/             # JOINs, subqueries
-│   ├── advanced/                 # Window functions, CTEs, optimization
-│   └── notes_sqlbasics.md        # SQL concepts & patterns
+├── 📂 certifications/                    # Certificate tracking
+│   ├── README.md                         # All certifications overview
+│   └── in-progress/                      # Current progress tracking
+│       ├── python-for-everybody-progress.md
+│       ├── google-data-analytics-progress.md
+│       └── ibm-data-analyst-progress.md
 │
-├── 📂 trading/                   # Trading research & analysis
-│   └── notes_trading_ideas.md    # Market analysis, strategy notes
+├── 📂 docs/                              # Documentation & guides
+│   ├── index.html                        # GitHub Pages landing page
+│   ├── roadmap.html                      # Interactive 37-month roadmap
+│   └── activation-plans/                 # Structured learning guides
+│       ├── README.md                     # Guide overview
+│       ├── WEEK_01_MASTER_ACTIVATION_PLAN.md
+│       ├── DAILY_ROUTINE_GUIDE.md
+│       ├── ACCEPTANCE_CRITERIA.md
+│       └── WEEK_01_QUICK_REFERENCE.md
 │
-├── 📂 notes/                     # General course notes
-│   ├── week1_summary.md          # Week 1 learning summary
-│   └── week2_summary.md          # Week 2 learning summary
+├── 📂 notes/                             # Learning journal
+│   ├── week1_summary.md                  # Weekly progress summaries
+│   ├── trading_ideas.md                  # Trading research
+│   └── learning-journal.md               # Daily reflections
 │
-├── .gitignore                    # Ignore .venv, __pycache__, etc.
-└── README.md                     # This file
+├── .gitignore                            # Ignore .venv, cache, etc.
+├── .vscode/                              # VS Code settings
+└── requirements.txt                      # Python dependencies
 ```
 
-**Key Folders:**
-
-- **`docs/`** - GitHub Pages hosting for interactive roadmap and landing page
-- **`python/`** - All Python practice with virtual environment setup
-- **`sql/`** - SQL practice organized by difficulty level
-- **`cs50_harvard/`** - CS50 course materials and notes
-- **`trading/`** - Trading-specific research and strategies
-- **`notes/`** - Weekly summaries and general notes
-
-**Not Committed to Git:**
-- `python/.venv/` - Virtual environment (local only)
-- `**/__pycache__/` - Python cache files
-- `.DS_Store` - macOS system files
+**Key Principles:**
+- ✅ **Projects in separate repos** - Each major project has its own repository
+- ✅ **Course-based organization** - Materials grouped by course, not week
+- ✅ **Clear navigation** - Every folder has README.md
+- ✅ **Production-ready structure** - Professional organization from Day 1
 
 ---
 
-## 🎯 Current Progress (Stage 1)
+## 🎯 Current Progress (Week 1, Stage 1)
 
 ### ✅ **Completed:**
-- Week 1: CS50 Week 0 (Scratch)
-- Python basics setup (virtual environment)
-- SQL basics (SELECT, WHERE)
+- Development environment setup (Python, VS Code, Git, SQL)
+- CS50 Week 0 (Scratch fundamentals)
+- Python basics (variables, data types, operators)
+- 1099 ETL Pipeline (production deployment) ⭐
+- Repository structure (professional organization)
+- Week 1 activation plan execution
 
-### 🔄 **In Progress (Week 1-2):**
-- CS50 Week 1 (C fundamentals)
+### 🚧 **In Progress:**
 - Python for Everybody Week 1-2
-- SQL practice (JOINs, aggregations)
-- Setting up trading data sources
+- Trading Attention Tracker v1.0 (capstone)
+- SQL practice (SELECT, WHERE, JOIN)
+- Learning journal (daily entries)
 
-### ⏳ **Coming Next:**
-- IBM Data Analyst courses (starting Month 2)
-- Google Data Analytics case studies
-- Statistics with Python
-- First mini-project: Basic market data dashboard
+### 📅 **Coming Next (Weeks 2-4):**
+- CS50 completion (Week 4)
+- Python for Everybody certificate (Week 8)
+- IBM Data Analyst courses (Month 2)
+- First portfolio project: Trading dashboard
+- Kaggle competition entry
 
 ---
 
-## 💻 Environment Setup
+## 💻 Development Environment
 
-This repo uses a **local virtual environment** for Python dependencies.
+This repo uses Python virtual environment for dependency isolation.
 
-### **Initial Setup (One-time):**
-
+### **Quick Start:**
 ```bash
-# Navigate to python folder
-cd ~/dev/learning_journey/python
+# Clone repository
+git clone https://github.com/manuel-reyes-ml/learning_journey.git
+cd learning_journey
 
-# Create virtual environment
-python3 -m venv .venv
+# See setup guide for detailed instructions
+open getting-started/SETUP_GUIDE.md
 
-# Activate it
-source .venv/bin/activate
-
-# Upgrade pip
-python -m pip install --upgrade pip
-
-# Install dependencies
-pip install -r requirements.txt
+# Or verify your environment
+python getting-started/environment-verification.py
 ```
 
-### **Daily Workflow:**
+### **Current Tech Stack:**
+- **Languages:** Python 3.11+, SQL
+- **Libraries:** pandas, NumPy, Matplotlib, Seaborn, Plotly
+- **Tools:** VS Code, Git/GitHub, Jupyter, SQLite
+- **Platforms:** Coursera, DataCamp, HackerRank, Kaggle
 
-```bash
-# Activate environment
-cd ~/dev/learning_journey/python
-source .venv/bin/activate
-
-# You should see (.venv) in your prompt
-# Now you can run Python scripts, Jupyter, etc.
-
-# When done
-deactivate
-```
-
-### **Current Dependencies:**
-```
-numpy
-pandas
-matplotlib
-seaborn
-plotly
-jupyter
-ipython
-yfinance        # For trading data
-scipy           # Statistical analysis
-requests        # API calls
-```
+**→ [Complete setup guide](./getting-started/SETUP_GUIDE.md)**
 
 ---
 
-## 📝 Commit Message Conventions
+## 👨‍💻 What You'll Find Here
 
-To keep the repo organized and show my thinking process, I use prefixed commit messages:
+### **Not Just Homework:**
+Every exercise is enhanced, optimized, and tested with variations.
 
-### **Categories:**
-
-**🔧 Environment & Config**
-```
-Config: add virtualenv setup instructions
-Config: ignore .venv in git
-Config: add initial requirements.txt
-Config: update dependencies for data viz
-```
-
-**🐍 Python Practice**
-```
-Python: add check_env.py script
-Python: implement hours calculator exercise
-Python: add solution for regex assignment
-Python: refactor file parsing into function
-Python: enhance exercise with error handling
-Python: optimize performance by 40%
-```
-
-**🗄️ SQL Practice**
-```
-SQL: create mode_practice.sql with basic SELECTs
-SQL: add JOIN and GROUP BY examples
-SQL: add practice queries for album analysis
-SQL: clean up comments and formatting
-SQL: optimize query using indexes
-SQL: add window function examples
-```
-
-**📊 Trading & Analysis**
-```
-Trading: add technical indicators research
-Trading: implement RSI calculation
-Trading: test backtesting framework
-Trading: add market data fetching script
-```
-
-**📚 Documentation & Notes**
-```
-Docs: document daily workflow for venv
-Docs: add notes on TRIM and COALESCE in SQL
-Docs: summarize IBM course week 1 concepts
-Docs: trading strategy research notes
-```
-
-**✨ Enhancements**
-```
-Enhance: add 3 alternative solutions to exercise
-Enhance: optimize query performance
-Enhance: add comprehensive error handling
-Enhance: create visualization for results
-```
-
-**🔨 Refactoring**
-```
-Refactor: extract repeated code into functions
-Refactor: improve code readability
-Refactor: apply DRY principle to SQL queries
-```
-
----
-
-## 🚀 What Makes This Different
-
-### **Not Just Following Tutorials:**
-
-**Typical learner:**
+**Example - Typical approach:**
 ```python
-# Exercise: Calculate average
+# Calculate average
 numbers = [1, 2, 3, 4, 5]
-average = sum(numbers) / len(numbers)
-print(average)
+print(sum(numbers) / len(numbers))
 ```
 
 **My approach:**
 ```python
-# Exercise: Calculate average
-# ENHANCED: Added error handling, edge cases, multiple approaches
-
 def calculate_average(numbers, method='arithmetic'):
     """
-    Calculate average with multiple methods and robust error handling.
+    Calculate average with multiple methods and comprehensive error handling.
     
-    Args:
-        numbers: List of numbers
-        method: 'arithmetic', 'geometric', 'harmonic'
-    
-    Returns:
-        float: Calculated average
-    
-    Raises:
-        ValueError: If list is empty or contains invalid values
+    Supports: arithmetic, geometric, harmonic means
+    Handles: empty lists, invalid values, edge cases
     """
     if not numbers:
         raise ValueError("Cannot calculate average of empty list")
@@ -358,170 +321,357 @@ def calculate_average(numbers, method='arithmetic'):
     else:
         raise ValueError(f"Unknown method: {method}")
 
-# Testing with edge cases
-assert calculate_average([1, 2, 3]) == 2.0
-assert calculate_average([5]) == 5.0
-
-# Compare methods
-prices = [100, 102, 98, 101, 99]
-print(f"Arithmetic: {calculate_average(prices, 'arithmetic'):.2f}")
-print(f"Geometric: {calculate_average(prices, 'geometric'):.2f}")
-
-# Performance testing with larger dataset
-import time
-large_data = list(range(1, 10001))
-start = time.time()
-result = calculate_average(large_data)
-print(f"Time: {(time.time() - start)*1000:.2f}ms")
+# Test all methods with real data
+stock_returns = [0.05, 0.03, -0.02, 0.04, 0.01]
+for method in ['arithmetic', 'geometric', 'harmonic']:
+    avg = calculate_average(stock_returns, method)
+    print(f"{method.title()} return: {avg*100:.2f}%")
 ```
 
-**Commit:**
+**Commit message:**
 ```
-Enhance: implement 3 average methods with comprehensive testing
-- Added arithmetic, geometric, harmonic calculations
-- Robust error handling for edge cases
-- Performance benchmarking on 10K dataset
+Enhance: implement 3 average calculation methods with financial application
+- Added arithmetic, geometric, harmonic mean calculations
+- Comprehensive error handling for edge cases
+- Applied to stock return analysis
 - Unit tests for validation
 ```
 
 ---
 
-## 📊 Learning Stats
+## 🌟 The Unique Value Proposition
 
-**Time Investment:**
-- Daily: 3.5 hours (M-F: 4:30-6am + 8-10pm)
-- Saturday: 5.5 hours (5-8:30am + 8-10pm)
-- Sunday: 2 hours (7:30-9:30pm)
-- **Total: 25 hours/week**
-- **Bonus: 20 min/day Sololearn practice**
+### **What Recruiters See in Most Candidates:**
+- Python, SQL, Excel ✓
+- Can make dashboards ✓
+- Completed online courses ✓
+- Generic tutorial projects ⚠️
+- No domain expertise ⚠️
+- No production experience ⚠️
 
-**Progress Tracking:**
-- Week 1: ✅ 25 hours completed
-- Week 2: 🔄 In progress
-- Total hours: ~25/5,000+ (37-month journey)
+### **What I Bring:**
+- Python, SQL, Excel ✓
+- Advanced data visualization ✓
+- Multiple certifications ✓
+- **Production ETL system (publicly viewable)** 🌟
+- **10+ years finance/trading experience** 🌟
+- **Real business impact (95% efficiency gain)** 🌟
+- **Domain expertise in quantitative finance** 🌟
+- **Clear path to ML/LLM engineering** 🌟
+- **Building AI trading systems** 🌟
 
-**Completion Metrics:**
-- CS50: Week 0/11 completed
-- Python for Everybody: 0/5 courses
-- IBM Data Analyst: 0/11 courses
-- Portfolio projects: 0/6 Stage 1 projects
+**The Pitch:**
+> "I'm not just a data analyst who learned Python from tutorials. I'm someone who:
+> - Already delivered a production ETL system saving my company 20 hrs/month
+> - Has 10+ years of trading and finance expertise
+> - Understands markets at a deep quantitative level
+> - Is systematically building toward LLM engineering
+> - Can bridge business needs with technical solutions
+> 
+> The code is public. The impact is measurable. The trajectory is clear."
+
+---
+
+## 📈 Trading Integration Across All Stages
+
+Every stage builds toward a complete AI Trading Assistant:
+
+| Stage | Trading Deliverable | Technologies |
+|-------|-------------------|--------------|
+| **1. Data Analyst** | Market Analysis Dashboard | Python, pandas, Plotly, yfinance |
+| **2. Data Engineer** | Real-time Trading Pipeline | AWS, PostgreSQL, Airflow, Kafka |
+| **3. ML Engineer** | ML Trading Models | scikit-learn, TensorFlow, backtesting |
+| **4. LLM Specialist** | AI Trading Assistant V1 | LangChain, RAG, GPT-4, agents |
+| **5. Senior Engineer** | Production AI System | MLOps, monitoring, monetization |
+
+**Final Product (Month 37):**
+- Real-time market data processing at scale
+- ML-powered signal generation with backtesting
+- LLM-based analysis and natural language insights
+- Multi-agent orchestration for strategy execution
+- Production deployment with monitoring
+- Revenue generation: $2-50K/month potential
+
+---
+
+## 📊 Learning Commitment
+
+### **Time Investment:**
+- **Mon-Fri:** 4:30-6 AM + 8-10 PM (3.5 hrs/day)
+- **Saturday:** 5-8:30 AM + 8-10 PM (5.5 hrs)
+- **Sunday:** 7:30-9:30 PM (2 hrs)
+- **Weekly Total:** 25 hours (sustainable for 37 months!)
+- **Bonus:** 20 min/day mobile practice (Sololearn)
+
+### **Progress Tracking:**
+```
+Current Week:     1 of 160
+Current Stage:    Data Analyst (1 of 5)
+Hours This Week:  25 / 25 ✅
+Total Hours:      25 / 5,000+
+Completion:       0.5% of journey
+```
+
+### **Study Routine:**
+- **Morning (4:30-6 AM):** Video lectures, reading, theory
+- **Evening (8-10 PM):** Coding, projects, hands-on practice
+- **Saturday:** Deep work on complex projects
+- **Sunday:** Review week, LinkedIn engagement, planning
 
 ---
 
 ## 🎯 Stage 1 Goals (Months 1-5)
 
-### **Technical Skills:**
-- ✅ Python fundamentals (variables, loops, functions, data structures)
-- ✅ SQL basics (SELECT, WHERE, JOIN)
-- 🔄 Advanced Python (Pandas, NumPy, data analysis)
-- 🔄 SQL intermediate (subqueries, window functions, CTEs)
-- ⏳ Statistics & probability
-- ⏳ Data visualization (Matplotlib, Plotly, Tableau)
+### **Must Complete:**
 
-### **Portfolio Projects (Must Complete):**
-1. 📈 **Algorithmic Trading Dashboard** - Real-time market analysis with 10+ indicators
-2. 📊 **IBM Data Analyst Capstone** - Professional end-to-end analysis
-3. 📉 **Google Analytics Case Study** - Business intelligence project
-4. 🔍 **SQL Data Warehouse Analysis** - Complex query practice
-5. 📈 **Statistical Analysis Project** - Hypothesis testing, distributions
-6. 🏆 **Kaggle Competition Entry** - Public notebook, community engagement
+**Certifications (5):**
+- [x] CS50 (Harvard) - Computer Science fundamentals
+- [ ] Python for Everybody (University of Michigan)
+- [ ] Google Data Analytics Professional
+- [ ] IBM Data Analyst Professional (11 courses)
+- [ ] Statistics with Python (University of Michigan)
 
-### **Job Search Prep:**
-- ⏳ Resume with 5 major certificates
-- ⏳ LinkedIn profile optimization
-- ⏳ GitHub portfolio (4-6 pinned repos)
-- ⏳ Interview prep (SQL, Python, behavioral)
-- ⏳ 50-100 job applications
+**Portfolio Projects (4):**
+1. ✅ 1099 ETL Pipeline (production, completed)
+2. 🚧 Trading Attention Tracker (capstone, in progress)
+3. 📅 Financial Dashboard (interactive, Month 2-3)
+4. 📅 ML Trading Prototype (basic models, Month 3-4)
 
-### **Target Outcome:**
-- 🎯 **Data Analyst job offer by Month 5**
+**Technical Skills:**
+- ✅ Python fundamentals
+- 🚧 Pandas, NumPy (data manipulation)
+- 🚧 SQL (basic → intermediate)
+- 📅 Statistics & probability
+- 📅 Data visualization (Matplotlib, Plotly)
+- 📅 Tableau/Power BI
+
+**Job Search:**
+- 📅 Resume optimization (with 5 certs)
+- 📅 LinkedIn profile (recruiter-ready)
+- 📅 GitHub portfolio (4+ pinned repos)
+- 📅 Interview prep (SQL, Python, behavioral)
+- 📅 50-100 applications (Month 3-5)
+
+**Target Outcome:**
+- 🎯 Data Analyst job offer by Month 5
 - 💰 $60-75K remote position
-- 🇪🇸 Visa secured, income established
-- 🚀 Continue learning while employed (Stage 2)
+- 🌍 Continue learning while employed (Stage 2)
 
 ---
 
-## 🌟 The Unique Value Proposition
+## 💡 Learning Philosophy
 
-### **What Recruiters See:**
+### **Why Building in Public:**
 
-**Most Data Analyst Candidates:**
-- Know Python, SQL, Excel ✅
-- Can make dashboards ✅
-- Completed online courses ✅
-- Generic projects ⚠️
-- No domain expertise ⚠️
+**Transparency:**  
+Real learning is messy. This repo shows the actual process—struggles, breakthroughs, iterations.
 
-**What I Bring:**
-- Python, SQL, Excel ✅
-- Advanced data visualization ✅
-- 5 major certifications ✅
-- **Trading/finance domain expertise** 🌟
-- **10+ years market experience** 🌟
-- **Quantitative mindset** 🌟
-- **Building toward ML/AI** 🌟
-- **Unique projects (trading analytics)** 🌟
+**Accountability:**  
+Public commits = public commitment. Can't fake progress when it's all visible.
 
-**The Pitch:**
-> "I'm not just a data analyst who can make charts. I'm someone who understands markets, can build trading algorithms, and is on a path to becoming an LLM engineer. I bring both finance expertise AND cutting-edge technical skills."
+**Community:**  
+Others learn from my journey; I learn from feedback and discussions.
 
----
+**Portfolio:**  
+This repo IS the proof of coding ability, learning capacity, and work ethic.
 
-## 📈 Trading Integration (All Stages)
+**Future Content:**  
+Foundation for blog posts, tutorials, courses, and thought leadership (Stage 5).
 
-Every stage includes trading-focused deliverables:
+### **Core Principles:**
 
-| Stage | Trading Project | Technologies |
-|-------|----------------|--------------|
-| **1. Data Analyst** | Market Analysis Dashboard | Python, Pandas, Plotly, yfinance |
-| **2. Data Engineer** | Real-time Data Pipeline | AWS, PostgreSQL, Airflow, streaming |
-| **3. ML Engineer** | ML Trading Models | scikit-learn, TensorFlow, backtesting |
-| **4. LLM Engineer** | AI Trading Assistant V1 | LangChain, RAG, GPT-4, agents |
-| **5. Senior** | Production AI System | MLOps, monitoring, deployment |
-
-**End Result:**
-> A complete, production-grade **AI Trading Assistant** that combines:
-> - Real-time market data processing
-> - ML-powered signal generation
-> - LLM-based analysis and insights
-> - Multi-agent orchestration
-> - Automated execution capabilities
+1. **Practice > Theory** - Code every day, minimum 20 minutes
+2. **Enhance Everything** - Never just "complete" an exercise, make it better
+3. **Document Thinking** - Commit messages explain WHY, not just WHAT
+4. **Real-World Focus** - Every skill applied to trading/finance domain
+5. **Quality > Quantity** - Deep understanding beats surface completion
+6. **Sustainable Pace** - 25 hrs/week for 37 months (marathon not sprint)
+7. **Production Mindset** - Write code like it's going to production (because it might)
 
 ---
 
-## 🔗 Related Repositories
+## 📝 Commit Message Strategy
 
-**Portfolio Projects (Pinned):**
-1. 🤖 **[algorithmic-trading-dashboard]** - Stage 1 capstone (WIP)
-2. 📊 **[ibm-data-analyst-capstone]** - Professional certification project (Coming Month 4)
-3. 📈 **[google-analytics-case-study]** - Business intelligence (Coming Month 4)
-4. 💼 **[sql-data-analysis]** - Advanced SQL projects (Coming Month 3)
+Organized commits that show thinking process:
 
-**This Repo:**
-- 📚 Daily practice and experiments
-- 🧪 Testing and optimization
-- 📝 Course notes and summaries
-- 🔬 Research and exploration
+### **Categories:**
+
+**🔧 Setup & Configuration**
+```
+Setup: initialize Python virtual environment
+Setup: configure VS Code with extensions
+Setup: add .gitignore for Python projects
+```
+
+**📚 Course Work**
+```
+Course: complete Python for Everybody Week 1
+Course: add CS50 Problem Set 2 solution
+Course: IBM Data Analyst Module 3 exercises
+```
+
+**✨ Enhancements**
+```
+Enhance: add 3 alternative solutions to exercise
+Enhance: optimize query performance by 40%
+Enhance: implement comprehensive error handling
+Enhance: add data visualization to analysis
+```
+
+**📊 Projects**
+```
+Project: initialize Trading Attention Tracker
+Project: implement data pipeline for market data
+Project: add validation layer to ETL
+Project: complete dashboard MVP
+```
+
+**📖 Documentation**
+```
+Docs: add comprehensive README for course folder
+Docs: document database schema design
+Docs: create getting started guide
+Docs: update weekly progress summary
+```
+
+**🔨 Refactoring**
+```
+Refactor: extract repeated logic into functions
+Refactor: apply DRY principle to data processing
+Refactor: improve code readability and structure
+```
 
 ---
 
-## 📚 Resources & References
+## 🚀 Why This Works
 
-**Main Roadmap:**
-- [View complete 37-month roadmap](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)
+### **For Recruiters:**
 
-**Courses & Platforms:**
-- [CS50](https://cs50.harvard.edu/)
-- [Python for Everybody](https://www.py4e.com/)
+**Evidence of Ability:**
+- Production code already running in business environment
+- Public repositories demonstrating code quality
+- Comprehensive documentation showing communication skills
+- Measurable business impact (not just "completed projects")
+
+**Strategic Thinking:**
+- 37-month roadmap shows long-term planning
+- Progressive skill building (DA → DE → ML → LLM)
+- Domain expertise + technical skills = unique value
+- Clear career trajectory with income at each stage
+
+**Work Ethic:**
+- 25 hours/week consistent commitment
+- Daily practice and learning
+- Building in public = accountability
+- Production-grade quality from Day 1
+
+**Unique Combination:**
+- Finance domain expertise (10+ years)
+- Real trading experience (6+ years active)
+- Quantitative mindset
+- Production ETL experience
+- Path to advanced AI/ML skills
+
+---
+
+## 🔗 Connect & Collaborate
+
+**Professional:**
+- **LinkedIn:** [Manuel Reyes](https://www.linkedin.com/in/mr410/)
+- **GitHub:** [@manuel-reyes-ml](https://github.com/manuel-reyes-ml)
+- **Email:** manuelreyesv410@gmail.com
+
+**Portfolio:**
+- **Projects:** [View all projects →](./projects/)
+- **Roadmap:** [37-month interactive roadmap →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)
+- **Production Code:** [1099 ETL Pipeline →](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline)
+
+**Open To:**
+- 💼 Data Analyst job opportunities (remote, finance/trading sector)
+- 🤝 Networking with data professionals
+- 📊 Trading + tech collaborations
+- 🎓 Learning accountability partners
+- 💡 Code reviews and feedback
+- 🎤 Mentorship (giving or receiving)
+
+---
+
+## 🏆 Milestones
+
+### **Completed:**
+- ✅ Week 1 activation plan (25 hours)
+- ✅ Development environment setup
+- ✅ CS50 Week 0 (Scratch)
+- ✅ Python basics (variables, operators, data types)
+- ✅ 1099 ETL Pipeline (production deployment)
+- ✅ Repository structure (professional organization)
+- ✅ First LinkedIn post (career transition announcement)
+
+### **In Progress:**
+- 🚧 Python for Everybody Week 1-2
+- 🚧 Trading Attention Tracker v1.0
+- 🚧 SQL practice (basics → intermediate)
+- 🚧 Learning journal (daily entries)
+
+### **Coming Milestones:**
+- 📅 **Week 4:** Complete CS50
+- 📅 **Week 8:** Python for Everybody certificate
+- 📅 **Month 2:** Start IBM Data Analyst courses
+- 📅 **Month 2:** Launch Trading Attention Tracker v1.0
+- 📅 **Month 3:** Financial Dashboard (interactive)
+- 📅 **Month 4:** Complete all Stage 1 certifications
+- 📅 **Month 5:** Land Data Analyst job! 🎯
+
+---
+
+## 📚 Resources
+
+**Main Guides:**
+- [Getting Started Guide](./getting-started/) - Setup & prerequisites
+- [Complete Roadmap](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html) - Interactive 37-month plan
+- [Portfolio Projects](./projects/) - All projects & deliverables
+- [Activation Plans](./docs/activation-plans/) - Structured learning guides
+
+**Courses:**
+- [CS50](https://cs50.harvard.edu/) - Harvard's intro CS course
+- [Python for Everybody](https://www.py4e.com/) - Python fundamentals
 - [Google Data Analytics](https://www.coursera.org/google-certificates/data-analytics-certificate)
 - [IBM Data Analyst](https://www.coursera.org/ibm-certifications/data-analyst)
-- [Kaggle](https://www.kaggle.com/)
-- [HackerRank](https://www.hackerrank.com/)
 
-**Trading & Finance:**
-- [Investopedia](https://www.investopedia.com/)
-- [Machine Learning for Trading (Book)](https://www.ml4trading.io/)
-- [QuantConnect](https://www.quantconnect.com/)
+**Practice Platforms:**
+- [HackerRank](https://www.hackerrank.com/) - Coding challenges
+- [LeetCode](https://leetcode.com/) - Algorithm practice
+- [Kaggle](https://www.kaggle.com/) - Data science competitions
+- [SQLZoo](https://sqlzoo.net/) - SQL practice
+
+---
+
+## 📊 Success Metrics
+
+**Technical Progress:**
+- Lines of code committed (quality over quantity)
+- Projects completed (4+ in Stage 1)
+- Certificates earned (5 in Stage 1)
+- GitHub contributions (consistent daily commits)
+- Skills mastered (Python, SQL, statistics, viz)
+
+**Career Milestones:**
+- Data Analyst job secured (Month 5)
+- Salary progression ($60K → $250K+ over 37 months)
+- Certifications (15+ across all stages)
+- Portfolio projects (20+ across all stages)
+
+**Community Engagement:**
+- LinkedIn connections (data professionals)
+- GitHub stars/followers
+- Discussions participated in
+- Knowledge shared (future: blog, tutorials)
+
+**Personal Growth:**
+- Consistency (days/weeks of 25 hrs maintained)
+- Discipline (4:30 AM wake-ups)
+- Production systems built
+- Business value delivered
 
 ---
 
@@ -529,175 +679,82 @@ Every stage includes trading-focused deliverables:
 
 While this is primarily a personal learning repository, I welcome:
 
-✅ **Feedback on code quality**  
-✅ **Suggestions for improvements**  
-✅ **Trading strategy discussions**  
-✅ **Best practice recommendations**  
-✅ **Resource suggestions**  
+**✅ Open To:**
+- Code quality feedback
+- Improvement suggestions
+- Trading strategy discussions
+- Best practice recommendations
+- Resource suggestions
+- Networking and collaboration
 
-**Not accepting:**
-❌ Solutions to exercises (I want to learn by doing!)  
-❌ Direct answers without explanation  
+**❌ Not Accepting:**
+- Direct exercise solutions (want to learn by doing!)
+- Answers without explanation
+- Copy-paste code suggestions
 
-**How to engage:**
+**How To Engage:**
 - Open an issue for discussion
 - Comment on specific commits
-- Share your own learning journey
 - Connect on LinkedIn
+- Share your own learning journey
 
 ---
 
-## 📫 Connect
+## 💭 Final Thoughts
 
-**LinkedIn:** [Your Profile](https://www.linkedin.com/in/mr410/)  
-**Email:** manuelreyesv410@gmail.com
+### **This Repository Represents:**
+- 37 months of dedicated learning (5,000+ hours)
+- Transition from financial services to senior LLM engineering
+- Foundation for 6-figure tech career
+- Path to location independence (remote work)
+- Potential for $180-250K+ salary by Month 37
+- Combination of passion (trading) with profession (AI engineering)
 
-**Open to:**
-- Data Analyst job opportunities (remote, finance/trading sector)
-- Networking with data professionals
-- Trading + tech collaborations
-- Learning accountability partners
-- Mentorship (giving or receiving)
-
----
-
-## 🏆 Milestones & Achievements
-
-### **Week 1 (November 2025):**
-- ✅ Completed CS50 Week 0 (Scratch)
-- ✅ Set up development environment
-- ✅ Created learning_journey repository
-- ✅ Established daily practice routine (25 hrs/week)
-- ✅ Committed to building in public
-
-### **Coming Milestones:**
-- 📅 Week 4: Complete CS50
-- 📅 Month 2: Start IBM Data Analyst courses
-- 📅 Month 3: Launch first trading dashboard
-- 📅 Month 4: Complete capstone projects
-- 📅 Month 5: Land Data Analyst job! 🎯
-
----
-
-## 💭 Philosophy & Approach
-
-### **Why I'm Building in Public:**
-
-**Transparency:** Real learning is messy. Showing the process, not just the results.
-
-**Accountability:** Public commits = public commitment. Can't fake progress.
-
-**Community:** Others can learn from my journey, and I from theirs.
-
-**Portfolio:** This repo IS the proof I can code, learn, and deliver.
-
-**Future content:** Foundation for blog posts, tutorials, courses (Stage 5).
-
-### **Learning Principles:**
-
-1. **Practice > Theory:** Code every single day, even if just 20 minutes
-2. **Enhance Everything:** Never just "complete" an exercise - make it better
-3. **Document Thinking:** Commit messages explain WHY, not just WHAT
-4. **Real-World Focus:** Every skill learned is applied to trading/finance
-5. **Quality > Quantity:** Deep understanding beats surface-level completion
-6. **Sustainable Pace:** 25 hrs/week for 37 months = marathon, not sprint
-
----
-
-## 📊 Weekly Routine
-
-**Monday - Friday:**
-- 4:30-6:00 AM: Video lectures, reading (1.5 hrs)
-- During work: Sololearn practice (20 min)
-- 8:00-10:00 PM: Coding, projects, exercises (2 hrs)
-- **Daily total: 3.5 hrs + 20 min bonus**
-
-**Saturday:**
-- 5:00-8:30 AM: Deep work - complex projects (3.5 hrs)
-- 8:00-10:00 PM: Continue projects or catch-up (2 hrs)
-- **Total: 5.5 hrs**
-
-**Sunday:**
-- 7:30-9:30 PM: Week review, planning, community (2 hrs)
-  - 30 min: Review week's commits
-  - 30 min: LinkedIn posts, networking
-  - 30 min: Read 1 article (Real Python, trading research)
-  - 30 min: Plan next week's focus
-
-**Weekly Total: 25 hours** (sustainable long-term!)
-
----
-
-## 🎯 Success Metrics
-
-**Technical:**
-- Lines of code committed (quality > quantity)
-- Projects completed
-- Certificates earned
-- Kaggle competitions entered
-
-**Career:**
-- Job applications sent
-- Interviews scheduled
-- Offers received
-- Salary progression
-
-**Community:**
-- LinkedIn connections (data professionals)
-- GitHub stars/followers
-- Helpful discussions participated in
-- Knowledge shared
-
-**Personal:**
-- Consistency (days of 25 hrs/week maintained)
-- Skills mastered (Python, SQL, ML, LLMs)
-- Trading strategies developed
-- AI system built
-
----
-
-## 🚀 The Long Game
-
-**This repo represents:**
-- 37 months of dedicated learning
-- 5,000+ hours of practice
-- Transition from Financial Services Professional to LLM engineer
-- Foundation for 6-figure career
-- Path to Spain citizenship
-- Potential for $400-700K/year by Month 37
-
-**Every commit is a step toward:**
-- Financial freedom through tech skills
-- Location independence (remote work)
-- Building AI systems that generate value
-- Combining passion (trading) with profession (engineering)
+### **Every Commit Is a Step Toward:**
+- Financial freedom through high-value technical skills
+- Building AI systems that generate actual value
 - Creating opportunities to teach and mentor others
+- Proving that career transformation is possible with structure and commitment
+- Demonstrating that finance background + tech skills = powerful combination
 
 ---
 
-## 📖 Reading This?
+## 🎯 The Long Game
 
-If you're here, you're witnessing a complete career transformation in real-time.
-
-**Bookmark this repo** to follow the journey from Day 1 to production AI system.
-
-**Star it** if you appreciate the transparency and want to support the journey!
-
-**Fork it** if you want to build your own learning journey structure.
-
----
-
-### 💡 *"The journey of 37 months begins with a single commit."*
-
-**Current Week:** 1 of 160  
-**Current Stage:** Data Analyst (1 of 5)  
-**Hours Invested:** 25 / 5,000+  
+**Current State:** Week 1 of 160  
+**Current Focus:** Building Data Analyst foundations  
+**Production Value:** Already delivering (1099 ETL pipeline)  
 **Next Milestone:** CS50 completion (Week 4)  
+**Big Goal:** Senior LLM Engineer (Month 37)  
+
+**The Journey:**
+- Started: November 20, 2025
+- Target: December 2028
+- Hours/Week: 25 (sustainable)
+- Income: Every stage
+- Public: Every commit
+- Goal: AI Trading Assistant (production-deployed, monetized)
 
 ---
 
-⭐ **Star this repo to follow the journey!**  
-🔔 **Watch for weekly updates!**  
-💬 **Open an issue to discuss or connect!**
+## ⭐ Follow The Journey
 
-*Last updated: November 2025 | Week 1 of 160*
+**This is a real-time documentation of a complete career transformation.**
+
+If you're here, you're witnessing Day 1 → Senior Engineer in public.
+
+- ⭐ **Star this repo** to follow along
+- 🔔 **Watch** for weekly updates
+- 🔗 **Connect on LinkedIn** for discussions
+- 💬 **Open an issue** to engage
+
+---
+
+### 💡 *"The journey of 37 months begins with 25 hours a week."*
+
+**Week 1 ✅ | 159 weeks to go | Let's build. 🚀**
+
+---
+
+*Last updated: November 2025 | Week 1 of 160 | Stage 1: Data Analyst*  
+*Next update: End of Week 2 with progress summary*
