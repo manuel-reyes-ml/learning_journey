@@ -79,16 +79,23 @@
             height: 30px;
             overflow: hidden;
             margin: 15px 0;
+            position: relative;
         }
         .progress-fill {
             background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
             height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: 600;
             transition: width 0.5s ease;
+            position: relative;
+        }
+        .progress-percentage {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #333;
+            font-weight: 600;
+            font-size: 0.9em;
+            z-index: 10;
         }
         .progress-text {
             text-align: center;
@@ -158,6 +165,9 @@
         }
         
         /* CTA Buttons */
+        .cta-section {
+            margin: 30px 0;
+        }
         .cta-button {
             display: inline-block;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
@@ -181,6 +191,17 @@
         }
         .secondary-button:hover {
             background: #f8f9ff;
+        }
+        .button-description {
+            font-size: 0.8em;
+            color: #999;
+            display: block;
+            margin-top: 5px;
+        }
+        .button-group {
+            display: inline-block;
+            text-align: center;
+            margin: 10px;
         }
         
         /* Stats */
@@ -254,6 +275,10 @@
             .milestones {
                 grid-template-columns: 1fr;
             }
+            .button-group {
+                display: block;
+                margin: 15px 0;
+            }
         }
     </style>
 </head>
@@ -273,18 +298,19 @@
         
         <!-- Progress Dashboard -->
         <div class="progress-section">
-            <h2>📊 Current Progress: Stage 1 - Week 7</h2>
+            <h2>📊 Current Progress: Stage 1 - Week 1</h2>
             <div class="progress-bar">
-                <div class="progress-fill" style="width: 35%">35% Complete</div>
+                <div class="progress-fill" style="width: 5%"></div>
+                <div class="progress-percentage">5% Complete</div>
             </div>
             <p class="progress-text">
-                <strong>7 weeks completed</strong> • 13 weeks remaining to Data Analyst job target
+                <strong>1 week completed</strong> • 19 weeks remaining to Data Analyst job target
             </p>
             
             <div class="milestones">
                 <div class="milestone done">✅ CS50 Week 0 Complete</div>
                 <div class="milestone done">✅ Python Setup & Basics</div>
-                <div class="milestone current">🔄 Python for Everybody (Week 2)</div>
+                <div class="milestone current">🔄 Python for Everybody (Week 1)</div>
                 <div class="milestone upcoming">⏳ SQL Fundamentals</div>
                 <div class="milestone upcoming">⏳ Google Analytics Cert</div>
                 <div class="milestone upcoming">⏳ First Portfolio Project</div>
@@ -295,22 +321,36 @@
         <div class="activity-section">
             <h3>🔥 Recent Activity</h3>
             <ul class="activity-list">
-                <li><strong>Jan 6:</strong> Updated landing page with progress tracking</li>
-                <li><strong>Jan 5:</strong> Python loops and conditionals practice (CS50)</li>
-                <li><strong>Jan 4:</strong> Started SQL basics - SELECT, WHERE, ORDER BY</li>
-                <li><strong>Jan 3:</strong> Trading strategy research - technical indicators</li>
-                <li><strong>Jan 2:</strong> Repository structure optimization</li>
+                <li><strong>Nov 26:</strong> Completed Week 1 activation plan (25 hours)</li>
+                <li><strong>Nov 25:</strong> 1099 ETL Pipeline live in production (95% time reduction)</li>
+                <li><strong>Nov 24:</strong> Started Trading Attention Tracker project</li>
+                <li><strong>Nov 23:</strong> Repository structure optimization & documentation</li>
+                <li><strong>Nov 22:</strong> LinkedIn post - Career transition announcement</li>
             </ul>
         </div>
         
         <!-- CTA Buttons -->
-        <a href="roadmap.html" class="cta-button" title="Interactive timeline with all 5 stages and detailed milestones">
-            📋 View 37-Month Roadmap
-        </a>
-        
-        <a href="https://github.com/manuel-reyes-ml/learning_journey" target="_blank" class="cta-button secondary-button">
-            💻 View Repository
-        </a>
+        <div class="cta-section">
+            <div class="button-group">
+                <a href="roadmap.html" class="cta-button" title="Interactive timeline with all 5 stages and detailed milestones">
+                    📋 View 37-Month Roadmap
+                </a>
+            </div>
+            
+            <div class="button-group">
+                <a href="https://github.com/manuel-reyes-ml/data-portfolio" target="_blank" class="cta-button secondary-button" title="Production ETL system + learning projects">
+                    💼 Projects Portfolio
+                </a>
+                <span class="button-description">Production & learning projects</span>
+            </div>
+            
+            <div class="button-group">
+                <a href="https://github.com/manuel-reyes-ml/learning_journey" target="_blank" class="cta-button secondary-button" title="Course materials, notes, and progress documentation">
+                    📚 Learning Journey
+                </a>
+                <span class="button-description">Course materials & progress</span>
+            </div>
+        </div>
         
         <!-- Stats -->
         <div class="stats">
@@ -327,23 +367,20 @@
                 <div class="stat-label">Hrs/Week</div>
             </div>
             <div class="stat">
-                <div class="stat-number">7</div>
-                <div class="stat-label">Weeks In</div>
+                <div class="stat-number">1</div>
+                <div class="stat-label">Week In</div>
             </div>
         </div>
         
         <!-- Footer -->
         <div class="footer">
             <div class="last-updated">
-                📅 Last Updated: <strong>January 6, 2026</strong> | Week 7 of 37-month journey
+                📅 Last Updated: <strong>November 26, 2025</strong> | Week 1 of 37-month journey
             </div>
             <div class="build-status">🟢 Active • Learning in Public</div>
             <br>
             Building in public | Finance + Tech + AI
             <br>
             <a href="https://github.com/manuel-reyes-ml" target="_blank">GitHub</a> • 
-            <a href="https://www.linkedin.com/in/mr410/" target="_blank">LinkedIn</a>
-        </div>
-    </div>
-</body>
-</html>
+            <a href="https://www.linkedin.com/in/mr410/" target="_blank">LinkedIn</a> •
+            <a href="/cdn-cgi/l/email-protection#e588848b90808997809c809693d1d4d5a58288848c89cb868a88">Emai
