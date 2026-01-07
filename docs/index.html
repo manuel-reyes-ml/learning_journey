@@ -167,6 +167,11 @@
         /* CTA Buttons */
         .cta-section {
             margin: 30px 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
         }
         .cta-button {
             display: inline-block;
@@ -178,7 +183,8 @@
             font-size: 1.1em;
             font-weight: 600;
             transition: transform 0.3s, box-shadow 0.3s;
-            margin: 10px;
+            margin: 0;
+            white-space: nowrap;
         }
         .cta-button:hover {
             transform: translateY(-3px);
@@ -197,11 +203,19 @@
             color: #999;
             display: block;
             margin-top: 5px;
+            text-align: center;
         }
         .button-group {
-            display: inline-block;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
             text-align: center;
-            margin: 10px;
+        }
+        .secondary-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
         }
         
         /* Stats */
@@ -266,18 +280,24 @@
             h1 {
                 font-size: 2em;
             }
+            .cta-section {
+                flex-direction: column;
+            }
+            .secondary-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
             .cta-button {
                 padding: 15px 30px;
                 font-size: 1em;
-                display: block;
-                margin: 10px 0;
+                width: 100%;
+                max-width: 300px;
             }
             .milestones {
                 grid-template-columns: 1fr;
             }
             .button-group {
-                display: block;
-                margin: 15px 0;
+                width: 100%;
             }
         }
     </style>
@@ -337,18 +357,20 @@
                 </a>
             </div>
             
-            <div class="button-group">
-                <a href="https://github.com/manuel-reyes-ml/data-portfolio" target="_blank" class="cta-button secondary-button" title="Production ETL system + learning projects">
-                    💼 Projects Portfolio
-                </a>
-                <span class="button-description">Production & learning projects</span>
-            </div>
-            
-            <div class="button-group">
-                <a href="https://github.com/manuel-reyes-ml/learning_journey" target="_blank" class="cta-button secondary-button" title="Course materials, notes, and progress documentation">
-                    📚 Learning Journey
-                </a>
-                <span class="button-description">Course materials & progress</span>
+            <div class="secondary-buttons">
+                <div class="button-group">
+                    <a href="https://github.com/manuel-reyes-ml/data-portfolio" target="_blank" class="cta-button secondary-button" title="Production ETL system + learning projects">
+                        💼 Projects Portfolio
+                    </a>
+                    <span class="button-description">Production & learning projects</span>
+                </div>
+                
+                <div class="button-group">
+                    <a href="https://github.com/manuel-reyes-ml/learning_journey" target="_blank" class="cta-button secondary-button" title="Course materials, notes, and progress documentation">
+                        📚 Learning Journey
+                    </a>
+                    <span class="button-description">Course materials & progress</span>
+                </div>
             </div>
         </div>
         
