@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Learning Journey - Manuel Reyes</title>
+    <title>Learning Journey - Manuel Reyes | Data Analyst → Senior LLM Engineer</title>
+    <meta name="description" content="37-month public documentation of career transition from financial services to Senior LLM Engineer. Production systems, real business impact, building in public.">
     <style>
         * {
             margin: 0;
@@ -23,7 +24,7 @@
             background: white;
             border-radius: 20px;
             padding: 60px 40px;
-            max-width: 800px;
+            max-width: 900px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
             text-align: center;
         }
@@ -59,131 +60,183 @@
             content: "🟢 ";
         }
         
-        /* Progress Section */
-        .progress-section {
-            background: #f8f9ff;
+        /* Highlight Box */
+        .highlight-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
             border-radius: 15px;
             padding: 25px;
+            margin: 25px 0;
+            box-shadow: 0 10px 30px rgba(240, 147, 251, 0.3);
+        }
+        .highlight-box h2 {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+        .highlight-box p {
+            font-size: 1.05em;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        .highlight-metrics {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .metric {
+            text-align: center;
+            min-width: 120px;
+        }
+        .metric-number {
+            font-size: 2em;
+            font-weight: bold;
+            display: block;
+        }
+        .metric-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        /* Current Stage Section */
+        .stage-section {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 30px;
             margin: 30px 0;
             text-align: left;
         }
-        .progress-section h2 {
-            font-size: 1.3em;
+        .stage-section h2 {
+            font-size: 1.5em;
             color: #333;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             text-align: center;
         }
-        .progress-bar {
-            background: #e5e7eb;
-            border-radius: 10px;
-            height: 30px;
-            overflow: hidden;
-            margin: 15px 0;
-            position: relative;
-        }
-        .progress-fill {
-            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
-            height: 100%;
-            transition: width 0.5s ease;
-            position: relative;
-        }
-        .progress-percentage {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: #333;
-            font-weight: 600;
-            font-size: 0.9em;
-            z-index: 10;
-        }
-        .progress-text {
-            text-align: center;
-            color: #666;
-            font-size: 0.95em;
-            margin-top: 10px;
-        }
-        
-        /* Milestones */
-        .milestones {
+        .stage-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
+            gap: 15px;
             margin-top: 20px;
         }
-        .milestone {
-            padding: 12px;
-            border-radius: 8px;
+        .stage-item {
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 0.95em;
+        }
+        .stage-item.current {
+            background: #dbeafe;
+            border: 2px solid #3b82f6;
+        }
+        .stage-item.upcoming {
+            background: #f3f4f6;
+            border: 2px solid #e5e7eb;
+            opacity: 0.7;
+        }
+        .stage-item h3 {
+            color: #1e40af;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+        .stage-item.upcoming h3 {
+            color: #6b7280;
+        }
+        .stage-item p {
+            color: #4b5563;
             font-size: 0.9em;
+            margin: 5px 0;
+        }
+        
+        /* Projects Showcase */
+        .projects-section {
+            background: #fafafa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 25px 0;
             text-align: left;
         }
-        .milestone.done {
+        .projects-section h2 {
+            font-size: 1.4em;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .project-list {
+            list-style: none;
+        }
+        .project-item {
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            background: white;
+            border-left: 4px solid #667eea;
+        }
+        .project-item h3 {
+            color: #667eea;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+        .project-item .status {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .status.live {
             background: #d1fae5;
             color: #065f46;
         }
-        .milestone.current {
+        .status.active {
             background: #fef3c7;
             color: #92400e;
-            font-weight: 600;
         }
-        .milestone.upcoming {
-            background: #e5e7eb;
-            color: #6b7280;
+        .status.next {
+            background: #e0e7ff;
+            color: #3730a3;
         }
-        
-        /* Recent Activity */
-        .activity-section {
-            background: #fafafa;
-            border-radius: 15px;
-            padding: 25px;
-            margin: 20px 0;
-            text-align: left;
-        }
-        .activity-section h3 {
-            font-size: 1.2em;
-            color: #333;
-            margin-bottom: 15px;
-            text-align: center;
-        }
-        .activity-list {
-            list-style: none;
-        }
-        .activity-list li {
-            padding: 10px 0;
-            border-bottom: 1px solid #e5e7eb;
+        .project-item p {
             color: #666;
             font-size: 0.95em;
+            line-height: 1.5;
         }
-        .activity-list li:last-child {
-            border-bottom: none;
-        }
-        .activity-list li:before {
-            content: "→ ";
-            color: #667eea;
-            font-weight: bold;
-            margin-right: 8px;
+        .project-impact {
+            color: #10b981;
+            font-weight: 600;
+            margin-top: 8px;
+            font-size: 0.9em;
         }
         
         /* CTA Buttons */
         .cta-section {
-            margin: 30px 0;
+            margin: 35px 0;
             display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             gap: 20px;
+        }
+        .primary-cta {
+            width: 100%;
+            max-width: 500px;
+        }
+        .secondary-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            width: 100%;
         }
         .cta-button {
             display: inline-block;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
-            padding: 18px 50px;
+            padding: 18px 40px;
             border-radius: 50px;
             text-decoration: none;
             font-size: 1.1em;
             font-weight: 600;
             transition: transform 0.3s, box-shadow 0.3s;
-            margin: 0;
             white-space: nowrap;
         }
         .cta-button:hover {
@@ -194,28 +247,11 @@
             background: white;
             color: #667eea;
             border: 2px solid #667eea;
+            padding: 14px 30px;
+            font-size: 1em;
         }
         .secondary-button:hover {
             background: #f8f9ff;
-        }
-        .button-description {
-            font-size: 0.8em;
-            color: #999;
-            display: block;
-            margin-top: 5px;
-            text-align: center;
-        }
-        .button-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-        .secondary-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
         }
         
         /* Stats */
@@ -226,18 +262,19 @@
             padding-top: 30px;
             border-top: 1px solid #eee;
             flex-wrap: wrap;
+            gap: 20px;
         }
         .stat {
             text-align: center;
             min-width: 100px;
         }
         .stat-number {
-            font-size: 2em;
+            font-size: 2.2em;
             font-weight: bold;
             color: #667eea;
         }
         .stat-label {
-            font-size: 0.9em;
+            font-size: 0.95em;
             color: #999;
             margin-top: 5px;
         }
@@ -257,120 +294,166 @@
         .footer a:hover {
             text-decoration: underline;
         }
-        .last-updated {
-            font-size: 0.85em;
-            color: #666;
-            margin-bottom: 10px;
-        }
         .build-status {
             display: inline-block;
             background: #10b981;
             color: white;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.8em;
-            margin-bottom: 10px;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            margin: 10px 0;
         }
         
         /* Mobile Responsive */
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
             .container {
                 padding: 40px 20px;
             }
             h1 {
                 font-size: 2em;
             }
-            .cta-section {
+            .cta-button {
+                padding: 15px 30px;
+                font-size: 1em;
+            }
+            .secondary-button {
+                padding: 12px 25px;
+                font-size: 0.95em;
+            }
+            .stage-grid {
+                grid-template-columns: 1fr;
+            }
+            .highlight-metrics {
                 flex-direction: column;
+                gap: 10px;
             }
             .secondary-buttons {
                 flex-direction: column;
                 width: 100%;
             }
-            .cta-button {
-                padding: 15px 30px;
-                font-size: 1em;
+            .secondary-button {
                 width: 100%;
                 max-width: 300px;
-            }
-            .milestones {
-                grid-template-columns: 1fr;
-            }
-            .button-group {
-                width: 100%;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>📚 My Learning Journey</h1>
+        <h1>📚 Learning Journey</h1>
         
         <div class="status-badge">ACTIVE - Stage 1 in Progress</div>
         
         <p class="subtitle">
-            37-Month Transformation
+            37-Month Public Transformation
             <br>
             <span class="career-path">
-                Bookkeeper → Data Analyst → Data Engineer → ML Engineer → LLM Engineer
+                Finance Professional → Data Analyst → Data Engineer → ML Engineer → Senior LLM Engineer
             </span>
         </p>
         
-        <!-- Progress Dashboard -->
-        <div class="progress-section">
-            <h2>📊 Current Progress: Stage 1 - Week 1</h2>
-            <div class="progress-bar">
-                <div class="progress-fill" style="width: 5%"></div>
-                <div class="progress-percentage">5% Complete</div>
-            </div>
-            <p class="progress-text">
-                <strong>1 week completed</strong> • 19 weeks remaining to Data Analyst job target
-            </p>
-            
-            <div class="milestones">
-                <div class="milestone done">✅ CS50 Week 0 Complete</div>
-                <div class="milestone done">✅ Python Setup & Basics</div>
-                <div class="milestone current">🔄 Python for Everybody (Week 1)</div>
-                <div class="milestone upcoming">⏳ SQL Fundamentals</div>
-                <div class="milestone upcoming">⏳ Google Analytics Cert</div>
-                <div class="milestone upcoming">⏳ First Portfolio Project</div>
+        <!-- Production Highlight -->
+        <div class="highlight-box">
+            <h2>🏆 Production Systems, Not Just Tutorials</h2>
+            <p><strong>1099 Reconciliation ETL Pipeline:</strong> Live in production at Daybright Financial</p>
+            <div class="highlight-metrics">
+                <div class="metric">
+                    <span class="metric-number">95%</span>
+                    <span class="metric-label">Time Reduction</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-number">$15K+</span>
+                    <span class="metric-label">Annual Savings</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-number">10x</span>
+                    <span class="metric-label">Scalability</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-number">0</span>
+                    <span class="metric-label">Errors</span>
+                </div>
             </div>
         </div>
         
-        <!-- Recent Activity -->
-        <div class="activity-section">
-            <h3>🔥 Recent Activity</h3>
-            <ul class="activity-list">
-                <li><strong>Nov 26:</strong> Completed Week 1 activation plan (25 hours)</li>
-                <li><strong>Nov 25:</strong> 1099 ETL Pipeline live in production (95% time reduction)</li>
-                <li><strong>Nov 24:</strong> Started Trading Attention Tracker project</li>
-                <li><strong>Nov 23:</strong> Repository structure optimization & documentation</li>
-                <li><strong>Nov 22:</strong> LinkedIn post - Career transition announcement</li>
+        <!-- Current Stage -->
+        <div class="stage-section">
+            <h2>🎯 Career Progression: Stage 1 of 5</h2>
+            <div class="stage-grid">
+                <div class="stage-item current">
+                    <h3>📊 Stage 1: Data Analyst</h3>
+                    <p><strong>Status:</strong> Active (Months 1-5)</p>
+                    <p><strong>Focus:</strong> Python, SQL, Statistics, Visualization</p>
+                    <p><strong>Goal:</strong> Land Data Analyst role</p>
+                </div>
+                <div class="stage-item upcoming">
+                    <h3>🔧 Stage 2: Data Engineer</h3>
+                    <p><strong>Timeline:</strong> Months 6-15</p>
+                    <p><strong>Focus:</strong> AWS, Pipelines, Big Data</p>
+                </div>
+                <div class="stage-item upcoming">
+                    <h3>🤖 Stage 3: ML Engineer</h3>
+                    <p><strong>Timeline:</strong> Months 16-29</p>
+                    <p><strong>Focus:</strong> Machine Learning, MLOps</p>
+                </div>
+                <div class="stage-item upcoming">
+                    <h3>🧠 Stage 4: LLM Specialist</h3>
+                    <p><strong>Timeline:</strong> Months 30-34</p>
+                    <p><strong>Focus:</strong> RAG, Vector DBs, Fine-tuning</p>
+                </div>
+                <div class="stage-item upcoming">
+                    <h3>⭐ Stage 5: Senior LLM Engineer</h3>
+                    <p><strong>Timeline:</strong> Months 35-37</p>
+                    <p><strong>Focus:</strong> Production AI Systems</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Active Projects -->
+        <div class="projects-section">
+            <h2>💼 Current Projects</h2>
+            <ul class="project-list">
+                <li class="project-item">
+                    <span class="status live">✅ LIVE</span>
+                    <h3>1099 Reconciliation ETL Pipeline</h3>
+                    <p>Production automated ETL system reconciling retirement plan data between Relius and Matrix financial systems.</p>
+                    <p class="project-impact">💰 $15,000+ annual savings • ⚡ 95% time reduction • 📊 10x scalability</p>
+                </li>
+                <li class="project-item">
+                    <span class="status active">🚧 ACTIVE</span>
+                    <h3>Trading Attention Tracker</h3>
+                    <p>Multi-source data pipeline correlating stock trading volume with public attention metrics (Wikipedia, news, sentiment).</p>
+                    <p class="project-impact">🔬 Foundation for ML-powered trading strategies</p>
+                </li>
+                <li class="project-item">
+                    <span class="status next">📅 NEXT</span>
+                    <h3>OnBase Workflow Intelligence System</h3>
+                    <p>Enterprise workflow analytics for retirement plan operations. Demand analysis, bottleneck identification, and stakeholder recommendations.</p>
+                    <p class="project-impact">🎯 Demonstrates business intelligence + enterprise integration</p>
+                </li>
             </ul>
         </div>
         
         <!-- CTA Buttons -->
         <div class="cta-section">
-            <div class="button-group">
-                <a href="roadmap.html" class="cta-button" title="Interactive timeline with all 5 stages and detailed milestones">
-                    📋 View 37-Month Roadmap
+            <div class="primary-cta">
+                <a href="roadmap.html" class="cta-button">
+                    📋 View Complete 37-Month Roadmap
                 </a>
             </div>
             
             <div class="secondary-buttons">
-                <div class="button-group">
-                    <a href="https://github.com/manuel-reyes-ml/data-portfolio" target="_blank" class="cta-button secondary-button" title="Production ETL system + learning projects">
-                        💼 Projects Portfolio
-                    </a>
-                    <span class="button-description">Production & learning projects</span>
-                </div>
+                <a href="https://github.com/manuel-reyes-ml/data-portfolio" target="_blank" class="cta-button secondary-button">
+                    💼 Projects Portfolio
+                </a>
                 
-                <div class="button-group">
-                    <a href="https://github.com/manuel-reyes-ml/learning_journey" target="_blank" class="cta-button secondary-button" title="Course materials, notes, and progress documentation">
-                        📚 Learning Journey
-                    </a>
-                    <span class="button-description">Course materials & progress</span>
-                </div>
+                <a href="https://github.com/manuel-reyes-ml/learning_journey" target="_blank" class="cta-button secondary-button">
+                    📚 Course Materials
+                </a>
+                
+                <a href="https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline" target="_blank" class="cta-button secondary-button">
+                    🔧 Production Code
+                </a>
             </div>
         </div>
         
@@ -378,31 +461,32 @@
         <div class="stats">
             <div class="stat">
                 <div class="stat-number">37</div>
-                <div class="stat-label">Months</div>
+                <div class="stat-label">Months Total</div>
             </div>
             <div class="stat">
                 <div class="stat-number">5</div>
-                <div class="stat-label">Stages</div>
+                <div class="stat-label">Career Stages</div>
             </div>
             <div class="stat">
                 <div class="stat-number">25</div>
-                <div class="stat-label">Hrs/Week</div>
+                <div class="stat-label">Hours/Week</div>
             </div>
             <div class="stat">
                 <div class="stat-number">1</div>
-                <div class="stat-label">Week In</div>
+                <div class="stat-label">Production System</div>
             </div>
         </div>
         
         <!-- Footer -->
         <div class="footer">
-            <div class="last-updated">
-                📅 Last Updated: <strong>November 26, 2025</strong> | Week 1 of 37-month journey
-            </div>
-            <div class="build-status">🟢 Active • Learning in Public</div>
-            <br>
-            Building in public | Finance + Tech + AI
+            <div class="build-status">🟢 Active • Building in Public • Deploying Production Systems</div>
+            <br><br>
+            Finance + Data + Trading + AI
             <br>
             <a href="https://github.com/manuel-reyes-ml" target="_blank">GitHub</a> • 
             <a href="https://www.linkedin.com/in/mr410/" target="_blank">LinkedIn</a> •
-            <a href="/cdn-cgi/l/email-protection#e588848b90808997809c809693d1d4d5a58288848c89cb868a88">Emai
+            <a href="mailto:manuelreyesv410@gmail.com">Email</a>
+        </div>
+    </div>
+</body>
+</html>
