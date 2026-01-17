@@ -1,3 +1,10 @@
+"""
+1) Read through the file: mbox-short.txt
+2) Extract lines starting with ´X-DSPAM-Confidence
+3) From those lines, extract the floating point values on each of the lines and compute the average of those values
+4) Print out the average as a floating point number
+"""
+
 from pathlib import Path
 
 import statistics as stat
@@ -6,13 +13,13 @@ import re
 def _extract_numbers(file_path):
     """Generator function to extract floating-point numbers from lines starting with 'X-DSPAM-Confidence:' in the file."""
     
-    with file_path.open("r") as fhand:
+    with file_path.open("r") as fhand: # Open the file using the Path object's open method, while ensuring it gets closed after use(after block ends)
         for line in fhand:
             if not line.startswith("X-DSPAM-Confidence:"):
                 continue
-            match = re.search(r"[-+]?\d*\.\d+", line)
+            match = re.search(r"[-+]?\d*\.\d+", line.strip())
             if match:
-                yield float(match.group())
+                yield float(match.group()) # Yield -> is a generator function where we yield one value at a time
                 
 
 def _file_input():
@@ -56,9 +63,13 @@ def _file_input():
 def compute_average():
     """Function to compute the average of spam confidence values from the specified file."""
     
-    numbers = []
-    for number in _extract_numbers(_file_input()):
-        numbers.append(number)
+    # numbers = []
+    # for number in _extract_numbers(_file_input()):
+    #    numbers.append(number)
+    
+    # numbers = [number for number in _extract_numbers(_file_input())] # List comprehension to gather all numbers
+    
+    numbers = list(_extract_numbers(_file_input())) # Convert generator to list directly
     
     if not numbers:
         print("No numbers or lines starting with 'X-DSPAM-Confidence:' found in the file.\n")
@@ -70,7 +81,7 @@ def compute_average():
     return average, count
     
         
-   
+
 def main():
 
     print("\nThis program computes the average of the spam confidence values from a specified file. Enter ctrl+c to exit.\n")
@@ -87,6 +98,7 @@ def main():
     
     print("Thank you for using the program. Goodbye!\n")
     
-    
+
+# Program entry point
 if __name__ == "__main__":
     main()
