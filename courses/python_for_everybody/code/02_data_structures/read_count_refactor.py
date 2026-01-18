@@ -1,3 +1,10 @@
+"""
+1) Read through the file: mbox-short.txt
+2) Extract lines starting with ´X-DSPAM-Confidence
+3) From those lines, extract the floating point values on each of the lines and compute the average of those values
+4) Print out the average as a floating point number
+"""
+
 from __future__ import annotations # For future compatibility with type hinting of return types
 
 from pathlib import Path
