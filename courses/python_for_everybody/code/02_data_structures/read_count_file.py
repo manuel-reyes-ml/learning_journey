@@ -4,13 +4,13 @@
 3) From those lines, extract the floating point values on each of the lines and compute the average of those values
 4) Print out the average as a floating point number
 """
-
+from __future__ import annotations # For future compatibility with type hinting of return types
 from pathlib import Path
 
 import statistics as stat
 import re
 
-def _extract_numbers(file_path):
+def _extract_numbers(file_path: Path | str) -> float:
     """Generator function to extract floating-point numbers from lines starting with 'X-DSPAM-Confidence:' in the file."""
     
     with file_path.open("r") as fhand: # Open the file using the Path object's open method, while ensuring it gets closed after use(after block ends)
@@ -22,7 +22,7 @@ def _extract_numbers(file_path):
                 yield float(match.group()) # Yield -> is a generator function where we yield one value at a time
                 
 
-def _file_input():
+def _file_input() -> Path:
     """
     Function to handle user input for file name and validate its existence.
     provides up to 3 attempts to enter a valid file name before exiting.
@@ -60,19 +60,22 @@ def _file_input():
                 fname = input("Enter file name: ").strip().lower()
 
 
-def compute_average():
+def compute_average() -> tuple[float, int]:
     """Function to compute the average of spam confidence values from the specified file."""
     
+    ## Initial approach using a loop ##
     # numbers = []
     # for number in _extract_numbers(_file_input()):
     #    numbers.append(number)
     
+    ## Alternative approach using list comprehension ##
     # numbers = [number for number in _extract_numbers(_file_input())] # List comprehension to gather all numbers
     
-    numbers = list(_extract_numbers(_file_input())) # Convert generator to list directly
+    ## More concise approach directly converting generator to list (using list() and Yield from _extract_numbers) ##
+    numbers = list(_extract_numbers(_file_input()))
     
     if not numbers:
-        print("No numbers or lines starting with 'X-DSPAM-Confidence:' found in the file.\n")
+        print("No numbers or No lines starting with 'X-DSPAM-Confidence:' found in the file.\n")
         exit()
     
     average = stat.mean(numbers)
