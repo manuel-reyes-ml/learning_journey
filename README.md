@@ -1,4 +1,4 @@
-# 🚀 Learning Journey: Finance Professional → Senior LLM Engineer
+# 🚀 Learning Journey: Business Ops Professional → Senior LLM Engineer
 
 **Building Production Data Systems in Public** | Production Code from Day 1 | Systematic 37-Month Transformation
 
@@ -20,8 +20,9 @@
 **👔 For Recruiters / Hiring Managers:**
 1. **[💼 Production Projects →](https://github.com/manuel-reyes-ml/data-portfolio)** - Live ETL system + portfolio ⭐ **START HERE**
 2. **[🧾 1099 ETL Pipeline →](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline)** - Production code (public, $15K savings)
-3. **[📊 Complete Roadmap →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)** - 37-month visualization
-4. **[🔗 LinkedIn →](https://www.linkedin.com/in/mr410/)** - Professional background
+3. **[📈 Attention-Flow Catalyst →](https://github.com/manuel-reyes-ml/attention-flow-catalyst)** - Flagship trading project (5 stages)
+4. **[📊 Complete Roadmap →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)** - 37-month visualization
+5. **[🔗 LinkedIn →](https://www.linkedin.com/in/mr410/)** - Professional background
 
 **🎓 For Fellow Learners:**
 1. **[📚 Course Materials →](#-repository-structure)** - Organized by platform & course
@@ -59,11 +60,10 @@
 
 ---
 
-## 🏆 Production Highlight
+## 🏆 Production & Portfolio Highlights
 
-### **1099 Reconciliation ETL Pipeline** 🌟
-**Status:** ✅ Live in Production at Daybright Financial  
-**Repository:** [1099_reconciliation_pipeline](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline) 🌐 Public Code
+### **1099 Reconciliation ETL Pipeline** ✅ Live Production
+**Repository:** [1099_reconciliation_pipeline](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline) 🌐 Public
 
 **Business Challenge:**  
 Manual reconciliation of retirement plan distributions took 4-6 hours weekly, was error-prone, and blocked critical 1099-R tax reporting.
@@ -76,13 +76,104 @@ Automated Python ETL pipeline using pandas and openpyxl that extracts, transform
 - 💰 **$15,000+ annual savings** in labor costs
 - 📊 **10x scalability** (300+ accounts vs. 30 manual capacity)
 - ✅ **Zero errors** since deployment through automated validation
-- 🔒 **Professional data governance** (public code with synthetic test data)
 
-**Why It Matters:**
-- Real enterprise system integration (not tutorial project)
-- Measurable ROI demonstrating business value
-- Public code showing technical capability
-- Proves production readiness from Day 1
+**Why It Matters:** Real enterprise system integration with measurable ROI—not a tutorial project.
+
+---
+
+### **Attention-Flow Catalyst** 🚧 Flagship Project (Phase 1A Active)
+**Repository:** [attention-flow-catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst) 🌐 Public
+
+> **Research Question:** Which trigger or combination best predicts +10% price moves within 3 trading days?
+
+**One project, five stages, complete career demonstration.**
+
+This is my **flagship project** evolving through all 5 stages of my career transition—from Data Analyst to Senior LLM Engineer:
+
+**What It Does:**
+```
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│  Stock Screener │ ──► │  Data Pipeline  │ ──► │ Trigger Detection│
+│  50 small-caps  │     │  3yr history    │     │  T1-T4 signals   │
+│  (<$5, listed)  │     │  per ticker     │     │  + combinations  │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+                                                        │
+                                                        ▼
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│ Signal Generator│ ◄── │   Leaderboard   │ ◄── │ Backtest Engine │
+│  daily watchlist│     │  rank by hit    │     │  test all combos│
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+```
+
+**Stock Screening Criteria:**
+- Price < $5 (bigger % move potential)
+- Listed exchanges only (NYSE, NASDAQ, AMEX — NO OTC)
+- Small float (limited shares = faster moves)
+- Strong sector (auto-detected by relative strength)
+
+**Triggers Being Tested:**
+
+| ID | Trigger | Data Source | What It Detects |
+|----|---------|-------------|-----------------|
+| **T1** | SEC Form 4 Insider Buy | edgartools | Smart money activity |
+| **T2** | Wikipedia Attention Spike | Wikipedia API | Public attention surge |
+| **T3** | News Mention Spike | RSS/GDELT | Media coverage |
+| **T4** | Volume Accumulation | yfinance | Institutional buying (RVOL, OBV, quiet accumulation) |
+
+**Combination Testing:** All individual triggers, 2-trigger, 3-trigger, and 4-trigger combinations with sector & index context filters.
+
+**Project Evolution Through 5 Career Stages:**
+
+| Stage | Version | Focus | Key Deliverable |
+|-------|---------|-------|-----------------|
+| **1 (DA)** | v2.0 | Backtest engine | Trigger leaderboard, signal generator |
+| **2 (DE)** | v4.0 | Cloud scale | 500+ tickers, Airflow automation |
+| **3 (ML)** | v5.0 | Predictions | ML ensemble, auto-optimization |
+| **4 (LLM)** | v6.0 | AI Assistant | Natural language interface, RAG |
+| **5 (Sr)** | v7.0 | Production | Monetization platform ($2-50K/mo) |
+
+**Why This Project Stands Out:**
+- ✅ **Dynamic screening** — Program finds stocks automatically (not manual list)
+- ✅ **Real SEC data** — Form 4 insider transactions via edgartools
+- ✅ **Statistical rigor** — Proper backtesting with combination testing
+- ✅ **Volume analysis** — RVOL, OBV, accumulation patterns (institutional footprint)
+- ✅ **Domain expertise** — 6 years trading knowledge codified into algorithms
+- ✅ **Progressive architecture** — Evolves through all 5 career stages
+
+**Tech Stack:** Python • SQLite • pandas • edgartools • yfinance • Wikipedia API • matplotlib
+
+[**→ View Project Repository**](https://github.com/manuel-reyes-ml/attention-flow-catalyst)
+
+---
+
+### Project Progression Map
+
+```
+✅ DEPLOYED
+└─ 1099 Reconciliation ETL Pipeline (Production, Live, $15K savings)
+
+🚧 ACTIVE DEVELOPMENT  
+└─ Attention-Flow Catalyst — Phase 1A (Predictive Trigger Analysis)
+   ├─ Dynamic stock screener (small-caps < $5, strong sectors)
+   ├─ Alternative data collection (Form 4, Wiki, News)
+   ├─ Volume accumulation signals (RVOL, OBV, quiet accumulation)
+   ├─ Backtest engine (3 years, all trigger combinations)
+   └─ Trigger leaderboard & signal generator
+
+📅 NEXT (Stage 1)
+├─ Phase 1B: VSA Metrics & Technical Analysis Module
+├─ Dashboard Component (Streamlit visualization)
+└─ OnBase Workflow Intelligence System
+
+📅 PLANNED (Stage 2-5)
+├─ Cloud Migration (AWS, Airflow, 500+ tickers)
+├─ ML Trading Models (XGBoost, LSTM, ensemble)
+├─ AI Trading Assistant (RAG, natural language)
+└─ Production Platform + Monetization
+
+🎯 ULTIMATE GOAL (Stage 5)
+└─ Production AI Trading Platform ($2-50K/mo potential)
+```
 
 **→ [View all projects in portfolio](https://github.com/manuel-reyes-ml/data-portfolio)**
 
@@ -104,9 +195,9 @@ Systematic progression from Data Analyst to Senior LLM Engineer with income at e
 
 **Key Deliverables:**
 - ✅ 1099 ETL Pipeline (production, deployed)
-- 🚧 Trading Attention Tracker (multi-source data pipeline)
+- 🚧 Attention-Flow Catalyst Phase 1A (backtest engine, signal generator)
+- 📅 Attention-Flow Catalyst Phase 1B (VSA metrics, dashboard)
 - 📅 OnBase Workflow Intelligence (enterprise analytics)
-- 📅 Financial Data Dashboard (interactive Streamlit app)
 
 **Certifications:**
 - Python for Everybody Specialization (University of Michigan)
@@ -129,7 +220,7 @@ Systematic progression from Data Analyst to Senior LLM Engineer with income at e
 - Database design and optimization
 - ETL/ELT at scale
 
-**Key Deliverable:** Cloud-based real-time trading data pipeline
+**Key Deliverable:** Attention-Flow Catalyst v4.0 — Cloud-based pipeline, 500+ tickers, Airflow scheduling
 
 ---
 
@@ -143,7 +234,7 @@ Systematic progression from Data Analyst to Senior LLM Engineer with income at e
 - Feature engineering and model selection
 - Production ML systems
 
-**Key Deliverable:** ML-powered trading models with backtesting framework
+**Key Deliverable:** Attention-Flow Catalyst v5.0 — ML-powered trigger prediction with ensemble strategies
 
 ---
 
@@ -157,7 +248,7 @@ Systematic progression from Data Analyst to Senior LLM Engineer with income at e
 - LLM fine-tuning and agents
 - Multi-agent orchestration
 
-**Key Deliverable:** AI Trading Assistant V1 (LLM-powered analysis)
+**Key Deliverable:** Attention-Flow Catalyst v6.0 — AI Trading Assistant with natural language interface
 
 ---
 
@@ -171,7 +262,7 @@ Systematic progression from Data Analyst to Senior LLM Engineer with income at e
 - Technical writing and speaking
 - System design at scale
 
-**Key Deliverable:** AI Trading Assistant V2 (fully automated, production-ready, monetized)
+**Key Deliverable:** Attention-Flow Catalyst v7.0 — Production platform with monetization ($2-50K/mo potential)
 
 **📋 [View Interactive 37-Month Roadmap →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
 
@@ -186,8 +277,8 @@ learning_journey/
 ├── 📂 projects/                          # ⭐ Project directory (links to separate repos)
 │   └── README.md                         # Comprehensive project index
 │       ├── 1099 ETL Pipeline (production, public)
-│       ├── Trading Attention Tracker (capstone, in progress)
-│       └── Planned projects (dashboard, ML prototype)
+│       ├── Attention-Flow Catalyst (flagship, 5-stage evolution)
+│       └── Planned projects (dashboard, enterprise analytics)
 │
 ├── 📂 getting-started/                   # For new visitors
 │   ├── README.md                         # Navigation & overview
@@ -271,7 +362,7 @@ learning_journey/
 
 **Active Projects:**
 - ✅ 1099 ETL Pipeline (production, deployed)
-- 🚧 Trading Attention Tracker (Phase 2 development)
+- 🚧 Attention-Flow Catalyst Phase 1A (backtest engine development)
 - 📅 OnBase Workflow Intelligence (next major project)
 
 ### **Stage 1 Objectives:**
@@ -298,7 +389,7 @@ Languages:     Python 3.11+, SQL
 Data Analysis: pandas, NumPy, Matplotlib, Seaborn, Plotly
 Databases:     SQLite, PostgreSQL (learning)
 Tools:         VS Code, Git/GitHub, Jupyter, Excel (advanced)
-APIs & Web:    REST APIs, JSON/XML, BeautifulSoup
+APIs & Web:    REST APIs, JSON/XML, BeautifulSoup, edgartools, yfinance
 Platforms:     Coursera, DataCamp, Kaggle, HackerRank
 ```
 
@@ -406,6 +497,7 @@ Enhance: implement comprehensive statistics calculator
 ✓ Multiple professional certifications (in progress)
 ✓ Enhanced tutorial projects
 ✓ Production ETL system ($15K annual savings)
+✓ Flagship trading project with statistical rigor
 ✓ 10+ years data experience across industries
 ✓ 8 years finance + 6 years trading expertise
 ✓ Measurable business impact (95% efficiency gain)
@@ -417,6 +509,7 @@ Enhance: implement comprehensive statistics calculator
 
 > "I'm not just another data analyst who learned Python from tutorials. I bring:
 > - Production ETL system already deployed and saving real money
+> - Flagship trading project using real SEC data and statistical backtesting
 > - 10+ years working with data across manufacturing, finance, and trading
 > - Deep understanding of financial markets and quantitative analysis
 > - Systematic plan to advance to LLM engineering
@@ -430,13 +523,13 @@ Enhance: implement comprehensive statistics calculator
 
 Every stage builds components for a complete AI Trading Assistant:
 
-| Stage | Deliverable | Technologies |
-|-------|-------------|--------------|
-| **1. Data Analyst** | Market Analysis Dashboard | Python, pandas, Plotly, yfinance |
-| **2. Data Engineer** | Real-time Data Pipeline | AWS, PostgreSQL, Airflow, streaming |
-| **3. ML Engineer** | ML Trading Models | scikit-learn, TensorFlow, backtesting |
-| **4. LLM Specialist** | AI Trading Assistant V1 | LangChain, RAG, GPT-4, agents |
-| **5. Senior Engineer** | Production AI System | MLOps, monitoring, monetization |
+| Stage | Project Version | Technologies |
+|-------|-----------------|--------------|
+| **1. Data Analyst** | Attention-Flow Catalyst v2-3 | Python, pandas, SQLite, edgartools, yfinance |
+| **2. Data Engineer** | Attention-Flow Catalyst v4 | AWS, PostgreSQL, Airflow, streaming |
+| **3. ML Engineer** | Attention-Flow Catalyst v5 | scikit-learn, XGBoost, LSTM, backtesting |
+| **4. LLM Specialist** | Attention-Flow Catalyst v6 | LangChain, RAG, GPT-4, agents |
+| **5. Senior Engineer** | Attention-Flow Catalyst v7 | MLOps, monitoring, monetization |
 
 **Final System (Month 37):**
 - Real-time market data processing at scale
@@ -501,6 +594,7 @@ Every stage builds components for a complete AI Trading Assistant:
 **Portfolio:**
 - **Projects:** [Data Portfolio Repository](https://github.com/manuel-reyes-ml/data-portfolio)
 - **Production Code:** [1099 ETL Pipeline](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline)
+- **Flagship Project:** [Attention-Flow Catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst)
 - **Roadmap:** [37-Month Interactive Plan](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)
 
 **Open To:**

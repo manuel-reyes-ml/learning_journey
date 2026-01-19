@@ -23,6 +23,24 @@ This README serves as a **directory and roadmap** to all my project work across 
 - 📋 Activation plans and learning guides
 - 🗺️ Roadmap and overall journey documentation
 
+### Flagship Project Strategy
+
+Rather than building many disconnected projects, I'm building **one flagship project** that evolves through all 5 career stages:
+
+```
+Attention-Flow Catalyst Evolution:
+
+Stage 1 (DA):  SQLite → Backtest engine → Trigger leaderboard → Signals
+                                    │
+Stage 2 (DE):  AWS → Airflow → 500+ tickers → Real-time pipeline
+                                    │
+Stage 3 (ML):  XGBoost → LSTM → Ensemble → Auto-optimization
+                                    │
+Stage 4 (LLM): RAG → Natural language → AI Trading Assistant
+                                    │
+Stage 5 (Sr):  Production → Monitoring → Monetization ($2-50K/mo)
+```
+
 ---
 
 ## 🔒 Data Privacy & Test Data Strategy
@@ -59,13 +77,9 @@ test_data = {
 - 📚 **Educational** - Others can learn from real production patterns
 - 💼 **Professional** - Shows understanding of data governance
 
-**Future Projects:**
-- Same approach for any work with sensitive data
-- Documentation includes data privacy considerations
-- Test suites use synthetic data exclusively
-- Production deployment guides separate from code
-
 ---
+
+## ✅ Production Projects
 
 ### 1099 Reconciliation ETL Pipeline
 **Repo:** [1099_reconciliation_pipeline](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline) 🌐 *Public*  
@@ -98,76 +112,164 @@ Data engineering, ETL pipelines, data validation, production deployment, busines
 
 ---
 
-## 🚀 Learning Capstone Projects
+## 🚀 Flagship Project
 
-### Trading Attention Tracker
-**Repo:** [trading_attention_tracker](https://github.com/manuel-reyes-ml/trading_attention_tracker) 🌐 *Public*  
+### Attention-Flow Catalyst
+**Repo:** [attention-flow-catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst) 🌐 *Public*  
 **Started:** December 2025 (Month 1)  
-**Status:** 🚧 v1.0 in Development  
-**Tech Stack:** Python • SQLite • pandas • yfinance • Wikipedia API • RSS • Matplotlib  
+**Status:** 🚧 Phase 1A Active  
+**Tech Stack:** Python • SQLite • pandas • edgartools • yfinance • Wikipedia API • RSS/GDELT • matplotlib  
+
+> **Research Question:** Which trigger or combination best predicts +10% price moves within 3 trading days?
 
 **Project Purpose:**  
-Capstone for _Python for Everybody_ specialization. End-to-end data pipeline integrating multiple APIs, database design, and analytical visualization.
+Flagship project demonstrating complete career progression from Data Analyst to Senior LLM Engineer. Predictive trigger analysis system for small-cap stocks using alternative data sources.
 
-**Description:**  
-Correlates **stock trading volume**, **news headlines**, and **Wikipedia pageviews** for FAANG companies to analyze the relationship between public attention and market activity.
-
-**Data Pipeline:**  
+**System Architecture:**
 ```
-APIs/RSS → Python → SQLite → pandas → Analysis → Visualization
-├── Market data: yfinance (historical prices & volume)
-├── Attention: Wikipedia Pageviews API (JSON)
-├── News: RSS feeds (XML) + BeautifulSoup
-└── Storage: Normalized SQLite database
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│  Stock Screener │ ──► │  Data Pipeline  │ ──► │ Trigger Detection│
+│  50 small-caps  │     │  3yr history    │     │  T1-T4 signals   │
+│  (<$5, listed)  │     │  per ticker     │     │  + combinations  │
+└─────────────────┘     └─────────────────┘     └─────────────────┘
+                                                        │
+                                                        ▼
+┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
+│ Signal Generator│ ◄── │   Leaderboard   │ ◄── │ Backtest Engine │
+│  daily watchlist│     │  rank by hit    │     │  test all combos│
+└─────────────────┘     └─────────────────┘     └─────────────────┘
 ```
 
-**Features:**
-- Automated multi-source data ingestion
-- Normalized database design (5 tables, foreign keys, joins)
-- Basic sentiment analysis on headlines
-- Time-series correlation analysis
-- Clear visualizations (volume vs attention vs news)
+**Stock Screening Criteria:**
+- Price < $5 (bigger % move potential)
+- Listed exchanges only (NYSE, NASDAQ, AMEX — NO OTC)
+- Small float (limited shares = faster moves)
+- Strong sector (auto-detected by relative strength)
+
+**Triggers Being Tested:**
+
+| ID | Trigger | Data Source | What It Detects |
+|----|---------|-------------|-----------------|
+| **T1** | SEC Form 4 Insider Buy | edgartools | Smart money activity |
+| **T2** | Wikipedia Attention Spike | Wikipedia API | Public attention surge |
+| **T3** | News Mention Spike | RSS/GDELT | Media coverage |
+| **T4** | Volume Accumulation | yfinance | Institutional buying patterns |
+
+**Volume Signals (T4 Breakdown):**
+- **T4a:** Relative Volume (RVOL ≥ 1.5x) — Unusual activity
+- **T4b:** Accumulation Score Rising — Sustained buying pressure
+- **T4c:** OBV Breakout (20-day high) — Cumulative buying strength
+- **T4d:** Quiet Accumulation — Stealth institutional buying
+- **T4e:** Volume Dry-Up — Sellers exhausted (pre-breakout)
+
+**Combination Testing:**
+- All individual triggers (T1, T2, T3, T4)
+- All 2-trigger combinations (T1+T2, T1+T4, etc.)
+- All 3-trigger combinations (T1+T2+T3, T1+T2+T4, etc.)
+- All 4-trigger combination (T1+T2+T3+T4)
+- Each tested with context filters (sector strength, index trend)
+
+**Phase 1A Deliverables (Current):**
+- ✅ Dynamic stock screener with auto-detection of strong sectors
+- ✅ 3+ years historical data collection for 50 stocks
+- ✅ All trigger detection (T1-T4) with context analysis
+- ✅ Backtest engine testing all combinations
+- ✅ Trigger leaderboard ranked by +10% hit rate
+- ✅ Forward signal generator using winning triggers
 
 **Skills Demonstrated:**  
-End-to-end pipelines, API integration, database design, data wrangling, visualization, text processing
+Dynamic screening, API integration, database design, statistical backtesting, feature engineering, volume analysis, alternative data integration
 
-**Progression Plan:**
-- **v1.0** (Month 1): Core pipeline, 3 tickers → *Capstone requirement* ✅
-- **v1.1** (Month 2): Expand to 10+ tickers, CSV exports
-- **v2.0** (Month 3): Interactive Streamlit dashboard
-- **v3.0** (Month 4): ML models predicting volume from attention
+**Project Evolution Through 5 Career Stages:**
 
----
+| Stage | Version | Focus | Key Deliverable |
+|-------|---------|-------|-----------------|
+| **1 (DA)** | v2.0-v3.0 | Backtest engine | Trigger leaderboard, signal generator, dashboard |
+| **2 (DE)** | v4.0 | Cloud scale | 500+ tickers, Airflow automation, AWS |
+| **3 (ML)** | v5.0 | Predictions | ML ensemble, XGBoost/LSTM, auto-optimization |
+| **4 (LLM)** | v6.0 | AI Assistant | Natural language interface, RAG system |
+| **5 (Sr)** | v7.0 | Production | Monetization platform ($2-50K/mo potential) |
 
-## 📋 Planned Projects
-
-### Financial Data Dashboard (Month 2-3)
-**Planned Repo:** `financial-dashboard` 🌐 *Public*  
-**Status:** 📅 Planned  
-**Type:** Interactive Web Application (v2.0 of Trading Tracker)
-
-**Features:**
-- Interactive Streamlit/Plotly dashboard
-- Company selector and date range filtering
-- Dynamic multi-ticker comparisons
-- Exportable PDF/PNG reports
-
-**New Skills:** Web frameworks (Streamlit), interactive viz (Plotly), UI/UX design
+**Why This Project Stands Out:**
+- ✅ **Dynamic screening** — Program finds stocks automatically (not manual list)
+- ✅ **Real SEC data** — Form 4 insider transactions via edgartools
+- ✅ **Statistical rigor** — Proper backtesting with combination testing
+- ✅ **Volume analysis** — RVOL, OBV, accumulation patterns (institutional footprint)
+- ✅ **Domain expertise** — 6 years trading knowledge codified into algorithms
+- ✅ **Progressive architecture** — Evolves through all 5 career stages
+- ✅ **Clear path to monetization** — Not just a learning project
 
 ---
 
-### ML Trading Strategy Prototype (Month 3-4)
-**Planned Repo:** `ml-trading-strategy` 🌐 *Public*  
-**Status:** 📅 Planned  
-**Type:** Machine Learning Application (v3.0 evolution)
+## 📋 Planned Projects (Stage 1)
+
+### Trading Dashboard (Phase 1B Component)
+**Status:** 📅 Planned (Attention-Flow Catalyst Phase 1B)  
+**Type:** Interactive Web Application
+
+Interactive Streamlit dashboard built on Attention-Flow Catalyst data.
 
 **Features:**
-- Feature engineering (returns, volatility, technical indicators)
-- Baseline ML models (logistic regression, decision trees)
-- Backtesting framework on historical data
-- Model evaluation and performance metrics
+- Interactive trigger leaderboard visualization
+- Stock screener results with filtering
+- Active signals watchlist
+- Backtest performance charts
+- Export capabilities
 
-**New Skills:** Scikit-learn, feature engineering, ML evaluation, backtesting
+**New Skills:** Streamlit, Plotly (interactive charts), UI/UX design  
+**Relationship:** Component within flagship project (not separate repo)
+
+---
+
+### OnBase Workflow Intelligence System
+**Planned Repo:** `onbase-workflow-intelligence` 🌐 *Public*  
+**Status:** 📅 Next Major Project  
+**Type:** Enterprise Analytics
+
+Enterprise workflow analytics for retirement plan operations at Daybright Financial.
+
+**Business Challenge:**  
+No visibility into demand patterns or processing bottlenecks across workflows (distributions, contributions, enrollments, transfers), making resource allocation suboptimal.
+
+**Planned Solution:**
+- Data extraction from OnBase document management system
+- Demand analysis per workflow type
+- Processing time analysis per stage and queue
+- Interactive dashboards for stakeholder visibility
+- Actionable recommendations with ROI estimates
+
+**Expected Impact:**
+- Identify processing bottlenecks
+- Enable data-driven resource allocation
+- Reduce average processing times
+- Improve capacity planning
+
+**Skills to Demonstrate:**
+- Enterprise system integration
+- Business intelligence
+- Stakeholder communication
+- Process optimization
+- Data-driven recommendations
+
+**Tech Stack:** Python • SQL • pandas • data visualization • business intelligence
+
+---
+
+### ML Trading Models (Stage 3 Evolution)
+**Status:** 📅 Planned (Attention-Flow Catalyst v5.0)  
+**Type:** Machine Learning Application
+
+Machine learning models predicting price movements using triggers and features from Phase 1.
+
+**Planned Approach:**
+- Feature engineering from trigger combinations
+- XGBoost for tabular signal data
+- LSTM for time-series patterns
+- Ensemble strategies combining models
+- Comprehensive backtesting framework
+
+**New Skills:** scikit-learn, XGBoost, LSTM, feature engineering, ML backtesting  
+**Relationship:** Stage 3 evolution of flagship project
 
 ---
 
@@ -178,12 +280,11 @@ End-to-end pipelines, API integration, database design, data wrangling, visualiz
 | Month | Project | Status | Key Skills |
 |-------|---------|--------|------------|
 | **Current** | 1099 Reconciliation Pipeline | ✅ Production | ETL, validation, business impact |
-| **1** | Trading Attention Tracker v1.0 | 🚧 In Progress | APIs, database, visualization |
-| **2** | Trading Tracker v1.1 | 📅 Planned | Scaling, exports, reporting |
-| **2-3** | Financial Dashboard | 📅 Planned | Web apps, interactive viz |
-| **3-4** | ML Trading Prototype | 📅 Planned | ML basics, backtesting |
+| **1-2** | Attention-Flow Catalyst Phase 1A | 🚧 In Progress | APIs, database, backtesting, signals |
+| **3** | Attention-Flow Catalyst Phase 1B | 📅 Planned | VSA metrics, Streamlit dashboard |
+| **3-4** | OnBase Workflow Intelligence | 📅 Planned | Enterprise analytics, BI |
 
-**Goal:** 4 public portfolio projects + 1 production system by Month 5
+**Goal:** 2 major projects + 1 production system by Month 5
 
 ---
 
@@ -191,13 +292,13 @@ End-to-end pipelines, API integration, database design, data wrangling, visualiz
 
 **Focus:** Cloud infrastructure, production pipelines, big data
 
-Planned projects:
-- Cloud ETL Pipeline (AWS S3 + Glue + Redshift)
-- Real-time Streaming Pipeline (Kafka/Kinesis)
-- Airflow Orchestration for Trading Data
-- Data Warehouse Design & Optimization
+**Key Deliverable:** Attention-Flow Catalyst v4.0
+- Cloud migration (AWS S3, Glue, Redshift)
+- Airflow orchestration for daily pipeline runs
+- Scale to 500+ tickers
+- Real-time data streaming
 
-**Evolution:** Migrate Trading Tracker to cloud, add scheduled pipelines, scale to 100+ tickers
+**Evolution:** Migrate flagship project to cloud with scheduled pipelines
 
 ---
 
@@ -205,13 +306,14 @@ Planned projects:
 
 **Focus:** Production ML models, deployment, MLOps
 
-Planned projects:
-- Production ML Trading Models
-- Model Deployment (FastAPI + Docker)
-- ML Monitoring & Retraining Pipelines
-- Feature Store Implementation
+**Key Deliverable:** Attention-Flow Catalyst v5.0
+- ML models (XGBoost, LSTM) for trigger prediction
+- Ensemble strategies combining models
+- Feature store implementation
+- Model deployment (FastAPI + Docker)
+- ML monitoring & retraining pipelines
 
-**Evolution:** Deploy ML models to production with full MLOps workflow
+**Evolution:** Add ML layer to flagship project with full MLOps workflow
 
 ---
 
@@ -219,33 +321,34 @@ Planned projects:
 
 **Focus:** LLMs, RAG systems, AI agents, thought leadership
 
-Planned projects:
+**Key Deliverable:** Attention-Flow Catalyst v6.0 & v7.0
 - AI Trading Assistant (natural language interface)
-- RAG System for Financial Research
-- Fine-tuned LLM for Financial Analysis
-- Multi-Agent Trading System
+- RAG system for market research
+- Multi-agent orchestration
+- Production deployment with monitoring
+- Monetization ($2-50K/mo potential)
 
 **Evolution:** Add LLM intelligence layer to complete AI trading platform
 
 ---
 
-## 🎯 Integrated Project: Trading System Evolution
+## 🎯 Integrated Project: Flagship Evolution
 
-**Core Thread:** Trading Attention Tracker evolves across all 5 stages
+**Core Thread:** Attention-Flow Catalyst evolves across all 5 stages
 
 ```
-Stage 1 (DA):    Data pipeline, SQLite, analysis
-                 ↓
-Stage 2 (DE):    Cloud infrastructure, Airflow, scale
-                 ↓
-Stage 3 (ML):    ML models, predictions, deployment
-                 ↓
-Stage 4 (LLM):   AI assistant, RAG, natural language
-                 ↓
-Stage 5 (Sr):    Production platform, monetization, thought leadership
+Stage 1 (DA):    Dynamic screener → Backtest engine → Trigger leaderboard → Signals
+                                    │
+Stage 2 (DE):    AWS → Airflow → 500+ tickers → Real-time pipeline
+                                    │
+Stage 3 (ML):    XGBoost → LSTM → Ensemble → Auto-optimization
+                                    │
+Stage 4 (LLM):   RAG → Natural language → AI Trading Assistant
+                                    │
+Stage 5 (Sr):    Production → Monitoring → Monetization ($2-50K/mo)
 ```
 
-**By Month 37:** Complete production-grade AI trading platform demonstrating full-stack expertise: data engineering → ML → LLMs
+**By Month 37:** Complete production-grade AI trading platform demonstrating full-stack expertise: data analysis → data engineering → ML → LLMs
 
 ---
 
@@ -255,9 +358,10 @@ Stage 5 (Sr):    Production platform, monetization, thought leadership
 **GitHub Profile:** [github.com/manuel-reyes-ml](https://github.com/manuel-reyes-ml)
 
 ### Public Repos
-- [1099_reconciliation_pipeline](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline) - Production ETL system (public)
-- [trading_attention_tracker](https://github.com/manuel-reyes-ml/trading_attention_tracker) - Learning capstone (public)
-- [learning_journey](https://github.com/manuel-reyes-ml/learning_journey) - Course materials (public)
+- [1099_reconciliation_pipeline](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline) - Production ETL system ✅
+- [attention-flow-catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst) - Flagship trading project 🚧
+- [learning_journey](https://github.com/manuel-reyes-ml/learning_journey) - Course materials & roadmap 📚
+- [data-portfolio](https://github.com/manuel-reyes-ml/data-portfolio) - Portfolio overview 💼
 
 *All repositories are public with comprehensive documentation and runnable examples.*
 
@@ -269,24 +373,26 @@ Stage 5 (Sr):    Production platform, monetization, thought leadership
 
 **1. Production Readiness**
 - ✅ Real business problem solved (1099 pipeline)
-- ✅ Measurable ROI (95% efficiency gain)
+- ✅ Measurable ROI (95% efficiency gain, $15K savings)
 - ✅ **Production code publicly available** (review actual implementation)
 - ✅ Domain expertise + technical skills
 - ✅ Professional test data generation (faker module)
 
 **2. Technical Depth**
 - ✅ End-to-end data pipelines
-- ✅ Multiple data sources (APIs, files, databases)
+- ✅ Dynamic stock screening algorithms
+- ✅ Statistical backtesting methodology
+- ✅ Multiple data sources (APIs, SEC filings, databases)
 - ✅ Database design and SQL
-- ✅ Data validation frameworks
+- ✅ Volume analysis and feature engineering
 - ✅ **Clear, production-grade code** (see for yourself!)
 - ✅ Comprehensive documentation
 
 **3. Growth Trajectory**
 - ✅ Started with business automation
-- 🚧 Building data analysis skills
+- 🚧 Building statistical analysis and backtesting skills
 - 📅 Progressing toward ML and AI
-- 🎯 Clear 37-month roadmap
+- 🎯 Clear 37-month roadmap with one flagship project
 
 **4. Self-Direction**
 - ✅ Identified opportunities autonomously
@@ -299,17 +405,19 @@ Stage 5 (Sr):    Production platform, monetization, thought leadership
 
 **Immediate Value:**
 - Already delivering production systems at current company
+- Building flagship project with real SEC data and statistical rigor
 - Can hit the ground running on data projects
 
 **Unique Combination:**
 - 10+ years finance domain expertise
+- 6 years active trading experience
 - New technical skills in Python/data/SQL
 - Bridge between business and technology
 
 **Future Potential:**
 - Clear vision (37-month roadmap to Senior LLM Engineer)
+- One flagship project evolving through all stages
 - Systematic skill development
-- Each project more complex than the last
 - Progressive career path with income at each stage
 
 ---
@@ -323,12 +431,15 @@ All projects follow these principles:
 - ✅ Clear setup instructions and dependencies
 - ✅ Architecture diagrams where applicable
 - ✅ Code comments and docstrings
+- ✅ CLAUDE.md for AI assistant context
 
 ### Code Quality
 - ✅ Clean, readable code with consistent style
+- ✅ Type hints on all function signatures
 - ✅ Error handling and validation
 - ✅ Modular design (functions, classes, modules)
 - ✅ Version control with clear commit messages
+- ✅ Config-driven (no hardcoded values)
 
 ### Business Focus
 - ✅ Every project solves a real problem
@@ -337,10 +448,10 @@ All projects follow these principles:
 - ✅ Scalability and maintainability considered
 
 ### Progressive Complexity
-- ✅ Each project builds on previous skills
+- ✅ Each stage builds on previous work
 - ✅ Clear progression from simple to advanced
 - ✅ New technologies/concepts introduced systematically
-- ✅ Integration of previous learnings
+- ✅ One flagship project evolving through career stages
 
 ---
 
@@ -348,58 +459,74 @@ All projects follow these principles:
 
 ### Python
 - 1099 Reconciliation Pipeline (pandas, openpyxl)
-- Trading Attention Tracker (all projects)
+- Attention-Flow Catalyst (all stages)
 
 ### Databases
-- Trading Attention Tracker (SQLite, schema design)
-- Future: PostgreSQL, Redshift, BigQuery
+- Attention-Flow Catalyst (SQLite → PostgreSQL → Cloud)
+- Future: Redshift, BigQuery
 
 ### Data Sources
-- yfinance API (market data)
+- edgartools (SEC Form 4 filings)
+- yfinance API (market data, volume)
 - Wikipedia Pageviews API (attention metrics)
-- RSS feeds (news headlines)
+- RSS feeds / GDELT (news headlines)
 - Excel files (business data)
+
+### Analysis & Backtesting
+- Statistical z-scores (attention signals)
+- Volume analysis (RVOL, OBV, accumulation)
+- Combination testing (trigger pairs, triples)
+- Forward return calculation
 
 ### Visualization
 - Matplotlib (current)
 - Plotly (planned)
-- Streamlit (planned)
+- Streamlit (Phase 1B)
 
-### Cloud (Future)
+### Cloud (Future - Stage 2)
 - AWS: S3, Glue, Redshift, Lambda
 - Airflow orchestration
 - Docker containerization
 
-### ML/AI (Future)
-- Scikit-learn (Stage 3)
-- TensorFlow (Stage 3)
-- Transformers/LLMs (Stage 4-5)
-- RAG systems (Stage 4-5)
+### ML/AI (Future - Stage 3-5)
+- scikit-learn, XGBoost (Stage 3)
+- TensorFlow/PyTorch, LSTM (Stage 3)
+- LangChain, RAG systems (Stage 4)
+- Multi-agent systems (Stage 5)
 
 ---
 
 ## 📈 Project Statistics
 
-### Current Status (Month 1)
+### Current Status (Month 1-2)
 ```
-Total Projects:          2 (1 production, 1 learning)
+Total Projects:          2 (1 production, 1 flagship)
 In Production:           1 (1099 pipeline - publicly viewable!)
-In Development:          1 (Trading Tracker v1.0)
-Planned (Stage 1):       2 (Dashboard, ML prototype)
+In Development:          1 (Attention-Flow Catalyst Phase 1A)
+Planned (Stage 1):       2 (Phase 1B dashboard, OnBase analytics)
 
-Lines of Code:           ~2,500+ (and growing)
-Repositories:            3 (all public)
-Public Repos:            3 (100% transparency)
-GitHub Stars:            Building community
+Key Metrics:
+├─ Production savings:   $15,000+/year
+├─ Trigger types:        4 (T1-T4) + 5 volume sub-signals
+├─ Combination tests:    15+ trigger combinations
+├─ Backtest period:      3 years
+├─ Target stocks:        50 small-caps
+└─ Repositories:         4 (all public)
 ```
 
 ### Target by Month 5
 ```
-Total Projects:          5 (1 production, 4 learning)
-Completed Learning:      4 portfolio projects
+Total Projects:          3 (1 production, 1 flagship, 1 enterprise)
+Flagship Phases:         1A + 1B complete (backtest + dashboard)
 Certifications:          3 (Python, Google DA, IBM DA)
-GitHub Stars:            TBD
-Community Engagement:    Active on LinkedIn, Kaggle
+Key Deliverable:         Trigger leaderboard with winning signals
+```
+
+### Target by Month 37
+```
+Flagship Version:        v7.0 (Production AI Trading Platform)
+Revenue Potential:       $2-50K/month
+Full Stack:              Data → Engineering → ML → LLM → Production
 ```
 
 ---
@@ -411,11 +538,12 @@ While these are solo projects for learning and portfolio purposes, I'm open to:
 - **Feedback** on architecture and design decisions
 - **Suggestions** for improvements or extensions
 - **Discussions** about approaches and tradeoffs
+- **Trading strategy** discussions and market analysis
 
 **Connect with me:**
 - LinkedIn: [Manuel Reyes](https://www.linkedin.com/in/mr410/)
 - GitHub: [@manuel-reyes-ml](https://github.com/manuel-reyes-ml)
-- Email: [manuelreyesv410@gmail.com]
+- Email: [manuelreyesv410@gmail.com](mailto:manuelreyesv410@gmail.com)
 
 ---
 
@@ -425,10 +553,10 @@ All public projects are MIT licensed - feel free to learn from or adapt for your
 
 ---
 
-**Last Updated:** December 2025  
-**Current Stage:** Stage 1 (Data Analyst), Month 1  
-**Status:** 🔥 Building production-grade portfolio from Day 1  
-**Next Update:** End of Month 1 (Trading Tracker v1.0 complete)
+**Last Updated:** January 2026  
+**Current Stage:** Stage 1 (Data Analyst), Month 1-2  
+**Status:** 🔥 Building flagship project with statistical rigor  
+**Next Update:** Phase 1A complete (backtest engine + trigger leaderboard)
 
 ---
 
