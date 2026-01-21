@@ -7,10 +7,11 @@
 from __future__ import annotations # For future compatibility with type hinting of return types
 from pathlib import Path
 
+from typing import Iterator
 import statistics as stat
 import re
 
-def _extract_numbers(file_path: Path | str) -> float:
+def _extract_numbers(file_path: Path | str) -> Iterator[float]:
     """Generator function to extract floating-point numbers from lines starting with 'X-DSPAM-Confidence:' in the file."""
     
     with file_path.open("r") as fhand: # Open the file using the Path object's open method, while ensuring it gets closed after use(after block ends)
