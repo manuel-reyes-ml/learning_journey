@@ -7,8 +7,8 @@
 - **Skills:** Python fundamentals, pandas, data visualization, statistics, exploratory data analysis
 
 ## Progress
-- [ ] 01: Introduction to Python
-- [ ] 02: Intermediate Python
+- [x] 01: Introduction to Python
+- [x] 02: Intermediate Python
 - [ ] 03: Data Manipulation with pandas
 - [ ] 04: Joining Data with pandas
 - [ ] 05: Introduction to Statistics in Python

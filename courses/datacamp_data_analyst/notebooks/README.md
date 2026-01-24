@@ -6,13 +6,12 @@ This folder contains my hands-on practice notebooks for the DataCamp "Data Analy
 ## Notebook Organization
 
 ### Completed:
-*(Will update as you progress)*
-
-### In Progress:
 - **01_intro_to_python.ipynb** - Python fundamentals
 
+### In Progress:
+- **02_intermediate_python.ipynb** - Python control flow and data structures
+
 ### Not Started:
-- 02_intermediate_python.ipynb
 - 03_data_manipulation_pandas.ipynb
 - *(etc.)*
 
