@@ -10,6 +10,7 @@ Usage:
 from __future__ import annotations
 from typing import Optional, Iterator
 
+import itertools
 from pathlib import Path
 
 import re
@@ -37,17 +38,18 @@ def resolve_input_path(fname: str, data_dir: Optional[Path]) -> Path:
     Raises:
         FileNotFoundError: If file not found.
     """
-
-    p = Path(fname)
+  
+    p = Path(fname).expanduser() # Expand '~' to full path
     if p.is_file():
-        return p 
+        return p.resolve() # Clean it up only if it exists
 
-    if data_dir is None:
-        data_dir = DEFAULT_DATA_DIR
+   
+    data_dir = data_dir or DEFAULT_DATA_DIR # If data_dir is None, use DEFAULT_DATA_DIR
     
-    candidate = data_dir / fname
+    candidate = (data_dir / fname).expanduser() # Expand '~' to full path
+   
     if candidate.is_file():
-        return candidate
+        return candidate.resolve() # Clean it up only if it exists
 
     raise FileNotFoundError(f"File not found: {fname} (also tried: {candidate})")
 
@@ -67,8 +69,8 @@ def _extract_and_generate_numbers(path: Path) -> Iterator[int]:
         for line in f:
             if line.strip() == '': # Skip empty lines(blank lines in file)
                 continue
-            for match in pattern.findall(line.strip()):
-                yield int(match)
+            for match in pattern.finditer(line.strip()): # We use finditer() instead of findall() to yield one by one
+                yield int(match.group()) # Use group() to get the actual matched string from match object
 
 
 def add_ints(path: Path) -> int:
@@ -83,14 +85,16 @@ def add_ints(path: Path) -> int:
     Raises:
         ValueError: If no integers found in file.
     """
-    total_ints = None
-    for i in _extract_and_generate_numbers(path):
-        total_ints = i if total_ints is None else total_ints + i
-    
-    if total_ints is not None: # Compares with None to check if it was initialized
-        return total_ints
-    
-    raise ValueError(f"No integers found in file: {path}")
+    numbers = _extract_and_generate_numbers(path)
+
+    try:
+        first = next(numbers) # Get the first number
+    except StopIteration: 
+        # This happens when there are no more items to iterate over
+        raise ValueError(f"No integers found in file: {path}")
+    else:
+        # This only runs if try block doesn't raise an exception
+        return sum(itertools.chain([first], numbers)) # Put the first number in front of the rest and add them all
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -115,8 +119,6 @@ def main(argv: list[str] | None = None) -> int:
     try:
         path = resolve_input_path(args.file, data_dir)
         total_ints = add_ints(path)
-        print(f"\nTotal of integers in file: {total_ints}\n")
-        return 0
 
     except (FileNotFoundError, ValueError) as e:
         print(f"Error: {e}", file=sys.stderr)
@@ -126,8 +128,11 @@ def main(argv: list[str] | None = None) -> int:
         print("\nInterrupted by User. Exiting.\n", file=sys.stderr)
         return 130
     
+    else:
+        # This only runs if try block doesn't raise an exception
+        print(f"\nTotal of integers in file: {total_ints}\n")
+        return 0
+    
 
 if __name__ == "__main__":
     sys.exit(main()) # Exit with return code from main() - more convetional than raise SystemExit(main())
-
-    
