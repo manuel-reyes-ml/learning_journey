@@ -1,3 +1,10 @@
+"""
+1) Read through the file: *.txt
+2) Extract strings from txt file that match regex pattern 'PREFIX'.
+3) Convert strings to int and yield it.
+4) Add all integers extracted from file.
+5) Print out the total sum of all integers extracted from file.
+"""
 
 from __future__ import annotations
 from typing import Optional, Iterator
