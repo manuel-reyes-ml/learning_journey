@@ -2,9 +2,8 @@
 HTML Span Number Sum Script - Extract and sum all integers from <span> tags in HTML.
 
 Usage:
-    python span_number_sum.py
-    python span_number_sum.py http://py4e-data.dr-chuck.net/comments_42.html
-    python span_number_sum.py http://py4e-data.dr-chuck.net/comments_2357632.html
+    python span_number_sum.py [URL]
+    python span_number_sum.py --verbose
 """
 
 from __future__ import annotations
@@ -13,14 +12,27 @@ from typing import Iterator
 import itertools
 import re
 import argparse
+import logging
 import sys
-import urllib.request
-import urllib.error
-from bs4 import BeautifulSoup
 
+# Try/Except import for external dependencies
+try:
+    import requests
+    from bs4 import BeautifulSoup
+except ImportError as e:
+    sys.exit(f"Error: Missing dependency. Please install via pip.\nDetails: {e}")
+
+# Configuration
 DEFAULT_URL: str = 'http://py4e-data.dr-chuck.net/comments_42.html'
-NUMBER_PATTERN: str = r'[0-9]+'  # 'r' -> raw string = no escape characters
+# Pre-compiling regex at the module level is more efficient than compiling it on every iteration
+NUMBER_PATTERN = re.compile(r'[0-9]+')  # 'r' -> raw string = no escape characters
 
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(levelname)s: %(message)s'
+)
+logger = logging.getLogger(__name__)
 
 def fetch_html(url: str) -> str:
     """
@@ -35,15 +47,14 @@ def fetch_html(url: str) -> str:
         urllib.error.HTTPError: If HTTP error occurs (404, 500, etc.).
     """
     try:
-        with urllib.request.urlopen(url) as response:
-            html = response.read().decode('utf-8')
-            return html
-    except urllib.error.URLError as e:
-        raise urllib.error.URLError(f"Failed to fetch URL {url}: {e.reason}") from e
-    except urllib.error.HTTPError as e:
-        raise urllib.error.HTTPError(
-            url, e.code, f"HTTP error {e.code}: {e.reason}", e.headers, None
-        ) from e
+        with requests.get(url, timeout=10) as response:
+            response.raise_for_status() # Raise an exception for HTTP errors (404, 500, etc.)
+    except requests.RequestException as e:
+        # We log the specific error here for debugging purposes
+        logger.debug(f"Failed to fetch URL {url}: {e.reason}")
+        raise
+    else:
+        return response.text # Return the HTML content as a string (requests library automatically handles decoding)
 
 
 def extract_numbers_from_spans(html: str) -> Iterator[int]:
@@ -59,13 +70,13 @@ def extract_numbers_from_spans(html: str) -> Iterator[int]:
     soup = BeautifulSoup(html, 'html.parser')
     span_tags = soup.find_all('span')
     
-    pattern = re.compile(NUMBER_PATTERN)  # Compile regex pattern for better performance
-    
     for span in span_tags:
-        text = span.get_text()  # Get text content from span tag
-        if text.strip() == '':  # Skip empty spans
+        text = span.get_text(strip=True)  # strip=True removes leading and trailing whitespace automatically
+        if not text:  # Skip empty spans
             continue
-        for match in pattern.finditer(text.strip()):  # Use finditer() to yield one by one
+        
+        # finditer is excellent for memory efficiency when dealing with large amounts of data
+        for match in NUMBER_PATTERN.finditer(text):
             yield int(match.group())  # Use group() to get the actual matched string from match object
 
 
@@ -117,23 +128,36 @@ def main(argv: list[str] | None = None) -> int:
         default=DEFAULT_URL,
         help=f"URL to fetch HTML from (default: {DEFAULT_URL})"
     )
+    parser.add_argument(
+        "-v", "--verbose",
+        action="store_true",
+        help="Enable verbose (debug) output",
+    )
+    
     args = parser.parse_args(argv)
+    
+    if args.verbose:
+        logger.setLevel(logging.DEBUG)
+        
+    logger.info(f"Fetching data from URL: {args.url}")
     
     url = args.url
     
     try:
         total_ints = sum_span_numbers(url)
         
-    except (urllib.error.URLError, urllib.error.HTTPError) as e:
-        print(f"Error: {e}", file=sys.stderr)
+    except requests.RequestException as e:
+        logger.error(f"Network error: {e}")
         return 1
         
     except ValueError as e:
-        print(f"Error: {e}", file=sys.stderr)
+        logger.error(f"No integers found in span tags: {e}")
         return 1
-        
+    except Exception as e:
+        logger.error(f"Unexpected error: {e}")
+        return 1
     except KeyboardInterrupt:
-        print("\nInterrupted by User. Exiting.\n", file=sys.stderr)
+        logger.info("Interrupted by User. Exiting.")
         return 130
     
     else:
