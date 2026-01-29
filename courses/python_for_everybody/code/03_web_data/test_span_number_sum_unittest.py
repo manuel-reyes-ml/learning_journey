@@ -9,7 +9,7 @@ import sys
 current_dir = Path(__file__).resolve().parent
 sys.path.append(str(current_dir))
 
-# We import the function from the script
+# Now, we import the function from the script
 from span_number_sum import extract_numbers_from_spans, sum_span_numbers
 
 # inheritates TestCase from unittest to use .assertEqual and others
