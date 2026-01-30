@@ -159,7 +159,6 @@ def main(argv: list[str] | None = None) -> int:
     except KeyboardInterrupt:
         logger.info("Interrupted by User. Exiting.")
         return 130
-    
     else:
         # This only runs if try block doesn't raise an exception
         print(f"\nTotal of integers in span tags: {total_ints}\n")
