@@ -9,7 +9,7 @@
 ## Progress
 - [x] 01: Programming for Everybody (Getting Started with Python)
 - [x] 02: Python Data Structures
-- [ ] 03: Using Python to Access Web Data
+- [x] 03: Using Python to Access Web Data
 - [ ] 04: Using Databases with Python
 - [ ] 05: Capstone: Retrieving, Processing, and Visualizing Data
 
