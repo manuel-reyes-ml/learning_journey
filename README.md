@@ -10,7 +10,7 @@
 [![Current Stage](https://img.shields.io/badge/Stage-1%3A%20AI--Powered%20Data%20Analyst-green)]()
 [![Study Hours](https://img.shields.io/badge/Weekly%20Hours-25-orange)]()
 [![Timeline](https://img.shields.io/badge/Timeline-37%20Months%20(5%20Stages)-blue)]()
-[![AI-Powered](https://img.shields.io/badge/🤖_AI--Powered-2025_Market_Advantage-blueviolet)]()
+[![AI-Powered](https://img.shields.io/badge/🤖_AI--Powered-2026_Market_Advantage-blueviolet)]()
 
 📋 **[View Complete 37-Month Interactive Roadmap →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
 
@@ -20,7 +20,7 @@
 
 **👔 For Recruiters / Hiring Managers:**
 1. **[💼 Production Projects →](https://github.com/manuel-reyes-ml/data-portfolio)** - Live ETL system + portfolio ⭐ **START HERE**
-2. **[🤖 AI-Powered Differentiation →](#-ai-powered-differentiation-2025-market-advantage)** - What sets this apart
+2. **[🤖 AI-Powered Differentiation →](#-ai-powered-differentiation-2026-market-advantage)** - What sets this apart
 3. **[📊 Complete Roadmap →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)** - 37-month visualization
 4. **[🔗 LinkedIn →](https://www.linkedin.com/in/mr410/)** - Professional background
 
@@ -28,6 +28,7 @@
 1. **[🤖 AI Integration Strategy →](#-ai-tools--workflows-integration)** - My AI stack and approach
 2. **[📚 Repository Structure →](#-repository-structure)** - Course materials organization
 3. **[💡 Learning Philosophy →](#-learning-philosophy)** - Core principles and approach
+4. **[🛠️ Setup Guides →](./getting_started/)** - Environment configuration
 
 ---
 
@@ -47,7 +48,7 @@
 
 ---
 
-## 🤖 AI-Powered Differentiation (2025 Market Advantage)
+## 🤖 AI-Powered Differentiation (2026 Market Advantage)
 
 In 2025, AI literacy is essential for data professionals. While most candidates learn traditional tools only, this journey integrates AI systematically from the start.
 
@@ -153,34 +154,71 @@ Operations teams lack visibility into workflow demand patterns, leading to react
 ```
 learning_journey/
 │
-├── 📄 README.md                          # This file
+├── 📄 README.md                          # This file - Complete overview with AI positioning
 │
-├── 📂 projects/                          # Links to project repositories
-│   └── README.md                         # Project index with context
+├── 📂 projects/                          # ⭐ Project directory (links to separate repos)
+│   └── README.md                         # Comprehensive project index
+│       ├── 1099 ETL Pipeline (production, public, $15K savings)
+│       ├── Operations-Demand-Intelligence (AI chat, enterprise analytics)
+│       ├── Attention-Flow Catalyst (flagship, AI-powered, 5-stage evolution)
+│       └── Planned projects
 │
-├── 📂 courses/                           # Course materials by platform
-│   ├── cs50_harvard/                     # Computer Science fundamentals
-│   ├── python_for_everybody/             # Python, enhanced exercises
-│   ├── datacamp_data_analyst/            # Hands-on practice
-│   ├── vanderbilt_genai_analyst/         # 🤖 AI-powered analysis
-│   ├── ibm_data_analyst/                 # Professional certification
-│   └── sql_mode_thoughtspot/             # SQL mastery
+├── 📂 getting-started/                   # For new visitors
+│   ├── README.md                         # Navigation & overview
+│   ├── SETUP_GUIDE.md                    # Complete dev environment + AI tools
+│   ├── environment-verification.py       # Test your setup
+│   └── prerequisites.md                  # What you need to begin
 │
-├── 📂 certifications/                    # Progress tracking
-│   └── in-progress/                      # Current certifications
+├── 📂 courses/                           # Course-specific materials
+│   ├── cs50_harvard/                     # CS50 work & notes
+│   │
+│   ├── python_for_everybody/             # Python course materials
+│   │   ├── code/                         # Practice scripts (AI-enhanced)
+│   │   ├── experiments/                  # Enhanced exercises
+│   │   ├── notebooks/                    # Jupyter notebooks
+│   │   └── notes/                        # Course notes by module
+│   │
+│   ├── datacamp_data_analyst/            # DataCamp Data Analyst Track
+│   │   ├── notebooks/                    # Practice notebooks
+│   │   └── README.md                     # Track progress
+│   │
+│   ├── vanderbilt_genai_analyst/         # 🤖 NEW: AI-Powered Analysis
+│   │   ├── chatgpt_workflows/            # CLUE/TRUST/CAPTURE frameworks
+│   │   ├── prompt_engineering/           # Prompt patterns & examples
+│   │   └── README.md                     # Course progress
+│   │
+│   ├── ibm_data_analyst/                 # IBM course materials
+│   │
+│   └── sql_mode_thoughtspot/             # SQL practice
 │
-├── 📂 docs/                              # Documentation
-│   ├── roadmap.html                      # Interactive 37-month plan
+├── 📂 certifications/                    # Certificate tracking
+│   ├── README.md                         # All certifications overview
+│   └── in-progress/                      # Current progress tracking
+│       ├── python-for-everybody-progress.md
+│       ├── google-data-analytics-progress.md
+│       ├── ibm-data-analyst-progress.md
+│       ├── vanderbilt-genai-analyst-progress.md  # 🤖 NEW
+│       └── statistics-with-python-progress.md
+│
+├── 📂 docs/                              # Documentation & guides
+│   ├── index.html                        # GitHub Pages landing page
+│   ├── roadmap.html                      # Interactive 37-month AI-powered roadmap
 │   └── activation-plans/                 # Structured learning guides
+│       ├── README.md                     # Guide overview
+│       ├── WEEK_01_MASTER_ACTIVATION_PLAN.md
+│       ├── DAILY_ROUTINE_GUIDE.md
+│       ├── ACCEPTANCE_CRITERIA.md
+│       └── WEEK_01_QUICK_REFERENCE.md
 │
 ├── 📂 notes/                             # Learning journal
-│   ├── ai_tools_exploration.md           # 🤖 AI integration notes
-│   ├── trading_ideas.md                  # Research and analysis
-│   └── learning-journal.md               # Progress reflections
+│   ├── week1_summary.md                  # Weekly progress summaries
+│   ├── ai_tools_exploration.md           # 🤖 NEW: AI tools learning notes
+│   ├── trading_ideas.md                  # Trading research
+│   └── learning-journal.md               # Daily reflections
 │
-└── 📂 getting-started/                   # Setup and prerequisites
-    ├── SETUP_GUIDE.md                    # Complete environment config
-    └── environment-verification.py       # Validation script
+├── .gitignore                            # Ignore .venv, cache, etc.
+├── .vscode/                              # VS Code settings
+└── requirements.txt                      # Python dependencies
 ```
 
 ---
@@ -275,7 +313,19 @@ Systematic progression with AI integration at every stage. Income secured from S
 **AI Tools:** Cursor AI, ChatGPT Plus, Codeium, PandasAI  
 **Platforms:** Coursera, DataCamp, DeepLearning.AI
 
-**Setup:** See [Complete Setup Guide](./getting-started/SETUP_GUIDE.md)
+```bash
+# Clone repository
+git clone https://github.com/manuel-reyes-ml/learning_journey.git
+cd learning_journey
+
+# See detailed setup guide (includes AI tools setup)
+open getting_started/SETUP_GUIDE.md
+
+# Verify environment
+python getting_started/environment-verification.py
+```
+
+**Setup:** See [Complete Setup Guide](./getting_started/SETUP_GUIDE.md)
 
 ---
 
