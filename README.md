@@ -1,15 +1,16 @@
 # 🚀 Learning Journey: Business Ops Professional → Senior LLM Engineer
 
-**Building Production Data Systems in Public** | Production Code from Day 1 | Systematic 37-Month Transformation
+**AI-Powered Career Transformation** | Production Code from Day 1 | Systematic 37-Month Journey
 
-> **Current Stage:** Data Analyst (Stage 1 of 5)  
-> **Next Milestone:** Land Data Analyst role  
+> **Current Stage:** AI-Powered Data Analyst (Stage 1 of 5)  
+> **Next Milestone:** Land Data Analyst role with AI integration skills  
 > **Ultimate Goal:** Senior LLM Engineer building production AI Trading Assistant  
 > **Study Commitment:** 25 hours/week systematic learning
 
-[![Current Stage](https://img.shields.io/badge/Stage-1%3A%20Data%20Analyst-green)]()
+[![Current Stage](https://img.shields.io/badge/Stage-1%3A%20AI--Powered%20Data%20Analyst-green)]()
 [![Study Hours](https://img.shields.io/badge/Weekly%20Hours-25-orange)]()
 [![Timeline](https://img.shields.io/badge/Timeline-37%20Months%20(5%20Stages)-blue)]()
+[![AI-Powered](https://img.shields.io/badge/🤖_AI--Powered-2025_Market_Advantage-blueviolet)]()
 
 📋 **[View Complete 37-Month Interactive Roadmap →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
 
@@ -19,568 +20,305 @@
 
 **👔 For Recruiters / Hiring Managers:**
 1. **[💼 Production Projects →](https://github.com/manuel-reyes-ml/data-portfolio)** - Live ETL system + portfolio ⭐ **START HERE**
-2. **[🧾 1099 ETL Pipeline →](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline)** - Production code (public, $15K savings)
-3. **[📈 Attention-Flow Catalyst →](https://github.com/manuel-reyes-ml/attention-flow-catalyst)** - Flagship trading project (5 stages)
-4. **[📊 Complete Roadmap →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)** - 37-month visualization
-5. **[🔗 LinkedIn →](https://www.linkedin.com/in/mr410/)** - Professional background
+2. **[🤖 AI-Powered Differentiation →](#-ai-powered-differentiation-2025-market-advantage)** - What sets this apart
+3. **[📊 Complete Roadmap →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)** - 37-month visualization
+4. **[🔗 LinkedIn →](https://www.linkedin.com/in/mr410/)** - Professional background
 
 **🎓 For Fellow Learners:**
-1. **[📚 Course Materials →](#-repository-structure)** - Organized by platform & course
-2. **[🛠️ Setup Guides →](./getting-started/)** - Environment configuration
-3. **[📋 Learning Strategy →](#-learning-philosophy)** - My approach & principles
-4. **[📝 Progress Tracking →](./certifications/)** - Certification status
+1. **[🤖 AI Integration Strategy →](#-ai-tools--workflows-integration)** - My AI stack and approach
+2. **[📚 Repository Structure →](#-repository-structure)** - Course materials organization
+3. **[💡 Learning Philosophy →](#-learning-philosophy)** - Core principles and approach
 
 ---
 
 ## 💪 What Makes This Different
 
-### **Most Learning Repositories:**
+**Most learning repositories:** Tutorial completions and course exercises with no real-world application.
+
+**This repository demonstrates:**
+- ✅ **Production system deployed** - Live ETL pipeline saving $15K/year with public code
+- ✅ **AI integration from Day 1** - ChatGPT, Cursor AI, PandasAI in active use
+- ✅ **Enterprise analytics in development** - Operations-Demand-Intelligence with AI chat interface
+- ✅ **Domain expertise** - 15+ years data experience, 8 years finance, 6 years trading
+- ✅ **Measurable business impact** - 95% efficiency gains, documented results
+- ✅ **Systematic AI-powered progression** - Clear 37-month path with AI at every stage
+
+**The key differentiator:** Already delivering production value while building toward LLM engineering, with transparent AI integration throughout.
+
+---
+
+## 🤖 AI-Powered Differentiation (2025 Market Advantage)
+
+In 2025, AI literacy is essential for data professionals. While most candidates learn traditional tools only, this journey integrates AI systematically from the start.
+
+### **The AI-Enhancement Framework**
+
+Each stage combines traditional data skills with AI augmentation:
+
+**Stage 1: AI-Powered Data Analyst** 🟢 ACTIVE
 ```
-✓ Tutorial completions
-✓ Course exercises  
-✓ Personal projects
-✗ No production experience
-✗ No domain expertise
-✗ No measurable business impact
+Foundation: Python, SQL, Statistics, Visualization
++ AI Layer: ChatGPT workflows, Cursor AI IDE, PandasAI, Prompt Engineering
+= Result: AI-powered dashboards with natural language interfaces
 ```
 
-### **This Repository:**
+**Stage 2: AI-Powered Data Engineer** 📅 PLANNED  
 ```
-✓ Tutorial completions (enhanced beyond requirements)
-✓ Course exercises (optimized and expanded)
-✓ Personal projects (production-grade quality)
-✓ Production ETL system (live, saving $15K/year)
-✓ Finance domain expertise (10+ years data, 8 years finance, 6 years trading)
-✓ Measurable business impact (95% efficiency gain, public code)
-✓ Systematic 37-month roadmap (structured progression)
-✓ Building in public (transparent, accountable)
+Foundation: AWS, Airflow, PySpark, PostgreSQL
++ AI Layer: dbt, LangChain basics, intelligent monitoring
+= Result: AI-enhanced pipelines with smart automation
 ```
 
-**Key Differentiator:** Not just learning—already delivering production value with public, reviewable code.
+**Stages 3-5** progress through ML Engineering → LLM Specialist → Senior LLM Engineer, with AI capabilities expanding at each level.
+
+### **Why This Matters**
+
+| Traditional Path | AI-Powered Path (This Journey) |
+|-----------------|--------------------------------|
+| Learn tools → Get job → Maybe add AI later | Learn tools + AI together → Land AI-ready role |
+| Positioned with majority of candidates | Positioned ahead of 95% of candidates |
+| Standard market rates | 15-20% salary premium for AI skills |
+| Limited future trajectory | Clear path to LLM engineering |
+
+**Market reality:** The AI agent market is growing 823% in 2025. Companies need professionals who bridge data workflows and AI implementation—not one or the other.
 
 ---
 
 ## 🏆 Production & Portfolio Highlights
 
-### **1099 Reconciliation ETL Pipeline** ✅ Live Production
-**Repository:** [1099_reconciliation_pipeline](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline) 🌐 Public
+### **[1099 Reconciliation ETL Pipeline](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline)** ✅ Live Production
 
-**Business Challenge:**  
-Manual reconciliation of retirement plan distributions took 4-6 hours weekly, was error-prone, and blocked critical 1099-R tax reporting.
+Automated Python ETL pipeline for retirement plan distribution reconciliation at Daybright Financial.
 
-**Technical Solution:**  
-Automated Python ETL pipeline using pandas and openpyxl that extracts, transforms, validates, and reconciles data between two financial systems (Relius and Matrix).
+**Impact:** 95% time reduction (4-6 hours → 15 min/week) | $15,000+ annual savings | 10x scalability | Zero errors
 
-**Measurable Impact:**
-- ⚡ **95% time reduction** (4-6 hours → 15 minutes weekly)
-- 💰 **$15,000+ annual savings** in labor costs
-- 📊 **10x scalability** (300+ accounts vs. 30 manual capacity)
-- ✅ **Zero errors** since deployment through automated validation
-
-**Why It Matters:** Real enterprise system integration with measurable ROI—not a tutorial project.
+**Tech:** Python • pandas • openpyxl • matplotlib • pytest • GitHub Actions CI
 
 ---
 
-### **Attention-Flow Catalyst** 🚧 Flagship Project (Phase 1A Active)
-**Repository:** [attention-flow-catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst) 🌐 Public
+### **[Operations-Demand-Intelligence](https://github.com/manuel-reyes-ml/operations-demand-intelligence)** 🚧 Second Project to Launch
+
+**AI-Powered Workflow Demand Analysis** for data-driven staffing decisions using OnBase enterprise data.
+
+Analyzing 8+ months of workflow data to enable intelligent resource allocation with AI-powered natural language insights.
+
+**Business Challenge:**  
+Operations teams lack visibility into workflow demand patterns, leading to reactive staffing and resource inefficiencies. No data-driven approach for Distribution vs Loan workflow segmentation.
+
+**AI-Powered Solution:**
+
+| Feature | Implementation | AI Enhancement |
+|---------|----------------|----------------|
+| **Demand Analysis** | Volume patterns, Distribution vs Loan segmentation | AI-powered trend detection, anomaly alerts |
+| **Interactive Dashboard** | Streamlit with Plotly visualizations | **PandasAI chat:** "Why did loan volume spike in March?" |
+| **Insights Generation** | Traditional business metrics | **AI-generated commentary** for stakeholders |
+| **Data Privacy** | PII handling, synthetic data for GitHub | AI with privacy guardrails, read-only access |
+
+**What Makes It Stand Out:**
+- ✅ **Enterprise system integration** - Real OnBase workflow data (8+ months)
+- ✅ **AI chat interface** - Natural language queries with SQL transparency
+- ✅ **Business impact focus** - Data-driven staffing recommendations
+- ✅ **Production-grade privacy** - Proper PII handling with synthetic data for GitHub
+
+**Tech:** Python • pandas • Streamlit • **PandasAI** • Plotly • GitHub Actions CI • data anonymization
+
+**Status:** Active development - launching as Stage 1 second major project
+
+---
+
+### **[Attention-Flow Catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst)** 📅 Next Project to Complete
 
 > **Research Question:** Which trigger or combination best predicts +10% price moves within 3 trading days?
 
-**One project, five stages, complete career demonstration.**
+**Flagship project evolving through all 5 career stages:**
 
-This is my **flagship project** evolving through all 5 stages of my career transition—from Data Analyst to Senior LLM Engineer:
+| Stage | Focus | AI Integration |
+|-------|-------|----------------|
+| **1 (Next)** | Statistical backtesting, signal leaderboard | AI chat interface (PandasAI), AI insights |
+| **2** | AWS pipelines, 500+ tickers | AI monitoring, intelligent alerts |
+| **3** | ML predictions, ensemble models | AutoML, AI feature engineering |
+| **4** | ❌ Traditional N/A | ✅ **Natural language trading interface (RAG)** |
+| **5** | Production deployment | ✅ **Multi-agent AI orchestration** |
 
-**What It Does:**
-```
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│  Stock Screener │ ──► │  Data Pipeline  │ ──► │ Trigger Detection│
-│  50 small-caps  │     │  3yr history    │     │  T1-T4 signals   │
-│  (<$5, listed)  │     │  per ticker     │     │  + combinations  │
-└─────────────────┘     └─────────────────┘     └─────────────────┘
-                                                        │
-                                                        ▼
-┌─────────────────┐     ┌─────────────────┐     ┌─────────────────┐
-│ Signal Generator│ ◄── │   Leaderboard   │ ◄── │ Backtest Engine │
-│  daily watchlist│     │  rank by hit    │     │  test all combos│
-└─────────────────┘     └─────────────────┘     └─────────────────┘
-```
+**Phase 1A (To Complete):** Dynamic stock screener • Alternative data collection (SEC, Wikipedia, News) • Statistical backtesting with bootstrap confidence • Trigger leaderboard
 
-**Stock Screening Criteria:**
-- Price < $5 (bigger % move potential)
-- Listed exchanges only (NYSE, NASDAQ, AMEX — NO OTC)
-- Small float (limited shares = faster moves)
-- Strong sector (auto-detected by relative strength)
+**Phase 1B (Then Build):** Streamlit dashboard + **PandasAI chat interface** + **AI-generated commentary** + Natural language queries
 
-**Triggers Being Tested:**
-
-| ID | Trigger | Data Source | What It Detects |
-|----|---------|-------------|-----------------|
-| **T1** | SEC Form 4 Insider Buy | edgartools | Smart money activity |
-| **T2** | Wikipedia Attention Spike | Wikipedia API | Public attention surge |
-| **T3** | News Mention Spike | RSS/GDELT | Media coverage |
-| **T4** | Volume Accumulation | yfinance | Institutional buying (RVOL, OBV, quiet accumulation) |
-
-**Combination Testing:** All individual triggers, 2-trigger, 3-trigger, and 4-trigger combinations with sector & index context filters.
-
-**Project Evolution Through 5 Career Stages:**
-
-| Stage | Version | Focus | Key Deliverable |
-|-------|---------|-------|-----------------|
-| **1 (DA)** | v2.0 | Backtest engine | Trigger leaderboard, signal generator |
-| **2 (DE)** | v4.0 | Cloud scale | 500+ tickers, Airflow automation |
-| **3 (ML)** | v5.0 | Predictions | ML ensemble, auto-optimization |
-| **4 (LLM)** | v6.0 | AI Assistant | Natural language interface, RAG |
-| **5 (Sr)** | v7.0 | Production | Monetization platform ($2-50K/mo) |
-
-**Why This Project Stands Out:**
-- ✅ **Dynamic screening** — Program finds stocks automatically (not manual list)
-- ✅ **Real SEC data** — Form 4 insider transactions via edgartools
-- ✅ **Statistical rigor** — Proper backtesting with combination testing
-- ✅ **Volume analysis** — RVOL, OBV, accumulation patterns (institutional footprint)
-- ✅ **Domain expertise** — 6 years trading knowledge codified into algorithms
-- ✅ **Progressive architecture** — Evolves through all 5 career stages
-
-**Tech Stack:** Python • SQLite • pandas • edgartools • yfinance • Wikipedia API • matplotlib
-
-[**→ View Project Repository**](https://github.com/manuel-reyes-ml/attention-flow-catalyst)
-
----
-
-### Project Progression Map
-
-```
-✅ DEPLOYED
-└─ 1099 Reconciliation ETL Pipeline (Production, Live, $15K savings)
-
-🚧 ACTIVE DEVELOPMENT  
-└─ Attention-Flow Catalyst — Phase 1A (Predictive Trigger Analysis)
-   ├─ Dynamic stock screener (small-caps < $5, strong sectors)
-   ├─ Alternative data collection (Form 4, Wiki, News)
-   ├─ Volume accumulation signals (RVOL, OBV, quiet accumulation)
-   ├─ Backtest engine (3 years, all trigger combinations)
-   └─ Trigger leaderboard & signal generator
-
-📅 NEXT (Stage 1)
-├─ Phase 1B: VSA Metrics & Technical Analysis Module
-├─ Dashboard Component (Streamlit visualization)
-└─ OnBase Workflow Intelligence System
-
-📅 PLANNED (Stage 2-5)
-├─ Cloud Migration (AWS, Airflow, 500+ tickers)
-├─ ML Trading Models (XGBoost, LSTM, ensemble)
-├─ AI Trading Assistant (RAG, natural language)
-└─ Production Platform + Monetization
-
-🎯 ULTIMATE GOAL (Stage 5)
-└─ Production AI Trading Platform ($2-50K/mo potential)
-```
-
-**→ [View all projects in portfolio](https://github.com/manuel-reyes-ml/data-portfolio)**
-
----
-
-## 🎯 The 37-Month Roadmap
-
-Systematic progression from Data Analyst to Senior LLM Engineer with income at every stage:
-
-### **Stage 1: Data Analyst** (Months 1-5) 🟢 **ACTIVE**
-**Objective:** Build foundations and land first tech role
-
-**Core Skills:**
-- Python (pandas, NumPy, Matplotlib, Seaborn)
-- SQL (queries, joins, aggregations, window functions)
-- Statistics & probability fundamentals
-- Data visualization and storytelling
-- Business intelligence tools
-
-**Key Deliverables:**
-- ✅ 1099 ETL Pipeline (production, deployed)
-- 🚧 Attention-Flow Catalyst Phase 1A (backtest engine, signal generator)
-- 📅 Attention-Flow Catalyst Phase 1B (VSA metrics, dashboard)
-- 📅 OnBase Workflow Intelligence (enterprise analytics)
-
-**Certifications:**
-- Python for Everybody Specialization (University of Michigan)
-- Google Data Analytics Professional Certificate
-- IBM Data Analyst Professional Certificate (11 courses)
-- CS50: Introduction to Computer Science (Harvard)
-- Statistics with Python Specialization (University of Michigan)
-
-**Outcome:** Data Analyst position secured
-
----
-
-### **Stage 2: Data Engineer** (Months 6-15) ⏳ Planned
-**Objective:** Master production data systems and cloud infrastructure
-
-**Core Skills:**
-- AWS ecosystem (S3, Glue, Redshift, EMR, Lambda)
-- Data pipeline orchestration (Apache Airflow)
-- Big data processing (PySpark)
-- Database design and optimization
-- ETL/ELT at scale
-
-**Key Deliverable:** Attention-Flow Catalyst v4.0 — Cloud-based pipeline, 500+ tickers, Airflow scheduling
-
----
-
-### **Stage 3: ML Engineer** (Months 16-29) ⏳ Planned
-**Objective:** Build and deploy machine learning systems
-
-**Core Skills:**
-- Mathematics for ML (linear algebra, calculus, probability)
-- Machine learning frameworks (scikit-learn, TensorFlow, PyTorch)
-- Model deployment and MLOps
-- Feature engineering and model selection
-- Production ML systems
-
-**Key Deliverable:** Attention-Flow Catalyst v5.0 — ML-powered trigger prediction with ensemble strategies
-
----
-
-### **Stage 4: LLM Specialist** (Months 30-34) ⏳ Planned
-**Objective:** Master large language models and AI systems
-
-**Core Skills:**
-- Prompt engineering and optimization
-- RAG (Retrieval-Augmented Generation) systems
-- Vector databases and embeddings
-- LLM fine-tuning and agents
-- Multi-agent orchestration
-
-**Key Deliverable:** Attention-Flow Catalyst v6.0 — AI Trading Assistant with natural language interface
-
----
-
-### **Stage 5: Senior LLM Engineer** (Months 35-37) 🎯 **ULTIMATE GOAL**
-**Objective:** Production AI systems and thought leadership
-
-**Core Skills:**
-- Production AI architecture and deployment
-- Team leadership and mentorship
-- Open source contributions
-- Technical writing and speaking
-- System design at scale
-
-**Key Deliverable:** Attention-Flow Catalyst v7.0 — Production platform with monetization ($2-50K/mo potential)
-
-**📋 [View Interactive 37-Month Roadmap →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
+**What makes it defensible:** Walk-forward validation • Survivorship bias controls • Modern stack (DuckDB, Parquet) • Progressive architecture through all career stages
 
 ---
 
 ## 📂 Repository Structure
+
 ```
 learning_journey/
 │
-├── 📄 README.md                          # This file - Complete overview
+├── 📄 README.md                          # This file
 │
-├── 📂 projects/                          # ⭐ Project directory (links to separate repos)
-│   └── README.md                         # Comprehensive project index
-│       ├── 1099 ETL Pipeline (production, public)
-│       ├── Attention-Flow Catalyst (flagship, 5-stage evolution)
-│       └── Planned projects (dashboard, enterprise analytics)
+├── 📂 projects/                          # Links to project repositories
+│   └── README.md                         # Project index with context
 │
-├── 📂 getting-started/                   # For new visitors
-│   ├── README.md                         # Navigation & overview
-│   ├── SETUP_GUIDE.md                    # Complete dev environment setup
-│   ├── environment-verification.py       # Test your setup
-│   └── prerequisites.md                  # What you need to begin
+├── 📂 courses/                           # Course materials by platform
+│   ├── cs50_harvard/                     # Computer Science fundamentals
+│   ├── python_for_everybody/             # Python, enhanced exercises
+│   ├── datacamp_data_analyst/            # Hands-on practice
+│   ├── vanderbilt_genai_analyst/         # 🤖 AI-powered analysis
+│   ├── ibm_data_analyst/                 # Professional certification
+│   └── sql_mode_thoughtspot/             # SQL mastery
 │
-├── 📂 courses/                           # Course-specific materials
-│   ├── cs50_harvard/                     # CS50 work & notes
-│   │
-│   ├── python_for_everybody/             # Python course materials
-│   │   ├── code/                         # Practice scripts
-│   │   ├── experiments/                  # Enhanced exercises
-│   │   ├── notebooks/                    # Jupyter notebooks
-│   │   └── notes/                        # Course notes by module
-│   │
-│   ├── datacamp_data_analyst/            # DataCamp Data Analyst Track
-│   │   ├── notebooks/                    # Practice notebooks
-│   │   └── README.md                     # Track progress
-│   │
-│   ├── ibm_data_analyst/                 # IBM course materials
-│   │
-│   └── sql_mode_thoughtspot/             # SQL practice
+├── 📂 certifications/                    # Progress tracking
+│   └── in-progress/                      # Current certifications
 │
-├── 📂 certifications/                    # Certificate tracking
-│   ├── README.md                         # All certifications overview
-│   └── in-progress/                      # Current progress tracking
-│       ├── python-for-everybody-progress.md
-│       ├── google-data-analytics-progress.md
-│       └── ibm-data-analyst-progress.md
-│
-├── 📂 docs/                              # Documentation & guides
-│   ├── index.html                        # GitHub Pages landing page
-│   ├── roadmap.html                      # Interactive 37-month roadmap
+├── 📂 docs/                              # Documentation
+│   ├── roadmap.html                      # Interactive 37-month plan
 │   └── activation-plans/                 # Structured learning guides
-│       ├── README.md                     # Guide overview
-│       ├── WEEK_01_MASTER_ACTIVATION_PLAN.md
-│       ├── DAILY_ROUTINE_GUIDE.md
-│       ├── ACCEPTANCE_CRITERIA.md
-│       └── WEEK_01_QUICK_REFERENCE.md
 │
 ├── 📂 notes/                             # Learning journal
-│   ├── week1_summary.md                  # Weekly progress summaries
-│   ├── trading_ideas.md                  # Trading research
-│   └── learning-journal.md               # Daily reflections
+│   ├── ai_tools_exploration.md           # 🤖 AI integration notes
+│   ├── trading_ideas.md                  # Research and analysis
+│   └── learning-journal.md               # Progress reflections
 │
-├── .gitignore                            # Ignore .venv, cache, etc.
-├── .vscode/                              # VS Code settings
-└── requirements.txt                      # Python dependencies
+└── 📂 getting-started/                   # Setup and prerequisites
+    ├── SETUP_GUIDE.md                    # Complete environment config
+    └── environment-verification.py       # Validation script
 ```
-
-**Organization Principles:**
-- ✅ **Platform-based structure** - Materials grouped by learning platform
-- ✅ **Clear hierarchy** - courses/ contains all course materials
-- ✅ **DataCamp integration** - Dedicated folder for DataCamp practice
-- ✅ **Separate project repos** - Major projects have their own repositories
-- ✅ **Professional documentation** - Every folder has README.md
 
 ---
 
-## 🎯 Current Focus
+## 🎯 The 37-Month AI-Powered Roadmap
 
-**Stage:** Data Analyst (1 of 5)  
-**Primary Goal:** Build foundations and secure Data Analyst position  
-**Study Commitment:** 25 hours/week systematic learning
+Systematic progression with AI integration at every stage. Income secured from Stage 1 onward.
 
-### **Active Learning:**
+### **Stage 1: AI-Powered Data Analyst** (Months 1-5) 🟢 ACTIVE
 
-**Coursera Programs:**
-- CS50: Introduction to Computer Science (Harvard)
-- Python for Everybody Specialization (University of Michigan)
+**Core Skills:** Python • SQL • Statistics • Visualization • Power BI/Tableau  
+**AI Skills:** ChatGPT workflows • Cursor AI • PandasAI • Prompt engineering
+
+**Learning Path:**
+- CS50 (Harvard) - Computer Science fundamentals
+- Python for Everybody (University of Michigan)
 - Google Data Analytics Professional Certificate
-- IBM Data Analyst Professional Certificate (11 courses)
-- Statistics with Python Specialization (University of Michigan)
+- IBM Data Analyst Professional Certificate
+- Statistics with Python (University of Michigan)
+- 🤖 Generative AI Data Analyst Specialization (Vanderbilt)
+- 🤖 ChatGPT Prompt Engineering (DeepLearning.AI)
 
-**DataCamp Reinforcement:**
-- Data Analyst Career Track
-- Python fundamentals and data manipulation
-- SQL query optimization
-- Data visualization best practices
+**Key Deliverables:**
+- 1099 ETL Pipeline (deployed, $15K savings)
+- Operations-Demand-Intelligence (AI-powered workflow analysis - second project to launch)
+- Attention-Flow Catalyst Phase 1A & 1B (flagship project - next to complete)
 
-**Active Projects:**
-- ✅ 1099 ETL Pipeline (production, deployed)
-- 🚧 Attention-Flow Catalyst Phase 1A (backtest engine development)
-- 📅 OnBase Workflow Intelligence (next major project)
+**Outcome:** AI-Powered Data Analyst position
 
-### **Stage 1 Objectives:**
+---
 
-**Technical Milestones:**
-- Complete 5 professional certifications
-- Build 4+ portfolio projects with business impact
-- Master Python, SQL, and data visualization
-- Develop production-quality coding practices
+### **Stage 2: AI-Powered Data Engineer** (Months 6-15) 📅 Planned
 
-**Career Milestones:**
-- Build comprehensive portfolio showcasing capabilities
-- Optimize LinkedIn and GitHub presence
-- Secure Data Analyst position in business operations or finance sector
-- Demonstrate production experience and domain expertise
+**Core Skills:** AWS • Airflow • PySpark • PostgreSQL • Data warehousing  
+**AI Skills:** dbt • LangChain basics • AI-enhanced pipelines
+
+**Key Deliverable:** Attention-Flow Catalyst v4.0 — Cloud-scale with AI monitoring
+
+---
+
+### **Stages 3-5** 📅 Planned
+
+- **Stage 3 (Months 16-29):** ML Engineer - scikit-learn, TensorFlow, PyTorch, MLOps
+- **Stage 4 (Months 30-34):** LLM Specialist - RAG, Vector DBs, Multi-agent systems
+- **Stage 5 (Months 35-37):** Senior LLM Engineer - Production AI architecture
+
+**Final Deliverable:** AI Trading Assistant with natural language interface and multi-agent orchestration. Revenue potential: $2-50K/month.
+
+**📋 [View Interactive Roadmap →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
+
+---
+
+## 🤖 AI Tools & Workflows Integration
+
+### **Current Stack (Stage 1)**
+
+**Development:**
+- **Cursor AI IDE** - Primary editor with AI pair programming (Composer mode)
+- **VS Code + Codeium** - Secondary environment with code completion
+
+**Analysis:**
+- **ChatGPT Plus** - Advanced Data Analysis, code generation, debugging
+- **PandasAI** - Natural language data querying for dashboard integration
+
+**Learning:**
+- Vanderbilt GenAI Specialization (CLUE/TRUST/CAPTURE frameworks)
+- DeepLearning.AI Prompt Engineering (API integration, production patterns)
+
+### **Integration Principles**
+
+**Transparency:** Document AI assistance in commits and comments  
+**Validation:** Always test AI-generated code  
+**Production:** Implement guardrails (read-only, cost controls, disclaimers)  
+**Progressive:** Expand AI capabilities systematically across stages
+
+### **Evolution Path**
+
+| Stage | AI Tools & Frameworks |
+|-------|----------------------|
+| **2** | dbt + LangChain + AI-enhanced Airflow |
+| **3** | AutoML + AI feature engineering |
+| **4** | LangGraph + CrewAI + MCP + Vector DBs + RAG |
+| **5** | Production multi-agent systems + AI monitoring |
 
 ---
 
 ## 💻 Development Environment
 
-### **Tech Stack (Stage 1):**
-```
-Languages:     Python 3.11+, SQL
-Data Analysis: pandas, NumPy, Matplotlib, Seaborn, Plotly
-Databases:     SQLite, PostgreSQL (learning)
-Tools:         VS Code, Git/GitHub, Jupyter, Excel (advanced)
-APIs & Web:    REST APIs, JSON/XML, BeautifulSoup, edgartools, yfinance
-Platforms:     Coursera, DataCamp, Kaggle, HackerRank
-```
+**Languages:** Python 3.11+, SQL  
+**Data:** pandas, NumPy, Matplotlib, Seaborn, Plotly  
+**Databases:** SQLite, DuckDB, PostgreSQL  
+**AI Tools:** Cursor AI, ChatGPT Plus, Codeium, PandasAI  
+**Platforms:** Coursera, DataCamp, DeepLearning.AI
 
-### **Setup:**
-```bash
-# Clone repository
-git clone https://github.com/manuel-reyes-ml/learning_journey.git
-cd learning_journey
-
-# See detailed setup guide
-open getting-started/SETUP_GUIDE.md
-
-# Verify environment
-python getting-started/environment-verification.py
-```
-
-**→ [Complete Setup Guide](./getting-started/SETUP_GUIDE.md)**
-
----
-
-## 👨‍💻 Enhancement Philosophy
-
-### **Beyond Basic Completion:**
-
-Every exercise is enhanced with additional functionality, error handling, testing, and real-world application.
-
-**Standard Approach:**
-```python
-# Calculate average
-numbers = [1, 2, 3, 4, 5]
-average = sum(numbers) / len(numbers)
-print(f"Average: {average}")
-```
-
-**My Enhanced Approach:**
-```python
-def calculate_statistics(data, include_outliers=True):
-    """
-    Calculate comprehensive statistics with multiple methods.
-    
-    Args:
-        data: List of numeric values
-        include_outliers: Whether to include outlier analysis
-    
-    Returns:
-        dict: Statistics including mean, median, mode, std dev
-    """
-    import statistics
-    from collections import Counter
-    
-    if not data:
-        raise ValueError("Cannot calculate statistics on empty dataset")
-    
-    stats = {
-        'mean': statistics.mean(data),
-        'median': statistics.median(data),
-        'mode': statistics.mode(data) if len(Counter(data)) < len(data) else None,
-        'std_dev': statistics.stdev(data) if len(data) > 1 else 0,
-        'range': (min(data), max(data))
-    }
-    
-    if include_outliers:
-        q1 = statistics.quantiles(data, n=4)[0]
-        q3 = statistics.quantiles(data, n=4)[2]
-        iqr = q3 - q1
-        stats['outliers'] = [x for x in data if x < (q1 - 1.5*iqr) or x > (q3 + 1.5*iqr)]
-    
-    return stats
-
-# Apply to real trading data
-stock_returns = [0.05, 0.03, -0.02, 0.04, 0.01, 0.15]  # 15% is potential outlier
-analysis = calculate_statistics(stock_returns)
-print(f"Return Analysis: {analysis}")
-```
-
-**Commit Convention:**
-```
-Enhance: implement comprehensive statistics calculator
-- Added mean, median, mode, std dev calculations
-- Outlier detection using IQR method  
-- Applied to stock return analysis
-- Comprehensive error handling
-- Unit tests for edge cases
-```
-
----
-
-## 🌟 Unique Value Proposition
-
-### **What Sets This Apart:**
-
-**Most Entry-Level Candidates:**
-```
-✓ Python, SQL basics
-✓ Completed online courses
-✓ Tutorial projects
-✗ No production experience
-✗ No domain expertise
-✗ No measurable business impact
-```
-
-**What I Bring:**
-```
-✓ Python, SQL proficiency
-✓ Multiple professional certifications (in progress)
-✓ Enhanced tutorial projects
-✓ Production ETL system ($15K annual savings)
-✓ Flagship trading project with statistical rigor
-✓ 10+ years data experience across industries
-✓ 8 years finance + 6 years trading expertise
-✓ Measurable business impact (95% efficiency gain)
-✓ Clear trajectory to Senior LLM Engineer
-✓ Public code demonstrating capability
-```
-
-### **The Career Narrative:**
-
-> "I'm not just another data analyst who learned Python from tutorials. I bring:
-> - Production ETL system already deployed and saving real money
-> - Flagship trading project using real SEC data and statistical backtesting
-> - 10+ years working with data across manufacturing, finance, and trading
-> - Deep understanding of financial markets and quantitative analysis
-> - Systematic plan to advance to LLM engineering
-> - Ability to bridge business needs with technical solutions
-> 
-> The code is public. The impact is measurable. The trajectory is clear."
-
----
-
-## 📈 Trading Integration
-
-Every stage builds components for a complete AI Trading Assistant:
-
-| Stage | Project Version | Technologies |
-|-------|-----------------|--------------|
-| **1. Data Analyst** | Attention-Flow Catalyst v2-3 | Python, pandas, SQLite, edgartools, yfinance |
-| **2. Data Engineer** | Attention-Flow Catalyst v4 | AWS, PostgreSQL, Airflow, streaming |
-| **3. ML Engineer** | Attention-Flow Catalyst v5 | scikit-learn, XGBoost, LSTM, backtesting |
-| **4. LLM Specialist** | Attention-Flow Catalyst v6 | LangChain, RAG, GPT-4, agents |
-| **5. Senior Engineer** | Attention-Flow Catalyst v7 | MLOps, monitoring, monetization |
-
-**Final System (Month 37):**
-- Real-time market data processing at scale
-- ML-powered signal generation with comprehensive backtesting
-- LLM-based natural language market analysis
-- Multi-agent orchestration for strategy execution
-- Production deployment with monitoring and alerts
-- Revenue potential: $2-50K/month
-
----
-
-## 📊 Study Commitment
-
-### **Weekly Schedule:**
-- **Monday-Friday:** 4:30-6 AM + 8-10 PM (3.5 hrs/day)
-- **Saturday:** 5-8:30 AM + 8-10 PM (5.5 hrs)
-- **Sunday:** 7:30-9:30 PM (2 hrs)
-- **Total:** 25 hours/week (sustainable for 37 months)
-- **Bonus:** 20 min/day mobile practice (Sololearn)
-
-### **Study Routine:**
-- **Morning (4:30-6 AM):** Video lectures, reading, theoretical concepts
-- **Evening (8-10 PM):** Coding practice, projects, hands-on work
-- **Saturday:** Deep work on complex projects and portfolio
-- **Sunday:** Weekly review, planning, LinkedIn engagement
+**Setup:** See [Complete Setup Guide](./getting-started/SETUP_GUIDE.md)
 
 ---
 
 ## 💡 Learning Philosophy
 
-### **Why Building in Public:**
+### **Core Principles**
 
-**Transparency:** Real learning is messy - showing the actual process, not just polished results
+**AI-Enhanced Practice:** Daily coding with AI pair programming, but always understanding and validating outputs
 
-**Accountability:** Public commits create public commitment - progress is visible and verifiable
+**Production-First:** Every project built to production standards with proper error handling, testing, and documentation
 
-**Community:** Others learn from my journey; I learn from feedback and collaboration
+**Transparent Integration:** Document when/how AI assists, show reasoning not just outputs
 
-**Portfolio:** This repository itself demonstrates coding ability, consistency, and work ethic
+**Enhancement Always:** Never just complete exercises—optimize, expand, and apply to real-world scenarios
 
-**Future Platform:** Foundation for blog posts, tutorials, courses, and thought leadership (Stage 5)
+**Domain Application:** Every skill applied to trading/finance domain for authentic learning
 
-### **Core Principles:**
+**Systematic Progression:** Clear 37-month path with measurable milestones
 
-1. **Practice > Theory** - Daily coding practice, minimum 20 minutes
-2. **Enhancement Always** - Never just "complete" exercises, always improve them
-3. **Document Thinking** - Commit messages explain reasoning, not just changes
-4. **Real-World Focus** - Apply every skill to trading/finance domain
-5. **Quality > Quantity** - Deep understanding beats surface-level completion
-6. **Sustainable Pace** - Marathon approach: 25 hrs/week for 37 months
-7. **Production Mindset** - Write code as if it's going to production (it might!)
+### **Study Commitment**
+
+25 hours/week structured as:
+- **Mornings (4:30-6 AM):** Theory, lectures, reading
+- **Evenings (8-10 PM):** Hands-on coding with AI tools, projects
+- **Weekends:** Deep work on complex projects and integration
+
+Sustainable pace designed for 37-month journey while working full-time.
+
+---
+
+## 📊 Current Progress
+
+**Active Stage:** 1 of 5 (AI-Powered Data Analyst)  
+**Projects:** 1 deployed (production), 1 launching (Operations-Demand-Intelligence), 1 next (Attention-Flow Catalyst)  
+**Certifications:** 7 in progress (including 2 AI-focused)  
+**GitHub Streak:** 64 days, 500+ commits  
+**Study Hours:** 25/week consistent
+
+**Next Milestones:**
+- Launch Operations-Demand-Intelligence (AI-powered workflow analysis)
+- Complete Attention-Flow Catalyst Phase 1A & 1B (flagship project)
+- Finish 5 core certifications
+- Secure AI-Powered Data Analyst role
 
 ---
 
@@ -592,102 +330,65 @@ Every stage builds components for a complete AI Trading Assistant:
 - **Email:** manuelreyesv410@gmail.com
 
 **Portfolio:**
-- **Projects:** [Data Portfolio Repository](https://github.com/manuel-reyes-ml/data-portfolio)
-- **Production Code:** [1099 ETL Pipeline](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline)
-- **Flagship Project:** [Attention-Flow Catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst)
-- **Roadmap:** [37-Month Interactive Plan](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)
+- [Data Portfolio Repository](https://github.com/manuel-reyes-ml/data-portfolio)
+- [1099 ETL Pipeline](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline)
+- [Attention-Flow Catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst)
 
 **Open To:**
-- 💼 Data Analyst opportunities (remote, business operations or finance/trading sectors)
+- 💼 AI-Powered Data Analyst opportunities (remote preferred)
 - 🤝 Networking with data professionals and traders
-- 📊 Collaborations on trading + tech projects
-- 🎓 Learning accountability partnerships
+- 🤖 AI tool and workflow discussions
 - 💡 Code reviews and technical discussions
-- 🎤 Mentorship (giving or receiving)
+- 🎓 Mentorship (giving or receiving)
 
 ---
 
-## 🏆 Success Metrics
-
-**Technical Progress:**
-- Certifications completed (target: 5 in Stage 1)
-- Portfolio projects built (target: 4+ in Stage 1)
-- GitHub contribution consistency
-- Skills mastered per stage
-
-**Career Milestones:**
-- Data Analyst position secured (Stage 1 goal)
-- Salary progression across stages
-- Production systems deployed
-- Business value delivered
-
-**Community Engagement:**
-- LinkedIn professional network growth
-- GitHub visibility and contributions
-- Knowledge sharing and collaboration
-- Thought leadership development
-
----
-
-## 🤝 Engagement & Feedback
+## 🤝 How to Engage
 
 **Welcome:**
-- ✅ Code quality feedback and best practice suggestions
-- ✅ Trading strategy discussions and market analysis
-- ✅ Resource recommendations and learning tips
-- ✅ Career advice and networking opportunities
-- ✅ Collaboration on projects
+- Code quality feedback and best practices
+- AI integration approaches and tool recommendations
+- Trading strategy discussions
+- Career advice and networking
+- Collaboration on projects
 
-**Not Accepting:**
-- ❌ Direct exercise solutions (learning by doing!)
-- ❌ Answers without detailed explanations
-- ❌ Copy-paste code suggestions
-
-**How to Engage:**
+**How:**
 - Open GitHub issues for technical discussions
-- Comment on specific commits with feedback
 - Connect on LinkedIn for professional networking
-- Share your own learning journey
+- Comment on commits with feedback
+- Share your own AI-powered learning journey
 
 ---
 
-## 💭 The Long-Term Vision
+## 💭 The Vision
 
-### **This Repository Represents:**
-- 37-month systematic career transformation (5,000+ hours)
-- Journey from financial services to senior LLM engineering
-- Foundation for six-figure tech career with remote flexibility
-- Combination of passion (trading/finance) with profession (AI engineering)
+This repository documents a complete career transformation: from financial services professional to Senior LLM Engineer, with AI integration from Day 1.
+
+**What this represents:**
+- 37-month systematic journey (5,000+ hours)
+- Production systems with measurable business impact
+- AI-powered approach positioning ahead of traditional candidates
+- Foundation for six-figure remote tech career
 - Path to building revenue-generating AI systems
-- Platform for teaching and mentoring others
+- Demonstration that structured learning + AI integration enables career reinvention
 
-### **Ultimate Goals:**
-- **Technical:** Production AI Trading Assistant generating value
-- **Financial:** $180-250K+ salary potential by Month 37
-- **Personal:** Location-independent remote career
-- **Community:** Help others make similar transformations
-- **Impact:** Demonstrate that structured learning enables career reinvention
+**Ultimate goal:** Production AI Trading Assistant combining deep finance expertise with cutting-edge AI capabilities.
 
 ---
 
 ## ⭐ Follow the Journey
 
-**Real-time documentation of a complete career transformation - from Day 1 to Senior Engineer**
+Real-time documentation of an AI-powered career transformation from Day 1 to Senior LLM Engineer.
 
 - ⭐ **Star this repository** to follow the journey
-- 🔔 **Watch for updates** on progress and new projects
-- 🔗 **Connect on LinkedIn** for professional discussions
-- 💬 **Open issues** to engage and collaborate
+- 🔔 **Watch** for updates on AI integration and project progress
+- 🔗 **Connect** for professional discussions and collaboration
 
 ---
 
-### 💡 *"37 months. 25 hours/week. 5 career stages. 1 clear goal."*
+### 💡 *"37 months. AI-powered from Day 1. Production code. Clear trajectory."*
 
-**Building in public. Learning systematically. Deploying production code. 🚀**
-
----
-
-**Current Stage:** Data Analyst (1 of 5) | Building Foundations  
+**Current Stage:** AI-Powered Data Analyst (1 of 5) | Building AI-Enhanced Foundations  
 **Status:** 🟢 Active • Learning in Public • Deploying Production Systems
 
 **[→ View Live Progress & Interactive Roadmap](https://manuel-reyes-ml.github.io/learning_journey/)**
