@@ -89,11 +89,13 @@ Foundation: AWS, Airflow, PySpark, PostgreSQL
 
 ### **[1099 Reconciliation ETL Pipeline](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline)** ✅ Live Production
 
-Automated Python ETL pipeline for retirement plan distribution reconciliation at Daybright Financial.
+Automated Python ETL pipeline reconciling retirement plan distribution data between Relius and Matrix financial systems at Daybright Financial.
+
+**Business Challenge:** Manual reconciliation took 4-6 hours weekly, was error-prone, and blocked critical 1099-R tax reporting deadlines.
 
 **Impact:** 95% time reduction (4-6 hours → 15 min/week) | $15,000+ annual savings | 10x scalability | Zero errors
 
-**Tech:** Python • pandas • openpyxl • matplotlib • pytest • GitHub Actions CI
+**Tech:** Python • pandas • openpyxl • Excel • Matplotlib • pytest • GitHub Actions CI • faker (synthetic data)
 
 ---
 
@@ -123,8 +125,6 @@ Operations teams lack visibility into workflow demand patterns, leading to react
 
 **Tech:** Python • pandas • Streamlit • **PandasAI** • Plotly • GitHub Actions CI • data anonymization
 
-**Status:** Active development - launching as Stage 1 second major project
-
 ---
 
 ### **[Attention-Flow Catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst)** 📅 Next Project to Complete
@@ -146,6 +146,10 @@ Operations teams lack visibility into workflow demand patterns, leading to react
 **Phase 1B (Then Build):** Streamlit dashboard + **PandasAI chat interface** + **AI-generated commentary** + Natural language queries
 
 **What makes it defensible:** Walk-forward validation • Survivorship bias controls • Modern stack (DuckDB, Parquet) • Progressive architecture through all career stages
+
+**Current Tech:** Python • DuckDB • Parquet • httpx async • edgartools • yfinance • Wikipedia API • Plotly
+
+**Future Evolution:** Stage 2 (Cloud/Airflow) → Stage 3 (ML models) → Stage 4 (AI Assistant/RAG) → Stage 5 (Production platform)
 
 ---
 
@@ -345,9 +349,9 @@ python getting_started/environment-verification.py
 
 **Systematic Progression:** Clear 37-month path with measurable milestones
 
-#### 👨‍💻 Enhancement Philosophy
+### 👨‍💻 Enhancement Philosophy
 
-##### **Beyond Basic Completion:**
+#### **Beyond Basic Completion:**
 
 Every exercise is enhanced with additional functionality, error handling, testing, and real-world application. Now with AI assistance documented transparently.
 
@@ -469,7 +473,7 @@ Sustainable pace designed for 37-month journey while working full-time.
 
 ## 💭 The Vision
 
-This repository documents a complete career transformation: from financial services professional to Senior LLM Engineer, with AI integration from Day 1.
+This repository documents a complete career transformation: from business ops professional to Senior LLM Engineer, with AI integration from Day 1.
 
 **What this represents:**
 - 37-month systematic journey (5,000+ hours)
