@@ -4,7 +4,7 @@
 **Course:** Harvard CS50x Introduction to Computer Science  
 **Developer:** Manuel Reyes | [LinkedIn](https://linkedin.com/in/mr410) | [Portfolio](https://manuel-reyes-ml.github.io/learning_journey/)
 
-[![Play on Scratch](https://img.shields.io/badge/Play-Scratch-orange?logo=scratch)](https://scratch.mit.edu/projects/YOUR_PROJECT_ID/)
+[![Play on Scratch](https://img.shields.io/badge/Play-Scratch-orange?logo=scratch)](https://scratch.mit.edu/projects/1273758883/)
 [![View Code](https://img.shields.io/badge/View-GitHub-blue?logo=github)](https://github.com/manuel-reyes-ml/learning_journey/tree/main/cs50_harvard/scratch)
 
 ---
@@ -13,7 +13,7 @@
 
 An **infinite runner platformer** where instead of jumping, you flip gravity to run on the ceiling. Built to demonstrate fundamental computer science concepts including physics simulation, coordinate geometry, and memory management.
 
-**🎮 [Play the game →](https://scratch.mit.edu/projects/YOUR_ID/)**
+**🎮 [Play the game →](https://scratch.mit.edu/projects/1273758883/)**
 
 ### Key Features
 
@@ -27,7 +27,7 @@ An **infinite runner platformer** where instead of jumping, you flip gravity to 
 ## 🚀 Quick Start
 
 ### Play Online
-1. Visit [scratch.mit.edu/projects/YOUR_ID](https://scratch.mit.edu/projects/YOUR_ID/)
+1. Visit [scratch.mit.edu/projects/1273758883](https://scratch.mit.edu/projects/1273758883/)
 2. Click the green flag to start
 3. Press **SPACE** to flip gravity
 4. Dodge the lightning bolts!
