@@ -1,95 +1,177 @@
 """
-Mario Script - Use Height value from user to build a pyramid.
+Mario Pyramid Builder - Generate ASCII pyramids of specified height.
 
-Usage:
+A command-line tool that creates double-sided pyramids using hash symbols,
+inspired by the classic Super Mario Bros pyramid structures.
+
+Usage
+-----
     python mario.py [HEIGHT]
     python mario.py --verbose
+    python mario.py  # Interactive mode
+
+Examples
+--------
+    $ python mario.py 4
+       #  #
+      ##  ##
+     ###  ###
+    ####  ####
+
+    $ python mario.py --verbose 3
+    2025-02-05 10:30:15 : DEBUG : Verbose mode enabled
+    2025-02-05 10:30:15 : INFO : Building pyramid of height: 3
+      #  #
+     ##  ##
+    ###  ###
 """
 
 from __future__ import annotations
-from typing import Optional
-
 import argparse
 import logging
 import sys
 
-# Set up logging
+# =============================================================================
+# Module Configuration
+# =============================================================================
+
+# Module level constants
+MIN_HEIGHT: int = 1
+MAX_HEIGHT: int = 8
+
+# Exit codes (Unix standard)
+EXIT_SUCCESS: int = 0
+EXIT_ERROR: int = 1
+EXIT_KEYBOARD_INTERRUP: int = 130 # Standard SIGINT exit code
+
+# Logging configuration
 logging.basicConfig(
     level=logging.INFO, # Only save messages with level INFO or higher
     format='%(asctime)s : %(levelname)s : %(message)s', # Format the log message
 )
 logger = logging.getLogger(__name__)
 
-def input_height_validation(height: Optional[str] = None) -> int:
+
+# =============================================================================
+# Core Functions
+# =============================================================================
+
+def input_height_validation(height: str | None = None) -> int:
     """
-    Get the height of the pyramid from the user.
-    
-    Args:
-        height (str): The height of the pyramid.
-    Returns:
-        The height (int) of the pyramid.
-    Raises:
-        ValueError: If the input is not a number or is not between 1 and 8.
+     Validate and return the pyramid height from user input.
+
+    Prompts the user interactively if height is not provided. Validates
+    that the input is a positive integer within the acceptable range.
+
+    Parameters
+    ----------
+    height : str or None, optional
+        The height as a string to validate. If None, prompts the user
+        for input interactively.
+
+    Returns
+    -------
+    int
+        Validated height between MIN_HEIGHT and MAX_HEIGHT inclusive.
+
+    Raises
+    ------
+    ValueError
+        If height cannot be converted to an integer or falls outside
+        the valid range [MIN_HEIGHT, MAX_HEIGHT].
+
+    Examples
+    --------
+    >>> validate_height("5")
+    5
+    >>> validate_height("0")
+    Traceback (most recent call last):
+    ...
+    ValueError: Height 0 outside valid range [1-8]
     """
     if not height:
         height = input("Please enter Height: ").strip()
     
     try: 
-        height = int(height)
-    except TypeError as e:
-        raise f"Invalid input '{height}': {e}"
+        height_int = int(height)
+    except ValueError as e: # Catches int("abc"), int("3.5")
+        raise ValueError(f"'{height}' is not a valid integer") from e # To trace back to original error
     else:
-        if height < 1 or height > 8:
-            raise ValueError(f"Invalid input '{height}': Height must be between 1 and 8")
-        return height
+        if not MIN_HEIGHT <= height_int <= MAX_HEIGHT: # Python´s chain comparison is more readable
+            raise ValueError(
+                f"Height {height_int} outside valid range [{MIN_HEIGHT}-{MAX_HEIGHT}]"
+            )
+        
+        return height_int
     
 
-def print_pyramid(height: int) -> None:
+def print_pyramid(height: int) -> str:
     """
-    Print the pyramid of hashes based on the height.
-    
-    Args:
-        height (int): The height of the pyramid.
-    Returns:
-        None
-    Raises:
-        None
-    """
-    for i in range(height):
-        
-        for j in range(height - i - 1):
-            print(" ", end="")
-        
-        for k in range(i + 1):
-            print("#", end="")
-        
-        print("  ", end="")
-        
-        for l in range(i + 1):
-            print("#", end="")
-            
-        print("\n", end="")
+    Build an ASCII pyramid string of the specified height.
 
+    Creates a double-sided pyramid where each row contains hash symbols
+    separated by two spaces, with leading spaces for right-alignment.
+
+    Parameters
+    ----------
+    height : int
+        The number of rows in the pyramid. Must be a positive integer.
+
+    Returns
+    -------
+    str
+        The complete pyramid as a multi-line string.
+
+    Examples
+    --------
+    >>> print(build_pyramid(2))
+     #  #
+    ##  ##
+    >>> print(build_pyramid(3))
+      #  #
+     ##  ##
+    ###  ###
+    """
+    lines = []
+    
+    for row in range(height):
+        spaces = " " * (height - row - 1)
+        blocks = "#" * (row + 1)
+        lines.append(f"{spaces}{blocks}  {blocks}")
+        
+    return "\n".join(lines) 
+    # it is testable: 'assert build_pyramid(2) == " #  #\n##  ##"
+
+
+# =============================================================================
+# CLI Entry Point
+# =============================================================================
 
 def main(argv: list[str] | None = None) -> int:
     """
-    Main entry point for the build pyramid script.
-    
-    Args:
-        argv (list[str] | None, optional): Command line arguments. Defaults to None.
-    Returns:
-        int: Return code (0 on success, 1 on failure, 130 on keyboard interrupt).
-    Raises:
-        TypeError: If trying to cover str to int.
-        ValueError: If digit is not between 1 and 8.
+      Main entry point for the pyramid builder CLI.
+
+    Parses command-line arguments, validates input, and outputs
+    the generated pyramid to stdout.
+
+    Parameters
+    ----------
+    argv : list of str or None, optional
+        Command-line arguments. If None, uses sys.argv.
+
+    Returns
+    -------
+    int
+        Exit code: 0 on success, 1 on validation error,
+        130 on keyboard interrupt.
     """
     parser = argparse.ArgumentParser(
-        description="Get block height from user and build pyramid"
+        description="Build an ASCII pyramid of specified height"
     )
     parser.add_argument(
         "height",
         nargs='?',
-        help="Enter height number between 1 and 8"
+        help=f"Enter height number between {MIN_HEIGHT} and {MAX_HEIGHT}"
     )
     parser.add_argument(
         "-v", "--verbose",
@@ -101,26 +183,27 @@ def main(argv: list[str] | None = None) -> int:
     
     if args.verbose:
         logger.setLevel(logging.DEBUG)
-    
-    logger.info(f"Building pyramid of height: {args.height}")
+        logger.debug("Verbose mode enabled")
     
     try:
         height = input_height_validation(args.height)
-    except TypeError as e:
-        logger.error(f"Invalid input. {args.height} is not a numerical value: {e}")
-        return 1
-    except ValueError as e:
-        logger.error(f"Invalid input '{args.height}'. Value must be between 1 and 8: {e}")
-        return 1
-    except Exception as e:
-        logger.error(f"Unexpected error: {e}")
-        return 1
-    except KeyboardInterrupt:
+        logger.info(f"Building pyramid of height: {height}") # Log AFTER validation
+    
+    except KeyboardInterrupt: # Must specific first
         logger.info("Interrupted by User. Exiting")
-        return 130
+        return EXIT_KEYBOARD_INTERRUP
+    
+    except ValueError as e:
+        logger.error(f"Height validation failed: {e}") # Combines WHERE + WHAT
+        return EXIT_ERROR
+    
+    except Exception as e: # General catch-all last
+        logger.exception(f"Unexpected error: {e}") # logger.exception logs the traceback
+        return EXIT_ERROR
+    
     else:
-        print_pyramid(height)
-        return 0
+        print(print_pyramid(height))
+        return EXIT_SUCCESS
     
 if __name__ == "__main__":
     sys.exit(main())
