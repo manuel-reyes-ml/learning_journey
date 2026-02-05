@@ -170,12 +170,12 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "height",
-        nargs='?',
+        nargs='?', # Accept Zero or one value (optional)
         help=f"Enter height number between {MIN_HEIGHT} and {MAX_HEIGHT}"
     )
     parser.add_argument(
         "-v", "--verbose",
-        action="store_true",
+        action="store_true", # Store True if flag present ('-v', '--verbose')
         help="Enable verbose (debug) output"
     )
     
