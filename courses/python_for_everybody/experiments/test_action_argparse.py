@@ -2,10 +2,12 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-v", "--verbose", action="store_true")
+parser.add_argument("--file", action= "append")
 args = parser.parse_args()
 
 print(f"verbose = {args.verbose}")
 print(f"type = {type(args.verbose)}")
+print(f"files = {args.file}")
 
 # =============================================================================
 # ARGPARSE ACTION QUICK REFERENCE

@@ -2,10 +2,12 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("height", nargs="?") # Accept Zero or one value (optional)
+parser.add_argument("--files", nargs="*")
 args = parser.parse_args()
 
 print(f"height = {args.height}")
 print(f"type = {type(args.height)}")
+print(f"files = {args.files}")
 
 # =============================================================================
 # ARGPARSE NARGS QUICK REFERENCE
