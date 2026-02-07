@@ -1,4 +1,19 @@
 """
+Web Crawler for Link Following.
+
+This script connects to a starting URL, parses the HTML to find a specific
+link at a given position, and follows that link. It repeats this process
+for a specified count to find the "secret" URL at the end of the chain.
+
+Usage:
+    python script.py -c <count> -pos <position> [url]
+
+Example:
+    python script.py -c 7 -pos 18 http://py4e-data.dr-chuck.net/known_by_Fikret.html
+
+Dependencies:
+    - requests
+    - beautifulsoup4
 """
 
 from __future__ import annotations
@@ -7,6 +22,7 @@ import argparse
 from urllib3.util import Retry
 import logging
 import sys
+from typing import Tuple
 
 try:
     import requests
@@ -22,7 +38,7 @@ MIN_NUMBER: int = 1
 
 EXIT_SUCCESS: int = 0
 EXIT_ERROR: int = 1
-EXIT_KEYBOARD_INTERRUP: int = 130
+EXIT_KEYBOARD_INTERRUPT: int = 130
 
 logging.basicConfig(
     level=logging.INFO,
@@ -30,7 +46,19 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
 def get_smart_session():
+    """
+    Creates a requests Session with automated retry logic.
+
+    This session is configured to handle transient network errors (like 502, 
+    503, 504) by retrying the request up to 3 times with a backoff factor.
+    
+    Returns
+    -------
+    requests.Session
+        A configured session object ready for making HTTP requests.
+    """
     # Create this once to keep the "pipe" to the server open
     #   makes script significantly faster
     session = requests.Session() 
@@ -39,9 +67,28 @@ def get_smart_session():
     retries = Retry(total=3, backoff_factor=1, status_forcelist=[502, 503, 504])
     session.mount('https://', HTTPAdapter(max_retries=retries))
     return session
+           
                             
 def _fetch_html(url: str, session: Session) -> str:  # in a function signature do not use constructor requests.Session()
     """
+    Fetches the HTML content from the specified URL.
+
+    Parameters
+    ----------
+    url : str
+        The target URL to fetch.
+    session : requests.Session
+        The active session object to use for the request.
+
+    Returns
+    -------
+    str
+        The decoded HTML content of the page.
+
+    Raises
+    ------
+    requests.RequestException
+        If the HTTP request fails, times out, or returns a 4xx/5xx status code.
     """
     try:
         response = session.get(url, timeout=10)  # Faster call for each iteration
@@ -52,10 +99,38 @@ def _fetch_html(url: str, session: Session) -> str:  # in a function signature d
         logger.debug(f"Failed to fecth URL '{url}': {e}")
         raise
 
-def input_validation(url: str, count: int, pos: int, session: Session) -> tuple(str, int, int):
+
+def input_validation(url: str, count: int, pos: int, session: Session) -> Tuple[str, int, int]: # TODO: difference between tuple() and Tuple[]
     """
+    Validates input arguments and checks initial connectivity.
+
+    This function ensures the numeric arguments are within valid ranges and
+    verifies that the starting URL is reachable before the main loop begins.
+
+    Parameters
+    ----------
+    url : str
+        The starting URL.
+    count : int
+        Number of times to repeat the crawl.
+    pos : int
+        The position of the link to follow (1-based index).
+    session : requests.Session
+        The active session object.
+
+    Returns
+    -------
+    tuple[str, int, int]
+        A tuple containing the validated (url, count, pos).
+
+    Raises
+    ------
+    ValueError
+        If count or pos are less than the minimum allowed value.
+    requests.RequestException
+        If the initial URL cannot be fetched.
     """
-    _fetch_html(url, session)  # confirm if argument URL works to start the program
+    _fetch_html(url, session)  # cTest fetch to confirm URL is valid/reachable
     
     if count < MIN_NUMBER or pos < MIN_NUMBER:
         raise ValueError(
@@ -66,12 +141,37 @@ def input_validation(url: str, count: int, pos: int, session: Session) -> tuple(
 
 def crawl_links(url: str, count: int, pos: int, session: Session) -> str:
     """
+    Follows a chain of links for a specified number of iterations.
+
+    For each iteration, parses the HTML, finds the link at the specified
+    position, and updates the URL for the next iteration.
+
+    Parameters
+    ----------
+    url : str
+        The starting URL.
+    count : int
+        The number of links to follow.
+    pos : int
+        The position of the link to select on each page (1-based).
+    session : requests.Session
+        The persistent HTTP session.
+
+    Returns
+    -------
+    str
+        The URL of the final page reached after the loop completes.
+
+    Raises
+    ------
+    ValueError
+        If no <a> tags are found or if the requested position is out of range.
     """
-    for _ in range(count): # Using '_' for variables that we don't use
+    for i in range(count):
         # session -> Reuse the same underlying connection (TCP handshake and SSL negotiation) 
         # for every URL in your list.
         html = _fetch_html(url, session)  # fetch_html() returns the HTML content as a string
-        logger.debug(f"Fetched URL {url}")
+        logger.debug(f"Iteration {i+1}: Fetched URL {url}")
         
         soup = BeautifulSoup(html, 'html.parser')
         
@@ -82,18 +182,33 @@ def crawl_links(url: str, count: int, pos: int, session: Session) -> str:
         if pos > len(tags):
            raise ValueError(f"Requested position {pos} but only {len(tags)} links found at URL: {url}")
 
+        # Convert 1-based position to 0-based index
         tag = tags[pos - 1]
-        last_url = tag.get('href').strip()
+        last_url = tag.get('href', '').strip() # TODO: why to default to ''
         url = last_url
         
     return last_url
                      
 
-def main(argv: str | None = None) -> int:
+def main(argv: list[str] | None = None) -> int:
     """
+    Main entry point for the script.
+
+    Parses command line arguments, sets up logging, and executes the
+    crawling logic within a safe context.
+
+    Parameters
+    ----------
+    argv : list[str] | None, optional
+        Command line arguments. If None, uses sys.argv.
+
+    Returns
+    -------
+    int
+        Exit status code (0 for success, non-zero for errors).
     """
     parser = argparse.ArgumentParser(
-        description="Extract URLs from <a> tags in HTML followint a Count and Position"
+        description="Extract URLs from <a> tags in HTML following a Count and Position"
     )
     parser.add_argument(
         "url",  # Positional arguments are 'required' by default
@@ -111,7 +226,7 @@ def main(argv: str | None = None) -> int:
         "-pos", "--position", # '-x, --x' flags act like an 'optional choice', if empty argparse assignes  None
         type=int,
         required=True,  # Force for the user to provide the argument
-        help=f"Enter position = What URL to fetch inside HTML. Position should be > {MIN_NUMBER}"
+        help=f"Enter position = what URL to fetch inside HTML. Position should be > {MIN_NUMBER}"
     )
     parser.add_argument(
         "-v", "--verbose",
@@ -125,19 +240,20 @@ def main(argv: str | None = None) -> int:
         logger.setLevel(logging.DEBUG)
         logger.debug("Verbose enabled")
     
+    # args.count/position are already integers due to type=int in add_argument
     url = args.url
-    count_str = args.count
-    pos_str = args.position    
+    count = args.count
+    pos = args.position    
 
     try:
         # 'with' block -> Context manager: it opens at the start and cleans up after itself when the script finishes
         with get_smart_session() as session:
-            url, count_int, pos_int = input_validation(url, count_str, pos_str, session)
-            last_url = crawl_links(url, count_int, pos_int, session)
+            url, count_v, pos_v = input_validation(url, count, pos, session)
+            last_url = crawl_links(url, count_v, pos_v, session)
         
     except KeyboardInterrupt:
         logger.info("Interrupet by User. Exiting")
-        return EXIT_KEYBOARD_INTERRUP
+        return EXIT_KEYBOARD_INTERRUPT
     
     except requests.RequestException as e:
         logger.error(f"Network error: {e}")
