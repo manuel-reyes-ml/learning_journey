@@ -1,28 +1,153 @@
-import urllib.request
-from bs4 import BeautifulSoup
-import ssl # Defaults to certificate verification and most secure protocol (now TLS)
+"""
+"""
 
-# Ignore SSL/TLS certificate error
-ctx = ssl.create_default_context()
-ctx.check_hostname = False
-ctx.verify_mode = ssl.CERT_NONE
+from __future__ import annotations
 
-url = input('Enter URL: ').strip()
-if len(url) < 1:
-    url = 'http://py4e-data.dr-chuck.net/known_by_Fikret.html'
+import argparse
+from ast import Import
+import logging
+import sys
 
-count = int(input("Enter count: ").strip())
-pos = int(input("Enter position: ").strip())
+try:
+    import requests
+    from requests import Session
+    from bs4 import BeautifulSoup
+except ImportError as e:
+    sys.exit(f"Error: Missing dependency. Please install via pip.\nDetails: {e}")
 
-for count in range(count+1):
-    html = urllib.request.urlopen(url, context=ctx).read()
-    soup = BeautifulSoup(html, 'html.parser')
-    print(f" Retreiving: {url}")
+
+DEFAULT_URL: str = "http://py4e-data.dr-chuck.net/known_by_Fikret.html"
+MIN_NUMBER: int = 1
+
+EXIT_SUCCESS: int = 0
+EXIT_ERROR: int = 1
+EXIT_KEYBOARD_INTERRUP: int = 130
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s : %(levelname)s : %(message)s',
+)
+logger = logging.getLogger(__name__)
+
+# Create this once to keep the "pipe" to the server open
+#   makes script significantly faster
+session = requests.Session() 
+                            
+def _fetch_html(url: str, session: Session) -> str:
+    """
+    """
+    try:
+        response = session.get(url, timeout=10)  # Faster call for each iteration
+        response.raise_for_status()  # Raise an exception for HTTP errors (404, 500, etc.)
+        return response.text  # Return the HTML content as a string (requests library automatically handles decoding)
     
-    # Retrieve all anchor tags
-    tags = soup('a')
-    for i, tag in enumerate(tags, 1):
-        if i == pos:
-            url = tag.get('href')
-            break
+    except requests.RequestException as e:
+        logger.debug(f"Failed to fecth URL '{url}': {e}")
+        raise
+
+def input_validation(url: str, count: int, pos: int) -> tuple(str, int, int):
+    """
+    """
+    _fetch_html(url, session)  # confirm if argument URL works to start the program
+    
+    if count < MIN_NUMBER or pos < MIN_NUMBER:
+        raise ValueError(
+            f"One of the values '{count}' or '{pos}' is less than 1. Can't process program"
+        )
+        
+    return url, count, pos
+
+def crawl_links(url: str, count: int, pos: int) -> str:
+    """
+    """
+    for _ in range(count): # Using '_' for variables that we don't use
+        # session -> Reuse the same underlying connection (TCP handshake and SSL negotiation) 
+        # for every URL in your list.
+        html = _fetch_html(url, session)  # fetch_html() returns the HTML content as a string
+        logger.debug(f"Fetched URL {url}")
+        
+        soup = BeautifulSoup(html, 'html.parser')
+        
+        tags = soup.find_all('a')
+        if not tags:
+            raise ValueError(f"No <a> tags found from URL: {url}")
+       
+        if pos > len(tags):
+           raise ValueError(f"Requested position {pos} but only {len(tags)} links found at URL: {url}")
+
+        tag = tags[pos - 1]
+        last_url = tag.get('href').strip()
+        url = last_url
+        
+    return last_url
+                     
+
+def main(argv: str | None = None) -> int:
+    """
+    """
+    parser = argparse.ArgumentParser(
+        description="Extract URLs from <a> tags in HTML followint a Count and Position"
+    )
+    parser.add_argument(
+        "url",  # Positional arguments are 'required' by default
+        nargs="?", # Zero or one argument - if zero 'defaul' kicks in
+        default=DEFAULT_URL,
+        help=f"Enter URL to start crawling from (default: {DEFAULT_URL})"
+    )
+    parser.add_argument(
+        "-c", "--count",
+        type=int,  # Converts the input string to an integer automatically
+        required=True,
+        help=f"Enter count = how many links to fetch. Count should be > {MIN_NUMBER}"
+    )
+    parser.add_argument(
+        "-pos", "--position", # '-x, --x' flags act like an 'optional choice', if empty argparse assignes  None
+        type=int,
+        required=True,  # Force for the user to provide the argument
+        help=f"Enter position = What URL to fetch inside HTML. Position should be > {MIN_NUMBER}"
+    )
+    parser.add_argument(
+        "-v", "--verbose",
+        action="store_true",
+        help="Enable verbose (debug) output"
+    )
+    
+    args = parser.parse_args(argv)
+    
+    if args.verbose:
+        logger.setLevel(logging.DEBUG)
+        logger.debug("Verbose enabled")
+    
+    url = args.url
+    count_str = args.count
+    pos_str = args.position    
+
+    try:
+        url, count_int, pos_int = input_validation(url, count_str, pos_str)
+        last_url = crawl_links(url, count_int, pos_int)
+        
+    except KeyboardInterrupt:
+        logger.info("Interrupet by User. Exiting")
+        return EXIT_KEYBOARD_INTERRUP
+    
+    except requests.RequestException as e:
+        logger.error(f"Network error: {e}")
+        return EXIT_ERROR
+    
+    except ValueError as e:
+        logger.error(f"Input failed: {e}")
+        return EXIT_ERROR
+    
+    except Exception as e:
+        logger.exception(f"Unexpected error: {e}")
+        return EXIT_ERROR
+
+    else:
+        session.close()
+        print(f"Last URL Retrieved: {last_url}\n")
+        return EXIT_SUCCESS
+    
+    
+if __name__ == "__main__":
+    sys.exit(main())
     
