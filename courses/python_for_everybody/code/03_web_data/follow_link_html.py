@@ -22,7 +22,6 @@ import argparse
 from urllib3.util import Retry
 import logging
 import sys
-from typing import Tuple
 
 try:
     import requests
@@ -100,7 +99,9 @@ def _fetch_html(url: str, session: Session) -> str:  # in a function signature d
         raise
 
 
-def input_validation(url: str, count: int, pos: int, session: Session) -> Tuple[str, int, int]: # TODO: difference between tuple() and Tuple[]
+# Use tuple[] for type definition (a tuple containing a string and integers)
+# tuple() Python thinks you are trying to call the function 'tuple' with two arguments
+def input_validation(url: str, count: int, pos: int, session: Session) -> tuple[str, int, int]:
     """
     Validates input arguments and checks initial connectivity.
 
@@ -138,6 +139,7 @@ def input_validation(url: str, count: int, pos: int, session: Session) -> Tuple[
         )
         
     return url, count, pos
+
 
 def crawl_links(url: str, count: int, pos: int, session: Session) -> str:
     """
