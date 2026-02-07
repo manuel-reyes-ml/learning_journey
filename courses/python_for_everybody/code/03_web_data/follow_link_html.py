@@ -4,12 +4,13 @@
 from __future__ import annotations
 
 import argparse
-from ast import Import
+from urllib3.util import Retry
 import logging
 import sys
 
 try:
     import requests
+    from requests.adapters import HTTPAdapter
     from requests import Session
     from bs4 import BeautifulSoup
 except ImportError as e:
@@ -29,11 +30,17 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-# Create this once to keep the "pipe" to the server open
-#   makes script significantly faster
-session = requests.Session() 
+def get_smart_session():
+    # Create this once to keep the "pipe" to the server open
+    #   makes script significantly faster
+    session = requests.Session() 
+    
+    # Configure retry logic: retry 3 times, backoff (wait) between attempts
+    retries = Retry(total=3, backoff_factor=1, status_forcelist=[502, 503, 504])
+    session.mount('https://', HTTPAdapter(max_retries=retries))
+    return session
                             
-def _fetch_html(url: str, session: Session) -> str:
+def _fetch_html(url: str, session: Session) -> str:  # in a function signature do not use constructor requests.Session()
     """
     """
     try:
@@ -45,7 +52,7 @@ def _fetch_html(url: str, session: Session) -> str:
         logger.debug(f"Failed to fecth URL '{url}': {e}")
         raise
 
-def input_validation(url: str, count: int, pos: int) -> tuple(str, int, int):
+def input_validation(url: str, count: int, pos: int, session: Session) -> tuple(str, int, int):
     """
     """
     _fetch_html(url, session)  # confirm if argument URL works to start the program
@@ -57,7 +64,7 @@ def input_validation(url: str, count: int, pos: int) -> tuple(str, int, int):
         
     return url, count, pos
 
-def crawl_links(url: str, count: int, pos: int) -> str:
+def crawl_links(url: str, count: int, pos: int, session: Session) -> str:
     """
     """
     for _ in range(count): # Using '_' for variables that we don't use
@@ -123,8 +130,10 @@ def main(argv: str | None = None) -> int:
     pos_str = args.position    
 
     try:
-        url, count_int, pos_int = input_validation(url, count_str, pos_str)
-        last_url = crawl_links(url, count_int, pos_int)
+        # 'with' block -> Context manager: it opens at the start and cleans up after itself when the script finishes
+        with get_smart_session() as session:
+            url, count_int, pos_int = input_validation(url, count_str, pos_str, session)
+            last_url = crawl_links(url, count_int, pos_int, session)
         
     except KeyboardInterrupt:
         logger.info("Interrupet by User. Exiting")
@@ -143,7 +152,6 @@ def main(argv: str | None = None) -> int:
         return EXIT_ERROR
 
     else:
-        session.close()
         print(f"Last URL Retrieved: {last_url}\n")
         return EXIT_SUCCESS
     
