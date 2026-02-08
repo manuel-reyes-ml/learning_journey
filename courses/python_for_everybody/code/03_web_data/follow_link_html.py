@@ -63,7 +63,14 @@ def get_smart_session():
     session = requests.Session() 
     
     # Configure retry logic: retry 3 times, backoff (wait) between attempts
+    # Uses exponential backoff. This means it waits longer after each failure to give the server breathing room.
+    # We choose these (5..) because they are usually temporary. It wouldn't make sense to retry a 404 Not Found error
     retries = Retry(total=3, backoff_factor=1, status_forcelist=[502, 503, 504])
+    
+    # When we "mount" it, we are telling the Session: "Whenever you connect to a URL that starts with
+    # https://, use this specific adapter with our custom retry rules."
+    # URL: https://example.com $\rightarrow$ Matches prefix 'https://' $\rightarrow$ Uses Custom Retry Adapter
+    # session.mount(prefix, adapter) - prefix: str, adapter: Object
     session.mount('https://', HTTPAdapter(max_retries=retries))
     return session
            
@@ -186,7 +193,7 @@ def crawl_links(url: str, count: int, pos: int, session: Session) -> str:
 
         # Convert 1-based position to 0-based index
         tag = tags[pos - 1]
-        last_url = tag.get('href', '').strip() # TODO: why to default to ''
+        last_url = tag.get('href', '').strip() # if no 'href' function returns None.strip() -> AttributeError since None doesn't have strip()
         url = last_url
         
     return last_url
