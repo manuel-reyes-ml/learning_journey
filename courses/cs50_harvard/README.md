@@ -7,8 +7,8 @@
 - **Skills:** C, Python, SQL, HTML/CSS, JavaScript, Flask, Algorithms, Data Structures
 
 ## Progress
-- [ ] 00: Scratch
-- [ ] 01: C
+- [x] 00: Scratch
+- [x] 01: C
 - [ ] 02: Arrays
 - [ ] 03: Algorithms
 - [ ] 04: Memory
