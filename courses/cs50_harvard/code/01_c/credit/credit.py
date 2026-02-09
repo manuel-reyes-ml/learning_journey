@@ -16,7 +16,7 @@ from __future__ import annotations
 import argparse
 import logging
 import sys
-from typing import TypedDict, Final  # TypeDict is Pro way to handle dictionaries that have predictable structure
+from typing import TypedDict, Final  # TypedDict is Pro way to handle dictionaries that have predictable structure
 
 # =============================================================================
 # Module Configuration
@@ -42,9 +42,12 @@ MASTERCARD_RANGE: Final[range] = range(51, 56)  # 51 to 55 inclusive
 VISA_START: Final[str] = "4" 
 
 # Pre-converting ranges to string tuples for O(1) lookups in startswith
-MASTERCAD_PREFIXES = tuple(str(x) for x in MASTERCARD_RANGE)
+MASTERCARD_PREFIXES = tuple(str(x) for x in MASTERCARD_RANGE)
 
-# Exit Codes
+# Exit codes (Unix standard)
+# NOTE: This tool returns EXIT_SUCCESS (0) for successful program execution,
+# regardless of whether cards are valid or invalid. Invalid cards are reported
+# via logging, not exit codes. Use EXIT_FAILURE (1) only for unexpected crashes.
 EXIT_SUCCESS: int = 0
 EXIT_KEYBOARD_INTERRUPT: int = 130
 EXIT_FAILURE: int = 1
@@ -73,7 +76,7 @@ CARD_SPECS: dict[str, CardSpecs] = {
         }, 
         "MASTERCAD": {
             "Length": [MASTERCARD_LENGTH], 
-            "Start": MASTERCAD_PREFIXES # TODO, test in VS code
+            "Start": MASTERCARD_PREFIXES # TODO, test in VS code
         },
         "VISA": {
             "Length": [VISA_LENGTH_LONG, VISA_LENGTH_SHORT], 
@@ -117,6 +120,9 @@ def validate_luhn(card_number: str) -> bool:
     >>> validate_luhn("49927398717")
     False
     """
+    if not card_number:
+        raise ValueError("Card number cannot be empty")
+    
     # 1. Reverse string of digits and convert to integers 
     # digits = list(map(int, card_number[::-1]))  # map applies function to each item in iterable
     digits = [int(d) for d in card_number[::-1]]  # Using list comprehension for faster approach
@@ -162,7 +168,7 @@ def identify_card_provider(card_number: str, specs: dict[str, CardSpecs]) -> str
 
     Examples
     --------
-    >>> specs = CARDS_SPECS
+    >>> specs = CARD_SPECS
     >>> identify_card_provider("4123456789123", specs)
     'VISA'
     """
@@ -180,7 +186,7 @@ def identify_card_provider(card_number: str, specs: dict[str, CardSpecs]) -> str
     raise ValueError("Unknown card provider (Prefix mismatch)")
 
 
-def process_card(card_number: str) -> None:
+def process_card(card_number: str, specs: dict[str, CardSpecs] = CARD_SPECS) -> None:
     """
     Orchestrates the validation pipeline for a single card number.
 
@@ -212,7 +218,7 @@ def process_card(card_number: str) -> None:
             return
         
         # Step 2: Provider Identification
-        provider = identify_card_provider(clean_number, CARD_SPECS)
+        provider = identify_card_provider(clean_number, specs)
         logger.info(f"VALID {provider} detected: {clean_number}")
     
     except ValueError as e:
@@ -242,7 +248,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "card_numbers",
-        metavar="N",  # Use when variable name is long "card_number" -> Now the positional name is "N" in --help/-h
+        metavar="CARD",  # Use when variable name is long "card_number" -> Now the positional name is "CARD" in --help/-h
         type=str,
         nargs="+",  # One or more arguments
         help="Enter credit card number(s). If many, separated by space"
