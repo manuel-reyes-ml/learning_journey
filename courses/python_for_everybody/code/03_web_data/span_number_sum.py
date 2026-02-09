@@ -51,7 +51,7 @@ def fetch_html(url: str) -> str:
             response.raise_for_status() # Raise an exception for HTTP errors (404, 500, etc.)
     except requests.RequestException as e:
         # We log the specific error here for debugging purposes
-        logger.debug(f"Failed to fetch URL {url}: {e.reason}")
+        logger.debug(f"Failed to fetch URL {url}: {e}")
         raise
     else:
         return response.text # Return the HTML content as a string (requests library automatically handles decoding)
