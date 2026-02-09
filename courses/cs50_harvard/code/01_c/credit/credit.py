@@ -1,4 +1,16 @@
 """
+Credit Card Validator
+=====================
+
+A command-line utility to validate credit card numbers using the Luhn algorithm
+and identify the card provider (Visa, MasterCard, Amex) based on IIN prefixes.
+
+Usage
+-----
+Run the script directly from the command line:
+
+    $ python validator.py 4123456789123456
+    $ python validator.py -v 340000000000000 5100000000000000
 """
 from __future__ import annotations
 import argparse
@@ -32,6 +44,16 @@ EXIT_FAILURE: int = 1
 
 # Define the structure for the inner dictionary
 class CardSpecs(TypedDict):
+    """
+    Defines the structural requirements for a credit card provider.
+
+    Attributes
+    ----------
+    Length : list[int]
+        A list of valid lengths for the card number.
+    Start : tuple[str, ...]
+        A tuple of valid starting digit sequences (prefixes).
+    """
     Length: list[int]
     Start: tuple[str, ...]  # Optimized, startswith accepts tuples natively
     
@@ -65,6 +87,27 @@ logger = logging.getLogger(__name__)
 
 def validate_luhn(card_number: str) -> bool:
     """
+    Validates a credit card number using the Luhn checksum algorithm.
+
+    The Luhn algorithm (or Modulo 10) validates identification numbers by
+    creating a checksum digit. It detects accidental errors like typos.
+
+    Parameters
+    ----------
+    card_number : str
+        The credit card number as a string of digits.
+
+    Returns
+    -------
+    bool
+        True if the checksum is valid (modulo 10 is 0), False otherwise.
+
+    Examples
+    --------
+    >>> validate_luhn("49927398716")
+    True
+    >>> validate_luhn("49927398717")
+    False
     """
     # 1. Reverse string of digits and convert to integers 
     # digits = list(map(int, card_number[::-1]))  # map applies function to each item in iterable
@@ -89,6 +132,31 @@ def validate_luhn(card_number: str) -> bool:
 
 def identify_card_provider(card_number: str, specs: dict[str, CardSpecs]) -> str:
     """
+    Identifies the card issuer based on IIN prefixes and validates length.
+
+    Parameters
+    ----------
+    card_number : str
+        The valid credit card number to identify.
+    specs : dict[str, CardSpecs]
+        A dictionary containing provider specifications (prefixes and lengths).
+
+    Returns
+    -------
+    str
+        The name of the card provider (e.g., "VISA", "AMEX").
+
+    Raises
+    ------
+    ValueError
+        If the card number does not match any known provider prefix or
+        if the length is invalid for the matched provider.
+
+    Examples
+    --------
+    >>> specs = CARDS_SPECS
+    >>> identify_card_provider("4123456789123", specs)
+    'VISA'
     """
     for name, data in specs.items():
         # Optimization: startswith accepts a tuple of strings directly
@@ -106,6 +174,20 @@ def identify_card_provider(card_number: str, specs: dict[str, CardSpecs]) -> str
 
 def process_card(card_number: str) -> None:
     """
+    Orchestrates the validation pipeline for a single card number.
+
+    This function cleans the input, runs the Luhn check, identifies the
+    provider, and logs the final result.
+
+    Parameters
+    ----------
+    card_number : str
+        The raw input string (can contain whitespace).
+
+    Returns
+    -------
+    None
+        This function does not return a value; it logs results to stdout/stderr.
     """
     clean_number = card_number.strip()
     
@@ -131,6 +213,17 @@ def process_card(card_number: str) -> None:
 
 def main(argv: list[str] | None = None) -> int:
     """
+    The main entry point for the command-line interface.
+
+    Parameters
+    ----------
+    argv : list[str] | None, optional
+        A list of command-line arguments. Defaults to sys.argv[1:].
+
+    Returns
+    -------
+    int
+        Exit status code. 0 for success, 1 for failure and 130 for interruption.
     """
     parser = argparse.ArgumentParser(
         description="Validate real credit card number"
