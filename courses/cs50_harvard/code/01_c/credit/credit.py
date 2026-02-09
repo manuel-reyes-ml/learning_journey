@@ -1,101 +1,133 @@
 """
 """
 from __future__ import annotations
-from typing import TypedDict  # Pro way to handle dictionaries that have predictable structure
-import logging
-
 import argparse
+import logging
 import sys
+from typing import TypedDict, Final  # TypeDict is Pro way to handle dictionaries that have predictable structure
 
-AMEX_LENGTH: int = 15
-MASTERCARD_LENGTH: int = 16
-VISA_LENGTH_SHORT: int = 13
-VISA_LENGTH_LONG: int = 16 
+# Using Final prevents accidental reassignment
+# Signals a type checker (MyPy) Value Constraint: always same value(s) and Type Constraint: always same type (int, str, etc.)
+AMEX_LENGTH: Final[int] = 15
+MASTERCARD_LENGTH: Final[int] = 16
+VISA_LENGTH_SHORT: Final[int] = 13
+VISA_LENGTH_LONG: Final[int] = 16 
 
-AMEX_START_1: int = 34
-AMEX_START_2: int = 37
-MASTERCARD_START_MIN: int = 51
-MASTERCARD_START_MAX: int = 55
-VISA_START: int = 4 
+# Ranges and Start Digits
+#  In Python type hinting, tuples are treated differently that lists:
+#   Lists(list[str]): Lists are assumed to be variable length by default.
+#   Tuples: are usually used for fixed-size structures(like coordinates '(x, y)'), so Python
+#   expects you to define every single slot.
+#   tuple[str] -> a tuple with exactly 1 string ("A",)
+#   tuple[str, str] -> a tuple with exactly 2 strings ("A", "B")
+#   tuple[str, ...] -> a tuple with any number of strings (), ("A",), ("A", "B", "C")
+AMEX_STARTS: Final[tuple[str, ...]] = ("34", "37")  # 
+MASTERCARD_RANGE: Final[range] = range(51, 56)  # 51 to 55 inclusive
+VISA_START: Final[str] = "4" 
 
+# Exit Codes
 EXIT_SUCCESS: int = 0
-EXIT_KEYBOARD_INTERRUPT: int = 1
-EXIT_ERROR: int = 1
+EXIT_KEYBOARD_INTERRUPT: int = 130
+EXIT_FAILURE: int = 1
 
 # Define the structure for the inner dictionary
 class CardSpecs(TypedDict):
     Length: list[int]
-    Start: list[int]
+    Start: tuple[str, ...]  # Optimized, startswith accepts tuples natively
+    
+# Pre-converting ranges to string tuples for O(1) lookups in startswith
+MASTERCAD_PREFIXES = tuple(str(x) for x in MASTERCARD_RANGE)
 
 # Type Hint: Keys are strings, Values are CardSpecs objects
 # If you try to add a key like "Color": "Blue", the IDE will not let you
-cards_specs: dict[str, CardSpecs] = {
+CARD_SPECS: dict[str, CardSpecs] = {
         "AMEX": {
             "Length": [AMEX_LENGTH],
-            "Start": [AMEX_START_1, AMEX_START_2]
+            "Start": AMEX_STARTS
         }, 
         "MASTERCAD": {
             "Length": [MASTERCARD_LENGTH], 
-            "Start": list(range(MASTERCARD_START_MIN, MASTERCARD_START_MAX)) # TODO, test in VS code
+            "Start": MASTERCAD_PREFIXES # TODO, test in VS code
         },
         "VISA": {
             "Length": [VISA_LENGTH_LONG, VISA_LENGTH_SHORT], 
-            "Start": [VISA_START]
+            "Start": (VISA_START,) # Single item tuple
         },
 }
 
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s : %(levelname)s : %(message)s',
+    datefmt='%H:%M:%S'
 )
 logger = logging.getLogger(__name__)
 
 
-def number_validation(str_number: str) -> str:
+def validate_luhn(card_number: str) -> bool:
     """
     """
-    # Reverse string of digits and re convert to int
-    reversed_numbers = list(map(int, str_number[::-1]))
+    # 1. Reverse string of digits and convert to integers 
+    # digits = list(map(int, card_number[::-1]))  # map applies function to each item in iterable
+    digits = [int(d) for d in card_number[::-1]]  # Using list comprehension for faster approach
    
-    sum = 0
-    for i, number in enumerate(reversed_numbers, 1):
+    checksum = 0
+    
+    # 2. Iterate: Double every second digit (index, 1, 3, 5...)
+    for i, digit in enumerate(digits):
         # Only apply t0 every other number in the list
-        if i % 2 == 0:
-            product = number * 2
-            sum += int(product / 10) + (product % 10)
+        if i % 2 == 1:
+            doubled = digit * 2
+            # Optimization: Subtracting 9 is faster/equivalent to adding digits for numbers < 19
+            if doubled > 9:
+                doubled -= 9
+            checksum += doubled
         else:
-            sum += number
+            checksum += digit
     
-    if sum % 10 != 0:
-        raise ValueError(f"INVALID credit card number '{str_number}'")
-        
-    logger.debug(f"Analyzing credit card number '{str_number}...")
-    return str_number
-    
+    return checksum % 10 == 0
 
-def card_type(str_number: str, card_specs: dict[str, CardSpecs]) -> str:
+
+def identify_card_provider(card_number: str, specs: dict[str, CardSpecs]) -> str:
     """
     """
-    found_card = False
-    
-    for name, specs in cards_specs.items():
-        # 1. First, check if the card start with the right digits
-        # We convert the start numbers to strings to compare easily
-        start_digits = [str(digits) for digits in specs["Start"]]
+    for name, data in specs.items():
+        # Optimization: startswith accepts a tuple of strings directly
+        if card_number.startswith(data["Start"]):
+            logger.debug(f"Prefix match found for {name}")
         
-        if any(str_number.startswith(prefix) for prefix in start_digits):
-            logger.debug("Card type found...")
-            found_card = True
-        
-            if len(str_number) not in specs["Length"]:
-                raise ValueError(f"Invalid length for {name}. Expected {specs["Length"]}")
+            if len(card_number) not in data["Length"]:
+                msg = f"Invalid length for {name}. Expected {data['Length']}, got {len(card_number)}"
+                raise ValueError(msg)
             
-            logger.debug("Card length matches...")
             return name
     
-    if not found_card:
-        raise ValueError("Unknown card type.")
+    raise ValueError("Unknown card provider (Prefix mismatch)")
 
+
+def process_card(card_number: str) -> None:
+    """
+    """
+    clean_number = card_number.strip()
+    
+    if not clean_number.isdigit():
+        logger.error(f"'{clean_number}' contains non-numeric characters.")
+        return
+    
+    logger.debug(f"Analyzing card: {clean_number}")
+    
+    try:
+        # Step 1: Luhn Check
+        if not validate_luhn(clean_number):
+            logger.error(f"INVALID Checksum (Luhn) for '{clean_number}'")
+            return
+        
+        # Step 2: Provider Identification
+        provider = identify_card_provider(clean_number, CARD_SPECS)
+        logger.info(f"VALID {provider} detected: {clean_number}")
+    
+    except ValueError as e:
+        logger.error(f"Validation Error for '{clean_number}': {e}")
+        
 
 def main(argv: list[str] | None = None) -> int:
     """
@@ -104,7 +136,8 @@ def main(argv: list[str] | None = None) -> int:
         description="Validate real credit card number"
     )
     parser.add_argument(
-        "card_number",
+        "card_numbers",
+        metavar="N",  # Use when variable name is long "card_number" -> Now the positional name is "N" in --help/-h
         type=str,
         nargs="+",  # One or more arguments
         help="Enter credit card number(s). If many, separated by space"
@@ -121,30 +154,20 @@ def main(argv: list[str] | None = None) -> int:
         logger.setLevel(logging.DEBUG)
         logger.debug("Verbose mode enabled")
     
-    str_numbers: list[str] = list(args.card_number)
+    # Wrap main execution to catch interruptions gracefully
+    try:
+        for number in args.card_numbers:
+            process_card(number)
     
-    for digits in str_numbers:
-        str_number = digits.strip()
-        
-        try:
-            number_validation(str_number)
-            merchant_name = card_type(str_number, cards_specs)
-        
-        except KeyboardInterrupt:
-            logger.info("Interrupted by User. Exiting")
-            return EXIT_KEYBOARD_INTERRUPT
-        
-        except ValueError as e:
-            logger.error(f"Error validating card number: {e}")
-            return EXIT_ERROR
-        
-        except Exception as e:
-            logger.error(f"Unexpected error: {e}")
-            return EXIT_ERROR
-        
-        else:
-            logger.info(f"Valid {merchant_name} detected!")
-            return EXIT_SUCCESS
+    except KeyboardInterrupt:
+        logger.info("\nInterrupted by User. Exiting.")
+        return EXIT_KEYBOARD_INTERRUPT
+    
+    except Exception as e:
+        logger.exception(f"Unexpected crash: {e}") # Defaults to 'ERROR' level, but it always include traceback
+        return EXIT_FAILURE
+    
+    return EXIT_SUCCESS
 
 if __name__ == "__main__":
     sys.exit(main())
