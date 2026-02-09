@@ -18,6 +18,10 @@ import logging
 import sys
 from typing import TypedDict, Final  # TypeDict is Pro way to handle dictionaries that have predictable structure
 
+# =============================================================================
+# Module Configuration
+# =============================================================================
+
 # Using Final prevents accidental reassignment
 # Signals a type checker (MyPy) Value Constraint: always same value(s) and Type Constraint: always same type (int, str, etc.)
 AMEX_LENGTH: Final[int] = 15
@@ -36,6 +40,9 @@ VISA_LENGTH_LONG: Final[int] = 16
 AMEX_STARTS: Final[tuple[str, ...]] = ("34", "37")  # 
 MASTERCARD_RANGE: Final[range] = range(51, 56)  # 51 to 55 inclusive
 VISA_START: Final[str] = "4" 
+
+# Pre-converting ranges to string tuples for O(1) lookups in startswith
+MASTERCAD_PREFIXES = tuple(str(x) for x in MASTERCARD_RANGE)
 
 # Exit Codes
 EXIT_SUCCESS: int = 0
@@ -56,9 +63,6 @@ class CardSpecs(TypedDict):
     """
     Length: list[int]
     Start: tuple[str, ...]  # Optimized, startswith accepts tuples natively
-    
-# Pre-converting ranges to string tuples for O(1) lookups in startswith
-MASTERCAD_PREFIXES = tuple(str(x) for x in MASTERCARD_RANGE)
 
 # Type Hint: Keys are strings, Values are CardSpecs objects
 # If you try to add a key like "Color": "Blue", the IDE will not let you
@@ -84,6 +88,10 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
+
+# =============================================================================
+# Core Functions
+# =============================================================================
 
 def validate_luhn(card_number: str) -> bool:
     """
@@ -210,6 +218,10 @@ def process_card(card_number: str) -> None:
     except ValueError as e:
         logger.error(f"Validation Error for '{clean_number}': {e}")
         
+
+# =============================================================================
+# CLI Entry Point
+# =============================================================================
 
 def main(argv: list[str] | None = None) -> int:
     """
