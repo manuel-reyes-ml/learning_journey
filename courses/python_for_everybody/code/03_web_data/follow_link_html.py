@@ -193,10 +193,10 @@ def crawl_links(url: str, count: int, pos: int, session: Session) -> str:
 
         # Convert 1-based position to 0-based index
         tag = tags[pos - 1]
-        last_url = tag.get('href', '').strip() # if no 'href' function returns None.strip() -> AttributeError since None doesn't have strip()
-        url = last_url
+        last_url = tag.get('href', '') # if no 'href' function returns None.strip() -> AttributeError since None doesn't have strip()
+        url = str(last_url).strip()
         
-    return last_url
+    return url
                      
 
 def main(argv: list[str] | None = None) -> int:
