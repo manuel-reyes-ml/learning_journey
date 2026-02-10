@@ -1,5 +1,35 @@
 """
+Scrabble Point Calculator - Determine the winner between players based on word scores.
+
+A command-line tool that calculates Scrabble points for words submitted by
+players and determines the winner based on standard Scrabble letter values.
+
+Usage
+-----
+    python scrabble.py WORD1 WORD2
+    python scrabble.py --verbose CAT DOG
+    python scrabble.py -v QUEEN ZEBRA
+
+Examples
+--------
+    $ python scrabble.py CAT DOG
+    12:30:45 : INFO : Scores: {'player_1': 5, 'player_2': 5}
+    12:30:45 : INFO : It's a tie!
+
+    $ python scrabble.py QUEEN ZEBRA
+    12:31:00 : INFO : Scores: {'player_1': 14, 'player_2': 16}
+    12:31:00 : INFO : Winner is player_2, points: 16
+
+    $ python scrabble.py -v CAT DOG
+    12:32:15 : DEBUG : Verbose mode enabled
+    12:32:15 : DEBUG : Received 2 words: ['CAT', 'DOG']
+    12:32:15 : DEBUG : Validating Scrabble word(s)......
+    12:32:15 : DEBUG : Calculating points for ['player_1', 'player_2']......
+    12:32:15 : DEBUG : Analyzing winner......
+    12:32:15 : INFO : Scores: {'player_1': 5, 'player_2': 5}
+    12:32:15 : INFO : It's a tie!
 """
+
 from __future__ import annotations
 from typing import Final
 from collections import Counter
@@ -55,8 +85,43 @@ logger = logging.getLogger(__name__)
 
 def validate_input(words: list[str], players: int = PLAYERS) -> list[str]:
     """
+    Validate and normalize player words for Scrabble scoring.
+
+    Ensures the correct number of words are provided and that each word
+    contains only alphabetic characters. Words are stripped of whitespace
+    and converted to uppercase for consistent scoring.
+
+    Parameters
+    ----------
+    words : list of str
+        Raw word strings submitted by players.
+    players : int, optional
+        Expected number of words (one per player). Default is PLAYERS (2).
+
+    Returns
+    -------
+    list of str
+        Validated words, stripped and uppercased.
+
+    Raises
+    ------
+    ValueError
+        If the word list is empty, contains the wrong number of words,
+        or any word contains non-alphabetic characters.
+
+    Examples
+    --------
+    >>> validate_input(["cat", "dog"])
+    ['CAT', 'DOG']
+    >>> validate_input(["  HELLO  ", "world"])
+    ['HELLO', 'WORLD']
+    >>> validate_input(["abc123", "dog"])
+    Traceback (most recent call last):
+    ...
+    ValueError: Words must contain only letters
     """
     logger.debug("Validating Scrabble word(s)......")
+    
     # Validate once at the entry point (DRY!)
     if not words:
         raise ValueError("List of strings cannot be empty")
@@ -79,7 +144,36 @@ def calculate_points(
     player_prefix: str = PLAYER_PREFIX,
 ) -> dict[str, int]:
     """
-    """ 
+    Calculate Scrabble points for each player's word.
+
+    Iterates through each word and sums the point values for each letter
+    based on standard Scrabble scoring. Letters not found in the points
+    dictionary are assigned zero points.
+
+    Parameters
+    ----------
+    word_list : list of str
+        Validated uppercase words, one per player.
+    points : dict of {str: int}, optional
+        Letter-to-point mapping. Default is POINTS (standard Scrabble values).
+    player_prefix : str, optional
+        Prefix for player keys in the result dict. Default is "player".
+
+    Returns
+    -------
+    dict of {str: int}
+        Player identifiers mapped to their total scores.
+        Keys are formatted as "{player_prefix}_{n}" where n starts at 1.
+
+    Examples
+    --------
+    >>> calculate_points(["CAT", "DOG"])
+    {'player_1': 5, 'player_2': 5}
+    >>> calculate_points(["QUEEN", "ZEBRA"])
+    {'player_1': 14, 'player_2': 16}
+    >>> calculate_points(["ZZ"], player_prefix="team")
+    {'team_1': 20}
+    """
     results = {}
     for i, word in enumerate(word_list):
         # Use sum() to make list comprehensive(iterator)
@@ -92,6 +186,30 @@ def calculate_points(
 
 def determine_winner(scores: dict[str, int]) -> str:
     """
+    Determine the winner from player scores.
+
+    Identifies the player(s) with the highest score. If multiple players
+    share the highest score, declares a tie.
+
+    Parameters
+    ----------
+    scores : dict of {str: int}
+        Player identifiers mapped to their total scores.
+
+    Returns
+    -------
+    str
+        Result message indicating the winner and their score,
+        or a tie announcement if scores are equal.
+
+    Examples
+    --------
+    >>> determine_winner({"player_1": 10, "player_2": 8})
+    'Winner is player_1, points: 10'
+    >>> determine_winner({"player_1": 5, "player_2": 5})
+    "It's a tie!"
+    >>> determine_winner({"player_1": 3, "player_2": 7, "player_3": 7})
+    "It's a tie!"
     """
     logger.debug("Analyzing winner......")
     
@@ -122,6 +240,21 @@ def determine_winner(scores: dict[str, int]) -> str:
 
 def main(argv: list[str] | None = None) -> int:
     """
+    Main entry point for the Scrabble point calculator CLI.
+
+    Parses command-line arguments, validates input words, calculates
+    points for each player, and logs the winner.
+
+    Parameters
+    ----------
+    argv : list of str or None, optional
+        Command-line arguments. If None, uses sys.argv.
+
+    Returns
+    -------
+    int
+        Exit code: 0 on success, 1 on validation/processing error,
+        130 on keyboard interrupt.
     """
     parser = argparse.ArgumentParser(
         description=f"Calculate Scrabble point for {PLAYERS} players / words"
@@ -169,6 +302,3 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-    
-            
-    
