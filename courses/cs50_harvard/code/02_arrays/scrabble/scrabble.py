@@ -60,19 +60,13 @@ def validate_input(words: list[str], players: int = PLAYERS) -> list[str]:
     
     # True if any word is not alphabetic (contains digits)
     if not all(word.isalpha() for word in word_list):
-        raise ValueError(
-            f"One or both strings contain numeric or special characters. Can't process it"
-        )
+        raise ValueError(f"Strings contain numeric or special characters. Can't process it")
     
     logger.debug("Scrabble word(s) validated...")
     return word_list
 
 
-def calculate_points(
-    word_list: list[str], 
-    points: dict[str, int] = POINTS,
-    players: int = PLAYERS
-) -> list[tuple[str, int]]:
+def calculate_points(word_list: list[str], points: dict[str, int] = POINTS, players: int = PLAYERS) -> None:
     """
     """
     if not word_list:
@@ -90,9 +84,17 @@ def calculate_points(
             player_points += points.get(letter, 0)
             
         counters[f"player_{player + 1}"] = player_points
-        
+    
     logger.debug(f"Points calculated for {list(counters.keys())}...")
-    return Counter(counters).most_common(1)
+
+    # set -> unordered collection of unique elements
+    if len(set(counters.values())) > 1:
+        winner = Counter(counters).most_common(1)
+        logger.info(f"The winner is {winner[0][0]}, points: {winner[0][1]}")
+        return
+    
+    logger.info("It's a tie!")
+    return
 
 
 # =============================================================================
@@ -127,8 +129,7 @@ def main(argv: list[str] | None = None) -> int:
         
     try:
         word_list = validate_input(args.words, PLAYERS)
-        winner = calculate_points(word_list, POINTS, PLAYERS)
-        logger.info(f"The winner is {winner[0][0]}, points: {winner[0][1]}")
+        calculate_points(word_list, POINTS, PLAYERS)
     
     except KeyboardInterrupt:
         logger.info("\nInterrupted by User. Exiting.")
