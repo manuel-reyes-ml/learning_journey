@@ -94,13 +94,21 @@ def determine_winner(scores: dict[str, int]) -> str:
     """
     """
     logger.debug("Analyzing winner......")
-    # Set -> unordered collection of unique elements
-    if len(set(scores.values())) > 1:
-        winner = Counter(scores).most_common(1)
-        return f"Winner is {winner[0][0]}, points: {winner[0][1]}" 
     
-    return "It's a tie!"
-
+    ## OPTION 1: Use conditions to define winner or Tie ====================
+    max_score = max(scores.values())
+    winners = [player for player, score in scores.items() if score == max_score]
+    
+    if len(winners) > 1:
+        return "It's a tie!"
+    return f"Winner is {winners[0]}, points: {max_score}"
+    
+    ## OPTION 2: Set to store unique values ================================
+    # Set -> unordered collection of unique elements
+    # if len(set(scores.values())) > 1:
+    #    winner = Counter(scores).most_common(1)
+         
+    ## OPTION 3: Use iterator to preserve memory ===========================
     # When you have a massive dictionary (millions of items), an iterator
     # is the best approach to stop when a difference is found.
     # values = iter(counters.values())
@@ -122,7 +130,7 @@ def main(argv: list[str] | None = None) -> int:
         "words",
         type=str,
         nargs=PLAYERS,
-        help=f"Enter '{PLAYERS}' words to calculate points"    
+        help=f"Enter {PLAYERS} words to calculate points"    
     )
     parser.add_argument(
         "-v", "--verbose",
