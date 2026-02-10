@@ -15,10 +15,12 @@ import sys
 __all__ = [
     "validate_input",
     "calculate_points",
+    "POINTS",
 ]
 
 # Number of words allowble to enter the program at a time
 PLAYERS: Final[int] = 2
+PLAYER_PREFIX: Final[str] = "player"
 
 # Exit codes (Unix standard)
 EXIT_SUCCESS: int = 0
@@ -54,59 +56,56 @@ logger = logging.getLogger(__name__)
 def validate_input(words: list[str], players: int = PLAYERS) -> list[str]:
     """
     """
+    logger.debug("Validating Scrabble word(s)......")
+    # Validate once at the entry point (DRY!)
     if not words:
-        raise ValueError(f"List of strings can't be empty")
-    elif len(words) != PLAYERS:
-        raise ValueError(
-            f"Program will process only '{players}' words at a time. Submitted '{len(words)} words'"
-        )
+        raise ValueError("List of strings cannot be empty")
+    
+    if len(words) != players:
+        raise ValueError(f"Expected {players} words, got {len(words)}'")
    
     word_list = [word.strip().upper() for word in words]
     
     # True if one word is not alphabetic (contains digits)
     if not all(word.isalpha() for word in word_list):
-        raise ValueError(f"Strings contain numeric or special characters. Can't process it")
+        raise ValueError("Words must contain only letters")
     
-    logger.debug("Scrabble word(s) validated...")
     return word_list
 
 
-def calculate_points(word_list: list[str], points: dict[str, int] = POINTS, players: int = PLAYERS) -> None:
+def calculate_points(
+    word_list: list[str],
+    points: dict[str, int] = POINTS, 
+    player_prefix: str = PLAYER_PREFIX,
+) -> dict[str, int]:
     """
-    """
-    if not word_list:
-        raise ValueError(f"List of strings can't be empty")
-    elif len(word_list) != players:
-        raise ValueError(
-            f"Program will process only '{players}' words at a time. Submitted '{len(word_list)}' words'"
-        )
-        
-    counters = {}
+    """ 
+    results = {}
+    for i, word in enumerate(word_list):
+        # Use sum() to make list comprehensive(iterator)
+        player_points = sum(points.get(letter, 0) for letter in word)
+        results[f"{player_prefix}_{i + 1}"] = player_points
     
-    for player in range(players):
-        player_points = 0
-        for letter in word_list[player]:
-            player_points += points.get(letter, 0)
-            
-        counters[f"player_{player + 1}"] = player_points
-    
-    logger.debug(f"Points calculated for {list(counters.keys())}...")
+    logger.debug(f"Calculating points for {list(results.keys())}......")
+    return results
 
+
+def determine_winner(scores: dict[str, int]) -> str:
+    """
+    """
+    logger.debug("Analyzing winner......")
     # Set -> unordered collection of unique elements
-    # if len(set(counters.values())) > 1:
-       #   ... connects with line '97'   
+    if len(set(scores.values())) > 1:
+        winner = Counter(scores).most_common(1)
+        return f"Winner is {winner[0][0]}, points: {winner[0][1]}" 
     
+    return "It's a tie!"
+
     # When you have a massive dictionary (millions of items), an iterator
     # is the best approach to stop when a difference is found.
-    values = iter(counters.values())
-    first = next(values)
-    if any(first != value for value in values):
-        winner = Counter(counters).most_common(1)
-        logger.info(f"The winner is {winner[0][0]}, points: {winner[0][1]}")
-        return
-    
-    logger.info("It's a tie!")
-    return
+    # values = iter(counters.values())
+    # first = next(values)
+    # if any(first != value for value in values):
 
 
 # =============================================================================
@@ -140,8 +139,9 @@ def main(argv: list[str] | None = None) -> int:
     logger.debug(f"Received {PLAYERS} words: {args.words}")
         
     try:
-        word_list = validate_input(args.words, PLAYERS)
-        calculate_points(word_list, POINTS, PLAYERS)
+        word_list = validate_input(args.words)
+        scores = calculate_points(word_list)
+        winner = determine_winner(scores)
     
     except KeyboardInterrupt:
         logger.info("\nInterrupted by User. Exiting.")
@@ -153,7 +153,10 @@ def main(argv: list[str] | None = None) -> int:
     
     except Exception as e:
         logger.exception(f"Unexpected crash: {e}")  # Defaults to 'ERROR' level, but it always include traceback
+        return EXIT_FAILURE
     
+    logger.info(f"Scores: {scores}")
+    logger.info(winner)
     return EXIT_SUCCESS
 
 if __name__ == "__main__":
