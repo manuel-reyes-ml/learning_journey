@@ -12,6 +12,11 @@ import sys
 # Module Configuration
 # =============================================================================
 
+__all__ = [
+    "validate_input",
+    "calculate_points",
+]
+
 # Number of words allowble to enter the program at a time
 PLAYERS: Final[int] = 2
 
@@ -58,7 +63,7 @@ def validate_input(words: list[str], players: int = PLAYERS) -> list[str]:
    
     word_list = [word.strip().upper() for word in words]
     
-    # True if any word is not alphabetic (contains digits)
+    # True if one word is not alphabetic (contains digits)
     if not all(word.isalpha() for word in word_list):
         raise ValueError(f"Strings contain numeric or special characters. Can't process it")
     
@@ -87,8 +92,15 @@ def calculate_points(word_list: list[str], points: dict[str, int] = POINTS, play
     
     logger.debug(f"Points calculated for {list(counters.keys())}...")
 
-    # set -> unordered collection of unique elements
-    if len(set(counters.values())) > 1:
+    # Set -> unordered collection of unique elements
+    # if len(set(counters.values())) > 1:
+       #   ... connects with line '97'   
+    
+    # When you have a massive dictionary (millions of items), an iterator
+    # is the best approach to stop when a difference is found.
+    values = iter(counters.values())
+    first = next(values)
+    if any(first != value for value in values):
         winner = Counter(counters).most_common(1)
         logger.info(f"The winner is {winner[0][0]}, points: {winner[0][1]}")
         return
