@@ -6,6 +6,7 @@ from typing import Final, Iterator
 import itertools
 import argparse
 import logging
+import string
 import sys
 import re
 
@@ -14,9 +15,29 @@ import re
 # Module Configuration
 # =============================================================================
 
-# Coleman-Liau index (Readability test)
-RATE: Final[int] = 100
+__all__ = [
+    "calculate_variables",
+    "coleman_liau",
+    "RATE",
+    "CLI_COEF_L",
+    "CLI_COEF_S",
+    "CLI_INTERCEPT",
+    "PATTERN_SENTENCE",
+    "DEFAULT_TEXT",
+]
 
+# Coleman-Liau index (Readability test) coefficients
+RATE: Final[int] = 100
+CLI_COEF_L: Final[float] = 0.0588
+CLI_COEF_S: Final[float] = 0.296
+CLI_INTERCEPT: Final[float] = 15.8
+ROUND_DIGITS: Final[int] = 2
+
+# Grade boundaries
+GRADE_MIN: Final[int] = 1
+GRADE_MAX: Final[int] = 16
+
+# REGEX Pattern to match
 PATTERN_SENTENCE = re.compile(r'[^.!?]+[.!?]')
 
 DEFAULT_TEXT: Final[str] = """
@@ -41,7 +62,7 @@ logger = logging.getLogger(__name__)
 # Core Functions
 # =============================================================================
 
-def _validate_setences(full_text: str, pattern: re.Pattern[str] = PATTERN_SENTENCE) -> Iterator[str]:
+def _validate_sentences(full_text: str, pattern: re.Pattern[str] = PATTERN_SENTENCE) -> Iterator[str]:
     """
     """ 
     for match in pattern.finditer(full_text): 
@@ -57,12 +78,14 @@ def _count_strings(sentences: Iterator[str]) -> tuple[int, int, int]:
         
     for sentence in sentences:
         sentence_count += 1
-        for word in sentence.strip().split():
-            if word.isalpha():
+        for word in sentence.split():
+            # Strip punctuation from word edges
+            # string.puntuaction = '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~'
+            clean_word = word.strip(string.punctuation)
+            
+            if clean_word:
                 word_count += 1
-                for char in word.strip():
-                    if char.isalpha():
-                        letter_count += 1
+                letter_count += sum(1 for char in clean_word if char.isalpha())
     
     if word_count == 0:
         raise ValueError("Text contains numeric characters (numbers)")
@@ -78,7 +101,7 @@ def calculate_variables(full_text: str, rate: int = RATE) -> tuple[float, float]
     if not full_text:
         raise ValueError("Text is empty")
     
-    sentences = _validate_setences(full_text)
+    sentences = _validate_sentences(full_text)
     
     try:
         first = next(sentences)
@@ -89,33 +112,43 @@ def calculate_variables(full_text: str, rate: int = RATE) -> tuple[float, float]
         raise ValueError("Puntuaction missing. No sentence found")
     
     except (ValueError, ZeroDivisionError) as e:
-        raise ValueError (f"Processing Error: {e}") from e
+        raise ValueError(f"Processing Error: {e}") from e
     
+    ## PEP 8 discourages single uppercase letters. Use descriptive names
     # Average number of letters per 100 words in the text
-    L: float = (letter_count / word_count) * rate  
+    letters_avg: float = (letter_count / word_count) * rate  
     # average number of sentences per 100 words in the text
-    S: float = (sentence_count / word_count) * rate
+    sentences_avg: float = (sentence_count / word_count) * rate
     
     logger.debug(f"Sentences: {sentence_count}, Words: {word_count}, Letters: {letter_count}")
     
-    return L, S    
+    return letters_avg, sentences_avg    
             
             
-def coleman_liau(L: float, S: float) -> str:
+def coleman_liau(
+    letters_avg: float,
+    sentences_avg: float,
+    cli_coef_l: float = CLI_COEF_L,
+    cli_coef_s: float = CLI_COEF_S,
+    cli_intercept: float = CLI_INTERCEPT,
+    grade_min: int = GRADE_MIN,
+    grade_max: int = GRADE_MAX,
+    round_digits: int = ROUND_DIGITS
+) -> str:
     """
     """
     logger.debug("Calculating grade......")
     
-    index = (0.0588 * L) - (0.296 * S) - 15.8
+    index = (cli_coef_l * letters_avg) - (cli_coef_s * sentences_avg) - cli_intercept
     
-    if index < 1:
-        grade = "Before Grade 1"
-    elif index > 16:
-        grade = "Grade 16+"
+    if index < grade_min:
+        grade = f"Before Grade {grade_min}"
+    elif index > grade_max:
+        grade = f"Grade {grade_max}+"
     else:
         grade = f"Grade {round(index)}"
     
-    logger.debug(f"Coleman-Liau index is: {round(index, 2)}")
+    logger.debug(f"Coleman-Liau index is: {round(index, round_digits)}")
     
     return grade
     
@@ -134,7 +167,7 @@ def main(argv: list[str] | None = None) -> int:
         "text",  # Positional argument requires at least 1 argument
         type=str,
         nargs = "*",  # zero or more arguments (words), if zero goes to default
-        default=DEFAULT_TEXT,
+        default=None, # If DEFAULT_TEXT used here, it will be joined as characters by .join()
         help="Enter text with no numeric characters, use alphabetic characteres"
     )
     parser.add_argument(
@@ -148,11 +181,15 @@ def main(argv: list[str] | None = None) -> int:
         logger.setLevel(logging.DEBUG)
         logger.debug("Verbose mode enabled")
     
-    full_text = " ".join(args.text)
-    
+    # Use default=None as a flag to assign text in correct way
+    if args.text:
+        full_text = " ".join(args.text)
+    else:
+        full_text = DEFAULT_TEXT
+        
     try:
-        L, S = calculate_variables(full_text)
-        grade = coleman_liau(L, S)
+        letters_avg, sentences_avg = calculate_variables(full_text)
+        grade = coleman_liau(letters_avg, sentences_avg)
         logger.info(grade)
     
     except KeyboardInterrupt:
@@ -165,8 +202,10 @@ def main(argv: list[str] | None = None) -> int:
     
     except Exception as e:
         logger.exception(f"Unexpected error: {e}")  # logger.exception logs the traceback
+        return EXIT_FAILURE
     
     return EXIT_SUCCESS
+
 
 if __name__ == "__main__":
     sys.exit(main())
