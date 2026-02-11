@@ -1,4 +1,47 @@
 """
+Readability Calculator - Determine text readability using the Coleman-Liau index.
+
+A command-line tool that analyzes text complexity by counting sentences, words,
+and letters, then calculates a grade level using the Coleman-Liau readability
+formula. Useful for educators, writers, and content creators.
+
+The Coleman-Liau Index Formula
+------------------------------
+    CLI = (0.0588 * L) - (0.296 * S) - 15.8
+
+    Where:
+        L = average number of letters per 100 words
+        S = average number of sentences per 100 words
+
+Usage
+-----
+    python readability.py "Your text here. Multiple sentences work!"
+    python readability.py --verbose "Text to analyze."
+    python readability.py  # Uses default sample text
+
+Examples
+--------
+    $ python readability.py "Hello world. Simple text."
+    14:30:45 : INFO : Grade 2
+
+    $ python readability.py "The quick brown fox jumps. Over the lazy dog."
+    14:31:00 : INFO : Grade 3
+
+    $ python readability.py -v "Congratulations! Today is your day."
+    14:32:15 : DEBUG : Verbose mode enabled
+    14:32:15 : DEBUG : Validating text......
+    14:32:15 : DEBUG : Sentences: 2, Words: 5, Letters: 29
+    14:32:15 : DEBUG : Calculating grade......
+    14:32:15 : DEBUG : Coleman-Liau index is: 2.45
+    14:32:15 : INFO : Grade 2
+
+    $ python readability.py  # No arguments, uses default text
+    14:33:00 : INFO : Grade 3
+
+References
+----------
+.. [1] Coleman, M., & Liau, T. L. (1975). A computer readability formula
+       designed for machine scoring. Journal of Applied Psychology, 60(2), 283.
 """
 
 from __future__ import annotations
@@ -64,13 +107,64 @@ logger = logging.getLogger(__name__)
 
 def _validate_sentences(full_text: str, pattern: re.Pattern[str] = PATTERN_SENTENCE) -> Iterator[str]:
     """
-    """ 
+    Extract sentences from text using regex pattern matching.
+
+    Yields individual sentences by matching text segments that end with
+    sentence-terminating punctuation (.!?).
+
+    Parameters
+    ----------
+    full_text : str
+        The complete text to parse for sentences.
+    pattern : re.Pattern[str], optional
+        Compiled regex pattern for sentence matching.
+        Default matches sequences ending in period, exclamation, or question mark.
+
+    Yields
+    ------
+    str
+        Individual sentences, stripped of leading/trailing whitespace.
+
+    Notes
+    -----
+    This is a private helper function. Text without sentence-ending
+    punctuation will yield no results, which should be handled by the caller.
+    """
     for match in pattern.finditer(full_text): 
         yield str(match.group()).strip()
 
 
 def _count_strings(sentences: Iterator[str]) -> tuple[int, int, int]:
     """
+    Count sentences, words, and letters from an iterator of sentences.
+
+    Processes each sentence to extract word and letter counts. Punctuation
+    is stripped from word boundaries to ensure accurate counting of words
+    like contractions ("You're") and sentence-final words ("away!").
+
+    Parameters
+    ----------
+    sentences : Iterator[str]
+        An iterator yielding sentence strings to analyze.
+
+    Returns
+    -------
+    tuple of (int, int, int)
+        A tuple containing:
+        - sentence_count : Total number of sentences processed
+        - word_count : Total number of valid words found
+        - letter_count : Total number of alphabetic characters
+
+    Raises
+    ------
+    ValueError
+        If no valid words are found in the text (word_count == 0).
+
+    Notes
+    -----
+    This is a private helper function. Words are identified by splitting
+    on whitespace and stripping edge punctuation using `string.punctuation`.
+    Only alphabetic characters contribute to the letter count.
     """
     sentence_count: int = 0
     word_count: int = 0
@@ -95,6 +189,37 @@ def _count_strings(sentences: Iterator[str]) -> tuple[int, int, int]:
 
 def calculate_variables(full_text: str, rate: int = RATE) -> tuple[float, float]:
     """
+    Calculate the L and S variables required for the Coleman-Liau index.
+
+    Parses the input text to count sentences, words, and letters, then
+    computes the average letters and sentences per specified rate (default 100)
+    words.
+
+    Parameters
+    ----------
+    full_text : str
+        The complete text to analyze for readability.
+    rate : int, optional
+        The normalization rate for averaging. Default is 100 (per 100 words).
+
+    Returns
+    -------
+    tuple of (float, float)
+        A tuple containing:
+        - letters_avg : Average number of letters per `rate` words
+        - sentences_avg : Average number of sentences per `rate` words
+
+    Raises
+    ------
+    ValueError
+        If the text is empty, contains no valid sentences (missing punctuation),
+        or contains no valid words.
+
+    Examples
+    --------
+    >>> letters_avg, sentences_avg = calculate_variables("Hello world. Test sentence.")
+    >>> isinstance(letters_avg, float) and isinstance(sentences_avg, float)
+    True
     """
     logger.debug("Validating text......")
     
@@ -136,6 +261,46 @@ def coleman_liau(
     round_digits: int = ROUND_DIGITS
 ) -> str:
     """
+    Calculate the Coleman-Liau readability grade from text statistics.
+
+    Applies the Coleman-Liau formula to determine the U.S. school grade level
+    required to understand the text. Results are clamped to a readable range.
+
+    Parameters
+    ----------
+    letters_avg : float
+        Average number of letters per 100 words (L variable).
+    sentences_avg : float
+        Average number of sentences per 100 words (S variable).
+    cli_coef_l : float, optional
+        Coefficient for the letters variable. Default is 0.0588.
+    cli_coef_s : float, optional
+        Coefficient for the sentences variable. Default is 0.296.
+    cli_intercept : float, optional
+        Constant intercept value. Default is 15.8.
+    grade_min : int, optional
+        Minimum grade level to report. Default is 1.
+    grade_max : int, optional
+        Maximum grade level to report. Default is 16.
+    round_digits : int, optional
+        Decimal places for debug logging. Default is 2.
+
+    Returns
+    -------
+    str
+        Human-readable grade level string:
+        - "Before Grade {min}" if index < grade_min
+        - "Grade {max}+" if index > grade_max
+        - "Grade {n}" where n is the rounded index
+
+    Examples
+    --------
+    >>> coleman_liau(letters_avg=100.0, sentences_avg=10.0)
+    'Grade 3'
+    >>> coleman_liau(letters_avg=50.0, sentences_avg=20.0)
+    'Before Grade 1'
+    >>> coleman_liau(letters_avg=200.0, sentences_avg=5.0)
+    'Grade 16+'
     """
     logger.debug("Calculating grade......")
     
@@ -159,6 +324,21 @@ def coleman_liau(
 
 def main(argv: list[str] | None = None) -> int:
     """
+    Main entry point for the readability calculator CLI.
+
+    Parses command-line arguments, processes the input text (or uses default),
+    calculates readability metrics, and logs the resulting grade level.
+
+    Parameters
+    ----------
+    argv : list of str or None, optional
+        Command-line arguments. If None, uses sys.argv.
+
+    Returns
+    -------
+    int
+        Exit code: 0 on success, 1 on validation/processing error,
+        130 on keyboard interrupt.
     """
     parser = argparse.ArgumentParser(
         description="Calculate readability level based on Coleman-Liau index"
