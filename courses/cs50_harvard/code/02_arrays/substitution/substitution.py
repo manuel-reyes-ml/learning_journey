@@ -92,21 +92,36 @@ def substitution(clean_key: str, clean_text: str, alphabet: str = ALPHABET) -> s
     """
     logger.debug("Running substitution algorithm...")
     
-    cipher_text_lst = []
-    for char in clean_text:
-        if char.isalpha():
-            
-            if char.isupper():
-                pos = alphabet.find(char.lower())
-                cipher_text_lst.append(clean_key[pos].upper())
-            else:
-                pos = alphabet.find(char)
-                cipher_text_lst.append(clean_key[pos])
-                
-        else:
-            cipher_text_lst.append(char)  # Non-alphabetic preserved
+    # Single responsability: handles one character at a time
+    def substitute_char(char: str) -> str:
+        """
+        """
+        if not char.isalpha():
+            return char
+        
+        pos = alphabet.find(char.lower())
+        substituted = clean_key[pos]
+        
+        return substituted.upper() if char.isupper() else substituted
     
-    return "".join(cipher_text_lst)
+    # Generatior expression is more memory-efficient than building a list
+    return "".join(substitute_char(c) for c in clean_text)
+    
+    #cipher_text_lst = []
+    #for char in clean_text:
+    #    if char.isalpha():
+            
+    #        if char.isupper():
+    #            pos = alphabet.find(char.lower())
+    #            cipher_text_lst.append(clean_key[pos].upper())
+    #        else:
+    #            pos = alphabet.find(char)
+    #            cipher_text_lst.append(clean_key[pos])
+    #            
+    #   else:
+    #        cipher_text_lst.append(char)  # Non-alphabetic preserved
+    
+    #return "".join(cipher_text_lst)
        
         
 # =============================================================================
