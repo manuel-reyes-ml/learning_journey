@@ -13,6 +13,15 @@ import sys
 # Module Configuration
 # =============================================================================
 
+# Exports
+__all__ = [
+    "validate_key",
+    "get_plaintext",
+    "substitution",
+    "DEFAULT_KEY",
+    "ALPHABET",
+]
+
 # Cipher Specs
 KEY_LENGTH: Final[int] = 26
 KEY_CHAR_UNIQUE: Final[bool] = True
@@ -63,15 +72,17 @@ def validate_key(key: str, key_length: int = KEY_LENGTH, key_char_unique: bool =
     return clean_key
 
 
-def input_plaintext() -> str:
+# When no input to function is expected, use a default parameter to make function testable
+def get_plaintext(text: str | None = None) -> str:
     """
     """
-    plain_text = input("Enter plain text: ").strip().split()
+    if text is None:
+        text = input("Enter plain text: ")
     
-    if not plain_text:
+    if not text:
         raise ValueError("Text cannot be empty")
     
-    clean_text = " ".join(plain_text)
+    clean_text = " ".join(text.strip().split())
     
     return clean_text
 
@@ -92,9 +103,8 @@ def substitution(clean_key: str, clean_text: str, alphabet: str = ALPHABET) -> s
                 pos = alphabet.find(char)
                 cipher_text_lst.append(clean_key[pos])
                 
-            continue
-        
-        cipher_text_lst.append(char)
+        else:
+            cipher_text_lst.append(char)  # Non-alphabetic preserved
     
     return "".join(cipher_text_lst)
        
@@ -131,7 +141,7 @@ def main(argv: list[str] | None = None) -> int:
         
     try:
         clean_key = validate_key(args.cipher_key)
-        clean_text = input_plaintext()
+        clean_text = get_plaintext()
         cipher_text = substitution(clean_key, clean_text)
         logger.info(f"Cipher text: {cipher_text}")
     
