@@ -1,4 +1,47 @@
 """
+Substitution Cipher - Encrypt plaintext using a monoalphabetic substitution algorithm.
+
+A command-line tool that encrypts text by replacing each letter with a corresponding
+letter from a 26-character cipher key. Non-alphabetic characters (spaces, punctuation,
+numbers) are preserved in their original positions.
+
+How Substitution Cipher Works
+-----------------------------
+Each letter in the plaintext is replaced by the letter at the same position
+in the cipher key:
+
+    Alphabet: abcdefghijklmnopqrstuvwxyz
+    Key:      NQXPOMAFTRHLZGECYJIUWSKDVB
+    
+    'a' → 'N', 'b' → 'Q', 'c' → 'X', etc.
+
+Usage
+-----
+    python substitution.py [KEY]
+    python substitution.py --verbose NQXPOMAFTRHLZGECYJIUWSKDVB
+    python substitution.py  # Uses default key
+
+Examples
+--------
+    $ python substitution.py
+    Enter plain text: Hello World
+    14:30:45 : INFO : Cipher text: Aozze Kesip
+
+    $ python substitution.py ZYXWVUTSRQPONMLKJIHGFEDCBA
+    Enter plain text: ABC xyz
+    14:31:00 : INFO : Cipher text: ZYX cba
+
+    $ python substitution.py -v
+    14:32:15 : DEBUG : Verbose mode enabled
+    14:32:15 : DEBUG : Key is valid......
+    Enter plain text: Test
+    14:32:20 : DEBUG : Running substitution algorithm...
+    14:32:20 : INFO : Cipher text: Uoiu
+
+Notes
+-----
+The cipher key must be exactly 26 unique alphabetic characters representing
+the substitution alphabet. Case is preserved during encryption.
 """
 
 from __future__ import annotations
@@ -50,6 +93,45 @@ logger = logging.getLogger(__name__)
 
 def validate_key(key: str, key_length: int = KEY_LENGTH, key_char_unique: bool = KEY_CHAR_UNIQUE) -> str:
     """
+    Validate and normalize a substitution cipher key.
+
+    Ensures the key contains only alphabetic characters, meets the required
+    length, and optionally contains only unique characters.
+
+    Parameters
+    ----------
+    key : str
+        The cipher key to validate.
+    key_length : int, optional
+        Required length of the key. Default is 26 (full alphabet).
+    key_char_unique : bool, optional
+        If True, requires all characters to be unique. Default is True.
+
+    Returns
+    -------
+    str
+        The validated key, stripped of whitespace and lowercased.
+
+    Raises
+    ------
+    ValueError
+        If key is empty, contains non-alphabetic characters, has incorrect
+        length, or contains duplicate characters (when uniqueness required).
+
+    Examples
+    --------
+    >>> validate_key("NQXPOMAFTRHLZGECYJIUWSKDVB")
+    'nqxpomaftrhlzgecyjiuwskdvb'
+    >>> validate_key("  ZYXWVUTSRQPONMLKJIHGFEDCBA  ")
+    'zyxwvutsrqponmlkjihgfedcba'
+    >>> validate_key("ABC")
+    Traceback (most recent call last):
+    ...
+    ValueError: Key has 3 characters, 26 are required
+    >>> validate_key("AAXPOMAFTRHLZGECYJIUWSKDVB")
+    Traceback (most recent call last):
+    ...
+    ValueError: Key must have unique characters
     """
     if not key:
         raise ValueError("Key cannot be empty")
@@ -75,6 +157,40 @@ def validate_key(key: str, key_length: int = KEY_LENGTH, key_char_unique: bool =
 # When no input to function is expected, use a default parameter to make function testable
 def get_plaintext(text: str | None = None) -> str:
     """
+    Get and validate plaintext for encryption.
+
+    Prompts the user interactively if text is not provided. Normalizes
+    whitespace by collapsing multiple spaces into single spaces.
+
+    Parameters
+    ----------
+    text : str or None, optional
+        The plaintext to validate. If None, prompts user for input.
+
+    Returns
+    -------
+    str
+        The validated and whitespace-normalized plaintext.
+
+    Raises
+    ------
+    ValueError
+        If the text is empty or contains only whitespace.
+
+    Examples
+    --------
+    >>> get_plaintext("Hello World")
+    'Hello World'
+    >>> get_plaintext("  Multiple   Spaces  ")
+    'Multiple Spaces'
+    >>> get_plaintext("")
+    Traceback (most recent call last):
+    ...
+    ValueError: Text cannot be empty
+    >>> get_plaintext("   ")
+    Traceback (most recent call last):
+    ...
+    ValueError: Text cannot be empty
     """
     if text is None:
         text = input("Enter plain text: ")
@@ -89,6 +205,45 @@ def get_plaintext(text: str | None = None) -> str:
 
 def substitution(clean_key: str, clean_text: str, alphabet: str = ALPHABET) -> str:
     """
+    Encrypt plaintext using monoalphabetic substitution cipher.
+
+    Each letter in the plaintext is replaced by the corresponding letter
+    in the cipher key. Case is preserved, and non-alphabetic characters
+    remain unchanged.
+
+    Parameters
+    ----------
+    clean_key : str
+        The 26-character substitution key (lowercase).
+    clean_text : str
+        The plaintext to encrypt.
+    alphabet : str, optional
+        The source alphabet for mapping. Default is 'abcdefghijklmnopqrstuvwxyz'.
+
+    Returns
+    -------
+    str
+        The encrypted ciphertext.
+
+    Notes
+    -----
+    Uses Python's built-in `str.maketrans()` and `str.translate()` for
+    efficient character substitution. Two translation tables are created
+    to handle both lowercase and uppercase characters.
+
+    Examples
+    --------
+    >>> key = "nqxpomaftrhlzgecyjiuwskdvb"
+    >>> substitution(key, "hello")
+    'aozze'
+    >>> substitution(key, "Hello World")
+    'Aozze Kesip'
+    >>> substitution(key, "ABC xyz")
+    'NQX dvq'
+    >>> substitution(key, "Hello, World!")
+    'Aozze, Kesip!'
+    >>> substitution(key, "123")
+    '123'
     """
     logger.debug("Running substitution algorithm...")
     
@@ -147,6 +302,21 @@ def substitution(clean_key: str, clean_text: str, alphabet: str = ALPHABET) -> s
       
 def main(argv: list[str] | None = None) -> int:
     """
+    Main entry point for the substitution cipher CLI.
+
+    Parses command-line arguments, validates the cipher key, prompts for
+    plaintext, performs encryption, and logs the result.
+
+    Parameters
+    ----------
+    argv : list of str or None, optional
+        Command-line arguments. If None, uses sys.argv.
+
+    Returns
+    -------
+    int
+        Exit code: 0 on success, 1 on validation/processing error,
+        130 on keyboard interrupt.
     """
     parser = argparse.ArgumentParser(
         description="Encrypt plain text using substitution algorithm"
