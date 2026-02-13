@@ -348,11 +348,12 @@ def main(argv: list[str] | None = None) -> int:
         type=str,
         nargs = "*",  # zero or more arguments (words), if zero goes to default
         default=None, # If DEFAULT_TEXT used here, it will be joined as characters by .join()
-        help="Enter text with no numeric characters, use alphabetic characteres"
+        help="Enter text with no numeric characters, use alphabetic characteres",
     )
     parser.add_argument(
         "-v", "--verbose",
-        action="store_true"  # Store True if flag present ('-v', '--verbose')
+        action="store_true",  # Store True if flag present ('-v', '--verbose')
+        help="Enable verbose (debug) output",
     )
     
     args = parser.parse_args(argv)
