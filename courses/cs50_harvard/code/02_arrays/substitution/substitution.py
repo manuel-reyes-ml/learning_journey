@@ -92,21 +92,38 @@ def substitution(clean_key: str, clean_text: str, alphabet: str = ALPHABET) -> s
     """
     logger.debug("Running substitution algorithm...")
     
+    # OPTION 3: Pythonic way, using buil-in tools
+    # str.maketrans creates a translation table (mapping) -> dictionary:
+    #   - where Keys = ASCII codes of original characteres
+    #   - and Values = ASCII codes of replacement characteres
+    #   - Length of both strings  need to match, if not ValueError is raised
+    lower_table = str.maketrans(alphabet, clean_key)
+    upper_table = str.maketrans(alphabet.upper(), clean_key.upper())
+    
+    # translate does the work to switch the character from original text to new characters from table
+    result = clean_text.translate(lower_table)
+    result = result.translate(upper_table)
+    
+    return result
+    
+    
+    # OPTION 2: Using inner function as generator ==================
     # Single responsability: handles one character at a time
-    def substitute_char(char: str) -> str:
-        """
-        """
-        if not char.isalpha():
-            return char
-        
-        pos = alphabet.find(char.lower())
-        substituted = clean_key[pos]
-        
-        return substituted.upper() if char.isupper() else substituted
+    #def substitute_char(char: str) -> str:
+    #    """
+    #    """
+    #    if not char.isalpha():
+    #        return char
+    #    
+    #    pos = alphabet.find(char.lower())
+    #    substituted = clean_key[pos]
+    #    
+    #    return substituted.upper() if char.isupper() else substituted
     
-    # Generatior expression is more memory-efficient than building a list
-    return "".join(substitute_char(c) for c in clean_text)
+    # Generator expression is more memory-efficient than building a list
+    #return "".join(substitute_char(c) for c in clean_text)
     
+    # OPTION 1: Using conditionals and list ========================
     #cipher_text_lst = []
     #for char in clean_text:
     #    if char.isalpha():
@@ -140,12 +157,12 @@ def main(argv: list[str] | None = None) -> int:
         metavar="key",
         nargs="?",  # Zero or One argument
         default=DEFAULT_KEY,
-        help= f"Enter Cipher Key. Only alphabetic and unique, 26 characters. Default: '{DEFAULT_KEY}'"
+        help= f"Enter Cipher Key. Only alphabetic and unique, 26 characters. Default: '{DEFAULT_KEY}'",
     )
     parser.add_argument(
         "-v", "--verbose",
-        action="store_true",
-        help="Enable verbose (debug) output"
+        action="store_true",  # Store True if flag present ('-v', '--verbose')
+        help="Enable verbose (debug) output",
     )
     
     args = parser.parse_args(argv)
