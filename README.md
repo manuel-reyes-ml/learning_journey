@@ -1,18 +1,18 @@
 # 🚀 Learning Journey: Business Ops Professional → Senior LLM Engineer
 
-**AI-Powered Career Transformation** | Production Code from Day 1 | Systematic 37-Month Journey
+**GenAI-First Career Transformation** | Production Code from Day 1 | Systematic 37-Month Journey
 
-> **Current Stage:** AI-Powered Data Analyst (Stage 1 of 5)  
-> **Next Milestone:** Land Data Analyst role with AI integration skills  
+> **Current Stage:** GenAI-First Data Analyst & AI Engineer (Stage 1 of 5)  
+> **Next Milestone:** Land Data Analyst & AI Engineer role with GenAI integration skills  
 > **Ultimate Goal:** Senior LLM Engineer building production AI Trading Assistant  
 > **Study Commitment:** 25 hours/week systematic learning
 
-[![Current Stage](https://img.shields.io/badge/Stage-1%3A%20AI--Powered%20Data%20Analyst-green)]()
+[![Current Stage](https://img.shields.io/badge/Stage-1%3A%20GenAI--First%20Data%20Analyst%20%26%20AI%20Engineer-green)]()
 [![Study Hours](https://img.shields.io/badge/Weekly%20Hours-25-orange)]()
 [![Timeline](https://img.shields.io/badge/Timeline-37%20Months%20(5%20Stages)-blue)]()
-[![AI-Powered](https://img.shields.io/badge/🤖_AI--Powered-2026_Market_Advantage-blueviolet)]()
+[![GenAI-First](https://img.shields.io/badge/🤖_GenAI--First-2026_Market_Advantage-blueviolet)]()
 
-📋 **[View Complete 37-Month Interactive Roadmap →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
+📋 **[View Complete 37-Month Interactive Roadmap (v8) →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
 
 ---
 
@@ -20,7 +20,7 @@
 
 **👔 For Recruiters / Hiring Managers:**
 1. **[💼 Production Projects →](https://github.com/manuel-reyes-ml/data-portfolio)** - Live ETL system + portfolio ⭐ **START HERE**
-2. **[🤖 AI-Powered Differentiation →](#-ai-powered-differentiation-2026-market-advantage)** - What sets this apart
+2. **[🤖 GenAI-First Differentiation →](#-genai-first-differentiation-2026-market-advantage)** - What sets this apart
 3. **[📊 Complete Roadmap →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)** - 37-month visualization
 4. **[🔗 LinkedIn →](https://www.linkedin.com/in/mr410/)** - Professional background
 
@@ -38,50 +38,69 @@
 
 **This repository demonstrates:**
 - ✅ **Production system deployed** - Live ETL pipeline saving $15K/year with public code
-- ✅ **AI integration from Day 1** - ChatGPT, Cursor AI, PandasAI in active use
+- ✅ **GenAI integration from Day 1** - LLM SDKs (Gemini, OpenAI, Claude), LangChain, Streamlit, PandasAI, Cursor AI in active use
 - ✅ **Enterprise analytics in development** - Operations-Demand-Intelligence with AI chat interface
 - ✅ **Domain expertise** - 15+ years data experience, 8 years finance, 6 years trading
 - ✅ **Measurable business impact** - 95% efficiency gains, documented results
-- ✅ **Systematic AI-powered progression** - Clear 37-month path with AI at every stage
+- ✅ **Systematic GenAI-first progression** - Clear 37-month path with GenAI/LLM engineering at every stage
 
-**The key differentiator:** Already delivering production value while building toward LLM engineering, with transparent AI integration throughout.
+**The key differentiator:** Already delivering production value while building toward LLM engineering, with transparent GenAI integration throughout.
 
 ---
 
-## 🤖 AI-Powered Differentiation (2026 Market Advantage)
+## 🤖 GenAI-First Differentiation (2026 Market Advantage)
 
-In 2025, AI literacy is essential for data professionals. While most candidates learn traditional tools only, this journey integrates AI systematically from the start.
+In 2026, GenAI engineering is essential for data professionals. While most candidates learn traditional tools only, this journey integrates GenAI/LLM engineering systematically from the start.
 
-### **The AI-Enhancement Framework**
+### **The GenAI-First Framework**
 
-Each stage combines traditional data skills with AI augmentation:
+Each stage combines traditional data skills with GenAI augmentation:
 
-**Stage 1: AI-Powered Data Analyst** 🟢 ACTIVE
+**Stage 1: GenAI-First Data Analyst & AI Engineer** 🟢 ACTIVE
 ```
 Foundation: Python, SQL, Statistics, Visualization
-+ AI Layer: ChatGPT workflows, Cursor AI IDE, PandasAI, Prompt Engineering
-= Result: AI-powered dashboards with natural language interfaces
++ GenAI Layer: IBM GenAI Engineering cert, LLM SDKs (Gemini, OpenAI, Claude), LangChain, Streamlit, PandasAI, Cursor AI
+= Result: AI-powered dashboards with natural language interfaces + production GenAI applications
 ```
 
-**Stage 2: AI-Powered Data Engineer** 📅 PLANNED  
+**Stage 2: GenAI Data Engineer + AI Systems Architect** 📅 PLANNED  
 ```
 Foundation: AWS, Airflow, PySpark, PostgreSQL
-+ AI Layer: dbt, LangChain basics, intelligent monitoring
-= Result: AI-enhanced pipelines with smart automation
++ AI Systems Layer: Vector DBs (Pinecone/Weaviate/Qdrant), RAG infrastructure, embedding pipelines
+= Result: AI-first data pipelines feeding LLM systems with unstructured data ETL
 ```
 
-**Stages 3-5** progress through ML Engineering → LLM Specialist → Senior LLM Engineer, with AI capabilities expanding at each level.
+**Stage 3: ML Engineer + Local LLM Specialist** 📅 PLANNED
+```
+Foundation: scikit-learn, TensorFlow, PyTorch, MLOps
++ LLM Layer: Ollama (local LLMs), fine-tuning (LoRA/QLoRA/PEFT), on-premise AI for finance
+= Result: Private AI systems solving finance's data privacy problem
+```
+
+**Stage 4: Agentic AI Engineer & LLM Specialist** 📅 PLANNED
+```
+Foundation: Advanced LLM architecture, system design
++ Agentic Layer: MCP (Anthropic), LangGraph, CrewAI, Andrew Ng's Agentic AI, multi-agent orchestration
+= Result: Autonomous AI trading systems with multi-agent collaboration
+```
+
+**Stage 5: Senior LLM Engineer** 📅 PLANNED
+```
+Foundation: Production architecture, thought leadership
++ Evaluation Layer: Automated Testing for LLMOps, CI/CD for AI, production monitoring
+= Result: Senior-level AI systems with evaluation-driven development ($180-250K+)
+```
 
 ### **Why This Matters**
 
-| Traditional Path | AI-Powered Path (This Journey) |
+| Traditional Path | GenAI-First Path (This Journey) |
 |-----------------|--------------------------------|
-| Learn tools → Get job → Maybe add AI later | Learn tools + AI together → Land AI-ready role |
+| Learn tools → Get job → Maybe add AI later | Learn tools + GenAI together → Land AI-ready role |
 | Positioned with majority of candidates | Positioned ahead of 95% of candidates |
-| Standard market rates | 15-20% salary premium for AI skills |
-| Limited future trajectory | Clear path to LLM engineering |
+| Standard market rates | 15-20% salary premium for GenAI skills |
+| Limited future trajectory | Clear path to Senior LLM Engineer ($180-250K+) |
 
-**Market reality:** The AI agent market is growing 823% in 2025. Companies need professionals who bridge data workflows and AI implementation—not one or the other.
+**Market reality:** The agentic AI market is exploding in 2026 with MCP (Anthropic) and A2A (Google) protocols becoming industry standards. Companies need professionals who BUILD production AI systems—not just prompt ChatGPT.
 
 ---
 
@@ -113,7 +132,7 @@ Operations teams lack visibility into workflow demand patterns, leading to react
 | Feature | Implementation | AI Enhancement |
 |---------|----------------|----------------|
 | **Demand Analysis** | Volume patterns, Distribution vs Loan segmentation | AI-powered trend detection, anomaly alerts |
-| **Interactive Dashboard** | Streamlit with Plotly visualizations | **PandasAI chat:** "Why did loan volume spike in March?" |
+| **Interactive Dashboard** | Streamlit with Plotly visualizations | **LLM SDK + PandasAI chat:** "Why did loan volume spike in March?" |
 | **Insights Generation** | Traditional business metrics | **AI-generated commentary** for stakeholders |
 | **Data Privacy** | PII handling, synthetic data for GitHub | AI with privacy guardrails, read-only access |
 
@@ -123,7 +142,7 @@ Operations teams lack visibility into workflow demand patterns, leading to react
 - ✅ **Business impact focus** - Data-driven staffing recommendations
 - ✅ **Production-grade privacy** - Proper PII handling with synthetic data for GitHub
 
-**Tech:** Python • pandas • Streamlit • **PandasAI** • Plotly • GitHub Actions CI • data anonymization
+**Tech:** Python • pandas • Streamlit • **Gemini SDK** • PandasAI • Plotly • GitHub Actions CI • data anonymization
 
 ---
 
@@ -135,21 +154,21 @@ Operations teams lack visibility into workflow demand patterns, leading to react
 
 | Stage | Focus | AI Integration |
 |-------|-------|----------------|
-| **1 (Next)** | Statistical backtesting, signal leaderboard | AI chat interface (PandasAI), AI insights |
-| **2** | AWS pipelines, 500+ tickers | AI monitoring, intelligent alerts |
-| **3** | ML predictions, ensemble models | AutoML, AI feature engineering |
-| **4** | ❌ Traditional N/A | ✅ **Natural language trading interface (RAG)** |
-| **5** | Production deployment | ✅ **Multi-agent AI orchestration** |
+| **1 (Next)** | Statistical backtesting, signal leaderboard | LLM SDK chat + PandasAI, AI insights |
+| **2** | AWS pipelines, 500+ tickers, vector storage | RAG infrastructure, embedding pipelines |
+| **3** | ML predictions, ensemble models | Local LLMs (Ollama), fine-tuned financial models |
+| **4** | Agentic AI trading system | **MCP + LangGraph + Multi-agent orchestration** |
+| **5** | Production deployment + evaluation | **LLMOps testing, CI/CD for AI, monitoring** |
 
 **Phase 1A (To Complete):** Dynamic stock screener • Alternative data collection (SEC, Wikipedia, News) • Statistical backtesting with bootstrap confidence • Trigger leaderboard
 
-**Phase 1B (Then Build):** Streamlit dashboard + **PandasAI chat interface** + **AI-generated commentary** + Natural language queries
+**Phase 1B (Then Build):** Streamlit dashboard + **LLM SDK chat interface** + PandasAI + **AI-generated commentary** + Natural language queries
 
 **What makes it defensible:** Walk-forward validation • Survivorship bias controls • Modern stack (DuckDB, Parquet) • Progressive architecture through all career stages
 
 **Current Tech:** Python • DuckDB • Parquet • httpx async • edgartools • yfinance • Wikipedia API • Plotly
 
-**Future Evolution:** Stage 2 (Cloud/Airflow) → Stage 3 (ML models) → Stage 4 (AI Assistant/RAG) → Stage 5 (Production platform)
+**Future Evolution:** Stage 2 (Cloud/Vector DBs/RAG) → Stage 3 (ML + Local LLMs) → Stage 4 (Agentic AI/MCP) → Stage 5 (Production + LLMOps Evaluation)
 
 ---
 
@@ -158,7 +177,7 @@ Operations teams lack visibility into workflow demand patterns, leading to react
 ```
 learning_journey/
 │
-├── 📄 README.md                          # This file - Complete overview with AI positioning
+├── 📄 README.md                          # This file - Complete overview with GenAI-first positioning
 │
 ├── 📂 projects/                          # ⭐ Project directory (links to separate repos)
 │   └── README.md                         # Comprehensive project index
@@ -186,10 +205,12 @@ learning_journey/
 │   │   ├── notebooks/                    # Practice notebooks
 │   │   └── README.md                     # Track progress
 │   │
-│   ├── vanderbilt_genai_analyst/         # 🤖 NEW: AI-Powered Analysis
+│   ├── vanderbilt_genai_analyst/         # 🤖 GenAI-Powered Analysis
 │   │   ├── chatgpt_workflows/            # CLUE/TRUST/CAPTURE frameworks
 │   │   ├── prompt_engineering/           # Prompt patterns & examples
 │   │   └── README.md                     # Course progress
+│   │
+│   ├── ibm_genai_engineering/            # 🤖 IBM GenAI Engineering (16 courses)
 │   │
 │   ├── ibm_data_analyst/                 # IBM course materials
 │   │
@@ -201,12 +222,13 @@ learning_journey/
 │       ├── python-for-everybody-progress.md
 │       ├── google-data-analytics-progress.md
 │       ├── ibm-data-analyst-progress.md
-│       ├── vanderbilt-genai-analyst-progress.md  # 🤖 NEW
+│       ├── ibm-genai-engineering-progress.md  # 🤖 GenAI Engineering cert
+│       ├── vanderbilt-genai-analyst-progress.md
 │       └── statistics-with-python-progress.md
 │
 ├── 📂 docs/                              # Documentation & guides
 │   ├── index.html                        # GitHub Pages landing page
-│   ├── roadmap.html                      # Interactive 37-month AI-powered roadmap
+│   ├── roadmap.html                      # Interactive 37-month GenAI-first roadmap (v8)
 │   └── activation-plans/                 # Structured learning guides
 │       ├── README.md                     # Guide overview
 │       ├── WEEK_01_MASTER_ACTIVATION_PLAN.md
@@ -216,7 +238,7 @@ learning_journey/
 │
 ├── 📂 notes/                             # Learning journal
 │   ├── week1_summary.md                  # Weekly progress summaries
-│   ├── ai_tools_exploration.md           # 🤖 NEW: AI tools learning notes
+│   ├── ai_tools_exploration.md           # 🤖 AI tools learning notes
 │   ├── trading_ideas.md                  # Trading research
 │   └── learning-journal.md               # Daily reflections
 │
@@ -227,14 +249,14 @@ learning_journey/
 
 ---
 
-## 🎯 The 37-Month AI-Powered Roadmap
+## 🎯 The 37-Month GenAI-First Roadmap
 
-Systematic progression with AI integration at every stage. Income secured from Stage 1 onward.
+Systematic progression with GenAI/LLM engineering at every stage. Income secured from Stage 1 onward.
 
-### **Stage 1: AI-Powered Data Analyst** (Months 1-5) 🟢 ACTIVE
+### **Stage 1: GenAI-First Data Analyst & AI Engineer** (Months 1-5) 🟢 ACTIVE
 
 **Core Skills:** Python • SQL • Statistics • Visualization • Power BI/Tableau  
-**AI Skills:** ChatGPT workflows • Cursor AI • PandasAI • Prompt engineering
+**GenAI Skills:** LLM SDKs (Gemini, OpenAI, Claude) • LangChain • Streamlit • PandasAI • Cursor AI • Prompt Engineering
 
 **Learning Path:**
 - CS50 (Harvard) - Computer Science fundamentals
@@ -242,34 +264,56 @@ Systematic progression with AI integration at every stage. Income secured from S
 - Google Data Analytics Professional Certificate
 - IBM Data Analyst Professional Certificate
 - Statistics with Python (University of Michigan)
+- 🤖 **IBM Generative AI Engineering Professional Certificate** (16 courses) — RAG, LangChain, fine-tuning, deployment
+- 🤖 AI Python for Beginners (DeepLearning.AI) — Andrew Ng's AI-first Python
 - 🤖 Generative AI Data Analyst Specialization (Vanderbilt)
 - 🤖 ChatGPT Prompt Engineering (DeepLearning.AI)
+- 🤖 30 Days of Streamlit Challenge — Build AI UIs fast
 
 **Key Deliverables:**
 - 1099 ETL Pipeline (deployed, $15K savings)
 - Operations-Demand-Intelligence (AI-powered workflow analysis - second project to launch)
 - Attention-Flow Catalyst Phase 1A & 1B (flagship project - next to complete)
 
-**Outcome:** AI-Powered Data Analyst position
+**Outcome:** GenAI-First Data Analyst & AI Engineer position
 
 ---
 
-### **Stage 2: AI-Powered Data Engineer** (Months 6-15) 📅 Planned
+### **Stage 2: GenAI Data Engineer + AI Systems Architect** (Months 6-15) 📅 Planned
 
 **Core Skills:** AWS • Airflow • PySpark • PostgreSQL • Data warehousing  
-**AI Skills:** dbt • LangChain basics • AI-enhanced pipelines
+**AI Systems Skills:** Vector DBs (Pinecone/Weaviate/Qdrant) • RAG infrastructure • Embedding pipelines • Unstructured data ETL
 
-**Key Deliverable:** Attention-Flow Catalyst v4.0 — Cloud-scale with AI monitoring
+**Key Deliverable:** Attention-Flow Catalyst v4.0 — Cloud-scale with vector storage and RAG architecture
 
 ---
 
-### **Stages 3-5** 📅 Planned
+### **Stage 3: ML Engineer + Local LLM Specialist** (Months 16-29) 📅 Planned
 
-- **Stage 3 (Months 16-29):** ML Engineer - scikit-learn, TensorFlow, PyTorch, MLOps
-- **Stage 4 (Months 30-34):** LLM Specialist - RAG, Vector DBs, Multi-agent systems
-- **Stage 5 (Months 35-37):** Senior LLM Engineer - Production AI architecture
+**Core Skills:** scikit-learn • TensorFlow • PyTorch • MLOps  
+**LLM Skills:** Ollama (local LLMs) • Fine-tuning (LoRA/QLoRA/PEFT) • On-premise AI for finance
 
-**Final Deliverable:** AI Trading Assistant with natural language interface and multi-agent orchestration. Revenue potential: $2-50K/month.
+**Key Deliverable:** Fine-tuned financial LLM solving finance's data privacy problem
+
+---
+
+### **Stage 4: Agentic AI Engineer & LLM Specialist** (Months 30-34) 📅 Planned
+
+**Core Skills:** Advanced LLM architecture • System design • Production deployment  
+**Agentic Skills:** MCP (Anthropic) • LangGraph • CrewAI • Andrew Ng's Agentic AI • Multi-agent orchestration
+
+**Key Deliverable:** AI Trading Assistant with multi-agent collaboration (research + analysis + execution agents)
+
+---
+
+### **Stage 5: Senior LLM Engineer** (Months 35-37) 📅 Planned
+
+**Core Skills:** Production AI architecture • Thought leadership • System design interviews  
+**Evaluation Skills:** Automated Testing for LLMOps • CI/CD for AI • Production monitoring
+
+**Key Deliverable:** Production-grade AI Trading Platform with evaluation-driven development
+
+**Final Target:** Senior LLM Engineer ($180-250K+) with advanced expertise and global opportunities.
 
 **📋 [View Interactive Roadmap →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
 
@@ -283,29 +327,36 @@ Systematic progression with AI integration at every stage. Income secured from S
 - **Cursor AI IDE** - Primary editor with AI pair programming (Composer mode)
 - **VS Code + Codeium** - Secondary environment with code completion
 
-**Analysis:**
-- **ChatGPT Plus** - Advanced Data Analysis, code generation, debugging
+**GenAI Engineering:**
+- **LLM SDKs (Gemini, OpenAI, Claude)** - Provider-agnostic API integration for production AI systems
+- **LangChain** - Framework for building GenAI applications
+- **Streamlit** - AI-powered web app interfaces
 - **PandasAI** - Natural language data querying for dashboard integration
 
+**Analysis:**
+- **ChatGPT Plus** - Advanced Data Analysis, code generation, debugging
+
 **Learning:**
+- IBM GenAI Engineering Professional Certificate (RAG, LangChain, fine-tuning, deployment)
 - Vanderbilt GenAI Specialization (CLUE/TRUST/CAPTURE frameworks)
 - DeepLearning.AI Prompt Engineering (API integration, production patterns)
+- AI Python for Beginners (Andrew Ng's AI-first Python foundation)
 
 ### **Integration Principles**
 
 **Transparency:** Document AI assistance in commits and comments  
 **Validation:** Always test AI-generated code  
 **Production:** Implement guardrails (read-only, cost controls, disclaimers)  
-**Progressive:** Expand AI capabilities systematically across stages
+**Progressive:** Expand GenAI capabilities systematically across stages
 
 ### **Evolution Path**
 
 | Stage | AI Tools & Frameworks |
 |-------|----------------------|
-| **2** | dbt + LangChain + AI-enhanced Airflow |
-| **3** | AutoML + AI feature engineering |
-| **4** | LangGraph + CrewAI + MCP + Vector DBs + RAG |
-| **5** | Production multi-agent systems + AI monitoring |
+| **2** | Vector DBs (Pinecone/Weaviate) + RAG infrastructure + Embedding pipelines |
+| **3** | Ollama (local LLMs) + Fine-tuning (LoRA/QLoRA/PEFT) + Generative AI with LLMs (AWS) |
+| **4** | MCP (Anthropic) + LangGraph + CrewAI + Andrew Ng's Agentic AI + Multi-agent systems |
+| **5** | Automated Testing for LLMOps + CI/CD for AI + Production evaluation + Monitoring |
 
 ---
 
@@ -314,7 +365,7 @@ Systematic progression with AI integration at every stage. Income secured from S
 **Languages:** Python 3.11+, SQL  
 **Data:** pandas, NumPy, Matplotlib, Seaborn, Plotly  
 **Databases:** SQLite, DuckDB, PostgreSQL  
-**AI Tools:** Cursor AI, ChatGPT Plus, Codeium, PandasAI  
+**GenAI Tools:** LLM SDKs (Gemini, OpenAI, Claude), LangChain, Streamlit, PandasAI, Cursor AI, ChatGPT Plus  
 **Platforms:** Coursera, DataCamp, DeepLearning.AI
 
 ```bash
@@ -337,7 +388,7 @@ python getting_started/environment-verification.py
 
 ### **Core Principles**
 
-**AI-Enhanced Practice:** Daily coding with AI pair programming, but always understanding and validating outputs
+**GenAI-Enhanced Practice:** Daily coding with AI pair programming, but always understanding and validating outputs
 
 **Production-First:** Every project built to production standards with proper error handling, testing, and documentation
 
@@ -363,7 +414,7 @@ average = sum(numbers) / len(numbers)
 print(f"Average: {average}")
 ```
 
-**My AI-Enhanced Approach:**
+**My GenAI-Enhanced Approach:**
 ```python
 def calculate_statistics(data: list[float], include_outliers: bool = True) -> dict:
     """
@@ -419,17 +470,17 @@ Sustainable pace designed for 37-month journey while working full-time.
 
 ## 📊 Current Progress
 
-**Active Stage:** 1 of 5 (AI-Powered Data Analyst)  
+**Active Stage:** 1 of 5 (GenAI-First Data Analyst & AI Engineer)  
 **Projects:** 1 deployed (production), 1 launching (Operations-Demand-Intelligence), 1 next (Attention-Flow Catalyst)  
-**Certifications:** 7 in progress (including 2 AI-focused)  
+**Certifications:** 8 in progress (including 3 GenAI-focused)  
 **GitHub Streak:** 64 days, 500+ commits  
 **Study Hours:** 25/week consistent
 
 **Next Milestones:**
 - Launch Operations-Demand-Intelligence (AI-powered workflow analysis)
 - Complete Attention-Flow Catalyst Phase 1A & 1B (flagship project)
-- Finish 5 core certifications
-- Secure AI-Powered Data Analyst role
+- Finish 5 core certifications + IBM GenAI Engineering cert
+- Secure GenAI-First Data Analyst & AI Engineer role
 
 ---
 
@@ -446,9 +497,9 @@ Sustainable pace designed for 37-month journey while working full-time.
 - [Attention-Flow Catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst)
 
 **Open To:**
-- 💼 AI-Powered Data Analyst opportunities (remote preferred)
+- 💼 GenAI-First Data Analyst & AI Engineer opportunities (remote preferred)
 - 🤝 Networking with data professionals and traders
-- 🤖 AI tool and workflow discussions
+- 🤖 GenAI tool and workflow discussions
 - 💡 Code reviews and technical discussions
 - 🎓 Mentorship (giving or receiving)
 
@@ -458,7 +509,7 @@ Sustainable pace designed for 37-month journey while working full-time.
 
 **Welcome:**
 - Code quality feedback and best practices
-- AI integration approaches and tool recommendations
+- GenAI integration approaches and tool recommendations
 - Trading strategy discussions
 - Career advice and networking
 - Collaboration on projects
@@ -467,39 +518,39 @@ Sustainable pace designed for 37-month journey while working full-time.
 - Open GitHub issues for technical discussions
 - Connect on LinkedIn for professional networking
 - Comment on commits with feedback
-- Share your own AI-powered learning journey
+- Share your own GenAI-powered learning journey
 
 ---
 
 ## 💭 The Vision
 
-This repository documents a complete career transformation: from business ops professional to Senior LLM Engineer, with AI integration from Day 1.
+This repository documents a complete career transformation: from business ops professional to Senior LLM Engineer, with GenAI/LLM engineering from Day 1.
 
 **What this represents:**
 - 37-month systematic journey (5,000+ hours)
 - Production systems with measurable business impact
-- AI-powered approach positioning ahead of traditional candidates
+- GenAI-first approach positioning ahead of traditional candidates
 - Foundation for six-figure remote tech career
 - Path to building revenue-generating AI systems
-- Demonstration that structured learning + AI integration enables career reinvention
+- Demonstration that structured learning + GenAI integration enables career reinvention
 
-**Ultimate goal:** Production AI Trading Assistant combining deep finance expertise with cutting-edge AI capabilities.
+**Ultimate goal:** Production AI Trading Assistant combining deep finance expertise with cutting-edge agentic AI capabilities.
 
 ---
 
 ## ⭐ Follow the Journey
 
-Real-time documentation of an AI-powered career transformation from Day 1 to Senior LLM Engineer.
+Real-time documentation of a GenAI-first career transformation from Day 1 to Senior LLM Engineer.
 
 - ⭐ **Star this repository** to follow the journey
-- 🔔 **Watch** for updates on AI integration and project progress
+- 🔔 **Watch** for updates on GenAI integration and project progress
 - 🔗 **Connect** for professional discussions and collaboration
 
 ---
 
-### 💡 *"37 months. AI-powered from Day 1. Production code. Clear trajectory."*
+### 💡 *"37 months. GenAI-first from Day 1. Production code. Clear trajectory."*
 
-**Current Stage:** AI-Powered Data Analyst (1 of 5) | Building AI-Enhanced Foundations  
+**Current Stage:** GenAI-First Data Analyst & AI Engineer (1 of 5) | Building GenAI-Enhanced Foundations  
 **Status:** 🟢 Active • Learning in Public • Deploying Production Systems
 
 **[→ View Live Progress & Interactive Roadmap](https://manuel-reyes-ml.github.io/learning_journey/)**
