@@ -5,7 +5,7 @@
 **Instructor:** David J. Malan  
 **Week:** 2  
 **Started:** Nov 2025  
-**Status:** In progress
+**Status:** Completed
 
 ---
 
@@ -19,8 +19,8 @@ Deep dive into arrays - collections of values stored contiguously in memory. Lea
 
 - [x] Lecture: Arrays and strings
 - [x] Sections: Memory and debugging
-- [ ] Problem Set 2: Readability, Caesar/Substitution
-- [ ] Lab 2: Scrabble
+- [x] Problem Set 2: Readability, Caesar/Substitution
+- [x] Lab 2: Scrabble
 
 ---
 
