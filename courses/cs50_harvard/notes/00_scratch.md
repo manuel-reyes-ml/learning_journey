@@ -19,8 +19,8 @@ Introduction to computational thinking using Scratch, a visual programming langu
 
 - [x] Lecture: Introduction to Computer Science
 - [x] Sections: Scratch basics
-- [ ] Problem Set 0: Create a Scratch project
-- [ ] Lab 0: (Optional warm-up)
+- [x] Problem Set 0: Create a Scratch project
+- [x] Lab 0: (Optional warm-up)
 
 ---
 
