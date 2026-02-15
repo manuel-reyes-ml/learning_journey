@@ -9,7 +9,7 @@
 ## Progress
 - [x] 00: Scratch
 - [x] 01: C
-- [ ] 02: Arrays
+- [x] 02: Arrays
 - [ ] 03: Algorithms
 - [ ] 04: Memory
 - [ ] 05: Data Structures
