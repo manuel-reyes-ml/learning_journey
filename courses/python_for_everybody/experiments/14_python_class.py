@@ -67,28 +67,106 @@ print("\n")
 class Animal: # Parent (base) class
     def __init__(self, name):
         self.name = name
-        
+    
     def speak(self):
+        return f"{self.name} makes a sound"
+        
+    def speak1(self):
         print(f"{self.name} makes a sound")
 
 # Dog inherits from Animal
-# Dog gets everything from Animal has (like self.name)       
-class Dog(Animal): 
-    def speak(self): # OVERRIDE the parent method
+# Dog gets everything from Animal has (like self.name)
+# super().method() -> Do what my parent does       
+class Dog(Animal):
+    def __init__(self, name, breed):
+        super().__init__(name) # Call Animal's __init__ first! to set up self.name
+        self.breed = breed          # Then add Dog-specific data
+    
+    def speak(self):
+        parent_message = super().speak() # Get Animal's version
+        return f"{parent_message}... Woof! (I'm a {self.breed})"
+    
+    def speak1(self): # OVERRIDE the parent method
         print(f"{self.name} says: Woof!")
         
 class Cat(Animal): # Cat inherits from Animal
-    def speak(self): # OVERRIDE the parent method
+    def speak1(self): # OVERRIDE the parent method
         print(f"{self.name} says: Meow!")
         
 # Create objects
 generic = Animal("Generic")
-buddy = Dog("Buddy")
+buddy = Dog("Buddy", "Labrador")
 whiskers = Cat("Whiskers")
 
-generic.speak()
-buddy.speak()
-whiskers.speak()
+generic.speak1()
+buddy.speak1()
+whiskers.speak1()
 
+print("\n")
 
+print(buddy.speak())
 
+print("\n")
+
+class BasicFormatter:
+    """Pretend this is logging.Formatter"""
+    def format(self, record):
+        return f"[LOG] {record}"
+
+class ColoredFormatter(BasicFormatter):
+    """Our custom formatter that adds color"""
+    
+    def format(self, record):
+        # Step 1: Get the parent´s formatted message
+        original = super().format(record)
+        
+        # Step 2: Wrap it with color
+        return f"\033[92m{original}\033[0m"
+
+# Test both
+basic = BasicFormatter()
+colored = ColoredFormatter()
+
+print(basic.format("Hello World"))
+print(colored.format("Hello Workd"))
+
+# =============================================================================
+# PYTHON CLASSES QUICK REFERENCE
+# =============================================================================
+#
+# BASIC CLASS
+# -----------
+# class ClassName:
+#     def __init__(self, param1, param2):    # Constructor
+#         self.attribute1 = param1           # Instance attribute
+#         self.attribute2 = param2
+#
+#     def method(self):                      # Instance method
+#         return self.attribute1
+#
+# INHERITANCE
+# -----------
+# class Child(Parent):                       # Child inherits from Parent
+#     def __init__(self, param1, new_param):
+#         super().__init__(param1)           # Call parent's __init__
+#         self.new_attr = new_param          # Add child-specific data
+#
+#     def method(self):                      # Override parent method
+#         parent_result = super().method()   # Optionally use parent's version
+#         return f"Modified: {parent_result}"
+#
+# KEY TERMS
+# ---------
+# | Term        | Meaning                                    |
+# |-------------|-------------------------------------------|
+# | class       | Blueprint for creating objects             |
+# | object      | Instance created from a class              |
+# | self        | Reference to the current instance          |
+# | __init__    | Constructor, runs when object is created   |
+# | method      | Function defined inside a class            |
+# | attribute   | Variable stored on an object (self.x)      |
+# | inheritance | Child class gets parent's attributes/methods|
+# | super()     | Access parent class's methods              |
+# | override    | Child replaces parent's method             |
+#
+# =============================================================================
