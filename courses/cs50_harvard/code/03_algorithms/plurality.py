@@ -1,4 +1,56 @@
 """
+Plurality Voting System - Count votes and determine winner(s) by simple majority.
+
+A command-line tool that implements a plurality voting system where each voter
+casts one vote for their preferred candidate. The candidate(s) with the most
+votes wins. Supports ties when multiple candidates share the highest vote count.
+
+How Plurality Voting Works
+--------------------------
+1. Register candidates (2-9 allowed)
+2. Each voter casts exactly one vote
+3. Votes are tallied per candidate
+4. Candidate(s) with most votes win(s)
+
+Usage
+-----
+    python plurality.py Alice Bob Charlie
+    python plurality.py --verbose Alice Bob
+    python plurality.py "John Smith" "Jane Doe"
+
+Examples
+--------
+    $ python plurality.py Alice Bob Charlie
+    Enter number of voters: 5
+    Vote 1: Alice
+    Vote 2: Bob
+    Vote 3: Alice
+    Vote 4: Charlie
+    Vote 5: Alice
+    14:30:45 : INFO : Alice 3
+
+    $ python plurality.py Alice Bob
+    Enter number of voters: 4
+    Vote 1: Alice
+    Vote 2: Bob
+    Vote 3: Alice
+    Vote 4: Bob
+    14:31:00 : INFO : Alice 2
+    14:31:00 : INFO : Bob 2
+
+    $ python plurality.py -v Alice Bob Charlie
+    14:32:15 : DEBUG : Verbose mode enabled
+    Enter number of voters: 2
+    Vote 1: alice
+    Vote 2: David
+    14:32:20 : WARNING : Invalid vote...
+    14:32:20 : INFO : Alice 1
+
+Notes
+-----
+- Candidate names are case-insensitive and normalized to Title Case
+- Invalid votes (non-candidates, empty, numeric) are logged and skipped
+- Ties are reported by listing all winners with their vote counts
 """
 
 from __future__ import annotations
@@ -24,6 +76,7 @@ __all__ = [
     "CANDIDATES_MIN",
     "CANDIDATES_MAX",
     "VALID_CANDIDATES_LENGTH",
+    "ColoredFormatter",
 ]
 
 # Program constants
@@ -39,7 +92,29 @@ EXIT_FAILURE: int = 1
 EXIT_KEYBOARD_INTERRUPT: int = 130
 
 class ColoredFormatter(logging.Formatter): # Inherits from Python's built-in Formatter!
-    """Custom formatter that adds colors based on log level."""
+    """
+    Custom logging formatter that adds ANSI color codes based on log level.
+
+    Inherits from Python's built-in logging.Formatter and overrides the
+    format method to wrap log messages in terminal color codes.
+
+    Attributes
+    ----------
+    COLORS : dict of {int: str}
+        Mapping of logging level constants to ANSI color codes.
+    RESET : str
+        ANSI code to reset terminal color to default.
+
+    Examples
+    --------
+    >>> handler = logging.StreamHandler()
+    >>> handler.setFormatter(ColoredFormatter(
+    ...     fmt='%(levelname)s : %(message)s'
+    ... ))
+    >>> logger.addHandler(handler)
+    >>> logger.info("This appears in green")
+    >>> logger.error("This appears in red")
+    """
     
     # Color codes for each level
     COLORS: Final[dict[int, str]] = {
@@ -95,6 +170,40 @@ logger.addHandler(handler)
 
 def validate_candidates(candidates: list[str], length_prefix: tuple[int, ...] = VALID_CANDIDATES_LENGTH) -> list[str]:
     """
+    Validate the candidate list for count and uniqueness.
+
+    Ensures the number of candidates falls within acceptable bounds and
+    that all candidate names are unique.
+
+    Parameters
+    ----------
+    candidates : list of str
+        List of candidate names to validate.
+    length_prefix : tuple of int, optional
+        Valid candidate count range. Default is (2, 3, 4, 5, 6, 7, 8, 9).
+
+    Returns
+    -------
+    list of str
+        The validated candidate list, unchanged.
+
+    Raises
+    ------
+    ValueError
+        If candidate count is outside valid range or names are not unique.
+
+    Examples
+    --------
+    >>> validate_candidates(["Alice", "Bob", "Charlie"])
+    ['Alice', 'Bob', 'Charlie']
+    >>> validate_candidates(["Alice"])
+    Traceback (most recent call last):
+    ...
+    ValueError: List must be between 2 and 9 candidates
+    >>> validate_candidates(["Alice", "Alice", "Bob"])
+    Traceback (most recent call last):
+    ...
+    ValueError: Candidate names must be unique
     """
     if len(candidates) not in length_prefix:
         raise ValueError(
@@ -110,6 +219,43 @@ def validate_candidates(candidates: list[str], length_prefix: tuple[int, ...] = 
 
 def _validate_candidate_arg(candidate: str) -> str:
     """
+    Argparse type validator for individual candidate names.
+
+    Validates and normalizes a single candidate name from CLI input.
+    Strips punctuation, converts to Title Case, and ensures alphabetic content.
+
+    Parameters
+    ----------
+    candidate : str
+        Raw candidate name from command line.
+
+    Returns
+    -------
+    str
+        Cleaned and normalized candidate name.
+
+    Raises
+    ------
+    argparse.ArgumentTypeError
+        If candidate is empty or contains non-alphabetic characters.
+
+    Notes
+    -----
+    This is a private function used by argparse's type parameter.
+    It is called once per candidate argument, not on the full list.
+
+    Examples
+    --------
+    >>> _validate_candidate_arg("alice")
+    'Alice'
+    >>> _validate_candidate_arg("  Bob!  ")
+    'Bob'
+    >>> _validate_candidate_arg("John Smith")
+    'John Smith'
+    >>> _validate_candidate_arg("Alice123")
+    Traceback (most recent call last):
+    ...
+    argparse.ArgumentTypeError: Candidate name must be alphabetic: 'Alice123'
     """
     if not candidate:
         raise argparse.ArgumentTypeError("Candidate name cannot be empty")
@@ -124,6 +270,40 @@ def _validate_candidate_arg(candidate: str) -> str:
 
 def validate_voter_count(voters: str | int | None = None) -> int:
     """
+    Validate and return the number of voters.
+
+    Accepts input as string, integer, or prompts interactively if None.
+    Ensures the value is a valid positive integer.
+
+    Parameters
+    ----------
+    voters : str, int, or None, optional
+        The voter count as string or int. If None, prompts user interactively.
+
+    Returns
+    -------
+    int
+        Validated voter count.
+
+    Raises
+    ------
+    ValueError
+        If voters is empty or cannot be converted to an integer.
+
+    Examples
+    --------
+    >>> validate_voter_count(5)
+    5
+    >>> validate_voter_count("10")
+    10
+    >>> validate_voter_count("")
+    Traceback (most recent call last):
+    ...
+    ValueError: Voters cannot be empty
+    >>> validate_voter_count("abc")
+    Traceback (most recent call last):
+    ...
+    ValueError: Number of voters must be numeric
     """
     if isinstance(voters, int):
         return voters
@@ -144,6 +324,44 @@ def validate_voter_count(voters: str | int | None = None) -> int:
 
 def _validate_votes(voters_int: int | None = None, votes: list[str] | None = None) -> Iterator[str]:
     """
+    Validate and yield individual votes.
+
+    Operates in two modes: interactive (prompts for each vote) or batch
+    (processes a provided list). Invalid votes are skipped with a warning.
+
+    Parameters
+    ----------
+    voters_int : int or None, optional
+        Number of voters for interactive mode. Required if votes is None.
+    votes : list of str or None, optional
+        Pre-defined vote list for testing/batch mode. If provided,
+        voters_int is ignored.
+
+    Yields
+    ------
+    str
+        Valid vote strings, normalized to Title Case.
+
+    Raises
+    ------
+    ValueError
+        If votes is None and voters_int is also None.
+
+    Notes
+    -----
+    This is a private generator function. Invalid votes (empty, non-alphabetic)
+    are silently skipped in batch mode, or logged as warnings in interactive mode.
+
+    Examples
+    --------
+    >>> list(_validate_votes(votes=["alice", "BOB", "charlie"]))
+    ['Alice', 'Bob', 'Charlie']
+    >>> list(_validate_votes(votes=["alice", "123", "bob"]))
+    ['Alice', 'Bob']
+    >>> list(_validate_votes(votes=None, voters_int=None))
+    Traceback (most recent call last):
+    ...
+    ValueError: voters_int required for interative mode
     """
     if votes is None:
         if voters_int is None:
@@ -172,6 +390,43 @@ def assign_votes(
     votes: list[str] | None = None,
 ) -> defaultdict[str, int]:
     """
+    Collect and tally votes for candidates.
+
+    Processes votes either interactively or from a provided list, counting
+    only valid votes that match registered candidates.
+
+    Parameters
+    ----------
+    clean_candidates : list of str
+        List of valid candidate names to accept votes for.
+    voters_int : int or None, optional
+        Number of voters for interactive mode.
+    votes : list of str or None, optional
+        Pre-defined vote list for testing/batch mode.
+
+    Returns
+    -------
+    defaultdict of {str: int}
+        Dictionary mapping candidate names to their vote counts.
+        Only candidates with at least one vote are included.
+
+    Raises
+    ------
+    ValueError
+        If no valid votes are found or all votes are invalid.
+
+    Examples
+    --------
+    >>> assign_votes(["Alice", "Bob"], votes=["Alice", "Alice", "Bob"])
+    defaultdict(<class 'int'>, {'Alice': 2, 'Bob': 1})
+    >>> assign_votes(["Alice", "Bob"], votes=["Charlie", "David"])
+    Traceback (most recent call last):
+    ...
+    ValueError: All votes were invalid. No count was processed
+    >>> assign_votes(["Alice", "Bob"], votes=[])
+    Traceback (most recent call last):
+    ...
+    ValueError: No valid votes found!
     """
     votes_dict = defaultdict(int)
     votes_iter = _validate_votes(voters_int, votes)
@@ -196,6 +451,29 @@ def assign_votes(
 
 def count_winners(votes_dict: defaultdict[str, int]) -> Iterator[tuple[str, int]]:
     """
+    Determine the winner(s) from vote tallies.
+
+    Identifies the candidate(s) with the highest vote count. In case of
+    a tie, yields all candidates sharing the maximum votes.
+
+    Parameters
+    ----------
+    votes_dict : defaultdict of {str: int}
+        Dictionary mapping candidate names to vote counts.
+
+    Yields
+    ------
+    tuple of (str, int)
+        Tuples of (candidate_name, vote_count) for each winner.
+
+    Examples
+    --------
+    >>> dict(count_winners(defaultdict(int, {"Alice": 3, "Bob": 2})))
+    {'Alice': 3}
+    >>> dict(count_winners(defaultdict(int, {"Alice": 3, "Bob": 3, "Charlie": 1})))
+    {'Alice': 3, 'Bob': 3}
+    >>> list(count_winners(defaultdict(int, {"Alice": 5})))
+    [('Alice', 5)]
     """
     max_count = max(votes_dict.values())
             
@@ -210,6 +488,21 @@ def count_winners(votes_dict: defaultdict[str, int]) -> Iterator[tuple[str, int]
       
 def main(argv: list[str] | None = None) -> int:
     """
+    Main entry point for the plurality voting CLI.
+
+    Parses command-line arguments, validates candidates, collects votes,
+    tallies results, and announces the winner(s).
+
+    Parameters
+    ----------
+    argv : list of str or None, optional
+        Command-line arguments. If None, uses sys.argv.
+
+    Returns
+    -------
+    int
+        Exit code: 0 on success, 1 on validation/processing error,
+        130 on keyboard interrupt.
     """
     parser = argparse.ArgumentParser(
         description="Count votes per candidates and print out winner(s)"
