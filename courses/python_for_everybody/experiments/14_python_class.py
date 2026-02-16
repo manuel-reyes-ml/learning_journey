@@ -1,3 +1,7 @@
+# =============================================================================
+# EMPTY CLASS
+# =============================================================================
+
 class Dog1:
     pass  # Empty class for now
 
@@ -10,6 +14,10 @@ print(type(max))
 print(buddy == max) # Are they the same object?
 
 print("\n")
+
+# =============================================================================
+# CONSTRUCTOR(__init__), DATA, METHODS IN CLASS
+# =============================================================================
 
 # Class name must be unique inside the script
 class Dog2:
@@ -50,7 +58,37 @@ max.bark()
 buddy.describe()
 max.describe()
 
+print("\n")
 
+# =============================================================================
+# INHERITANCE (BUILDING ON ANOTHER CLASS)
+# =============================================================================
+
+class Animal: # Parent (base) class
+    def __init__(self, name):
+        self.name = name
+        
+    def speak(self):
+        print(f"{self.name} makes a sound")
+
+# Dog inherits from Animal
+# Dog gets everything from Animal has (like self.name)       
+class Dog(Animal): 
+    def speak(self): # OVERRIDE the parent method
+        print(f"{self.name} says: Woof!")
+        
+class Cat(Animal): # Cat inherits from Animal
+    def speak(self): # OVERRIDE the parent method
+        print(f"{self.name} says: Meow!")
+        
+# Create objects
+generic = Animal("Generic")
+buddy = Dog("Buddy")
+whiskers = Cat("Whiskers")
+
+generic.speak()
+buddy.speak()
+whiskers.speak()
 
 
 
