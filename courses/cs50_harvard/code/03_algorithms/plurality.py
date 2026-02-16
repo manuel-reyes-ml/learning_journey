@@ -38,14 +38,56 @@ EXIT_SUCCESS: int = 0
 EXIT_FAILURE: int = 1
 EXIT_KEYBOARD_INTERRUPT: int = 130
 
-# Set up Logging
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s : %(levelname)s : %(message)s',
-    datefmt='%H:%M:%S',
-)
-logger = logging.getLogger(__name__)
+class ColoredFormatter(logging.Formatter): # Inherits from Python's built-in Formatter!
+    """Custom formatter that adds colors based on log level."""
+    
+    # Color codes for each level
+    COLORS: Final[dict[int, str]] = {
+        logging.DEBUG:    "\033[90m",   # Gray
+        logging.INFO:     "\033[92m",   # Green
+        logging.WARNING:  "\033[93m",   # Yellow
+        logging.ERROR:    "\033[91m",   # Red
+        logging.CRITICAL: "\033[1;91m", # Bold Red
+    }
+    RESET = "\033[0m"
+    
+    # Override the parent´s format method
+    def format(self, record) -> str:
+        # Step 1: Get the color for this log level
+        color = self.COLORS.get(record.levelno, self.RESET)
+        
+        # Format the message normally first
+        # This produces: "14:30:45 : INFO : Your message here"
+        message = super(). format(record) # Call PARENT´s format!
+        
+        # Step 3: Wrap with color codes
+        return f"{color}{message}{self.RESET}"
 
+# Set up Logging
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+# Create handler with colored formatter
+handler = logging.StreamHandler()
+handler.setFormatter(ColoredFormatter(
+    fmt='%(asctime)s : %(levelname)s : %(message)s',
+    datefmt='%H:%M:%S',
+))
+logger.addHandler(handler)
+
+# **The flow when you call `logger.info("Hello")`:**
+# logger.info("Hello")
+#        ↓
+# handler receives the log record
+#        ↓
+# handler.formatter.format(record) is called
+#        ↓
+# ColoredFormatter.format() runs:
+#    1. Gets color for INFO level → "\033[92m" (green)
+#    2. Calls super().format(record) → "14:30:45 : INFO : Hello"
+#    3. Returns "\033[92m14:30:45 : INFO : Hello\033[0m"
+#        ↓
+# Green text appears in terminal!
 
 # =============================================================================
 # Core Functions
@@ -111,7 +153,7 @@ def _validate_votes(voters_int: int | None = None, votes: list[str] | None = Non
             vote = input(f"Vote {i + 1}: ").strip()
             
             if not vote or not vote.isalpha():
-                logger.info("Invalid vote...")
+                logger.warning("Invalid vote...")
                 continue
             
             yield vote.title()  # Transform: 'john' -> 'John'
@@ -141,7 +183,7 @@ def assign_votes(
     
     for vote in itertools.chain([first], votes_iter):
         if vote not in clean_candidates:
-            logger.info("Invalid vote...")
+            logger.warning("Invalid vote...")
             continue
         votes_dict[vote] += 1
     
