@@ -365,7 +365,7 @@ def _validate_votes(voters_int: int | None = None, votes: list[str] | None = Non
     """
     if votes is None:
         if voters_int is None:
-            raise ValueError("voters_int required for interative mode")
+            raise ValueError("voters_int required for interactive mode")
         
         for i in range(voters_int):
             vote = input(f"Vote {i + 1}: ").strip()
