@@ -23,8 +23,6 @@ __all__ = [
     "count_winners",
     "CANDIDATES_MIN",
     "CANDIDATES_MAX",
-    "RANK_NUMBER",
-    "RANGE_POINTS",
     "RANK_SPECS",
     "MAX_RANK",
 ]
@@ -34,15 +32,12 @@ CANDIDATES_MIN: Final[int] = 3
 CANDIDATES_MAX: Final[int] = 9
 RANK_NUMBER: Final[int] = 3
 
-
-# Build a list for a range of points '[2, 1, 0]'
-RANGE_POINTS: Final[list[int]] = [point for point in range(RANK_NUMBER)][::-1]
-
 # Rank and points structure for iteration in function
-# RANK_POINTS = {"rank1": 2, "rank2": 1, "rank3": 0}
-RANK_SPECS: Final[dict[str, int]] = {}
-for i in range(RANK_NUMBER):
-    RANK_SPECS[f"rank{i + 1}"] = RANGE_POINTS[i]
+# RANK_POINTS = {"rank1": 3, "rank2": 2, "rank3": 1}
+RANK_SPECS: Final[dict[str, int]] = {
+    f"rank{i + 1}": RANK_NUMBER - i   # dict comprehension (same as list's)
+    for i in range(RANK_NUMBER)
+}
 
 # Identify max rank format -> 'rank1'
 MAX_RANK: Final[str] = list(RANK_SPECS.keys())[0]
@@ -55,6 +50,27 @@ EXIT_KEYBOARD_INTERRUPT: Final[int] = 130
 # Inherits from Python's built-in Formatter
 class ColoredFormatter(logging.Formatter):
     """
+    Custom logging formatter that adds ANSI color codes based on log level.
+
+    Inherits from Python's built-in logging.Formatter and overrides the
+    format method to wrap log messages in terminal color codes.
+
+    Attributes
+    ----------
+    COLORS : dict of {int: str}
+        Mapping of logging level constants to ANSI color codes.
+    RESET : str
+        ANSI code to reset terminal color to default.
+
+    Examples
+    --------
+    >>> handler = logging.StreamHandler()
+    >>> handler.setFormatter(ColoredFormatter(
+    ...     fmt='%(levelname)s : %(message)s'
+    ... ))
+    >>> logger.addHandler(handler)
+    >>> logger.info("This appears in green")
+    >>> logger.error("This appears in red")
     """
     # Color codes for each level
     COLORS: Final[dict[int, str]] = {
@@ -102,7 +118,7 @@ def validate_candidates(
     ) -> list[str]:
     """
     """
-    if candidates_min > len(candidates) > candidates_max:
+    if not (candidates_min <= len(candidates) <= candidates_max):
         raise ValueError(
             f"List must be between {candidates_min} and {candidates_max} candidates"
         )
@@ -175,6 +191,8 @@ def _validate_votes(
                 points = (points + 1) if rank == max_rank else points
                 
                 yield vote.title(), points
+        
+        return  # Explicitly returns after 'if votes is None' block
     
     # When votes are manually passed as list of lists            
     if isinstance(votes, list):
@@ -224,15 +242,14 @@ def assign_votes(
 def count_winners(votes_dict: defaultdict[str, int]) -> tuple[str, int]:
     """
     """
-    sorted_dict = dict(
-        sorted(votes_dict.items(), 
+    sorted_items = sorted(
+        votes_dict.items(), 
         key=lambda item: item[1],
         reverse=True,
-        )
     )
     
-    logger.debug(f"Candidates: {sorted_dict}....")
-    return list(sorted_dict.items())[0]
+    logger.debug(f"Candidates: {dict(sorted_items)}....")
+    return sorted_items[0]
 
 
 # =============================================================================
