@@ -55,11 +55,50 @@ if otherf == "Y":
     def cap(name):
         return name.capitalize()
     
-    capitalized = map(cap, name_lst) #we use map() instead of "for loop"
-    capitalized = list(capitalized) #convert from map() object to list
+    #capitalized = map(cap, name_lst) #we use map() instead of "for loop"
+    #capitalized = list(capitalized) #convert from map() object to list
+    
+    capitalized = list(map(lambda name: name.title(), names))
 
     print(f"Names list processed using map() function:\n {capitalized}\n")
 
 else:
     print("\nExiting program now...")
     quit()
+
+# =============================================================================
+# LAMBDA QUICK REFERENCE
+# =============================================================================
+#
+# Signature:
+#     lambda parameters: expression
+#
+# | Parameters     | Example                          | Result          |
+# |----------------|----------------------------------|-----------------|
+# | None           | lambda: 42                       | 42              |
+# | One            | lambda x: x * 2                  | 10 (if x=5)     |
+# | Two            | lambda a, b: a + b               | 7 (if a=3, b=4) |
+# | Multiple       | lambda a, b, c: a + b + c        | 6 (1+2+3)       |
+# | With default   | lambda x, y=10: x + y            | 15 (if x=5)     |
+# | With *args     | lambda *args: sum(args)          | 10 (1,2,3,4)    |
+#
+# Ternary in lambda:
+#     lambda x: "yes" if x > 0 else "no"
+#
+# Common pairings:
+#     sorted(items, key=lambda x: ...)
+#     map(lambda x: ..., items)
+#     filter(lambda x: ..., items)
+#     max(items, key=lambda x: ...)
+#     min(items, key=lambda x: ...)
+#
+# When to use lambda:
+#     ✅ Simple, one-time-use functions
+#     ✅ As arguments to higher-order functions (sorted, map, filter)
+#
+# When NOT to use lambda:
+#     ❌ Complex logic (use regular def)
+#     ❌ Reusable functions (give it a name with def)
+#     ❌ When it hurts readability
+#
+# =============================================================================
