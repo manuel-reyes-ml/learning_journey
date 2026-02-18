@@ -67,6 +67,41 @@ else:
     quit()
 
 # =============================================================================
+# COMMON USE CASES
+# =============================================================================
+
+# 1. With sorted() — custom sort key
+names = ["Charlie", "Alice", "Bob"]
+sorted(names, key=lambda x: len(x))  # Sort by length
+# ['Bob', 'Alice', 'Charlie']
+
+
+# 2. With map() — transform each item
+numbers = [1, 2, 3, 4]
+list(map(lambda x: x ** 2, numbers))  # Square each
+# [1, 4, 9, 16]
+
+
+# 3. With filter() — keep items that match
+numbers = [1, 2, 3, 4, 5, 6]
+list(filter(lambda x: x % 2 == 0, numbers))  # Keep even
+# [2, 4, 6]
+
+
+# 4. With max() / min() — custom comparison
+people = [("Alice", 30), ("Bob", 25), ("Charlie", 35)]
+max(people, key=lambda x: x[1])  # Oldest person
+# ('Charlie', 35)
+
+
+# 5. With reduce() — accumulate values
+from functools import reduce
+numbers = [1, 2, 3, 4]
+reduce(lambda acc, x: acc + x, numbers)  # Sum all
+# 10
+
+
+# =============================================================================
 # LAMBDA QUICK REFERENCE
 # =============================================================================
 #
