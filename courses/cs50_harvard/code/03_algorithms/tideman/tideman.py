@@ -525,6 +525,31 @@ def count_winners(votes_dict: defaultdict[str, int]) -> tuple[str, int]:
     logger.debug(f"Candidates: {dict(sorted_items)}....")
     return sorted_items[0]
 
+# =============================================================================
+# LAMBDA WITH SORTED() QUICK REFERENCE
+# =============================================================================
+#
+# Pattern:
+#     sorted(iterable, key=lambda x: WHAT_TO_SORT_BY, reverse=True/False)
+#
+# Examples:
+#     # Sort tuples by second element
+#     sorted([(a, 1), (b, 3), (c, 2)], key=lambda x: x[1])
+#     # Result: [(a, 1), (c, 2), (b, 3)]
+#
+#     # Sort strings by length
+#     sorted(["cat", "elephant", "dog"], key=lambda x: len(x))
+#     # Result: ["cat", "dog", "elephant"]
+#
+#     # Sort dicts by a key
+#     sorted([{"name": "Bob", "age": 25}, {"name": "Alice", "age": 30}], key=lambda x: x["age"])
+#     # Result: [{"name": "Bob", "age": 25}, {"name": "Alice", "age": 30}]
+#
+#     # Sort by multiple criteria (tuple)
+#     sorted(items, key=lambda x: (x["category"], x["price"]))
+#     # Sorts by category first, then by price within each category
+#
+# =============================================================================
 
 # =============================================================================
 # CLI Entry Point
