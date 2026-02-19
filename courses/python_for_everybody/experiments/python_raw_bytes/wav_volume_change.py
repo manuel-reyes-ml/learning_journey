@@ -31,7 +31,7 @@ The computer will "wrap around" into negative numbers, causing horrific, screech
 
 # To read raw bytes as integers in Python, we use the built-in 'struct' library. 
 
-import struct
+import struct  # All details about struct library are included at the end of this file
 import sys
 
 def change_volume(input_file, output_file, factor):
@@ -84,9 +84,39 @@ def change_volume(input_file, output_file, factor):
 if __name__ == "__main__":
     # Multiplies volume by 0.5 (half as loud)
     sys.exit(
-        change_volume("input.wav", "output.wav", 0.5)
+        change_volume("input.wav", "output.wav", 3)
     )
-    
+
+
+# ==============================================================================
+# UNDERSTANDING THE 'struct' LIBRARY IN PYTHON
+# ==============================================================================
+# What it is:
+# The 'struct' module acts as a translator between Python's flexible data types 
+# and raw, C-style machine memory (binary).
+#
+# Why we need it:
+# In Python, an integer is just a number; it doesn't have a strict "byte size" 
+# and handles its own memory. However, binary files (like WAV audio, BMP images) 
+# require strict, exact byte layouts. For example, a 16-bit WAV file demands 
+# that every single audio sample is exactly 2 bytes long. 'struct' bridges this 
+# gap by forcing Python data into these strict byte blocks.
+#
+# The Two Main Functions:
+# 1. struct.pack():   Translates Python values -> Raw Bytes
+#                     (e.g., taking the number 1500 and packing it into 2 bytes)
+# 2. struct.unpack(): Translates Raw Bytes -> Python values
+#                     (e.g., reading '\xff\x10' and converting it to an integer)
+#
+# Format Strings (The Translation Rules):
+# 'struct' uses specific characters to know how to translate the bytes:
+#   'c' : char (1 byte)
+#   'h' : short integer (2 bytes) <--- What we use for 16-bit WAV audio
+#   'i' : standard integer (4 bytes)
+#   'f' : float (4 bytes)
+#   '<' : Little-Endian byte order (reads the least significant byte first)
+# ==============================================================================
+
 # --- Understanding struct.unpack('<h', sample_bytes)[0] ---
 #
 # 1. The Format String ('<h'):
