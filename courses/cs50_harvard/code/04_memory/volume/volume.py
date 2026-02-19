@@ -15,7 +15,16 @@ import sys
 # =============================================================================
 
 # Exports
-
+__all__ = [
+    "validate_input_file",
+    "validate_output_file",
+    "change_volume",
+    "HEADER_SIZE",
+    "SAMPLE_SIZE",
+    "BIT_FORMAT",
+    "FILE_EXT",
+    "DATA_DIR",
+]
 
 # Program Constants
 HEADER_SIZE: Final[int] = 44
@@ -266,6 +275,9 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(
         description="Change volume of audio file using a factor from user"
     )
+    # No need to add 'nargs' since it changes argument´s output automatically to a list, not single strings
+    #   -> parser.add_argument("input_file", nargs=1)
+    #   -> Returns a list -> ['input.wav']
     parser.add_argument(
         "-input", "--input-file",
         type= str,
@@ -311,12 +323,15 @@ def main(argv: list[str] | None = None) -> int:
     
     except (FileExistsError, FileNotFoundError) as e:
         logger.error(f"Error in file: {e}")
+        return EXIT_FAILURE
     
     except ValueError as e:
         logger.error(f"Error in processing: {e}")
-        
+        return EXIT_FAILURE
+    
     except Exception as e:
         logger.exception(f"Unexpected Error: {e}")
+        return EXIT_FAILURE
         
     return EXIT_SUCCESS
 
