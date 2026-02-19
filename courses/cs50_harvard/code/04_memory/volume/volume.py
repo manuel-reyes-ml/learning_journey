@@ -23,7 +23,7 @@ SAMPLE_SIZE: Final[int] = 2
 BIT_FORMAT: Final[str] = '<h'
 FILE_EXT: Final[str] = ".wav"
 OUT_FNAME: Final[str] = "output.wav"
-DATA_DIR: Final[Path] = Path(__name__).resolve().parent / "Data"
+DATA_DIR: Final[Path] = Path(__name__).resolve().parent / "data"
 
 
 # Exit codes (Unix standard)
@@ -111,8 +111,10 @@ def validate_input_file(
     if input_dir:
         input_file = Path(input_dir).expanduser().resolve() / fname
     else:
+        logger.debug("Not directory entered by user, searching in default directories....")
         input_file = Path(fname).resolve() if Path(fname).exists() else data_dir / fname
     
+    logger.debug(f"Searching input file in '{input_file}'....")
     if input_file.is_file():
         
         # Check 1: File with the correct extension?
@@ -133,7 +135,7 @@ def validate_input_file(
         else:
             raise FileExistsError(f"{fname} is not a valid WAV file")
     else:
-        raise FileNotFoundError(f"{fname} doesn't exists in directory {input_file}")
+        raise FileNotFoundError(f"{fname} doesn't exists in directory '{input_file}'")
 
     # ==============================================================================
     # PATHLIB METHOD QUICK REFERENCE
@@ -162,6 +164,7 @@ def validate_output_file(
     if not input_file:
         raise FileNotFoundError("File path cannot be empty")
     
+    logger.debug("Input file found......")
     file_path = input_file.parent
     
     output_file = file_path / fname
@@ -169,6 +172,7 @@ def validate_output_file(
     if output_file.suffix != file_ext:
         output_file = output_file.with_suffix(file_ext)
     
+    logger.debug(f"Saving output file in same directory '{output_file}'")
     return output_file
 
 
@@ -204,12 +208,16 @@ def change_volume(
     
     #Open files in "rb" (read binary) and "wb" (write binary) modes
     # Use context manager ('with...') to make sure connector to file is close after with block
+    logger.debug(f"Opening input and output file to update volume using factor {factor}....")
     with open(input_file, "rb") as infile, open(output_file, "wb") as outfile:
-            
+        
+        file_empty = True
         # 1. Read the exact 44-byte header and immediately write it to the new file
         header = infile.read(header_size)
         outfile.write(header)
-            
+
+        count_bytes = 0
+        
         # 2. Loop through the rest of the file, 2 bytes at a time
         while True:
             sample_bytes = infile.read(sample_size)
@@ -217,7 +225,10 @@ def change_volume(
             # If we didn't get any bytes, we rechaed the end of the file
             if not sample_bytes:
                 break
-                
+            
+            file_empty = False
+            count_bytes += 2
+             
             # When you read a file in binary("rb"), Python doesn't see "numbers", it sees raw
             # hex bytes like '\xff\x10'.
                 
@@ -238,8 +249,9 @@ def change_volume(
             new_sample_bytes = struct.pack(bit_format, new_sample)
             outfile.write(new_sample_bytes)
                 
-        if not sample_bytes:
+        if file_empty:
             raise ValueError(f"File {input_file} is empty")
+        logger.debug(f"Input file not empty, updating {count_bytes} bytes......")
         
         logger.info(f"Success: Updated volume by factor of {factor} in {output_file}")
         
@@ -257,18 +269,17 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "-input", "--input-file",
         type= str,
-        nargs=1,  # 1 argument required
         help="Enter file name of input audio file",
     )
     parser.add_argument(
         "-out", "--output-file",
         type=str,
+        default=OUT_FNAME,
         help=f"Enter file name of output audio file. Default if 'None': {OUT_FNAME}",
     )
     parser.add_argument(
         "factor",
         type=_validate_factor,
-        nargs="?",  # Zero or one argument
         help="Enter factor number to be used to update volume of audio file",
     )
     parser.add_argument(
@@ -287,7 +298,7 @@ def main(argv: list[str] | None = None) -> int:
     if args.verbose:
         logger.setLevel(logging.DEBUG)
         logger.debug("Verbose mode enabled")
-        
+     
     try:
         input_file = validate_input_file(args.input_file, args.directory)
         output_file = validate_output_file(input_file, args.output_file)
