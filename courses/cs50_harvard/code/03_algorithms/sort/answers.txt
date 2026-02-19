@@ -1,14 +1,8 @@
-sort1 uses: TODO
+sort1 uses: Bubble Sort
+How do you know?: It is extremely fast on already sorted lists, but very slow on random or reversed lists. This perfectly matches Bubble Sort, which has a best-case time complexity of Ω(n) (when no swaps are needed) and a worst-case of O(n^2).
 
-How do you know?: TODO
+sort2 uses: Merge Sort
+How do you know?: It is the fastest algorithm overall, especially on the large 50,000-number random and reversed datasets. This matches Merge Sort's incredibly efficient O(n log n) time complexity. 
 
-
-sort2 uses: TODO
-
-How do you know?: TODO
-
-
-
-sort3 uses: TODO
-
-How do you know?: TODO
+sort3 uses: Selection Sort
+How do you know?: It is consistently slow across all datasets, even the ones that are already sorted. This matches Selection Sort, which has a best-case and worst-case time complexity of O(n^2) because it always has to scan the entire remaining list to find the smallest number, regardless of whether the list is already in order.
