@@ -2,7 +2,7 @@
 """
 
 from __future__ import annotations
-from typing import Final
+from typing import Final, TypedDict
 from pathlib import Path
 import argparse
 import struct
@@ -27,18 +27,64 @@ __all__ = [
 ]
 
 # Program Constants
+INT16_MIN: Final[int] = -32768
+INT16_MAX: Final[int] = 32767
 HEADER_SIZE: Final[int] = 44
 SAMPLE_SIZE: Final[int] = 2
 BIT_FORMAT: Final[str] = '<h'
 FILE_EXT: Final[str] = ".wav"
 OUT_FNAME: Final[str] = "output.wav"
-DATA_DIR: Final[Path] = Path(__name__).resolve().parent / "data"
 
+# Use '__file__' for the actual file path
+DATA_DIR: Final[Path] = Path(__file__).resolve().parent / "data"
 
 # Exit codes (Unix standard)
 EXIT_SUCCESS: Final[int] = 0
 EXIT_FAILURE: Final[int] = 1
 EXIT_KEYBOARD_INTERRUPT: Final[int] = 130
+
+# Make a fix structure for a Dictionary, for Type checker to warn
+# later on the program.
+class VolumeChangeResult(TypedDict):
+    """
+    """
+    bytes_processed: int
+    samples_processed: int
+    samples_clipped: int
+    output_file: Path
+    
+# =============================================================================
+# TYPEDDICT QUICK REFERENCE
+# =============================================================================
+#
+# Basic syntax:
+#     class MyDict(TypedDict):
+#         key1: type1
+#         key2: type2
+#
+# All optional:
+#     class MyDict(TypedDict, total=False):
+#         key1: type1  # Optional
+#
+# Mixed (Python 3.11+):
+#     class MyDict(TypedDict, total=False):
+#         required_key: Required[str]
+#         optional_key: NotRequired[int]
+#
+# Mixed (Python 3.9-3.10):
+#     class _Required(TypedDict):
+#         must_have: str
+#     class MyDict(_Required, total=False):
+#         optional: int
+#
+# Key points:
+#     - Runtime type is just `dict`
+#     - Type checking is STATIC only (IDE/mypy)
+#     - No runtime validation
+#     - JSON serializable
+#     - Use for structured return values
+#
+# =============================================================================
 
 # Inherits from Python's built-in Formatter
 class ColoredFormatter(logging.Formatter):
@@ -67,7 +113,7 @@ class ColoredFormatter(logging.Formatter):
     """
     # Color codes for each level
     COLORS: Final[dict[int, str]] = {
-        logging.DEBUG:     "\033[90m",   # Greay
+        logging.DEBUG:     "\033[90m",   # Gray
         logging.INFO:      "\033[92m",   # Green
         logging.WARNING:   "\033[93m",   # Yellow
         logging.ERROR:     "\033[91m",   # Red
@@ -75,7 +121,7 @@ class ColoredFormatter(logging.Formatter):
     }
     RESET: Final[str] = "\033[0m"
     
-    # Overried the parent's format method
+    # Override the parent's format method
     def format(self, record) -> str:
         # Step 1: Get the color for this log level
         color = self.COLORS.get(record.levelno, self.RESET)
@@ -86,6 +132,7 @@ class ColoredFormatter(logging.Formatter):
         
         # Step 3: Wrap with color codes
         return f"{color}{message}{self.RESET}"
+
 
 # Set up logging
 logger = logging.getLogger(__name__)
@@ -134,11 +181,17 @@ def validate_input_file(
         # Check 2: It is already a WAV file (but maybe uppercase like .WaV)?
         elif input_file.suffix.lower() == file_ext:
             # .with_suffix automatically replaces the old extension with the new one
-            return input_file.with_suffix(file_ext)
+            new_input_file = input_file.with_suffix(file_ext)
+            input_file.rename(new_input_file) # Rename file on disk
+            
+            return new_input_file
         
         # Check 3: Does it have not extension at all?
         elif input_file.suffix == "":
-            return input_file.with_suffix(file_ext)
+            new_input_file = input_file.with_suffix(file_ext)
+            input_file.rename(new_input_file)
+            
+            return new_input_file
         
         # Check 4: It has an extension, but it´s  the wrong find (like .mp3)
         else:
@@ -171,7 +224,7 @@ def validate_output_file(
     """
     """
     if not input_file:
-        raise FileNotFoundError("File path cannot be empty")
+        raise ValueError("Input file path cannot be empty")
     
     logger.debug("Input file found......")
     file_path = input_file.parent
@@ -194,9 +247,29 @@ def _validate_factor(factor: str | None = None) -> int:
     try:
         factor_int = int(factor.strip())
     except (ValueError, TypeError) as e:
-        raise argparse.ArgumentTypeError("Factor must contain numeric characters only")
+        raise argparse.ArgumentTypeError("Factor must be numeric")
+    
+    if factor_int == 0:
+        raise argparse.ArgumentTypeError("Factor cannot be 0 (would create silent audio)")
+    
+    if factor_int == 1:
+        raise argparse.ArgumentTypeError("Factor of 1 makes no change")
     
     return factor_int
+
+
+def _validate_wav_header(header:bytes, header_size: int = HEADER_SIZE) -> None:
+    """
+    """
+    if len(header) < header_size:
+        raise ValueError(f"Header too short: {len(header)} bytes (need {header_size})")
+    
+    # WAV files start with "RIFF" and contain "WAVE"
+    if header[0:4] != b"RIFF":
+        raise ValueError("Not a valid WAV file: missing RIFF marker")
+    
+    if header[8:12] != b"WAVE":
+        raise ValueError("Not a valid WAV file: missing RIFF marker")
 
 
 def change_volume(
@@ -206,14 +279,16 @@ def change_volume(
     bit_format: str = BIT_FORMAT,
     header_size: int = HEADER_SIZE,
     sample_size: int = SAMPLE_SIZE,
-) -> None:
+    int16_min: int = INT16_MIN,
+    int16_max: int = INT16_MAX,
+) -> VolumeChangeResult:
     """
     """
     if not input_file or not output_file:
         raise FileNotFoundError("File(s) path cannot be empty")
     
     if not factor:
-        raise ValueError("Factor cannt be empty")
+        raise ValueError("Factor cannot be empty")
     
     #Open files in "rb" (read binary) and "wb" (write binary) modes
     # Use context manager ('with...') to make sure connector to file is close after with block
@@ -223,15 +298,21 @@ def change_volume(
         file_empty = True
         # 1. Read the exact 44-byte header and immediately write it to the new file
         header = infile.read(header_size)
+        
+        _validate_wav_header(header) # Validate header before processing
+        logger.debug(f"Audio file header verified......")
+        
         outfile.write(header)
 
+        samples_clipped = 0
+        samples_processed = 0
         count_bytes = 0
         
         # 2. Loop through the rest of the file, 2 bytes at a time
         while True:
             sample_bytes = infile.read(sample_size)
                 
-            # If we didn't get any bytes, we rechaed the end of the file
+            # If we didn't get any bytes, we reached the end of the file
             if not sample_bytes:
                 break
             
@@ -244,25 +325,41 @@ def change_volume(
             # 3. Unpack the 2 raw bytes into a Python integer
             # '<h' tells Python: "This is a Little-Endian, 16-bit signed integer (short)"
             # struct.unpack grabs those bytes and translates them into a human-readable math number(like -543)
+            #   - struct.unpack always returns a tuple, because it is designed to unpack 
+            #      multiple values at once (e.g., '<hhh' would return 3 integers). 
+            #   - Even though we only ask for one value, it returns it like this: (453,)
             sample = struct.unpack(bit_format, sample_bytes)[0]
-                
+            samples_processed += 1
+            
             # 4. Change the volume (multiply by factor)
-            new_sample = int(sample * factor)
-                
+            raw_sample = sample * factor
+            
             # 5. Prevent Clipping (Clamp values to 16-bit limits)
-            new_sample = new_sample if new_sample <= 32767 else 32767
-            new_sample = new_sample if new_sample >= -32768 else -32768
-                
+            # In function - Pythonic clamping with max/min
+            clamped = max(int16_min, min(int16_max, raw_sample))
+            
+            if clamped != raw_sample:
+                samples_clipped += 1
+            
             # 6. Pack the new integer back into 2 raw bytes and write it
-            # struct.pack translates your  match back into the raw machine bytes the WAV file expects
-            new_sample_bytes = struct.pack(bit_format, new_sample)
+            # struct.pack translates your math back into the raw machine bytes the WAV file expects
+            new_sample_bytes = struct.pack(bit_format, clamped)
             outfile.write(new_sample_bytes)
                 
         if file_empty:
             raise ValueError(f"File {input_file} is empty")
-        logger.debug(f"Input file not empty, updating {count_bytes} bytes......")
         
-        logger.info(f"Success: Updated volume by factor of {factor} in {output_file}")
+        logger.info(
+            f"Success: Updated volume by factor of {factor}, from {input_file.name} to {output_file.name}"
+        )
+        
+    return {
+        "bytes_processed":   count_bytes,
+        "samples_processed": samples_processed,
+        "samples_clipped": samples_clipped,
+        "output_file": output_file,
+    }
+        
         
 
 # =============================================================================
@@ -279,12 +376,12 @@ def main(argv: list[str] | None = None) -> int:
     #   -> parser.add_argument("input_file", nargs=1)
     #   -> Returns a list -> ['input.wav']
     parser.add_argument(
-        "-input", "--input-file",
+        "-i", "--input-file",  # Standard: -i for short, --input-file for long
         type= str,
         help="Enter file name of input audio file",
     )
     parser.add_argument(
-        "-out", "--output-file",
+        "-o", "--output-file",
         type=str,
         default=OUT_FNAME,
         help=f"Enter file name of output audio file. Default if 'None': {OUT_FNAME}",
@@ -295,7 +392,7 @@ def main(argv: list[str] | None = None) -> int:
         help="Enter factor number to be used to update volume of audio file",
     )
     parser.add_argument(
-        "-dir", "--directory",
+        "-d", "--directory",
         type=str,
         help=f"Enter directory or Path to search for input audio file. Default is current directory or {DATA_DIR}"
     )
@@ -315,7 +412,11 @@ def main(argv: list[str] | None = None) -> int:
         input_file = validate_input_file(args.input_file, args.directory)
         output_file = validate_output_file(input_file, args.output_file)
         
-        change_volume(input_file, output_file, args.factor)
+        result = change_volume(
+            input_file,
+            output_file, 
+            args.factor,
+        )
         
     except KeyboardInterrupt:
         logger.warning("\nInterrupted by user. Exiting.")
@@ -332,6 +433,10 @@ def main(argv: list[str] | None = None) -> int:
     except Exception as e:
         logger.exception(f"Unexpected Error: {e}")
         return EXIT_FAILURE
+    
+    logger.info(f"Processed {result['samples_processed']} samples")
+    logger.info(f"Clipped {result['samples_clipped']} samples")
+    logger.info(f"Output file saved to -> '{result['output_file']}'")
         
     return EXIT_SUCCESS
 
