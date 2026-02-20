@@ -9,6 +9,8 @@ print(f"height = {args.height}")
 print(f"type = {type(args.height)}")
 print(f"files = {args.files}")
 
+# Nargs produces a list or argument in all cases mentioned below**
+
 # =============================================================================
 # ARGPARSE NARGS QUICK REFERENCE
 # =============================================================================
