@@ -64,3 +64,29 @@ def read_bmp(filename):
     full_header = bmp_header + dib_header
     return width, height, pixels, full_header
 
+
+def write_bmp(filename, width, height, pixels, headers):
+    """Writes a 2D list of pixels back into a BMP file."""
+    with open(filename, "wb") as f:
+        # 1. Write the exact same headers back
+        f.write(headers)
+
+        # Calculate padding again
+        padding = (4 - (width * 3) % 4) % 4
+        padding_bytes = b'\x00' * padding
+        
+        # 2. Write the Pixel Array
+        for row in pixels:
+            for pixel in row:
+                b, g, r = pixel
+                
+                # Failsafe: Ensure Values are integer and clamped between 0-255
+                b = max(0, min(255, int(b)))
+                g = max(0, min(255, int(g)))
+                r = max(0, min(255, int(r)))
+                
+                # Pack the B, G, R values back into 3 bytes and write
+                f.write(struct.pack('<BBB', b, g, r))
+                
+            #  Add the padding bytes at the end of the row
+            f.write(padding_bytes)
