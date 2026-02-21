@@ -7,6 +7,28 @@ def apply_grayscale(width, height, pixels):
     # depends on neighbors (like blur/edges).
     # For grayscale it's fine, but copy.deepcopy is a safe habit!
     new_pixels = copy.deepcopy(pixels)
+    # =============================================================================
+    # COPYING LISTS QUICK REFERENCE
+    # =============================================================================
+    #
+    # Simple list (no nesting):
+    #     copy = original.copy()
+    #     copy = list(original)
+    #     copy = original[:]
+    #
+    # Nested list (like pixels):
+    #     from copy import deepcopy
+    #     copy = deepcopy(original)  # Simple but slow
+    #
+    #     # Or: List comprehension (faster)
+    #     copy = [[pixel.copy() for pixel in row] for row in pixels]
+    #     copy = [[[b, g, r] for b, g, r in row] for row in pixels]
+    #
+    # Creating NEW structure (fastest for filters):
+    #     new = [[None] * width for _ in range(height)]
+    #     # Then fill with new values
+    #
+    # =============================================================================
     
     for y in range(height):
         for x in range(width):
