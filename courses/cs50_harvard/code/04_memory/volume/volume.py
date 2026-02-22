@@ -86,6 +86,43 @@ OUT_FNAME: Final[str] = "output.wav"
 
 # Use '__file__' for the actual file path
 DATA_DIR: Final[Path] = Path(__file__).resolve().parent / "data"
+# =============================================================================
+# PATHLIB QUICK REFERENCE
+# =============================================================================
+#
+# Creating paths:
+#     Path("folder/file.txt")
+#     Path.home() / "Documents" / "file.txt"
+#     Path.cwd() / "data"
+#
+# Path properties:
+#     path.parent          # Parent directory
+#     path.name            # Full filename (image.bmp)
+#     path.stem            # Filename without extension (image)
+#     path.suffix          # Extension (.bmp)
+#     path.parts           # Tuple of components
+#
+# Path methods:
+#     path.exists()        # Does it exist?
+#     path.is_file()       # Is it a file?
+#     path.is_dir()        # Is it a directory?
+#     path.resolve()       # Absolute path
+#     path.expanduser()    # Expand ~ to home
+#     path.with_suffix()   # Change extension
+#     path.with_name()     # Change filename
+#     path.glob("*.bmp")   # Find matching files
+#     path.iterdir()       # List contents
+#
+# File operations:
+#     path.read_text()     # Read as string
+#     path.read_bytes()    # Read as bytes
+#     path.write_text(s)   # Write string
+#     path.write_bytes(b)  # Write bytes
+#     path.mkdir()         # Create directory
+#     path.unlink()        # Delete file
+#     path.rename(new)     # Rename/move
+#
+# =============================================================================
 
 # Exit codes (Unix standard)
 EXIT_SUCCESS: Final[int] = 0
