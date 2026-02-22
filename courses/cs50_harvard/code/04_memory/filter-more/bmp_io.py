@@ -4,7 +4,6 @@
 from __future__ import annotations
 from pathlib import Path
 from typing import Final
-import argparse
 import logging
 import struct
 import sys
@@ -15,22 +14,17 @@ import sys
 # =============================================================================
 
 # Exports
-
+__all__ = [
+    "read_bmp",
+    "write_bmp",
+]
 
 # Program Constants
 BMP_HEADER_SIZE: Final[int] = 14
 BMP_SIGNATURE: Final[bytes] = b"BM"
-FILE_EXT: Final[str] = ".bmp"
+PAD_HEX: Final[bytes] = b"\x00"
 PIXEL_SIZE: Final[int] = 3
 BPP: Final[int] = 24  # bits per pixel (3 bytes RGB)
-
-# Use '__file__' for the actual file path
-DATA_DIR : Final[Path] = Path(__file__).resolve().parent / "images"
-
-# Exit codes (Unix standard)
-EXIT_SUCCESS: Final[int] = 0
-EXIT_FAILURE: Final[int] = 1
-EXIT_KEYBOARD_INTERRUPT: Final[int] = 130
 
 # Inherits from Python's built-in Formatter
 class ColoredFormatter(logging.Formatter):
@@ -97,6 +91,12 @@ logger.addHandler(handler)
 # Core Functions
 # =============================================================================
 
+def _padding_calculator(width: int) -> int:
+    """
+    """
+    return (4 - (width * 3) % 4) % 4
+
+
 def read_bmp(
     in_file: Path | None = None,
     bmp_signature: bytes = BMP_SIGNATURE,
@@ -145,7 +145,7 @@ def read_bmp(
         # STEP 3: Calculate row padding
         # =====================================================
         # BMP rows must be multiplies of 4 bytes
-        padding = (4 - (width * 3) % 4) % 4
+        padding = _padding_calculator(width)
         
         # =====================================================
         # STEP 4: Read pixel data
@@ -168,4 +168,41 @@ def read_bmp(
     full_header = bmp_header + dib_header
     
     return width, height, pixels, full_header
+
+
+def write_bmp(
+    out_file: Path | None = None,
+    width: int | None = None,
+    pixels: list | None = None,
+    header: bytes | None = None,
+    pad_hex: bytes = PAD_HEX,
+) -> None:
+    """
+    """
+    if not out_file:
+        raise ValueError("Output file cannot be empty")
+    
+    if not width:
+        raise ValueError("Width cannot be empty")
+    
+    if not pixels:
+        raise ValueError("Pixels cannot be empty")
+    
+    if not header:
+        raise ValueError("Header cannot be empty")
+    
+    padding = _padding_calculator(width)
+    
+    with open(out_file, "wb") as f:
+        # Write original header
+        f.write(header)
+        
+        # Write pixel data
+        for row in pixels:
+            for pixel in row:
+                b, g, r = pixel
+                f.write(struct.pack('<BBB', b, g, r))
                 
+            # Write padding
+            f.write(pad_hex * padding)
+        
