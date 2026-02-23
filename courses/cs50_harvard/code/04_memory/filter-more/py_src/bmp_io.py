@@ -8,11 +8,7 @@ import struct
 
 from bmp_config import (
     ColoredFormatter,
-    BMP_HEADER_SIZE,
-    BMP_SIGNATURE,
-    PAD_HEX,
-    PIXEL_SIZE,
-    BPP,
+    BMP,
 )
 
 
@@ -55,10 +51,10 @@ def _padding_calculator(width: int) -> int:
 
 def read_bmp(
     in_file: Path | None = None,
-    bmp_signature: bytes = BMP_SIGNATURE,
-    bmp_header_size: int = BMP_HEADER_SIZE,
-    pixel_size: int = PIXEL_SIZE,
-    bpp_bmp: int = BPP,
+    bmp_signature: bytes = BMP.SIGNATURE,
+    bmp_header_size: int = BMP.HEADER_SIZE,
+    pixel_size: int = BMP.PIXEL_SIZE,
+    bpp_bmp: int = BMP.BPP,
 ) -> tuple[int, int, list, bytes]:
     """
     """
@@ -131,7 +127,7 @@ def write_bmp(
     width: int | None = None,
     pixels: list | None = None,
     header: bytes | None = None,
-    pad_hex: bytes = PAD_HEX,
+    pad_hex: bytes = BMP.PAD_HEX,
 ) -> None:
     """
     """
