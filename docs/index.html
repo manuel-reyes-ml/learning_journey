@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Learning Journey - Manuel Reyes | GenAI-First Data Analyst & AI Engineer → Senior LLM Engineer</title>
-    <meta name="description" content="37-month GenAI-First career transformation from financial services to Senior LLM Engineer. Production systems, MCP, LangGraph, Agentic AI, building in public.">
+    <meta name="description" content="37-month GenAI-First career transformation from financial services to Senior LLM Engineer. Production systems, RAG, Multimodal AI, building in public.">
     <style>
         * {
             margin: 0;
@@ -214,60 +214,82 @@
         .projects-section h2 {
             font-size: 1.4em;
             color: #333;
-            margin-bottom: 20px;
+            margin-bottom: 5px;
             text-align: center;
+        }
+        .projects-subtitle {
+            font-size: 0.9em;
+            color: #999;
+            text-align: center;
+            margin-bottom: 20px;
         }
         .project-list {
             list-style: none;
         }
         .project-item {
             padding: 15px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             border-radius: 8px;
             background: white;
             border-left: 4px solid #667eea;
         }
+        .project-item.flagship-border {
+            border-left: 4px solid #f5576c;
+        }
         .project-item h3 {
             color: #667eea;
-            font-size: 1.1em;
-            margin-bottom: 8px;
+            font-size: 1.05em;
+            margin-bottom: 6px;
         }
         .project-item .status {
             display: inline-block;
-            padding: 4px 10px;
+            padding: 3px 10px;
             border-radius: 12px;
-            font-size: 0.85em;
+            font-size: 0.8em;
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
         }
         .status.live {
             background: #d1fae5;
             color: #065f46;
         }
-        .status.launching {
+        .status.building {
             background: #fef3c7;
             color: #92400e;
         }
-        .status.next {
+        .status.planned {
             background: #e0e7ff;
             color: #3730a3;
         }
+        .status.flagship {
+            background: #fce7f3;
+            color: #9d174d;
+        }
         .project-item p {
             color: #666;
-            font-size: 0.95em;
+            font-size: 0.9em;
             line-height: 1.5;
         }
         .project-impact {
-            color: #10b981;
+            color: #10b981 !important;
             font-weight: 600;
-            margin-top: 8px;
-            font-size: 0.9em;
+            margin-top: 6px;
+            font-size: 0.85em !important;
         }
         .project-tech {
-            color: #667eea;
+            color: #667eea !important;
             font-weight: 600;
-            margin-top: 5px;
-            font-size: 0.85em;
+            margin-top: 4px;
+            font-size: 0.8em !important;
+        }
+        .project-skill-tag {
+            display: inline-block;
+            background: #f0f4ff;
+            color: #4b5563;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            margin-top: 4px;
         }
         
         /* CTA Buttons */
@@ -431,15 +453,15 @@
         <!-- AI Differentiator -->
         <div class="ai-box">
             <h2>🚀 2026 Market Advantage: GenAI/LLM Engineering from Week 1</h2>
-            <p>While most candidates learn traditional tools only, this journey integrates GenAI/LLM engineering systematically from Week 1—building production AI systems with LLM SDKs (Gemini, OpenAI, Claude), LangChain, and Streamlit by Month 1. Progressing through Vector DBs, RAG, local LLMs, to MCP + multi-agent orchestration by Month 34.</p>
+            <p>While most candidates learn traditional tools only, this journey integrates GenAI/LLM engineering systematically from Week 1—building production AI systems with LLM SDKs (Gemini, OpenAI, Claude), RAG pipelines, Multimodal AI, and Streamlit by Month 1. Progressing through Vector DBs, local LLMs, to MCP + multi-agent orchestration by Month 34.</p>
             <div class="ai-tools">
                 <span class="ai-tool">LLM SDKs (Gemini/OpenAI/Claude)</span>
-                <span class="ai-tool">LangChain</span>
-                <span class="ai-tool">LangGraph</span>
+                <span class="ai-tool">RAG + ChromaDB</span>
+                <span class="ai-tool">Multimodal AI</span>
+                <span class="ai-tool">Pydantic</span>
                 <span class="ai-tool">Streamlit</span>
-                <span class="ai-tool">MCP (Anthropic)</span>
-                <span class="ai-tool">Cursor AI IDE</span>
                 <span class="ai-tool">PandasAI</span>
+                <span class="ai-tool">Cursor AI IDE</span>
             </div>
         </div>
         
@@ -474,7 +496,7 @@
                 <div class="stage-item current">
                     <h3>📊 Stage 1: GenAI-First DA & AI Eng</h3>
                     <p><strong>Status:</strong> Active (Months 1-5)</p>
-                    <p><strong>Focus:</strong> Python, SQL + LLM SDKs + IBM GenAI Cert + Streamlit</p>
+                    <p><strong>Focus:</strong> Python, SQL + LLM SDKs + RAG + Multimodal AI + Streamlit</p>
                     <p><strong>Goal:</strong> AI Engineer who knows Analytics</p>
                 </div>
                 <div class="stage-item upcoming">
@@ -500,29 +522,62 @@
             </div>
         </div>
         
-        <!-- Active Projects -->
+        <!-- Project Pipeline -->
         <div class="projects-section">
-            <h2>💼 Project Pipeline: Production → GenAI Integration → Flagship</h2>
+            <h2>💼 Project Pipeline — Skills Progression (Easy → Flagship)</h2>
+            <p class="projects-subtitle">Each project introduces new skills that build on the previous</p>
             <ul class="project-list">
                 <li class="project-item">
                     <span class="status live">✅ DEPLOYED</span>
-                    <h3>1099 Reconciliation ETL Pipeline</h3>
+                    <h3>1. 1099 Reconciliation ETL Pipeline</h3>
                     <p>Production system automating retirement plan distribution reconciliation between enterprise financial systems.</p>
                     <p class="project-impact">💰 $15K+ annual savings • ⚡ 95% time reduction • 📊 Zero errors since deployment</p>
+                    <p class="project-tech">Python • pandas • openpyxl • pytest • GitHub Actions CI</p>
+                    <span class="project-skill-tag">Foundation: ETL + Testing + CI/CD</span>
                 </li>
                 <li class="project-item">
-                    <span class="status launching">🚧 LAUNCHING</span>
-                    <h3>Operations-Demand-Intelligence</h3>
-                    <p><strong>GenAI-Powered Workflow Analytics:</strong> Enterprise OnBase data analysis with PandasAI chat interface for data-driven staffing decisions.</p>
-                    <p class="project-tech">🤖 GenAI Stack: LLM SDK (provider-agnostic) + PandasAI + Natural language queries + AI-generated insights + Privacy guardrails</p>
+                    <span class="status planned">📅 NEXT</span>
+                    <h3>2. DataVault Analyst — First AI Project</h3>
+                    <p><strong>AI-Powered PII-Safe Data Intelligence:</strong> Natural language analytics for retirement plan operations with PII protection and AI guardrails.</p>
+                    <p class="project-tech">🤖 LLM SDK (provider-agnostic) + PandasAI + Pydantic structured outputs + PII guardrails</p>
+                    <span class="project-skill-tag">+ LLM SDK + Streamlit + Pydantic + PII Handling</span>
+                </li>
+                <li class="project-item">
+                    <span class="status planned">📅 PLANNED</span>
+                    <h3>3. PolicyPulse — RAG Foundation</h3>
+                    <p><strong>AI-Powered HR Policy Chatbot:</strong> RAG chatbot answering policy questions with cited sources. Auto-escalates to HR when uncertain.</p>
+                    <p class="project-tech">🧠 Embeddings + ChromaDB + Semantic Search + RAG Pipeline + Ticket Escalation</p>
+                    <span class="project-skill-tag">+ Embeddings + ChromaDB + RAG + Semantic Search</span>
+                </li>
+                <li class="project-item">
+                    <span class="status planned">📅 PLANNED</span>
+                    <h3>4. FormSense — Document Intelligence</h3>
+                    <p><strong>AI-Powered Distribution Form Validator:</strong> Multimodal AI reads retirement plan forms (handwritten checkboxes, signatures), validates, and routes.</p>
+                    <p class="project-tech">👁️ Gemini Vision SDK + Multimodal AI + Business Rule Validation + Email Automation</p>
+                    <span class="project-skill-tag">+ Multimodal AI (Vision LLM) + Document Processing</span>
+                </li>
+                <li class="project-item">
+                    <span class="status building">🚧 IN DEVELOPMENT</span>
+                    <h3>5. Operations-Demand-Intelligence — Enterprise Analytics</h3>
+                    <p><strong>AI-Powered Workflow Demand Analysis:</strong> 8+ months of OnBase enterprise data enabling data-driven staffing decisions.</p>
+                    <p class="project-tech">🤖 LLM SDK + PandasAI + Plotly + Real production data + Privacy guardrails</p>
                     <p class="project-impact">🎯 8+ months enterprise data • 📊 Distribution vs Loan segmentation • 💬 AI chat interface</p>
+                    <span class="project-skill-tag">+ Enterprise Real Data + Advanced Analytics</span>
                 </li>
                 <li class="project-item">
-                    <span class="status next">📅 NEXT</span>
-                    <h3>Attention-Flow Catalyst (Flagship)</h3>
-                    <p><strong>5-Stage GenAI Evolution:</strong> GenAI-powered predictive trigger analysis for small-cap stocks. Statistical backtesting → Cloud scale → ML predictions → LLM interface → Multi-agent orchestration.</p>
-                    <p class="project-tech">🤖 Phase 1B: LLM SDKs + LangChain + Streamlit + AI-generated commentary + Conversational memory</p>
-                    <p class="project-impact">🔬 SEC data + Wikipedia + News • 📈 Walk-forward validation • 🎯 Complete LLM career demonstration</p>
+                    <span class="status planned">📅 PLANNED</span>
+                    <h3>6. StreamSmart Optimizer — Consumer AI App</h3>
+                    <p><strong>AI-Powered Streaming Subscription Advisor:</strong> Optimizes household streaming spend through AI rotation planning, content search, and savings forecasting.</p>
+                    <p class="project-tech">📺 Watchmode/TMDB APIs + httpx async + AI Rotation Planner + Cost Analytics</p>
+                    <span class="project-skill-tag">+ External APIs + Consumer UX + Optimization Engine</span>
+                </li>
+                <li class="project-item flagship-border">
+                    <span class="status flagship">🚀 FLAGSHIP</span>
+                    <h3>7. Attention-Flow Catalyst — 5-Stage Evolution</h3>
+                    <p><strong>AI-Powered Predictive Trigger Analysis:</strong> Defensible research system for small-cap stocks with statistical rigor. Evolves through all 5 career stages.</p>
+                    <p class="project-tech">🔬 SEC Form 4 + Wikipedia + News + DuckDB Lakehouse + Walk-Forward Validation</p>
+                    <p class="project-impact">📈 5 trigger types • 🎯 Statistical methodology • 🏗️ Complete LLM career demonstration</p>
+                    <span class="project-skill-tag">+ Statistical Methodology + DuckDB + Async + Multi-Source</span>
                 </li>
             </ul>
         </div>
@@ -565,8 +620,8 @@
                 <div class="stat-label">Hours/Week</div>
             </div>
             <div class="stat">
-                <div class="stat-number">3</div>
-                <div class="stat-label">Active Projects</div>
+                <div class="stat-number">7</div>
+                <div class="stat-label">Production-Grade Projects</div>
             </div>
         </div>
         
@@ -574,8 +629,12 @@
         <div class="footer">
             <div class="build-status">🟢 Active • GenAI-Powered • Building in Public • Production Systems</div>
             <br><br>
-            GenAI/LLM Integration + Agentic AI + Production Code + Domain Expertise
+            GenAI/LLM Integration + RAG + Multimodal AI + Production Code + Domain Expertise
             <br>
             <a href="https://github.com/manuel-reyes-ml" target="_blank">GitHub</a> • 
             <a href="https://www.linkedin.com/in/mr410/" target="_blank">LinkedIn</a> •
-            <a href="/cdn-cgi/l/email-protection#f794989983969483b79a969982929b85928e9284d9939281">Email<
+            <a href="mailto:manuelreyesv410@gmail.com">Email</a>
+        </div>
+    </div>
+</body>
+</html>
