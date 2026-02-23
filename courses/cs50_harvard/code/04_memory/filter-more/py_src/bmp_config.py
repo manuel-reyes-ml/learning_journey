@@ -2,6 +2,7 @@
 """
 
 from __future__ import annotations
+from dataclasses import dataclass
 from typing import Final
 import logging
 
@@ -12,27 +13,32 @@ import logging
 
 __all__ = [
     "ColoredFormatter",
-    "BMP_HEADER_SIZE",
-    "BMP_SIGNATURE",
-    "PAD_HEX",
-    "PIXEL_SIZE",
-    "BPP",
+    "BMP",
 ]
 
 
 # =============================================================================
-# Constants
+# Constants Configuration
 # =============================================================================
 
-BMP_HEADER_SIZE: Final[int] = 14
-BMP_SIGNATURE: Final[bytes] = b"BM"
-PAD_HEX: Final[bytes] = b"\x00"
-PIXEL_SIZE: Final[int] = 3
-BPP: Final[int] = 24  # bits per pixel (3 bytes RGB)
+# Final[] Type Hint only-tells type checkers "don't reassign" (IDE, mypy)
+# frozen=True Makes instance immutable at runtime 
+@dataclass(frozen=True)
+class BmpConstants:
+    """
+    """
+    HEADER_SIZE: Final[int] = 14
+    SIGNATURE: Final[bytes] = b"BM"
+    PAD_HEX: Final[bytes] = b"\x00"
+    PIXEL_SIZE: Final[int] = 3
+    BPP: Final[int] = 24  # bits per pixel (3 bytes RGB)
+
+
+BMP = BmpConstants()
 
 
 # =============================================================================
-# Configuration Classes
+# Logging Configuration
 # =============================================================================
 
 # Inherits from Python's built-in Formatter
