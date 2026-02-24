@@ -2,21 +2,10 @@
 """
 
 from __future__ import annotations
-from typing import Final, Callable
+from typing import Final, Callable, TypedDict
 from dataclasses import dataclass
 from pathlib import Path
 import logging
-import sys
-
-try:
-    from .bmp_filters import (
-    grayscale,
-    reflect,
-    blur,
-    edges,
-    )
-except ImportError as e:
-    sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
 
 
 # =============================================================================
@@ -25,8 +14,8 @@ except ImportError as e:
 
 __all__ = [
     "ColoredFormatter",
+    "DictDispatch",
     "FilterFunc",
-    "FUNCS",
     "DIRS",
     "EXIT",
     "BMP",
@@ -43,15 +32,6 @@ __all__ = [
 #       - Function that takes a list, returns a list
 #       - def process(pixels: list) -> list
 type FilterFunc = Callable[[list], list]
-
-# Keys = names (strings)
-# Values = functions (NOT called — no parentheses!)
-FUNCS: Final[dict[str, FilterFunc]] = {
-    "grayscale": grayscale,
-    "reflect": reflect,
-    "blur": blur,
-    "edges": edges,
-}
 
 # parent = parents[0] = bmp_config.py directory -> py_src/
 # parents[1] = project root directory -> filter-more/
@@ -87,11 +67,23 @@ class ExitCodes:
     SUCCESS: Final[int] = 0
     FAILURE: Final[int] = 1
     KEYBOARD_INTERRUPT: Final[int] = 130
-    
 
 DIRS = BmpDirectories()
 BMP = BmpConstants()
 EXIT = ExitCodes()
+
+
+# =============================================================================
+# Dictionary Dispatch Configuration
+# =============================================================================
+
+class DictDispatch(TypedDict):
+    """
+    """
+    grayscale: FilterFunc
+    reflect: FilterFunc
+    blur: FilterFunc
+    edges: FilterFunc
 
 
 # =============================================================================
