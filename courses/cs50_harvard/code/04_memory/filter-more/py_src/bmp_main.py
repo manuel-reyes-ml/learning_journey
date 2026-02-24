@@ -14,14 +14,9 @@ from bmp_config import (
     FilterFunc, 
     FUNCS,
     DIRS,
+    EXIT,
 )
 from bmp_io import read_bmp, write_bmp
-from bmp_filters import (
-    grayscale,
-    reflect,
-    blur,
-    edges,
-)
 
 
 # =============================================================================
@@ -131,17 +126,17 @@ def validate_infile(
 def validate_outfile(
     fname: str | None = None,
     in_file: Path | None = None,
+    filter_name: str | None = None,
     out_dir: Path = DIRS.OUT_DIR,
     file_ext: str = DIRS.FILE_EXT,
-    default_name: str = DIRS.OUT_FNAME,
 ) -> Path:
     """
     """
     if not fname:
-        if not in_file:
+        if not in_file or not filter_name:
             raise ValueError("File name cannot be empty")
         
-        fname = f"{in_file.stem}{default_name}"
+        fname = f"{in_file.stem}{filter_name}{file_ext}"
         
     out_file = out_dir / fname
     
@@ -166,14 +161,11 @@ def process_filter(
         raise ValueError("Pixels cannot be empty")
     
     try:
-        clean_filters = [
-            _validate_filter(filter) 
-            for filter in filters
-        ]
-        
-        for filter in clean_filters:
-            new_pixels = funcs[filter](pixels)  # Dictionary dispatch!
-            yield new_pixels, filter
+        for filter in filters:
+            clean_filter = _validate_filter(filter)
+            new_pixels = funcs[clean_filter](pixels)  # Dictionary dispatch!
+            
+            yield new_pixels, clean_filter
         
     except (
         argparse.ArgumentTypeError,
@@ -189,6 +181,86 @@ def process_filter(
 def main(argv: list[str] | None = None) -> int:
     """
     """
+    parser = argparse.ArgumentParser(
+        description=f"Apply one, some or all filters to an image. Options: {FUNCS.keys()}"
+    )
+    parser.add_argument(
+        "-i", "--input-file",
+        type=str,
+        help=f"Enter file name of input {DIRS.FILE_EXT} file",
+    )
+    parser.add_argument(
+        "-o", "--output-file",
+        type=str,
+        help=f"Enter file name of output {DIRS.FILE_EXT} file",
+    )
+    parser.add_argument(
+        "-f", "--filter",
+        type=_validate_filter,
+        nargs="+",
+        help=(
+            f"Enter filters to apply to the image. Use 'all' for all filters: {FUNCS.keys()}"
+        )
+    )
+    parser.add_argument(
+        "-d", "--directory",
+        type=str,
+        help=(
+            f"Enter directory path to search for {DIRS.FILE_EXT} file. Default is images/ directory"
+        )
+    )
+    parser.add_argument(
+        "-v", "--verbose",
+        action="store_true",
+        help="Enable verbose (debu) output"
+    )
     
+    args = parser.parse_args(argv)
     
+    if args.verbose:
+        logger.setLevel(logging.DEBUG)
+        logger.debug("Verbose mode enabled")
     
+    if str(args.filter).strip().lower() == "all":
+        filters = list(FUNCS.keys())
+    else:
+        filters = args.filter
+        
+    try:
+        # Step 1: Input and read BMP file
+        in_file = validate_infile(args.input_file, args.directory)
+        width, height, pixels, full_header = read_bmp(in_file)
+        
+        # Step 2: Process using a generator
+        for new_pixels, clean_filter in process_filter(pixels, filters):
+            
+            # Step 3: Generate output file and write BMP
+            out_file = validate_outfile(
+                args.output_file, 
+                in_file, 
+                clean_filter,
+            )
+            
+            write_bmp(out_file, width, new_pixels, full_header)
+            
+    except KeyboardInterrupt:
+        logger.warning("\nInterrupted by user. Exiting.")
+        return EXIT.KEYBOARD_INTERRUPT
+        
+    except (FileExistsError, FileNotFoundError) as e:
+        logger.error(f"Error in file: {e}")
+        return EXIT.FAILURE
+        
+    except ValueError as e:
+        logger.error(f"Error in processing: {e}")
+        return EXIT.FAILURE
+    
+    except Exception as e:
+        logger.exception(f"Unexpected Error: {e}")
+        return EXIT.FAILURE
+    
+    return EXIT.SUCCESS
+
+
+if __name__ == "__main__":
+    sys.exit(main()) 
