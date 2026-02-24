@@ -5,11 +5,15 @@ from __future__ import annotations
 from pathlib import Path
 import logging
 import struct
+import sys
 
-from bmp_config import (
+try:
+    from .bmp_config import (
     ColoredFormatter,
     BMP,
-)
+    )
+except ImportError as e:
+    sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
 
 
 # =============================================================================

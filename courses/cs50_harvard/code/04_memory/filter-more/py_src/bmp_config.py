@@ -6,13 +6,17 @@ from typing import Final, Callable
 from dataclasses import dataclass
 from pathlib import Path
 import logging
+import sys
 
-from bmp_filters import (
+try:
+    from .bmp_filters import (
     grayscale,
     reflect,
     blur,
     edges,
-)
+    )
+except ImportError as e:
+    sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
 
 
 # =============================================================================
@@ -75,6 +79,7 @@ class BmpConstants:
     PIXEL_SIZE: Final[int] = 3
     BPP: Final[int] = 24  # bits per pixel (3 bytes RGB)
 
+# Exit codes (Unix standard)
 @dataclass(frozen=True)
 class ExitCodes:
     """

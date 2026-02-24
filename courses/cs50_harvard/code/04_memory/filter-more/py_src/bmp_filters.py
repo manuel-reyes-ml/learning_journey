@@ -4,8 +4,12 @@
 from __future__ import annotations
 import logging
 import math
+import sys
 
-from bmp_config import ColoredFormatter
+try:
+    from .bmp_config import ColoredFormatter
+except ImportError as e:
+    sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
 
 
 # =============================================================================
