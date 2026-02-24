@@ -21,6 +21,7 @@ from bmp_filters import (
 
 __all__ = [
     "ColoredFormatter",
+    "FilterFunc",
     "FUNCS",
     "DIRS",
     "BMP",
@@ -31,9 +32,15 @@ __all__ = [
 # Constants Configuration
 # =============================================================================
 
-# Type alias for filter functions
-FilterFunc = Callable[[list], list]
+# Callable for function Type Hint
+#   - Syntax: Callable[[INPUT_TYPES], RETURN_TYPE]
+#       - Input parameters in a list
+#       - Function that takes a list, returns a list
+#       - def process(pixels: list) -> list
+type FilterFunc = Callable[[list], list]
 
+# Keys = names (strings)
+# Values = functions (NOT called — no parentheses!)
 FUNCS: Final[dict[str, FilterFunc]] = {
     "grayscale": grayscale,
     "reflect": reflect,
