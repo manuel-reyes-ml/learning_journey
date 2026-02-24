@@ -12,12 +12,18 @@ import sys
 try:
     from .bmp_config import (
         ColoredFormatter,
-        FilterFunc, 
-        FUNCS,
+        DictDispatch,
         DIRS,
         EXIT,
     )
+    from .bmp_filters import(
+        grayscale,
+        reflect,
+        edges,
+        blur,
+    )
     from .bmp_io import read_bmp, write_bmp
+    
 except ImportError as e:
     sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
 
@@ -33,6 +39,15 @@ except ImportError as e:
 # parents=True: create any missing parent directories
 # exist_ok=True: no error if directory already exists
 DIRS.OUT_DIR.mkdir(parents=True, exist_ok=True)
+
+# Keys = names (strings)
+# Values = functions (NOT called — no parentheses!)
+FUNCS: DictDispatch = {
+    "grayscale": grayscale,
+    "reflect": reflect,
+    "edges": edges,
+    "blur": blur,
+} 
 
 # Set up Logging
 logger = logging.getLogger(__name__)
@@ -51,7 +66,7 @@ logger.addHandler(handler)
 # Internal Helper Functions
 # =============================================================================
 
-def _validate_filter(filter: str | None = None, funcs: dict[str, FilterFunc] = FUNCS) -> str:
+def _validate_filter(filter: str | None = None, funcs: DictDispatch = FUNCS) -> str:
     """
     """
     if not filter:
@@ -153,7 +168,7 @@ def validate_outfile(
 def process_filter(
     pixels: list | None = None,
     filters: list[str] | None = None,
-    funcs: dict[str, FilterFunc] = FUNCS,
+    funcs: DictDispatch = FUNCS,
 ) -> Iterator[tuple[list, str]]:
     """
     """
