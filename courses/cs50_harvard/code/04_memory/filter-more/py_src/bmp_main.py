@@ -9,14 +9,17 @@ import logging
 import string
 import sys
 
-from bmp_config import (
-    ColoredFormatter,
-    FilterFunc, 
-    FUNCS,
-    DIRS,
-    EXIT,
-)
-from bmp_io import read_bmp, write_bmp
+try:
+    from .bmp_config import (
+        ColoredFormatter,
+        FilterFunc, 
+        FUNCS,
+        DIRS,
+        EXIT,
+    )
+    from .bmp_io import read_bmp, write_bmp
+except ImportError as e:
+    sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
 
 
 # =============================================================================
