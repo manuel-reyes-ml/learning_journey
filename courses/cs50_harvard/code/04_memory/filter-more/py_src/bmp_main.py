@@ -180,6 +180,14 @@ def process_filter(
     ) as e:
         raise ValueError(f"Validation Error: {e}") from e
     
+
+# =============================================================================
+# CLI Entry Point
+# =============================================================================
+
+def main(argv: list[str] | None = None) -> int:
+    """
+    """
     
     
     
