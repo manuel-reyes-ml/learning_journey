@@ -2,7 +2,7 @@
 """
 
 from __future__ import annotations
-from typing import Callable, Iterator
+from typing import Iterator
 from pathlib import Path
 import argparse
 import logging
@@ -10,7 +10,8 @@ import string
 import sys
 
 from bmp_config import (
-    ColoredFormatter, 
+    ColoredFormatter,
+    FilterFunc, 
     FUNCS,
     DIRS,
 )
@@ -52,7 +53,7 @@ logger.addHandler(handler)
 # Internal Helper Functions
 # =============================================================================
 
-def _validate_filter(filter: str | None = None, funcs: dict[str, Callable] = FUNCS) -> str:
+def _validate_filter(filter: str | None = None, funcs: dict[str, FilterFunc] = FUNCS) -> str:
     """
     """
     if not filter:
@@ -154,8 +155,8 @@ def validate_outfile(
 def process_filter(
     pixels: list | None = None,
     filters: list[str] | None = None,
-    funcs: dict[str, Callable] = FUNCS,
-) -> Iterator[list]:
+    funcs: dict[str, FilterFunc] = FUNCS,
+) -> Iterator[tuple[list, str]]:
     """
     """
     if not filters:
@@ -172,7 +173,7 @@ def process_filter(
         
         for filter in clean_filters:
             new_pixels = funcs[filter](pixels)  # Dictionary dispatch!
-            yield new_pixels
+            yield new_pixels, filter
         
     except (
         argparse.ArgumentTypeError,
