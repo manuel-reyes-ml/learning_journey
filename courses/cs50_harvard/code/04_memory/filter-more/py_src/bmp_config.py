@@ -3,6 +3,7 @@
 
 from __future__ import annotations
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Final
 import logging
 
@@ -13,6 +14,8 @@ import logging
 
 __all__ = [
     "ColoredFormatter",
+    "FILTERS",
+    "DIRS",
     "BMP",
 ]
 
@@ -20,6 +23,27 @@ __all__ = [
 # =============================================================================
 # Constants Configuration
 # =============================================================================
+
+FILTERS: Final[list[str]] = [
+    "grayscale",
+    "reflect",
+    "blur",
+    "edges",
+]
+
+# parent = parents[0] = bmp_config.py directory -> py_src/
+# parents[1] = project root directory -> filter-more/
+CUR_DIR: Final[Path] = Path(__file__).resolve().parent
+BASE_DIR: Final[Path] = CUR_DIR.parent
+
+@dataclass(frozen=True)
+class BmpDirectories:
+    """
+    """
+    FILE_EXT: str = ".bmp"
+    INPUT_DIR: Path = BASE_DIR / "images"
+    OUT_DIR: Path = CUR_DIR / "filtered_imgs"
+    OUT_FNAME: str = f"_filtered{FILE_EXT}"
 
 # Final[] Type Hint only-tells type checkers "don't reassign" (IDE, mypy)
 # frozen=True Makes instance immutable at runtime 
@@ -33,7 +57,7 @@ class BmpConstants:
     PIXEL_SIZE: Final[int] = 3
     BPP: Final[int] = 24  # bits per pixel (3 bytes RGB)
 
-
+DIRS = BmpDirectories()
 BMP = BmpConstants()
 
 
