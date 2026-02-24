@@ -91,8 +91,8 @@ def read_bmp(
         height = struct.unpack('<i', dib_header[8:12])[0]
         
         # Extract bits per pixel (bytes 14-15 in DIB)
-        # '<H' = little-endian unsigned 16-bit
-        bpp = struct.unpack('<H', dib_header[14:15])[0]
+        # '<H' = little-endian unsigned 16-bit: Requires 2 bytes
+        bpp = struct.unpack('<H', dib_header[14:16])[0]
         
         if bpp != bpp_bmp:
             raise ValueError(f"Only {bpp_bmp}-bit BMPs supported. Got {bpp}-bit.")
