@@ -40,7 +40,7 @@ except ImportError as e:
 # exist_ok=True: no error if directory already exists
 DIRS.OUT_DIR.mkdir(parents=True, exist_ok=True)
 
-# Keys = names (strings)
+# Keys = function names (strings)
 # Values = functions (NOT called — no parentheses!)
 FUNCS: DictDispatch = {     # Creating Dictionary Dispatch for faster func iteration
     "grayscale": grayscale,
@@ -72,8 +72,7 @@ def _validate_filter(filter: str | None = None, funcs: DictDispatch = FUNCS) -> 
     if not filter:
         raise argparse.ArgumentTypeError("Filter cannot be empty")
     
-    filter = filter.strip()
-    clean_filter = filter.strip(string.punctuation).lower()
+    clean_filter = filter.strip().strip(string.punctuation).lower()
     
     if not clean_filter.isalpha():
         raise argparse.ArgumentTypeError("Filter must be alphabetic")
@@ -84,6 +83,20 @@ def _validate_filter(filter: str | None = None, funcs: DictDispatch = FUNCS) -> 
         )
     
     return clean_filter
+
+
+def _validate_filters(filters: list[str] | None = None) -> Iterator[str]:
+    """
+    """
+    if not filters:
+        raise ValueError("Filters cannot be empty")
+    
+    # Set is an unordered collection of UNIQUE items
+    if len(filters) != len(set(filters)):
+        raise ValueError("Filters must not contain duplicates")
+    
+    for filter in filters:
+        yield _validate_filter(filter)
 
 
 # =============================================================================
@@ -179,11 +192,10 @@ def process_filter(
         raise ValueError("Pixels cannot be empty")
     
     try:
-        for filter in filters:
-            clean_filter = _validate_filter(filter)
-            new_pixels = funcs[clean_filter](pixels)  # Dictionary dispatch!
-            
-            yield new_pixels, clean_filter
+        for clean_filter in _validate_filters(filters):
+            # funcs[clean_filter](pixels):  Dictionary dispatch!
+            # Applies filter function following clean_filter("blur", "reflect", etc.)
+            yield funcs[clean_filter](pixels), clean_filter
         
     except (
         argparse.ArgumentTypeError,
@@ -249,7 +261,7 @@ def main(argv: list[str] | None = None) -> int:
         in_file = validate_infile(args.input_file, args.directory)
         width, height, pixels, full_header = read_bmp(in_file)
         
-        # Step 2: Process using a generator
+        # Step 2: Apply filter using a generator
         for new_pixels, clean_filter in process_filter(pixels, filters):
             
             # Step 3: Generate output file and write BMP
