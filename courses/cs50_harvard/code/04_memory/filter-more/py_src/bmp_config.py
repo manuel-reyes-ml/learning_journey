@@ -2,10 +2,17 @@
 """
 
 from __future__ import annotations
+from typing import Final, Callable
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Final
 import logging
+
+from bmp_filters import (
+    grayscale,
+    reflect,
+    blur,
+    edges,
+)
 
 
 # =============================================================================
@@ -14,7 +21,7 @@ import logging
 
 __all__ = [
     "ColoredFormatter",
-    "FILTERS",
+    "FUNCS",
     "DIRS",
     "BMP",
 ]
@@ -24,12 +31,15 @@ __all__ = [
 # Constants Configuration
 # =============================================================================
 
-FILTERS: Final[list[str]] = [
-    "grayscale",
-    "reflect",
-    "blur",
-    "edges",
-]
+# Type alias for filter functions
+FilterFunc = Callable[[list], list]
+
+FUNCS: Final[dict[str, FilterFunc]] = {
+    "grayscale": grayscale,
+    "reflect": reflect,
+    "blur": blur,
+    "edges": edges,
+}
 
 # parent = parents[0] = bmp_config.py directory -> py_src/
 # parents[1] = project root directory -> filter-more/
@@ -111,3 +121,32 @@ class ColoredFormatter(logging.Formatter):
         
         # Step 3: Wrap with color codes
         return f"{color}{message}{self.RESET}"
+    
+    
+# =============================================================================
+# FUNCTION DISPATCH QUICK REFERENCE
+# =============================================================================
+#
+# Dictionary dispatch (most common):
+#     FUNCS = {"name": func, ...}
+#     result = FUNCS[name](args)
+#
+# getattr() for class methods:
+#     func = getattr(self, method_name)
+#     result = func(args)
+#
+# Decorator registry:
+#     REGISTRY = {}
+#     def register(func):
+#         REGISTRY[func.__name__] = func
+#         return func
+#
+#     @register
+#     def my_func(): ...
+#
+# With validation:
+#     if name not in FUNCS:
+#         raise ValueError(f"Unknown: {name}")
+#     FUNCS[name](args)
+#
+# =============================================================================
