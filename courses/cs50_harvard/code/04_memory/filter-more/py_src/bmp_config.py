@@ -24,6 +24,7 @@ __all__ = [
     "FilterFunc",
     "FUNCS",
     "DIRS",
+    "EXIT",
     "BMP",
 ]
 
@@ -74,8 +75,18 @@ class BmpConstants:
     PIXEL_SIZE: Final[int] = 3
     BPP: Final[int] = 24  # bits per pixel (3 bytes RGB)
 
+@dataclass(frozen=True)
+class ExitCodes:
+    """
+    """
+    SUCCESS: Final[int] = 0
+    FAILURE: Final[int] = 1
+    KEYBOARD_INTERRUPT: Final[int] = 130
+    
+
 DIRS = BmpDirectories()
 BMP = BmpConstants()
+EXIT = ExitCodes()
 
 
 # =============================================================================
