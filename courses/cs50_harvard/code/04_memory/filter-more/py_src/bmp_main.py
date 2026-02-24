@@ -42,7 +42,7 @@ DIRS.OUT_DIR.mkdir(parents=True, exist_ok=True)
 
 # Keys = names (strings)
 # Values = functions (NOT called — no parentheses!)
-FUNCS: DictDispatch = {
+FUNCS: DictDispatch = {     # Creating Dictionary Dispatch for faster func iteration
     "grayscale": grayscale,
     "reflect": reflect,
     "edges": edges,
@@ -154,7 +154,7 @@ def validate_outfile(
         if not in_file or not filter_name:
             raise ValueError("File name cannot be empty")
         
-        fname = f"{in_file.stem}{filter_name}{file_ext}"
+        fname = f"{in_file.stem}_{filter_name}{file_ext}"
         
     out_file = out_dir / fname
     
@@ -273,7 +273,8 @@ def main(argv: list[str] | None = None) -> int:
         logger.error(f"Error in processing: {e}")
         return EXIT.FAILURE
     
-    except Exception as e:
+    except Exception as e:  # Catches every other exception in program
+        # Appears as logging.error, provides Python's traceback info
         logger.exception(f"Unexpected Error: {e}")
         return EXIT.FAILURE
     
