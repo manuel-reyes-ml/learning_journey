@@ -32,7 +32,7 @@ __all__ = [
 # Constants Configuration
 # =============================================================================
 
-# Callable for function Type Hint
+# Type Alias: Callable for function Type Hint
 #   - Syntax: Callable[[INPUT_TYPES], RETURN_TYPE]
 #       - Input parameters in a list
 #       - Function that takes a list, returns a list
@@ -129,7 +129,39 @@ class ColoredFormatter(logging.Formatter):
         # Step 3: Wrap with color codes
         return f"{color}{message}{self.RESET}"
     
-    
+
+# =============================================================================
+# CALLABLE, TYPE ALIAS & DICTIONARY DISPATCH
+# =============================================================================
+#
+# CALLABLE - Type hint for functions:
+#     Callable[[input_types], return_type]
+#
+#     Callable[[], None]           # No params, no return
+#     Callable[[str], int]         # str → int
+#     Callable[[int, int], float]  # (int, int) → float
+#     Callable[[list], list]       # list → list
+#
+# TYPE ALIAS - Name for a type:
+#     FilterFunc = Callable[[list], list]
+#     Pixel = list[int]
+#     ImageData = list[list[Pixel]]
+#
+# DICTIONARY DISPATCH - Map names to functions:
+#     FUNCS: dict[str, Callable] = {
+#         "name1": func1,
+#         "name2": func2,
+#     }
+#
+#     # Get and call
+#     FUNCS["name1"](args)
+#
+#     # With validation
+#     if name in FUNCS:
+#         return FUNCS[name](args)
+#     raise ValueError(f"Unknown: {name}")
+#
+# =============================================================================
 # =============================================================================
 # FUNCTION DISPATCH QUICK REFERENCE
 # =============================================================================
