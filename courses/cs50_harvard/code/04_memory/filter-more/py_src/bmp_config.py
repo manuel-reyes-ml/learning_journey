@@ -16,6 +16,7 @@ __all__ = [
     "ColoredFormatter",
     "DictDispatch",
     "FilterFunc",
+    "CUR_DIR",
     "DIRS",
     "EXIT",
     "BMP",
