@@ -12,6 +12,7 @@ import sys
 try:
     from .bmp_config import (
         DictDispatch,
+        CUR_DIR,
         DIRS,
         EXIT,
     )
@@ -37,7 +38,7 @@ except ImportError as e:
 
 
 # Program Constants
-MODULE_NAME: Final[str] = "py_src.bmp_main"
+MODULE_NAME: Final[str] = f"{CUR_DIR.name}.bmp_main"
 
 # Keys = function names (strings)
 # Values = functions (NOT called — no parentheses!)
