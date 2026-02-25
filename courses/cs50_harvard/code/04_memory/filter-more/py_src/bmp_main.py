@@ -215,7 +215,7 @@ def main(argv: list[str] | None = None) -> int:
     """
     """
     parser = argparse.ArgumentParser(
-        description=f"Apply one, some or all filters to an image. Options: {FUNCS.keys()}"
+        description=f"Apply one, some or all filters to an image. Options: {list(FUNCS.keys())}"
     )
     parser.add_argument(
         "-i", "--input-file",
@@ -232,7 +232,7 @@ def main(argv: list[str] | None = None) -> int:
         type=_validate_filter,
         nargs="+",
         help=(
-            f"Enter filters to apply to the image. Use 'all' for all filters: {FUNCS.keys()}"
+            f"Enter filters to apply to the image. Use 'all' for all filters: {list(FUNCS.keys())}"
         )
     )
     parser.add_argument(
