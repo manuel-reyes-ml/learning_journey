@@ -2,7 +2,7 @@
 """
 
 from __future__ import annotations
-from typing import Iterator
+from typing import Iterator, Final
 from pathlib import Path
 import argparse
 import logging
@@ -11,7 +11,6 @@ import sys
 
 try:
     from .bmp_config import (
-        ColoredFormatter,
         DictDispatch,
         DIRS,
         EXIT,
@@ -22,6 +21,8 @@ try:
         edges,
         blur,
     )
+    
+    from .bmp_logger import setup_logging
     from .bmp_io import read_bmp, write_bmp
     
 except ImportError as e:
@@ -36,6 +37,8 @@ except ImportError as e:
 
 
 # Program Constants
+MODULE_NAME: Final[str] = "py_src.bmp_main"
+
 # Keys = function names (strings)
 # Values = functions (NOT called — no parentheses!)
 FUNCS: DictDispatch = {     # Creating Dictionary Dispatch for faster func iteration
@@ -46,16 +49,11 @@ FUNCS: DictDispatch = {     # Creating Dictionary Dispatch for faster func itera
 } 
 
 # Set up Logging
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-
-# Create handler with colored formatter
-handler = logging.StreamHandler()
-handler.setFormatter(ColoredFormatter(
-    fmt='%(asctime)s : %(levelname)s : %(message)s',
-    datefmt='%H:%M:%S',
-))
-logger.addHandler(handler)
+setup_logging()  # Uses logging.INFO by default!
+# When running this module Python assigns string '__main__' to '__name__',
+# so we need to assign the module name directly so this logger is assigned
+# to the 'py_src' logger hierarchy we created in bmp_logger.py.
+logger = logging.getLogger(MODULE_NAME)
 
 
 # =============================================================================
@@ -165,6 +163,7 @@ def validate_outfile(
         if not in_file or not filter_name:
             raise ValueError("File name cannot be empty")
         
+        # path.stem gives filename without extention (image)
         fname = f"{in_file.stem}_{filter_name}{file_ext}"
         
     out_file = out_dir / fname
@@ -251,7 +250,7 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     
     if args.verbose:
-        logger.setLevel(logging.DEBUG)
+        setup_logging(level=logging.DEBUG)
         logger.debug("Verbose mode enabled")
     
     if str(args.filter).strip().lower() == "all":
