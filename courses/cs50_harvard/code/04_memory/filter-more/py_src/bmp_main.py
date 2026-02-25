@@ -72,11 +72,12 @@ def _validate_filter(filter: str | None = None, funcs: DictDispatch = FUNCS) -> 
     if not clean_filter.isalpha():
         raise argparse.ArgumentTypeError("Filter must be alphabetic")
     
-    if not clean_filter in funcs:
-        raise argparse.ArgumentTypeError(
-            f"{filter} is not part or current functions: {funcs.keys()}"
-        )
-    
+    if clean_filter != "all":
+        if not clean_filter in funcs:
+            raise argparse.ArgumentTypeError(
+                f"{filter} is not part or current functions: {funcs.keys()}"
+            )
+        
     return clean_filter
 
 
@@ -109,7 +110,7 @@ def validate_infile(
     """
     """
     if not fname:
-        raise ValueError("File name cannot be empty")
+        raise ValueError("Input file name cannot be empty")
     
     # Convert string into a Path object
     if input_dir:
@@ -228,9 +229,9 @@ def main(argv: list[str] | None = None) -> int:
         help=f"Enter file name of output {DIRS.FILE_EXT} file",
     )
     parser.add_argument(
-        "-f", "--filter",
+        "filter",   # Positional argument make entry required
         type=_validate_filter,
-        nargs="+",
+        nargs="+",  # One or more arguments are required
         help=(
             f"Enter filters to apply to the image. Use 'all' for all filters: {list(FUNCS.keys())}"
         )
@@ -254,7 +255,8 @@ def main(argv: list[str] | None = None) -> int:
         setup_logging(level=logging.DEBUG)
         logger.debug("Verbose mode enabled")
     
-    if str(args.filter).strip().lower() == "all":
+    # Arv(args) returns a list when 'nargs=' is used
+    if args.filter[0].strip().strip(string.punctuation).lower() == "all":
         filters = list(FUNCS.keys())
     else:
         filters = args.filter
