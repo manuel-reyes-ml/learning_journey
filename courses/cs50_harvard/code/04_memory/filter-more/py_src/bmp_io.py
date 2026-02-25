@@ -8,10 +8,7 @@ import struct
 import sys
 
 try:
-    from .bmp_config import (
-    ColoredFormatter,
-    BMP,
-    )
+    from .bmp_config import BMP
 except ImportError as e:
     sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
 
@@ -27,16 +24,8 @@ __all__ = [
 ]   
     
 # Set up logging
+# '__name__' will automatically be name 'py_src.bmp_io'
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-    
-# Create handler with colored formatter
-handler = logging.StreamHandler()
-handler.setFormatter(ColoredFormatter(
-    fmt='%(asctime)s : %(levelname)s : %(message)s',
-    datefmt='%H:%M:%S',
-))
-logger.addHandler(handler)
 
 
 # =============================================================================
