@@ -75,6 +75,7 @@ def grayscale(pixels: list | None = None) -> list:
         
         new_pixels.append(new_row)
     
+    logger.debug("Filter applied......")
     return new_pixels
 
 
@@ -89,7 +90,8 @@ def reflect(pixels: list | None = None) -> list:
     for row in pixels:
         # Reverse each row
         new_pixels.append(row[::-1])
-        
+    
+    logger.debug("Filter applied......")
     return new_pixels
 
 
@@ -129,6 +131,7 @@ def blur(pixels: list | None = None) -> list:
                 round(total_r / count),
             ]
     
+    logger.debug("Filter applied......")
     return new_pixels
 
 
@@ -143,7 +146,7 @@ def edges(pixels: list | None = None) -> list:
     # Initialize the new image grid
     new_pixels = [[[0, 0, 0] for _ in range(width)] for _ in range(height)]
     
-    # Define the Sobrel kernels
+    # Define the Sobel kernels
     gx_kernel = [
         [-1, 0, 1],
         [-2, 0, 2],
@@ -196,4 +199,5 @@ def edges(pixels: list | None = None) -> list:
                 min(255, mag_r),
             ]
     
+    logger.debug("Filter applied......")
     return new_pixels

@@ -16,7 +16,7 @@ try:
         DIRS,
         EXIT,
     )
-    from .bmp_filters import(
+    from .bmp_filters import (
         grayscale,
         reflect,
         edges,
@@ -95,6 +95,8 @@ def _validate_filters(filters: list[str] | None = None) -> Iterator[str]:
     if len(filters) != len(set(filters)):
         raise ValueError("Filters must not contain duplicates")
     
+    logger.debug("Filters list has been validated......")
+    
     for filter in filters:
         yield _validate_filter(filter)
 
@@ -139,7 +141,7 @@ def validate_infile(
             if consent in ["yes", "y"]:
                 new_in_file = in_file.with_suffix(file_ext)
                 in_file.rename(new_in_file)
-                logger.info(f"File name updated successfully to {in_file.name}")
+                logger.info(f"File name updated successfully to {new_in_file.name}")
                 
                 return new_in_file
             
@@ -193,6 +195,7 @@ def process_filter(
     
     try:
         for clean_filter in _validate_filters(filters):
+            logger.warning(f"Applying [{clean_filter}] filter....")
             # funcs[clean_filter](pixels):  Dictionary dispatch!
             # Applies filter function following clean_filter("blur", "reflect", etc.)
             yield funcs[clean_filter](pixels), clean_filter
@@ -272,6 +275,7 @@ def main(argv: list[str] | None = None) -> int:
             )
             
             write_bmp(out_file, width, new_pixels, full_header)
+        logger.info("=== Program Finished. Enjoy your filtered images :) ===\n")
             
     except KeyboardInterrupt:
         logger.warning("\nInterrupted by user. Exiting.")

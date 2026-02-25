@@ -75,6 +75,8 @@ def read_bmp(
         if bmp_header[0:2] != bmp_signature:
             raise ValueError(f"Not a valid BMP file. Must start with '{bmp_signature}'.")
         
+        logger.debug("File has been located and accessed. Retrieving pixels....")
+        
         # Extract pixel data offset (bytes 10-13)
         # '<I' = little-endian unsigned 32-bit integer
         pixel_offset = struct.unpack('<I', bmp_header[10:14])[0]
@@ -97,6 +99,8 @@ def read_bmp(
         if bpp != bpp_bmp:
             raise ValueError(f"Only {bpp_bmp}-bit BMPs supported. Got {bpp}-bit.")
         
+        logger.info(f"Processing file '{in_file.name}'....")
+        
         # =====================================================
         # STEP 3: Calculate row padding
         # =====================================================
@@ -108,6 +112,8 @@ def read_bmp(
         # =====================================================
         pixels = []
         
+        # abs() returns the absolute value
+        # is the distance from 0 to the number (always positive)
         for _ in range(abs(height)):
             row = []
             for _ in range(width):
@@ -122,6 +128,8 @@ def read_bmp(
             
     # Return headers for easy writing later
     full_header = bmp_header + dib_header
+    
+    logger.debug("Pixels are retrieved from input file......")
     
     return width, height, pixels, full_header
 
@@ -161,4 +169,5 @@ def write_bmp(
                 
             # Write padding
             f.write(pad_hex * padding)
-        
+    
+    logger.info(f"File '{out_file.name}' is generated....")
