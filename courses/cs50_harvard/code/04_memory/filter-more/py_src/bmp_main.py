@@ -36,10 +36,6 @@ except ImportError as e:
 
 
 # Program Constants
-# parents=True: create any missing parent directories
-# exist_ok=True: no error if directory already exists
-DIRS.OUT_DIR.mkdir(parents=True, exist_ok=True)
-
 # Keys = function names (strings)
 # Values = functions (NOT called — no parentheses!)
 FUNCS: DictDispatch = {     # Creating Dictionary Dispatch for faster func iteration
@@ -175,7 +171,11 @@ def validate_outfile(
     
     if out_file.suffix != file_ext:
         out_file = out_file.with_suffix(file_ext)
-    
+        
+    # parents=True: create any missing parent directories
+    # exist_ok=True: no error if directory already exists
+    out_dir.mkdir(parents=True, exist_ok=True)
+        
     logger.debug(f"Saving output file in directory '{out_file}'")
     return out_file
 
