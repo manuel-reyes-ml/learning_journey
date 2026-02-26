@@ -2,6 +2,7 @@
 """
 
 from __future__ import annotations
+from tkinter import ALL
 from typing import Iterator, Final
 from pathlib import Path
 import argparse
@@ -12,6 +13,7 @@ import sys
 try:
     from .bmp_config import (
         DictDispatch,
+        ALL_FILTERS,
         CUR_DIR,
         DIRS,
         EXIT,
@@ -38,6 +40,7 @@ except ImportError as e:
 
 
 # Program Constants
+# Path.name gives the full name of a file or directory
 MODULE_NAME: Final[str] = f"{CUR_DIR.name}.bmp_main"
 
 # Keys = function names (strings)
@@ -61,7 +64,10 @@ logger = logging.getLogger(MODULE_NAME)
 # Internal Helper Functions
 # =============================================================================
 
-def _validate_filter(filter: str | None = None, funcs: DictDispatch = FUNCS) -> str:
+def _validate_filter(
+    filter: str | None = None, funcs: DictDispatch = FUNCS,
+    all_filters: str = ALL_FILTERS,
+) -> str:
     """
     """
     if not filter:
@@ -72,10 +78,10 @@ def _validate_filter(filter: str | None = None, funcs: DictDispatch = FUNCS) -> 
     if not clean_filter.isalpha():
         raise argparse.ArgumentTypeError("Filter must be alphabetic")
     
-    if clean_filter != "all":
+    if clean_filter != all_filters:
         if not clean_filter in funcs:
             raise argparse.ArgumentTypeError(
-                f"{filter} is not part or current functions: {funcs.keys()}"
+                f"{filter} is not part or current functions: {list(funcs.keys())}"
             )
         
     return clean_filter
@@ -256,7 +262,7 @@ def main(argv: list[str] | None = None) -> int:
         logger.debug("Verbose mode enabled")
     
     # Arv(args) returns a list when 'nargs=' is used
-    if args.filter[0].strip().strip(string.punctuation).lower() == "all":
+    if args.filter[0].strip().strip(string.punctuation).lower() == ALL_FILTERS:
         filters = list(FUNCS.keys())
     else:
         filters = args.filter
