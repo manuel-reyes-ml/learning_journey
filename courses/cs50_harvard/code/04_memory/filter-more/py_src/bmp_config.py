@@ -16,6 +16,7 @@ __all__ = [
     "ColoredFormatter",
     "DictDispatch",
     "FilterFunc",
+    "ALL_FILTERS",
     "CUR_DIR",
     "DIRS",
     "EXIT",
@@ -26,6 +27,8 @@ __all__ = [
 # =============================================================================
 # Constants Configuration
 # =============================================================================
+
+ALL_FILTERS: Final[str] = "all"
 
 # Type Alias: Callable for function Type Hint
 #   - Syntax: Callable[[INPUT_TYPES], RETURN_TYPE]
