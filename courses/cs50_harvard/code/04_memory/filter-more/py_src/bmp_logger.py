@@ -2,12 +2,13 @@
 """
 
 from __future__ import annotations
+from pathlib import Path
 from typing import Final
 import logging
 import sys
 
 try:
-    from .bmp_config import ColoredFormatter
+    from .bmp_config import ColoredFormatter, CUR_DIR
 except ImportError as e:
     sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
     
@@ -17,9 +18,7 @@ except ImportError as e:
 # =============================================================================
 
 # Exports
-__all__ = [
-    "setup_logging"
-]
+__all__ = ["setup_logging"]
 
 # Program Constants
 LEVEL_DEFAULT = logging.INFO
@@ -31,7 +30,8 @@ FORMATTER_CLASS: Final[type[logging.Formatter]] = ColoredFormatter
 # =============================================================================
 
 def setup_logging(
-    formatter_class: type[logging.Formatter] | None = FORMATTER_CLASS, 
+    formatter_class: type[logging.Formatter] | None = FORMATTER_CLASS,
+    cur_dir: Path = CUR_DIR, 
     level=LEVEL_DEFAULT,
 ) -> None:
     """Configures the base logger for the entire py_src packages."""
@@ -39,7 +39,8 @@ def setup_logging(
         raise ValueError("formatter_class cannot be empty")
     
     # 1. Grab the top-level logger for your package
-    package_logger = logging.getLogger("py_src")
+    # cur_dir.name gives the current directory in string "py_src"
+    package_logger = logging.getLogger(cur_dir.name)
     package_logger.setLevel(level)
     
     # 2. Prevent duplicate handlers if this function is called multiple times
@@ -56,7 +57,7 @@ def setup_logging(
     # 4. Attach the handler to the package logger
     package_logger.addHandler(console_handler)
     
-    # 5. Prevent logs from bubblig up to Python's default root logger
+    # 5. Prevent logs from bubbling up to Python's default root logger
     # (prevents duplicate printing in some environments)
     package_logger.propagate = False
     
