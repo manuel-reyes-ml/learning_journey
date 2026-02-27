@@ -1,6 +1,10 @@
 """
 """
 
+# =============================================================================
+# IMPORTS
+# =============================================================================
+
 from __future__ import annotations
 import logging
 import math
@@ -13,7 +17,7 @@ except ImportError as e:
 
 
 # =============================================================================
-# Module Configuration
+# MODULE CONFIGURATION
 # =============================================================================
 
 # Exports
@@ -30,7 +34,7 @@ logger = logging.getLogger(__name__)
 
 
 # =============================================================================
-# Internal Helper Functions
+# INTERNAL HELPER FUNCTIONS
 # =============================================================================
 
 def _width_height_calculator(pixels: ImageData) -> tuple[int, int]:
@@ -46,7 +50,7 @@ def _width_height_calculator(pixels: ImageData) -> tuple[int, int]:
 
 
 # =============================================================================
-# Core Functions
+# CORE FUNCTIONS
 # =============================================================================
 
 def grayscale(pixels: ImageData | None = None) -> ImageData:

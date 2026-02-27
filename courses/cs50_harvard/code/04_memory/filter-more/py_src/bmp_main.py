@@ -1,6 +1,10 @@
 """
 """
 
+# =============================================================================
+# IMPORTS
+# =============================================================================
+
 from __future__ import annotations
 from typing import Iterator, Final
 from pathlib import Path
@@ -33,7 +37,7 @@ except ImportError as e:
 
 
 # =============================================================================
-# Module Configuration
+# MODULE CONFIGURATION
 # =============================================================================
 
 # Exports
@@ -61,7 +65,7 @@ logger = logging.getLogger(MODULE_NAME)
 
 
 # =============================================================================
-# Internal Helper Functions
+# INTERNAL HELPER FUNCTIONS
 # =============================================================================
 
 def _validate_filter(
@@ -105,7 +109,7 @@ def _validate_filters(filters: list[str] | None = None) -> Iterator[str]:
 
 
 # =============================================================================
-# Core Functions
+# CORE FUNCTIONS
 # =============================================================================
 
 def validate_infile(
@@ -216,7 +220,7 @@ def process_filter(
     
 
 # =============================================================================
-# CLI Entry Point
+# CLI ENTRY POINT
 # =============================================================================
 
 def main(argv: list[str] | None = None) -> ExitCode:

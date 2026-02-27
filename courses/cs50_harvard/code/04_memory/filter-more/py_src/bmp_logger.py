@@ -1,6 +1,10 @@
 """
 """
 
+# =============================================================================
+# IMPORTS
+# =============================================================================
+
 from __future__ import annotations
 from pathlib import Path
 from typing import Final
@@ -14,7 +18,7 @@ except ImportError as e:
     
 
 # =============================================================================
-# Module Configuration
+# MODULE CONFIGURATION
 # =============================================================================
 
 # Exports
@@ -26,7 +30,7 @@ FORMATTER_CLASS: Final[type[logging.Formatter]] = ColoredFormatter
 
 
 # =============================================================================
-# Core Functions
+# CORE FUNCTIONS
 # =============================================================================
 
 def setup_logging(

@@ -1,6 +1,10 @@
 """
 """
 
+# =============================================================================
+# IMPORTS
+# =============================================================================
+
 from __future__ import annotations
 from pathlib import Path
 import logging
@@ -14,7 +18,7 @@ except ImportError as e:
 
 
 # =============================================================================
-# Module Configuration
+# MODULE CONFIGURATION
 # =============================================================================
 
 # Exports
@@ -29,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 
 # =============================================================================
-# Internal Helper Functions
+# INTERNAL HELPER FUNCTIONS
 # =============================================================================
 
 def _padding_calculator(width: int) -> int:
@@ -39,7 +43,7 @@ def _padding_calculator(width: int) -> int:
 
 
 # =============================================================================
-# Core Functions
+# CORE FUNCTIONS
 # =============================================================================
 
 def read_bmp(
@@ -61,6 +65,8 @@ def read_bmp(
         bmp_header = f.read(bmp_header_size)
         
         # Check for "BM" signature
+        # Slicing bytes [0:2] returns a bytes objects
+        # Indexing bytes [1] returns an int
         if bmp_header[0:2] != bmp_signature:
             raise ValueError(f"Not a valid BMP file. Must start with '{bmp_signature}'.")
         
