@@ -4,6 +4,12 @@
 from __future__ import annotations
 import logging
 import math
+import sys
+
+try:
+    from .bmp_config import PixelRow, ImageData
+except ImportError as e:
+    raise sys.exit("Error: Cannot find relative modules.\nDetails: {e}")
 
 
 # =============================================================================
@@ -27,7 +33,7 @@ logger = logging.getLogger(__name__)
 # Internal Helper Functions
 # =============================================================================
 
-def _width_height_calculator(pixels: list) -> tuple[int, int]:
+def _width_height_calculator(pixels: ImageData) -> tuple[int, int]:
     """
     """
     # How many rows / main lists (where pixel lists are inside)
@@ -43,16 +49,16 @@ def _width_height_calculator(pixels: list) -> tuple[int, int]:
 # Core Functions
 # =============================================================================
 
-def grayscale(pixels: list | None = None) -> list:
+def grayscale(pixels: ImageData | None = None) -> ImageData:
     """
     """
     if not pixels: 
         raise ValueError("Pixels list cannot be empty")
     
-    new_pixels = []
+    new_pixels: ImageData = []
     
     for row in pixels:
-        new_row = []
+        new_row: PixelRow = []
         for pixel in row:
             b, g, r = pixel
             # Luminosity formula (human eye is most sensitive to gree)
@@ -65,13 +71,13 @@ def grayscale(pixels: list | None = None) -> list:
     return new_pixels
 
 
-def reflect(pixels: list | None = None) -> list:
+def reflect(pixels: ImageData | None = None) -> ImageData:
     """
     """
     if not pixels: 
         raise ValueError("Pixels list cannot be empty")
     
-    new_pixels = []
+    new_pixels: ImageData = []
     
     for row in pixels:
         # Reverse each row
@@ -81,7 +87,7 @@ def reflect(pixels: list | None = None) -> list:
     return new_pixels
 
 
-def blur(pixels: list | None = None) -> list:
+def blur(pixels: ImageData | None = None) -> ImageData:
     """
     """
     if not pixels: 
@@ -90,7 +96,7 @@ def blur(pixels: list | None = None) -> list:
     height, width = _width_height_calculator(pixels)
 
     # Create a copy to avoid modifying while reading
-    new_pixels = [[[0, 0, 0] for _ in range(width)] for _ in range(height)]
+    new_pixels: ImageData = [[[0, 0, 0] for _ in range(width)] for _ in range(height)]
     
     for y in range(height):
         for x in range(width):
@@ -121,7 +127,7 @@ def blur(pixels: list | None = None) -> list:
     return new_pixels
 
 
-def edges(pixels: list | None = None) -> list:
+def edges(pixels: ImageData | None = None) -> ImageData:
     """
     """
     if not pixels: 
