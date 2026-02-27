@@ -22,6 +22,7 @@ __all__ = [
     "DictDispatch",
     "FilterFunc",
     "ImageData",
+    "BmpData",
     "PixelRow",
     "Pixel",
     "ExitCode",
@@ -45,10 +46,14 @@ __all__ = [
 #       - Input parameters in a list
 #       - Function that takes a list, returns a list
 #       - def process(pixels: list) -> list
-type FilterFunc = Callable[[list], list]
 type Pixel = list[int]
 type PixelRow = list[Pixel]
 type ImageData = list[PixelRow]
+type HeaderBytes = bytes
+type FilterFunc = Callable[[ImageData], ImageData]
+
+# BMP read result
+type BmpData = tuple[int, int, ImageData, HeaderBytes]
 
 
 # =====================================================
