@@ -20,7 +20,7 @@ try:
         ExitCode,
         ALL_FILTERS,
         CUR_DIR,
-        DIRS,
+        bmp_dirs,
     )
     from .bmp_filters import (
         grayscale,
@@ -119,8 +119,8 @@ def _validate_filters(filters: list[str] | None = None) -> Iterator[str]:
 def validate_infile(
     fname: str | None = None,
     input_dir: str | None = None,
-    file_ext: str = DIRS.FILE_EXT,
-    image_dir: Path = DIRS.INPUT_DIR,
+    file_ext: str = bmp_dirs.FILE_EXT,
+    image_dir: Path = bmp_dirs.INPUT_DIR,
 ) -> Path:
     """
     """
@@ -171,8 +171,8 @@ def validate_outfile(
     fname: str | None = None,
     in_file: Path | None = None,
     filter_name: str | None = None,
-    out_dir: Path = DIRS.OUT_DIR,
-    file_ext: str = DIRS.FILE_EXT,
+    out_dir: Path = bmp_dirs.OUT_DIR,
+    file_ext: str = bmp_dirs.FILE_EXT,
 ) -> Path:
     """
     """
@@ -236,12 +236,12 @@ def main(argv: list[str] | None = None) -> ExitCode:
     parser.add_argument(
         "-i", "--input-file",
         type=str,
-        help=f"Enter file name of input {DIRS.FILE_EXT} file",
+        help=f"Enter file name of input {bmp_dirs.FILE_EXT} file",
     )
     parser.add_argument(
         "-o", "--output-file",
         type=str,
-        help=f"Enter file name of output {DIRS.FILE_EXT} file",
+        help=f"Enter file name of output {bmp_dirs.FILE_EXT} file",
     )
     parser.add_argument(
         "filter",   # Positional argument make entry required
@@ -255,7 +255,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         "-d", "--directory",
         type=str,
         help=(
-            f"Enter directory path to search for {DIRS.FILE_EXT} file. Default is images/ directory"
+            f"Enter directory path to search for {bmp_dirs.FILE_EXT} file. Default is images/ directory"
         )
     )
     parser.add_argument(

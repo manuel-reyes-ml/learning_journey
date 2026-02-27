@@ -12,7 +12,7 @@ import struct
 import sys
 
 try:
-    from .bmp_config import BMP, ImageData, HeaderBytes, BmpData
+    from .bmp_config import bmp_constants, ImageData, HeaderBytes, BmpData
 except ImportError as e:
     sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
 
@@ -48,10 +48,10 @@ def _padding_calculator(width: int) -> int:
 
 def read_bmp(
     in_file: Path | None = None,
-    bmp_signature: bytes = BMP.SIGNATURE,
-    bmp_header_size: int = BMP.HEADER_SIZE,
-    pixel_size: int = BMP.PIXEL_SIZE,
-    bpp_bmp: int = BMP.BPP,
+    bmp_signature: bytes = bmp_constants.SIGNATURE,
+    bmp_header_size: int = bmp_constants.HEADER_SIZE,
+    pixel_size: int = bmp_constants.PIXEL_SIZE,
+    bpp_bmp: int = bmp_constants.BPP,
 ) -> BmpData:
     """
     """
@@ -134,7 +134,7 @@ def write_bmp(
     width: int | None = None,
     pixels: ImageData | None = None,
     header: HeaderBytes | None = None,
-    pad_hex: bytes = BMP.PAD_HEX,
+    pad_hex: bytes = bmp_constants.PAD_HEX,
 ) -> None:
     """
     """
