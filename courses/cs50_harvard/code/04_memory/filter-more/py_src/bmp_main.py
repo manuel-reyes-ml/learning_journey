@@ -2,7 +2,6 @@
 """
 
 from __future__ import annotations
-from tkinter import ALL
 from typing import Iterator, Final
 from pathlib import Path
 import argparse
@@ -13,10 +12,11 @@ import sys
 try:
     from .bmp_config import (
         DictDispatch,
+        ImageData,
+        ExitCode,
         ALL_FILTERS,
         CUR_DIR,
         DIRS,
-        EXIT,
     )
     from .bmp_filters import (
         grayscale,
@@ -188,10 +188,10 @@ def validate_outfile(
 
 
 def process_filter(
-    pixels: list | None = None,
+    pixels: ImageData | None = None,
     filters: list[str] | None = None,
     funcs: DictDispatch = FUNCS,
-) -> Iterator[tuple[list, str]]:
+) -> Iterator[tuple[ImageData, str]]:
     """
     """
     if not filters:
@@ -218,7 +218,7 @@ def process_filter(
 # CLI Entry Point
 # =============================================================================
 
-def main(argv: list[str] | None = None) -> int:
+def main(argv: list[str] | None = None) -> ExitCode:
     """
     """
     parser = argparse.ArgumentParser(
@@ -287,22 +287,22 @@ def main(argv: list[str] | None = None) -> int:
             
     except KeyboardInterrupt:
         logger.warning("\nInterrupted by user. Exiting.")
-        return EXIT.KEYBOARD_INTERRUPT
+        return ExitCode.KEYBOARD_INTERRUPT
         
     except (FileExistsError, FileNotFoundError) as e:
         logger.error(f"Error in file: {e}")
-        return EXIT.FAILURE
+        return ExitCode.FAILURE
         
     except ValueError as e:
         logger.error(f"Error in processing: {e}")
-        return EXIT.FAILURE
+        return ExitCode.FAILURE
     
     except Exception as e:  # Catches every other exception in program
         # Appears as logging.error, provides Python's traceback info
         logger.exception(f"Unexpected Error: {e}")
-        return EXIT.FAILURE
+        return ExitCode.FAILURE
     
-    return EXIT.SUCCESS
+    return ExitCode.SUCCESS
 
 
 if __name__ == "__main__":
