@@ -65,7 +65,8 @@ logger = logging.getLogger(MODULE_NAME)
 # =============================================================================
 
 def _validate_filter(
-    filter: str | None = None, funcs: DictDispatch = FUNCS,
+    filter: str | None = None,
+    funcs: DictDispatch = FUNCS,
     all_filters: str = ALL_FILTERS,
 ) -> str:
     """
