@@ -126,7 +126,7 @@ def read_bmp(
     
     logger.debug("Pixels are retrieved from input file......")
     
-    return width, height, pixels, full_header
+    return BmpData(width, height, pixels, full_header)
 
 
 def write_bmp(

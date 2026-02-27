@@ -207,6 +207,8 @@ def process_filter(
         raise ValueError("Filter(s) list cannot be emtpy")
     
     # Explicit check for ImageData (list of lists)
+    # This distinguishes between "caller forgot to pass data",
+    # and "data exists but is empty".
     if pixels is None:
         raise ValueError("Pixels argument is required")
     
@@ -281,12 +283,12 @@ def main(argv: list[str] | None = None) -> ExitCode:
         filters = args.filter
         
     try:
-        # Step 1: Input and read BMP file
+        # Step 1: Input file validation and read BMP file
         in_file = validate_infile(args.input_file, args.directory)
-        width, height, pixels, full_header = read_bmp(in_file)
+        bmp_data = read_bmp(in_file)
         
         # Step 2: Apply filter using a generator
-        for new_pixels, clean_filter in process_filter(pixels, filters):
+        for new_pixels, clean_filter in process_filter(bmp_data.pixels, filters):
             
             # Step 3: Generate output file and write BMP
             out_file = validate_outfile(
@@ -295,7 +297,12 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 clean_filter,
             )
             
-            write_bmp(out_file, width, new_pixels, full_header)
+            write_bmp(
+                out_file,
+                bmp_data.width,
+                new_pixels,
+                bmp_data.full_header,
+            )
         logger.info("=== Program Finished. Enjoy your filtered images :) ===\n")
             
     except KeyboardInterrupt:
