@@ -41,7 +41,11 @@ except ImportError as e:
 # =============================================================================
 
 # Exports
-
+__all__ = [
+    "validate_infile",
+    "validate_outfile",
+    "process_filter",
+]
 
 # Program Constants
 # Path.name gives the full name of a file or directory
