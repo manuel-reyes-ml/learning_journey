@@ -144,7 +144,11 @@ def write_bmp(
     if not width:
         raise ValueError("Width cannot be empty")
     
-    if not pixels:
+    # Explicit check for ImageData (list of lists)
+    if pixels is None:
+        raise ValueError("Pixels argument is required")
+    
+    if len(pixels) == 0:
         raise ValueError("Pixels cannot be empty")
     
     if not header:

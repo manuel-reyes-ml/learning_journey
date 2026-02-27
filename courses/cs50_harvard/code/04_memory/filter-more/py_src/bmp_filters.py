@@ -57,8 +57,12 @@ def _width_height_calculator(pixels: ImageData) -> tuple[int, int]:
 def grayscale(pixels: ImageData | None = None) -> ImageData:
     """
     """
-    if not pixels: 
-        raise ValueError("Pixels list cannot be empty")
+    # Explicit check for ImageData (list of lists)
+    if pixels is None:
+        raise ValueError("Pixels argument is required")
+    
+    if len(pixels) == 0:
+        raise ValueError("Pixels cannot be empty")
     
     new_pixels: ImageData = []
     
@@ -79,8 +83,12 @@ def grayscale(pixels: ImageData | None = None) -> ImageData:
 def reflect(pixels: ImageData | None = None) -> ImageData:
     """
     """
-    if not pixels: 
-        raise ValueError("Pixels list cannot be empty")
+    # Explicit check for ImageData (list of lists)
+    if pixels is None:
+        raise ValueError("Pixels argument is required")
+    
+    if len(pixels) == 0:
+        raise ValueError("Pixels cannot be empty")
     
     new_pixels: ImageData = []
     
@@ -95,8 +103,12 @@ def reflect(pixels: ImageData | None = None) -> ImageData:
 def blur(pixels: ImageData | None = None) -> ImageData:
     """
     """
-    if not pixels: 
-        raise ValueError("Pixels list cannot be empty")
+    # Explicit check for ImageData (list of lists)
+    if pixels is None:
+        raise ValueError("Pixels argument is required")
+    
+    if len(pixels) == 0:
+        raise ValueError("Pixels cannot be empty")
     
     height, width = _width_height_calculator(pixels)
 
@@ -135,8 +147,12 @@ def blur(pixels: ImageData | None = None) -> ImageData:
 def edges(pixels: ImageData | None = None) -> ImageData:
     """
     """
-    if not pixels: 
-        raise ValueError("Pixels list cannot be empty")
+    # Explicit check for ImageData (list of lists)
+    if pixels is None:
+        raise ValueError("Pixels argument is required")
+    
+    if len(pixels) == 0:
+        raise ValueError("Pixels cannot be empty")
     
     height, width = _width_height_calculator(pixels)
     

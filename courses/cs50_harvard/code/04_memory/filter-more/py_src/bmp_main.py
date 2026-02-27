@@ -206,7 +206,11 @@ def process_filter(
     if not filters:
         raise ValueError("Filter(s) list cannot be emtpy")
     
-    if not pixels:
+    # Explicit check for ImageData (list of lists)
+    if pixels is None:
+        raise ValueError("Pixels argument is required")
+    
+    if len(pixels) == 0:
         raise ValueError("Pixels cannot be empty")
     
     try:
