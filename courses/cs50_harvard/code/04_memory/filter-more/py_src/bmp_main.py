@@ -73,16 +73,16 @@ logger = logging.getLogger(MODULE_NAME)
 # =============================================================================
 
 def _validate_filter(
-    filter: str | None = None,
+    filter_name: str | None = None,
     funcs: DictDispatch = FUNCS,
     all_filters: str = ALL_FILTERS,
 ) -> str:
     """
     """
-    if not filter:
+    if not filter_name:
         raise argparse.ArgumentTypeError("Filter cannot be empty")
     
-    clean_filter = filter.strip().strip(string.punctuation).lower()
+    clean_filter = filter_name.strip().strip(string.punctuation).lower()
     
     if not clean_filter.isalpha():
         raise argparse.ArgumentTypeError("Filter must be alphabetic")
@@ -108,8 +108,8 @@ def _validate_filters(filters: list[str] | None = None) -> Iterator[str]:
     
     logger.debug("Filters list has been validated......")
     
-    for filter in filters:
-        yield _validate_filter(filter)
+    for filter_name in filters:
+        yield _validate_filter(filter_name)
 
 
 # =============================================================================
