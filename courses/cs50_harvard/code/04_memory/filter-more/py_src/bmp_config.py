@@ -6,7 +6,7 @@
 # =============================================================================
 
 from __future__ import annotations
-from typing import Final, Callable, TypedDict
+from typing import Final, Callable, TypedDict, NamedTuple
 from dataclasses import dataclass
 from enum import IntEnum, unique
 from pathlib import Path
@@ -51,9 +51,6 @@ type PixelRow = list[Pixel]
 type ImageData = list[PixelRow]
 type HeaderBytes = bytes
 type FilterFunc = Callable[[ImageData], ImageData]
-
-# BMP read result
-type BmpData = tuple[int, int, ImageData, HeaderBytes]
 
 
 # =====================================================
@@ -117,9 +114,10 @@ bmp_constants = BmpConstants()
 
 
 # =============================================================================
-# DICTIONARY DISPATCH CONFIGURATION
+# OTHER CLASS CONFIGURATION
 # =============================================================================
 
+# Dictionary Dispatch for filters function iteration
 class DictDispatch(TypedDict):
     """
     """
@@ -127,6 +125,16 @@ class DictDispatch(TypedDict):
     reflect: FilterFunc
     blur: FilterFunc
     edges: FilterFunc
+
+# NamedTuple for named access patterns. (BmpData.width)
+# BMP read result
+class BmpData(NamedTuple):
+    """
+    """
+    width: int
+    height: int
+    pixels: ImageData
+    full_header: HeaderBytes
 
 
 # =============================================================================
