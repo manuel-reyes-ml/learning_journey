@@ -1,47 +1,74 @@
 """
 """
 
+# =============================================================================
+# IMPORTS
+# =============================================================================
+
 from __future__ import annotations
 from typing import Final, Callable, TypedDict
 from dataclasses import dataclass
+from enum import IntEnum, unique
 from pathlib import Path
 import logging
 
 
 # =============================================================================
-# Exports
+# EXPORTS
 # =============================================================================
 
 __all__ = [
     "ColoredFormatter",
     "DictDispatch",
     "FilterFunc",
+    "ImageData",
+    "PixelRow",
+    "Pixel",
+    "ExitCode",
     "ALL_FILTERS",
     "CUR_DIR",
     "DIRS",
-    "EXIT",
     "BMP",
 ]
 
 
 # =============================================================================
-# Constants Configuration
+# CONSTANTS CONFIGURATION
 # =============================================================================
 
-ALL_FILTERS: Final[str] = "all"
+# =====================================================
+# Type Aliases
+# =====================================================
 
-# Type Alias: Callable for function Type Hint
+# TypeAlias statement: Improves readability for function Type Hint
 #   - Syntax: Callable[[INPUT_TYPES], RETURN_TYPE]
 #       - Input parameters in a list
 #       - Function that takes a list, returns a list
 #       - def process(pixels: list) -> list
 type FilterFunc = Callable[[list], list]
+type Pixel = list[int]
+type PixelRow = list[Pixel]
+type ImageData = list[PixelRow]
+
+
+# =====================================================
+# Constants
+# =====================================================
+
+ALL_FILTERS: Final[str] = "all"
 
 # parent = parents[0] = bmp_config.py directory -> py_src/
 # parents[1] = project root directory -> filter-more/
 CUR_DIR: Final[Path] = Path(__file__).resolve().parent
 BASE_DIR: Final[Path] = CUR_DIR.parent
 
+
+# =====================================================
+# Dataclass Frozen Constants
+# ===================================================== 
+# frozen dataclass (since variables might need runtime protection)
+
+# Directories
 @dataclass(frozen=True)
 class BmpDirectories:
     """
@@ -51,6 +78,7 @@ class BmpDirectories:
     OUT_DIR: Path = CUR_DIR / "filtered_imgs"
     OUT_FNAME: str = f"_filtered{FILE_EXT}"
 
+#BMP file constants
 # Final[] Type Hint only-tells type checkers "don't reassign" (IDE, mypy)
 # frozen=True Makes instance immutable at runtime 
 @dataclass(frozen=True)
@@ -64,21 +92,25 @@ class BmpConstants:
     BPP: Final[int] = 24  # bits per pixel (3 bytes RGB)
 
 # Exit codes (Unix standard)
-@dataclass(frozen=True)
-class ExitCodes:
+@unique  # Ensures no duplicate values
+class ExitCode(IntEnum):
     """
     """
-    SUCCESS: Final[int] = 0
-    FAILURE: Final[int] = 1
-    KEYBOARD_INTERRUPT: Final[int] = 130
+    SUCCESS = 0
+    FAILURE = 1
+    KEYBOARD_INTERRUPT = 130
+   # BADUSE = 1  Error!
+
+# =====================================================
+# Dataclass Instantiation
+# =====================================================
 
 DIRS = BmpDirectories()
 BMP = BmpConstants()
-EXIT = ExitCodes()
 
 
 # =============================================================================
-# Dictionary Dispatch Configuration
+# DICTIONARY DISPATCH CONFIGURATION
 # =============================================================================
 
 class DictDispatch(TypedDict):
@@ -91,7 +123,7 @@ class DictDispatch(TypedDict):
 
 
 # =============================================================================
-# Logging Configuration
+# LOGGING CONFIGURATION
 # =============================================================================
 
 # Inherits from Python's built-in Formatter
