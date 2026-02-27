@@ -8,7 +8,7 @@ import struct
 import sys
 
 try:
-    from .bmp_config import BMP
+    from .bmp_config import BMP, ImageData, HeaderBytes, BmpData
 except ImportError as e:
     sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
 
@@ -48,7 +48,7 @@ def read_bmp(
     bmp_header_size: int = BMP.HEADER_SIZE,
     pixel_size: int = BMP.PIXEL_SIZE,
     bpp_bmp: int = BMP.BPP,
-) -> tuple[int, int, list, bytes]:
+) -> BmpData:
     """
     """
     if not in_file:
@@ -126,8 +126,8 @@ def read_bmp(
 def write_bmp(
     out_file: Path | None = None,
     width: int | None = None,
-    pixels: list | None = None,
-    header: bytes | None = None,
+    pixels: ImageData | None = None,
+    header: HeaderBytes | None = None,
     pad_hex: bytes = BMP.PAD_HEX,
 ) -> None:
     """
