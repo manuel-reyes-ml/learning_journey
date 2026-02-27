@@ -13,7 +13,8 @@ import sys
 try:
     from .bmp_config import PixelRow, ImageData
 except ImportError as e:
-    raise sys.exit("Error: Cannot find relative modules.\nDetails: {e}")
+    # sys.exit() raises SystemExit internally, don´t need 'raise...'
+    sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
 
 
 # =============================================================================
@@ -140,7 +141,7 @@ def edges(pixels: ImageData | None = None) -> ImageData:
     height, width = _width_height_calculator(pixels)
     
     # Initialize the new image grid
-    new_pixels = [[[0, 0, 0] for _ in range(width)] for _ in range(height)]
+    new_pixels: ImageData = [[[0, 0, 0] for _ in range(width)] for _ in range(height)]
     
     # Define the Sobel kernels
     gx_kernel = [
@@ -179,13 +180,13 @@ def edges(pixels: ImageData | None = None) -> ImageData:
                         gx_r += r * weight_x
                         
                         # Apply Gy weights
-                        gy_b += y * weight_y
+                        gy_b += b * weight_y
                         gy_g += g * weight_y
                         gy_r += r * weight_y
                         
             # Calculate final magnitude: sqrt(Gx^2 + Gy^2)
             mag_b = round(math.sqrt(gx_b**2 + gy_b**2))
-            mag_g = round(math.sqrt(gx_g**2 + gx_g**2))
+            mag_g = round(math.sqrt(gx_g**2 + gy_g**2))
             mag_r = round(math.sqrt(gx_r**2 + gy_r**2))
             
             # Cap values at 255 to ensure valid color values
