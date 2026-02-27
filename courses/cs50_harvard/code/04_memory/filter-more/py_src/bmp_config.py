@@ -28,8 +28,8 @@ __all__ = [
     "ExitCode",
     "ALL_FILTERS",
     "CUR_DIR",
-    "DIRS",
-    "BMP",
+    "bmp_dirs",
+    "bmp_constants",
 ]
 
 
@@ -110,8 +110,10 @@ class ExitCode(IntEnum):
 # Dataclass Instantiation
 # =====================================================
 
-DIRS = BmpDirectories()
-BMP = BmpConstants()
+# Following PEP 8 standars, name of an instance should be lowercase,
+# unless it is a global constant itself.
+bmp_dirs = BmpDirectories()
+bmp_constants = BmpConstants()
 
 
 # =============================================================================
