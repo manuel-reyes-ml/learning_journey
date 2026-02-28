@@ -58,6 +58,8 @@ def grayscale(pixels: ImageData | None = None) -> ImageData:
     """
     """
     # Explicit check for ImageData (list of lists)
+    # This distinguishes between "caller forgot to pass data",
+    # and "data exists but is empty".
     if pixels is None:
         raise ValueError("Pixels argument is required")
     
@@ -200,10 +202,11 @@ def edges(pixels: ImageData | None = None) -> ImageData:
                         gy_g += g * weight_y
                         gy_r += r * weight_y
                         
-            # Calculate final magnitude: sqrt(Gx^2 + Gy^2)
-            mag_b = round(math.sqrt(gx_b**2 + gy_b**2))
-            mag_g = round(math.sqrt(gx_g**2 + gy_g**2))
-            mag_r = round(math.sqrt(gx_r**2 + gy_r**2))
+            # Calculate final magnitude: 
+            # math.hypot = sqrt(Gx^2 + Gy^2)
+            mag_b = round(math.hypot(gx_b, gy_b))
+            mag_g = round(math.hypot(gx_g, gy_g))
+            mag_r = round(math.hypot(gx_r, gy_r))
             
             # Cap values at 255 to ensure valid color values
             new_pixels[y][x] = [
