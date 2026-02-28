@@ -11,7 +11,7 @@ import math
 import sys
 
 try:
-    from .bmp_config import Pixel, PixelRow, ImageData
+    from .bmp_config import Pixel, PixelRow, ImageData, ImageSize
 except ImportError as e:
     # sys.exit() raises SystemExit internally, don´t need 'raise...'
     sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
@@ -38,7 +38,7 @@ logger = logging.getLogger(__name__)
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
 
-def _width_height_calculator(pixels: ImageData) -> tuple[int, int]:
+def _width_height_calculator(pixels: ImageData) -> ImageSize:
     """
     """
     # How many rows / main lists (where pixel lists are inside)
@@ -47,7 +47,7 @@ def _width_height_calculator(pixels: ImageData) -> tuple[int, int]:
     # How many pixel lists are inside each row/main list
     width = len(pixels[0])
 
-    return height, width
+    return ImageSize(height, width)
 
 
 # =============================================================================
@@ -111,13 +111,16 @@ def blur(pixels: ImageData | None = None) -> ImageData:
     if len(pixels) == 0:
         raise ValueError("Pixels cannot be empty")
     
-    height, width = _width_height_calculator(pixels)
+    size: ImageSize = _width_height_calculator(pixels)
 
     # Create a copy to avoid modifying while reading
-    new_pixels: ImageData = [[Pixel(0, 0, 0) for _ in range(width)] for _ in range(height)]
+    new_pixels: ImageData = [
+        [Pixel(0, 0, 0) for _ in range(size.width)]
+        for _ in range(size.height)
+    ]
     
-    for y in range(height):
-        for x in range(width):
+    for y in range(size.height):
+        for x in range(size.width):
             total_b, total_g, total_r = 0, 0, 0
             count = 0
             
@@ -127,7 +130,7 @@ def blur(pixels: ImageData | None = None) -> ImageData:
                     ny, nx = y + dy, x + dx
                     
                     # Check bounds
-                    if 0 <= ny < height and 0 <= nx < width:
+                    if 0 <= ny < size.height and 0 <= nx < size.width:
                         pixel: Pixel = pixels[ny][nx]
                         total_b += pixel.b
                         total_g += pixel.g
@@ -155,10 +158,13 @@ def edges(pixels: ImageData | None = None) -> ImageData:
     if len(pixels) == 0:
         raise ValueError("Pixels cannot be empty")
     
-    height, width = _width_height_calculator(pixels)
+    size: ImageSize = _width_height_calculator(pixels)
     
     # Initialize the new image grid
-    new_pixels: ImageData = [[Pixel(0, 0, 0) for _ in range(width)] for _ in range(height)]
+    new_pixels: ImageData = [
+        [Pixel(0, 0, 0) for _ in range(size.width)]
+        for _ in range(size.height)
+    ]
     
     # Define the Sobel kernels
     gx_kernel = [
@@ -173,8 +179,8 @@ def edges(pixels: ImageData | None = None) -> ImageData:
         [1, 2, 1],
     ]
     
-    for y in range(height):
-        for x in range(width):
+    for y in range(size.height):
+        for x in range(size.width):
             gx_b, gx_g, gx_r = 0, 0, 0
             gy_b, gy_g, gy_r = 0, 0, 0
             
@@ -184,7 +190,7 @@ def edges(pixels: ImageData | None = None) -> ImageData:
                     ny, nx = y + dy, x + dx
                     
                     # If out of bounds, values remain 0 (so we only add if IN bounds)
-                    if 0 <= ny < height and 0 <= nx < width:
+                    if 0 <= ny < size.height and 0 <= nx < size.width:
                         pixel: Pixel = pixels[ny][nx]
                         
                         # Map 'dy' and 'dx' from [-1, 1] to kernel indices [0, 2]
