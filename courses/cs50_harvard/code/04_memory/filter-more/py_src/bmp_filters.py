@@ -11,7 +11,7 @@ import math
 import sys
 
 try:
-    from .bmp_config import PixelRow, ImageData
+    from .bmp_config import Pixel, PixelRow, ImageData
 except ImportError as e:
     # sys.exit() raises SystemExit internally, don´t need 'raise...'
     sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
@@ -71,10 +71,9 @@ def grayscale(pixels: ImageData | None = None) -> ImageData:
     for row in pixels:
         new_row: PixelRow = []
         for pixel in row:
-            b, g, r = pixel
             # Luminosity formula (human eye is most sensitive to gree)
-            gray = int(0.299 * r + 0.587 * g + 0.114 * b)
-            new_row.append([gray, gray, gray])
+            gray = int(0.299 * pixel.r + 0.587 * pixel.g + 0.114 * pixel.b)
+            new_row.append(Pixel(gray, gray, gray))
         
         new_pixels.append(new_row)
     
@@ -115,7 +114,7 @@ def blur(pixels: ImageData | None = None) -> ImageData:
     height, width = _width_height_calculator(pixels)
 
     # Create a copy to avoid modifying while reading
-    new_pixels: ImageData = [[[0, 0, 0] for _ in range(width)] for _ in range(height)]
+    new_pixels: ImageData = [[Pixel(0, 0, 0) for _ in range(width)] for _ in range(height)]
     
     for y in range(height):
         for x in range(width):
@@ -129,18 +128,18 @@ def blur(pixels: ImageData | None = None) -> ImageData:
                     
                     # Check bounds
                     if 0 <= ny < height and 0 <= nx < width:
-                        b, g, r = pixels[ny][nx]
-                        total_b += b
-                        total_g += g
-                        total_r += r
+                        pixel: Pixel = pixels[ny][nx]
+                        total_b += pixel.b
+                        total_g += pixel.g
+                        total_r += pixel.r
                         count += 1
             
             # Average
-            new_pixels[y][x] = [
+            new_pixels[y][x] = Pixel(
                 round(total_b / count),
                 round(total_g / count),
                 round(total_r / count),
-            ]
+            )
     
     logger.debug("Filter applied......")
     return new_pixels
@@ -159,7 +158,7 @@ def edges(pixels: ImageData | None = None) -> ImageData:
     height, width = _width_height_calculator(pixels)
     
     # Initialize the new image grid
-    new_pixels: ImageData = [[[0, 0, 0] for _ in range(width)] for _ in range(height)]
+    new_pixels: ImageData = [[Pixel(0, 0, 0) for _ in range(width)] for _ in range(height)]
     
     # Define the Sobel kernels
     gx_kernel = [
@@ -186,21 +185,21 @@ def edges(pixels: ImageData | None = None) -> ImageData:
                     
                     # If out of bounds, values remain 0 (so we only add if IN bounds)
                     if 0 <= ny < height and 0 <= nx < width:
-                        b, g, r = pixels[ny][nx]
+                        pixel: Pixel = pixels[ny][nx]
                         
                         # Map 'dy' and 'dx' from [-1, 1] to kernel indices [0, 2]
                         weight_x = gx_kernel[dy + 1][dx + 1]
                         weight_y = gy_kernel[dy + 1][dx + 1]
                         
                         # Apply Gx weights
-                        gx_b += b * weight_x
-                        gx_g += g * weight_x
-                        gx_r += r * weight_x
+                        gx_b += pixel.b * weight_x
+                        gx_g += pixel.g * weight_x
+                        gx_r += pixel.r * weight_x
                         
                         # Apply Gy weights
-                        gy_b += b * weight_y
-                        gy_g += g * weight_y
-                        gy_r += r * weight_y
+                        gy_b += pixel.b * weight_y
+                        gy_g += pixel.g * weight_y
+                        gy_r += pixel.r * weight_y
                         
             # Calculate final magnitude: 
             # math.hypot = sqrt(Gx^2 + Gy^2)
@@ -209,11 +208,11 @@ def edges(pixels: ImageData | None = None) -> ImageData:
             mag_r = round(math.hypot(gx_r, gy_r))
             
             # Cap values at 255 to ensure valid color values
-            new_pixels[y][x] = [
+            new_pixels[y][x] = Pixel(
                 min(255, mag_b),
                 min(255, mag_g),
                 min(255, mag_r),
-            ]
+            )
     
     logger.debug("Filter applied......")
     return new_pixels
