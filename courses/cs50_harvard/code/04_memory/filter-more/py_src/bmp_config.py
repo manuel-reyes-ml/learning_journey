@@ -22,6 +22,7 @@ __all__ = [
     "DictDispatch",
     "FilterFunc",
     "ImageData",
+    "ImageSize",
     "BmpData",
     "PixelRow",
     "Pixel",
@@ -144,6 +145,13 @@ class Pixel(NamedTuple):
     b: int
     g: int
     r: int
+
+# Image size variables configuration
+class ImageSize(NamedTuple):
+    """
+    """
+    height: int
+    width: int
 
 
 # =============================================================================
