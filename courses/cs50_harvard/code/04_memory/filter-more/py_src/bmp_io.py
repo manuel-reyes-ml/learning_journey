@@ -12,7 +12,13 @@ import struct
 import sys
 
 try:
-    from .bmp_config import bmp_constants, ImageData, HeaderBytes, BmpData
+    from .bmp_config import (
+        bmp_constants, 
+        ImageData,
+        HeaderBytes,
+        BmpData,
+        Pixel,
+    )
 except ImportError as e:
     sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
 
@@ -82,7 +88,7 @@ def read_bmp(
         dib_header_size = pixel_offset - bmp_header_size
         dib_header = f.read(dib_header_size)
         
-        # Extract dimensions
+        # Extract dimensions (don't include padding)
         # '<i' = little-endian SIGNED 32-bit (height can be negative)
         width = struct.unpack('<i', dib_header[4:8])[0]
         height = struct.unpack('<i', dib_header[8:12])[0]
@@ -107,15 +113,16 @@ def read_bmp(
         # =====================================================
         pixels = []
         
-        # abs() returns the absolute value
-        # is the distance from 0 to the number (always positive)
+        # abs() returns the absolute value, is the difference
+        # from 0 to the number (always positive).
         for _ in range(abs(height)):
             row = []
             for _ in range(width):
                 # Read 3 bytes as BGR
                 # '<BBB' = three unsigned bytes
+                # -unpack returns a plain tuple: tuple[Any, ...] type
                 b, g, r = struct.unpack('<BBB', f.read(pixel_size))
-                row.append([b, g, r])
+                row.append(Pixel(b, g, r))
                 
             # Skip padding bytes at the end of the row
             f.read(padding)
@@ -163,8 +170,7 @@ def write_bmp(
         # Write pixel data
         for row in pixels:
             for pixel in row:
-                b, g, r = pixel
-                f.write(struct.pack('<BBB', b, g, r))
+                f.write(struct.pack('<BBB', pixel.b, pixel.g, pixel.r))
                 
             # Write padding
             f.write(pad_hex * padding)
