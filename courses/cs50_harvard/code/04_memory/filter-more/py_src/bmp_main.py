@@ -5,8 +5,8 @@
 # IMPORTS
 # =============================================================================
 
-from __future__ import annotations
-from typing import Iterator, Final
+from __future__ import annotations  # Must be at the beginning of the file
+from typing import Iterator, Final, cast
 from pathlib import Path
 import argparse
 import logging
@@ -14,8 +14,11 @@ import string
 import sys
 
 try:
+    from .bmp_logger import setup_logging
+    from .bmp_io import read_bmp, write_bmp
     from .bmp_config import (
         DictDispatch,
+        FilterName,
         ImageData,
         ExitCode,
         ALL_FILTERS,
@@ -28,9 +31,6 @@ try:
         edges,
         blur,
     )
-    
-    from .bmp_logger import setup_logging
-    from .bmp_io import read_bmp, write_bmp
     
 except ImportError as e:
     sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
@@ -90,13 +90,13 @@ def _validate_filter(
     if clean_filter != all_filters:
         if not clean_filter in funcs:
             raise argparse.ArgumentTypeError(
-                f"{filter} is not part or current functions: {list(funcs.keys())}"
+                f"'{clean_filter}' is not part of current filters: {list(funcs.keys())}"
             )
         
     return clean_filter
 
 
-def _validate_filters(filters: list[str] | None = None) -> Iterator[str]:
+def _validate_filters(filters: list[FilterName] | None = None) -> Iterator[str]:
     """
     """
     if not filters:
@@ -198,7 +198,7 @@ def validate_outfile(
 
 def process_filter(
     pixels: ImageData | None = None,
-    filters: list[str] | None = None,
+    filters: list[FilterName] | None = None,
     funcs: DictDispatch = FUNCS,
 ) -> Iterator[tuple[ImageData, str]]:
     """
@@ -278,9 +278,12 @@ def main(argv: list[str] | None = None) -> ExitCode:
     
     # Arv(args) returns a list when 'nargs=' is used
     if args.filter[0].strip().strip(string.punctuation).lower() == ALL_FILTERS:
-        filters = list(FUNCS.keys())
+        # cast() tells the type checker to treat a value as a specific type.
+        # At runtime, filters is still the exact same list[str] object,
+        # cast() just silenced the type checker. It´s purely a hint.
+        filters = cast(list[FilterName], list(FUNCS.keys())) 
     else:
-        filters = args.filter
+        filters: list[FilterName] = args.filter
         
     try:
         # Step 1: Input file validation and read BMP file
