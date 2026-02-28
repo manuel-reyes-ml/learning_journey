@@ -128,13 +128,19 @@ class DictDispatch(TypedDict):
     blur: FilterFunc
     edges: FilterFunc
 
+# Image size variables configuration
+class ImageSize(NamedTuple):
+    """
+    """
+    height: int
+    width: int
+
 # NamedTuple for named access patterns. (BmpData.width)
 # BMP read result
 class BmpData(NamedTuple):
     """
     """
-    width: int
-    height: int
+    size: ImageSize   # Nested NamedTuple class
     pixels: ImageData
     full_header: HeaderBytes
 
@@ -145,14 +151,7 @@ class Pixel(NamedTuple):
     b: int
     g: int
     r: int
-
-# Image size variables configuration
-class ImageSize(NamedTuple):
-    """
-    """
-    height: int
-    width: int
-
+    
 
 # =============================================================================
 # LOGGING CONFIGURATION
