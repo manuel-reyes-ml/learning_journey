@@ -46,7 +46,6 @@ __all__ = [
 #       - Input parameters in a list
 #       - Function that takes a list, returns a list
 #       - def process(pixels: list) -> list
-type Pixel = list[int]
 type PixelRow = list[Pixel]
 type ImageData = list[PixelRow]
 type HeaderBytes = bytes
@@ -138,6 +137,14 @@ class BmpData(NamedTuple):
     pixels: ImageData
     full_header: HeaderBytes
 
+# Pixel configuration for BMP (b,g,r)
+class Pixel(NamedTuple):
+    """
+    """
+    b: int
+    g: int
+    r: int
+
 
 # =============================================================================
 # LOGGING CONFIGURATION
@@ -176,7 +183,7 @@ class ColoredFormatter(logging.Formatter):
         logging.ERROR:     "\033[91m",   # Red
         logging.CRITICAL:  "\033[1;91m", # Bold Red
     }
-    RESET: Final[str] = f"\033[0m"
+    RESET: Final[str] = "\033[0m"
     
     # Override the parent's format method
     def format(self, record) -> str:
