@@ -71,7 +71,9 @@ BASE_DIR: Final[Path] = CUR_DIR.parent
 # frozen dataclass (since variables might need runtime protection)
 
 # Directories
-@dataclass(frozen=True)
+# slots=True prevents dynamic attribute creation and,
+# reduces memory footprint.
+@dataclass(frozen=True, slots=True)
 class BmpDirectories:
     """
     """
@@ -83,7 +85,7 @@ class BmpDirectories:
 #BMP file constants
 # Final[] Type Hint only-tells type checkers "don't reassign" (IDE, mypy)
 # frozen=True Makes instance immutable at runtime 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class BmpConstants:
     """
     """
