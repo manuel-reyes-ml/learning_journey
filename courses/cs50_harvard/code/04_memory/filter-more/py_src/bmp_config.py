@@ -6,11 +6,17 @@
 # =============================================================================
 
 from __future__ import annotations
-from typing import Final, Callable, TypedDict, NamedTuple
 from dataclasses import dataclass
 from enum import IntEnum, unique
 from pathlib import Path
 import logging
+from typing import (
+    Final,
+    Callable,
+    TypedDict,
+    NamedTuple,
+    Literal,
+)
 
 
 # =============================================================================
@@ -20,7 +26,7 @@ import logging
 __all__ = [
     "ColoredFormatter",
     "DictDispatch",
-    "FilterFunc",
+    "FilterName",
     "ImageData",
     "ImageSize",
     "BmpData",
@@ -51,6 +57,7 @@ type PixelRow = list[Pixel]
 type ImageData = list[PixelRow]
 type HeaderBytes = bytes
 type FilterFunc = Callable[[ImageData], ImageData]
+type FilterName = Literal["grayscale", "reflect", "blur", "edges"]
 
 
 # =====================================================
@@ -68,7 +75,7 @@ BASE_DIR: Final[Path] = CUR_DIR.parent
 # =====================================================
 # Dataclass Frozen Constants
 # ===================================================== 
-# frozen dataclass (since variables might need runtime protection)
+# frozen dataclass (since constants might need runtime protection)
 
 # Directories
 # slots=True prevents dynamic attribute creation and,
@@ -95,15 +102,6 @@ class BmpConstants:
     PIXEL_SIZE: Final[int] = 3
     BPP: Final[int] = 24  # bits per pixel (3 bytes RGB)
 
-# Exit codes (Unix standard)
-@unique  # Ensures no duplicate values
-class ExitCode(IntEnum):
-    """
-    """
-    SUCCESS = 0
-    FAILURE = 1
-    KEYBOARD_INTERRUPT = 130
-   # BADUSE = 1  Error!
 
 # =====================================================
 # Dataclass Instantiation
@@ -118,6 +116,16 @@ bmp_constants = BmpConstants()
 # =============================================================================
 # OTHER CLASS CONFIGURATION
 # =============================================================================
+
+# Exit codes (Unix standard)
+@unique  # Ensures no duplicate values
+class ExitCode(IntEnum):
+    """
+    """
+    SUCCESS = 0
+    FAILURE = 1
+    KEYBOARD_INTERRUPT = 130
+   # BADUSE = 1  Error!
 
 # Dictionary Dispatch for filters function iteration
 class DictDispatch(TypedDict):
