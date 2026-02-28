@@ -15,6 +15,7 @@ try:
     from .bmp_config import (
         bmp_constants, 
         ImageData,
+        ImageSize,
         HeaderBytes,
         BmpData,
         Pixel,
@@ -92,6 +93,7 @@ def read_bmp(
         # '<i' = little-endian SIGNED 32-bit (height can be negative)
         width = struct.unpack('<i', dib_header[4:8])[0]
         height = struct.unpack('<i', dib_header[8:12])[0]
+        size = ImageSize(height, width)
         
         # Extract bits per pixel (bytes 14-15 in DIB)
         # '<H' = little-endian unsigned 16-bit: Requires 2 bytes
@@ -106,7 +108,7 @@ def read_bmp(
         # STEP 3: Calculate row padding
         # =====================================================
         # BMP rows must be multiplies of 4 bytes
-        padding = _padding_calculator(width)
+        padding = _padding_calculator(size.width)
         
         # =====================================================
         # STEP 4: Read pixel data
@@ -115,9 +117,9 @@ def read_bmp(
         
         # abs() returns the absolute value, is the difference
         # from 0 to the number (always positive).
-        for _ in range(abs(height)):
+        for _ in range(abs(size.height)):
             row = []
-            for _ in range(width):
+            for _ in range(size.width):
                 # Read 3 bytes as BGR
                 # '<BBB' = three unsigned bytes
                 # -unpack returns a plain tuple: tuple[Any, ...] type
@@ -133,7 +135,7 @@ def read_bmp(
     
     logger.debug("Pixels are retrieved from input file......")
     
-    return BmpData(width, height, pixels, full_header)
+    return BmpData(size, pixels, full_header)
 
 
 def write_bmp(

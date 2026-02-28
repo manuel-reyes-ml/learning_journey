@@ -299,7 +299,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
             
             write_bmp(
                 out_file,
-                bmp_data.width,
+                bmp_data.size.width,
                 new_pixels,
                 bmp_data.full_header,
             )
