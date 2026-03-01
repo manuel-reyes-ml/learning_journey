@@ -4,13 +4,13 @@
 
 SELECT * FROM sample_table;
 
---1.1 SELECT specific columns from TABLE_NAME
+-- 1.1 SELECT specific columns from TABLE_NAME
 SELECT year,
        month,
        west
   FROM tutorial.us_housing_units
 
---1.2 SELECT all or specific columns from TABLE_NAME and change name for results
+-- 1.2 SELECT all or specific columns from TABLE_NAME and change name for results
 SELECT west AS "West Region",
        south AS "South Region"
   FROM tutorial.us_housing_units
@@ -33,12 +33,18 @@ FROM sample_table
 WHERE west > 500;
 
 -- ======================
--- 4. Select with ILIKE operator
+-- 4. Select with ILIKE, LIKE operator
 -- ======================
 
 SELECT *
 WHERE year <=10
 AND group_name ILIKE "%ludacris%";
+
+/* 4.1 LIKE operator to find at least 3 a,
+in the string*/
+SELECT name
+FROM table
+WHERE name LIKE '%a%a%a%'
 
 -- ======================
 -- 5. Select with multiple operators and conditions
@@ -76,40 +82,40 @@ AND ( (year BETWEEN 1970 AND 1979) OR
 -- ======================
 
 SELECT *
-  FROM tutorial.billboard_top_100_year_end
- WHERE year = 2013
-   AND song_name NOT ILIKE '%a%';
+FROM tutorial.billboard_top_100_year_end
+WHERE year = 2013
+AND song_name NOT ILIKE '%a%';
 
 -- ======================
 -- 7. Sort Data
 -- ======================
 
 SELECT *
-  FROM tutorial.billboard_top_100_year_end
- WHERE year = 2013
- ORDER BY year_rank;
+FROM tutorial.billboard_top_100_year_end
+WHERE year = 2013
+ORDER BY year_rank;
 -- Default (Ascending = from lower to greater numbers)
 
 --If you'd like your results in the opposite order (referred to as descending order), you need to add the DESC operator:
 
 SELECT *
-  FROM tutorial.billboard_top_100_year_end
- WHERE year = 2013
- ORDER BY year_rank DESC;
+FROM tutorial.billboard_top_100_year_end
+WHERE year = 2013
+ORDER BY year_rank DESC;
 
 -- 7.1 Ordering data by multiple columns
 
 SELECT *
-  FROM tutorial.billboard_top_100_year_end
-  WHERE year_rank <= 3
- ORDER BY year DESC, year_rank;
+FROM tutorial.billboard_top_100_year_end
+WHERE year_rank <= 3
+ORDER BY year DESC, year_rank;
 
- --7.1.1 Substituing numbers for column names. Numbers correspond to the order in which you list columns in SELECT.
+ -- 7.1.1 Substituing numbers for column names. Numbers correspond to the order in which you list columns in SELECT.
 
 SELECT *
-  FROM tutorial.billboard_top_100_year_end
- WHERE year_rank <= 3
- ORDER BY 2, 1 DESC;
+FROM tutorial.billboard_top_100_year_end
+WHERE year_rank <= 3
+ORDER BY 2, 1 DESC;
 
  /* ======================
     8. Limit
