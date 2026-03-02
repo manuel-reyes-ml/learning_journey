@@ -5,11 +5,11 @@
 # IMPORTS
 # =============================================================================
 
-from __future__ import annotations
+from __future__ import annotations  # Must be at the beginning of the file
+from typing import Final, NamedTuple, TypedDict, TypeVar
 from dataclasses import dataclass
 from enum import IntEnum, unique
 from pathlib import Path
-from typing import Final
 import logging
 import struct
 import sys
@@ -26,6 +26,23 @@ import sys
 # Module Constants
 # =====================================================
 
+ImageCounter = TypeVar('ImageCounter', str, int, None)
+
+# =====================================================
+# Type Aliases
+# =====================================================
+
+type BufferBytes = bytes
+type TrueFalse = bool
+type ByteHex = int
+type Fname = str
+type ImagesReport = dict[str, ImageVariales] | None
+
+
+# =====================================================
+# Dataclass Frozen Constants
+# ===================================================== 
+
 # Directories
 @dataclass(frozen=True, slots=True)
 class FileDirectories:
@@ -34,9 +51,43 @@ class FileDirectories:
     CUR_DIR: Final[Path] = Path(__file__).resolve().parent
     INPUT_DIR: Final[Path] = CUR_DIR / "memory_card"
     OUT_DIR: Final[Path] = CUR_DIR / "recovered"
-    FILE_EXT: str = ".jpeg"
+
+# File information
+@dataclass(frozen=True, slots=True)
+class FileName:
+    """
+    """
+    INFILE_EXT: str = ".raw"
+    OUTFILE_EXT: str = ".jpeg"
     OUT_FNAME: str = f"image_"  # complete during file writing
 
+
+# =====================================================
+# Dataclass Instantiation
+# =====================================================
+
+# Following PEP 8 standars, name of an instance should be lowercase,
+# unless it is a global constant itself.
+file_directories = FileDirectories()
+filename = FileName()
+
+
+# =====================================================
+# Other Class Configuration
+# =====================================================
+
+# JPEG Image information
+class ImageData(IntEnum):
+    """
+    """
+    BLOCK_SIZE = 512
+    BITS_MASK = 0xf0
+    KB_PER_BYTE = 1024
+    BYTE_0 = 0xff
+    BYTE_1 = 0xd8
+    BYTE_2 = 0xff
+    BYTE_3 = 0xe0
+    
 # Exit codes (Unix standard)
 @unique  # Ensure no duplicate values
 class ExitCode(IntEnum):
@@ -45,7 +96,29 @@ class ExitCode(IntEnum):
     SUCCESS = 0
     FAILURE = 0
     KEYBOARD_INTERRUPT = 130
+    
+class ByteSignature(NamedTuple):
+    """
+    """
+    byte_0: int
+    byte_1: int
+    byte_2: int
+    byte_3: int
 
+# TypedDict makes a fix structure for a Dictionary,
+# for Type checker to warn later on the program.
+class JpegRecoverResult(TypedDict):
+    """
+    """
+    images_recovered: int
+    images_details: ImagesReport  # Nested dictionary
+    output_file: Path
+    
+class ImageVariales(TypedDict):
+    """
+    """
+    kb_size: float
+    
 
 # =====================================================
 # Logging Configuration
@@ -111,3 +184,183 @@ console_handler.setFormatter(ColoredFormatter(
 ))
 logger.addHandler(console_handler)
 
+
+# =============================================================================
+# INTERNAL HELPER FUNCTIONS
+# =============================================================================
+
+def _build_outfile_path(
+    out_fname: str | None = None,
+    out_dir: Path = file_directories.OUT_DIR,
+) -> Path:
+    """
+    """
+    if out_fname == "":
+        raise ValueError("out_fname cannot be empty")
+    
+    if not isinstance(out_fname, str):
+        raise TypeError(f"out_fname must a string. Got '{type(out_fname)}'")
+    
+    if not out_dir.exists():
+        out_dir.mkdir(parents=True, exist_ok=True)
+    
+    return out_dir / out_fname
+
+
+def _is_jpeg_start(
+    buffer: ByteSignature | None = None,
+    byte_0: ByteHex = ImageData.BYTE_0,
+    byte_1: ByteHex = ImageData.BYTE_1,
+    byte_2: ByteHex = ImageData.BYTE_2,
+    byte_3: ByteHex = ImageData.BYTE_3,
+    bits_mask: ByteHex = ImageData.BITS_MASK,
+) -> TrueFalse:
+    """
+    """
+    if not buffer: 
+        raise ValueError("Buffer cannot be empty")
+    
+    return (
+        buffer.byte_0 == byte_0 and
+        buffer.byte_1 == byte_1 and
+        buffer.byte_2 == byte_2 and
+        (
+            buffer.byte_3 & 
+            bits_mask
+        ) == byte_3
+    )
+
+
+# =============================================================================
+# CORE FUNCTIONS
+# =============================================================================
+
+def validate_infile(
+    fname: str | None = None,
+    input_dir: Path | str | None = None,
+    infile_ext: str = filename.INFILE_EXT,
+    default_dir: Path = file_directories.INPUT_DIR,
+    ) -> Path:
+    """
+    """
+    if not fname:
+        raise ValueError("File name cannot be empty")
+    
+    if input_dir:
+        if not isinstance(input_dir, Path):
+            input_dir = Path(input_dir)
+        input_dir = input_dir.expanduser().resolve()
+        in_file = input_dir / fname
+    else: 
+        logger.debug("Not directory entered by user, searching in default directory....")
+        in_file = Path(fname).resolve() if Path(fname).exists() else default_dir / fname
+    
+    if in_file.is_file():
+        
+        # Check 1: File with correct extension?
+        # .suffix gets the extension (.raw)
+        if in_file.suffix == infile_ext:
+            return in_file
+        
+        # Check 2: It is already a RAW file (but maybe uppercase like .RaW or not extension)?
+        elif in_file.suffix.lower() == infile_ext or in_file.suffix == "":
+            consent = input(
+                f"Would you like me to correct extension to {in_file.name} (y/n): "
+            ).strip().lower()
+            
+            if consent in ["y", "yes"]:
+                new_in_file = in_file.with_suffix(infile_ext)
+                in_file.rename(new_in_file)
+                # .name returns just file name ('card.raw')
+                logger.info(f"File name updated successfully to {new_in_file.name}")
+                
+                return new_in_file
+            
+            else:
+                logger.warning(f"File name is unchanged {in_file.name}")
+                
+                return in_file
+        else:
+            raise FileExistsError(f"{fname} is not a valid '{infile_ext}")
+    else:
+        raise FileNotFoundError(f"{fname} doesn't exist in directory '{in_file}")
+
+
+def generate_outfile(
+    image_counter: int | str | None = None,
+    file_ext: str = filename.INFILE_EXT,
+    fname: str = filename.OUT_FNAME,
+) -> Path:
+    """
+    """
+    # If its any other Type than 'int' or 'str' (eg. None, float)
+    if not isinstance(image_counter, (int, str)):
+        raise TypeError(f"imagent_count must be an integer or string. Got '{type(image_counter)}'")
+    
+    # If its empty
+    if image_counter == "":
+        raise ValueError("image_counter cannot be empty")
+    
+    if isinstance(image_counter, str):
+        if not image_counter.strip().isdigit(): 
+            raise ValueError("image_counter string must only contain digits")   
+
+        image_counter = int(image_counter.strip())
+
+    out_fname = f"{fname}{image_counter:03}{file_ext}"
+        
+    return _build_outfile_path(out_fname)
+    
+        
+def recover_jpeg(
+    infile: Path | None = None,
+    block_size: int = ImageData.BLOCK_SIZE,
+    kb_per_byte: int = ImageData.KB_PER_BYTE,
+) -> JpegRecoverResult:
+    """
+    """
+    if not infile:
+        raise ValueError("Input file cannot be empty")
+    
+    kbytes = 0
+    image_counter = 0
+    out_handler = None
+    recover_results: ImagesReport = {}
+    
+    with open(infile, "rb") as inputf:
+        while True:
+            buffer: BufferBytes = inputf.read(block_size)
+            
+            if not buffer:
+                break
+            
+            b0, b1, b2, b3 = struct.unpack("<BBBB", buffer[0:4])
+            signature = ByteSignature(b0, b1, b2, b3)
+            
+            # Check if the block is the start of a new JPEG
+            if _is_jpeg_start(signature): 
+                #If we were already writing a file, close it
+                if out_handler:
+                    kbytes = out_handler.tell() / kb_per_byte
+                    out_handler.close
+                
+                # Open a new file to start writing
+                out_filename: Path = generate_outfile(image_counter)
+                out_handler = open(out_filename, "wb")
+                
+                #Initialize image_xx in dictionary
+                recover_results = {out_filename.stem: {"kb_size": kbytes}}
+                image_counter += 1
+                
+                # Write the start of the image
+                out_handler.write(buffer)
+            
+            # If it´s not a new JPEG start, but we have a file open, keep writing
+            elif out_handler:
+                out_handler.write(buffer)
+        
+        # Close the last file if one was open        
+        if out_handler:
+            out_handler.close()
+            
+            
