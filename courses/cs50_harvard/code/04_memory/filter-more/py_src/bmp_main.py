@@ -1,4 +1,19 @@
 """
+CLI entry point and orchestration for BMP image filtering.
+
+Provides argument parsing, file validation, and filter
+orchestration for the BMP filter pipeline. Coordinates the
+read → filter → write workflow through ``main()``, which
+serves as both the CLI entry point and the package's public
+API via ``py_src.main()``.
+
+Examples
+--------
+Command-line usage::
+
+    $ python -m py_src blur -i image.bmp
+    $ python -m py_src grayscale edges -i photo.bmp -v
+    $ python -m py_src all -i image.bmp -d ~/pictures/
 """
 
 # =============================================================================
@@ -14,8 +29,8 @@ import string
 import sys
 
 try:
-    from .bmp_logger import setup_logging
     from .bmp_io import read_bmp, write_bmp
+    from .bmp_logger import setup_logging
     from .bmp_config import (
         DictDispatch,
         FilterName,
@@ -78,6 +93,31 @@ def _validate_filter(
     all_filters: str = ALL_FILTERS,
 ) -> str:
     """
+    Validate and normalize a single filter name string.
+
+    Strips whitespace and punctuation, converts to lowercase,
+    then verifies the filter exists in the dispatch table or
+    is the special ``"all"`` keyword.
+
+    Parameters
+    ----------
+    filter_name : str or None, optional
+        Raw filter name from user input. Cannot be None or empty.
+    funcs : DictDispatch, optional
+        Filter dispatch table to validate against (default ``FUNCS``).
+    all_filters : str, optional
+        Special keyword that selects all filters (default ``"all"``).
+
+    Returns
+    -------
+    str
+        Cleaned, lowercase filter name.
+
+    Raises
+    ------
+    argparse.ArgumentTypeError
+        If ``filter_name`` is empty, non-alphabetic, or not a
+        recognized filter name.
     """
     if not filter_name:
         raise argparse.ArgumentTypeError("Filter cannot be empty")
@@ -98,6 +138,27 @@ def _validate_filter(
 
 def _validate_filters(filters: list[FilterName] | None = None) -> Iterator[str]:
     """
+    Validate a list of filter names and yield each cleaned name.
+
+    Checks for duplicates in the filter list, then yields each
+    filter name through ``_validate_filter()`` for individual
+    validation.
+
+    Parameters
+    ----------
+    filters : list of FilterName or None, optional
+        List of filter name strings to validate. Cannot be
+        None or empty.
+
+    Yields
+    ------
+    str
+        Each validated and cleaned filter name.
+
+    Raises
+    ------
+    ValueError
+        If ``filters`` is None, empty, or contains duplicates.
     """
     if not filters:
         raise ValueError("Filters cannot be empty")
@@ -123,6 +184,39 @@ def validate_infile(
     image_dir: Path = bmp_dirs.INPUT_DIR,
 ) -> Path:
     """
+    Locate and validate an input BMP file.
+
+    Resolves the file path from the given filename and optional
+    directory, then verifies the file exists and has the correct
+    BMP extension. Offers to correct mismatched extensions
+    interactively.
+
+    Parameters
+    ----------
+    fname : str or None, optional
+        Name of the input BMP file. Cannot be None or empty.
+    input_dir : str or None, optional
+        Directory to search for the file. If None, searches the
+        current working directory first, then the default images
+        directory.
+    file_ext : str, optional
+        Expected file extension (default ``".bmp"``).
+    image_dir : Path, optional
+        Fallback directory for BMP images (default ``images/``).
+
+    Returns
+    -------
+    Path
+        Resolved, validated path to the input BMP file.
+
+    Raises
+    ------
+    ValueError
+        If ``fname`` is None or empty.
+    FileNotFoundError
+        If the file does not exist at the resolved path.
+    FileExistsError
+        If the file exists but has an invalid extension.
     """
     if not fname:
         raise ValueError("Input file name cannot be empty")
@@ -175,6 +269,43 @@ def validate_outfile(
     file_ext: str = bmp_dirs.FILE_EXT,
 ) -> Path:
     """
+    Build and validate an output file path for a filtered image.
+
+    Constructs the output filename from the input file stem and
+    filter name if no explicit filename is provided. Ensures the
+    output directory exists and the file has the correct extension.
+
+    Parameters
+    ----------
+    fname : str or None, optional
+        Explicit output filename. If None, auto-generates from
+        ``in_file`` stem and ``filter_name``.
+    in_file : Path or None, optional
+        Path to the input file, used for auto-generating the
+        output filename. Required if ``fname`` is None.
+    filter_name : str or None, optional
+        Name of the applied filter, appended to the output
+        filename. Required if ``fname`` is None.
+    out_dir : Path, optional
+        Directory for output files (default ``filtered_imgs/``).
+    file_ext : str, optional
+        Required file extension (default ``".bmp"``).
+
+    Returns
+    -------
+    Path
+        Validated output file path with correct extension.
+
+    Raises
+    ------
+    ValueError
+        If ``fname`` is None and either ``in_file`` or
+        ``filter_name`` is also None.
+
+    Examples
+    --------
+    >>> validate_outfile(in_file=Path("tower.bmp"), filter_name="blur")
+    PosixPath('.../filtered_imgs/tower_blur.bmp')
     """
     if not fname:
         if not in_file or not filter_name:
@@ -202,6 +333,41 @@ def process_filter(
     funcs: DictDispatch = FUNCS,
 ) -> Iterator[tuple[ImageData, str]]:
     """
+    Apply one or more filters to an image via dictionary dispatch.
+
+    Validates the filter list, then lazily applies each filter
+    function from the dispatch table to the pixel data. Yields
+    results one at a time to support streaming write operations.
+
+    Parameters
+    ----------
+    pixels : ImageData or None, optional
+        2D grid of ``Pixel`` objects to filter. Cannot be None
+        or empty.
+    filters : list of FilterName or None, optional
+        Filter names to apply sequentially. Cannot be None or
+        empty.
+    funcs : DictDispatch, optional
+        Filter dispatch table mapping names to functions
+        (default ``FUNCS``).
+
+    Yields
+    ------
+    tuple of (ImageData, str)
+        Each yield produces the filtered pixel grid and the
+        name of the filter that was applied.
+
+    Raises
+    ------
+    ValueError
+        If ``pixels`` is None or empty, ``filters`` is None or
+        empty, or a filter name fails validation.
+
+    Notes
+    -----
+    Each filter is applied independently to the original pixel
+    data, not chained. This means applying ``["blur", "edges"]``
+    produces two separate outputs, not a blurred-then-edged image.
     """
     if not filters:
         raise ValueError("Filter(s) list cannot be emtpy")
@@ -235,6 +401,37 @@ def process_filter(
 
 def main(argv: list[str] | None = None) -> ExitCode:
     """
+    Parse CLI arguments and run the BMP filter pipeline.
+
+    Orchestrates the complete read → filter → write workflow:
+    validates input/output paths, reads the BMP file, applies
+    each requested filter, and writes the results.
+
+    Parameters
+    ----------
+    argv : list of str or None, optional
+        Command-line arguments to parse. If None, reads from
+        ``sys.argv`` (standard CLI behavior). Pass a list for
+        programmatic or test invocation.
+
+    Returns
+    -------
+    ExitCode
+        ``SUCCESS`` (0) on normal completion, ``FAILURE`` (1)
+        on any handled error, or ``KEYBOARD_INTERRUPT`` (130)
+        if terminated by Ctrl+C.
+
+    Examples
+    --------
+    CLI usage::
+
+        $ python -m py_src blur -i image.bmp
+        $ python -m py_src all -i image.bmp -v
+
+    Programmatic usage::
+
+        >>> from py_src.bmp_main import main
+        >>> exit_code = main(["blur", "-i", "image.bmp"])
     """
     parser = argparse.ArgumentParser(
         description=f"Apply one, some or all filters to an image. Options: {list(FUNCS.keys())}"

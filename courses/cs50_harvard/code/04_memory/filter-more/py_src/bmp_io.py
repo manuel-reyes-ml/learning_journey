@@ -1,4 +1,17 @@
 """
+BMP file I/O operations.
+
+Handles binary reading and writing of 24-bit BMP image files,
+including header parsing, pixel data extraction, and row padding
+calculations. Supports the standard BMP format with BGR pixel
+order and 4-byte row alignment.
+
+Notes
+-----
+BMP files store pixel rows padded to 4-byte boundaries. This
+module calculates and applies the correct padding during both
+read and write operations. Headers are preserved verbatim from
+the input file to ensure lossless round-trip I/O.
 """
 
 # =============================================================================
@@ -45,6 +58,30 @@ logger = logging.getLogger(__name__)
 
 def _padding_calculator(width: int) -> int:
     """
+    Calculate the number of padding bytes needed per BMP row.
+
+    BMP rows must be aligned to 4-byte boundaries. For 24-bit
+    images, each pixel occupies 3 bytes, so padding is added
+    at the end of each row to reach the next multiple of 4.
+
+    Parameters
+    ----------
+    width : int
+        Number of pixels per row.
+
+    Returns
+    -------
+    int
+        Number of null bytes (0–3) to append after each row.
+
+    Examples
+    --------
+    >>> _padding_calculator(1)   # 1 * 3 = 3 bytes → 1 pad
+    1
+    >>> _padding_calculator(4)   # 4 * 3 = 12 bytes → 0 pad
+    0
+    >>> _padding_calculator(5)   # 5 * 3 = 15 bytes → 1 pad
+    1
     """
     return (4 - (width * 3) % 4) % 4
 
@@ -61,6 +98,46 @@ def read_bmp(
     bpp_bmp: int = bmp_constants.BPP,
 ) -> BmpData:
     """
+    Read a 24-bit BMP file and extract its pixel data.
+
+    Parses the BMP file header and DIB header to extract image
+    dimensions, validates the format, then reads the pixel grid
+    row by row (accounting for padding). Returns all data needed
+    to reconstruct the file via ``write_bmp()``.
+
+    Parameters
+    ----------
+    in_file : Path or None
+        Path to the input BMP file. Cannot be None.
+    bmp_signature : bytes, optional
+        Expected magic bytes at file start (default ``b"BM"``).
+    bmp_header_size : int, optional
+        Size of the BMP file header in bytes (default 14).
+    pixel_size : int, optional
+        Bytes per pixel (default 3 for BGR).
+    bpp_bmp : int, optional
+        Expected bits per pixel (default 24).
+
+    Returns
+    -------
+    BmpData
+        NamedTuple containing:
+        - ``size``: ``ImageSize`` with height and width.
+        - ``pixels``: 2D grid of ``Pixel`` NamedTuples in BGR order.
+        - ``full_header``: Concatenated BMP + DIB header bytes.
+
+    Raises
+    ------
+    ValueError
+        If ``in_file`` is None, the file lacks a valid BMP
+        signature, or the bit depth is not 24-bit.
+
+    Notes
+    -----
+    Uses ``struct.unpack`` with little-endian format codes:
+    ``'<I'`` for unsigned 32-bit, ``'<i'`` for signed 32-bit,
+    ``'<H'`` for unsigned 16-bit, and ``'<BBB'`` for three
+    unsigned bytes (one pixel).
     """
     if not in_file:
         raise ValueError("Input file cannot be empty.")
@@ -146,6 +223,37 @@ def write_bmp(
     pad_hex: bytes = bmp_constants.PAD_HEX,
 ) -> None:
     """
+    Write pixel data and headers to a BMP file.
+
+    Reconstructs a valid 24-bit BMP file by writing the original
+    headers followed by pixel data with correct row padding.
+
+    Parameters
+    ----------
+    out_file : Path or None
+        Destination path for the output BMP file. Cannot be None.
+    width : int or None
+        Image width in pixels, used to calculate row padding.
+        Cannot be None.
+    pixels : ImageData or None
+        2D grid of ``Pixel`` objects to write. Cannot be None
+        or empty.
+    header : HeaderBytes or None
+        Original BMP + DIB header bytes from ``read_bmp()``.
+        Cannot be None.
+    pad_hex : bytes, optional
+        Byte value used for row padding (default ``b"\\x00"``).
+
+    Raises
+    ------
+    ValueError
+        If any required parameter is None or empty.
+
+    Notes
+    -----
+    Writes pixels in BGR order using ``struct.pack('<BBB', ...)``,
+    matching the BMP file format specification. Row padding is
+    appended as null bytes to maintain 4-byte alignment.
     """
     if not out_file:
         raise ValueError("Output file cannot be empty")

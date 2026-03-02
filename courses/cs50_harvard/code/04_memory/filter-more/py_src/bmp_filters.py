@@ -1,4 +1,16 @@
 """
+BMP image filter functions.
+
+Implements four pixel-level image filters for 24-bit BMP images:
+grayscale conversion, horizontal reflection, box blur, and Sobel
+edge detection. Each filter accepts an ``ImageData`` grid and
+returns a new grid without mutating the original.
+
+Notes
+-----
+All filters operate on BGR-ordered ``Pixel`` NamedTuples and
+produce new ``Pixel`` instances rather than mutating in place,
+consistent with the immutability of NamedTuple objects.
 """
 
 # =============================================================================
@@ -40,6 +52,20 @@ logger = logging.getLogger(__name__)
 
 def _width_height_calculator(pixels: ImageData) -> ImageSize:
     """
+    Extract image dimensions from the pixel grid.
+
+    Derives height from the number of rows and width from
+    the length of the first row, assuming a rectangular grid.
+
+    Parameters
+    ----------
+    pixels : ImageData
+        2D grid of ``Pixel`` objects (non-empty).
+
+    Returns
+    -------
+    ImageSize
+        NamedTuple with ``height`` and ``width`` fields.
     """
     # How many rows / main lists (where pixel lists are inside)
     height = len(pixels)
@@ -56,6 +82,35 @@ def _width_height_calculator(pixels: ImageData) -> ImageSize:
 
 def grayscale(pixels: ImageData | None = None) -> ImageData:
     """
+    Convert an image to grayscale using the luminosity method.
+
+    Applies the ITU-R BT.601 luminosity formula to each pixel,
+    weighting RGB channels by human eye sensitivity:
+    ``gray = 0.299 * R + 0.587 * G + 0.114 * B``.
+
+    Parameters
+    ----------
+    pixels : ImageData or None
+        2D grid of ``Pixel`` objects to convert. Cannot be
+        None or empty.
+
+    Returns
+    -------
+    ImageData
+        New pixel grid where each pixel has equal B, G, R
+        values set to the computed grayscale intensity.
+
+    Raises
+    ------
+    ValueError
+        If ``pixels`` is None or an empty list.
+
+    Examples
+    --------
+    >>> img = [[Pixel(50, 100, 200)]]
+    >>> result = grayscale(img)
+    >>> result[0][0]
+    Pixel(b=126, g=126, r=126)
     """
     # Explicit check for ImageData (list of lists)
     # This distinguishes between "caller forgot to pass data",
@@ -83,6 +138,34 @@ def grayscale(pixels: ImageData | None = None) -> ImageData:
 
 def reflect(pixels: ImageData | None = None) -> ImageData:
     """
+    Mirror an image horizontally by reversing each pixel row.
+
+    Produces a left-to-right reflection of the input image.
+    Each row's pixel order is reversed while row order is
+    preserved.
+
+    Parameters
+    ----------
+    pixels : ImageData or None
+        2D grid of ``Pixel`` objects to reflect. Cannot be
+        None or empty.
+
+    Returns
+    -------
+    ImageData
+        New pixel grid with each row reversed.
+
+    Raises
+    ------
+    ValueError
+        If ``pixels`` is None or an empty list.
+
+    Examples
+    --------
+    >>> img = [[Pixel(1, 2, 3), Pixel(4, 5, 6)]]
+    >>> result = reflect(img)
+    >>> result[0]
+    [Pixel(b=4, g=5, r=6), Pixel(b=1, g=2, r=3)]
     """
     # Explicit check for ImageData (list of lists)
     if pixels is None:
@@ -103,6 +186,35 @@ def reflect(pixels: ImageData | None = None) -> ImageData:
 
 def blur(pixels: ImageData | None = None) -> ImageData:
     """
+    Apply a 3x3 box blur to an image.
+
+    For each pixel, computes the average of all neighboring
+    pixels within a 3x3 grid (including the pixel itself).
+    Edge and corner pixels use only the available neighbors,
+    resulting in a naturally weighted boundary treatment.
+
+    Parameters
+    ----------
+    pixels : ImageData or None
+        2D grid of ``Pixel`` objects to blur. Cannot be
+        None or empty.
+
+    Returns
+    -------
+    ImageData
+        New pixel grid with each pixel replaced by the
+        rounded average of its 3x3 neighborhood.
+
+    Raises
+    ------
+    ValueError
+        If ``pixels`` is None or an empty list.
+
+    Notes
+    -----
+    Reads from the original ``pixels`` grid and writes to a
+    separate ``new_pixels`` grid to avoid read-after-write
+    artifacts during the convolution pass.
     """
     # Explicit check for ImageData (list of lists)
     if pixels is None:
@@ -150,6 +262,52 @@ def blur(pixels: ImageData | None = None) -> ImageData:
 
 def edges(pixels: ImageData | None = None) -> ImageData:
     """
+    Detect edges in an image using the Sobel operator.
+
+    Applies two 3x3 Sobel kernels (Gx for horizontal edges,
+    Gy for vertical edges) to each color channel independently.
+    The final magnitude is computed as ``sqrt(Gx² + Gy²)``
+    using ``math.hypot()``, then capped at 255.
+
+    Parameters
+    ----------
+    pixels : ImageData or None
+        2D grid of ``Pixel`` objects to process. Cannot be
+        None or empty.
+
+    Returns
+    -------
+    ImageData
+        New pixel grid where bright values indicate strong
+        edges and dark values indicate uniform regions.
+
+    Raises
+    ------
+    ValueError
+        If ``pixels`` is None or an empty list.
+
+    Notes
+    -----
+    Out-of-bounds neighbors are treated as black (value 0),
+    consistent with the CS50 specification. The Sobel kernels
+    used are:
+
+    Gx::
+
+        [-1  0  1]
+        [-2  0  2]
+        [-1  0  1]
+
+    Gy::
+
+        [-1 -2 -1]
+        [ 0  0  0]
+        [ 1  2  1]
+
+    References
+    ----------
+    .. [1] Sobel, I. and Feldman, G., "A 3x3 Isotropic Gradient
+       Operator for Image Processing," 1968.
     """
     # Explicit check for ImageData (list of lists)
     if pixels is None:

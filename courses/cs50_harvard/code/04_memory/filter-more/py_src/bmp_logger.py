@@ -1,4 +1,17 @@
 """
+Logging configuration for the py_src package.
+
+Provides a single ``setup_logging()`` function that configures
+the package-level logger with colored console output. Uses
+``ColoredFormatter`` from ``bmp_config`` to apply ANSI color
+codes based on log severity level.
+
+Notes
+-----
+The logger is scoped to the ``py_src`` package namespace,
+meaning all child loggers (e.g., ``py_src.bmp_io``,
+``py_src.bmp_filters``) inherit this configuration
+automatically via Python's logger hierarchy.
 """
 
 # =============================================================================
@@ -38,7 +51,43 @@ def setup_logging(
     cur_dir: Path = CUR_DIR, 
     level=LEVEL_DEFAULT,
 ) -> None:
-    """Configures the base logger for the entire py_src packages."""
+    """
+    Configure the package-level logger with colored console output.
+
+    Sets up a ``StreamHandler`` on ``sys.stdout`` with the specified
+    formatter class and log level. Scoped to the ``py_src`` package
+    logger so all child module loggers inherit the configuration.
+
+    Parameters
+    ----------
+    formatter_class : type[logging.Formatter] or None, optional
+        Formatter class to use for console output. Defaults to
+        ``ColoredFormatter``, which applies ANSI color codes by
+        log level. Cannot be None.
+    cur_dir : Path, optional
+        Directory whose ``.name`` attribute determines the logger
+        namespace (default is the ``py_src/`` directory).
+    level : int, optional
+        Logging level threshold (default ``logging.INFO``). Use
+        ``logging.DEBUG`` for verbose output.
+
+    Raises
+    ------
+    ValueError
+        If ``formatter_class`` is None.
+
+    Notes
+    -----
+    Safe to call multiple times — clears existing handlers before
+    attaching a new one to prevent duplicate log output. Sets
+    ``propagate = False`` to prevent messages from bubbling up
+    to Python's root logger.
+
+    Examples
+    --------
+    >>> setup_logging()  # INFO level with colors
+    >>> setup_logging(level=logging.DEBUG)  # verbose mode
+    """
     if not formatter_class:
         raise ValueError("formatter_class cannot be empty")
     

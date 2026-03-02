@@ -1,4 +1,17 @@
 """
+BMP configuration module for image filter processing.
+
+Provides centralized type definitions, constants, data structures,
+and logging configuration used across all modules in the py_src
+package. Follows a single-source-of-truth pattern where all shared
+types, paths, and BMP-specific constants are defined here and
+imported by other modules.
+
+Notes
+-----
+Uses ``from __future__ import annotations`` to enable lazy evaluation
+of type hints, allowing forward references (e.g., ``PixelRow``
+referencing ``Pixel`` before ``Pixel`` is defined).
 """
 
 # =============================================================================
@@ -83,6 +96,29 @@ BASE_DIR: Final[Path] = CUR_DIR.parent
 @dataclass(frozen=True, slots=True)
 class BmpDirectories:
     """
+    Immutable directory and file extension configuration for BMP I/O.
+
+    Centralizes all filesystem paths and naming conventions used
+    for reading input images and writing filtered output files.
+
+    Attributes
+    ----------
+    FILE_EXT : str
+        Standard BMP file extension.
+    INPUT_DIR : Path
+        Default directory for source BMP images.
+    OUT_DIR : Path
+        Default directory for filtered output images.
+    OUT_FNAME : str
+        Default suffix appended to output file names.
+
+    Examples
+    --------
+    >>> dirs = BmpDirectories()
+    >>> dirs.INPUT_DIR
+    PosixPath('.../filter-more/images')
+    >>> dirs.FILE_EXT
+    '.bmp'
     """
     FILE_EXT: str = ".bmp"
     INPUT_DIR: Path = BASE_DIR / "images"
@@ -95,6 +131,32 @@ class BmpDirectories:
 @dataclass(frozen=True, slots=True)
 class BmpConstants:
     """
+    Immutable BMP file format constants.
+
+    Defines the binary structure parameters required for reading
+    and writing 24-bit BMP files, including header sizes, byte
+    signatures, and pixel encoding details.
+
+    Attributes
+    ----------
+    HEADER_SIZE : int
+        Size of the BMP file header in bytes (always 14).
+    SIGNATURE : bytes
+        Magic bytes identifying a valid BMP file (``b"BM"``).
+    PAD_HEX : bytes
+        Null byte used for row padding alignment.
+    PIXEL_SIZE : int
+        Number of bytes per pixel (3 for 24-bit BGR).
+    BPP : int
+        Bits per pixel (24 for 3-channel BGR).
+
+    Examples
+    --------
+    >>> consts = BmpConstants()
+    >>> consts.SIGNATURE
+    b'BM'
+    >>> consts.BPP
+    24
     """
     HEADER_SIZE: Final[int] = 14
     SIGNATURE: Final[bytes] = b"BM"
@@ -121,6 +183,19 @@ bmp_constants = BmpConstants()
 @unique  # Ensures no duplicate values
 class ExitCode(IntEnum):
     """
+    Unix-standard exit codes for CLI process termination.
+
+    Provides semantically named exit codes that follow Unix
+    conventions, used as return values from ``main()``.
+
+    Attributes
+    ----------
+    SUCCESS : int
+        Normal termination (0).
+    FAILURE : int
+        General error (1).
+    KEYBOARD_INTERRUPT : int
+        Terminated by Ctrl+C signal (130).
     """
     SUCCESS = 0
     FAILURE = 1
@@ -128,8 +203,26 @@ class ExitCode(IntEnum):
    # BADUSE = 1  Error!
 
 # Dictionary Dispatch for filters function iteration
+# NOTE try refactoring with 'register' class,
+#      and StrEnum from enum lib.
 class DictDispatch(TypedDict):
     """
+    Type definition for the filter function dispatch table.
+
+    Maps filter name strings to their corresponding filter
+    functions, enabling dictionary-based dispatch instead of
+    if/elif chains.
+
+    Attributes
+    ----------
+    grayscale : FilterFunc
+        Converts image to grayscale using luminosity formula.
+    reflect : FilterFunc
+        Mirrors image horizontally.
+    blur : FilterFunc
+        Applies 3x3 box blur averaging.
+    edges : FilterFunc
+        Detects edges using Sobel operator.
     """
     grayscale: FilterFunc
     reflect: FilterFunc
@@ -139,6 +232,25 @@ class DictDispatch(TypedDict):
 # Image size variables configuration
 class ImageSize(NamedTuple):
     """
+    Image dimensions as a named, immutable pair.
+
+    Provides named access to height and width instead of
+    positional tuple indexing, improving readability across
+    filter and I/O operations.
+
+    Attributes
+    ----------
+    height : int
+        Number of pixel rows in the image.
+    width : int
+        Number of pixels per row.
+
+    Examples
+    --------
+    >>> size = ImageSize(height=480, width=640)
+    >>> size.height
+    480
+    >>> h, w = size  # unpacking still works
     """
     height: int
     width: int
@@ -147,6 +259,31 @@ class ImageSize(NamedTuple):
 # BMP read result
 class BmpData(NamedTuple):
     """
+    Complete result of reading a BMP file.
+
+    Bundles the image dimensions, pixel data, and original
+    file headers into a single immutable container returned
+    by ``read_bmp()``. Headers are preserved for lossless
+    write-back via ``write_bmp()``.
+
+    Attributes
+    ----------
+    size : ImageSize
+        Nested NamedTuple containing image height and width.
+    pixels : ImageData
+        2D grid of ``Pixel`` objects (list of rows, each row
+        a list of ``Pixel``).
+    full_header : HeaderBytes
+        Concatenated BMP file header and DIB header bytes,
+        used for reconstructing the output file.
+
+    Examples
+    --------
+    >>> bmp = read_bmp(Path("image.bmp"))
+    >>> bmp.size.width
+    640
+    >>> bmp.pixels[0][0].r
+    255
     """
     size: ImageSize   # Nested NamedTuple class
     pixels: ImageData
@@ -155,6 +292,28 @@ class BmpData(NamedTuple):
 # Pixel configuration for BMP (b,g,r)
 class Pixel(NamedTuple):
     """
+    Single pixel in BGR color order.
+
+    Represents one pixel as stored in the BMP file format,
+    where blue comes first, followed by green, then red.
+    Immutable by design — filters create new ``Pixel``
+    instances rather than mutating existing ones.
+
+    Attributes
+    ----------
+    b : int
+        Blue channel value (0–255).
+    g : int
+        Green channel value (0–255).
+    r : int
+        Red channel value (0–255).
+
+    Examples
+    --------
+    >>> px = Pixel(100, 150, 200)
+    >>> px.r
+    200
+    >>> b, g, r = px  # positional unpacking
     """
     b: int
     g: int
