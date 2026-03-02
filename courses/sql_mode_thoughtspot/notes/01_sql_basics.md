@@ -1,321 +1,746 @@
-# SQL = Structured Query Language
-Programming language designed for managing data in a relational database. 
+# SQL Basics — Complete Reference Notes
 
-Broadly, within databases, tables are organized in schemas. Schemas are defined by usernames, so if your username is databass3000, all of the tables you upload will be stored under the databass3000 schema. For example, if databass3000 uploads a table on fish food sales called fish_food_sales, that table would be referenced as databass3000.fish_food_sales.
+> **Author:** Manuel Reyes | [github.com/manuel-reyes-ml](https://github.com/manuel-reyes-ml)  
+> **Sources:** [Mode Analytics SQL Tutorial](https://mode.com/sql-tutorial), [SQLZoo](https://sqlzoo.net)  
+> **Companion file:** `queries/01_practice_basics.sql` (hands-on exercises)  
+> **Stage:** 1 of 5 — AI-Powered Data Analyst ([Roadmap v6](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html))  
+> **Last updated:** 2026-03-01
 
-## Basic syntax: SELECT and FROM
+---
 
-There are two required ingredients in any SQL query: SELECT and FROM—and they have to be in that order. SELECT indicates which columns you'd like to view, and FROM identifies the table that they live in.
+## Table of Contents
 
-### Formatting convention
+1. [What Is SQL?](#1-what-is-sql)
+2. [SELECT and FROM](#2-select-and-from)
+3. [Column Aliases (AS)](#3-column-aliases-as)
+4. [WHERE and Comparison Operators](#4-where-and-comparison-operators)
+5. [Logical Operators (AND, OR, NOT, XOR)](#5-logical-operators-and-or-not-xor)
+6. [Pattern Matching (LIKE, ILIKE, Wildcards)](#6-pattern-matching-like-ilike-wildcards)
+7. [Range and Membership (BETWEEN, IN)](#7-range-and-membership-between-in)
+8. [NULL Handling (IS NULL, IS NOT NULL, TRIM)](#8-null-handling-is-null-is-not-null-trim)
+9. [DISTINCT](#9-distinct)
+10. [ORDER BY](#10-order-by)
+11. [LIMIT](#11-limit)
+12. [Arithmetic and Derived Columns](#12-arithmetic-and-derived-columns)
+13. [Numeric Functions (ROUND)](#13-numeric-functions-round)
+14. [Aggregate Functions (COUNT, SUM, AVG, MIN, MAX)](#14-aggregate-functions-count-sum-avg-min-max)
+15. [GROUP BY](#15-group-by)
+16. [String Functions (LENGTH, LEFT, RIGHT, CONCAT)](#16-string-functions-length-left-right-concat)
+17. [Full Clause Order Reference](#17-full-clause-order-reference)
 
-You might have noticed that the SELECT and `FROM' commands are capitalized. This isn't actually necessary—SQL will understand these commands if you type them in lowercase. Capitalizing commands is simply a convention that makes queries easier to read. Similarly, SQL treats one space, multiple spaces, or a line break as being the same thing. For example, SQL treats this the same way it does the previous query:
+---
 
-SELECT * FROM tutorial.us_housing_units
+## 1. What Is SQL?
 
-It also treats this the same way:
+**SQL (Structured Query Language)** is a programming language designed for managing data in a **relational database** — a database that stores data in tables made up of rows and columns.
+
+### Databases, Schemas, and Tables
+
+Within databases, tables are organized into **schemas**. Schemas are typically defined by usernames or logical groupings. For example, if your username is `databass3000` and you upload a table called `fish_food_sales`, it would be referenced as:
+
+```sql
+SELECT * FROM databass3000.fish_food_sales;
+```
+
+Think of it like a file system: the **database** is the hard drive, the **schema** is the folder, and the **table** is the file inside that folder.
+
+---
+
+## 2. SELECT and FROM
+
+The two **required** ingredients in any SQL query. They must appear in this order:
+
+- **`SELECT`** — which columns you want to see
+- **`FROM`** — which table those columns live in
+
+```sql
+-- Select specific columns
+SELECT year, month, west
+  FROM tutorial.us_housing_units;
+
+-- Select ALL columns (exploratory only — avoid in production)
+SELECT *
+  FROM tutorial.us_housing_units;
+```
+
+> **Best practice:** Always name your columns explicitly instead of using `*`. It makes queries faster, more readable, and protects you if the table structure changes later.
+
+### Formatting Conventions
+
+SQL is **not case-sensitive** for keywords — `SELECT` and `select` work identically. Capitalizing keywords is a convention that makes queries easier to read. SQL also treats one space, multiple spaces, and line breaks the same way:
+
+```sql
+-- These are identical to SQL:
+SELECT * FROM tutorial.us_housing_units;
 
 SELECT *
-  FROM tutorial.us_housing_units
+  FROM tutorial.us_housing_units;
+```
 
-### Column names
+> **Convention used in this repo:** SQL keywords in `UPPER CASE`, table/column names in `lower_case`, and each major clause on its own line indented for readability.
 
-If you'd like your results to look a bit more presentable, you can rename columns to include spaces. For example, if you want the west column to appear as West Region in the results, you would have to type:
+---
 
-SELECT west AS "West Region"     (review double quotes in SQLite for name with space)
-  FROM tutorial.us_housing_units
+## 3. Column Aliases (AS)
 
-## Comparison Operators SQL
+Aliases rename columns **in the result set only** — they do not change the actual table. Use `AS` followed by the alias name:
 
-Equal to	=
-Not equal to	<> or !=
-Greater than	>
-Less than	<
-Greater than or equal to	>=
-Less than or equal to	<=
+```sql
+SELECT west  AS "West Region",
+       south AS "South Region"
+  FROM tutorial.us_housing_units;
+```
 
-*All of the above operators work on non-numerical data as well. = and != make perfect sense—they allow you to select rows that match or don't match any value, respectively.
+### Quoting Rules for Aliases
 
-**There are some important rules when using these operators, though. If you're using an operator with values that are non-numeric, you need to put the value in single quotes: 'value'.
+| Scenario | Syntax | Example |
+|---|---|---|
+| Single-word alias | No quotes needed | `SELECT west AS region` |
+| Alias with spaces | **Double quotes** required | `SELECT west AS "West Region"` |
+| String literal value | **Single quotes** always | `WHERE name = 'France'` |
 
-You can use >, <, and the rest of the comparison operators on non-numeric columns as well—they filter based on alphabetical order. Try it out a couple times with different operators:
+> **Key rule:** Single quotes `' '` = **data values** (strings). Double quotes `" "` = **identifiers** (column/table names or aliases with spaces). Mixing them up is one of the most common SQL bugs.
 
+### Alias Behavior Across Dialects
+
+| Dialect | Alias with spaces |
+|---|---|
+| PostgreSQL | `"West Region"` (double quotes) |
+| MySQL | `` `West Region` `` (backticks) or `"West Region"` |
+| SQLite (CS50) | `"West Region"` (double quotes) |
+| SQL Server | `[West Region]` (square brackets) |
+
+---
+
+## 4. WHERE and Comparison Operators
+
+`WHERE` filters rows **before** they reach the result set. Only rows where the condition evaluates to `TRUE` are included.
+
+```sql
+SELECT *
+  FROM sample_table
+ WHERE year = 2025;
+```
+
+> **Required clause order:** `SELECT` → `FROM` → `WHERE` (always this order).
+
+### Comparison Operators
+
+| Operator | Meaning | Example |
+|:---:|---|---|
+| `=` | Equal to | `WHERE year = 2025` |
+| `<>` | Not equal to (SQL standard) | `WHERE region <> 'West'` |
+| `!=` | Not equal to (widely supported) | `WHERE region != 'West'` |
+| `>` | Greater than | `WHERE west > 500` |
+| `<` | Less than | `WHERE year_rank < 10` |
+| `>=` | Greater than or equal to | `WHERE year >= 2000` |
+| `<=` | Less than or equal to | `WHERE year_rank <= 3` |
+
+### Comparing Non-Numeric Values
+
+All comparison operators work on text — they filter based on **alphabetical (lexicographic) order**. Non-numeric values must be wrapped in **single quotes**:
+
+```sql
 SELECT *
   FROM tutorial.us_housing_units
- WHERE month_name > 'January'
+ WHERE month_name > 'January';
+```
 
-If you're using >, <, >=, or <=, you don't necessarily need to be too specific about how you filter. Try this:
+**Why does `> 'J'` include January?** SQL considers `'Ja'` to be greater than `'J'` because it has an extra character. Just like a dictionary would list "January" after "J." This means `> 'J'` returns anything starting with `'J'` plus one or more additional characters, as well as any letter after `'J'`.
 
+```sql
+-- This returns January, July, June, March, May, November, October, September
 SELECT *
   FROM tutorial.us_housing_units
- WHERE month_name > 'J'
+ WHERE month_name > 'J';
+```
 
-The way SQL treats alphabetical ordering is a little bit tricky. You may have noticed in the above query that selecting month_name > 'J' will yield only rows in which month_name starts with "j" or later in the alphabet. "Wait a minute," you might say. "January is included in the results—shouldn't I have to use month_name >= 'J' to make that happen?" SQL considers 'Ja' to be greater than 'J' because it has an extra letter. It's worth noting that most dictionaries would list 'Ja' after 'J' as well.
+---
 
-Note: SQL uses single quotes to reference column values.
+## 5. Logical Operators (AND, OR, NOT, XOR)
 
-## SQL Logical operators
+Logical operators combine multiple conditions in a single `WHERE` clause.
 
-You’ll likely also want to filter data using several conditions—possibly more often than you'll want to filter by only one condition. Logical operators allow you to use multiple comparison operators in one query.
+### Operator Precedence (highest → lowest)
 
-Each logical operator is a special snowflake, so we'll go through them individually in the following lessons. Here's a quick preview:
+| Priority | Operator | Evaluates |
+|:---:|:---:|---|
+| 1st | `NOT` | Negates the next condition |
+| 2nd | `AND` | Both sides must be TRUE |
+| 3rd | `OR` | At least one side must be TRUE |
 
-LIKE allows you to match similar values, instead of exact values.
+> **Always use parentheses** to make your intent explicit. Without them, `AND` is evaluated before `OR`, which can produce unexpected results.
 
-IN allows you to specify a list of values you'd like to include.
+### AND — Both Conditions Must Be TRUE
 
-BETWEEN allows you to select only rows within a certain range.
-
-IS NULL allows you to select rows that contain no data in a given column.
-
-AND allows you to select only rows that satisfy two conditions.
-
-OR allows you to select rows that satisfy either of two conditions.
-
-NOT allows you to select rows that do not match a certain condition.
-
-## IS NULL Operator
-
-Is a logical operator in SQL that allows you to exclude rows with missing data from your results.
-
-You can select rows that contain no data in a given column by using IS NULL.
-
-SELECT *
-FROM tutorial_billboard_top_100_year_end
-WHERE artist IS NULL OR TRIM(artist) = '';
-
-WHERE artist = NULL will not work—you can't perform arithmetic on null values.
-TRIM() in SQL returns the string with leading and trailing spaces removed.
-TRIM('  Manuel ')   --> 'Manuel'
-TRIM('   a  ')      --> 'a'
-TRIM('   ')         --> ''   -- only spaces → becomes empty string
-TRIM('Rock Band')   --> 'Rock Band'  -- unchanged
-
-TRIM(artist) = ''
-you’re basically saying:
-“Give me rows where artist is only spaces or already empty.”
-and “This artist field is either empty or just whitespace (but not NULL).”
-
-## The SQL AND operator
-
-AND is a logical operator in SQL that allows you to select only rows that satisfy two conditions. 
-Using data from the Billboard Music Charts, the following query will return all rows for top-10 recordings in 2012.
-
+```sql
 SELECT *
   FROM tutorial.billboard_top_100_year_end
- WHERE year = 2012 AND year_rank <= 10;
+ WHERE year = 2012
+   AND year_rank <= 10;
+```
 
- You can use SQL's AND operator with additional AND statements or any other comparison operator, as many times as you want. If you run this query, you'll notice that all of the requirements are satisfied.
+You can chain as many `AND` statements as you need. Every condition must be satisfied for a row to appear in the results.
 
-## The SQL BETWEEN operator
+### OR — At Least One Condition Must Be TRUE
 
-BETWEEN is a logical operator in SQL that allows you to select only rows that are within a specific range. It has to be paired with the AND operator, which you'll learn about in a later lesson. Here's what BETWEEN looks like on a Billboard Music Chart Dataset:
-
+```sql
 SELECT *
   FROM tutorial.billboard_top_100_year_end
- WHERE year_rank BETWEEN 5 AND 10
+ WHERE year = 2013
+   AND ("group_name" ILIKE '%macklemore%'
+        OR "group_name" ILIKE '%timberlake%');
+```
 
-## The SQL LIKE operator
+> **Parentheses matter!** Without them, this query would be read as: `(year = 2013 AND group_name ILIKE '%macklemore%') OR (group_name ILIKE '%timberlake%')` — which would return ALL Timberlake rows from ANY year, not just 2013. The parentheses force SQL to evaluate the `OR` first.
 
+### NOT — Negates a Condition
+
+`NOT` flips any condition to its opposite. It can be combined with almost any operator:
+
+```sql
+-- NOT with ILIKE
+SELECT *
+  FROM tutorial.billboard_top_100_year_end
+ WHERE year = 2013
+   AND "group_name" NOT ILIKE '%macklemore%';
+
+-- NOT with BETWEEN
+SELECT *
+  FROM tutorial.billboard_top_100_year_end
+ WHERE year = 2013
+   AND year_rank NOT BETWEEN 2 AND 3;
+
+-- NOT with NULL (special syntax: IS NOT NULL)
+SELECT *
+  FROM tutorial.billboard_top_100_year_end
+ WHERE year = 2013
+   AND artist IS NOT NULL;
+```
+
+### XOR — Exactly One Condition True (Not Both)
+
+`XOR` (Exclusive OR) returns rows where **one** condition is true but **not both**. Useful for "either/or but not both" logic:
+
+```sql
+-- Countries big by area OR population, but NOT both (SQLZoo)
+SELECT name       AS "Country",
+       population AS "Population",
+       area       AS "Size"
+  FROM world
+ WHERE area > 3000000 XOR population > 250000000;
+```
+
+> **Dialect note:** `XOR` is supported in MySQL and SQLZoo. In PostgreSQL, you can achieve the same result with: `WHERE (condition_a OR condition_b) AND NOT (condition_a AND condition_b)`.
+
+---
+
+## 6. Pattern Matching (LIKE, ILIKE, Wildcards)
+
+`LIKE` lets you match **patterns** instead of exact values, using wildcard characters.
+
+### Wildcards
+
+| Wildcard | Matches | Example | Would Match |
+|:---:|---|---|---|
+| `%` | Zero or more characters | `'A%'` | `Apple`, `A`, `Ant` |
+| `_` | Exactly **one** character | `'_a%'` | `Santa`, `Bank` (second letter is `a`) |
+
+### Wildcard Patterns Explained
+
+| Pattern | Meaning |
+|---|---|
+| `'ludacris'` | Exact match only |
+| `'ludacris%'` | Starts with "ludacris" |
+| `'%ludacris'` | Ends with "ludacris" |
+| `'%ludacris%'` | Contains "ludacris" **anywhere** |
+| `'% %'` | Contains a space anywhere |
+| `'_____'` | Exactly 5 characters (5 underscores) |
+
+### LIKE vs ILIKE
+
+| Operator | Case Behavior | Example |
+|---|---|---|
+| `LIKE` | Case-**sensitive** | `'Ludacris'` ≠ `'ludacris'` |
+| `ILIKE` | Case-**insensitive** (PostgreSQL only) | `'Ludacris'` = `'LUDACRIS'` = `'lUdAcRiS'` |
+
+```sql
+-- Case-insensitive search for any group featuring an artist
 SELECT *
   FROM tutorial.billboard_top_100_year_end
  WHERE year = 2012
    AND year_rank <= 10
    AND "group_name" ILIKE '%feat%';
+```
 
-Note: "group_name" ILIKE '%string%' searches and selects all rows where group_name contains string.
-It works like LIKE but case-insensitive.
+### Chaining Wildcards for Multiple Matches
 
-  LIKE → case-sensitive ('Ludacris' ≠ 'ludacris')
-  ILIKE → case-insensitive ('Ludacris', 'LUDACRIS', 'lUdAcRiS' all match)
-
-will match:
-
-  Ludacris Fan Club
-  best of LUDACRIS
-  My ludacris playlist
-
-even though the case is different.
-
-🎯 The pattern: '%ludacris%'
-
-This is a string pattern with wildcards:
-
-'ludacris' → exact match only
-'ludacris%' → starts with "ludacris"
-'%ludacris' → ends with "ludacris"
-'%ludacris%' → contains "ludacris" anywhere
-'% %' → contains " "(espace) in the string
-
-The % used above represents any character or set of characters. In this case, % is referred to as a "wildcard."
-% = any sequence of 0 or more characters
-_ = exactly one character
+Each `%a%` means "any characters, then an `a`." Chaining three of them guarantees **at least three `a` characters** exist anywhere in the string:
 
 ```sql
 SELECT name
-FROM table
-WHERE name LIKE '%a%a%a%'
+  FROM world
+ WHERE name LIKE '%a%a%a%';
+-- Matches: 'Banana', 'Amanda', 'Saratoga'
 ```
 
-## How It Works
+### Case Sensitivity Across Dialects
 
-Each `%a%` matches "any characters, then an 'a'." By chaining three of them, you guarantee at least three `a` characters exist anywhere in the string. The `%` wildcards between and around them allow any number of other characters in any position.
+| Dialect | `LIKE` behavior | Case-insensitive option |
+|---|---|---|
+| **PostgreSQL** | Case-sensitive | Use `ILIKE` |
+| **MySQL** | Case-insensitive by default (most collations) | `LIKE` already works |
+| **SQLite (CS50)** | Case-insensitive for ASCII | `LIKE` already works |
 
-## Examples That Would Match
+---
 
-- `"Banana"` — 3 a's
-- `"Amanda"` — 3 a's
-- `"Saratoga"` — 3 a's
+## 7. Range and Membership (BETWEEN, IN)
 
-## Case Sensitivity Note
+### BETWEEN — Inclusive Range Filter
 
-- **MySQL:** `LIKE` is case-insensitive by default on most collations.
-- **PostgreSQL:** Use `ILIKE` instead for case-insensitive matching.
-- **SQLite (CS50):** Case-insensitive for ASCII by default.
+`BETWEEN` selects rows within a range, **including both endpoints**. It must be paired with `AND`:
 
-## The SQL OR and XOR operator
+```sql
+SELECT *
+  FROM tutorial.billboard_top_100_year_end
+ WHERE year_rank BETWEEN 5 AND 10;
+-- Equivalent to: WHERE year_rank >= 5 AND year_rank <= 10
+```
 
-OR is a logical operator in SQL that allows you to select rows that satisfy either of two conditions.
-You can combine AND with OR using parenthesis. The following query will return rows that satisfy both of the following conditions:
+> `BETWEEN` is inclusive on **both** sides. `BETWEEN 5 AND 10` includes rows where the value is 5 or 10.
 
-You'll notice that each row will satisfy one of the two conditions. You can combine AND with OR using parenthesis. The following query will return rows that satisfy both of the following conditions:
+### IN — Match Against a List
 
+`IN` replaces multiple `OR` conditions with a clean list. Works with both numbers and strings:
+
+```sql
+-- Numeric list
+SELECT *
+  FROM tutorial.billboard_top_100_year_end
+ WHERE year_rank IN (1, 2, 3);
+
+-- String list (use single quotes!)
+SELECT name, population
+  FROM world
+ WHERE name IN ('France', 'Germany', 'Italy');
+```
+
+> **When to use which:** `BETWEEN` is best for continuous ranges (years, prices, ranks). `IN` is best for discrete, unrelated values (specific names, categories, IDs).
+
+---
+
+## 8. NULL Handling (IS NULL, IS NOT NULL, TRIM)
+
+### What Is NULL?
+
+`NULL` represents **missing or unknown** data. It is **not** the same as zero, empty string, or the word "null" — it means "no value exists here."
+
+### The Golden Rule: You Cannot Use `=` with NULL
+
+```sql
+-- WRONG — this ALWAYS returns zero rows, even if NULLs exist
+WHERE artist = NULL
+
+-- CORRECT — use IS NULL
+WHERE artist IS NULL
+
+-- CORRECT — find rows that DO have data
+WHERE artist IS NOT NULL
+```
+
+> **Why?** `NULL` isn't a value — it's the **absence** of a value. Any comparison with `NULL` using `=`, `<>`, `>`, etc. evaluates to `NULL` (not TRUE or FALSE), so the row is excluded. Only `IS NULL` and `IS NOT NULL` can detect it.
+
+### NULL vs Empty Strings
+
+In real data, "missing" data can look like either `NULL` or an empty/whitespace-only string. To catch both:
+
+```sql
+SELECT *
+  FROM tutorial.billboard_top_100_year_end
+ WHERE artist IS NULL
+    OR TRIM(artist) = '';
+```
+
+### TRIM() — Remove Leading and Trailing Spaces
+
+`TRIM()` strips whitespace from both ends of a string:
+
+| Input | Output | Notes |
+|---|---|---|
+| `TRIM('  Manuel ')` | `'Manuel'` | Spaces removed from both sides |
+| `TRIM('   a  ')` | `'a'` | Only leading/trailing spaces removed |
+| `TRIM('   ')` | `''` | All spaces → empty string |
+| `TRIM('Rock Band')` | `'Rock Band'` | No change — no leading/trailing spaces |
+
+So `TRIM(artist) = ''` means: "Give me rows where the artist field is only whitespace or already empty (but not NULL)."
+
+---
+
+## 9. DISTINCT
+
+`DISTINCT` removes duplicate rows from the result set. It returns only **unique combinations** of the selected columns.
+
+```sql
+-- What unique years exist in the dataset?
+SELECT DISTINCT year
+  FROM tutorial.us_housing_units
+ ORDER BY year;
+
+-- Unique year + month combinations
+SELECT DISTINCT year, month
+  FROM tutorial.aapl_historical_stock_price
+ ORDER BY year, month;
+```
+
+> **When to use it:** `DISTINCT` is most useful for **exploration** — understanding what values exist in a column before doing deeper analysis. In production queries, if you need `DISTINCT` it sometimes means your JOINs are creating unintended duplicates (something to watch for in intermediate SQL).
+
+---
+
+## 10. ORDER BY
+
+`ORDER BY` sorts the result set based on one or more columns. It is applied **after** all filtering is done.
+
+### Sort Directions
+
+| Keyword | Direction | Default? |
+|:---:|---|:---:|
+| `ASC` | Ascending (A→Z, 1→9, oldest→newest) | Yes |
+| `DESC` | Descending (Z→A, 9→1, newest→oldest) | No |
+
+```sql
+-- Ascending (default — you can omit ASC)
 SELECT *
   FROM tutorial.billboard_top_100_year_end
  WHERE year = 2013
-   AND ("group_name" ILIKE '%macklemore%' OR "group_name" ILIKE '%timberlake%')
-  
-XOR is a logical operator in SL that allows you to select rows that satisfy either of two conditions BUT NOT BOTH.
+ ORDER BY year_rank;
 
-## The SQL IN operator
-
-IN is a logical operator in SQL that allows you to specify a list of values that you'd like to include in the results. For example, the following query of data from the Billboard Music Charts will return results for which the year_rank column is equal to one of the values in the list:
-
-SELECT *
-  FROM tutorial.billboard_top_100_year_end
- WHERE year_rank IN (1, 2, 3)
-
-## The SQL NOT operator
-
-NOT is a logical operator in SQL that you can put before any conditional statement to select rows for which that statement is false.
-
-Here's what NOT looks like in action in a query of Billboard Music Charts data:
-
+-- Descending — must specify DESC explicitly
 SELECT *
   FROM tutorial.billboard_top_100_year_end
  WHERE year = 2013
-   AND year_rank NOT BETWEEN 2 AND 3
+ ORDER BY year_rank DESC;
+```
 
-NOT is commonly used with LIKE. Run this query and check out how Macklemore magically disappears!
+### Multi-Column Sorting
 
-SELECT *
-  FROM tutorial.billboard_top_100_year_end
- WHERE year = 2013
-   AND "group_name" NOT ILIKE '%macklemore%'
+When sorting by multiple columns, SQL sorts by the **first** column, then breaks ties using the **second** column, and so on. Each column can have its own sort direction:
 
-NOT is also frequently used to identify non-null rows, but the syntax is somewhat special—you need to include IS beforehand. Here's how that looks:
-
-SELECT *
-  FROM tutorial.billboard_top_100_year_end
- WHERE year = 2013
-   AND artist IS NOT NULL
-
-## Sorting data with SQL ORDER BY
-
-Once you've learned how to filter data, it's time to learn how to sort data. The ORDER BY clause allows you to reorder your results based on the data in one or more columns. SQL´s default is to sort in ascending order (from lower to greater values).
-
-If you'd like your results in the opposite order (referred to as descending order), you need to add the DESC operator.
-
-### Ordering data by multiple columns
-
-You can also order by mutiple columns. This is particularly useful if your data falls into categories and you'd like to organize rows by date, for example, but keep all of the results within a given category together. This example query makes the most recent years come first but orders top-ranks songs before lower-ranked songs:
-
-SELECT *
-  FROM tutorial.billboard_top_100_year_end
-  WHERE year_rank <= 3
- ORDER BY year DESC, year_rank
-
-You can see a couple things from the above query: First, columns in the ORDER BY clause must be separated by commas. Second, the DESC operator is only applied to the column that precedes it. Finally, the results are sorted by the first column mentioned (year), then by year_rank afterward. You can see the difference the order makes by running the following query:
-
+```sql
+-- Most recent years first, then top-ranked songs within each year
 SELECT *
   FROM tutorial.billboard_top_100_year_end
  WHERE year_rank <= 3
- ORDER BY year_rank, year DESC
+ ORDER BY year DESC, year_rank;
+```
 
-Finally, you can make your life a little easier by substituting numbers for column names in the ORDER BY clause. The numbers will correspond to the order in which you list columns in the SELECT clause. For example, the following query is exactly equivalent to the previous query:
+> **Important:** `DESC` only applies to the column **immediately before it**. In the example above, `year` sorts descending but `year_rank` sorts ascending (default).
 
+### Sorting by Column Position
+
+You can substitute **column position numbers** for column names. The number refers to the column's order in the `SELECT` clause (1 = first column, 2 = second, etc.):
+
+```sql
 SELECT *
   FROM tutorial.billboard_top_100_year_end
  WHERE year_rank <= 3
- ORDER BY 2, 1 DESC
+ ORDER BY 2, 1 DESC;
+```
 
- ## Limit
+> **When to use this:** Useful when column names are very long or when grouping many columns. Otherwise, prefer column names for readability.
 
- The limit restricts how many rows the SQL query returns. The limiting functionality is built to prevent you from accidentally returning millions of rows without meaning to (we've all done it).
+---
 
- ## Arithmetic in SQL
+## 11. LIMIT
 
- You can perform arithmetic in SQL using the same operators you would in Excel: +, -, *, /. However, in SQL you can only perform arithmetic across columns on values in a given row. To clarify, you can only add values in multiple columns from the same row together using +—if you want to add values across multiple rows, you'll need to use aggregate functions.
+`LIMIT` restricts how many rows the query returns. It's a safety net that prevents accidentally loading millions of rows.
 
+```sql
+SELECT *
+  FROM tutorial.us_housing_units
+ LIMIT 15;
+```
+
+> **Practical use:** Always use `LIMIT` when exploring a new table for the first time. Start with `LIMIT 10` or `LIMIT 100` to understand the structure before running full queries. This is especially critical in production databases where tables can have millions of rows.
+
+### Dialect Differences
+
+| Dialect | Syntax |
+|---|---|
+| PostgreSQL, MySQL, SQLite | `LIMIT 15` |
+| SQL Server | `SELECT TOP 15 * FROM table` |
+| Oracle | `WHERE ROWNUM <= 15` (or `FETCH FIRST 15 ROWS ONLY` in 12c+) |
+
+---
+
+## 12. Arithmetic and Derived Columns
+
+SQL supports basic arithmetic directly in `SELECT` and `WHERE` using the same operators as Excel:
+
+| Operator | Operation |
+|:---:|---|
+| `+` | Addition |
+| `-` | Subtraction |
+| `*` | Multiplication |
+| `/` | Division |
+
+### Row-Level Only
+
+Arithmetic in SQL works **across columns within the same row**. You cannot add values from different rows using `+` — that requires aggregate functions (see [Section 14](#14-aggregate-functions-count-sum-avg-min-max)).
+
+```sql
+-- Add columns together to create a "derived column"
 SELECT year,
        month,
        west,
        south,
        west + south - 4 * year AS nonsense_column
-  FROM tutorial.us_housing_units
+  FROM tutorial.us_housing_units;
+```
 
-The columns that contain the arithmetic functions are called "derived columns" because they are generated by modifying the information that exists in the underlying data.
+The new column `nonsense_column` is called a **derived column** — it's generated on the fly from existing data and doesn't exist in the actual table.
 
-As in Excel, you can use parentheses to manage the order of operations. For example, if you wanted to average the west and south columns, you could write something like this:
+### Order of Operations
 
+SQL follows standard math precedence: multiplication and division before addition and subtraction. Use **parentheses** to control the order:
+
+```sql
+-- Without parentheses: west + (south / 2)  ← division happens first
+-- With parentheses:    (west + south) / 2   ← addition happens first
 SELECT year,
        month,
-       west,
-       south,
-       (west + south)/2 AS south_west_avg
+       (west + south) / 2 AS south_west_avg
+  FROM tutorial.us_housing_units;
+```
+
+### Arithmetic in WHERE
+
+You can also use arithmetic expressions to **filter** rows:
+
+```sql
+-- Rows where West region output exceeds Midwest + Northeast combined
+SELECT year       AS "Year",
+       month_name AS "Month Name",
+       west       AS "West Region",
+       midwest + northeast AS "Mid + North"
   FROM tutorial.us_housing_units
+ WHERE west > (midwest + northeast);
+```
 
-ROUND function:
+---
 
-  ROUND(x, 2) → round to 2 decimal places (0.01)
+## 13. Numeric Functions (ROUND)
 
-  ROUND(x, 0) → round to nearest integer
+### ROUND(value, decimal_places)
 
-  ROUND(x, -1) → round to nearest 10
+Rounds a number to the specified precision:
 
-  ROUND(x, -2) → round to nearest 100
+| `decimal_places` | Effect | Example | Result |
+|:---:|---|---|:---:|
+| `2` | 2 decimal places | `ROUND(3.14159, 2)` | `3.14` |
+| `0` | Nearest integer | `ROUND(3.7, 0)` | `4` |
+| `-1` | Nearest 10 | `ROUND(1234, -1)` | `1230` |
+| `-2` | Nearest 100 | `ROUND(1234, -2)` | `1200` |
+| `-3` | Nearest 1,000 | `ROUND(1234, -3)` | `1000` |
 
-  ROUND(x, -3) → round to nearest 1,000
+**Midpoint rounding:** At the exact midpoint, SQL rounds **up** (e.g., `ROUND(1500, -3)` → `2000`).
 
-  Examples:
-    ROUND(1234, -1) → 1230
+### Common Use Case: Percentages
 
-    ROUND(1234, -2) → 1200
+```sql
+SELECT year       AS "Year",
+       month_name AS "Month Name",
+       ROUND((south / (south + west + midwest + northeast)) * 100, 2) AS "South %",
+       ROUND((west  / (south + west + midwest + northeast)) * 100, 2) AS "West %"
+  FROM tutorial.us_housing_units
+ WHERE year >= 2000;
+```
 
-    ROUND(1234, -3) → 1000
+> **Watch for integer division!** In some SQL dialects, dividing two integers truncates the decimal: `5 / 2` = `2`, not `2.5`. To fix this, multiply by `1.0` first: `5 * 1.0 / 2` = `2.5`. PostgreSQL handles this correctly, but MySQL and SQLite may truncate.
 
-## The SQL GROUP BY clause
+---
 
-SQL aggregate function like COUNT, AVG, and SUM have something in common: they all aggregate across the entire table. But what if you want to aggregate only part of a table? For example, you might want to count the number of entries for each year.
+## 14. Aggregate Functions (COUNT, SUM, AVG, MIN, MAX)
 
-In situations like this, you'd need to use the GROUP BY clause. GROUP BY allows you to separate data into groups, which can be aggregated independently of one another.
+Aggregate functions **collapse multiple rows** into a single summary value. They are almost always used with `GROUP BY` (see [Section 15](#15-group-by)).
 
-You can group by multiple columns, but you have to separate column names with commas—just as with ORDER BY):
+| Function | Returns | NULL Handling |
+|---|---|---|
+| `COUNT(*)` | Total number of rows | Counts ALL rows including NULLs |
+| `COUNT(column)` | Number of non-NULL values | **Ignores** NULL values |
+| `SUM(column)` | Total of all values | Ignores NULLs |
+| `AVG(column)` | Arithmetic mean | Ignores NULLs |
+| `MIN(column)` | Smallest value | Ignores NULLs |
+| `MAX(column)` | Largest value | Ignores NULLs |
 
-SELECT year,
-       month,
-       COUNT(*) AS count
+> **Critical distinction:** `COUNT(*)` counts **all rows** (including those with NULLs). `COUNT(column)` counts only rows where that specific column is **not NULL**. This distinction matters when your data has gaps.
+
+### Examples from Mode Analytics (AAPL Stock Data)
+
+```sql
+-- Total trading days recorded
+SELECT COUNT(*) AS total_records
+  FROM tutorial.aapl_historical_stock_price;
+
+-- Total shares traded per year/month
+SELECT year, month,
+       SUM(volume) AS "Shares Traded"
   FROM tutorial.aapl_historical_stock_price
  GROUP BY year, month
+ ORDER BY year;
 
-As with, you can substitute numbers for column names in the  clause. It's generally recommended to do this only when you're grouping many columns, or if something else is causing the text in the clause to be excessively long:
+-- Average daily price change per year
+SELECT year,
+       AVG(open - close) AS "Avg Daily Price Change"
+  FROM tutorial.aapl_historical_stock_price
+ GROUP BY year
+ ORDER BY year;
 
+-- Monthly price range (lowest and highest)
+SELECT year, month,
+       MIN(low)  AS "Lowest Price",
+       MAX(high) AS "Highest Price"
+  FROM tutorial.aapl_historical_stock_price
+ GROUP BY year, month
+ ORDER BY year, month;
+```
+
+---
+
+## 15. GROUP BY
+
+`GROUP BY` splits rows into groups based on column values, then applies aggregate functions to **each group independently** instead of across the entire table.
+
+```sql
 SELECT year,
        month,
        COUNT(*) AS count
   FROM tutorial.aapl_historical_stock_price
- GROUP BY 1, 2
+ GROUP BY year, month;
+```
 
- ## The length() function in SQL
+### The GROUP BY Rule
 
- Returns the number of characters in a string. 
+**Every column in `SELECT` must either:**
+
+1. Be inside an aggregate function (`COUNT`, `SUM`, `AVG`, `MIN`, `MAX`), **OR**
+2. Be listed in the `GROUP BY` clause
+
+No exceptions. If you select `year` and `month` alongside `COUNT(*)`, both `year` and `month` must appear in `GROUP BY`.
+
+### Grouping by Column Position
+
+Just like `ORDER BY`, you can use column position numbers instead of names. This is recommended only when you have many columns or very long column names:
+
+```sql
+SELECT year,
+       month,
+       COUNT(*) AS count
+  FROM tutorial.aapl_historical_stock_price
+ GROUP BY 1, 2;
+-- 1 = year (first column in SELECT), 2 = month (second column)
+```
+
+### How GROUP BY Executes
+
+Think of it as a three-step process:
+
+1. **Split** — SQL divides all rows into groups based on the `GROUP BY` columns
+2. **Apply** — the aggregate function runs on each group separately
+3. **Combine** — results from each group are assembled into the final output
+
+> For example, `GROUP BY year, month` creates one group per unique year-month pair, then `SUM(volume)` adds up the volume **within each** of those groups.
+
+---
+
+## 16. String Functions (LENGTH, LEFT, RIGHT, CONCAT)
+
+### LENGTH(string) — Character Count
+
+Returns the number of characters in a string:
+
+```sql
+-- Find 5-letter European country names (SQLZoo)
+SELECT name, LENGTH(name) AS name_length
+  FROM world
+ WHERE LENGTH(name) = 5
+   AND region = 'Europe';
+```
+
+### LEFT(string, n) and RIGHT(string, n) — Slice Characters
+
+Extract the first `n` or last `n` characters from a string:
+
+| Function | Extracts | Example | Result |
+|---|---|---|---|
+| `LEFT('Mexico', 3)` | First 3 characters | `LEFT(name, 1)` | `'M'` |
+| `RIGHT('Mexico', 3)` | Last 3 characters | `RIGHT(name, 2)` | `'co'` |
+
+```sql
+-- Countries where country and capital start with the same letter,
+-- but the capital is not the same word (SQLZoo)
+SELECT name    AS "Country",
+       capital AS "Capital"
+  FROM world
+ WHERE LEFT(name, 1) = LEFT(capital, 1)
+   AND name <> capital;
+```
+
+### CONCAT(str1, str2, ...) — Join Strings
+
+Merges two or more strings into one:
+
+```sql
+-- Countries whose capital is the country name + ' City' (SQLZoo)
+-- Example: Mexico → Mexico City
+SELECT name
+  FROM world
+ WHERE capital = CONCAT(name, ' City');
+```
+
+### || Operator — Standard SQL Concatenation
+
+The `||` (double pipe) operator does the same thing as `CONCAT` and is the **SQL standard** syntax. Preferred in PostgreSQL and SQLite:
+
+```sql
+SELECT name
+  FROM world
+ WHERE capital = name || ' City';
+```
+
+| Dialect | Concatenation method |
+|---|---|
+| **PostgreSQL** | `CONCAT()` or `\|\|` (both work) |
+| **MySQL** | `CONCAT()` (preferred) or `\|\|` with `PIPES_AS_CONCAT` mode |
+| **SQLite (CS50)** | `\|\|` (preferred) |
+| **SQL Server** | `+` or `CONCAT()` |
+
+---
+
+## 17. Full Clause Order Reference
+
+SQL clauses **must** appear in this specific order. Not all are required — only `SELECT` and `FROM` are mandatory for basics:
+
+| Order | Clause | Purpose | Required? |
+|:---:|---|---|:---:|
+| 1 | `SELECT` | Which columns / calculations to return | Yes |
+| 2 | `FROM` | Which table to query | Yes |
+| 3 | `WHERE` | Filter rows **before** grouping | No |
+| 4 | `GROUP BY` | Group rows for aggregation | No |
+| 5 | `ORDER BY` | Sort the final result set | No |
+| 6 | `LIMIT` | Cap the number of rows returned | No |
+
+```sql
+-- Template showing the full clause order
+SELECT   column1, column2, AGGREGATE(column3)
+  FROM   schema.table_name
+ WHERE   condition
+ GROUP BY column1, column2
+ ORDER BY column1 DESC
+ LIMIT  100;
+```
+
+> **Coming in Intermediate SQL:** `HAVING` (filters groups **after** `GROUP BY`) slots in between `GROUP BY` and `ORDER BY`. Also: `CASE` statements, JOINs, UNION, and subqueries.
+
+---
+
+*Next file: `02_sql_intermediate.md` — HAVING, CASE, JOINs (INNER, LEFT, RIGHT, FULL OUTER), UNION, subqueries*
