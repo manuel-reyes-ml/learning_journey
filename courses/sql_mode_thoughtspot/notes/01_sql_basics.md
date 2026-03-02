@@ -151,6 +151,28 @@ The % used above represents any character or set of characters. In this case, % 
 % = any sequence of 0 or more characters
 _ = exactly one character
 
+```sql
+SELECT name
+FROM table
+WHERE name LIKE '%a%a%a%'
+```
+
+## How It Works
+
+Each `%a%` matches "any characters, then an 'a'." By chaining three of them, you guarantee at least three `a` characters exist anywhere in the string. The `%` wildcards between and around them allow any number of other characters in any position.
+
+## Examples That Would Match
+
+- `"Banana"` — 3 a's
+- `"Amanda"` — 3 a's
+- `"Saratoga"` — 3 a's
+
+## Case Sensitivity Note
+
+- **MySQL:** `LIKE` is case-insensitive by default on most collations.
+- **PostgreSQL:** Use `ILIKE` instead for case-insensitive matching.
+- **SQLite (CS50):** Case-insensitive for ASCII by default.
+
 ## The SQL OR and XOR operator
 
 OR is a logical operator in SQL that allows you to select rows that satisfy either of two conditions.
