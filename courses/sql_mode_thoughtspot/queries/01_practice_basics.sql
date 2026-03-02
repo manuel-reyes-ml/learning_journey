@@ -239,3 +239,21 @@ WHERE name in ("France", "Germany", "Italy")
     WHERE LEFT(name, 1) = LEFT(capital, 1) AND name <> capital
   /*LEFT(string_column, n) where n = number of characters to slice from the left
     RIGHT(string_column, n) where n = number of characters to slice from the right*/
+
+/* ======================
+    14. Concatenate Function
+   ====================== */
+
+SELECT name
+FROM world
+WHERE capital = CONCAT(name, ' City');
+
+/*The CONCAT function merges two strings together. Here, it takes the value in the 
+name column (e.g., "Mexico") and adds " City" (make sure there is a space before "City") 
+to the end of it, making "Mexico City".*/
+
+/*Note: If you are using a database system like SQLite or PostgreSQL that prefers 
+standard SQL concatenation, you would use the pipe operators (||) instead:*/
+SELECT name
+FROM world
+WHERE capital = name || ' City';
