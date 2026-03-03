@@ -6,7 +6,7 @@
 # =============================================================================
 
 from __future__ import annotations  # Must be at the beginning of the file
-from typing import Final, NamedTuple, TypedDict, TypeVar
+from typing import Final, NamedTuple, TypedDict
 from dataclasses import dataclass
 from enum import IntEnum, unique
 from pathlib import Path
@@ -20,14 +20,10 @@ import sys
 # MODULE CONFIGURATION
 # =============================================================================
 
+# =====================================================
 # Exports
-
-
-# =====================================================
-# Module Constants
 # =====================================================
 
-ImageCounter = TypeVar('ImageCounter', str, int, None)
 
 # =====================================================
 # Type Aliases
@@ -95,7 +91,7 @@ class ExitCode(IntEnum):
     """
     """
     SUCCESS = 0
-    FAILURE = 0
+    FAILURE = 1
     KEYBOARD_INTERRUPT = 130
     
 class ByteSignature(NamedTuple):
@@ -289,7 +285,7 @@ def validate_infile(
 
 def generate_outfile(
     image_counter: int | str | None = None,
-    file_ext: str = filename.INFILE_EXT,
+    file_ext: str = filename.OUTFILE_EXT,
     fname: str = filename.OUT_FNAME,
 ) -> Path:
     """
@@ -328,6 +324,7 @@ def recover_jpeg(
         kbytes: float = 0.0
         image_counter: int = 0
         out_filename = None
+        output_dir = None
         out_handler = None
         images_result: ImagesReport = {}
         
@@ -348,7 +345,7 @@ def recover_jpeg(
                     out_handler.close
                     
                     if out_filename:
-                        images_result[out_filename.stem] = ImageVariables(kb_size=kbytes)
+                        images_result[out_filename.name] = ImageVariables(kb_size=kbytes)
                 
                 # Open a new file to start writing
                 image_counter += 1
@@ -369,7 +366,8 @@ def recover_jpeg(
             out_handler.close()
             
             if out_filename:
-                images_result[out_filename.stem] = ImageVariables(kb_size=kbytes)
+                images_result[out_filename.name] = ImageVariables(kb_size=kbytes)
+                output_dir = out_filename.parent
             
     if not images_result:
         raise ValueError(f"{infile.name} is empty")
@@ -377,7 +375,7 @@ def recover_jpeg(
     return {
         "images_recovered": image_counter,
         "images_details": images_result,
-        "output_file": out_filename,
+        "output_file": output_dir,
     }
     
     
@@ -440,9 +438,11 @@ def main(argv: list[str] | None = None)-> ExitCode:
         return ExitCode.FAILURE
     
     # Print out report using logging
-    logger.info(f"Recovered {report['images_recovered']} from file")
+    logger.info(f"Recovered {report['images_recovered']} images from file")
+    
     for image, size in report["images_details"].items():
-        logger.info(f"Name: {image}, Size: {size} KB")
+        logger.info(f"Name: {image}, Size: {size['kb_size']} KB")
+        
     logger.info(f"All images are saved in: '{report['output_file']}'")
     
     return ExitCode.SUCCESS
