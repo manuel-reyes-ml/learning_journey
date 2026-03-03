@@ -37,6 +37,10 @@ __all__ = [
     "FileDirectories",
     "FileName",
     "ImageData",
+    # Module-level constants
+    "MIN_BLOCK_SIZE",
+    "KB_PER_BYTE",
+    "BLOCK_SIZE",
 ]
 
 
@@ -77,7 +81,7 @@ class FileName:
     """
     INFILE_EXT: str = ".raw"
     OUTFILE_EXT: str = ".jpeg"
-    OUT_FNAME: str = f"image_"  # complete during file writing
+    OUT_FNAME: str = "image_"  # complete during file writing
 
 
 # =====================================================
@@ -239,7 +243,7 @@ def _is_jpeg_start(
     )
     
     
-def _configuration_logging(verbose: bool = False) -> None:
+def _configure_logging(verbose: bool = False) -> None:
     """
     """
     logger.setLevel(logging.DEBUG if verbose else logging.INFO)
@@ -301,7 +305,7 @@ def validate_infile(
             else:
                 # Multiple lines using f-strings for readability
                 logger.warning(f"File '{in_file.name}' has non-standard extension. "
-                               f"Use auto-rename=True to fix.") 
+                                   f"Use auto-rename=True to fix.") 
                 return in_file
         else:
             raise FileExistsError(f"{fname} is not a valid '{infile_ext}' file")
@@ -374,6 +378,9 @@ def recover_jpeg(
                     break
                 
                 if len(buffer) < min_block_size:  # Guard if buffer is less than signature (4 bytes)
+                    if out_handler:
+                        # Ensure remaining bytes are being written to image file
+                        out_handler.write(buffer) 
                     break
                 
                 b0, b1, b2, b3 = struct.unpack("<BBBB", buffer[0:4])
@@ -395,8 +402,6 @@ def recover_jpeg(
                     out_filename = generate_outfile(image_counter)
                     out_handler = open(out_filename, "wb")
                     
-                    
-                    
                     # Write the start of the image
                     out_handler.write(buffer)
                 
@@ -405,7 +410,8 @@ def recover_jpeg(
                     out_handler.write(buffer)
         
         finally:
-            # Ensure the file is closed even if an error occurs (finally always executes)
+            # Ensure the file is closed even if an error occurs
+            # finally always executes - error or no error
             # Close the last file if one was open        
             if out_handler:
                 kbytes = out_handler.tell() / kb_per_byte
@@ -433,7 +439,8 @@ def main(argv: list[str] | None = None)-> ExitCode:
     """
     """
     parser = argparse.ArgumentParser(
-        description=f"Recover all images from memory card file, with '{filename.OUTFILE_EXT}' signature"
+        description="Recover all images from memory card file, with"
+                    f" {filename.OUTFILE_EXT} extension signature"
     )
     parser.add_argument(
         "-i", "--input-file",  # Short and long flag arguments (optional)
@@ -449,7 +456,8 @@ def main(argv: list[str] | None = None)-> ExitCode:
     parser.add_argument(
         "-d", "--directory",
         type=str,
-        help=f"Enter directory path to search for input file. Default: '{file_directories.INPUT_DIR}'"
+        help="Enter directory path to search for input file." 
+             f"Default: '{file_directories.INPUT_DIR}'"
     )
     parser.add_argument(
         "--auto-rename",
@@ -464,7 +472,7 @@ def main(argv: list[str] | None = None)-> ExitCode:
     
     args = parser.parse_args(argv)
     
-    _configuration_logging(args.verbose)  # Logging configured HERE, not on import  
+    _configure_logging(args.verbose)  # Logging configured HERE, not on import  
         
     try:
         input_file = validate_infile(
@@ -482,7 +490,7 @@ def main(argv: list[str] | None = None)-> ExitCode:
         logger.error(f"File Error: {e}")
         return ExitCode.FAILURE
     
-    except (ValueError, TypeError, struct.error) as e:
+    except (ValueError, TypeError, struct.error) as e:  # struct.error is for unpacking errors
         logger.error(f"Processing Error: {e}")
         return ExitCode.FAILURE
     
