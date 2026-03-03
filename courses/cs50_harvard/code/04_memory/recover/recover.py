@@ -247,6 +247,7 @@ def _is_jpeg_start(
 def validate_infile(
     fname: str | None = None,
     input_dir: Path | str | None = None,
+    auto_rename: bool = False,
     infile_ext: str = filename.INFILE_EXT,
     default_dir: Path = file_directories.INPUT_DIR,
     ) -> Path:
@@ -273,26 +274,35 @@ def validate_infile(
         
         # Check 2: It is already a RAW file (but maybe uppercase like .RaW or not extension)?
         elif in_file.suffix.lower() == infile_ext or in_file.suffix == "":
-            consent = input(
-                f"Would you like me to correct extension to {in_file.name} (y/n): "
-            ).strip().lower()
-            
-            if consent in ["y", "yes"]:
+            if auto_rename:
+                logger.debug(
+                    f"Auto-renaming file {in_file.name} to {in_file.with_suffix(infile_ext).name}"
+                )
                 new_in_file = in_file.with_suffix(infile_ext)
                 in_file.rename(new_in_file)
                 # .name returns just file name ('card.raw')
                 logger.info(f"File name updated successfully to {new_in_file.name}")
-                
                 return new_in_file
-            
             else:
-                logger.warning(f"File name is unchanged {in_file.name}")
-                
+                # Multiple lines using f-strings for readability
+                logger.warning(f"File '{in_file.name}' has non-standard extension. "
+                               f"Use auto-rename=True to fix.") 
                 return in_file
         else:
             raise FileExistsError(f"{fname} is not a valid '{infile_ext}' file")
     else:
         raise FileNotFoundError(f"{fname} doesn't exist in directory '{in_file}'")
+# BEFORE — validate_infile does TWO jobs:
+# Job 1: Validate a file path (logic)
+# Job 2: Ask a human what to do (user interaction)
+
+# PRODUCTION PATTERN — each layer handles its own job:
+
+#  main()           → Handles ALL user interaction (argparse, prompts)
+#  validate_infile  → Handles ONLY validation logic
+#  recover_jpeg     → Handles ONLY recovery logic
+
+# The "decision" flows DOWN as a parameter, not UP as an input() call
 
 
 def generate_outfile(
@@ -398,7 +408,7 @@ def recover_jpeg(
         "images_details": images_result,
         "output_file": output_dir,
     }
-    
+
     
 # =============================================================================
 # CLI ENTRY POINT
@@ -427,6 +437,11 @@ def main(argv: list[str] | None = None)-> ExitCode:
         help=f"Enter directory path to search for input file. Default: '{file_directories.INPUT_DIR}'"
     )
     parser.add_argument(
+        "--auto-rename",
+        action="store_true",
+        help="Automatically rename input file to standard extension"
+    )
+    parser.add_argument(
         "-v", "--verbose",
         action="store_true",
         help="Enable verbose (debug) output",
@@ -439,7 +454,11 @@ def main(argv: list[str] | None = None)-> ExitCode:
         logger.debug("Verbose mode enabled")
         
     try:
-        input_file = validate_infile(args.input_file, args.directory)
+        input_file = validate_infile(
+            args.input_file,
+            args.directory,
+            auto_rename=args.auto_rename)
+        
         report: JPEGRecoverResult = recover_jpeg(input_file)
         
     except KeyboardInterrupt:
