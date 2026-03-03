@@ -36,7 +36,7 @@ type BufferBytes = bytes
 type TrueFalse = bool
 type ByteHex = int
 type Fname = str
-type ImagesReport = dict[str, ImageVariales] | None
+type ImagesReport = dict[str, ImageVariables]
 
 
 # =====================================================
@@ -112,9 +112,9 @@ class JpegRecoverResult(TypedDict):
     """
     images_recovered: int
     images_details: ImagesReport  # Nested dictionary
-    output_file: Path
+    output_file: Path | None
     
-class ImageVariales(TypedDict):
+class ImageVariables(TypedDict):
     """
     """
     kb_size: float
@@ -322,12 +322,14 @@ def recover_jpeg(
     if not infile:
         raise ValueError("Input file cannot be empty")
     
-    kbytes = 0
-    image_counter = 0
-    out_handler = None
-    recover_results: ImagesReport = {}
-    
     with open(infile, "rb") as inputf:
+        
+        kbytes: float = 0.0
+        image_counter: int = 0
+        out_filename = None
+        out_handler = None
+        images_result: dict[str, dict[str, float]] = {}
+        
         while True:
             buffer: BufferBytes = inputf.read(block_size)
             
@@ -343,14 +345,16 @@ def recover_jpeg(
                 if out_handler:
                     kbytes = out_handler.tell() / kb_per_byte
                     out_handler.close
+                    
+                    if out_filename:
+                        images_result[out_filename.stem][list(ImageVariables.__annotations__.keys())[0]] = kbytes
                 
                 # Open a new file to start writing
-                out_filename: Path = generate_outfile(image_counter)
+                image_counter += 1
+                out_filename = generate_outfile(image_counter)
                 out_handler = open(out_filename, "wb")
                 
-                #Initialize image_xx in dictionary
-                recover_results = {out_filename.stem: {"kb_size": kbytes}}
-                image_counter += 1
+                
                 
                 # Write the start of the image
                 out_handler.write(buffer)
@@ -363,4 +367,14 @@ def recover_jpeg(
         if out_handler:
             out_handler.close()
             
+            if out_filename:
+                images_result[out_filename.stem][list(ImageVariables.__annotations__.keys())[0]] = kbytes
             
+    if not images_result:
+        raise ValueError(f"{infile.name} is empty")
+    
+    return {
+        "images_recovered": image_counter,
+        "images_details": images_result,
+        "output_file": out_filename,
+    }
