@@ -24,6 +24,12 @@ import sys
 # Exports
 # =====================================================
 
+__all__ = [
+    "validate_infile",
+    "generate_outfile",
+    "recover_jpeg",
+]
+
 
 # =====================================================
 # Type Aliases
@@ -278,9 +284,9 @@ def validate_infile(
                 
                 return in_file
         else:
-            raise FileExistsError(f"{fname} is not a valid '{infile_ext}")
+            raise FileExistsError(f"{fname} is not a valid '{infile_ext}' file")
     else:
-        raise FileNotFoundError(f"{fname} doesn't exist in directory '{in_file}")
+        raise FileNotFoundError(f"{fname} doesn't exist in directory '{in_file}'")
 
 
 def generate_outfile(
@@ -292,7 +298,7 @@ def generate_outfile(
     """
     # If its any other Type than 'int' or 'str' (eg. None, float)
     if not isinstance(image_counter, (int, str)):
-        raise TypeError(f"imagent_count must be an integer or string. Got '{type(image_counter)}'")
+        raise TypeError(f"image_count must be an integer or string. Got '{type(image_counter)}'")
     
     # If its empty
     if image_counter == "":
@@ -363,6 +369,7 @@ def recover_jpeg(
         
         # Close the last file if one was open        
         if out_handler:
+            kbytes = out_handler.tell() / kb_per_byte
             out_handler.close()
             
             if out_filename:
@@ -408,7 +415,7 @@ def main(argv: list[str] | None = None)-> ExitCode:
     parser.add_argument(
         "-v", "--verbose",
         action="store_true",
-        help="Enable verbose (debug) output"
+        help="Enable verbose (debug) output",
     )
     
     args = parser.parse_args(argv)
@@ -436,6 +443,7 @@ def main(argv: list[str] | None = None)-> ExitCode:
     except Exception as e: 
         logger.exception(f"Unexpected Error: {e}")  # Behaves like .error but includes TraceBack info
         return ExitCode.FAILURE
+    
     
     # Print out report using logging
     logger.info(f"Recovered {report['images_recovered']} images from file")
