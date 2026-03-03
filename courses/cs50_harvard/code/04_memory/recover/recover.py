@@ -10,6 +10,7 @@ from typing import Final, NamedTuple, TypedDict, TypeVar
 from dataclasses import dataclass
 from enum import IntEnum, unique
 from pathlib import Path
+import argparse
 import logging
 import struct
 import sys
@@ -107,17 +108,17 @@ class ByteSignature(NamedTuple):
 
 # TypedDict makes a fix structure for a Dictionary,
 # for Type checker to warn later on the program.
-class JpegRecoverResult(TypedDict):
+class ImageVariables(TypedDict):
+    """
+    """
+    kb_size: float
+
+class JPEGRecoverResult(TypedDict):
     """
     """
     images_recovered: int
     images_details: ImagesReport  # Nested dictionary
     output_file: Path | None
-    
-class ImageVariables(TypedDict):
-    """
-    """
-    kb_size: float
     
 
 # =====================================================
@@ -316,7 +317,7 @@ def recover_jpeg(
     infile: Path | None = None,
     block_size: int = ImageData.BLOCK_SIZE,
     kb_per_byte: int = ImageData.KB_PER_BYTE,
-) -> JpegRecoverResult:
+) -> JPEGRecoverResult:
     """
     """
     if not infile:
@@ -328,7 +329,7 @@ def recover_jpeg(
         image_counter: int = 0
         out_filename = None
         out_handler = None
-        images_result: dict[str, dict[str, float]] = {}
+        images_result: ImagesReport = {}
         
         while True:
             buffer: BufferBytes = inputf.read(block_size)
@@ -347,7 +348,7 @@ def recover_jpeg(
                     out_handler.close
                     
                     if out_filename:
-                        images_result[out_filename.stem][list(ImageVariables.__annotations__.keys())[0]] = kbytes
+                        images_result[out_filename.stem] = ImageVariables(kb_size=kbytes)
                 
                 # Open a new file to start writing
                 image_counter += 1
@@ -368,7 +369,7 @@ def recover_jpeg(
             out_handler.close()
             
             if out_filename:
-                images_result[out_filename.stem][list(ImageVariables.__annotations__.keys())[0]] = kbytes
+                images_result[out_filename.stem] = ImageVariables(kb_size=kbytes)
             
     if not images_result:
         raise ValueError(f"{infile.name} is empty")
@@ -378,3 +379,74 @@ def recover_jpeg(
         "images_details": images_result,
         "output_file": out_filename,
     }
+    
+    
+# =============================================================================
+# CLI ENTRY POINT
+# =============================================================================
+
+def main(argv: list[str] | None = None)-> ExitCode:
+    """
+    """
+    parser = argparse.ArgumentParser(
+        description=f"Recover all images from memory card file, with '{filename.OUTFILE_EXT}' signature"
+    )
+    parser.add_argument(
+        "-i", "--input-file",  # Short and long flag arguments (optional)
+        required=True,
+        type=str,
+        help=f"Enter memory card file, format '{filename.INFILE_EXT}'",
+    )
+    parser.add_argument(
+        "-o", "--output-file",
+        type=str,
+        help=f"Enter desired prefix for output. Default: '{filename.OUT_FNAME}'",
+    )
+    parser.add_argument(
+        "-d", "--directory",
+        type=str,
+        help=f"Enter directory path to search for input file. Default: '{file_directories.INPUT_DIR}'"
+    )
+    parser.add_argument(
+        "-v", "--verbose",
+        action="store_true",
+        help="Enable verbose (debug) output"
+    )
+    
+    args = parser.parse_args(argv)
+    
+    if args.verbose:
+        logger.setLevel(logging.DEBUG)
+        logger.debug("Verbose mode enabled")
+        
+    try:
+        input_file = validate_infile(args.input_file, args.directory)
+        report: JPEGRecoverResult = recover_jpeg(input_file)
+        
+    except KeyboardInterrupt:
+        logger.warning("\nInterrupted by user. Exiting.")
+        return ExitCode.KEYBOARD_INTERRUPT
+    
+    except (FileExistsError, FileNotFoundError) as e:
+        logger.error(f"File Error: {e}")
+        return ExitCode.FAILURE
+    
+    except (ValueError, TypeError) as e:
+        logger.error(f"Processing Error: {e}")
+        return ExitCode.FAILURE
+    
+    except Exception as e: 
+        logger.exception(f"Unexpected Error: {e}")  # Behaves like .error but includes TraceBack info
+        return ExitCode.FAILURE
+    
+    # Print out report using logging
+    logger.info(f"Recovered {report['images_recovered']} from file")
+    for image, size in report["images_details"].items():
+        logger.info(f"Name: {image}, Size: {size} KB")
+    logger.info(f"All images are saved in: '{report['output_file']}'")
+    
+    return ExitCode.SUCCESS
+    
+    
+if __name__ == "__main__":
+    sys.exit(main())
