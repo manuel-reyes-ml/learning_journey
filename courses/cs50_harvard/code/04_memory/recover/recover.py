@@ -25,9 +25,18 @@ import sys
 # =====================================================
 
 __all__ = [
+    # Core functions
     "validate_infile",
     "generate_outfile",
     "recover_jpeg",
+    # Types (needed by consumers of recover_jpeg's return value)
+    "JPEGRecoverResult",
+    "ImageVariables",
+    "ExitCode",
+    # Configuration (useful for custom workflows)
+    "FileDirectories",
+    "FileName",
+    "ImageData",
 ]
 
 
@@ -35,10 +44,6 @@ __all__ = [
 # Type Aliases
 # =====================================================
 
-type BufferBytes = bytes
-type TrueFalse = bool
-type ByteHex = int
-type Fname = str
 type ImagesReport = dict[str, ImageVariables]
 
 
@@ -213,12 +218,12 @@ def _build_outfile_path(
 
 def _is_jpeg_start(
     buffer: ByteSignature | None = None,
-    byte_0: ByteHex = ImageData.BYTE_0,
-    byte_1: ByteHex = ImageData.BYTE_1,
-    byte_2: ByteHex = ImageData.BYTE_2,
-    byte_3: ByteHex = ImageData.BYTE_3,
-    bits_mask: ByteHex = ImageData.BITS_MASK,
-) -> TrueFalse:
+    byte_0: int = ImageData.BYTE_0,
+    byte_1: int = ImageData.BYTE_1,
+    byte_2: int = ImageData.BYTE_2,
+    byte_3: int = ImageData.BYTE_3,
+    bits_mask: int = ImageData.BITS_MASK,
+) -> bool:
     """
     """
     if not buffer: 
@@ -338,7 +343,7 @@ def recover_jpeg(
         
         try:
             while True:
-                buffer: BufferBytes = inputf.read(block_size)
+                buffer: bytes = inputf.read(block_size)
                 
                 if not buffer:
                     break
