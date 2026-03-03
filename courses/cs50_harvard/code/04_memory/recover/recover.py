@@ -1,4 +1,42 @@
 """
+Recover JPEG images from a raw forensic memory card image.
+
+A Python reimplementation of the CS50 pset4 "Recover" problem,
+refactored to production-grade standards with full type safety,
+structured logging, and CLI support.
+
+The module reads a binary memory card dump block-by-block (512 bytes),
+detects JPEG SOI (Start of Image) signatures, and writes each
+recovered image to a separate file.
+
+Usage
+-----
+Command-line::
+
+    python recover.py -i card.raw
+    python recover.py -i card.raw -d /path/to/dir --auto-rename -v
+
+As a library::
+
+    from recover import validate_infile, recover_jpeg
+    infile = validate_infile("card.raw")
+    result = recover_jpeg(infile)
+
+Notes
+-----
+- JPEG signatures are detected by matching the first 4 bytes of each
+  512-byte block against the SOI marker: ``0xFF 0xD8 0xFF 0xE0-0xEF``.
+- Images are written to a ``recovered/`` subdirectory with
+  zero-padded filenames (e.g., ``image_001.jpeg``).
+- Original CS50 problem: https://cs50.harvard.edu/x/2024/psets/4/recover/
+
+Author
+------
+Manuel (GitHub: @manuelreyes-ml)
+
+Version
+-------
+1.0.0
 """
 
 # =============================================================================
@@ -69,6 +107,27 @@ type ImagesReport = dict[str, ImageVariables]
 @dataclass(frozen=True, slots=True)
 class FileDirectories:
     """
+    Immutable container for directory paths used during recovery.
+
+    All paths are resolved relative to the module file location,
+    ensuring consistent behavior regardless of the working directory.
+
+    Attributes
+    ----------
+    CUR_DIR : Path
+        Absolute path to the directory containing this module.
+    INPUT_DIR : Path
+        Default directory to search for raw memory card files.
+    OUT_DIR : Path
+        Default directory where recovered JPEG files are written.
+
+    Examples
+    --------
+    >>> dirs = FileDirectories()
+    >>> dirs.INPUT_DIR.name
+    'memory_card'
+    >>> dirs.OUT_DIR.name
+    'recovered'
     """
     CUR_DIR: Final[Path] = Path(__file__).resolve().parent
     INPUT_DIR: Final[Path] = CUR_DIR / "memory_card"
@@ -78,6 +137,22 @@ class FileDirectories:
 @dataclass(frozen=True, slots=True)
 class FileName:
     """
+    Immutable container for file naming conventions.
+
+    Attributes
+    ----------
+    INFILE_EXT : str
+        Expected extension for raw memory card input files.
+    OUTFILE_EXT : str
+        Extension applied to recovered JPEG output files.
+    OUT_FNAME : str
+        Prefix for recovered image filenames (e.g., ``image_001.jpeg``).
+
+    Examples
+    --------
+    >>> fn = FileName()
+    >>> fn.OUTFILE_EXT
+    '.jpeg'
     """
     INFILE_EXT: str = ".raw"
     OUTFILE_EXT: str = ".jpeg"
@@ -101,6 +176,32 @@ filename = FileName()
 # JPEG Image information
 class ImageData(IntEnum):
     """
+    JPEG SOI (Start of Image) marker bytes and bitmask.
+
+    The first three bytes of a JPEG file are always ``0xFF 0xD8 0xFF``.
+    The fourth byte ranges from ``0xE0`` to ``0xEF``; the bitmask
+    ``0xF0`` isolates the upper nibble for comparison.
+
+    Attributes
+    ----------
+    BYTE_0 : int
+        First SOI byte (``0xFF``).
+    BYTE_1 : int
+        Second SOI byte (``0xD8``).
+    BYTE_2 : int
+        Third SOI byte (``0xFF``).
+    BYTE_3 : int
+        Fourth SOI byte lower bound (``0xE0``).
+    BITS_MASK : int
+        Bitmask for the fourth byte (``0xF0``), matching range
+        ``0xE0``-``0xEF``.
+
+    Examples
+    --------
+    >>> hex(ImageData.BYTE_0)
+    '0xff'
+    >>> hex(ImageData.BITS_MASK)
+    '0xf0'
     """
     BYTE_0 = 0xff
     BYTE_1 = 0xd8
@@ -112,6 +213,16 @@ class ImageData(IntEnum):
 @unique  # Ensure no duplicate values
 class ExitCode(IntEnum):
     """
+    Process exit codes following Unix conventions.
+
+    Attributes
+    ----------
+    SUCCESS : int
+        Normal termination (0).
+    FAILURE : int
+        General error (1).
+    KEYBOARD_INTERRUPT : int
+        Terminated by Ctrl+C (130).
     """
     SUCCESS = 0
     FAILURE = 1
@@ -119,6 +230,24 @@ class ExitCode(IntEnum):
     
 class ByteSignature(NamedTuple):
     """
+    First four bytes of a block, used for JPEG signature detection.
+
+    Parameters
+    ----------
+    byte_0 : int
+        First byte of the block.
+    byte_1 : int
+        Second byte of the block.
+    byte_2 : int
+        Third byte of the block.
+    byte_3 : int
+        Fourth byte of the block.
+
+    Examples
+    --------
+    >>> sig = ByteSignature(0xff, 0xd8, 0xff, 0xe0)
+    >>> sig.byte_0 == 0xff
+    True
     """
     byte_0: int
     byte_1: int
@@ -129,11 +258,28 @@ class ByteSignature(NamedTuple):
 # for Type checker to warn later on the program.
 class ImageVariables(TypedDict):
     """
+    Per-image metadata stored in the recovery report.
+
+    Attributes
+    ----------
+    kb_size : float
+        Size of the recovered image in kilobytes.
     """
     kb_size: float
 
 class JPEGRecoverResult(TypedDict):
     """
+    Structured result returned by :func:`recover_jpeg`.
+
+    Attributes
+    ----------
+    images_recovered : int
+        Total number of JPEG images found and written.
+    images_details : ImagesReport
+        Mapping of filename to :class:`ImageVariables` with size info.
+    output_file : Path or None
+        Directory where recovered images were saved, or ``None``
+        if no images were recovered.
     """
     images_recovered: int
     images_details: ImagesReport  # Nested dictionary
@@ -206,6 +352,33 @@ def _build_outfile_path(
     out_dir: Path = file_directories.OUT_DIR,
 ) -> Path:
     """
+    Construct a full output file path, creating the directory if needed.
+
+    Parameters
+    ----------
+    out_fname : str or None
+        The output filename (e.g., ``"image_001.jpeg"``).
+    out_dir : Path, optional
+        Target directory for the output file
+        (default: ``FileDirectories.OUT_DIR``).
+
+    Returns
+    -------
+    Path
+        Full resolved path to the output file.
+
+    Raises
+    ------
+    ValueError
+        If ``out_fname`` is an empty string.
+    TypeError
+        If ``out_fname`` is not a string.
+
+    Examples
+    --------
+    >>> path = _build_outfile_path("image_001.jpeg")
+    >>> path.name
+    'image_001.jpeg'
     """
     if out_fname == "":
         raise ValueError("out_fname cannot be empty")
@@ -228,6 +401,44 @@ def _is_jpeg_start(
     bits_mask: int = ImageData.BITS_MASK,
 ) -> bool:
     """
+    Check if a 4-byte signature matches the JPEG SOI marker.
+
+    Compares the first three bytes exactly and applies a bitmask
+    to the fourth byte to match the range ``0xE0``-``0xEF``.
+
+    Parameters
+    ----------
+    buffer : ByteSignature or None
+        Named tuple containing the first 4 bytes of a block.
+    byte_0 : int, optional
+        Expected first byte (default: ``0xFF``).
+    byte_1 : int, optional
+        Expected second byte (default: ``0xD8``).
+    byte_2 : int, optional
+        Expected third byte (default: ``0xFF``).
+    byte_3 : int, optional
+        Expected fourth byte after masking (default: ``0xE0``).
+    bits_mask : int, optional
+        Bitmask applied to the fourth byte (default: ``0xF0``).
+
+    Returns
+    -------
+    bool
+        ``True`` if bytes match the JPEG SOI signature.
+
+    Raises
+    ------
+    ValueError
+        If ``buffer`` is ``None`` or empty.
+
+    Examples
+    --------
+    >>> sig = ByteSignature(0xff, 0xd8, 0xff, 0xe1)
+    >>> _is_jpeg_start(sig)
+    True
+    >>> sig = ByteSignature(0x00, 0x00, 0x00, 0x00)
+    >>> _is_jpeg_start(sig)
+    False
     """
     if not buffer: 
         raise ValueError("Buffer cannot be empty")
@@ -245,6 +456,23 @@ def _is_jpeg_start(
     
 def _configure_logging(verbose: bool = False) -> None:
     """
+    Configure console logging with colored output.
+
+    Sets up a :class:`StreamHandler` with :class:`ColoredFormatter`.
+    Checks for existing handlers to prevent duplicates when
+    ``main()`` is called multiple times (e.g., in tests).
+
+    Parameters
+    ----------
+    verbose : bool, optional
+        If ``True``, set log level to ``DEBUG``; otherwise ``INFO``
+        (default: ``False``).
+
+    Examples
+    --------
+    >>> _configure_logging(verbose=True)
+    >>> logger.level == logging.DEBUG
+    True
     """
     logger.setLevel(logging.DEBUG if verbose else logging.INFO)
     
@@ -257,7 +485,8 @@ def _configure_logging(verbose: bool = False) -> None:
         ))
         logger.addHandler(console_handler)
 
-    logger.debug("Verbose mode enabled")
+    if verbose:
+        logger.debug("Verbose mode enabled")
 
 # =============================================================================
 # CORE FUNCTIONS
@@ -271,6 +500,48 @@ def validate_infile(
     default_dir: Path = file_directories.INPUT_DIR,
     ) -> Path:
     """
+    Validate and resolve the input memory card file path.
+
+    Locates the file in the given or default directory, verifies it
+    exists, and checks the file extension. Optionally renames files
+    with non-standard extensions (e.g., ``.RaW`` or missing extension).
+
+    Parameters
+    ----------
+    fname : str or None
+        Name of the input file (e.g., ``"card.raw"``).
+    input_dir : Path, str, or None, optional
+        Directory to search for the file. If ``None``, searches the
+        current working directory first, then ``default_dir``.
+    auto_rename : bool, optional
+        If ``True``, automatically rename files with incorrect or
+        missing extensions to ``infile_ext`` (default: ``False``).
+    infile_ext : str, optional
+        Required file extension (default: ``".raw"``).
+    default_dir : Path, optional
+        Fallback directory when ``input_dir`` is not provided
+        (default: ``FileDirectories.INPUT_DIR``).
+
+    Returns
+    -------
+    Path
+        Validated absolute path to the input file.
+
+    Raises
+    ------
+    ValueError
+        If ``fname`` is ``None``, empty, or has an invalid extension.
+    FileNotFoundError
+        If the file does not exist in the resolved directory.
+
+    Examples
+    --------
+    >>> path = validate_infile("card.raw")
+    >>> path.suffix
+    '.raw'
+    >>> path = validate_infile("card.RAW", auto_rename=True)
+    >>> path.suffix
+    '.raw'
     """
     if not fname:
         raise ValueError("File name cannot be empty")
@@ -330,6 +601,41 @@ def generate_outfile(
     fname: str = filename.OUT_FNAME,
 ) -> Path:
     """
+    Generate a zero-padded output file path for a recovered image.
+
+    Constructs a filename like ``image_001.jpeg`` from the counter
+    value, then delegates to :func:`_build_outfile_path` for
+    directory creation and path resolution.
+
+    Parameters
+    ----------
+    image_counter : int, str, or None
+        Sequence number for the image. Strings must contain only
+        digits (leading/trailing whitespace is stripped).
+    file_ext : str, optional
+        File extension for the output (default: ``".jpeg"``).
+    fname : str, optional
+        Filename prefix (default: ``"image_"``).
+
+    Returns
+    -------
+    Path
+        Full path to the output file (e.g.,
+        ``recovered/image_001.jpeg``).
+
+    Raises
+    ------
+    TypeError
+        If ``image_counter`` is not an ``int`` or ``str``.
+    ValueError
+        If ``image_counter`` is empty or contains non-digit characters.
+
+    Examples
+    --------
+    >>> generate_outfile(1).name
+    'image_001.jpeg'
+    >>> generate_outfile("42").name
+    'image_042.jpeg'
     """
     # If its any other Type than 'int' or 'str' (eg. None, float)
     if not isinstance(image_counter, (int, str)):
@@ -357,6 +663,50 @@ def recover_jpeg(
     min_block_size: int = MIN_BLOCK_SIZE,
 ) -> JPEGRecoverResult:
     """
+    Recover JPEG images from a raw forensic memory card image.
+
+    Reads a binary file block-by-block, detecting JPEG SOI signatures
+    (``0xFF 0xD8 0xFF 0xE0-0xEF``) at block boundaries and writing
+    each image to a separate output file. Uses ``try/finally`` to
+    guarantee file handle cleanup even on unexpected errors.
+
+    Parameters
+    ----------
+    infile : Path or None
+        Path to the raw memory card image file.
+    block_size : int, optional
+        Number of bytes per read block (default: 512).
+    kb_per_byte : int, optional
+        Divisor for converting bytes to kilobytes (default: 1024).
+    min_block_size : int, optional
+        Minimum buffer length required for signature detection
+        (default: 4). Blocks shorter than this are written to the
+        current image (if open) and terminate the read loop.
+
+    Returns
+    -------
+    JPEGRecoverResult
+        Dictionary containing:
+
+        - **images_recovered** (*int*) -- Total number of JPEGs found.
+        - **images_details** (*ImagesReport*) -- Per-image file sizes
+          in KB, keyed by filename.
+        - **output_file** (*Path or None*) -- Directory where images
+          were saved.
+
+    Raises
+    ------
+    ValueError
+        If ``infile`` is ``None`` or the file contains no JPEG data.
+
+    Examples
+    --------
+    >>> from pathlib import Path
+    >>> result = recover_jpeg(Path("memory_card/card.raw"))
+    >>> result["images_recovered"]
+    50
+    >>> result["images_details"]["image_001.jpeg"]["kb_size"]
+    42.5
     """
     if not infile:
         raise ValueError("Input file cannot be empty")
@@ -437,6 +787,35 @@ def recover_jpeg(
 
 def main(argv: list[str] | None = None)-> ExitCode:
     """
+    CLI entry point for JPEG recovery from memory card images.
+
+    Parses command-line arguments, validates the input file,
+    runs the recovery process, and prints a summary report.
+
+    Parameters
+    ----------
+    argv : list of str or None, optional
+        Command-line arguments. If ``None``, reads from
+        ``sys.argv`` (default: ``None``).
+
+    Returns
+    -------
+    ExitCode
+        ``SUCCESS`` (0) on normal completion, ``FAILURE`` (1) on
+        error, or ``KEYBOARD_INTERRUPT`` (130) if terminated by user.
+
+    Examples
+    --------
+    From the command line::
+
+        $ python recover.py -i card.raw
+        $ python recover.py -i card.raw -d ./data --auto-rename -v
+
+    Programmatic usage (e.g., in tests)::
+
+        >>> exit_code = main(["-i", "card.raw", "-v"])
+        >>> exit_code == ExitCode.SUCCESS
+        True
     """
     parser = argparse.ArgumentParser(
         description="Recover all images from memory card file, with"
