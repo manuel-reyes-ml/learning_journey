@@ -189,16 +189,8 @@ class ColoredFormatter(logging.Formatter):
     
 
 # Set up logging
+# Move configuration into a setup function called by main()
 logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-
-# Create handler with colored formatter
-console_handler = logging.StreamHandler()
-console_handler.setFormatter(ColoredFormatter(
-    fmt='%(asctime)s : %(levelname)s : %(message)s',
-    datefmt='%H:%M:%S',
-))
-logger.addHandler(console_handler)
 
 
 # =============================================================================
@@ -245,7 +237,23 @@ def _is_jpeg_start(
             bits_mask
         ) == byte_3
     )
+    
+    
+def _configuration_logging(verbose: bool = False) -> None:
+    """
+    """
+    logger.setLevel(logging.DEBUG if verbose else logging.INFO)
+    
+    # Prevent duplicate handlers if main() is called multiple times (e.g. pytest)
+    if not logger.handlers:
+        console_handler = logging.StreamHandler()
+        console_handler.setFormatter(ColoredFormatter(
+            fmt='%(asctime)s : %(levelname)s : %(message)s',
+            datefmt='%H:%M:%S',
+        ))
+        logger.addHandler(console_handler)
 
+    logger.debug("Verbose mode enabled")
 
 # =============================================================================
 # CORE FUNCTIONS
@@ -456,9 +464,7 @@ def main(argv: list[str] | None = None)-> ExitCode:
     
     args = parser.parse_args(argv)
     
-    if args.verbose:
-        logger.setLevel(logging.DEBUG)
-        logger.debug("Verbose mode enabled")
+    _configuration_logging(args.verbose)  # Logging configured HERE, not on import  
         
     try:
         input_file = validate_infile(
