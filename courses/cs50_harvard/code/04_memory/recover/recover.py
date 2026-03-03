@@ -86,6 +86,7 @@ class ImageData(IntEnum):
     BLOCK_SIZE = 512
     BITS_MASK = 0xf0
     KB_PER_BYTE = 1024
+    MIN_BLOCK_SIZE = 4
     BYTE_0 = 0xff
     BYTE_1 = 0xd8
     BYTE_2 = 0xff
@@ -319,6 +320,7 @@ def recover_jpeg(
     infile: Path | None = None,
     block_size: int = ImageData.BLOCK_SIZE,
     kb_per_byte: int = ImageData.KB_PER_BYTE,
+    min_block_size: int = ImageData.MIN_BLOCK_SIZE,
 ) -> JPEGRecoverResult:
     """
     """
@@ -334,47 +336,54 @@ def recover_jpeg(
         out_handler = None
         images_result: ImagesReport = {}
         
-        while True:
-            buffer: BufferBytes = inputf.read(block_size)
-            
-            if not buffer:
-                break
-            
-            b0, b1, b2, b3 = struct.unpack("<BBBB", buffer[0:4])
-            signature = ByteSignature(b0, b1, b2, b3)
-            
-            # Check if the block is the start of a new JPEG
-            if _is_jpeg_start(signature): 
-                #If we were already writing a file, close it
-                if out_handler:
-                    kbytes = out_handler.tell() / kb_per_byte
-                    out_handler.close
+        try:
+            while True:
+                buffer: BufferBytes = inputf.read(block_size)
+                
+                if not buffer:
+                    break
+                
+                if len(buffer) < min_block_size:  # Guard if buffer is less than signature (4 bytes)
+                    break
+                
+                b0, b1, b2, b3 = struct.unpack("<BBBB", buffer[0:4])
+                signature = ByteSignature(b0, b1, b2, b3)
+                
+                # Check if the block is the start of a new JPEG
+                if _is_jpeg_start(signature): 
+                    #If we were already writing a file, close it
+                    if out_handler:
+                        # .tell() returns the current position of the file pointer in bytes
+                        kbytes = out_handler.tell() / kb_per_byte
+                        out_handler.close()
+                        
+                        if out_filename:
+                            images_result[out_filename.name] = ImageVariables(kb_size=kbytes)
                     
-                    if out_filename:
-                        images_result[out_filename.name] = ImageVariables(kb_size=kbytes)
+                    # Open a new file to start writing
+                    image_counter += 1
+                    out_filename = generate_outfile(image_counter)
+                    out_handler = open(out_filename, "wb")
+                    
+                    
+                    
+                    # Write the start of the image
+                    out_handler.write(buffer)
                 
-                # Open a new file to start writing
-                image_counter += 1
-                out_filename = generate_outfile(image_counter)
-                out_handler = open(out_filename, "wb")
-                
-                
-                
-                # Write the start of the image
-                out_handler.write(buffer)
-            
-            # If it´s not a new JPEG start, but we have a file open, keep writing
-            elif out_handler:
-                out_handler.write(buffer)
+                # If it´s not a new JPEG start, but we have a file open, keep writing
+                elif out_handler:
+                    out_handler.write(buffer)
         
-        # Close the last file if one was open        
-        if out_handler:
-            kbytes = out_handler.tell() / kb_per_byte
-            out_handler.close()
-            
-            if out_filename:
-                images_result[out_filename.name] = ImageVariables(kb_size=kbytes)
-                output_dir = out_filename.parent
+        finally:
+            # Ensure the file is closed even if an error occurs (finally always executes)
+            # Close the last file if one was open        
+            if out_handler:
+                kbytes = out_handler.tell() / kb_per_byte
+                out_handler.close()
+                
+                if out_filename:
+                    images_result[out_filename.name] = ImageVariables(kb_size=kbytes)
+                    output_dir = out_filename.parent
             
     if not images_result:
         raise ValueError(f"{infile.name} is empty")
@@ -436,7 +445,7 @@ def main(argv: list[str] | None = None)-> ExitCode:
         logger.error(f"File Error: {e}")
         return ExitCode.FAILURE
     
-    except (ValueError, TypeError) as e:
+    except (ValueError, TypeError, struct.error) as e:
         logger.error(f"Processing Error: {e}")
         return ExitCode.FAILURE
     
