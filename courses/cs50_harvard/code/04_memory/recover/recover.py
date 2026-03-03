@@ -41,6 +41,16 @@ __all__ = [
 
 
 # =====================================================
+# Module Level Constants
+# ===================================================== 
+
+# For I/O configuration
+MIN_BLOCK_SIZE: Final[int] = 4
+KB_PER_BYTE: Final[int] = 1024
+BLOCK_SIZE: Final[int] = 512
+
+
+# =====================================================
 # Type Aliases
 # =====================================================
 
@@ -88,14 +98,11 @@ filename = FileName()
 class ImageData(IntEnum):
     """
     """
-    BLOCK_SIZE = 512
-    BITS_MASK = 0xf0
-    KB_PER_BYTE = 1024
-    MIN_BLOCK_SIZE = 4
     BYTE_0 = 0xff
     BYTE_1 = 0xd8
     BYTE_2 = 0xff
     BYTE_3 = 0xe0
+    BITS_MASK = 0xf0  # Mask for 4th byte range (0xe0-0xef)
     
 # Exit codes (Unix standard)
 @unique  # Ensure no duplicate values
@@ -333,9 +340,9 @@ def generate_outfile(
         
 def recover_jpeg(
     infile: Path | None = None,
-    block_size: int = ImageData.BLOCK_SIZE,
-    kb_per_byte: int = ImageData.KB_PER_BYTE,
-    min_block_size: int = ImageData.MIN_BLOCK_SIZE,
+    block_size: int = BLOCK_SIZE,
+    kb_per_byte: int = KB_PER_BYTE,
+    min_block_size: int = MIN_BLOCK_SIZE,
 ) -> JPEGRecoverResult:
     """
     """
