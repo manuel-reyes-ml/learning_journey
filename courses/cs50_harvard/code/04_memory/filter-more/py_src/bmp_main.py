@@ -480,7 +480,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
     )
     
     if args.verbose:
-        logging.debug("Verbose mode enabled (debug output)")
+        logger.debug("Verbose mode enabled (console debug output)")
     
     # Arv(args) returns a list when 'nargs=' is used
     if args.filter[0].strip().strip(string.punctuation).lower() == ALL_FILTERS:

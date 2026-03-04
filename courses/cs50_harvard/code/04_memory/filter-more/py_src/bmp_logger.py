@@ -121,9 +121,6 @@ def setup_logging(
     ))
     package_logger.addHandler(console_handler)
     
-    if console_verbose:
-        logging.debug("Verbose mode enabled (debug output)")
-    
     # 4. File handler - plain text, always captures DEBUG
     if log_to_file:
         # parents=True: create any missing parent directories
