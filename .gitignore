@@ -35,6 +35,7 @@ Thumbs.db
 
 # But keep .gitkeep
 !**/outputs/.gitkeep
+!*.gitkeep
 
 # Data files (too large or sensitive)
 **/data/*.csv
@@ -42,3 +43,6 @@ Thumbs.db
 
 # Quick testing and experiments
 experiments/scratch.py
+
+# Logs with sensitive info
+*.log
