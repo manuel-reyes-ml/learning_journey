@@ -533,6 +533,4 @@ def main(argv: list[str] | None = None) -> ExitCode:
     
     return ExitCode.SUCCESS
 
-
-if __name__ == "__main__":
-    sys.exit(main()) 
+# Run using 'python py_src', since a __main__.py file is implemented as start point
