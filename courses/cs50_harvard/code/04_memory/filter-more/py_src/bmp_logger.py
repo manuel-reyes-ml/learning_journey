@@ -19,13 +19,14 @@ automatically via Python's logger hierarchy.
 # =============================================================================
 
 from __future__ import annotations
+from logging.handlers import RotatingFileHandler
 from pathlib import Path
 from typing import Final
 import logging
 import sys
 
 try:
-    from .bmp_config import ColoredFormatter, CUR_DIR
+    from .bmp_config import ColoredFormatter, CUR_DIR, LOGS_DIR
 except ImportError as e:
     sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
     
@@ -39,6 +40,9 @@ __all__ = ["setup_logging"]
 
 # Program Constants
 LEVEL_DEFAULT = logging.INFO
+LOG_FILE_NAME: Final[str] = "bmp_filter.log"
+MAX_LOG_BYTES: Final[int] = 5 * 1024 * 1024   # 5 MBD per file
+BACKUP_COUNT: Final[int] = 3                  # Keep 3 rotated backups
 FORMATTER_CLASS: Final[type[logging.Formatter]] = ColoredFormatter
 
 
@@ -48,8 +52,14 @@ FORMATTER_CLASS: Final[type[logging.Formatter]] = ColoredFormatter
 
 def setup_logging(
     formatter_class: type[logging.Formatter] | None = FORMATTER_CLASS,
-    cur_dir: Path = CUR_DIR, 
-    level=LEVEL_DEFAULT,
+    cur_dir: Path = CUR_DIR,
+    logs_dir: Path = LOGS_DIR,
+    level: int =LEVEL_DEFAULT,
+    log_to_file: bool = True,
+    console_verbose: bool = False,
+    max_bytes: int = MAX_LOG_BYTES,
+    log_fname: str = LOG_FILE_NAME,
+    backup_count: int = BACKUP_COUNT,
 ) -> None:
     """
     Configure the package-level logger with colored console output.
@@ -91,26 +101,50 @@ def setup_logging(
     if not formatter_class:
         raise ValueError("formatter_class cannot be empty")
     
+    level = logging.DEBUG if console_verbose else level
+    
     # 1. Grab the top-level logger for your package
     # cur_dir.name gives the current directory in string "py_src"
     package_logger = logging.getLogger(cur_dir.name)
-    package_logger.setLevel(level)
+    package_logger.setLevel(logging.DEBUG)  # Let handlers decide their own level
     
     # 2. Prevent duplicate handlers if this function is called multiple times
     if package_logger.hasHandlers():
         package_logger.handlers.clear()
         
-    # 3. Create your handler and attach the ColoredFormatter
-    console_handler = logging.StreamHandler(sys.stdout)
+    # 3. Console handler, colored, respected the 'level' parameter
+    console_handler = logging.StreamHandler(sys.stderr)
+    console_handler.setLevel(level)
     console_handler.setFormatter(formatter_class(
         fmt='%(asctime)s : %(levelname)s : %(message)s',
         datefmt='%H:%M:%S',
     ))
-    
-    # 4. Attach the handler to the package logger
     package_logger.addHandler(console_handler)
+    
+    if console_verbose:
+        logging.debug("Verbose mode enabled (debug output)")
+    
+    # 4. File handler - plain text, always captures DEBUG
+    if log_to_file:
+        # parents=True: create any missing parent directories
+        # exist_ok=True: no error if directory already exists
+        logs_dir.mkdir(parents=True, exist_ok=True)
+        log_file = logs_dir / log_fname
+        
+        file_handler = RotatingFileHandler(
+            filename=log_file,
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8",
+        )
+        file_handler.setLevel(logging.DEBUG)
+        # %(name)s shows module name (py_src.bmp_io)
+        file_handler.setFormatter(logging.Formatter(
+            fmt='%(asctime)s : %(name)s : %(levelname)s : %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S',
+        ))
+        package_logger.addHandler(file_handler)
     
     # 5. Prevent logs from bubbling up to Python's default root logger
     # (prevents duplicate printing in some environments)
     package_logger.propagate = False
-    

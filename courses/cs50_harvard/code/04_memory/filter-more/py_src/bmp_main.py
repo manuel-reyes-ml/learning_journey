@@ -466,12 +466,21 @@ def main(argv: list[str] | None = None) -> ExitCode:
         action="store_true",
         help="Enable verbose (debu) output"
     )
+    parser.add_argument(
+        "--no-log-file",
+        action="store_true",
+        help="Disable file logging (console only)",
+    )
     
     args = parser.parse_args(argv)
     
+    setup_logging(
+        console_verbose=args.verbose,
+        log_to_file=not args.no_log_file,
+    )
+    
     if args.verbose:
-        setup_logging(level=logging.DEBUG)
-        logger.debug("Verbose mode enabled")
+        logging.debug("Verbose mode enabled (debug output)")
     
     # Arv(args) returns a list when 'nargs=' is used
     if args.filter[0].strip().strip(string.punctuation).lower() == ALL_FILTERS:

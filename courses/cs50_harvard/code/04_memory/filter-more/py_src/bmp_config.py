@@ -48,6 +48,7 @@ __all__ = [
     "ExitCode",
     "ALL_FILTERS",
     "CUR_DIR",
+    "LOGS_DIR",
     "bmp_dirs",
     "bmp_constants",
 ]
@@ -83,6 +84,7 @@ ALL_FILTERS: Final[str] = "all"
 # parents[1] = project root directory -> filter-more/
 CUR_DIR: Final[Path] = Path(__file__).resolve().parent
 BASE_DIR: Final[Path] = CUR_DIR.parent
+LOGS_DIR: Final[Path] = CUR_DIR / "logs"
 
 
 # =====================================================
