@@ -44,6 +44,7 @@ Version
 # =============================================================================
 
 from __future__ import annotations  # Must be at the beginning of the file
+from logging.handlers import RotatingFileHandler
 from typing import Final, NamedTuple, TypedDict
 from dataclasses import dataclass
 from enum import IntEnum, unique
@@ -62,6 +63,7 @@ import sys
 # Exports
 # =====================================================
 
+# Controls: 'from module import *'
 __all__ = [
     # Core functions
     "validate_infile",
@@ -90,6 +92,12 @@ __all__ = [
 MIN_BLOCK_SIZE: Final[int] = 4
 KB_PER_BYTE: Final[int] = 1024
 BLOCK_SIZE: Final[int] = 512
+
+# For file_handler configuration
+MAX_LOG_BYTES: Final[int] = 5 * 1024 * 1024
+BACKUP_COUNT: Final[int] = 3
+LOG_FNAME: Final[str] = "recover.log"
+LEVEL_DEFAULT: Final[int] = logging.INFO
 
 
 # =====================================================
@@ -132,6 +140,7 @@ class FileDirectories:
     CUR_DIR: Final[Path] = Path(__file__).resolve().parent
     INPUT_DIR: Final[Path] = CUR_DIR / "memory_card"
     OUT_DIR: Final[Path] = CUR_DIR / "recovered"
+    LOG_DIR: Final[Path] = CUR_DIR / "py_log"
 
 # File information
 @dataclass(frozen=True, slots=True)
@@ -341,6 +350,7 @@ class ColoredFormatter(logging.Formatter):
 # Set up logging
 # Move configuration into a setup function called by main()
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)  # Let handlers decide their own level
 
 
 # =============================================================================
@@ -454,7 +464,16 @@ def _is_jpeg_start(
     )
     
     
-def _configure_logging(verbose: bool = False) -> None:
+def _configure_logging(
+    log_to_file: bool = True,
+    console_verbose: bool = False,
+    level: int = LEVEL_DEFAULT,
+    log_fname: str = LOG_FNAME,
+    max_bytes: int = MAX_LOG_BYTES,
+    backup_count: int = BACKUP_COUNT,
+    logs_dir: Path = file_directories.LOG_DIR,
+    formatter_class: type[logging.Formatter] = ColoredFormatter,
+) -> None:
     """
     Configure console logging with colored output.
 
@@ -474,19 +493,40 @@ def _configure_logging(verbose: bool = False) -> None:
     >>> logger.level == logging.DEBUG
     True
     """
-    logger.setLevel(logging.DEBUG if verbose else logging.INFO)
+    level = logging.DEBUG if console_verbose else level
     
-    # Prevent duplicate handlers if main() is called multiple times (e.g. pytest)
-    if not logger.handlers:
-        console_handler = logging.StreamHandler()
-        console_handler.setFormatter(ColoredFormatter(
+    # Prevent duplicate handlers if this function is called multiple times (e.g. pytest)
+    if logger.hasHandlers():
+        logger.handlers.clear()
+    
+    console_handler = logging.StreamHandler(sys.stderr)
+    console_handler.setLevel(level)
+    console_handler.setFormatter(formatter_class(
+        fmt='%(asctime)s : %(levelname)s : %(message)s',
+        datefmt='%H:%M:%S',
+    ))
+    logger.addHandler(console_handler)
+    
+    if log_to_file:
+        # parents=True: create any missing parent directories
+        # exist_ok=True: no error if directory already exists
+        logs_dir.mkdir(parents=True, exist_ok=True)
+        log_file = logs_dir / log_fname
+        
+        file_handler = RotatingFileHandler(
+            filename=log_file,
+            maxBytes=max_bytes,
+            backupCount=backup_count,
+            encoding="utf-8",
+        )
+        file_handler.setLevel(logging.DEBUG)
+        # %(name)s shows module name (recover)
+        file_handler.setFormatter(logging.Formatter(
             fmt='%(asctime)s : %(levelname)s : %(message)s',
-            datefmt='%H:%M:%S',
+            datefmt='%Y-%m-%d %H:%M:%S',
         ))
-        logger.addHandler(console_handler)
-
-    if verbose:
-        logger.debug("Verbose mode enabled")
+        logger.addHandler(file_handler)
+    
 
 # =============================================================================
 # CORE FUNCTIONS
@@ -498,7 +538,7 @@ def validate_infile(
     auto_rename: bool = False,
     infile_ext: str = filename.INFILE_EXT,
     default_dir: Path = file_directories.INPUT_DIR,
-    ) -> Path:
+) -> Path:
     """
     Validate and resolve the input memory card file path.
 
@@ -848,10 +888,22 @@ def main(argv: list[str] | None = None)-> ExitCode:
         action="store_true",
         help="Enable verbose (debug) output",
     )
+    parser.add_argument(
+        "--no-log-file",
+        action="store_true",
+        help="Disable file logging (console only)"
+    )
     
     args = parser.parse_args(argv)
     
-    _configure_logging(args.verbose)  # Logging configured HERE, not on import  
+    # Logging configured HERE, not on import 
+    _configure_logging(
+        console_verbose=args.verbose,
+        log_to_file=not args.no_log_file,
+    )
+    
+    if args.verbose:
+        logger.debug("Verbose mode enabled (console debug output)")
         
     try:
         input_file = validate_infile(
@@ -884,7 +936,7 @@ def main(argv: list[str] | None = None)-> ExitCode:
     for image, size in report["images_details"].items():
         logger.info(f"Name: {image}, Size: {size['kb_size']} KB")
         
-    logger.info(f"All images are saved in: '{report['output_file']}'")
+    logger.info(f"All images are saved in: '{report['output_file']}'\n")
     
     return ExitCode.SUCCESS
     
