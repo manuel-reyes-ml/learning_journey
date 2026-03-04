@@ -62,24 +62,32 @@ def setup_logging(
     backup_count: int = BACKUP_COUNT,
 ) -> None:
     """
-    Configure the package-level logger with colored console output.
+    Configure the package-level logger with console and optional file output.
 
-    Sets up a ``StreamHandler`` on ``sys.stdout`` with the specified
-    formatter class and log level. Scoped to the ``py_src`` package
-    logger so all child module loggers inherit the configuration.
+    Sets up a colored ``StreamHandler`` on ``sys.stderr`` for terminal
+    output and an optional ``RotatingFileHandler`` for persistent log
+    files with automatic size-based rotation.
 
     Parameters
     ----------
     formatter_class : type[logging.Formatter] or None, optional
-        Formatter class to use for console output. Defaults to
-        ``ColoredFormatter``, which applies ANSI color codes by
-        log level. Cannot be None.
+        Formatter class for console output. Defaults to
+        ``ColoredFormatter``. Cannot be None.
     cur_dir : Path, optional
-        Directory whose ``.name`` attribute determines the logger
-        namespace (default is the ``py_src/`` directory).
+        Directory whose ``.name`` determines the logger namespace.
+    logs_dir : Path, optional
+        Directory where log files are written
+        (default: ``<project_root>/logs/``).
     level : int, optional
-        Logging level threshold (default ``logging.INFO``). Use
-        ``logging.DEBUG`` for verbose output.
+        Logging level threshold (default ``logging.INFO``).
+    log_to_file : bool, optional
+        If ``True``, enable file logging alongside console output
+        (default: ``True``).
+    max_bytes : int, optional
+        Maximum size in bytes before the log file rotates
+        (default: 5 MB).
+    backup_count : int, optional
+        Number of rotated backup files to retain (default: 3).
 
     Raises
     ------
@@ -88,15 +96,24 @@ def setup_logging(
 
     Notes
     -----
-    Safe to call multiple times — clears existing handlers before
-    attaching a new one to prevent duplicate log output. Sets
-    ``propagate = False`` to prevent messages from bubbling up
-    to Python's root logger.
+    Console handler uses ``ColoredFormatter`` with ANSI codes.
+    File handler uses a **plain** ``logging.Formatter`` because
+    ANSI escape sequences are unreadable in text files. The file
+    handler always logs at ``DEBUG`` level to capture full detail,
+    regardless of the console level.
+
+    The rotation creates files like::
+
+        logs/bmp_filter.log        ← current (up to 5 MB)
+        logs/bmp_filter.log.1      ← previous
+        logs/bmp_filter.log.2      ← older
+        logs/bmp_filter.log.3      ← oldest (then deleted)
 
     Examples
     --------
-    >>> setup_logging()  # INFO level with colors
-    >>> setup_logging(level=logging.DEBUG)  # verbose mode
+    >>> setup_logging()                              # console + file
+    >>> setup_logging(log_to_file=False)             # console only
+    >>> setup_logging(level=logging.DEBUG)            # verbose console
     """
     if not formatter_class:
         raise ValueError("formatter_class cannot be empty")
