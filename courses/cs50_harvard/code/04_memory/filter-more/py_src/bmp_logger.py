@@ -51,15 +51,15 @@ FORMATTER_CLASS: Final[type[logging.Formatter]] = ColoredFormatter
 # =============================================================================
 
 def setup_logging(
-    formatter_class: type[logging.Formatter] | None = FORMATTER_CLASS,
+    console_verbose: bool = False,
+    log_to_file: bool = True,
     cur_dir: Path = CUR_DIR,
     logs_dir: Path = LOGS_DIR,
     level: int =LEVEL_DEFAULT,
-    log_to_file: bool = True,
-    console_verbose: bool = False,
     max_bytes: int = MAX_LOG_BYTES,
     log_fname: str = LOG_FILE_NAME,
     backup_count: int = BACKUP_COUNT,
+    formatter_class: type[logging.Formatter] | None = FORMATTER_CLASS,
 ) -> None:
     """
     Configure the package-level logger with console and optional file output.
