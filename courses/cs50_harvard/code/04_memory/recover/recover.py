@@ -128,6 +128,9 @@ class FileDirectories:
         Default directory to search for raw memory card files.
     OUT_DIR : Path
         Default directory where recovered JPEG files are written.
+    LOG_DIR : Path
+        Directory for rotating log files written by
+        :class:`~logging.handlers.RotatingFileHandler`.
 
     Examples
     --------
@@ -136,6 +139,8 @@ class FileDirectories:
     'memory_card'
     >>> dirs.OUT_DIR.name
     'recovered'
+    >>> dirs.LOG_DIR.name
+    'py_log'
     """
     CUR_DIR: Final[Path] = Path(__file__).resolve().parent
     INPUT_DIR: Final[Path] = CUR_DIR / "memory_card"
@@ -475,23 +480,52 @@ def _configure_logging(
     formatter_class: type[logging.Formatter] = ColoredFormatter,
 ) -> None:
     """
-    Configure console logging with colored output.
+    Configure console and file logging for the recovery CLI.
 
-    Sets up a :class:`StreamHandler` with :class:`ColoredFormatter`.
-    Checks for existing handlers to prevent duplicates when
+    Sets up two handlers on the module-level ``logger``:
+
+    - **Console** — :class:`StreamHandler` on ``sys.stderr`` with
+      :class:`ColoredFormatter` (ANSI colors for terminal output).
+    - **File** (optional) — :class:`~logging.handlers.RotatingFileHandler`
+      with plain-text formatting, capped at ``max_bytes`` per file
+      and ``backup_count`` rotated backups.
+
+    Clears any existing handlers first to prevent duplicates when
     ``main()`` is called multiple times (e.g., in tests).
 
     Parameters
     ----------
-    verbose : bool, optional
-        If ``True``, set log level to ``DEBUG``; otherwise ``INFO``
-        (default: ``False``).
+    log_to_file : bool, optional
+        If ``True``, add a :class:`RotatingFileHandler` that writes
+        ``DEBUG``-level records to disk (default: ``True``).
+    console_verbose : bool, optional
+        If ``True``, set console handler to ``DEBUG``; otherwise
+        use ``level`` (default: ``False``).
+    level : int, optional
+        Console log level when ``console_verbose`` is ``False``
+        (default: :data:`LEVEL_DEFAULT` / ``logging.INFO``).
+    log_fname : str, optional
+        Log filename inside ``logs_dir`` (default: ``"recover.log"``).
+    max_bytes : int, optional
+        Maximum bytes per log file before rotation
+        (default: 5 MB).
+    backup_count : int, optional
+        Number of rotated backup files to keep (default: 3).
+    logs_dir : Path, optional
+        Directory for log files, created if missing
+        (default: ``FileDirectories.LOG_DIR``).
+    formatter_class : type[logging.Formatter], optional
+        Formatter class for the console handler
+        (default: :class:`ColoredFormatter`).
 
     Examples
     --------
-    >>> _configure_logging(verbose=True)
-    >>> logger.level == logging.DEBUG
+    >>> _configure_logging(console_verbose=True)
+    >>> logger.handlers[0].level == logging.DEBUG
     True
+    >>> _configure_logging(log_to_file=False)
+    >>> len(logger.handlers)
+    1
     """
     level = logging.DEBUG if console_verbose else level
     
@@ -829,8 +863,9 @@ def main(argv: list[str] | None = None)-> ExitCode:
     """
     CLI entry point for JPEG recovery from memory card images.
 
-    Parses command-line arguments, validates the input file,
-    runs the recovery process, and prints a summary report.
+    Parses command-line arguments, configures console and file
+    logging, validates the input file, runs the recovery process,
+    and prints a summary report.
 
     Parameters
     ----------
@@ -850,6 +885,7 @@ def main(argv: list[str] | None = None)-> ExitCode:
 
         $ python recover.py -i card.raw
         $ python recover.py -i card.raw -d ./data --auto-rename -v
+        $ python recover.py -i card.raw --no-log-file
 
     Programmatic usage (e.g., in tests)::
 
