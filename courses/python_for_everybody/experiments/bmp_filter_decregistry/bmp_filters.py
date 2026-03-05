@@ -23,7 +23,14 @@ import math
 import sys
 
 try:
-    from .bmp_config import Pixel, PixelRow, ImageData, ImageSize
+    from .bmp_config import (
+        Pixel,
+        PixelRow,
+        ImageData,
+        ImageSize,
+        DictFuncs,
+        FilterFunc,
+    )
 except ImportError as e:
     # sys.exit() raises SystemExit internally, don´t need 'raise...'
     sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
@@ -39,7 +46,11 @@ __all__ = [
     "reflect",
     "blur",
     "edges",
+    "FILTERS",
 ]
+
+# Registry dictionary (global)
+FILTERS: DictFuncs = {}
 
 # Set up Logging
 # '__name__' will automatically be name 'py_src.bmp_filters'
@@ -76,10 +87,22 @@ def _width_height_calculator(pixels: ImageData) -> ImageSize:
     return ImageSize(height, width)
 
 
+def register_filter(
+    func: FilterFunc,
+    filters: DictFuncs = FILTERS,
+) -> FilterFunc:
+    """
+    """
+    filters[func.__name__] = func
+    return func  # Return unchanged function
+
+
 # =============================================================================
 # CORE FUNCTIONS
 # =============================================================================
 
+# Just add decorator - function auto-registers!
+@register_filter
 def grayscale(pixels: ImageData | None = None) -> ImageData:
     """
     Convert an image to grayscale using the luminosity method.
@@ -136,6 +159,7 @@ def grayscale(pixels: ImageData | None = None) -> ImageData:
     return new_pixels
 
 
+@register_filter
 def reflect(pixels: ImageData | None = None) -> ImageData:
     """
     Mirror an image horizontally by reversing each pixel row.
@@ -184,6 +208,7 @@ def reflect(pixels: ImageData | None = None) -> ImageData:
     return new_pixels
 
 
+@register_filter
 def blur(pixels: ImageData | None = None) -> ImageData:
     """
     Apply a 3x3 box blur to an image.
@@ -260,6 +285,7 @@ def blur(pixels: ImageData | None = None) -> ImageData:
     return new_pixels
 
 
+@register_filter
 def edges(pixels: ImageData | None = None) -> ImageData:
     """
     Detect edges in an image using the Sobel operator.
