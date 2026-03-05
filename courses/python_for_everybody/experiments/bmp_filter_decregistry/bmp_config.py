@@ -42,6 +42,8 @@ __all__ = [
     "FilterName",
     "ImageData",
     "ImageSize",
+    "DictFuncs",
+    "FilterFunc",
     "BmpData",
     "PixelRow",
     "Pixel",
@@ -67,10 +69,11 @@ __all__ = [
 #       - Input parameters in a list
 #       - Function that takes a list, returns a list
 #       - def process(pixels: list) -> list
+type HeaderBytes = bytes
 type PixelRow = list[Pixel]
 type ImageData = list[PixelRow]
-type HeaderBytes = bytes
 type FilterFunc = Callable[[ImageData], ImageData]
+type DictFuncs = dict[str, FilterFunc]
 type FilterName = Literal["grayscale", "reflect", "blur", "edges"]
 
 
