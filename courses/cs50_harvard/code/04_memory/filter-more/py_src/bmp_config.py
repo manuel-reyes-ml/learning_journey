@@ -26,7 +26,6 @@ import logging
 from typing import (
     Final,
     Callable,
-    TypedDict,
     NamedTuple,
     Literal,
 )
@@ -38,9 +37,10 @@ from typing import (
 
 __all__ = [
     "ColoredFormatter",
-    "DictDispatch",
     "FilterName",
     "ImageData",
+    "FilterFunc",
+    "DictFuncs",
     "ImageSize",
     "BmpData",
     "PixelRow",
@@ -71,6 +71,7 @@ type PixelRow = list[Pixel]
 type ImageData = list[PixelRow]
 type HeaderBytes = bytes
 type FilterFunc = Callable[[ImageData], ImageData]
+type DictFuncs = dict[str, FilterFunc]
 type FilterName = Literal["grayscale", "reflect", "blur", "edges"]
 
 
@@ -207,29 +208,6 @@ class ExitCode(IntEnum):
 # Dictionary Dispatch for filters function iteration
 # NOTE try refactoring with 'register' class,
 #      and StrEnum from enum lib.
-class DictDispatch(TypedDict):
-    """
-    Type definition for the filter function dispatch table.
-
-    Maps filter name strings to their corresponding filter
-    functions, enabling dictionary-based dispatch instead of
-    if/elif chains.
-
-    Attributes
-    ----------
-    grayscale : FilterFunc
-        Converts image to grayscale using luminosity formula.
-    reflect : FilterFunc
-        Mirrors image horizontally.
-    blur : FilterFunc
-        Applies 3x3 box blur averaging.
-    edges : FilterFunc
-        Detects edges using Sobel operator.
-    """
-    grayscale: FilterFunc
-    reflect: FilterFunc
-    blur: FilterFunc
-    edges: FilterFunc
 
 # Image size variables configuration
 class ImageSize(NamedTuple):
