@@ -75,6 +75,8 @@ FUNCS: DictDispatch = {     # Creating Dictionary Dispatch for faster func itera
     "blur": blur,
 } 
 
+funcs_available: str = ", ".join(FUNCS.keys())
+
 # Set up Logging
 setup_logging()  # Uses logging.INFO by default!
 # When running this module Python assigns string '__main__' to '__name__',
@@ -91,6 +93,7 @@ def _validate_filter(
     filter_name: str | None = None,
     funcs: DictDispatch = FUNCS,
     all_filters: str = ALL_FILTERS,
+    funcs_available: str = funcs_available,
 ) -> str:
     """
     Validate and normalize a single filter name string.
@@ -130,7 +133,7 @@ def _validate_filter(
     if clean_filter != all_filters:
         if not clean_filter in funcs:
             raise argparse.ArgumentTypeError(
-                f"'{clean_filter}' is not part of current filters: {list(funcs.keys())}"
+                f"'{clean_filter}' is not part of current filters: {funcs_available}"
             )
         
     return clean_filter
@@ -434,7 +437,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         >>> exit_code = main(["blur", "-i", "image.bmp"])
     """
     parser = argparse.ArgumentParser(
-        description=f"Apply one, some or all filters to an image. Options: {list(FUNCS.keys())}"
+        description=f"Apply one, some or all filters to an image. Options: {funcs_available}"
     )
     parser.add_argument(
         "-i", "--input-file",
@@ -451,7 +454,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         type=_validate_filter,
         nargs="+",  # One or more arguments are required
         help=(
-            f"Enter filters to apply to the image. Use 'all' for all filters: {list(FUNCS.keys())}"
+            f"Enter filters to apply to the image. Use 'all' for all filters: {funcs_available}"
         )
     )
     parser.add_argument(
