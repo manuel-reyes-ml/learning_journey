@@ -32,20 +32,15 @@ try:
     from .bmp_io import read_bmp, write_bmp
     from .bmp_logger import setup_logging
     from .bmp_config import (
-        DictDispatch,
         FilterName,
+        DictFuncs,
         ImageData,
         ExitCode,
         ALL_FILTERS,
         CUR_DIR,
         bmp_dirs,
     )
-    from .bmp_filters import (
-        grayscale,
-        reflect,
-        edges,
-        blur,
-    )
+    from .bmp_filters import FILTERS
     
 except ImportError as e:
     sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
@@ -66,16 +61,7 @@ __all__ = [
 # Path.name gives the full name of a file or directory
 MODULE_NAME: Final[str] = f"{CUR_DIR.name}.bmp_main"
 
-# Keys = function names (strings)
-# Values = functions (NOT called — no parentheses!)
-FUNCS: DictDispatch = {     # Creating Dictionary Dispatch for faster func iteration
-    "grayscale": grayscale,
-    "reflect": reflect,
-    "edges": edges,
-    "blur": blur,
-} 
-
-funcs_available: str = ", ".join(FUNCS.keys())
+funcs_available: str = ", ".join(FILTERS.keys())
 
 # Set up Logging
 setup_logging()  # Uses logging.INFO by default!
@@ -91,7 +77,7 @@ logger = logging.getLogger(MODULE_NAME)
 
 def _validate_filter(
     filter_name: str | None = None,
-    funcs: DictDispatch = FUNCS,
+    funcs: DictFuncs = FILTERS,
     all_filters: str = ALL_FILTERS,
     funcs_available: str = funcs_available,
 ) -> str:
@@ -333,7 +319,7 @@ def validate_outfile(
 def process_filter(
     pixels: ImageData | None = None,
     filters: list[FilterName] | None = None,
-    funcs: DictDispatch = FUNCS,
+    funcs: DictFuncs = FILTERS,
 ) -> Iterator[tuple[ImageData, str]]:
     """
     Apply one or more filters to an image via dictionary dispatch.
@@ -386,7 +372,7 @@ def process_filter(
     
     try:
         for clean_filter in _validate_filters(filters):
-            logger.warning(f"Applying [{clean_filter}] filter....")
+            logger.warning(f"Applying {clean_filter} filter....")
             # funcs[clean_filter](pixels):  Dictionary dispatch!
             # Applies filter function following clean_filter("blur", "reflect", etc.)
             yield funcs[clean_filter](pixels), clean_filter
@@ -490,7 +476,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         # cast() tells the type checker to treat a value as a specific type.
         # At runtime, filters is still the exact same list[str] object,
         # cast() just silenced the type checker. It´s purely a hint.
-        filters = cast(list[FilterName], list(FUNCS.keys())) 
+        filters = cast(list[FilterName], list(FILTERS.keys())) 
     else:
         filters: list[FilterName] = args.filter
         
