@@ -86,11 +86,8 @@ def _width_height_calculator(pixels: ImageData) -> ImageSize:
 
     return ImageSize(height, width)
 
-
-def register_filter(
-    func: FilterFunc,
-    filters: DictFuncs = FILTERS,
-) -> FilterFunc:
+# A decorator is just a function that takes a function and returns a function
+def register_filter(func: FilterFunc, filters: DictFuncs = FILTERS) -> FilterFunc:
     """
     """
     filters[func.__name__] = func
