@@ -33,19 +33,14 @@ try:
     from .bmp_logger import setup_logging
     from .bmp_config import (
         FilterName,
-        FilterFunc,
         DictFuncs,
         ImageData,
         ExitCode,
-        BrightDarkFilter,
         ALL_FILTERS,
         CUR_DIR,
         bmp_dirs,
     )
-    from .bmp_filters import (
-        FILTERS,
-        create_brightness_filter,
-    )
+    from .bmp_filters import FILTERS
     
 except ImportError as e:
     sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
@@ -72,18 +67,7 @@ __all__ = [
 
 # Path.name gives the full name of a file or directory
 MODULE_NAME: Final[str] = f"{CUR_DIR.name}.bmp_main"
-
-dark = BrightDarkFilter.DARK
-bright = BrightDarkFilter.BRIGHT
 funcs_available: str = ", ".join(FILTERS.keys())
-
-
-# =====================================================
-# Create Specific Filters
-# =====================================================
-
-brigthen: FilterFunc = create_brightness_filter(bright)
-darken: FilterFunc = create_brightness_filter(dark)
 
 
 # =====================================================
