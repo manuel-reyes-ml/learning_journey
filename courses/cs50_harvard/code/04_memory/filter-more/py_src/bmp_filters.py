@@ -40,19 +40,31 @@ except ImportError as e:
 # MODULE CONFIGURATION
 # =============================================================================
 
+# =====================================================
 # Exports
+# =====================================================
+
 __all__ = [
     "grayscale",
     "reflect",
     "blur",
     "edges",
+    "create_brightness_filter",
 ]
 
+
+# =====================================================
+# Module Level Constants
+# ===================================================== 
 
 # Registry dictionary (global)
 FILTERS: DictFuncs = {}
 
-# Set up Logging
+
+# =====================================================
+# Logging Set Up
+# =====================================================
+
 # '__name__' will automatically be name 'py_src.bmp_filters'
 logger = logging.getLogger(__name__)
 
@@ -403,3 +415,40 @@ def edges(pixels: ImageData | None = None) -> ImageData:
     
     logger.debug("Filter applied......")
     return new_pixels
+
+
+# =============================================================================
+# FUNCTION FACTORIES
+# =============================================================================
+
+# Functions that creates and return other functions
+def create_brightness_filter(adjustment: int) -> FilterFunc:
+    """
+    """
+    def adjust_brightness(pixels: ImageData | None = None) -> ImageData:
+        """
+        """
+        if pixels is None:
+            raise ValueError("Pixels argument is required")
+        
+        if len(pixels) == 0:
+            raise ValueError("Pixels cannot be empty")
+        
+        new_pixels: ImageData = []
+        
+        for row in pixels:
+            new_row: PixelRow = []
+            for pixel in row:
+                new_pixel = Pixel(
+                    max(0, min(255, pixel.b + adjustment)),
+                    max(0, min(255, pixel.g + adjustment)),
+                    max(0, min(255, pixel.r + adjustment)),
+                )
+                new_row.append(new_pixel)
+                
+            new_pixels.append(new_row)
+        
+        logger.debug("Filter applied......")
+        return new_pixels        
+                
+    return adjust_brightness
