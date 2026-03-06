@@ -73,7 +73,9 @@ type ImageData = list[PixelRow]
 type HeaderBytes = bytes
 type FilterFunc = Callable[[ImageData], ImageData]
 type DictFuncs = dict[str, FilterFunc]
-type FilterName = Literal["grayscale", "reflect", "blur", "edges"]
+
+# Keeps type checker aware of valid filter name (production-grade type safety)
+type FilterName = Literal["grayscale", "reflect", "blur", "edges", "brighten", "darken"]
 
 
 # =====================================================
