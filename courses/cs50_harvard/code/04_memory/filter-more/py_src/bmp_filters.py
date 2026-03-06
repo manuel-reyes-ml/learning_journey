@@ -30,6 +30,7 @@ try:
         ImageSize,
         DictFuncs,
         FilterFunc,
+        BrightDarkFilter,
     )
 except ImportError as e:
     # sys.exit() raises SystemExit internally, don´t need 'raise...'
@@ -49,6 +50,8 @@ __all__ = [
     "reflect",
     "blur",
     "edges",
+    "darken",
+    "brighten",
     "create_brightness_filter",
 ]
 
@@ -422,7 +425,7 @@ def edges(pixels: ImageData | None = None) -> ImageData:
 # =============================================================================
 
 # Functions that creates and return other functions
-def create_brightness_filter(adjustment: int) -> FilterFunc:
+def create_brightness_filter(adjustment: int, name: str) -> FilterFunc:
     """
     """
     def adjust_brightness(pixels: ImageData | None = None) -> ImageData:
@@ -450,5 +453,20 @@ def create_brightness_filter(adjustment: int) -> FilterFunc:
         
         logger.debug("Filter applied......")
         return new_pixels        
-                
+    
+    adjust_brightness.__name__ = name 
+    adjust_brightness.__qualname__ = f"create_brightness_filter.<locals>.{name}"           
     return adjust_brightness
+
+
+# =====================================================
+# Create Specific Filters
+# =====================================================
+
+# Having the creation and registration here so one module owns filter registration
+brighten: FilterFunc = register_filter(
+    create_brightness_filter(BrightDarkFilter.BRIGHT, name="brighten")
+)
+darken: FilterFunc = register_filter(
+    create_brightness_filter(BrightDarkFilter.DARK, name="darken")
+)
