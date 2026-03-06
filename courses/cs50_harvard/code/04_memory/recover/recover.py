@@ -895,7 +895,7 @@ def main(argv: list[str] | None = None)-> ExitCode:
     """
     parser = argparse.ArgumentParser(
         description="Recover all images from memory card file, with"
-                    f" {filename.OUTFILE_EXT} extension signature"
+                    f" {filename.OUTFILE_EXT} extension signature",
     )
     parser.add_argument(
         "-i", "--input-file",  # Short and long flag arguments (optional)
@@ -912,12 +912,12 @@ def main(argv: list[str] | None = None)-> ExitCode:
         "-d", "--directory",
         type=str,
         help="Enter directory path to search for input file." 
-             f"Default: '{file_directories.INPUT_DIR}'"
+             f"Default: '{file_directories.INPUT_DIR}'",
     )
     parser.add_argument(
         "--auto-rename",
         action="store_true",
-        help="Automatically rename input file to standard extension"
+        help="Automatically rename input file to standard extension",
     )
     parser.add_argument(
         "-v", "--verbose",
@@ -927,7 +927,7 @@ def main(argv: list[str] | None = None)-> ExitCode:
     parser.add_argument(
         "--no-log-file",
         action="store_true",
-        help="Disable file logging (console only)"
+        help="Disable file logging (console only)",
     )
     
     args = parser.parse_args(argv)
