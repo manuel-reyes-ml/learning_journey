@@ -33,14 +33,19 @@ try:
     from .bmp_logger import setup_logging
     from .bmp_config import (
         FilterName,
+        FilterFunc,
         DictFuncs,
         ImageData,
         ExitCode,
+        BrightDarkFilter,
         ALL_FILTERS,
         CUR_DIR,
         bmp_dirs,
     )
-    from .bmp_filters import FILTERS
+    from .bmp_filters import (
+        FILTERS,
+        create_brightness_filter,
+    )
     
 except ImportError as e:
     sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
@@ -50,21 +55,43 @@ except ImportError as e:
 # MODULE CONFIGURATION
 # =============================================================================
 
+# =====================================================
 # Exports
+# =====================================================
+
 __all__ = [
     "validate_infile",
     "validate_outfile",
     "process_filter",
 ]
 
-# Program Constants
+
+# =====================================================
+# Module Level Constants & Variables
+# =====================================================
+
 # Path.name gives the full name of a file or directory
 MODULE_NAME: Final[str] = f"{CUR_DIR.name}.bmp_main"
 
+dark = BrightDarkFilter.DARK
+bright = BrightDarkFilter.BRIGHT
 funcs_available: str = ", ".join(FILTERS.keys())
 
-# Set up Logging
+
+# =====================================================
+# Create Specific Filters
+# =====================================================
+
+brigthen: FilterFunc = create_brightness_filter(bright)
+darken: FilterFunc = create_brightness_filter(dark)
+
+
+# =====================================================
+# Logging Set Up
+# =====================================================
+
 setup_logging()  # Uses logging.INFO by default!
+
 # When running this module Python assigns string '__main__' to '__name__',
 # so we need to assign the module name directly so this logger is assigned
 # to the 'py_src' logger hierarchy we created in bmp_logger.py.
@@ -118,9 +145,8 @@ def _validate_filter(
     
     if clean_filter != all_filters:
         if not clean_filter in funcs:
-            raise argparse.ArgumentTypeError(
-                f"'{clean_filter}' is not part of current filters: {funcs_available}"
-            )
+            raise argparse.ArgumentTypeError("'{clean_filter}' is not part "
+                                             f"of current filters: {funcs_available}")
         
     return clean_filter
 
@@ -228,9 +254,8 @@ def validate_infile(
         
         # Check 2: It is already a BMP file (but maybe uppercase like .BmP or no extension)?
         elif in_file.suffix.lower() == file_ext or in_file.suffix == "":
-            consent = input(
-                f"Would you like me to correct extension to {in_file.name} (yes/no): "
-            ).strip().lower()
+            consent = input("Would you like me to correct extension to "
+                                 f" {in_file.name} (yes/no): ").strip().lower()
             
             if consent in ["yes", "y"]:
                 new_in_file = in_file.with_suffix(file_ext)
@@ -423,7 +448,8 @@ def main(argv: list[str] | None = None) -> ExitCode:
         >>> exit_code = main(["blur", "-i", "image.bmp"])
     """
     parser = argparse.ArgumentParser(
-        description=f"Apply one, some or all filters to an image. Options: {funcs_available}"
+        description="Apply one, some or all filters to an image."
+                    f"Options: {funcs_available}"
     )
     parser.add_argument(
         "-i", "--input-file",
@@ -439,21 +465,19 @@ def main(argv: list[str] | None = None) -> ExitCode:
         "filter",   # Positional argument make entry required
         type=_validate_filter,
         nargs="+",  # One or more arguments are required
-        help=(
-            f"Enter filters to apply to the image. Use 'all' for all filters: {funcs_available}"
-        )
+        help="Enter filters to apply to the image. "
+             f"Use 'all' for all filters: {funcs_available}",
     )
     parser.add_argument(
         "-d", "--directory",
         type=str,
-        help=(
-            f"Enter directory path to search for {bmp_dirs.FILE_EXT} file. Default is images/ directory"
-        )
+        help=f"Enter directory path to search for {bmp_dirs.FILE_EXT} file. "
+              "Default is images/ directory",
     )
     parser.add_argument(
         "-v", "--verbose",
         action="store_true",
-        help="Enable verbose (debu) output"
+        help="Enable verbose (debu) output",
     )
     parser.add_argument(
         "--no-log-file",
