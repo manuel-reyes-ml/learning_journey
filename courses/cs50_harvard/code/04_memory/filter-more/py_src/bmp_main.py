@@ -86,6 +86,17 @@ logger = logging.getLogger(MODULE_NAME)
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
 
+def _get_filter_help(funcs_data: DictFuncs = FILTERS) -> str:
+    """
+    """
+    lines: list[str] = ["\nAvailable Filters:\n"]
+    
+    for _, info in funcs_data.items():
+        lines.append(f"     {info.name:<12} {info.description}")
+    
+    return "\n".join(lines) + "\n"
+        
+
 def _validate_filter(
     filter_name: str | None = None,
     funcs: DictFuncs = FILTERS,
@@ -328,7 +339,7 @@ def validate_outfile(
 def process_filter(
     pixels: ImageData | None = None,
     filters: list[FilterName] | None = None,
-    funcs: DictFuncs = FILTERS,
+    funcs_data: DictFuncs = FILTERS,
 ) -> Iterator[tuple[ImageData, str]]:
     """
     Apply one or more filters to an image via dictionary dispatch.
@@ -382,9 +393,10 @@ def process_filter(
     try:
         for clean_filter in _validate_filters(filters):
             logger.warning(f"Applying {clean_filter} filter....")
-            # funcs[clean_filter](pixels):  Dictionary dispatch!
+            # funcs_data[clean_filter].func(pixels):  Dictionary dispatch!, 
+            # need to unpack the FilterInfo class.
             # Applies filter function following clean_filter("blur", "reflect", etc.)
-            yield funcs[clean_filter](pixels), clean_filter
+            yield funcs_data[clean_filter].func(pixels), clean_filter
         
     except (
         argparse.ArgumentTypeError,
@@ -448,7 +460,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
     parser.add_argument(
         "filter",   # Positional argument make entry required
         type=_validate_filter,
-        nargs="+",  # One or more arguments are required
+        nargs="*",  # Zero or more arguments
         help="Enter filters to apply to the image. "
              f"Use 'all' for all filters: {funcs_available}",
     )
@@ -468,8 +480,20 @@ def main(argv: list[str] | None = None) -> ExitCode:
         action="store_true",
         help="Disable file logging (console only)",
     )
+    parser.add_argument(
+        "--filter-help",
+        action="store_true",
+        help="Show all available filters with descriptions",
+    )
     
     args = parser.parse_args(argv)
+    
+    if args.filter_help:
+        print(_get_filter_help())
+        return ExitCode.SUCCESS
+    
+    if not args.filter:
+        parser.error("At least one filter is required (or use --filter-help)")
     
     setup_logging(
         console_verbose=args.verbose,
