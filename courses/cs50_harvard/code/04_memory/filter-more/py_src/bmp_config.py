@@ -41,6 +41,8 @@ __all__ = [
     "ImageData",
     "FilterFunc",
     "DictFuncs",
+    "FilterInfo",
+    "RegisterOut",
     "ImageSize",
     "BmpData",
     "PixelRow",
@@ -72,7 +74,8 @@ type PixelRow = list[Pixel]
 type ImageData = list[PixelRow]
 type HeaderBytes = bytes
 type FilterFunc = Callable[[ImageData], ImageData]
-type DictFuncs = dict[str, FilterFunc]
+type DictFuncs = dict[str, FilterInfo]
+type RegisterOut = Callable[[FilterFunc], FilterFunc]
 
 # Keeps type checker aware of valid filter name (production-grade type safety)
 type FilterName = Literal["grayscale", "reflect", "blur", "edges", "brighten", "darken"]
@@ -184,6 +187,14 @@ bmp_constants = BmpConstants()
 # =============================================================================
 # OTHER CLASS CONFIGURATION
 # =============================================================================
+
+@dataclass
+class FilterInfo:
+    """
+    """
+    func: FilterFunc
+    name: str
+    description: str
 
 # Exit codes (Unix standard)
 @unique  # Ensures no duplicate values
