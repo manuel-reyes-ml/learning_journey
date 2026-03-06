@@ -29,6 +29,8 @@ try:
         ImageData,
         ImageSize,
         DictFuncs,
+        FilterInfo,
+        RegisterOut,
         FilterFunc,
         BrightDarkFilter,
     )
@@ -101,20 +103,29 @@ def _width_height_calculator(pixels: ImageData) -> ImageSize:
 
     return ImageSize(height, width)
 
-# A decorator is just a function that takes a function and returns a function
-def register_filter(func: FilterFunc, filters: DictFuncs = FILTERS ) -> FilterFunc:
+# A decorator factory is just a function that takes custom parameters 
+# and generates a decorator.
+def register_filter(name: str, description: str = "") -> RegisterOut:
     """
     """
-    filters[func.__name__] = func
-    return func  # Return unchanged function
+    def decorator(func: FilterFunc, filters: DictFuncs = FILTERS) -> FilterFunc:
+        filters[name] = FilterInfo(
+            func=func,
+            name=name,
+            # __doc__ gives the docstring of a function
+            description=description or func.__doc__ or ""
+        )
+        return func  # Return unchanged function
+    return decorator
 
 
 # =============================================================================
 # CORE FUNCTIONS
 # =============================================================================
 
-# Just add decorator - function auto-registers!
-@register_filter
+# Just add decorator factory to grab function metadata and
+# generates function to auto-registers!
+@register_filter("grayscale", "Convert to grayscale using luminosity")
 def grayscale(pixels: ImageData | None = None) -> ImageData:
     """
     Convert an image to grayscale using the luminosity method.
@@ -171,7 +182,7 @@ def grayscale(pixels: ImageData | None = None) -> ImageData:
     return new_pixels
 
 
-@register_filter
+@register_filter("reflect", "Invert pixels horizontally")
 def reflect(pixels: ImageData | None = None) -> ImageData:
     """
     Mirror an image horizontally by reversing each pixel row.
@@ -220,7 +231,7 @@ def reflect(pixels: ImageData | None = None) -> ImageData:
     return new_pixels
 
 
-@register_filter
+@register_filter("blur", "Apply blur filter to image")
 def blur(pixels: ImageData | None = None) -> ImageData:
     """
     Apply a 3x3 box blur to an image.
@@ -297,7 +308,7 @@ def blur(pixels: ImageData | None = None) -> ImageData:
     return new_pixels
 
 
-@register_filter
+@register_filter("edges", "Identify object edges in image")
 def edges(pixels: ImageData | None = None) -> ImageData:
     """
     Detect edges in an image using the Sobel operator.
@@ -429,8 +440,6 @@ def create_brightness_filter(adjustment: int, name: str) -> FilterFunc:
     """
     """
     def adjust_brightness(pixels: ImageData | None = None) -> ImageData:
-        """
-        """
         if pixels is None:
             raise ValueError("Pixels argument is required")
         
@@ -454,8 +463,34 @@ def create_brightness_filter(adjustment: int, name: str) -> FilterFunc:
         logger.debug("Filter applied......")
         return new_pixels        
     
-    adjust_brightness.__name__ = name 
-    adjust_brightness.__qualname__ = f"create_brightness_filter.<locals>.{name}"           
+    # Python sets __name__ to "adjust_brightness" normally
+    # Override function's name to 'brighten' or 'darken' to identify
+    # each variant.
+    adjust_brightness.__name__ = name
+    
+    # __qualname__(qualified name) gives the full dotted path showing where
+    # a function lives in the nesting hierarchy.
+    # <locals> means the function was defined inside another function.
+    # __qualname__ showing create_brightness_filter.<locals>.brighten
+    # or .darken tells exactly which one failed.
+    adjust_brightness.__qualname__ = f"create_brightness_filter.<locals>.{name}"
+    
+    # __doc__ gives the docstring of a function
+    # When creating functions dinamycally a static dosctring would
+    # say the same thing for every variant.
+    # That´s why is better to set docstring dynamically also
+    adjust_brightness.__doc__ = (
+        f"Adjust pixel brightness by {adjustment} units.\n\n"
+        f"Parameters\n"
+        f"----------\n"
+        f"pixels : ImageData or None\n"
+        f"    2D grid of Pixel objects. Cannot be None or empty.\n\n"
+        f"Returns\n"
+        f"-------\n"
+        f"ImageData\n"
+        f"    New pixel grid with each channel clamped to 0-255.\n"
+    )
+               
     return adjust_brightness
 
 
@@ -464,9 +499,39 @@ def create_brightness_filter(adjustment: int, name: str) -> FilterFunc:
 # =====================================================
 
 # Having the creation and registration here so one module owns filter registration
-brighten: FilterFunc = register_filter(
-    create_brightness_filter(BrightDarkFilter.BRIGHT, name="brighten")
+brighten: FilterFunc = register_filter("brighten", "Increase pixel brightness")(
+    create_brightness_filter(BrightDarkFilter.BRIGHT, "brighten")
 )
-darken: FilterFunc = register_filter(
-    create_brightness_filter(BrightDarkFilter.DARK, name="darken")
+darken: FilterFunc = register_filter("darken", "Decrease pixel brightness")(
+    create_brightness_filter(BrightDarkFilter.DARK, "darken")
 )
+
+# READ THIS INSIDE-OUT:
+
+# Step 1 (outer call):
+#    register_filter("brighten", "Increase pixel brightness")
+#    → returns the 'decorator' function
+
+# Step 2 (chained call with parentheses):
+#    decorator(create_brightness_filter(BrightDarkFilter.BRIGHT, name="brighten"))
+#    → 'decorator' receives the factory-created function
+#    → stores it in FILTERS["brighten"] as a FilterInfo
+#    → returns the function unchanged
+
+# Step 3 (assignment):
+#    brighten: FilterFunc = <the returned function>
+
+# WHY THIS WORKS — It's the Same Pattern as the Decorator
+# The @ syntax is just syntactic sugar. These two are identical:
+
+# With @ syntax (what grayscale does)
+#    @register_filter("grayscale", "Convert to grayscale")
+#    def grayscale(pixels): ...
+
+# Without @ syntax (equivalent manual call)
+#    def grayscale(pixels): ...
+#    grayscale = register_filter("grayscale", "Convert to grayscale")(grayscale)
+
+# You can't use @ on factory-created functions because there's no def statement to 
+# decorate — the function already exists as a variable. So you use the manual call 
+# form instead. That's all that's happening at the bottom of your file.
