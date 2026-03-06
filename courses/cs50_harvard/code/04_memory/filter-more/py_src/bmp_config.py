@@ -46,6 +46,7 @@ __all__ = [
     "PixelRow",
     "Pixel",
     "ExitCode",
+    "BrightDarkFilter",
     "ALL_FILTERS",
     "CUR_DIR",
     "LOGS_DIR",
@@ -205,9 +206,11 @@ class ExitCode(IntEnum):
     KEYBOARD_INTERRUPT = 130
    # BADUSE = 1  Error!
 
-# Dictionary Dispatch for filters function iteration
-# NOTE try refactoring with 'register' class,
-#      and StrEnum from enum lib.
+class BrightDarkFilter(IntEnum):
+    """
+    """
+    BRIGHT = 50
+    DARK = -50
 
 # Image size variables configuration
 class ImageSize(NamedTuple):
