@@ -91,6 +91,22 @@ logger = logging.getLogger(MODULE_NAME)
 # the caller decides where to send it (logger, print, file).
 def _get_filter_help(funcs_data: DictFuncs = FILTERS) -> str:
     """
+    Format a columnar help string of all registered filters.
+
+    Iterates over the ``FILTERS`` dispatch table and builds
+    a left-aligned display with filter names and descriptions.
+    Returns a string rather than printing directly to support
+    testability and separation of concerns.
+
+    Parameters
+    ----------
+    funcs_data : DictFuncs, optional
+        Filter registry to read from (default ``FILTERS``).
+
+    Returns
+    -------
+    str
+        Multi-line formatted string with one filter per line.
     """
     lines: list[str] = ["\nAvailable Filters:\n"]
     
@@ -119,7 +135,7 @@ def _validate_filter(
     ----------
     filter_name : str or None, optional
         Raw filter name from user input. Cannot be None or empty.
-    funcs : DictDispatch, optional
+    funcs : DictFuncs, optional
         Filter dispatch table to validate against (default ``FUNCS``).
     all_filters : str, optional
         Special keyword that selects all filters (default ``"all"``).
@@ -190,6 +206,28 @@ def _validate_filters(filters: list[FilterName] | None = None) -> Iterator[str]:
     
 def _rename_infile(old_fname: Path | None = None, file_ext: str = bmp_dirs.FILE_EXT) -> Path:
     """
+    Rename a file on disk to use the standard BMP extension.
+
+    Replaces the file's current suffix with ``file_ext`` using
+    ``Path.rename()``. This is a filesystem operation — the file
+    is physically renamed, not copied.
+
+    Parameters
+    ----------
+    old_fname : Path or None, optional
+        Path to the file to rename. Cannot be None.
+    file_ext : str, optional
+        Target extension to apply (default ``".bmp"``).
+
+    Returns
+    -------
+    Path
+        New path with the corrected extension.
+
+    Raises
+    ------
+    ValueError
+        If ``old_fname`` is None.
     """
     if not old_fname:
         raise ValueError("File name cannot be empty")
@@ -221,8 +259,8 @@ def validate_infile(
 
     Resolves the file path from the given filename and optional
     directory, then verifies the file exists and has the correct
-    BMP extension. Offers to correct mismatched extensions
-    interactively.
+    BMP extension. When ``auto_rename`` is enabled, automatically
+    corrects mismatched extensions via ``_rename_infile()``.
 
     Parameters
     ----------
@@ -232,6 +270,11 @@ def validate_infile(
         Directory to search for the file. If None, searches the
         current working directory first, then the default images
         directory.
+    auto_rename : bool, optional
+        If ``True``, silently rename files with wrong-case or
+        missing extensions to standard ``.bmp``. If ``False``,
+        return the file unchanged with a warning
+        (default ``False``).
     file_ext : str, optional
         Expected file extension (default ``".bmp"``).
     image_dir : Path, optional
@@ -370,7 +413,7 @@ def process_filter(
     filters : list of FilterName or None, optional
         Filter names to apply sequentially. Cannot be None or
         empty.
-    funcs : DictDispatch, optional
+    funcs_data : DictDispatch, optional
         Filter dispatch table mapping names to functions
         (default ``FUNCS``).
 
@@ -487,13 +530,13 @@ def main(argv: list[str] | None = None) -> ExitCode:
     parser.add_argument(
         "--auto-rename",
         action="store_true",
-        help=f"Automaticall rename input file to "
-             f"standard extention {bmp_dirs.FILE_EXT}"
+        help=f"Automatically rename input file to "
+             f"standard extension {bmp_dirs.FILE_EXT}"
     )
     parser.add_argument(
         "-v", "--verbose",
         action="store_true",
-        help="Enable verbose (debu) output",
+        help="Enable verbose (debug) output",
     )
     parser.add_argument(
         "--no-log-file",
