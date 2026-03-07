@@ -140,7 +140,7 @@ def _validate_filter(
     
     if clean_filter != all_filters:
         if not clean_filter in funcs:
-            raise argparse.ArgumentTypeError("'{clean_filter}' is not part "
+            raise argparse.ArgumentTypeError(f"'{clean_filter}' is not part "
                                              f"of current filters: {funcs_available}")
         
     return clean_filter
