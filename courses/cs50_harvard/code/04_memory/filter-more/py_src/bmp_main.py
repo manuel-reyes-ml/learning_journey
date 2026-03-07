@@ -86,11 +86,16 @@ logger = logging.getLogger(MODULE_NAME)
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
 
+# Define it to return string for testability
+# Separation of concerns: the function formats the help text,
+# the caller decides where to send it (logger, print, file).
 def _get_filter_help(funcs_data: DictFuncs = FILTERS) -> str:
     """
     """
     lines: list[str] = ["\nAvailable Filters:\n"]
     
+    # The '<12' pads shorter names with spaces so every description starts at the same column.
+    # This is the same formatting pattern 'argparse' itself uses internall for '--help' output.
     for _, info in funcs_data.items():
         lines.append(f"     {info.name:<12} {info.description}")
     
@@ -488,11 +493,18 @@ def main(argv: list[str] | None = None) -> ExitCode:
     
     args = parser.parse_args(argv)
     
+    # The user wants information not processing an image
     if args.filter_help:
+        # Help test is user-facing output, not a log event. Print() goes to sdtout
+        # stdout: Data/output
+        # stderr: Diagnostics/Errors
         print(_get_filter_help())
-        return ExitCode.SUCCESS
+        return ExitCode.SUCCESS  # Showing help is a successful operation
     
     if not args.filter:
+        # argparser's own method for reporting usage errors - It 
+        # printsthe usage line,error mssg and exists with code 2
+        # (the unix convention for bad command-line syntax).
         parser.error("At least one filter is required (or use --filter-help)")
     
     setup_logging(
