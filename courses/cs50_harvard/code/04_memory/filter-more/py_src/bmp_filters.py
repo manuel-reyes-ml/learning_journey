@@ -1,16 +1,21 @@
 """
 BMP image filter functions.
 
-Implements four pixel-level image filters for 24-bit BMP images:
-grayscale conversion, horizontal reflection, box blur, and Sobel
-edge detection. Each filter accepts an ``ImageData`` grid and
-returns a new grid without mutating the original.
+Implements six pixel-level image filters for 24-bit BMP images:
+grayscale conversion, horizontal reflection, box blur, Sobel
+edge detection, brightness increase, and brightness decrease.
+Each filter accepts an ``ImageData`` grid and returns a new
+grid without mutating the original.
 
 Notes
 -----
 All filters operate on BGR-ordered ``Pixel`` NamedTuples and
 produce new ``Pixel`` instances rather than mutating in place,
 consistent with the immutability of NamedTuple objects.
+
+The four core filters use ``@register_filter`` decorator syntax.
+Factory-created filters (brighten, darken) use the equivalent
+manual call form since no ``def`` statement exists to decorate.
 """
 
 # =============================================================================
@@ -107,6 +112,39 @@ def _width_height_calculator(pixels: ImageData) -> ImageSize:
 # and generates a decorator.
 def register_filter(name: str, description: str = "") -> RegisterOut:
     """
+    Decorator factory that registers a filter in the dispatch table.
+
+    Returns a decorator that wraps a filter function by storing
+    it as a ``FilterInfo`` entry in the ``FILTERS`` dictionary.
+    The function itself is returned unchanged — registration is
+    a side effect, not a transformation.
+
+    Parameters
+    ----------
+    name : str
+        Key under which the filter is stored in ``FILTERS``.
+    description : str, optional
+        Short human-readable label for CLI help output. If
+        empty, falls back to the function's ``__doc__`` attribute.
+
+    Returns
+    -------
+    RegisterOut
+        A decorator that accepts a ``FilterFunc`` and returns
+        it unchanged after registration.
+
+    Examples
+    --------
+    Decorator syntax (for ``def`` statements)::
+
+        @register_filter("blur", "Apply blur filter")
+        def blur(pixels): ...
+
+    Manual call (for factory-created functions)::
+
+        brighten = register_filter("brighten", "Increase brightness")(
+            create_brightness_filter(50, "brighten")
+        )
     """
     def decorator(func: FilterFunc, filters: DictFuncs = FILTERS) -> FilterFunc:
         filters[name] = FilterInfo(
@@ -438,6 +476,37 @@ def edges(pixels: ImageData | None = None) -> ImageData:
 # Functions that creates and return other functions
 def create_brightness_filter(adjustment: int, name: str) -> FilterFunc:
     """
+    Factory that creates a brightness adjustment filter function.
+
+    Returns a closure that adds ``adjustment`` to every pixel
+    channel, clamping results to the 0–255 range. The returned
+    function's ``__name__``, ``__qualname__``, and ``__doc__``
+    are set dynamically so each variant is identifiable in
+    tracebacks, logs, and ``help()`` output.
+
+    Parameters
+    ----------
+    adjustment : int
+        Value to add to each BGR channel (-255 to 255).
+        Positive values brighten, negative values darken.
+    name : str
+        Identity for the returned function, used to set
+        ``__name__`` and ``__qualname__``.
+
+    Returns
+    -------
+    FilterFunc
+        A filter function with the standard
+        ``(ImageData) -> ImageData`` signature.
+
+    Examples
+    --------
+    >>> brighten = create_brightness_filter(50, "brighten")
+    >>> brighten.__name__
+    'brighten'
+    >>> darken = create_brightness_filter(-50, "darken")
+    >>> darken.__doc__[:30]
+    'Adjust pixel brightness by -50'
     """
     def adjust_brightness(pixels: ImageData | None = None) -> ImageData:
         if pixels is None:

@@ -191,6 +191,21 @@ bmp_constants = BmpConstants()
 @dataclass
 class FilterInfo:
     """
+    Metadata container for a registered image filter.
+
+    Bundles a filter function with its display name and
+    human-readable description. Stored as values in the
+    ``FILTERS`` dispatch dictionary and accessed by the
+    CLI help system and ``process_filter()`` dispatch.
+
+    Attributes
+    ----------
+    func : FilterFunc
+        The callable filter function.
+    name : str
+        Display name used as the dictionary key and in logs.
+    description : str
+        Short label shown in ``--filter-help`` output.
     """
     func: FilterFunc
     name: str
@@ -221,6 +236,18 @@ class ExitCode(IntEnum):
 
 class BrightDarkFilter(IntEnum):
     """
+    Pixel brightness adjustment constants.
+
+    Defines the default offset values passed to
+    ``create_brightness_filter()`` for the standard
+    brighten and darken filter variants.
+
+    Attributes
+    ----------
+    BRIGHT : int
+        Positive offset for brightness increase (50).
+    DARK : int
+        Negative offset for brightness decrease (-50).
     """
     BRIGHT = 50
     DARK = -50
