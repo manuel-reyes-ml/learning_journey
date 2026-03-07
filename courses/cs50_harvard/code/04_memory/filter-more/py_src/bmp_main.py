@@ -186,6 +186,23 @@ def _validate_filters(filters: list[FilterName] | None = None) -> Iterator[str]:
     
     for filter_name in filters:
         yield _validate_filter(filter_name)
+        
+    
+def _rename_infile(old_fname: Path | None = None, file_ext: str = bmp_dirs.FILE_EXT) -> Path:
+    """
+    """
+    if not old_fname:
+        raise ValueError("File name cannot be empty")
+    
+    logger.debug(f"Auto-renaming file {old_fname.name} to " 
+                     f"{old_fname.with_suffix(file_ext).name}")
+
+    new_fname = old_fname.with_suffix(file_ext)
+    old_fname.rename(new_fname)   # Renames file in disk
+    # .name return just file name ('tower.bmp')
+    logger.info(f"File name updated successfully to {new_fname.name}") 
+    
+    return new_fname   
 
 
 # =============================================================================
@@ -195,6 +212,7 @@ def _validate_filters(filters: list[FilterName] | None = None) -> Iterator[str]:
 def validate_infile(
     fname: str | None = None,
     input_dir: str | None = None,
+    auto_rename: bool = False,
     file_ext: str = bmp_dirs.FILE_EXT,
     image_dir: Path = bmp_dirs.INPUT_DIR,
 ) -> Path:
@@ -254,19 +272,10 @@ def validate_infile(
         
         # Check 2: It is already a BMP file (but maybe uppercase like .BmP or no extension)?
         elif in_file.suffix.lower() == file_ext or in_file.suffix == "":
-            consent = input("Would you like me to correct extension to "
-                                 f" {in_file.name} (yes/no): ").strip().lower()
-            
-            if consent in ["yes", "y"]:
-                new_in_file = in_file.with_suffix(file_ext)
-                in_file.rename(new_in_file)
-                logger.info(f"File name updated successfully to {new_in_file.name}")
-                
-                return new_in_file
-            
+            if auto_rename:
+                return _rename_infile(in_file)
             else:
                 logger.warning(f"File name is unchanged {in_file.name}")
-            
                 return in_file
         
         else:
@@ -476,6 +485,12 @@ def main(argv: list[str] | None = None) -> ExitCode:
               "Default is images/ directory",
     )
     parser.add_argument(
+        "--auto-rename",
+        action="store_true",
+        help=f"Automaticall rename input file to "
+             f"standard extention {bmp_dirs.FILE_EXT}"
+    )
+    parser.add_argument(
         "-v", "--verbose",
         action="store_true",
         help="Enable verbose (debu) output",
@@ -526,7 +541,12 @@ def main(argv: list[str] | None = None) -> ExitCode:
         
     try:
         # Step 1: Input file validation and read BMP file
-        in_file = validate_infile(args.input_file, args.directory)
+        in_file = validate_infile(
+            args.input_file,
+            args.directory,
+            auto_rename=args.auto_rename,
+        )
+        
         bmp_data = read_bmp(in_file)
         
         # Step 2: Apply filter using a generator
