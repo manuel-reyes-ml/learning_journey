@@ -207,7 +207,7 @@ class FilterInfo:
     description : str
         Short label shown in ``--filter-help`` output.
     """
-    # Requited field (no default) must come first
+    # Required fields (no default) must come first
     # Optional fields with defaults afterwards
     func: FilterFunc    # Positional or keyword
     name: str           # Positional or keyword
