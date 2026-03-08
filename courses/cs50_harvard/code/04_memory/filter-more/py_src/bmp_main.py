@@ -161,7 +161,9 @@ def _validate_filter(
     
     if clean_filter != all_filters:
         if not clean_filter in funcs:
-            raise argparse.ArgumentTypeError(f"'{clean_filter}' is not part "
+            # '!r': format flag inside f-strings that calls repr() on the value
+            # instead of str() (default).
+            raise argparse.ArgumentTypeError(f"{clean_filter!r} is not part "
                                              f"of current filters: {funcs_available}")
         
     return clean_filter
@@ -304,7 +306,7 @@ def validate_infile(
         logger.debug("Not directory entered by user, searching in default directory....")
         in_file = Path(fname).resolve() if Path(fname).exists() else image_dir / fname
         
-    logger.debug(f"Searching input file in '{in_file}'....")
+    logger.debug(f"Searching input file in {in_file.parent!r}....")
     
     if in_file.is_file():
         
@@ -324,7 +326,7 @@ def validate_infile(
         else:
             raise FileExistsError(f"{fname} is not a valid BMP file")
     else:
-        raise FileNotFoundError(f"{fname} doesn't exists in directory '{in_file}'")
+        raise FileNotFoundError(f"{fname} doesn't exists in directory {in_file.parent!r}")
     
     
 def validate_outfile(
@@ -389,7 +391,7 @@ def validate_outfile(
     # exist_ok=True: no error if directory already exists
     out_dir.mkdir(parents=True, exist_ok=True)
         
-    logger.debug(f"Saving output file in directory '{out_file}'")
+    logger.debug(f"Saving output file in directory {out_file.parent!r}")
     return out_file
 
 

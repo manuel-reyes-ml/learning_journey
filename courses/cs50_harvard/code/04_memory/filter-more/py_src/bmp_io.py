@@ -152,7 +152,7 @@ def read_bmp(
         # Slicing bytes [0:2] returns a bytes objects
         # Indexing bytes [1] returns an int
         if bmp_header[0:2] != bmp_signature:
-            raise ValueError(f"Not a valid BMP file. Must start with '{bmp_signature}'.")
+            raise ValueError(f"Not a valid BMP file. Must start with {bmp_signature!r}.")
         
         logger.debug("File has been located and accessed. Retrieving pixels....")
         
@@ -179,7 +179,7 @@ def read_bmp(
         if bpp != bpp_bmp:
             raise ValueError(f"Only {bpp_bmp}-bit BMPs supported. Got {bpp}-bit.")
         
-        logger.info(f"Processing file '{in_file.name}'....")
+        logger.info(f"Processing file {in_file.name!r}....")
         
         # =====================================================
         # STEP 3: Calculate row padding
@@ -285,4 +285,4 @@ def write_bmp(
             # Write padding
             f.write(pad_hex * padding)
     
-    logger.info(f"File '{out_file.name}' is generated....")
+    logger.info(f"File {out_file.name!r} is generated....")
