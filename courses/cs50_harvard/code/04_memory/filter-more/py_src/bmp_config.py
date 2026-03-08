@@ -19,15 +19,15 @@ referencing ``Pixel`` before ``Pixel`` is defined).
 # =============================================================================
 
 from __future__ import annotations
-from dataclasses import dataclass
+from dataclasses import dataclass, KW_ONLY
 from enum import IntEnum, unique
 from pathlib import Path
 import logging
 from typing import (
     Final,
+    Literal,
     Callable,
     NamedTuple,
-    Literal,
 )
 
 
@@ -207,8 +207,9 @@ class FilterInfo:
     description : str
         Short label shown in ``--filter-help`` output.
     """
-    func: FilterFunc
-    name: str
+    func: FilterFunc    # Positional or keyword
+    name: str           # Positional or keyword
+    _: KW_ONLY          # Everything after is keyword-only
     description: str
 
 # Exit codes (Unix standard)
