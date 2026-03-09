@@ -451,7 +451,8 @@ def process_filter(
     
     try:
         for clean_filter in _validate_filters(filters):
-            logger.warning(f"Applying {clean_filter} filter....")
+            function_name = funcs_data[clean_filter].func.__name__
+            logger.warning(f"Applying {function_name!r} filter....")
             # funcs_data[clean_filter].func(pixels):  Dictionary dispatch!, 
             # need to unpack the FilterInfo class.
             # Applies filter function following clean_filter("blur", "reflect", etc.)
