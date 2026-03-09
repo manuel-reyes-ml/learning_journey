@@ -153,7 +153,7 @@ def register_filter(name: str, description: str = "") -> RegisterOut:
         )
     """
     def decorator(func: FilterFunc, filters: DictFuncs = FILTERS) -> FilterFunc:
-        filters[name] = FilterInfo(
+        filters[func.__name__] = FilterInfo(
             func,
             name,
             # __doc__ gives the docstring of a function
