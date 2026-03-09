@@ -329,6 +329,45 @@ def section_3_doc_attribute() -> None:
     print(f"  no_docs.__doc__ = {no_docs.__doc__!r}")
     # None — help() will show nothing useful
 
+    # ========================================================================
+    # repr() and f-string flags
+    # ========================================================================
+    # '!r' it's a format flag inside f-strings that calls repr() on the value instead of str().
+    # The difference:
+    name = "blur"
+
+    print(f"{name}")       # blur        ← str() — human-friendly
+    print(f"{name!r}")     # 'blur'      ← repr() — shows the quotes
+    
+    # str() gives you what a human wants to read. repr() gives you what a developer needs to
+    # debug — it shows the object's type unambiguously. The distinction matters most
+    # with strings and None:
+    value = "blur"
+    empty = ""
+    nothing = None
+
+    # Without !r — ambiguous in logs
+    print(f"filter = {value}")      # filter = blur
+    print(f"filter = {empty}")      # filter =         ← is it empty or None?
+    print(f"filter = {nothing}")    # filter = None     ← string "None" or actual None?
+
+    # With !r — unambiguous
+    print(f"filter = {value!r}")    # filter = 'blur'   ← clearly a string
+    print(f"filter = {empty!r}")    # filter = ''       ← clearly empty string
+    print(f"filter = {nothing!r}")  # filter = None     ← clearly NoneType
+    
+    # I use it in the reference files for exactly this reason — when printing
+    # function attributes like __name__ or __doc__, you need to see whether
+    # the value is a string, None, or empty. Without !r, None and the string
+    # "None" look identical in output.
+    
+    # There are three format flags total: !r for repr(), !s for str()
+    # (the default, so you never need it), and !a for ascii() (rarely
+    # used — escapes non-ASCII characters).
+    # ========================================================================
+    # ========================================================================
+    
+
     # ── Setting __doc__ dynamically (factory pattern) ───────────
     def create_multiplier(factor: int) -> Callable[[int], int]:
         def multiply(x: int) -> int:
