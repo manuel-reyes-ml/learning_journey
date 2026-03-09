@@ -716,10 +716,10 @@ def create_brightness_filter(adjustment: int, name: str) -> FilterFunc:
 
 # Having the creation and registration here so one module owns filter registration
 brighten: FilterFunc = register_filter("brighten", "Increase pixel brightness")(
-    create_brightness_filter(BrightDarkFilter.BRIGHT, "brighten")
+    timer(create_brightness_filter(BrightDarkFilter.BRIGHT, "brighten"))
 )
 darken: FilterFunc = register_filter("darken", "Decrease pixel brightness")(
-    create_brightness_filter(BrightDarkFilter.DARK, "darken")
+    timer(create_brightness_filter(BrightDarkFilter.DARK, "darken"))
 )
 
 # READ THIS INSIDE-OUT:
