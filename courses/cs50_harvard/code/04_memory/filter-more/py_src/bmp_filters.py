@@ -23,9 +23,12 @@ manual call form since no ``def`` statement exists to decorate.
 # =============================================================================
 
 from __future__ import annotations
+from functools import wraps
+from typing import Any
 import enum
 import logging
 import math
+import time
 import sys
 
 try:
@@ -110,6 +113,7 @@ def _width_height_calculator(pixels: ImageData) -> ImageSize:
 
     return ImageSize(height, width)
 
+
 # A decorator factory is just a function that takes custom parameters 
 # and generates a decorator.
 def register_filter(name: str, description: str = "") -> RegisterOut:
@@ -156,8 +160,22 @@ def register_filter(name: str, description: str = "") -> RegisterOut:
             description=description or func.__doc__ or ""
         )
         return func  # Return unchanged function
+        # func goes in, func comes out. The function's __name__, __doc__, __qualname__
+        # are all intact because you never created a replacement. Nothing to fix,
+        # so @wraps would do nothing useful.
     return decorator
 
+
+def timer(func: FilterFunc) -> FilterFunc:
+    """Measure and print execution time."""
+    @wraps(func)
+    def wrapper(*args, **kwargs) -> Any:
+        start = time.perf_counter()
+        result = func(*args, **kwargs)
+        elapsed = time.perf_counter() - start
+        logger.debug(f"{func.__name__} took {elapsed:.6f}s")
+        return result
+    return wrapper
 
 # =============================================================================
 # CORE FUNCTIONS
@@ -166,6 +184,7 @@ def register_filter(name: str, description: str = "") -> RegisterOut:
 # Just add decorator factory to grab function metadata and
 # generates function to auto-registers!
 @register_filter("grayscale", "Convert to grayscale using luminosity")
+@timer
 def grayscale(pixels: ImageData | None = None) -> ImageData:
     """
     Convert an image to grayscale using the luminosity method.
@@ -223,6 +242,7 @@ def grayscale(pixels: ImageData | None = None) -> ImageData:
 
 
 @register_filter("reflect", "Invert pixels horizontally")
+@timer
 def reflect(pixels: ImageData | None = None) -> ImageData:
     """
     Mirror an image horizontally by reversing each pixel row.
@@ -272,6 +292,7 @@ def reflect(pixels: ImageData | None = None) -> ImageData:
 
 
 @register_filter("blur", "Apply blur filter to image")
+@timer
 def blur(pixels: ImageData | None = None) -> ImageData:
     """
     Apply a 3x3 box blur to an image.
@@ -349,6 +370,7 @@ def blur(pixels: ImageData | None = None) -> ImageData:
 
 
 @register_filter("edges", "Identify object edges in image")
+@timer
 def edges(pixels: ImageData | None = None) -> ImageData:
     """
     Detect edges in an image using the Sobel operator.
@@ -626,7 +648,8 @@ def _log_closure_debug(filters: DictFuncs = FILTERS) -> None:
                 # Each cell has a .cell_contents attribute with the actual value
                 logger.debug(f"{func.__name__} captured: {var} "
                                  f"= {cell.cell_contents!r}")
-
+    
+    
 #  =============================================================================
 #
 # A CLOSURE is a function that captures variables from its enclosing
