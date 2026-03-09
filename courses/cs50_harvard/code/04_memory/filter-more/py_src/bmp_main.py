@@ -40,7 +40,11 @@ try:
         ALL_FILTERS,
         bmp_dirs,
     )
-    from py_src.bmp_filters import FILTERS, _log_closure_debug
+    from py_src.bmp_filters import (
+        FILTERS,
+        _log_closure_debug,
+        _log_inspect_sig,
+    )
     
 except ImportError as e:
     sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
@@ -573,6 +577,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
     
     if args.verbose:
         logger.debug("Verbose mode enabled (console debug output)")
+        _log_inspect_sig()
         _log_closure_debug()
     
     # Arv(args) returns a list when 'nargs=' is used

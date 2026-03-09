@@ -25,8 +25,8 @@ manual call form since no ``def`` statement exists to decorate.
 from __future__ import annotations
 from functools import wraps
 from typing import Any
-import enum
 import logging
+import inspect
 import math
 import time
 import sys
@@ -796,6 +796,19 @@ def _log_closure_debug(filters: DictFuncs = FILTERS) -> None:
                     var = original.__code__.co_freevars[i]
                     logger.debug(f"{original.__name__} func_creator captured: {var} "
                                  f"= {cell.cell_contents!r}")
+      
+                    
+def _log_inspect_sig(filters: DictFuncs = FILTERS) -> None:
+    """
+    """
+    for filter_info in filters.values():
+        func: FilterFunc = filter_info.func
+        
+        # @wraps also preserves the function signature for tools like
+        # Sphinx, IDE autocomplete, and inspect.signature()
+        sig = inspect.signature(func)
+        logger.debug(f"  inspect.signature({func.__name__}) = {sig})")
+        # Shows ORIGINAL params, not (*args: Any, **kwargs: Any) from the wrapper
             
     
 #  =============================================================================
