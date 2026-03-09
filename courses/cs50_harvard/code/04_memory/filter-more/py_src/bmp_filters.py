@@ -531,6 +531,7 @@ def create_brightness_filter(adjustment: int, name: str) -> FilterFunc:
                 
             new_pixels.append(new_row)
         
+        # Closure quick guide in line 618
         if adjust_brightness.__closure__:
             for i, cell in enumerate(adjust_brightness.__closure__):
                 var_name = adjust_brightness.__code__.co_freevars[i]
@@ -612,3 +613,34 @@ darken: FilterFunc = register_filter("darken", "Decrease pixel brightness")(
 # You can't use @ on factory-created functions because there's no def statement to 
 # decorate — the function already exists as a variable. So you use the manual call 
 # form instead. That's all that's happening at the bottom of your file.
+
+
+#  =============================================================================
+#
+# A CLOSURE is a function that captures variables from its enclosing
+# scope. The captured variables are stored in __closure__ as a tuple
+# of "cell" objects.
+#
+# VISUAL:
+# ┌─────────────────────────────────────────────────┐
+# │  def make_adder(n):          # Enclosing scope  │
+# │      ┌────────────────────┐                     │
+# │      │ n = 10  (captured) │ ← "free variable"   │
+# │      └────────┬───────────┘                     │
+# │               │                                 │
+# │      def adder(x):           # Inner function   │
+# │          return x + n        # Uses 'n' from    │
+# │                              # enclosing scope  │
+# │      return adder                               │
+# │                                                  │
+# │  add10 = make_adder(10)                          │
+# │  add10.__closure__[0].cell_contents == 10        │
+# └─────────────────────────────────────────────────┘
+#
+# WHY THIS MATTERS:
+# Your create_brightness_filter IS a closure. The 'adjustment'
+# parameter is a free variable captured by the inner function.
+# Understanding __closure__ lets you inspect what values were
+# captured — invaluable for debugging.
+#
+# =============================================================================
