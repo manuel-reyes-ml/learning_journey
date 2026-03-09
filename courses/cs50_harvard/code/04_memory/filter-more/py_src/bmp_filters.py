@@ -169,7 +169,7 @@ def register_filter(name: str, description: str = "") -> RegisterOut:
 def timer(func: FilterFunc) -> FilterFunc:
     """Measure and print execution time."""
     @wraps(func)
-    def wrapper(*args, **kwargs) -> Any:
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
         start = time.perf_counter()
         result = func(*args, **kwargs)
         elapsed = time.perf_counter() - start
@@ -778,9 +778,25 @@ def _log_closure_debug(filters: DictFuncs = FILTERS) -> None:
                 # __code__.co_freevars lists the NAMES of captured variables (tuple)
                 var = func.__code__.co_freevars[i]
                 # Each cell has a .cell_contents attribute with the actual value
-                logger.debug(f"{func.__name__} captured: {var} "
+                logger.debug(f"{func.__name__} timer_wrapper captured: {var} "
+                             f"= {cell.cell_contents!r}")
+        
+        # __wrapped__ is set by @wraps - it points to the original function BEFORE the
+        # decorator wrapped it. If a function was decorated by timer, func is 'wrapper'
+        # and func.__wrapped__ is the original filter function (e.g. adjust_brightness).
+        # If no decorator wrapped it, __wrapped__ doesn't exist.       
+        original: FilterFunc | None = (
+            getattr(func, "__wrapped__")  # Get __wrapped__ from func
+            if hasattr(func, "__wrapped__")
+            else None
+        )
+        if original:
+            if original.__closure__:
+                for i, cell in enumerate(original.__closure__):
+                    var = original.__code__.co_freevars[i]
+                    logger.debug(f"{original.__name__} func_creator captured: {var} "
                                  f"= {cell.cell_contents!r}")
-    
+            
     
 #  =============================================================================
 #
