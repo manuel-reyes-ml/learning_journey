@@ -26,7 +26,7 @@ import logging
 import sys
 
 try:
-    from .bmp_config import ColoredFormatter, CUR_DIR, LOGS_DIR
+    from py_src.bmp_config import ColoredFormatter, CUR_DIR, LOGS_DIR
 except ImportError as e:
     sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
     

@@ -28,7 +28,8 @@ import math
 import sys
 
 try:
-    from .bmp_config import (
+    # PEP 8 recommends absolute imports for clarity
+    from py_src.bmp_config import (
         Pixel,
         PixelRow,
         ImageData,

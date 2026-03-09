@@ -29,9 +29,10 @@ import string
 import sys
 
 try:
-    from .bmp_io import read_bmp, write_bmp
-    from .bmp_logger import setup_logging
-    from .bmp_config import (
+    # PEP 8 recommends absolute imports for clarity
+    from py_src.bmp_io import read_bmp, write_bmp
+    from py_src.bmp_logger import setup_logging
+    from py_src.bmp_config import (
         FilterName,
         DictFuncs,
         ImageData,
@@ -40,7 +41,7 @@ try:
         CUR_DIR,
         bmp_dirs,
     )
-    from .bmp_filters import FILTERS
+    from py_src.bmp_filters import FILTERS
     
 except ImportError as e:
     sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
