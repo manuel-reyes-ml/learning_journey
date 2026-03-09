@@ -519,6 +519,7 @@ def create_brightness_filter(adjustment: int, name: str) -> FilterFunc:
         
         new_pixels: ImageData = []
         
+        # adjustment is a free variable (captured by inner function)
         for row in pixels:
             new_row: PixelRow = []
             for pixel in row:
@@ -617,9 +618,12 @@ def _log_closure_debug(filters: DictFuncs = FILTERS) -> None:
     """One-time diagnostic: log captured closure variables."""
     for filter_info in filters.values():
         func: FilterFunc = filter_info.func
-        if func.__closure__:
+        # Non-closure functions have __closure__ = None
+        if func.__closure__:  # Captures free variables (tuple)
             for i, cell in enumerate(func.__closure__):
+                # __code__.co_freevars lists the NAMES of captured variables (tuple)
                 var = func.__code__.co_freevars[i]
+                # Each cell has a .cell_contents attribute with the actual value
                 logger.debug(f"{func.__name__} captured: {var} "
                                  f"= {cell.cell_contents!r}")
 
