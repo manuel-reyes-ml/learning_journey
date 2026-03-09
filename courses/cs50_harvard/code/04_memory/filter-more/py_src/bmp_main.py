@@ -38,7 +38,6 @@ try:
         ImageData,
         ExitCode,
         ALL_FILTERS,
-        CUR_DIR,
         bmp_dirs,
     )
     from py_src.bmp_filters import FILTERS, _log_closure_debug
@@ -66,8 +65,6 @@ __all__ = [
 # Module Level Constants & Variables
 # =====================================================
 
-# Path.name gives the full name of a file or directory
-MODULE_NAME: Final[str] = f"{CUR_DIR.name}.bmp_main"
 funcs_available: str = ", ".join(FILTERS.keys())
 
 
@@ -80,7 +77,7 @@ setup_logging()  # Uses logging.INFO by default!
 # When running this module Python assigns string '__main__' to '__name__',
 # so we need to assign the module name directly so this logger is assigned
 # to the 'py_src' logger hierarchy we created in bmp_logger.py.
-logger = logging.getLogger(MODULE_NAME)
+logger = logging.getLogger(__name__)
 
 
 # =============================================================================
