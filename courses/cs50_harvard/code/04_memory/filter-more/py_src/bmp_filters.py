@@ -618,10 +618,10 @@ def _log_closure_debug(filters: DictFuncs = FILTERS) -> None:
     for filter_info in filters.values():
         func: FilterFunc = filter_info.func
         if func.__closure__:
-            for _i, _cell in enumerate(func.__closure__):
-                _var = func.__code__.co_freevars[_i]
-                logger.debug(f"{func.__name__} captured: {_var} "
-                                 f"= {_cell.cell_contents!r}")
+            for i, cell in enumerate(func.__closure__):
+                var = func.__code__.co_freevars[i]
+                logger.debug(f"{func.__name__} captured: {var} "
+                                 f"= {cell.cell_contents!r}")
 
 #  =============================================================================
 #
