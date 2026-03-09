@@ -41,7 +41,7 @@ try:
         CUR_DIR,
         bmp_dirs,
     )
-    from py_src.bmp_filters import FILTERS
+    from py_src.bmp_filters import FILTERS, _log_closure_debug
     
 except ImportError as e:
     sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
@@ -576,6 +576,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
     
     if args.verbose:
         logger.debug("Verbose mode enabled (console debug output)")
+        _log_closure_debug()
     
     # Arv(args) returns a list when 'nargs=' is used
     if args.filter[0].strip().strip(string.punctuation).lower() == ALL_FILTERS:
@@ -633,4 +634,4 @@ def main(argv: list[str] | None = None) -> ExitCode:
     
     return ExitCode.SUCCESS
 
-# Run using 'python py_src', since a __main__.py file is implemented as start point
+# Run using 'python -m py_src', since a __main__.py file is implemented as start point
