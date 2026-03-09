@@ -211,7 +211,7 @@ class FilterInfo:
     # Optional fields with defaults afterwards
     func: FilterFunc    # Positional or keyword
     name: str           # Positional or keyword
-    _: KW_ONLY          # Everything after is keyword-only
+    _: KW_ONLY          # Everything after this or '*,' is keyword-only
     description: str
 
 # Exit codes (Unix standard)
