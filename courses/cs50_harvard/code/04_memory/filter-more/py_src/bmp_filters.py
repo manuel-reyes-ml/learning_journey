@@ -175,7 +175,15 @@ def timer(func: FilterFunc) -> FilterFunc:
         elapsed = time.perf_counter() - start
         logger.debug(f"{func.__name__} took {elapsed:.6f}s")
         return result
+    # Without @wraps(func) on wrapper, the decorated function's __name__ becomes
+    # "wrapper", __doc__ becomes None, and tracebacks are useless. @wraps copies
+    # the original's identity onto the replacement.
     return wrapper
+
+# The simple rule: If your decorator has def wrapper (or any inner function) that
+# gets returned instead of the original, you need @wraps. If it returns the original
+# function unchanged, you don't.
+
 
 # =============================================================================
 # CORE FUNCTIONS
@@ -183,6 +191,7 @@ def timer(func: FilterFunc) -> FilterFunc:
 
 # Just add decorator factory to grab function metadata and
 # generates function to auto-registers!
+# Decorator apply **bottom-up** (closest to 'def' goes first)
 @register_filter("grayscale", "Convert to grayscale using luminosity")
 @timer
 def grayscale(pixels: ImageData | None = None) -> ImageData:
@@ -491,6 +500,119 @@ def edges(pixels: ImageData | None = None) -> ImageData:
     
     logger.debug("Filter applied......")
     return new_pixels
+
+# =============================================================================
+# DECORATOR EXECUTION ORDER
+# =============================================================================
+#
+# THE @ SYNTAX RULE:
+# Python always makes exactly ONE call on whatever expression follows @.
+# With @timer, that one call is timer(func).
+# With @register_filter(...), the parentheses already made one call,
+# so @ makes the SECOND call on the result.
+#
+# ─────────────────────────────────────────────────────────────────────
+# PATTERN 1: DECORATOR FACTORY (register_filter)
+# ─────────────────────────────────────────────────────────────────────
+#
+#   @register_filter("grayscale", "Convert to grayscale")
+#   def grayscale(pixels): ...
+#
+#   Python expands this to:
+#     decorator = register_filter("grayscale", "Convert to grayscale")
+#     grayscale = decorator(grayscale)
+#
+#   Call 1 (definition time):
+#     register_filter("grayscale", "Convert to grayscale")
+#     → outer function body runs
+#     → creates 'decorator' function
+#     → returns decorator (just a function, not called yet)
+#
+#   Call 2 (definition time — @ forces this immediately):
+#     decorator(grayscale)
+#     → inner function body runs NOW
+#     → filters["grayscale"] = FilterInfo(...)  ← work done at definition
+#     → returns original grayscale unchanged
+#
+#   Result:
+#     grayscale = original function (no middleman)
+#     FILTERS dict is populated
+#     At call time: grayscale(pixels) runs the original directly
+#
+# ─────────────────────────────────────────────────────────────────────
+# PATTERN 2: WRAPPING DECORATOR (timer)
+# ─────────────────────────────────────────────────────────────────────
+#
+#   @timer
+#   def grayscale(pixels): ...
+#
+#   Python expands this to:
+#     grayscale = timer(grayscale)
+#
+#   Call 1 (definition time):
+#     timer(grayscale)
+#     → creates 'wrapper' function (code inside is NOT executed)
+#     → returns wrapper as a REPLACEMENT for grayscale
+#
+#   Result:
+#     grayscale = wrapper (middleman installed)
+#     At call time: grayscale(pixels) actually calls wrapper(pixels)
+#       → wrapper measures start time
+#       → wrapper calls original grayscale inside
+#       → wrapper measures elapsed time
+#       → wrapper logs the result
+#
+# ─────────────────────────────────────────────────────────────────────
+# BOTH STACKED (correct order):
+# ─────────────────────────────────────────────────────────────────────
+#
+#   @register_filter("grayscale", "Convert to grayscale")
+#   @timer
+#   def grayscale(pixels): ...
+#
+#   Python expands bottom-up:
+#     step1 = timer(grayscale)                          # wrapper created
+#     step2 = register_filter("grayscale", "...")(step1) # wrapper registered
+#     grayscale = step2                                  # wrapper is stored
+#
+#   Call 1 (definition time — @timer):
+#     timer(original_grayscale)
+#     → creates wrapper around original
+#     → returns wrapper
+#
+#   Call 2 (definition time — @register_filter):
+#     register_filter("grayscale", "...")(wrapper)
+#     → stores WRAPPER in FILTERS["grayscale"].func  ← has timing!
+#     → returns wrapper unchanged
+#
+#   Result:
+#     grayscale = wrapper (has timer)
+#     FILTERS["grayscale"].func = wrapper (has timer)
+#     At call time: both the variable AND the dispatch dict
+#       go through the timer
+#
+# ─────────────────────────────────────────────────────────────────────
+# WRONG ORDER (timer on top):
+# ─────────────────────────────────────────────────────────────────────
+#
+#   @timer
+#   @register_filter("grayscale", "Convert to grayscale")
+#   def grayscale(pixels): ...
+#
+#   Call 1 (definition time — @register_filter):
+#     → stores ORIGINAL in FILTERS["grayscale"].func  ← no timer!
+#     → returns original
+#
+#   Call 2 (definition time — @timer):
+#     → wraps original with timing
+#     → returns wrapper
+#
+#   Result:
+#     grayscale variable = wrapper (has timer)
+#     FILTERS["grayscale"].func = original (NO timer!)
+#     process_filter dispatches through FILTERS → timer never runs
+#
+# =============================================================================
 
 
 # =============================================================================
