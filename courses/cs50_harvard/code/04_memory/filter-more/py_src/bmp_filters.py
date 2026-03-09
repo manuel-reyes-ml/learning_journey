@@ -722,36 +722,46 @@ darken: FilterFunc = register_filter("darken", "Decrease pixel brightness")(
     timer(create_brightness_filter(BrightDarkFilter.DARK, "darken"))
 )
 
-# READ THIS INSIDE-OUT:
+# READ THIS INSIDE-OUT (innermost call executes first):
 
-# Step 1 (outer call):
+# Step 1 (factory — innermost):
+#    create_brightness_filter(BrightDarkFilter.BRIGHT, "brighten")
+#    → creates adjust_brightness closure
+#    → sets __name__, __qualname__, __doc__ dynamically
+#    → returns the raw filter function
+
+# Step 2 (timer — wraps the factory output):
+#    timer(raw_filter_function)
+#    → creates wrapper with timing logic around the filter
+#    → @wraps preserves __name__, __doc__, etc. from the original
+#    → returns wrapper (middleman installed)
+
+# Step 3 (register_filter — outermost call):
 #    register_filter("brighten", "Increase pixel brightness")
 #    → returns the 'decorator' function
 
-# Step 2 (chained call with parentheses):
-#    decorator(create_brightness_filter(BrightDarkFilter.BRIGHT, name="brighten"))
-#    → 'decorator' receives the factory-created function
-#    → stores it in FILTERS["brighten"] as a FilterInfo
-#    → returns the function unchanged
+# Step 4 (chained call — decorator receives the timed wrapper):
+#    decorator(timed_wrapper)
+#    → stores TIMED wrapper in FILTERS["brighten"] as a FilterInfo
+#    → returns timed wrapper unchanged
 
-# Step 3 (assignment):
-#    brighten: FilterFunc = <the returned function>
+# Step 5 (assignment):
+#    brighten: FilterFunc = <timed wrapper>
 
-# WHY THIS WORKS — It's the Same Pattern as the Decorator
-# The @ syntax is just syntactic sugar. These two are identical:
-
-# With @ syntax (what grayscale does)
+# This mirrors the stacked @ syntax on core filters:
+#
 #    @register_filter("grayscale", "Convert to grayscale")
+#    @timer
 #    def grayscale(pixels): ...
-
-# Without @ syntax (equivalent manual call)
-#    def grayscale(pixels): ...
-#    grayscale = register_filter("grayscale", "Convert to grayscale")(grayscale)
-
-# You can't use @ on factory-created functions because there's no def statement to 
-# decorate — the function already exists as a variable. So you use the manual call 
-# form instead. That's all that's happening at the bottom of your file.
-
+#
+# Which Python expands bottom-up to:
+#    step1 = timer(grayscale)                              # wrap with timing
+#    step2 = register_filter("grayscale", "...")(step1)    # register the wrapper
+#    grayscale = step2
+#
+# You can't use @ on factory-created functions because there's no
+# def statement to decorate — the function already exists as a
+# variable. So you use the manual inside-out call form instead.
 
 
 # =============================================================================
