@@ -530,13 +530,6 @@ def create_brightness_filter(adjustment: int, name: str) -> FilterFunc:
                 new_row.append(new_pixel)
                 
             new_pixels.append(new_row)
-        
-        # Closure quick guide in line 618
-        if adjust_brightness.__closure__:
-            for i, cell in enumerate(adjust_brightness.__closure__):
-                var_name = adjust_brightness.__code__.co_freevars[i]
-                logger.debug(f"{adjust_brightness.__name__} captured: {var_name} = "
-                                 f"{cell.cell_contents!r}")
                 
         logger.debug("Filter applied......")
         return new_pixels        
@@ -614,6 +607,21 @@ darken: FilterFunc = register_filter("darken", "Decrease pixel brightness")(
 # decorate — the function already exists as a variable. So you use the manual call 
 # form instead. That's all that's happening at the bottom of your file.
 
+
+
+# =============================================================================
+# INTROSPECTION (Advanced Debugging)
+# =============================================================================
+
+def _log_closure_debug(filters: DictFuncs = FILTERS) -> None:
+    """One-time diagnostic: log captured closure variables."""
+    for filter_info in filters.values():
+        func: FilterFunc = filter_info.func
+        if func.__closure__:
+            for _i, _cell in enumerate(func.__closure__):
+                _var = func.__code__.co_freevars[_i]
+                logger.debug(f"{func.__name__} captured: {_var} "
+                                 f"= {_cell.cell_contents!r}")
 
 #  =============================================================================
 #
