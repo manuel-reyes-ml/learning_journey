@@ -23,6 +23,7 @@ manual call form since no ``def`` statement exists to decorate.
 # =============================================================================
 
 from __future__ import annotations
+import enum
 import logging
 import math
 import sys
@@ -530,6 +531,12 @@ def create_brightness_filter(adjustment: int, name: str) -> FilterFunc:
                 
             new_pixels.append(new_row)
         
+        if adjust_brightness.__closure__:
+            for i, cell in enumerate(adjust_brightness.__closure__):
+                var_name = adjust_brightness.__code__.co_freevars[i]
+                logger.debug(f"{adjust_brightness.__name__} captured: {var_name} = "
+                                 f"{cell.cell_contents!r}")
+                
         logger.debug("Filter applied......")
         return new_pixels        
     
