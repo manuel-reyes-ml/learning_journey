@@ -200,6 +200,12 @@ class BrightnessConfig():
         self._bright: int = bright
         self._dark: int = dark
     
+    def __post_init__(self) -> None:
+        if self._bright <= 0:
+            raise ValueError("Bright adjust cannot be negative or 0")
+        if self._dark >= 0:
+             raise ValueError("Dark adjust cannot be negative or 0")
+    
     # ── GETTER: @property ──────────────────────────────────
     @property
     def bright(self) -> int:
@@ -216,14 +222,14 @@ class BrightnessConfig():
     # ── SETTER: @name.setter ──────────────────────────────
     @bright.setter
     def bright(self, value: int) -> None:
-        if value == 0:
-            raise ValueError("Value cannot be 0. Will result in same image")
+        if value <= 0:
+            raise ValueError("Bright adjust cannot be negative or 0")
         self._bright = value
     
     @dark.setter
     def dark(self, value: int) -> None:
-        if value == 0:
-            raise ValueError("Value cannot be 0. Will result in same image")
+        if value >= 0:
+            raise ValueError("Dark adjust cannot be negative or 0")
         self._dark = value
 
 
