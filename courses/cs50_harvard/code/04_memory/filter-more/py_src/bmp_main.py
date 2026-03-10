@@ -38,10 +38,10 @@ try:
         ImageData,
         ExitCode,
         ALL_FILTERS,
+        FILTERS,
         bmp_dirs,
     )
     from py_src.bmp_filters import (
-        FILTERS,
         _log_closure_debug,
         _log_inspect_sig,
     )
