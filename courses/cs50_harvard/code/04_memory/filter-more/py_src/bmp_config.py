@@ -44,6 +44,7 @@ __all__ = [
     "FilterInfo",
     "RegisterOut",
     "ImageSize",
+    "BrightnessConfig",
     "BmpData",
     "PixelRow",
     "Pixel",
