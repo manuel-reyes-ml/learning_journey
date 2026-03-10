@@ -48,12 +48,13 @@ __all__ = [
     "PixelRow",
     "Pixel",
     "ExitCode",
-    "BrightDarkFilter",
+    "FILTERS",
     "ALL_FILTERS",
     "CUR_DIR",
     "LOGS_DIR",
     "bmp_dirs",
     "bmp_constants",
+    "brightness_cfg",
 ]
 
 
@@ -86,6 +87,13 @@ type FilterName = Literal["grayscale", "reflect", "blur", "edges", "brighten", "
 # =====================================================
 
 ALL_FILTERS: Final[str] = "all"
+
+# Registry dictionary (global)
+FILTERS: DictFuncs = {}
+
+# 
+BRIGHT: Final[int] = 50
+DARK: Final[int] = -50
 
 # parent = parents[0] = bmp_config.py directory -> py_src/
 # parents[1] = project root directory -> filter-more/
@@ -172,6 +180,51 @@ class BmpConstants:
     PAD_HEX: Final[bytes] = b"\x00"
     PIXEL_SIZE: Final[int] = 3
     BPP: Final[int] = 24  # bits per pixel (3 bytes RGB)
+    
+class BrightnessConfig():
+    """
+    Pixel brightness adjustment constants.
+
+    Defines the default offset values passed to
+    ``create_brightness_filter()`` for the standard
+    brighten and darken filter variants.
+
+    Attributes
+    ----------
+    BRIGHT : int
+        Positive offset for brightness increase (50).
+    DARK : int
+        Negative offset for brightness decrease (-50).
+    """
+    def __init__(self, bright: int, dark: int) -> None:
+        self._bright: int = bright
+        self._dark: int = dark
+    
+    # ── GETTER: @property ──────────────────────────────────
+    @property
+    def bright(self) -> int:
+        """
+        """
+        return self._bright
+    
+    @property
+    def dark(self) -> int:
+        """
+        """
+        return self._dark
+    
+    # ── SETTER: @name.setter ──────────────────────────────
+    @bright.setter
+    def bright(self, value: int) -> None:
+        if value == 0:
+            raise ValueError("Value cannot be 0. Will result in same image")
+        self._bright = value
+    
+    @dark.setter
+    def dark(self, value: int) -> None:
+        if value == 0:
+            raise ValueError("Value cannot be 0. Will result in same image")
+        self._dark = value
 
 
 # =====================================================
@@ -182,6 +235,7 @@ class BmpConstants:
 # unless it is a global constant itself.
 bmp_dirs = BmpDirectories()
 bmp_constants = BmpConstants()
+brightness_cfg = BrightnessConfig(BRIGHT, DARK)
 
 
 # =============================================================================
@@ -236,25 +290,7 @@ class ExitCode(IntEnum):
     FAILURE = 1
     KEYBOARD_INTERRUPT = 130
    # BADUSE = 1  Error!
-
-class BrightDarkFilter(IntEnum):
-    """
-    Pixel brightness adjustment constants.
-
-    Defines the default offset values passed to
-    ``create_brightness_filter()`` for the standard
-    brighten and darken filter variants.
-
-    Attributes
-    ----------
-    BRIGHT : int
-        Positive offset for brightness increase (50).
-    DARK : int
-        Negative offset for brightness decrease (-50).
-    """
-    BRIGHT = 50
-    DARK = -50
-
+    
 # Image size variables configuration
 class ImageSize(NamedTuple):
     """
