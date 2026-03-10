@@ -42,7 +42,8 @@ try:
         FilterInfo,
         RegisterOut,
         FilterFunc,
-        BrightDarkFilter,
+        FILTERS,
+        brightness_cfg,
     )
 except ImportError as e:
     # sys.exit() raises SystemExit internally, don´t need 'raise...'
@@ -65,15 +66,8 @@ __all__ = [
     "darken",
     "brighten",
     "create_brightness_filter",
+    "gen_brightness_filters",
 ]
-
-
-# =====================================================
-# Module Level Constants
-# ===================================================== 
-
-# Registry dictionary (global)
-FILTERS: DictFuncs = {}
 
 
 # =====================================================
@@ -715,12 +709,24 @@ def create_brightness_filter(adjustment: int, name: str) -> FilterFunc:
 # =====================================================
 
 # Having the creation and registration here so one module owns filter registration
-brighten: FilterFunc = register_filter("brighten", "Increase pixel brightness")(
-    timer(create_brightness_filter(BrightDarkFilter.BRIGHT, "brighten"))
-)
-darken: FilterFunc = register_filter("darken", "Decrease pixel brightness")(
-    timer(create_brightness_filter(BrightDarkFilter.DARK, "darken"))
-)
+def gen_brightness_filters(
+    bright: int = brightness_cfg.bright,
+    dark: int = brightness_cfg.dark,
+) -> tuple[FilterFunc, FilterFunc]:
+    """
+    """
+    brighten = register_filter("brighten", "Increase pixel brightness")(
+        timer(create_brightness_filter(bright, "brighten"))
+    )
+    darken = register_filter("darken", "Decrease pixel brightness")(
+        timer(create_brightness_filter(dark, "darken"))
+    )
+    
+    return brighten, darken
+
+# Module-level defaults - created at import time
+brighten, darken = gen_brightness_filters()
+
 
 # READ THIS INSIDE-OUT (innermost call executes first):
 
