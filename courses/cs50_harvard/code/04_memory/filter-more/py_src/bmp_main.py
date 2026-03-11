@@ -21,7 +21,7 @@ Command-line usage::
 # =============================================================================
 
 from __future__ import annotations  # Must be at the beginning of the file
-from typing import Iterator, Final, cast
+from typing import Iterator, cast
 from pathlib import Path
 import argparse
 import logging
@@ -34,16 +34,20 @@ try:
     from py_src.bmp_logger import setup_logging
     from py_src.bmp_config import (
         FilterName,
+        ExitCode,
         DictFuncs,
         ImageData,
-        ExitCode,
         ALL_FILTERS,
         FILTERS,
+        BRIGHT,
+        DARK,
         bmp_dirs,
+        brightness_cfg,
     )
     from py_src.bmp_filters import (
         _log_closure_debug,
         _log_inspect_sig,
+        gen_brightness_filters,
     )
     
 except ImportError as e:
@@ -527,6 +531,18 @@ def main(argv: list[str] | None = None) -> ExitCode:
              f"Use 'all' for all filters: {funcs_available}",
     )
     parser.add_argument(
+        "--bright",
+        type=int,
+        help="Enter bright adjustment as an integer greater than 0. "
+             f"Default is {BRIGHT}"
+    )
+    parser.add_argument(
+        "--dark",
+        type=int,
+        help="Enter dark adjustment as an inter greater than 0. "
+             f"Default is {DARK}"
+    )
+    parser.add_argument(
         "-d", "--directory",
         type=str,
         help=f"Enter directory path to search for {bmp_dirs.FILE_EXT} file. "
@@ -574,6 +590,10 @@ def main(argv: list[str] | None = None) -> ExitCode:
         console_verbose=args.verbose,
         log_to_file=not args.no_log_file,
     )
+    
+    brightness_cfg.bright = args.bright if args.bright else BRIGHT
+    brightness_cfg.dark = args.dark if args.dark else DARK
+    gen_brightness_filters(brightness_cfg.bright, brightness_cfg.dark)
     
     if args.verbose:
         logger.debug("Verbose mode enabled (console debug output)")
