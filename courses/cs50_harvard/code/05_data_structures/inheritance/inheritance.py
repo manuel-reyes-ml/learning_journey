@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 from dataclasses import dataclass, field
+from pathlib import Path
 from typing import Final
 import argparse
 import logging
@@ -30,8 +31,11 @@ __all__ = []
 # Module Level Constants
 # =====================================================
 
+# For random selection and generations build up
 ALLELES: Final[list[str]] = ['A', 'B', 'O']
 DEFAULT_GEN_COUNT: Final[int] = 3
+
+# For final output format
 INDENT_LENGTH: Final[int] = 4
 
 
@@ -39,13 +43,49 @@ INDENT_LENGTH: Final[int] = 4
 # Dataclasses
 # ===================================================== 
 
+@dataclass(frozen=True, slots=True)
+class FileHandlerConfig:
+    """
+    """
+    LEVEL_DEFAULT: Final[int] = logging.INFO
+    BACKUP_COUNT: Final[int] = 3
+    FILE_MB: Final[int] = 5      # megabytes
+    MEGABYTE: Final[int] = 1024  # kilobytes
+    KILOBYTE: Final[int] = 1024  # bytes
+    
+    @property
+    def max_log_bytes(self) -> int:
+        """
+        """
+        return self.FILE_MB * self.MEGABYTE * self.KILOBYTE
+
+
+@dataclass(frozen=True, slots=True)
+class FileDirectories:
+    """
+    """
+    CUR_DIR: Final[Path] = Path(__file__).resolve().parent
+    LOG_DIR: Final[Path] = CUR_DIR / "py_log"
+    
+    def create_log_fname(self) -> str:
+        """
+        """
+        return f"{self.CUR_DIR.name}.log"
+    
+    @property
+    def log_file(self) -> Path:
+        """
+        """
+        return self.LOG_DIR / self.create_log_fname()
+    
+
 @dataclass
 class Person:
     """
     """
     # Here, lambda is a zero-argument function that, when called,
     # creates and returns a fresh [None, None] list.
-    # Each person always has two elements: Persons (parents) or None slots
+    # Each person always has two elements: Person (parents) or None slots
     parents: list[Person | None] = field(default_factory=lambda: [None, None])
     alleles: list[str] = field(default_factory=list)  # on each call creates emtpy list[]
     
@@ -128,3 +168,16 @@ logger.setLevel(logging.DEBUG)  # Let handlers decide their own level!
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
 
+def _config_logging(
+    log_to_file: bool = True,
+    console_verbose: bool = False,
+    level: int = LEVEL_DEFAULT,
+    file_dirs: FileDirectories = FileDirectories(),
+    
+    
+)
+
+def random_allele(alleles: list[str] = ALLELES) -> str:
+    """
+    """
+    
