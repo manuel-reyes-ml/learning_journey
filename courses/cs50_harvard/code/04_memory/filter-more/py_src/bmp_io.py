@@ -96,7 +96,7 @@ def read_bmp(
     bmp_signature: bytes = bmp_constants.SIGNATURE,
     bmp_header_size: int = bmp_constants.HEADER_SIZE,
     pixel_size: int = bmp_constants.PIXEL_SIZE,
-    bpp_bmp: int = bmp_constants.BPP,
+    bpp_bmp: int = bmp_constants.bpp,
 ) -> BmpData:
     """
     Read a 24-bit BMP file and extract its pixel data.

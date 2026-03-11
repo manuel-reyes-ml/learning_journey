@@ -182,7 +182,6 @@ class BmpConstants:
     SIGNATURE: Final[bytes] = b"BM"
     PAD_HEX: Final[bytes] = b"\x00"
     PIXEL_SIZE: Final[int] = 3
-    BPP: Final[int] = PIXEL_SIZE * 8  # bits per pixel (3 bytes RGB)
     
     # ValueError at creation time.
     # __post_init__ always runs after __init__ completes.
@@ -192,10 +191,16 @@ class BmpConstants:
             raise ValueError("Header size must be positive")
         if self.PIXEL_SIZE <= 0:
             raise ValueError("Pixel size must be positive")
-        if self.BPP <=0:
-            raise ValueError("Bits per pixel must be positive")
     
-    
+    # Use property to access bpp return as an attribute vs a function
+    # .bpp instead of .bpp()
+    @property
+    def bpp(self) -> int:
+        """
+        """
+        return self.PIXEL_SIZE * 8  # bits per pixel (3 bytes RGB)
+
+# Regular class
 class BrightnessConfig():
     """
     Pixel brightness adjustment constants.
