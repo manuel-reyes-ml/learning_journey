@@ -198,9 +198,13 @@ class BrightnessConfig():
         Negative offset for brightness decrease (-50).
     """
     def __init__(self, bright: int, dark: int) -> None:
+        # The underscore signals "access this through the property, 
+        # not directly."
         self._bright: int = bright
         self._dark: int = dark
-    
+
+    # ValueError at creation time
+    # __post_inti__ always runs after __init__ completes
     def __post_init__(self) -> None:
         if self._bright <= 0:
             raise ValueError("Bright adjust cannot be negative or 0")
@@ -223,15 +227,43 @@ class BrightnessConfig():
     # ── SETTER: @name.setter ──────────────────────────────
     @bright.setter
     def bright(self, value: int) -> None:
+        # ValueError at running time, when reassigned
         if value <= 0:
             raise ValueError("Bright adjust cannot be negative or 0")
         self._bright = value
     
     @dark.setter
     def dark(self, value: int) -> None:
+        # ValueError at running time, when reassigned
         if value >= 0:
             raise ValueError("Dark adjust cannot be negative or 0")
         self._dark = value
+
+# =============================================================================
+# DATACLASS PROPERTY PATTERNS — WHEN TO USE WHICH
+# =============================================================================
+#
+# ┌────────────────────────────────────────────────────────────────────────────┐
+# │ Situation                          │ Approach                             │
+# │────────────────────────────────────│──────────────────────────────────────│
+# │ Frozen dataclass,                  │ __post_init__ validation +           │
+# │ validate at creation               │ @property for computed values        │
+# │                                    │                                      │
+# │ Mutable dataclass,                 │ InitVar + _private storage +         │
+# │ validate on every assignment       │ @property with setter                │
+# │                                    │                                      │
+# │ Just need a computed/derived value │ @property getter only                │
+# │                                    │ (no underscore storage needed)       │
+# │                                    │                                      │
+# │ No validation needed at all        │ Plain dataclass fields, no property  │
+# └────────────────────────────────────────────────────────────────────────────┘
+#
+# KEY INSIGHT:
+# frozen=True IS your setter protection — Python raises FrozenInstanceError
+# on reassignment, so setter validation is redundant on frozen dataclasses.
+# Only mutable dataclasses need the full InitVar + _private + setter pattern.
+#
+# =============================================================================
 
 
 # =====================================================
