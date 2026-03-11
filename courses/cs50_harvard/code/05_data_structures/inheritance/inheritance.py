@@ -6,6 +6,7 @@
 # =============================================================================
 
 from __future__ import annotations
+from logging.handlers import RotatingFileHandler
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Final
@@ -40,6 +41,14 @@ INDENT_LENGTH: Final[int] = 4
 
 
 # =====================================================
+# Random Generator
+# =====================================================
+
+# Production pattern: seed at the top
+random.seed()  # Uses system entropy - different each run
+
+
+# =====================================================
 # Dataclasses
 # ===================================================== 
 
@@ -48,6 +57,7 @@ class FileHandlerConfig:
     """
     """
     LEVEL_DEFAULT: Final[int] = logging.INFO
+    ENCODING: Final[str] = "utf-8"
     BACKUP_COUNT: Final[int] = 3
     FILE_MB: Final[int] = 5      # megabytes
     MEGABYTE: Final[int] = 1024  # kilobytes
@@ -89,7 +99,6 @@ class Person:
     parents: list[Person | None] = field(default_factory=lambda: [None, None])
     alleles: list[str] = field(default_factory=list)  # on each call creates emtpy list[]
     
-
     # ❌ DANGEROUS — every Person shares the SAME list object
     # parents: list[Person | None] = [None, None]
 
@@ -104,7 +113,15 @@ class Person:
     #   Person B gets created → calls lambda → different fresh [None, None]
     #   Person C gets created → calls lambda → another fresh [None, None]
     
-    
+
+# =====================================================
+# Dataclass Instantiation
+# =====================================================
+
+fhandler_config = FileHandlerConfig()
+file_dirs = FileDirectories()
+
+
 # =====================================================
 # Logging Configuration
 # =====================================================
@@ -171,13 +188,54 @@ logger.setLevel(logging.DEBUG)  # Let handlers decide their own level!
 def _config_logging(
     log_to_file: bool = True,
     console_verbose: bool = False,
-    level: int = LEVEL_DEFAULT,
-    file_dirs: FileDirectories = FileDirectories(),
+    file_dirs: FileDirectories = file_dirs,
+    fhandler_config: FileHandlerConfig = fhandler_config,
+    formatter_class: type[logging.Formatter] = ColoredFormatter,
+) -> None:
+    """
+    """
+    # Prevent duplicate handlers if this function is
+    # called multiple times (e.g. pytest).
+    if logger.hasHandlers():
+        logger.handlers.clear()
+        
+    level = logging.DEBUG if console_verbose else fhandler_config.LEVEL_DEFAULT
+        
+    console_handler = logging.StreamHandler(sys.stderr)
+    console_handler.setLevel(level)
+    console_handler.setFormatter(formatter_class(
+        fmt='%(asctime)s : %(levelname)s : %(message)s',
+        datefmt='%H:%M:%S',
+    ))
     
+    if log_to_file:
+        # parents=True: create any missing parent directories
+        # exist_ok=True: no error if directory already exists
+        file_dirs.LOG_DIR.mkdir(parents=True, exist_ok=True)
     
-)
+        file_handler = RotatingFileHandler(
+            filename=file_dirs.log_file.name,  # .name returns only file name
+            maxBytes=fhandler_config.max_log_bytes,
+            backupCount=fhandler_config.BACKUP_COUNT,
+            encoding=fhandler_config.ENCODING,
+        )
+        file_handler.setLevel(logging.DEBUG)
+        # %(name)s shows module name (inheritance)
+        file_handler.setFormatter(logging.Formatter(
+            fmt='%(asctime)s : %(levelname)s : %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S',
+        ))
+        logger.addHandler(file_handler)
+    
 
-def random_allele(alleles: list[str] = ALLELES) -> str:
+def _random_allele(alleles: list[str] = ALLELES) -> str:
     """
     """
-    
+    # Picks one random element from the sequence
+    return random.choice(alleles)
+
+
+# =============================================================================
+# CORE FUNCTIONS
+# =============================================================================
+
