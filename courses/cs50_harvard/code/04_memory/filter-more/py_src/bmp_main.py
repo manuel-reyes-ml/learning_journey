@@ -539,7 +539,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
     parser.add_argument(
         "--dark",
         type=int,
-        help="Enter dark adjustment as an inter greater than 0. "
+        help="Enter dark adjustment as an integer greater than 0. "
              f"Default is {DARK}"
     )
     parser.add_argument(
@@ -582,7 +582,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
     
     if not args.filter:
         # argparser's own method for reporting usage errors - It 
-        # printsthe usage line,error mssg and exists with code 2
+        # prints the usage line,error mssg and exists with code 2
         # (the unix convention for bad command-line syntax).
         parser.error("At least one filter is required (or use --filter-help)")
     
@@ -591,9 +591,13 @@ def main(argv: list[str] | None = None) -> ExitCode:
         log_to_file=not args.no_log_file,
     )
     
-    brightness_cfg.bright = args.bright if args.bright else BRIGHT
-    brightness_cfg.dark = args.dark if args.dark else DARK
-    gen_brightness_filters(brightness_cfg.bright, brightness_cfg.dark)
+    try:
+        brightness_cfg.bright = args.bright if args.bright else BRIGHT
+        brightness_cfg.dark = args.dark if args.dark else DARK
+        gen_brightness_filters(brightness_cfg.bright, brightness_cfg.dark)
+    except ValueError as e:
+        logger.error(f"Invalid brightness setting: {e}")
+        return ExitCode.FAILURE
     
     if args.verbose:
         logger.debug("Verbose mode enabled (console debug output)")
