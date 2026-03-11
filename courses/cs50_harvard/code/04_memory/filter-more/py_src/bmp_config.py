@@ -22,13 +22,13 @@ from __future__ import annotations
 from dataclasses import dataclass, KW_ONLY
 from enum import IntEnum, unique
 from pathlib import Path
-import logging
 from typing import (
     Final,
     Literal,
     Callable,
     NamedTuple,
 )
+import logging
 
 
 # =============================================================================
@@ -214,19 +214,19 @@ class BrightnessConfig():
     def __init__(self, bright: int, dark: int) -> None:
         # The underscore signals "access this through the property, 
         # not directly."
-        self._bright: int = bright
-        self._dark: int = dark
-        self.__post_init__()  # need to call explicitly
+        self.bright = bright
+        self.dark = dark
+    #    self.__post_init__()  # need to call explicitly
         
     # __post_init__  doesn't run in regular class only in dataclasses
     # since dataclass __init__ automatically calls for __post_init__.
-    def __post_init__(self) -> None:
-        if self._bright <= 0:
-            raise ValueError("Instance creation: Bright adjust cannot "
-                             f"be negative or 0. Got {self._bright}")
-        if self._dark >= 0:
-             raise ValueError("Instance creation: Dark adjust cannot "
-                              f"be positive or 0. Got {self._dark}")
+    #def __post_init__(self) -> None:
+    #    if self._bright <= 0:
+    #        raise ValueError("Instance creation: Bright adjust cannot "
+    #                         f"be negative or 0. Got {self._bright}")
+    #    if self._dark >= 0:
+    #         raise ValueError("Instance creation: Dark adjust cannot "
+    #                          f"be positive or 0. Got {self._dark}")
     
     # ── GETTER: @property ──────────────────────────────────
     @property
@@ -293,7 +293,7 @@ class BrightnessConfig():
 # unless it is a global constant itself.
 bmp_dirs = BmpDirectories()
 bmp_constants = BmpConstants()
-brightness_cfg = BrightnessConfig(BRIGHT, DARK)
+brightness_cfg = BrightnessConfig(BRIGHT, DARK)    
 
 
 # =============================================================================
