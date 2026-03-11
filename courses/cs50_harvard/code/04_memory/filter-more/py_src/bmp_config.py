@@ -53,7 +53,6 @@ __all__ = [
     "FILTERS",
     "ALL_FILTERS",
     "CUR_DIR",
-    "LOGS_DIR",
     "bmp_dirs",
     "bmp_constants",
     "brightness_cfg",
@@ -103,7 +102,6 @@ DARK: Final[int] = -50
 # parents[1] = project root directory -> filter-more/
 CUR_DIR: Final[Path] = Path(__file__).resolve().parent
 BASE_DIR: Final[Path] = CUR_DIR.parent
-LOGS_DIR: Final[Path] = CUR_DIR / "logs"
 
 
 # =====================================================
@@ -144,6 +142,7 @@ class BmpDirectories:
     FILE_EXT: str = ".bmp"
     INPUT_DIR: Path = BASE_DIR / "images"
     OUT_DIR: Path = CUR_DIR / "filtered_imgs"
+    LOGS_DIR: Final[Path] = CUR_DIR / "logs"
     OUT_FNAME: str = f"_filtered{FILE_EXT}"
 
 #BMP file constants

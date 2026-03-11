@@ -26,7 +26,7 @@ import logging
 import sys
 
 try:
-    from py_src.bmp_config import ColoredFormatter, CUR_DIR, LOGS_DIR
+    from py_src.bmp_config import ColoredFormatter, CUR_DIR, bmp_dirs
 except ImportError as e:
     sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
     
@@ -54,7 +54,7 @@ def setup_logging(
     console_verbose: bool = False,
     log_to_file: bool = True,
     cur_dir: Path = CUR_DIR,
-    logs_dir: Path = LOGS_DIR,
+    logs_dir: Path = bmp_dirs.LOGS_DIR,
     level: int =LEVEL_DEFAULT,
     max_bytes: int = MAX_LOG_BYTES,
     log_fname: str = LOG_FILE_NAME,
