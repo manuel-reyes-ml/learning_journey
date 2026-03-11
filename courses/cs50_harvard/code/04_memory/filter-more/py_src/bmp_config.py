@@ -29,6 +29,7 @@ from typing import (
     NamedTuple,
 )
 import logging
+import sys
 
 
 # =============================================================================
@@ -291,9 +292,12 @@ class BrightnessConfig():
 
 # Following PEP 8 standars, name of an instance should be lowercase,
 # unless it is a global constant itself.
-bmp_dirs = BmpDirectories()
-bmp_constants = BmpConstants()
-brightness_cfg = BrightnessConfig(BRIGHT, DARK)    
+try:
+    bmp_dirs = BmpDirectories()
+    bmp_constants = BmpConstants()
+    brightness_cfg = BrightnessConfig(BRIGHT, DARK)
+except ValueError as e:
+    sys.exit(f"ERROR: Invalid brightness setting: {e}\n") 
 
 
 # =============================================================================
