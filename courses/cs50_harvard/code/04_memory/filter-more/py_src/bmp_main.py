@@ -591,6 +591,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         log_to_file=not args.no_log_file,
     )
     
+    # Brightness configuration setup
     try:
         brightness_cfg.bright = args.bright if args.bright else BRIGHT
         brightness_cfg.dark = args.dark if args.dark else DARK
@@ -604,7 +605,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         _log_inspect_sig()
         _log_closure_debug()
     
-    # Arv(args) returns a list when 'nargs=' is used
+    # Argv(args) returns a list when 'nargs=' is used
     if args.filter[0].strip().strip(string.punctuation).lower() == ALL_FILTERS:
         # cast() tells the type checker to treat a value as a specific type.
         # At runtime, filters is still the exact same list[str] object,
@@ -612,7 +613,8 @@ def main(argv: list[str] | None = None) -> ExitCode:
         filters = cast(list[FilterName], list(FILTERS.keys())) 
     else:
         filters: list[FilterName] = args.filter
-        
+    
+    # Image processing pipeline (file I/O, filter application, writing)   
     try:
         # Step 1: Input file validation and read BMP file
         in_file = validate_infile(
