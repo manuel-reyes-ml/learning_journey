@@ -89,10 +89,12 @@ type FilterName = Literal["grayscale", "reflect", "blur", "edges", "brighten", "
 
 ALL_FILTERS: Final[str] = "all"
 
-# Registry dictionary (global)
+# Registry dictionary — defined here as single source of truth,
+# populated by register_filter() in bmp_filters.py,
+# consumed by process_filter() in bmp_main.py.
 FILTERS: DictFuncs = {}
 
-# 
+# Brightness default adjustments
 BRIGHT: Final[int] = 50
 DARK: Final[int] = -50
 
@@ -182,9 +184,9 @@ class BmpConstants:
     PIXEL_SIZE: Final[int] = 3
     BPP: Final[int] = PIXEL_SIZE * 8  # bits per pixel (3 bytes RGB)
     
-    # ValueError at creation time
-    # __post_init__ always runs after __init__ completes
-    # @dataclass auto generates __init__
+    # ValueError at creation time.
+    # __post_init__ always runs after __init__ completes.
+    # @dataclass auto generates __init__ and then calls post_init.
     def __post_init__(self) -> None:
         if self.HEADER_SIZE <= 0:
             raise ValueError("Header size must be positive")
@@ -214,14 +216,17 @@ class BrightnessConfig():
         # not directly."
         self._bright: int = bright
         self._dark: int = dark
-
-    # ValueError at creation time
-    # __post_init__ always runs after __init__ completes
+        self.__post_init__()  # need to call explicitly
+        
+    # __post_init__  doesn't run in regular class only in dataclasses
+    # since dataclass __init__ automatically calls for __post_init__.
     def __post_init__(self) -> None:
         if self._bright <= 0:
-            raise ValueError("Bright adjust cannot be negative or 0")
+            raise ValueError("Instance creation: Bright adjust cannot "
+                             f"be negative or 0. Got {self._bright}")
         if self._dark >= 0:
-             raise ValueError("Dark adjust cannot be negative or 0")
+             raise ValueError("Instance creation: Dark adjust cannot "
+                              f"be positive or 0. Got {self._dark}")
     
     # ── GETTER: @property ──────────────────────────────────
     @property
@@ -241,14 +246,16 @@ class BrightnessConfig():
     def bright(self, value: int) -> None:
         # ValueError at running time, when reassigned
         if value <= 0:
-            raise ValueError("Bright adjust cannot be negative or 0")
+            raise ValueError("Assignment: Bright adjust cannot be "
+                             f"negative or 0. Got {value}")
         self._bright = value
     
     @dark.setter
     def dark(self, value: int) -> None:
         # ValueError at running time, when reassigned
         if value >= 0:
-            raise ValueError("Dark adjust cannot be negative or 0")
+            raise ValueError("Assignment: Dark adjust cannot be "
+                             f"positive or 0. Got {value}")
         self._dark = value
 
 # =============================================================================
