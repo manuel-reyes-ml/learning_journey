@@ -180,7 +180,19 @@ class BmpConstants:
     SIGNATURE: Final[bytes] = b"BM"
     PAD_HEX: Final[bytes] = b"\x00"
     PIXEL_SIZE: Final[int] = 3
-    BPP: Final[int] = 24  # bits per pixel (3 bytes RGB)
+    BPP: Final[int] = PIXEL_SIZE * 8  # bits per pixel (3 bytes RGB)
+    
+    # ValueError at creation time
+    # __post_init__ always runs after __init__ completes
+    # @dataclass auto generates __init__
+    def __post_init__(self) -> None:
+        if self.HEADER_SIZE <= 0:
+            raise ValueError("Header size must be positive")
+        if self.PIXEL_SIZE <= 0:
+            raise ValueError("Pixel size must be positive")
+        if self.BPP <=0:
+            raise ValueError("Bits per pixel must be positive")
+    
     
 class BrightnessConfig():
     """
@@ -204,7 +216,7 @@ class BrightnessConfig():
         self._dark: int = dark
 
     # ValueError at creation time
-    # __post_inti__ always runs after __init__ completes
+    # __post_init__ always runs after __init__ completes
     def __post_init__(self) -> None:
         if self._bright <= 0:
             raise ValueError("Bright adjust cannot be negative or 0")
