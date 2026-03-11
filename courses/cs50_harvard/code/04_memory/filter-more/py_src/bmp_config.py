@@ -212,12 +212,13 @@ class BrightnessConfig():
         Negative offset for brightness decrease (-50).
     """
     def __init__(self, bright: int, dark: int) -> None:
-        # The underscore signals "access this through the property, 
-        # not directly."
+        # self.bright = bright in __init__ goes through the @bright.setter
+        # because the property is already defined on the class. So
+        # validation runs automatically at creation.
         self.bright = bright
         self.dark = dark
     #    self.__post_init__()  # need to call explicitly
-        
+
     # __post_init__  doesn't run in regular class only in dataclasses
     # since dataclass __init__ automatically calls for __post_init__.
     #def __post_init__(self) -> None:
@@ -227,6 +228,9 @@ class BrightnessConfig():
     #    if self._dark >= 0:
     #         raise ValueError("Instance creation: Dark adjust cannot "
     #                          f"be positive or 0. Got {self._dark}")
+    
+    # The underscore signals "access this through the property, 
+    # not directly."
     
     # ── GETTER: @property ──────────────────────────────────
     @property
