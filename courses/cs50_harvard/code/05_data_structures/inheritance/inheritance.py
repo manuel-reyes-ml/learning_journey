@@ -335,3 +335,36 @@ def create_family(generations: int = DEFAULT_GEN_COUNT) -> Person:
     # connects itself together.
     # ------------------------------------------------------------------ #
     return person
+
+
+def print_family(
+    person: Person | None,
+    generation: int = 0,
+    indent_length: int = INDENT_LENGTH,
+) -> None:
+    """
+    """
+    if person is None:
+        return
+    
+    indent = " " * (generation * indent_length)
+    
+    if generation == 0:
+        label = "Child"
+    elif generation == 1:
+        label = "Parent"
+    else:
+        # "Great-" repeated (generation - 2) times, then "Grandparent"
+        # String multiplication again: "Great-" * 1 = "Great-"
+        #                              "Great-" * 2 = "Great-Great-"
+        label = "Great-" * (generation-2) + "Grandparent"
+        
+    print(
+        f"{indent}{label} (Generation {generation}): "
+        f"blood type {person.alleles[0]}{person.alleles[1]}"
+    )
+    
+    
+    print_family(person.parents[0], generation +1)
+    print_family(person.parents[1], generation + 1)
+    
