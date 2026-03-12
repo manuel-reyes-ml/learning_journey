@@ -8,13 +8,14 @@
 from __future__ import annotations
 from logging.handlers import RotatingFileHandler
 from dataclasses import dataclass, field
-from enum import IntEnum, unique
+from typing import Final, Pattern, NamedTuple, overload
+from enum import IntEnum, StrEnum, unique
 from pathlib import Path
-from typing import Final
 import argparse
 import logging
 import random
 import sys
+import re
 
 
 # =============================================================================
@@ -41,6 +42,13 @@ alleles_available: str = ", ".join(ALLELES)
 
 # For final output format
 INDENT_LENGTH: Final[int] = 4
+
+
+# =====================================================
+# Type Aliases
+# =====================================================
+
+type SeedTypes = str | int | float | None
 
 
 # =====================================================
@@ -129,6 +137,13 @@ file_dirs = FileDirectories()
 # Other Class Configuration
 # =====================================================
 
+class NumberPattern(NamedTuple):
+    """
+    """
+    INT_PATTERN: Pattern = re.compile(r"^-?\d+$")
+    FLOAT_PATTERN: Pattern = re.compile(r"^-?\d+\.?\d*$")
+    
+
 # Exit codes (Unix standard)
 @unique  # Ensure no duplicate values
 class ExitCode(IntEnum):
@@ -147,6 +162,15 @@ class ExitCode(IntEnum):
     SUCCESS = 0
     FAILURE = 1
     KEYBOARD_INTERRUPT = 130
+    HOLA = 1
+    
+    
+@unique
+class ValidatorName(StrEnum):
+    """
+    """
+    SEED = "Seed"
+    GENERATION = "Generations"
 
 
 # =====================================================
@@ -212,20 +236,58 @@ logger.setLevel(logging.DEBUG)  # Let handlers decide their own level!
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
 
-def _validate_generations(generations: str | None = None) -> int:
+def _validate_number(
+    number: int | float,
+    *,
+    func_name: str | None = None,
+) -> int | float:
+    """
+    """
+    func_name = func_name if func_name else "Number"
+    
+    if number <= 0:
+        raise argparse.ArgumentTypeError(f"{func_name} must be positive")
+    return number
+
+
+def validate_generations(
+    generations: str | None = None,
+    func_name = ValidatorName.GENERATION,
+) -> int:
     """
     """
     if not generations:
         raise argparse.ArgumentTypeError("Generations cannot be empty")
     
     if not generations.strip().isdigit():
-        raise argparse.ArgumentTypeError(f"Generations my be numeric. Got {generations!r}")
+        raise argparse.ArgumentTypeError(f"Generations must be numeric. Got {generations!r}")
 
-    if int(generations) <= 0:
-        raise argparse.ArgumentTypeError(f"Generations must be positive. Got {generations!r}")
-    
+    _validate_number(int(generations), func_name=func_name)
     return int(generations.strip())
-    
+
+
+def validate_seed(
+    seed: SeedTypes = None,
+    func_name = ValidatorName.SEED,
+    match_number: type[NumberPattern] = NumberPattern,
+) -> SeedTypes:
+    """
+    """                 
+    if isinstance(seed, str):
+        if match_number.INT_PATTERN.match(seed.strip()):
+            return _validate_number(int(seed.strip()), func_name=func_name)
+        
+        elif match_number.FLOAT_PATTERN.match(seed.strip()):
+            return _validate_number(float(seed.strip()), func_name=func_name)
+        
+        else:
+            return seed.strip()
+        
+    elif isinstance(seed, (int, float)):
+        return _validate_number(seed, func_name=func_name)
+    else:
+        return None
+            
 
 def _config_logging(
     log_to_file: bool = True,
@@ -487,8 +549,13 @@ def main(argv: list[str] | None = None) -> ExitCode:
     )
     parser.add_argument(
         "-g","--generations",
-        type=_validate_generations,
+        type=validate_generations,
         default=DEFAULT_GEN_COUNT,
         help="Enter generations as a positive number. "
              f"Default is {DEFAULT_GEN_COUNT}"
+    )
+    parser.add_argument(
+        "-s", "--seed",
+        type=validate_seed,
+        help="",
     )
