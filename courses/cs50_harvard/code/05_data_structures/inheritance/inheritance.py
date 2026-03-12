@@ -37,6 +37,8 @@ __all__ = []
 ALLELES: Final[list[str]] = ['A', 'B', 'O']
 DEFAULT_GEN_COUNT: Final[int] = 3
 
+alleles_available: str = ", ".join(ALLELES)
+
 # For final output format
 INDENT_LENGTH: Final[int] = 4
 
@@ -209,6 +211,21 @@ logger.setLevel(logging.DEBUG)  # Let handlers decide their own level!
 # =============================================================================
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
+
+def _validate_generations(generations: str | None = None) -> int:
+    """
+    """
+    if not generations:
+        raise argparse.ArgumentTypeError("Generations cannot be empty")
+    
+    if not generations.strip().isdigit():
+        raise argparse.ArgumentTypeError(f"Generations my be numeric. Got {generations!r}")
+
+    if int(generations) <= 0:
+        raise argparse.ArgumentTypeError(f"Generations must be positive. Got {generations!r}")
+    
+    return int(generations.strip())
+    
 
 def _config_logging(
     log_to_file: bool = True,
@@ -453,6 +470,25 @@ def print_family(
     # these calls hit the base case (person is None) and return
     # immediately — no crash, no infinite loop.
     # ------------------------------------------------------------------ #
-    print_family(person.parents[0], generation +1)
+    print_family(person.parents[0], generation + 1)
     print_family(person.parents[1], generation + 1)
     
+
+# =============================================================================
+# CLI ENTRY POINT
+# =============================================================================
+
+def main(argv: list[str] | None = None) -> ExitCode:
+    """
+    """
+    parser = argparse.ArgumentParser(
+        description="Create family tree selecting random alleles from parent to child"
+                    f"Oldest generation gets random alleles from Constant: {alleles_available}"
+    )
+    parser.add_argument(
+        "-g","--generations",
+        type=_validate_generations,
+        default=DEFAULT_GEN_COUNT,
+        help="Enter generations as a positive number. "
+             f"Default is {DEFAULT_GEN_COUNT}"
+    )
