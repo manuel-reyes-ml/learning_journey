@@ -239,3 +239,29 @@ def _random_allele(alleles: list[str] = ALLELES) -> str:
 # CORE FUNCTIONS
 # =============================================================================
 
+def create_family(generations: int = DEFAULT_GEN_COUNT) -> Person:
+    """
+    """
+    if generations <= 0:
+        raise ValueError("Generations must be positive")
+    
+    person = Person()
+    
+    if generations == 1:
+        # Oldest generation - no parents, random alleles
+        person.alleles = [_random_allele(), _random_allele()]
+        # parents already default to [None, None] - nothing to do
+        
+    else:
+        parent_0 = create_family(generations - 1)
+        
+        parent_1 = create_family(generations -1)
+    
+        person.parents = [parent_0, parent_1]
+        
+        person.alleles = [
+            _random_allele(parent_0.alleles),
+            _random_allele(parent_1.alleles),
+        ]
+        
+    return person
