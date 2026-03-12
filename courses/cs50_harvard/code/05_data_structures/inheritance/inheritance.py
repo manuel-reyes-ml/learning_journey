@@ -245,23 +245,93 @@ def create_family(generations: int = DEFAULT_GEN_COUNT) -> Person:
     if generations <= 0:
         raise ValueError("Generations must be positive")
     
+    # ------------------------------------------------------------------ #
+    # STEP 1: Create a new person — every recursive call starts here.
+    # Whether this person is a grandparent or a child, they all begin
+    # as a blank Person. The if/else below decides HOW to fill them in.
+    # ------------------------------------------------------------------ #
     person = Person()
     
+    # ------------------------------------------------------------------ #
+    # STEP 2: Decide — are we at the oldest generation yet?
+    #
+    # Think of "generations" as a countdown:
+    #   create_family(3) → child      (has parents)
+    #   create_family(2) → parent     (has parents)
+    #   create_family(1) → grandparent (NO parents — BASE CASE)
+    #
+    # When generations == 1, we've reached the oldest generation.
+    # This is the BASE CASE — the recursion STOPS here.
+    # ------------------------------------------------------------------ #
     if generations == 1:
-        # Oldest generation - no parents, random alleles
+        # -------------------------------------------------------------- #
+        # BASE CASE: Oldest generation (grandparents)
+        #
+        # - No parents exist for them → stays [None, None] from default
+        # - Alleles are assigned randomly — this is where randomness
+        #   ENTERS the family tree. All other generations inherit FROM
+        #   these random starting points.
+        # -------------------------------------------------------------- #
         person.alleles = [_random_allele(), _random_allele()]
-        # parents already default to [None, None] - nothing to do
         
     else:
+        # -------------------------------------------------------------- #
+        # RECURSIVE CASE: This person has parents
+        #
+        # KEY INSIGHT: We must build the parents BEFORE we can assign
+        # this person's alleles, because their alleles are INHERITED
+        # from the parents. So parents must exist first.
+        #
+        # "generations - 1" is what makes recursion work — each call
+        # gets a SMALLER number, guaranteeing we eventually hit the
+        # base case (generations == 1). Without this shrinkage,
+        # the function would call itself forever → RecursionError.
+        # -------------------------------------------------------------- #
+        
+        
+        # Create parent_0 — this single call triggers a FULL chain:
+        # If generations=3, this calls create_family(2), which calls
+        # create_family(1) twice for grandparents. By the time this
+        # line finishes, parent_0 is FULLY BUILT with their own
+        # parents and alleles already assigned.
         parent_0 = create_family(generations - 1)
         
+        # Create parent_1 — same chain, independent branch.
+        # This is why we get 2 parents, 4 grandparents, 8 great-grands.
+        # Each level DOUBLES because every person creates TWO parents.
         parent_1 = create_family(generations -1)
-    
+
+        # -------------------------------------------------------------- #
+        # Link parents to this person — Python equivalent of C's:
+        #   p->parents[0] = parent0;
+        #   p->parents[1] = parent1;
+        # -------------------------------------------------------------- #
         person.parents = [parent_0, parent_1]
         
+        # -------------------------------------------------------------- #
+        # Inherit alleles — each parent randomly passes ONE of their
+        # two alleles to this child.
+        #
+        # _random_allele(parent_0.alleles) looks at e.g. ['A', 'O']
+        # and picks either 'A' or 'O' with equal probability.
+        #
+        # alleles[0] always comes from parent_0
+        # alleles[1] always comes from parent_1
+        # -------------------------------------------------------------- #
         person.alleles = [
             _random_allele(parent_0.alleles),
             _random_allele(parent_1.alleles),
         ]
-        
+    
+    # ------------------------------------------------------------------ #
+    # STEP 3: Return the fully built person.
+    #
+    # For the base case: returns a grandparent with random alleles.
+    # For the recursive case: returns a person with parents linked
+    #   and alleles inherited.
+    #
+    # This returned value is what gets assigned to "parent_0" or
+    # "parent_1" in the CALLER's frame — that's how the tree
+    # connects itself together.
+    # ------------------------------------------------------------------ #
     return person
