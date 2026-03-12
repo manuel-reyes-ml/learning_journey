@@ -344,11 +344,48 @@ def print_family(
 ) -> None:
     """
     """
+    # ------------------------------------------------------------------ #
+    # BASE CASE: If person is None, there's nothing to print.
+    #
+    # This happens when we try to print the parents of the oldest
+    # generation — their parents are [None, None]. Without this check,
+    # we'd crash trying to access None.alleles.
+    #
+    # Compare to create_family's base case:
+    #   create_family stops when generations == 1  (countdown hits bottom)
+    #   print_family stops when person is None     (tree has no more nodes)
+    # Different triggers, same purpose — STOP the recursion.
+    # ------------------------------------------------------------------ #
     if person is None:
         return
     
+    # ------------------------------------------------------------------ #
+    # STEP 1: Build the indentation string.
+    #
+    # Each generation level indents further to show depth visually:
+    #   Generation 0 (child):       no indent      ""
+    #   Generation 1 (parent):      4 spaces       "    "
+    #   Generation 2 (grandparent): 8 spaces        "        "
+    #
+    # This is just string multiplication — " " * 4 = "    "
+    # Same logic as the C version's for-loop printing spaces.
+    # ------------------------------------------------------------------ #
     indent = " " * (generation * indent_length)
     
+    # ------------------------------------------------------------------ #
+    # STEP 2: Determine the label based on generation number.
+    #
+    # Generation 0 → "Child"
+    # Generation 1 → "Parent"
+    # Generation 2 → "Grandparent"
+    # Generation 3 → "Great-Grandparent"
+    # Generation 4 → "Great-Great-Grandparent"
+    #
+    # For generation 3+, we prepend "Great-" for each level beyond 2.
+    # The count of "Great-" prefixes is (generation - 2).
+    #   generation 3 → 1 "Great-"  → "Great-Grandparent"
+    #   generation 4 → 2 "Great-"  → "Great-Great-Grandparent"
+    # ------------------------------------------------------------------ #
     if generation == 0:
         label = "Child"
     elif generation == 1:
@@ -358,13 +395,39 @@ def print_family(
         # String multiplication again: "Great-" * 1 = "Great-"
         #                              "Great-" * 2 = "Great-Great-"
         label = "Great-" * (generation-2) + "Grandparent"
-        
+    
+    # ------------------------------------------------------------------ #
+    # STEP 3: Print this person's info.
+    #
+    # Combines: indentation + label + generation number + both alleles.
+    # person.alleles[0] and [1] are single chars like 'A', 'O', 'B'.
+    # Printing them side by side gives "AO", "BB", "OA", etc.
+    # ------------------------------------------------------------------ #
     print(
         f"{indent}{label} (Generation {generation}): "
         f"blood type {person.alleles[0]}{person.alleles[1]}"
     )
     
-    
+    # ------------------------------------------------------------------ #
+    # STEP 4: Recurse into both parents.
+    #
+    # This is the RECURSIVE CASE — we print parent_0 first, then
+    # parent_1. Each call increases generation by 1, which:
+    #   - Adds more indentation (deeper = further right)
+    #   - Changes the label (Parent → Grandparent → Great-...)
+    #
+    # Compare to create_family's recursion:
+    #   create_family passes (generations - 1)  → counting DOWN
+    #   print_family passes (generation + 1)    → counting UP
+    #
+    # Why opposite directions?
+    #   create_family counts DOWN to know when to STOP building.
+    #   print_family counts UP to know how deep we ARE for display.
+    #
+    # When we reach a grandparent whose parents are [None, None],
+    # these calls hit the base case (person is None) and return
+    # immediately — no crash, no infinite loop.
+    # ------------------------------------------------------------------ #
     print_family(person.parents[0], generation +1)
     print_family(person.parents[1], generation + 1)
     
