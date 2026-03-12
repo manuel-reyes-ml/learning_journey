@@ -8,6 +8,7 @@
 from __future__ import annotations
 from logging.handlers import RotatingFileHandler
 from dataclasses import dataclass, field
+from enum import IntEnum, unique
 from pathlib import Path
 from typing import Final
 import argparse
@@ -120,6 +121,30 @@ class Person:
 
 fhandler_config = FileHandlerConfig()
 file_dirs = FileDirectories()
+
+
+# =====================================================
+# Other Class Configuration
+# =====================================================
+
+# Exit codes (Unix standard)
+@unique  # Ensure no duplicate values
+class ExitCode(IntEnum):
+    """
+    Process exit codes following Unix conventions.
+
+    Attributes
+    ----------
+    SUCCESS : int
+        Normal termination (0).
+    FAILURE : int
+        General error (1).
+    KEYBOARD_INTERRUPT : int
+        Terminated by Ctrl+C (130).
+    """
+    SUCCESS = 0
+    FAILURE = 1
+    KEYBOARD_INTERRUPT = 130
 
 
 # =====================================================
