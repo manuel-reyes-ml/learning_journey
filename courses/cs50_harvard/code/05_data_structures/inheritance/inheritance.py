@@ -137,11 +137,11 @@ file_dirs = FileDirectories()
 # Other Class Configuration
 # =====================================================
 
-class NumberPattern(NamedTuple):
+class NumberPattern:
     """
     """
-    INT_PATTERN: Pattern = re.compile(r"^-?\d+$")
-    FLOAT_PATTERN: Pattern = re.compile(r"^-?\d+\.?\d*$")
+    INT_PATTERN: re.Pattern = re.compile(r"^-?\d+$")
+    FLOAT_PATTERN: re.Pattern = re.compile(r"^-?\d+\.?\d*$")
     
 
 # Exit codes (Unix standard)
