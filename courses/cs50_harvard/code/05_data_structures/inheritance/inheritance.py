@@ -8,7 +8,7 @@
 from __future__ import annotations
 from logging.handlers import RotatingFileHandler
 from dataclasses import dataclass, field
-from typing import Final, Pattern, NamedTuple, overload
+from typing import Final, NamedTuple, overload
 from enum import IntEnum, StrEnum, unique
 from pathlib import Path
 import argparse
@@ -235,6 +235,13 @@ logger.setLevel(logging.DEBUG)  # Let handlers decide their own level!
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
 
+# Use overload when return Type depends on input Type for type checker!
+@overload
+def _validate_number(number:int, *, func_name: str | None = None) -> int: ...
+
+@overload
+def _validate_number(number: float, *, func_name: str | None = None) -> float: ...
+
 def _validate_number(
     number: int | float,
     *,
@@ -265,8 +272,7 @@ def validate_generations(
             f"Generations must be numeric. Got {generations!r}"
         )
 
-    _validate_number(int(generations.strip()), func_name=func_name)
-    return int(generations.strip())
+    return _validate_number(int(generations.strip()), func_name=func_name)
 
 
 def validate_seed(
