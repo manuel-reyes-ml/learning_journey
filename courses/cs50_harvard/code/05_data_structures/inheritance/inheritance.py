@@ -7,9 +7,9 @@
 
 from __future__ import annotations
 from logging.handlers import RotatingFileHandler
-from dataclasses import dataclass, field
-from typing import Final, NamedTuple, overload
 from enum import IntEnum, StrEnum, unique
+from dataclasses import dataclass, field
+from typing import Final, overload
 from pathlib import Path
 import argparse
 import logging
@@ -504,15 +504,16 @@ def print_family(
     #   generation 3 → 1 "Great-"  → "Great-Grandparent"
     #   generation 4 → 2 "Great-"  → "Great-Great-Grandparent"
     # ------------------------------------------------------------------ #
-    if generation == 0:
-        label = "Child"
-    elif generation == 1:
-        label = "Parent"
-    else:
-        # "Great-" repeated (generation - 2) times, then "Grandparent"
-        # String multiplication again: "Great-" * 1 = "Great-"
-        #                              "Great-" * 2 = "Great-Great-"
-        label = "Great-" * (generation-2) + "Grandparent"
+    match generation:  # Structural pattern matching - more powerful than if/elif
+        case 0:
+            label = "Child"
+        case 1:
+            label = "Parent"
+        case _:  # Default case (wildcard)
+            # "Great-" repeated (generation - 2) times, then "Grandparent"
+            # String multiplication again: "Great-" * 1 = "Great-"
+            #                              "Great-" * 2 = "Great-Great-"
+            label = "Great-" * (generation-2) + "Grandparent"
     
     # ------------------------------------------------------------------ #
     # STEP 3: Print this person's info.
@@ -624,7 +625,6 @@ def main(argv: list[str] | None = None) -> ExitCode:
         logger.warning("\nProgram terminated. Exiting...\n")
     
     return ExitCode.SUCCESS
-
 
 
 if __name__ == "__main__":
