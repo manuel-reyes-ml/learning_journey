@@ -162,7 +162,6 @@ class ExitCode(IntEnum):
     SUCCESS = 0
     FAILURE = 1
     KEYBOARD_INTERRUPT = 130
-    HOLA = 1
     
     
 @unique
@@ -443,6 +442,7 @@ def create_family(generations: int = DEFAULT_GEN_COUNT) -> Person:
 
 def print_family(
     person: Person | None,
+    *,
     generation: int = 0,
     indent_length: int = INDENT_LENGTH,
 ) -> None:
@@ -532,8 +532,8 @@ def print_family(
     # these calls hit the base case (person is None) and return
     # immediately — no crash, no infinite loop.
     # ------------------------------------------------------------------ #
-    print_family(person.parents[0], generation + 1)
-    print_family(person.parents[1], generation + 1)
+    print_family(person.parents[0], generation=generation + 1)
+    print_family(person.parents[1], generation=generation + 1)
     
 
 # =============================================================================
@@ -552,10 +552,58 @@ def main(argv: list[str] | None = None) -> ExitCode:
         type=validate_generations,
         default=DEFAULT_GEN_COUNT,
         help="Enter generations as a positive number. "
-             f"Default is {DEFAULT_GEN_COUNT}"
+             f"Default is {DEFAULT_GEN_COUNT}",
     )
     parser.add_argument(
         "-s", "--seed",
         type=validate_seed,
-        help="",
+        help="Enter seed as a positive number or "
+             "string to set a deterministic pattern",
     )
+    parser.add_argument(
+        "-v", "--verbose",
+        action="store_true",
+        help="Enable verbose (debug) output",
+    )
+    parser.add_argument(
+        "--no-log-file",
+        action="store_true",
+        help="Disable file logging (console only)",
+    )
+    
+    args = parser.parse_args(argv)
+    
+    _config_logging(
+        console_verbose=args.verbose,
+        log_to_file=not args.no_log_file,
+    )
+    
+    if args.verbose:
+        logger.debug("Verbose mode enabled (console debug output)")
+        
+    if args.seed:
+        random.seed(args.seed)
+        
+    try:
+        person = create_family(args.generations)
+        print_family(person, generation=0)
+    
+    except KeyboardInterrupt:
+        logger.warning("\nInterrupted by user. Exiting.")
+        return ExitCode.KEYBOARD_INTERRUPT
+    
+    except ValueError as e:
+        logger.error(f"Process Error: {e}")
+        return ExitCode.FAILURE
+    
+    except Exception as e:
+        # Behaves like .error but includes TraceBack info
+        logger.exception(f"Unexpected Error: {e}")
+        return ExitCode.FAILURE
+    
+    return ExitCode.SUCCESS
+
+
+
+if __name__ == "__main__":
+    sys.exit(main())
