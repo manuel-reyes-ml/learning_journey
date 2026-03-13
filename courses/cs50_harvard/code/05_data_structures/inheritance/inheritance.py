@@ -245,7 +245,9 @@ def _validate_number(
     func_name = func_name if func_name else "Number"
     
     if number <= 0:
-        raise argparse.ArgumentTypeError(f"{func_name} must be positive")
+        raise argparse.ArgumentTypeError(
+            f"{func_name} must be positive. Got {number!r}"
+        )
     return number
 
 
@@ -259,9 +261,11 @@ def validate_generations(
         raise argparse.ArgumentTypeError("Generations cannot be empty")
     
     if not generations.strip().isdigit():
-        raise argparse.ArgumentTypeError(f"Generations must be numeric. Got {generations!r}")
+        raise argparse.ArgumentTypeError(
+            f"Generations must be numeric. Got {generations!r}"
+        )
 
-    _validate_number(int(generations), func_name=func_name)
+    _validate_number(int(generations.strip()), func_name=func_name)
     return int(generations.strip())
 
 
@@ -583,14 +587,19 @@ def main(argv: list[str] | None = None) -> ExitCode:
         logger.debug("Verbose mode enabled (console debug output)")
         
     if args.seed:
+        logger.info(f"Seed successfully set to {args.seed!r}")
         random.seed(args.seed)
         
     try:
         person = create_family(args.generations)
+        logger.info("Family Tree created successfully......")
+        logger.info("Printing family tree now......\n")
+        
         print_family(person, generation=0)
+        logger.info("\nFamily tree printed successfully. Exiting.\n")
     
     except KeyboardInterrupt:
-        logger.warning("\nInterrupted by user. Exiting.")
+        logger.warning("Interrupted by user. Exiting.")
         return ExitCode.KEYBOARD_INTERRUPT
     
     except ValueError as e:
