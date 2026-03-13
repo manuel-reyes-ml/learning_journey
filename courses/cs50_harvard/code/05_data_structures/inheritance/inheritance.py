@@ -49,7 +49,6 @@ INDENT_LENGTH: Final[int] = 4
 # =====================================================
 
 type SeedTypes = str | int | float | None
-type 
 
 
 # =====================================================
@@ -602,11 +601,11 @@ def main(argv: list[str] | None = None) -> ExitCode:
         
     try:
         person = create_family(args.generations)
-        logger.info("Family Tree created successfully......")
+        logger.info(f"{args.generations} Gen Family Tree created successfully....")
         logger.info("Printing family tree now......\n")
         
         print_family(person, generation=0)
-        logger.info("\nFamily tree printed successfully. Exiting.\n")
+        logger.info("Family Tree printed successfully")
     
     except KeyboardInterrupt:
         logger.warning("Interrupted by user. Exiting.")
@@ -620,6 +619,9 @@ def main(argv: list[str] | None = None) -> ExitCode:
         # Behaves like .error but includes TraceBack info
         logger.exception(f"Unexpected Error: {e}")
         return ExitCode.FAILURE
+    
+    finally:
+        logger.warning("\nProgram terminated. Exiting...\n")
     
     return ExitCode.SUCCESS
 
