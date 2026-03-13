@@ -49,6 +49,7 @@ INDENT_LENGTH: Final[int] = 4
 # =====================================================
 
 type SeedTypes = str | int | float | None
+type 
 
 
 # =====================================================
@@ -259,20 +260,23 @@ def _validate_number(
 
 
 def validate_generations(
-    generations: str | None = None,
+    generations: str | int | None = None,
     func_name = ValidatorName.GENERATION,
 ) -> int:
     """
     """
     if not generations:
         raise argparse.ArgumentTypeError("Generations cannot be empty")
+        
+    if isinstance(generations, str):
+        if not generations.strip().isdigit():
+            raise argparse.ArgumentTypeError(
+                f"Generations must be a positive integer. Got {generations!r}"
+            )
     
-    if not generations.strip().isdigit():
-        raise argparse.ArgumentTypeError(
-            f"Generations must be numeric. Got {generations!r}"
-        )
-
-    return _validate_number(int(generations.strip()), func_name=func_name)
+        return int(generations.strip())
+        
+    return _validate_number(generations, func_name=func_name)
 
 
 def validate_seed(
