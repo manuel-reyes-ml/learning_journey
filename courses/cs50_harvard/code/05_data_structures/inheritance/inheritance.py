@@ -310,6 +310,7 @@ def config_logging(
         fmt='%(asctime)s : %(levelname)s : %(message)s',
         datefmt='%H:%M:%S',
     ))
+    logger.addHandler(console_handler)
     
     if log_to_file:
         # parents=True: create any missing parent directories
