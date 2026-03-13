@@ -34,12 +34,6 @@ __all__ = []
 # Module Level Constants
 # =====================================================
 
-# For random selection and generations build up
-ALLELES: Final[list[str]] = ['A', 'B', 'O']
-DEFAULT_GEN_COUNT: Final[int] = 3
-
-alleles_available: str = ", ".join(ALLELES)
-
 # For final output format
 INDENT_LENGTH: Final[int] = 4
 
@@ -99,6 +93,25 @@ class FileDirectories:
         """
         return self.LOG_DIR / self.create_log_fname()
     
+    
+# For random selection and generations build up
+@dataclass(frozen=True, slots=True)
+class GenBuildConstants:
+    """
+    """
+    ALLELES: Final[list[str]] = ['A', 'B', 'O']
+    DEFAULT_GEN_COUNT: Final[int] = 3
+
+    def __post_init__(self) -> None:
+        if self.DEFAULT_GEN_COUNT <= 0:
+            raise ValueError("Generations cannot be negative")
+        
+    @property
+    def alleles_available(self) -> str:
+        """
+        """
+        return ", ".join(self.ALLELES)
+
 
 @dataclass
 class Person:
@@ -131,6 +144,11 @@ class Person:
 
 fhandler_config = FileHandlerConfig()
 file_dirs = FileDirectories()
+
+try:
+    gen_constants = GenBuildConstants()
+except ValueError as e:
+    sys.exit(f"Error: Invalid generation seeting: {e}\n")
 
 
 # =====================================================
@@ -345,7 +363,7 @@ def config_logging(
         logger.addHandler(file_handler)
     
 
-def random_allele(alleles: list[str] = ALLELES) -> str:
+def random_allele(alleles: list[str] = gen_constants.ALLELES) -> str:
     """
     """
     # Picks one random element from the sequence
@@ -356,7 +374,7 @@ def random_allele(alleles: list[str] = ALLELES) -> str:
 # CORE FUNCTIONS
 # =============================================================================
 
-def create_family(generations: int = DEFAULT_GEN_COUNT) -> Person:
+def create_family(generations: int = gen_constants.DEFAULT_GEN_COUNT) -> Person:
     """
     """
     if generations <= 0:
@@ -559,15 +577,16 @@ def main(argv: list[str] | None = None) -> ExitCode:
     """
     """
     parser = argparse.ArgumentParser(
-        description="Create family tree selecting random alleles from parent to child"
-                    f"Oldest generation gets random alleles from Constant: {alleles_available}"
+        description="Create family tree selecting random alleles "
+                    "from parent to child. Oldest generation gets "
+                    f"random alleles from Constant: {gen_constants.alleles_available}"
     )
     parser.add_argument(
         "-g","--generations",
         type=validate_generations,
-        default=DEFAULT_GEN_COUNT,
+        default=gen_constants.DEFAULT_GEN_COUNT,
         help="Enter generations as a positive number. "
-             f"Default is {DEFAULT_GEN_COUNT}",
+             f"Default is {gen_constants.DEFAULT_GEN_COUNT}",
     )
     parser.add_argument(
         "-s", "--seed",
