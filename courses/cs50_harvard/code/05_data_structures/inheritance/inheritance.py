@@ -9,7 +9,8 @@ from __future__ import annotations
 from logging.handlers import RotatingFileHandler
 from enum import IntEnum, StrEnum, unique
 from dataclasses import dataclass, field
-from typing import Final, overload
+from typing import Any, Final, Callable, overload
+from functools import update_wrapper
 from pathlib import Path
 import argparse
 import logging
@@ -252,6 +253,25 @@ logger.setLevel(logging.DEBUG)  # Let handlers decide their own level!
 
 
 # =============================================================================
+# DECORATORS
+# =============================================================================
+
+# Sometimes you want a decorator that's a CLASS, not a function.
+# @wraps doesn't work as neatly here — use update_wrapper.
+class CountCalls:
+    """
+    """
+    def __init__(self, func: Callable) -> None:
+        update_wrapper(self, func)  # Copy func´s metadata to self
+        self.func = func
+        self.count = 0
+        
+    def __call__(self, *args: Any, **kwargs: Any) -> Any:
+        self.count += 1
+        return self.func(*args, **kwargs)
+
+
+# =============================================================================
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
 
@@ -365,6 +385,7 @@ def config_logging(
         logger.addHandler(file_handler)
     
 
+@CountCalls
 def random_allele(alleles: tuple[str, ...] = gen_constants.ALLELES) -> str:
     """
     """
@@ -623,6 +644,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         
     try:
         person = create_family(args.generations)
+        logger.debug(f"Random allele was called {random_allele.count!r} times")
         logger.info(f"{args.generations} Gen Family Tree created successfully....")
         logger.info("Printing family tree now......\n")
         
