@@ -99,7 +99,9 @@ class FileDirectories:
 class GenBuildConstants:
     """
     """
-    ALLELES: Final[list[str]] = ['A', 'B', 'O']
+    # For dataclass 'frozen' need to use hashable structure
+    # [str, ...] -> any numbre of strings values
+    ALLELES: Final[tuple[str, ...]] = ('A', 'B', 'O')
     DEFAULT_GEN_COUNT: Final[int] = 3
 
     def __post_init__(self) -> None:
@@ -121,7 +123,7 @@ class Person:
     # creates and returns a fresh [None, None] list.
     # Each person always has two elements: Person (parents) or None slots
     parents: list[Person | None] = field(default_factory=lambda: [None, None])
-    alleles: list[str] = field(default_factory=list)  # on each call creates emtpy list[]
+    alleles: tuple[str, ...] = field(default_factory=tuple)  # on each call creates emtpy tuple()
     
     # ❌ DANGEROUS — every Person shares the SAME list object
     # parents: list[Person | None] = [None, None]
@@ -363,7 +365,7 @@ def config_logging(
         logger.addHandler(file_handler)
     
 
-def random_allele(alleles: list[str] = gen_constants.ALLELES) -> str:
+def random_allele(alleles: tuple[str, ...] = gen_constants.ALLELES) -> str:
     """
     """
     # Picks one random element from the sequence
@@ -407,7 +409,7 @@ def create_family(generations: int = gen_constants.DEFAULT_GEN_COUNT) -> Person:
         #   ENTERS the family tree. All other generations inherit FROM
         #   these random starting points.
         # -------------------------------------------------------------- #
-        person.alleles = [random_allele(), random_allele()]
+        person.alleles = (random_allele(), random_allele())
         
     else:
         # -------------------------------------------------------------- #
@@ -453,10 +455,10 @@ def create_family(generations: int = gen_constants.DEFAULT_GEN_COUNT) -> Person:
         # alleles[0] always comes from parent_0
         # alleles[1] always comes from parent_1
         # -------------------------------------------------------------- #
-        person.alleles = [
+        person.alleles = (
             random_allele(parent_0.alleles),
             random_allele(parent_1.alleles),
-        ]
+        )
     
     # ------------------------------------------------------------------ #
     # STEP 3: Return the fully built person.
