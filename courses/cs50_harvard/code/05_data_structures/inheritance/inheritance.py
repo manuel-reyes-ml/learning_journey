@@ -16,7 +16,7 @@ import argparse
 import logging
 import random
 import sys
-import re
+import re  # Python's built-in library for working with regex
 
 
 # =============================================================================
@@ -44,6 +44,12 @@ INDENT_LENGTH: Final[int] = 4
 # =====================================================
 
 type SeedTypes = str | int | float | None
+# When using isinstance(var, None):
+#   None isn't a type-it's a value. Its type is
+#   NoneType(from types library, Python 3.10+).
+
+#   type(None) is more used in production code,
+#   since doesn't require an import.
 
 
 # =====================================================
@@ -158,13 +164,23 @@ except ValueError as e:
 # Other Class Configuration
 # =====================================================
 
+# With NamedTuple, the fields on the class itself are
+# descriptors (_tuplegetter), not the actual values.
 class NumberPattern:
     """
     """
     INT_PATTERN: re.Pattern = re.compile(r"^-?\d+$")
     FLOAT_PATTERN: re.Pattern = re.compile(r"^-?\d+\.?\d*$")
-    
+    # With regular class no need to instantiate to access values
 
+# Core functions from 're' module (more info at the end)
+#   re.search(pattern, string)    # Find first match anywhere in string
+#   re.match(pattern, string)     # Match only at the beginning
+#   re.findall(pattern, string)   # Return ALL matches as a list
+#   re.sub(pattern, repl, string) # Replace matches with new text
+#   re.split(pattern, string)     # Split string at each match
+ 
+ 
 # Exit codes (Unix standard)
 @unique  # Ensure no duplicate values
 class ExitCode(IntEnum):
@@ -184,13 +200,15 @@ class ExitCode(IntEnum):
     FAILURE = 1
     KEYBOARD_INTERRUPT = 130
     
-    
+# unique checks values regardless or
+# Enum type: InEnum, StrEnum, Enum.    
 @unique
 class ValidatorName(StrEnum):
     """
     """
     SEED = "Seed"
     GENERATION = "Generations"
+# Duplicate values get caught at class definition time.
 
 
 # =====================================================
@@ -269,6 +287,16 @@ class CountCalls:
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
         self.count += 1
         return self.func(*args, **kwargs)
+
+# @wraps(func) is actually syntactic sugar for update_wrapper().
+# They do the same thing, but update_wrapper gives you more control.
+#
+# @wraps(func)  ←→  update_wrapper(wrapper, wrapped=func)
+#
+# You would use update_wrapper directly when:
+# 1. You're not using a decorator pattern (e.g., factory functions)
+# 2. You need to customize WHICH attributes get copied
+# 3. You're building a class-based decorator
 
 
 # =============================================================================
@@ -672,3 +700,86 @@ def main(argv: list[str] | None = None) -> ExitCode:
 
 if __name__ == "__main__":
     sys.exit(main())
+    
+    
+    
+# ================================================================== #
+#                   REGEX (re module) QUICK REFERENCE                  #
+# ================================================================== #
+#
+# re.search(pattern, string)
+#   → Returns: Match object | None
+#   → Behavior: Finds FIRST match ANYWHERE in string
+#   → Example: re.search(r"\d+", "abc 123 def")  → Match '123'
+#   → Example: re.search(r"\d+", "no numbers")   → None
+#
+# re.match(pattern, string)
+#   → Returns: Match object | None
+#   → Behavior: Matches only at the BEGINNING of string
+#   → Example: re.match(r"\d+", "123 abc")   → Match '123'
+#   → Example: re.match(r"\d+", "abc 123")   → None
+#
+# re.fullmatch(pattern, string)
+#   → Returns: Match object | None
+#   → Behavior: ENTIRE string must match the pattern
+#   → Example: re.fullmatch(r"\d+", "123")     → Match '123'
+#   → Example: re.fullmatch(r"\d+", "123 abc") → None
+#
+# re.findall(pattern, string)
+#   → Returns: list[str] (all matches) | [] (empty list if none)
+#   → Behavior: Finds ALL non-overlapping matches
+#   → Example: re.findall(r"\d+", "abc 12 def 345") → ['12', '345']
+#   → Example: re.findall(r"\d+", "no numbers")     → []
+#
+# re.sub(pattern, repl, string)
+#   → Returns: str (new string with matches replaced)
+#   → Behavior: Replaces ALL matches with replacement text
+#   → Example: re.sub(r"\d+", "X", "abc 12 def 345") → 'abc X def X'
+#   → Example: re.sub(r"\d+", "X", "no numbers")     → 'no numbers'
+#
+# re.split(pattern, string)
+#   → Returns: list[str] (string split at each match)
+#   → Behavior: Splits string wherever the pattern matches
+#   → Example: re.split(r"\s+", "hello   world  foo") → ['hello', 'world', 'foo']
+#   → Example: re.split(r",", "a,b,c")                → ['a', 'b', 'c']
+#
+# re.compile(pattern)
+#   → Returns: re.Pattern object (pre-compiled regex)
+#   → Behavior: Compile once, reuse many times (faster in loops)
+#   → Example: pattern = re.compile(r"\d+")
+#              pattern.match("123")      → Match '123'
+#              pattern.findall("a 1 b 2") → ['1', '2']
+#
+# ------------------------------------------------------------------ #
+#                     MATCH OBJECT METHODS                             #
+# ------------------------------------------------------------------ #
+#
+# match.group()    → Returns the matched string: '123'
+# match.start()    → Returns start index of match: 4
+# match.end()      → Returns end index of match: 7
+# match.span()     → Returns (start, end) tuple: (4, 7)
+#
+# ------------------------------------------------------------------ #
+#                   COMMON PATTERN CHARACTERS                          #
+# ------------------------------------------------------------------ #
+#
+# \d    → Any digit [0-9]
+# \D    → Any NON-digit
+# \w    → Any word char [a-zA-Z0-9_]
+# \W    → Any NON-word char
+# \s    → Any whitespace (space, tab, newline)
+# \S    → Any NON-whitespace
+# .     → Any character except newline
+# ^     → Start of string
+# $     → End of string
+# +     → One or more
+# *     → Zero or more
+# ?     → Zero or one (optional)
+# {n}   → Exactly n times
+# {n,m} → Between n and m times
+# []    → Character class: [aeiou], [0-9], [A-Za-z]
+# |     → OR: (cat|dog)
+# ()    → Capture group
+# \.    → Literal dot (escaped)
+#
+# ================================================================== #
