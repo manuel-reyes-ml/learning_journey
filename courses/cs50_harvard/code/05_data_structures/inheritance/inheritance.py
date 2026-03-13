@@ -288,7 +288,7 @@ def validate_seed(
         return None
             
 
-def _config_logging(
+def config_logging(
     log_to_file: bool = True,
     console_verbose: bool = False,
     file_dirs: FileDirectories = file_dirs,
@@ -317,7 +317,7 @@ def _config_logging(
         file_dirs.LOG_DIR.mkdir(parents=True, exist_ok=True)
     
         file_handler = RotatingFileHandler(
-            filename=file_dirs.log_file.name,  # .name returns only file name
+            filename=file_dirs.log_file,
             maxBytes=fhandler_config.max_log_bytes,
             backupCount=fhandler_config.BACKUP_COUNT,
             encoding=fhandler_config.ENCODING,
@@ -331,7 +331,7 @@ def _config_logging(
         logger.addHandler(file_handler)
     
 
-def _random_allele(alleles: list[str] = ALLELES) -> str:
+def random_allele(alleles: list[str] = ALLELES) -> str:
     """
     """
     # Picks one random element from the sequence
@@ -375,7 +375,7 @@ def create_family(generations: int = DEFAULT_GEN_COUNT) -> Person:
         #   ENTERS the family tree. All other generations inherit FROM
         #   these random starting points.
         # -------------------------------------------------------------- #
-        person.alleles = [_random_allele(), _random_allele()]
+        person.alleles = [random_allele(), random_allele()]
         
     else:
         # -------------------------------------------------------------- #
@@ -422,8 +422,8 @@ def create_family(generations: int = DEFAULT_GEN_COUNT) -> Person:
         # alleles[1] always comes from parent_1
         # -------------------------------------------------------------- #
         person.alleles = [
-            _random_allele(parent_0.alleles),
-            _random_allele(parent_1.alleles),
+            random_allele(parent_0.alleles),
+            random_allele(parent_1.alleles),
         ]
     
     # ------------------------------------------------------------------ #
@@ -573,7 +573,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
     
     args = parser.parse_args(argv)
     
-    _config_logging(
+    config_logging(
         console_verbose=args.verbose,
         log_to_file=not args.no_log_file,
     )
