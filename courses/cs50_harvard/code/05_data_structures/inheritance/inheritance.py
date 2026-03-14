@@ -697,6 +697,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         
         print_family(person, generation=0)
         logger.info("Family Tree printed successfully")
+        return ExitCode.SUCCESS
     
     except KeyboardInterrupt:
         logger.warning("Interrupted by user. Exiting.")
@@ -713,8 +714,6 @@ def main(argv: list[str] | None = None) -> ExitCode:
     
     finally:  # Always runs (error or no erros)
         logger.warning("\nProgram terminated. Exiting...\n")
-    
-    return ExitCode.SUCCESS
 
 
 if __name__ == "__main__":
