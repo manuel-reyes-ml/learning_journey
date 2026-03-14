@@ -949,6 +949,14 @@ def main(argv: list[str] | None = None)-> ExitCode:
         
         report: JPEGRecoverResult = recover_jpeg(input_file)
         
+        # Print out report using logging
+        logger.info(f"Recovered {report['images_recovered']} images from file")
+        
+        for image, size in report["images_details"].items():
+            logger.info(f"Name: {image}, Size: {size['kb_size']} KB")
+            
+        logger.info(f"All images are saved in: '{report['output_file']}'\n")
+        
     except KeyboardInterrupt:
         logger.warning("\nInterrupted by user. Exiting.")
         return ExitCode.KEYBOARD_INTERRUPT
@@ -965,14 +973,8 @@ def main(argv: list[str] | None = None)-> ExitCode:
         logger.exception(f"Unexpected Error: {e}")  # Behaves like .error but includes TraceBack info
         return ExitCode.FAILURE
     
-    
-    # Print out report using logging
-    logger.info(f"Recovered {report['images_recovered']} images from file")
-    
-    for image, size in report["images_details"].items():
-        logger.info(f"Name: {image}, Size: {size['kb_size']} KB")
-        
-    logger.info(f"All images are saved in: '{report['output_file']}'\n")
+    finally:  # Always runs (error or no erros)
+        logger.warning("\nProgram terminated. Exiting...\n")
     
     return ExitCode.SUCCESS
     
