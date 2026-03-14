@@ -432,12 +432,27 @@ def config_logging(
         logger.addHandler(file_handler)
     
 
-@CountCalls
+@CountCalls  # random_allele is no longer a function-it's a CountCalls instance.
 def random_allele(alleles: tuple[str, ...] = gen_constants.ALLELES) -> str:
     """
     """
     # Picks one random element from the sequence
     return random.choice(alleles)
+
+# Step 1: Decoration happens at definition time
+#   Python translates @ syntax into this:
+#   random_allele = CountCalls(random_allele)
+#                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+#                   Calling the CLASS → triggers __init__
+
+# Step 2: Calling the decorated function triggers __call__
+#   random_allele()
+#                ^^
+#   random_allele is now a CountCalls INSTANCE
+#   Putting () after an instance triggers __call__:
+#       1. self.count += 1         → count goes from 0 → 1
+#       2. self.func("A", "B")     → runs original random_allele
+#       3. Returns the result
 
 
 # =============================================================================
