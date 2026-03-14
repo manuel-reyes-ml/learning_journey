@@ -6,10 +6,10 @@
 # =============================================================================
 
 from __future__ import annotations
+from typing import Any, Final, Callable, overload
 from logging.handlers import RotatingFileHandler
 from enum import IntEnum, StrEnum, unique
 from dataclasses import dataclass, field
-from typing import Any, Final, Callable, overload
 from functools import update_wrapper
 from pathlib import Path
 import argparse
@@ -59,6 +59,9 @@ type SeedTypes = str | int | float | None
 # Production pattern: seed at the top
 random.seed()  # Uses system entropy - different each run
 
+# seed() accepts any hashable value, including 0,
+# negatives, strings, and even none.
+
 
 # =====================================================
 # Dataclasses
@@ -107,7 +110,7 @@ class GenBuildConstants:
     """
     """
     # For dataclass 'frozen' need to use hashable structure
-    # [str, ...] -> any numbre of strings values
+    # [str, ...] -> any number of strings values
     ALLELES: Final[tuple[str, ...]] = ('A', 'B', 'O')
     DEFAULT_GEN_COUNT: Final[int] = 3
 
