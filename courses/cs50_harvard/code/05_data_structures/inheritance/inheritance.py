@@ -425,6 +425,7 @@ def config_logging(
         file_handler.setLevel(logging.DEBUG)
         # %(name)s shows module name (inheritance)
         file_handler.setFormatter(logging.Formatter(
+            # %(name)s would show module name (inheritance)
             fmt='%(asctime)s : %(levelname)s : %(message)s',
             datefmt='%Y-%m-%d %H:%M:%S',
         ))
@@ -542,7 +543,7 @@ def create_family(generations: int = gen_constants.DEFAULT_GEN_COUNT) -> Person:
 
 
 def print_family(
-    person: Person | None,
+    person: Person | None = None,
     *,
     generation: int = 0,
     indent_length: int = INDENT_LENGTH,
@@ -710,7 +711,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         logger.exception(f"Unexpected Error: {e}")
         return ExitCode.FAILURE
     
-    finally:
+    finally:  # Always runs (error or no erros)
         logger.warning("\nProgram terminated. Exiting...\n")
     
     return ExitCode.SUCCESS
