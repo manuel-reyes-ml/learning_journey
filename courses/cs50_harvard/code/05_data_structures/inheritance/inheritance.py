@@ -8,13 +8,14 @@
 from __future__ import annotations
 from typing import Any, Final, Callable, overload
 from logging.handlers import RotatingFileHandler
+from functools import update_wrapper, wraps
 from enum import IntEnum, StrEnum, unique
 from dataclasses import dataclass, field
-from functools import update_wrapper
 from pathlib import Path
 import argparse
 import logging
 import random
+import time
 import sys
 import re  # Python's built-in library for working with regex
 
@@ -315,6 +316,20 @@ class CountCalls:
 # 1. You're not using a decorator pattern (e.g., factory functions)
 # 2. You need to customize WHICH attributes get copied
 # 3. You're building a class-based decorator
+
+
+def timer(func: Callable) -> Callable:
+    """
+    """
+    @wraps(func)
+    def wrapper(*args: Any, **kwargs: Any) -> Any:
+        start = time.perf_counter()
+        result = func(*args, **kwargs)
+        elapsed = time.perf_counter() - start
+        logger.debug(f"{func.__name__} took {elapsed:.6f}s")
+        return result 
+    
+    return wrapper    
 
 
 # =============================================================================
