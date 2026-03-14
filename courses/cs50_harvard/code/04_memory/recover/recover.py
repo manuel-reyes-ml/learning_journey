@@ -956,7 +956,8 @@ def main(argv: list[str] | None = None)-> ExitCode:
             logger.info(f"Name: {image}, Size: {size['kb_size']} KB")
             
         logger.info(f"All images are saved in: '{report['output_file']}'\n")
-        
+        return ExitCode.SUCCESS
+    
     except KeyboardInterrupt:
         logger.warning("\nInterrupted by user. Exiting.")
         return ExitCode.KEYBOARD_INTERRUPT
@@ -975,8 +976,6 @@ def main(argv: list[str] | None = None)-> ExitCode:
     
     finally:  # Always runs (error or no erros)
         logger.warning("\nProgram terminated. Exiting...\n")
-    
-    return ExitCode.SUCCESS
     
     
 if __name__ == "__main__":
