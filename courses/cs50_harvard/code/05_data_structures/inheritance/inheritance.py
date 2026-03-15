@@ -670,16 +670,19 @@ def _print_person(person: Person | None, generation: int, indent_length: int) ->
         generation + 1,
         indent_length
     )
-    
+
+
+# =====================================================
+# Callers For Recursive Functions
+# =====================================================
 
 @timer
 def create_family(
     generations: int = gen_constants.DEFAULT_GEN_COUNT,
-    family_tree: Callable = _build_person,
 ) -> Person:
     """
     """
-    return family_tree(generations)
+    return _build_person(generations)
 
 
 @timer
@@ -688,12 +691,13 @@ def print_family(
     *,
     generation: int = 0,
     indent_length: int = INDENT_LENGTH,
-    print_tree: Callable = _print_person,
 ) -> None:
     """
     """
-    print_tree(person, generation, indent_length)
-
+    _print_person(person, generation, indent_length)
+# No need to define a Callable parameter in func signature to pass builders, since the
+# intention is not that a user can pass a function in CLI, but the function runs with
+# its predetermined caller behind the scenes.
 
 # =============================================================================
 # CLI ENTRY POINT
