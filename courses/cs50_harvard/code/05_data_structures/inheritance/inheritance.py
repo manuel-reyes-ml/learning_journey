@@ -132,7 +132,7 @@ class GenBuildConstants:
 
     def __post_init__(self) -> None:
         if self.DEFAULT_GEN_COUNT <= 0:
-            raise ValueError("Generations cannot be negative")
+            raise ValueError("Generations must be positive (>0)")
         
     @property
     def alleles_available(self) -> str:
@@ -176,7 +176,7 @@ file_dirs = FileDirectories()
 try:
     gen_constants = GenBuildConstants()
 except ValueError as e:
-    sys.exit(f"Error: Invalid generation seeting: {e}\n")
+    sys.exit(f"Error: Invalid generation setting: {e}\n")
 
 
 # =====================================================
@@ -565,7 +565,7 @@ def _build_person(generations: int) -> Person:
         # Create parent_1 — same chain, independent branch.
         # This is why we get 2 parents, 4 grandparents, 8 great-grands.
         # Each level DOUBLES because every person creates TWO parents.
-        parent_1 = _build_person(generations -1)
+        parent_1 = _build_person(generations - 1)
 
         # -------------------------------------------------------------- #
         # Link parents to this person — Python equivalent of C's:
@@ -699,7 +699,7 @@ def _print_person(person: Person | None, generation: int, indent_length: int) ->
     _print_person(
         person.parents[1],
         generation + 1,
-        indent_length
+        indent_length,
     )
 
 
@@ -743,7 +743,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
                     f"random alleles from Constant: {gen_constants.alleles_available}"
     )
     parser.add_argument(
-        "-g","--generations",
+        "-g", "--generations",
         type=validate_generations,
         default=gen_constants.DEFAULT_GEN_COUNT,
         help="Enter generations as a positive number. "
