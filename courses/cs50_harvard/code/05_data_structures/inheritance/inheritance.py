@@ -191,6 +191,22 @@ class NumberPattern:
     INT_PATTERN: re.Pattern = re.compile(r"^-?\d+$")
     FLOAT_PATTERN: re.Pattern = re.compile(r"^-?\d+\.?\d*$")
     # With regular class no need to instantiate to access values
+    
+    # re.compile() pre-compiles a pattern into a reusable Pattern object.
+    # This is faster when you use the same pattern multiple times (loops).
+    #
+    # ┌──────────────────────────────────────────────────────────────────┐
+    # │  WITHOUT compile (recompiles every iteration):                   │
+    # │                                                                  │
+    # │  for row in million_rows:                                        │
+    # │      re.search(r"\d{3}-\d{4}", row)  ← compiles EACH time      │
+    # │                                                                  │
+    # │  WITH compile (compile once, use many times):                    │
+    # │                                                                  │
+    # │  phone_pattern = re.compile(r"\d{3}-\d{4}")  ← compile ONCE    │
+    # │  for row in million_rows:                                        │
+    # │      phone_pattern.search(row)  ← uses cached pattern           │
+    # └──────────────────────────────────────────────────────────────────┘
 
 # Core functions from 're' module (more info at the end)
 #   re.search(pattern, string)    # Find first match anywhere in string
