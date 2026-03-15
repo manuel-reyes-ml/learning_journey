@@ -189,7 +189,15 @@ class NumberPattern:
     """
     """
     INT_PATTERN: re.Pattern = re.compile(r"^-?\d+$")
-    FLOAT_PATTERN: re.Pattern = re.compile(r"^-?\d+\.?\d*$")
+    FLOAT_PATTERN: re.Pattern = re.compile(r"""
+        ^       # Start of the string
+        -?      # negative sign (optional)
+        \d+     # one or more digits
+        \.      # decimal point (literal)
+        \d*     # zero or more decimal digits
+        $       # no more values at end of string
+    """, re.VERBOSE)
+    # re.VERBOSE is the Production standard for complex regex
     # With regular class no need to instantiate to access values
     
     # re.compile() pre-compiles a pattern into a reusable Pattern object.
