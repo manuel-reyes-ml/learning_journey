@@ -328,8 +328,14 @@ def timer(func: Callable) -> Callable:
         elapsed = time.perf_counter() - start
         logger.debug(f"{func.__name__} took {elapsed:.6f}s")
         return result 
-    
+    # Without @wraps(func) on wrapper, the decorated function's __name__ becomes
+    # "wrapper", __doc__ becomes None, and tracebacks are useless. @wraps copies
+    # the original's identity onto the replacement.
     return wrapper    
+
+# The simple rule: If your decorator has def wrapper (or any inner function) that
+# gets returned instead of the original, you need @wraps. If it returns the original
+# function unchanged, you don't.
 
 
 # =============================================================================
