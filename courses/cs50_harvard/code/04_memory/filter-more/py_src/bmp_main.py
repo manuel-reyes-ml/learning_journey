@@ -641,7 +641,8 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 new_pixels,
                 bmp_data.full_header,
             )
-        logger.info("=== Program Finished. Enjoy your filtered images :) ===\n")
+        logger.info("=== Enjoy your filtered images :) ===\n")
+        return ExitCode.SUCCESS
             
     except KeyboardInterrupt:
         logger.warning("\nInterrupted by user. Exiting.")
@@ -660,6 +661,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         logger.exception(f"Unexpected Error: {e}")
         return ExitCode.FAILURE
     
-    return ExitCode.SUCCESS
+    finally:  # Always runs (error or no erros)
+        logger.warning("\nProgram terminated. Exiting...\n")
 
 # Run using 'python -m py_src', since a __main__.py file is implemented as start point
