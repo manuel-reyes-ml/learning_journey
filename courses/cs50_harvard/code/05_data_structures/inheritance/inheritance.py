@@ -330,6 +330,12 @@ class CountCalls:
     def __call__(self, *args: Any, **kwargs: Any) -> Any:
         self.count += 1
         return self.func(*args, **kwargs)
+    
+    # If someone imports and uses random_allele across multiple create_family
+    # calls (e.g., in tests), the count accumulates across ALL calls.
+    def reset_count(self) -> None:
+        """Reset the call counter (useful for testing)."""
+        self.count = 0
 
 # @wraps(func) is actually syntactic sugar for update_wrapper().
 # They do the same thing, but update_wrapper gives you more control.
