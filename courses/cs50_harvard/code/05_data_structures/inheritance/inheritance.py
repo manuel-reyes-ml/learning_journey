@@ -403,8 +403,8 @@ def validate_generations(
             raise argparse.ArgumentTypeError(
                 f"Generations must be a positive integer. Got {generations!r}"
             )
-    
-        return int(generations.strip())
+        # Validate integer in case is zero(0)
+        return _validate_number(int(generations.strip()), func_name=func_name)
         
     return _validate_number(generations, func_name=func_name)
 
@@ -507,6 +507,7 @@ def random_allele(alleles: tuple[str, ...] = gen_constants.ALLELES) -> str:
 def _build_person(generations: int) -> Person:
     """
     """
+    # Guard for programmatic use — CLI validation handles this for end users
     if generations <= 0:
         raise ValueError("Generations must be positive")
     
