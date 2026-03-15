@@ -395,7 +395,7 @@ def validate_generations(
 ) -> int:
     """
     """
-    if not generations:
+    if generations is None or generations == "":
         raise argparse.ArgumentTypeError("Generations cannot be empty")
         
     if isinstance(generations, str):
