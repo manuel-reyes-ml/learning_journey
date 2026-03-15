@@ -474,7 +474,7 @@ def random_allele(alleles: tuple[str, ...] = gen_constants.ALLELES) -> str:
 # CORE FUNCTIONS
 # =============================================================================
 
-def create_family(generations: int = gen_constants.DEFAULT_GEN_COUNT) -> Person:
+def _build_person(generations: int) -> Person:
     """
     """
     if generations <= 0:
@@ -529,12 +529,12 @@ def create_family(generations: int = gen_constants.DEFAULT_GEN_COUNT) -> Person:
         # create_family(1) twice for grandparents. By the time this
         # line finishes, parent_0 is FULLY BUILT with their own
         # parents and alleles already assigned.
-        parent_0 = create_family(generations - 1)
+        parent_0 = _build_person(generations - 1)
         
         # Create parent_1 — same chain, independent branch.
         # This is why we get 2 parents, 4 grandparents, 8 great-grands.
         # Each level DOUBLES because every person creates TWO parents.
-        parent_1 = create_family(generations -1)
+        parent_1 = _build_person(generations -1)
 
         # -------------------------------------------------------------- #
         # Link parents to this person — Python equivalent of C's:
@@ -572,12 +572,7 @@ def create_family(generations: int = gen_constants.DEFAULT_GEN_COUNT) -> Person:
     return person
 
 
-def print_family(
-    person: Person | None = None,
-    *,
-    generation: int = 0,
-    indent_length: int = INDENT_LENGTH,
-) -> None:
+def _print_person(person: Person | None, generation: int, indent_length: int) -> None:
     """
     """
     # ------------------------------------------------------------------ #
@@ -665,9 +660,40 @@ def print_family(
     # these calls hit the base case (person is None) and return
     # immediately — no crash, no infinite loop.
     # ------------------------------------------------------------------ #
-    print_family(person.parents[0], generation=generation + 1)
-    print_family(person.parents[1], generation=generation + 1)
+    _print_person(
+        person.parents[0],
+        generation + 1,
+        indent_length,
+    )
+    _print_person(
+        person.parents[1],
+        generation + 1,
+        indent_length
+    )
     
+
+@timer
+def create_family(
+    generations: int = gen_constants.DEFAULT_GEN_COUNT,
+    family_tree: Callable = _build_person,
+) -> Person:
+    """
+    """
+    return family_tree(generations)
+
+
+@timer
+def print_family(
+    person: Person | None = None,
+    *,
+    generation: int = 0,
+    indent_length: int = INDENT_LENGTH,
+    print_tree: Callable = _print_person,
+) -> None:
+    """
+    """
+    print_tree(person, generation, indent_length)
+
 
 # =============================================================================
 # CLI ENTRY POINT
