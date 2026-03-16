@@ -941,6 +941,7 @@ def main(argv: list[str] | None = None)-> ExitCode:
     if args.verbose:
         logger.debug("Verbose mode enabled (console debug output)")
         
+    success = False  # Assume failure until proven otherwise
     try:
         input_file = validate_infile(
             args.input_file,
@@ -956,6 +957,8 @@ def main(argv: list[str] | None = None)-> ExitCode:
             logger.info(f"Name: {image}, Size: {size['kb_size']} KB")
             
         logger.info(f"All images are saved in: '{report['output_file']}'\n")
+        
+        success = True
         return ExitCode.SUCCESS
     
     except KeyboardInterrupt:
@@ -975,7 +978,10 @@ def main(argv: list[str] | None = None)-> ExitCode:
         return ExitCode.FAILURE
     
     finally:  # Always runs (error or no erros)
-        logger.warning("\nProgram terminated. Exiting...\n")
+        if success:
+            logger.info("\nProgram complete.\n")
+        else:
+            logger.warning("\nProgram terminated with errors.\n")
     
     
 if __name__ == "__main__":
