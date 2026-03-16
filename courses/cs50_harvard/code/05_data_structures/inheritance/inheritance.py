@@ -736,6 +736,7 @@ def print_family(
 # intention is not that a user can pass a function in CLI, but the function runs with
 # its predetermined caller behind the scenes.
 
+
 # =============================================================================
 # CLI ENTRY POINT
 # =============================================================================
@@ -785,7 +786,8 @@ def main(argv: list[str] | None = None) -> ExitCode:
     if args.seed:
         logger.info(f"Seed successfully set to {args.seed!r}")
         random.seed(args.seed)
-        
+    
+    success = False  # Assume failure until proven otherwise
     try:
         person = create_family(args.generations)
         logger.debug(f"Random allele was called {random_allele.count!r} times")
@@ -794,6 +796,8 @@ def main(argv: list[str] | None = None) -> ExitCode:
         
         print_family(person, generation=0)
         logger.info("Family Tree printed successfully")
+        
+        success = True
         return ExitCode.SUCCESS
     
     except KeyboardInterrupt:
@@ -810,7 +814,10 @@ def main(argv: list[str] | None = None) -> ExitCode:
         return ExitCode.FAILURE
     
     finally:  # Always runs (error or no erros)
-        logger.warning("\nProgram terminated. Exiting...\n")
+        if success:
+            logger.info("\nProgram complete.\n")
+        else:
+            logger.warning("\nProgram terminated with errors.\n")
 
 
 if __name__ == "__main__":
