@@ -591,14 +591,20 @@ def main(argv: list[str] | None = None) -> ExitCode:
         log_to_file=not args.no_log_file,
     )
     
+    success = False  # Assume failure until proven otherwise
+    
     # Brightness configuration setup
     try:
         brightness_cfg.bright = args.bright if args.bright else BRIGHT
         brightness_cfg.dark = args.dark if args.dark else DARK
         gen_brightness_filters(brightness_cfg.bright, brightness_cfg.dark)
+        success = True
     except ValueError as e:
         logger.error(f"Invalid brightness setting: {e}")
         return ExitCode.FAILURE
+    finally:
+        if not success:
+            logger.warning("\nProgram terminated with error.\n")
     
     if args.verbose:
         logger.debug("Verbose mode enabled (console debug output)")
@@ -614,7 +620,8 @@ def main(argv: list[str] | None = None) -> ExitCode:
     else:
         filters: list[FilterName] = args.filter
     
-    # Image processing pipeline (file I/O, filter application, writing)   
+    # Image processing pipeline (file I/O, filter application, writing) 
+    success = False  
     try:
         # Step 1: Input file validation and read BMP file
         in_file = validate_infile(
@@ -642,6 +649,8 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 bmp_data.full_header,
             )
         logger.info("=== Enjoy your filtered images :) ===\n")
+        
+        success = True
         return ExitCode.SUCCESS
             
     except KeyboardInterrupt:
@@ -662,6 +671,9 @@ def main(argv: list[str] | None = None) -> ExitCode:
         return ExitCode.FAILURE
     
     finally:  # Always runs (error or no erros)
-        logger.warning("\nProgram terminated. Exiting...\n")
+        if success:
+            logger.info("\nProgram completed.\n")
+        else:
+            logger.warning("\nProgram terminated with errors.\n")
 
 # Run using 'python -m py_src', since a __main__.py file is implemented as start point
