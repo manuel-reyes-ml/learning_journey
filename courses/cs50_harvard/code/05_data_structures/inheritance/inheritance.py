@@ -118,8 +118,10 @@ type SeedTypes = str | int | float | None
 # Production pattern: seed at the top
 random.seed()  # Uses system entropy - different each run
 
-# seed() accepts any hashable value, including 0,
-# negatives, strings, and even none.
+# Python 3.12+ restricts random.seed() to accept only None,
+# int, float, str, bytes and bytearray.
+# Tuples, frozensets, and other hashable types
+# now raise 'TypeError'.
 
 
 # =====================================================
@@ -657,7 +659,7 @@ def validate_generations(
             raise argparse.ArgumentTypeError(
                 f"Generations must be a positive integer. Got {generations!r}"
             )
-        # Validate integer in case is zero(0)
+        # Validate integer in case str is zero(0)
         return _validate_number(int(generations.strip()), func_name=func_name)
         
     return _validate_number(generations, func_name=func_name)
