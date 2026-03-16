@@ -1,4 +1,47 @@
 """
+inheritance.py
+==============
+ 
+Simulate the inheritance of blood type alleles across a family tree.
+ 
+Builds a recursive family tree of configurable depth, where the oldest
+generation receives randomly assigned alleles (A, B, or O) and each
+younger generation inherits one random allele from each parent. Based
+on the CS50 Week 5 Inheritance lab, reimplemented in Python with
+production-grade patterns.
+ 
+Features
+--------
+- Recursive tree construction with configurable generation depth.
+- ``@CountCalls`` class-based decorator tracks ``random_allele`` usage.
+- ``@timer`` decorator on public wrappers (not recursive internals)
+  measures total build/print time without per-call noise.
+- Full CLI with ``argparse``, seed control, verbose logging, and
+  optional file logging via ``RotatingFileHandler``.
+ 
+Usage
+-----
+Run from the command line::
+ 
+    $ python inheritance.py
+    $ python inheritance.py -g 4 -s 42 -v
+    $ python inheritance.py --generations 5 --seed hello --no-log-file
+ 
+Or import programmatically::
+ 
+    >>> from inheritance import create_family, print_family
+    >>> person = create_family(3)
+    >>> print_family(person)
+ 
+Author
+------
+Manuel Reyes — CS50 / Stage 1 Learning Project
+ 
+References
+----------
+.. [1] CS50 Inheritance: https://cs50.harvard.edu/x/psets/5/inheritance/
+.. [2] Python random module: https://docs.python.org/3/library/random.html
+.. [3] Python dataclasses: https://docs.python.org/3/library/dataclasses.html
 """
 
 # =============================================================================
@@ -86,6 +129,26 @@ random.seed()  # Uses system entropy - different each run
 @dataclass(frozen=True, slots=True)
 class FileHandlerConfig:
     """
+    Immutable configuration for the rotating log file handler.
+ 
+    All fields are frozen (read-only) constants that control log file
+    size, rotation, and encoding. Use the ``max_log_bytes`` property
+    to get the computed byte limit.
+ 
+    Attributes
+    ----------
+    LEVEL_DEFAULT : int
+        Default logging level for console output (``logging.INFO``).
+    ENCODING : str
+        Character encoding for log files.
+    BACKUP_COUNT : int
+        Number of rotated backup log files to retain.
+    FILE_MB : int
+        Maximum log file size in megabytes.
+    MEGABYTE : int
+        Bytes per kilobyte (1024).
+    KILOBYTE : int
+        Bytes per unit (1024).
     """
     LEVEL_DEFAULT: Final[int] = logging.INFO
     ENCODING: Final[str] = "utf-8"
@@ -97,6 +160,12 @@ class FileHandlerConfig:
     @property
     def max_log_bytes(self) -> int:
         """
+        Compute maximum log file size in bytes.
+ 
+        Returns
+        -------
+        int
+            ``FILE_MB * MEGABYTE * KILOBYTE`` (e.g., 5 * 1024 * 1024 = 5 MB).
         """
         return self.FILE_MB * self.MEGABYTE * self.KILOBYTE
 
@@ -104,18 +173,41 @@ class FileHandlerConfig:
 @dataclass(frozen=True, slots=True)
 class FileDirectories:
     """
+    Immutable directory paths for log file output.
+ 
+    Resolves the current script's parent directory at import time
+    and derives the log subdirectory from it.
+ 
+    Attributes
+    ----------
+    CUR_DIR : Path
+        Absolute path to the directory containing this script.
+    LOG_DIR : Path
+        Path to the ``py_log`` subdirectory under ``CUR_DIR``.
     """
     CUR_DIR: Final[Path] = Path(__file__).resolve().parent
     LOG_DIR: Final[Path] = CUR_DIR / "py_log"
     
     def create_log_fname(self) -> str:
         """
+        Build the log filename from the parent directory name.
+ 
+        Returns
+        -------
+        str
+            Filename in the format ``'<directory_name>.log'``.
         """
         return f"{self.CUR_DIR.name}.log"
     
     @property
     def log_file(self) -> Path:
         """
+        Full path to the log file.
+ 
+        Returns
+        -------
+        Path
+            ``LOG_DIR / '<directory_name>.log'``.
         """
         return self.LOG_DIR / self.create_log_fname()
     
@@ -124,6 +216,23 @@ class FileDirectories:
 @dataclass(frozen=True, slots=True)
 class GenBuildConstants:
     """
+    Immutable constants for family tree construction.
+ 
+    Stores the available blood type alleles and the default number
+    of generations. Validates that the generation count is positive
+    via ``__post_init__``.
+ 
+    Attributes
+    ----------
+    ALLELES : tuple of str
+        Possible blood type alleles (default: ``('A', 'B', 'O')``).
+    DEFAULT_GEN_COUNT : int
+        Default number of generations to build (default: 3).
+ 
+    Raises
+    ------
+    ValueError
+        If ``DEFAULT_GEN_COUNT`` is zero or negative.
     """
     # For dataclass 'frozen' need to use hashable structure
     # [str, ...] -> any number of strings values
@@ -137,6 +246,12 @@ class GenBuildConstants:
     @property
     def alleles_available(self) -> str:
         """
+        Format alleles as a comma-separated display string.
+ 
+        Returns
+        -------
+        str
+            e.g., ``'A, B, O'``.
         """
         return ", ".join(self.ALLELES)
 
@@ -144,6 +259,27 @@ class GenBuildConstants:
 @dataclass
 class Person:
     """
+    A single member in a family tree with blood type alleles.
+ 
+    Each person has two parent slots and two alleles. The oldest
+    generation has ``[None, None]`` parents and randomly assigned
+    alleles; younger generations inherit alleles from their parents.
+ 
+    Attributes
+    ----------
+    parents : list of (Person or None)
+        Two-element list referencing this person's parents.
+        Defaults to ``[None, None]`` (oldest generation).
+    alleles : tuple of str
+        Two-element tuple of single-character alleles (e.g., ``('A', 'O')``).
+        Defaults to empty tuple before assignment.
+ 
+    Examples
+    --------
+    >>> grandparent = Person(alleles=('A', 'B'))
+    >>> grandparent.parents
+    [None, None]
+    >>> child = Person(parents=[grandparent, None], alleles=('A', 'O'))
     """
     # Here, lambda is a zero-argument function that, when called,
     # creates and returns a fresh [None, None] list.
@@ -187,6 +323,20 @@ except ValueError as e:
 # descriptors (_tuplegetter), not the actual values.
 class NumberPattern:
     """
+    Pre-compiled regex patterns for numeric string validation.
+ 
+    Stores patterns as class-level attributes so they compile once
+    at class definition time and can be accessed without instantiation.
+ 
+    Attributes
+    ----------
+    INT_PATTERN : re.Pattern
+        Matches an optional negative sign followed by one or more digits.
+        Pattern: ``r"^-?\\d+$"``.
+    FLOAT_PATTERN : re.Pattern
+        Matches an optional negative sign, digits, a required decimal
+        point, and optional fractional digits.
+        Pattern: ``r"^-?\\d+\\.\\d*$"`` (compiled with ``re.VERBOSE``).
     """
     INT_PATTERN: re.Pattern = re.compile(r"^-?\d+$")
     FLOAT_PATTERN: re.Pattern = re.compile(r"""
@@ -248,6 +398,18 @@ class ExitCode(IntEnum):
 @unique
 class ValidatorName(StrEnum):
     """
+    Human-readable labels for CLI argument validators.
+ 
+    Used in error messages to identify which argument failed
+    validation (e.g., "Seed must be positive" vs "Generations must
+    be positive").
+ 
+    Attributes
+    ----------
+    SEED : str
+        Display name for the seed argument (``"Seed"``).
+    GENERATION : str
+        Display name for the generations argument (``"Generations"``).
     """
     SEED = "Seed"
     GENERATION = "Generations"
@@ -321,6 +483,28 @@ logger.setLevel(logging.DEBUG)  # Let handlers decide their own level!
 # @wraps doesn't work as neatly here — use update_wrapper.
 class CountCalls:
     """
+    Class-based decorator that counts how many times a function is called.
+ 
+    Replaces the decorated function with a callable instance that
+    increments ``count`` on each invocation. Uses ``update_wrapper``
+    to preserve the original function's metadata.
+ 
+    Attributes
+    ----------
+    func : Callable
+        The original wrapped function.
+    count : int
+        Running total of calls since decoration (or last reset).
+ 
+    Examples
+    --------
+    >>> @CountCalls
+    ... def greet(name: str) -> str:
+    ...     return f"Hello, {name}"
+    >>> greet("Manuel")
+    'Hello, Manuel'
+    >>> greet.count
+    1
     """
     def __init__(self, func: Callable) -> None:
         update_wrapper(self, func)  # Copy func´s metadata to self
@@ -350,6 +534,29 @@ class CountCalls:
 
 def timer(func: Callable) -> Callable:
     """
+    Decorator that logs execution time of the wrapped function.
+ 
+    Uses ``time.perf_counter`` for high-resolution timing and logs
+    the elapsed duration at DEBUG level via the module logger.
+ 
+    Parameters
+    ----------
+    func : Callable
+        The function to be timed.
+ 
+    Returns
+    -------
+    Callable
+        Wrapped function that logs ``'{func_name} took {elapsed:.6f}s'``
+        after each call.
+ 
+    Notes
+    -----
+    Do NOT apply directly to recursive functions — each recursive
+    call triggers a separate timing log. Instead, use the
+    public/private split pattern: apply ``@timer`` to a public
+    wrapper that delegates to an undecorated private recursive
+    function.
     """
     @wraps(func)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
@@ -385,6 +592,25 @@ def _validate_number(
     func_name: str | None = None,
 ) -> int | float:
     """
+    Validate that a number is strictly positive.
+ 
+    Parameters
+    ----------
+    number : int or float
+        The value to validate.
+    func_name : str or None, optional
+        Label for error messages (e.g., ``"Seed"``). Defaults to
+        ``"Number"`` if not provided.
+ 
+    Returns
+    -------
+    int or float
+        The original number, unchanged, if validation passes.
+ 
+    Raises
+    ------
+    argparse.ArgumentTypeError
+        If ``number <= 0``.
     """
     func_name = func_name if func_name else "Number"
     
@@ -400,6 +626,28 @@ def validate_generations(
     func_name = ValidatorName.GENERATION,
 ) -> int:
     """
+    Validate and convert the ``--generations`` CLI argument.
+ 
+    Accepts a string from ``argparse`` (or int for programmatic use),
+    ensures it represents a positive integer, and returns the
+    converted value.
+ 
+    Parameters
+    ----------
+    generations : str, int, or None
+        Raw input from argparse (string) or direct call (int).
+    func_name : ValidatorName
+        Label for error messages. Defaults to ``ValidatorName.GENERATION``.
+ 
+    Returns
+    -------
+    int
+        Validated positive integer.
+ 
+    Raises
+    ------
+    argparse.ArgumentTypeError
+        If input is empty, non-digit, zero, or negative.
     """
     if generations is None or generations == "":
         raise argparse.ArgumentTypeError("Generations cannot be empty")
@@ -421,6 +669,32 @@ def validate_seed(
     match_number: type[NumberPattern] = NumberPattern,
 ) -> SeedTypes:
     """
+    Validate and convert the ``--seed`` CLI argument.
+ 
+    Parses the seed as an integer, float, or string. Numeric seeds
+    must be positive; string seeds are passed through as-is (any
+    hashable value is valid for ``random.seed``).
+ 
+    Parameters
+    ----------
+    seed : str, int, float, or None
+        Raw input from argparse (string) or direct call.
+    func_name : ValidatorName
+        Label for error messages. Defaults to ``ValidatorName.SEED``.
+    match_number : type
+        Class providing ``INT_PATTERN`` and ``FLOAT_PATTERN`` regex
+        attributes. Defaults to ``NumberPattern``.
+ 
+    Returns
+    -------
+    int, float, str, or None
+        Converted seed value: int if integer string, float if decimal
+        string, stripped string otherwise, or None if no seed provided.
+ 
+    Raises
+    ------
+    argparse.ArgumentTypeError
+        If a numeric seed is zero or negative.
     """                 
     if isinstance(seed, str):
         if match_number.INT_PATTERN.match(seed.strip()):
@@ -446,6 +720,26 @@ def config_logging(
     formatter_class: type[logging.Formatter] = ColoredFormatter,
 ) -> None:
     """
+    Configure the module logger with console and optional file handlers.
+ 
+    Clears any existing handlers to prevent duplicates (e.g., during
+    tests), then attaches a colored console handler and an optional
+    rotating file handler.
+ 
+    Parameters
+    ----------
+    log_to_file : bool, optional
+        Whether to create a ``RotatingFileHandler``. Default is True.
+    console_verbose : bool, optional
+        If True, set console level to DEBUG; otherwise use
+        ``fhandler_config.LEVEL_DEFAULT``. Default is False.
+    file_dirs : FileDirectories, optional
+        Directory configuration for log file placement.
+    fhandler_config : FileHandlerConfig, optional
+        Size, rotation, and encoding settings for the file handler.
+    formatter_class : type, optional
+        Formatter class for the console handler. Default is
+        ``ColoredFormatter``.
     """
     # Prevent duplicate handlers if this function is
     # called multiple times (e.g. pytest).
@@ -486,6 +780,21 @@ def config_logging(
 @CountCalls  # random_allele is no longer a function-it's a CountCalls instance.
 def random_allele(alleles: tuple[str, ...] = gen_constants.ALLELES) -> str:
     """
+    Return a randomly chosen blood type allele.
+ 
+    Wrapped by ``@CountCalls`` to track total invocations across
+    the family tree build process.
+ 
+    Parameters
+    ----------
+    alleles : tuple of str, optional
+        Pool of alleles to choose from. Defaults to
+        ``gen_constants.ALLELES`` (``('A', 'B', 'O')``).
+ 
+    Returns
+    -------
+    str
+        A single allele character (``'A'``, ``'B'``, or ``'O'``).
     """
     # Picks one random element from the sequence
     return random.choice(alleles)
@@ -512,6 +821,30 @@ def random_allele(alleles: tuple[str, ...] = gen_constants.ALLELES) -> str:
 
 def _build_person(generations: int) -> Person:
     """
+    Recursively build a family tree of Person objects.
+ 
+    Private recursive worker — called by ``create_family``, not
+    directly by end users. Constructs the tree from leaves up:
+    grandparents are fully built before parents, parents before
+    the child.
+ 
+    Parameters
+    ----------
+    generations : int
+        Remaining generations to create. 1 = base case (oldest
+        generation, random alleles, no parents). >1 = recursive
+        case (create two parents, inherit alleles).
+ 
+    Returns
+    -------
+    Person
+        The fully constructed person at this tree node, with
+        ``parents`` and ``alleles`` assigned.
+ 
+    Raises
+    ------
+    ValueError
+        If ``generations <= 0`` (guard for programmatic use).
     """
     # Guard for programmatic use — CLI validation handles this for end users
     if generations <= 0:
@@ -611,6 +944,22 @@ def _build_person(generations: int) -> Person:
 
 def _print_person(person: Person | None, generation: int, indent_length: int) -> None:
     """
+    Recursively print a family tree with indented labels.
+ 
+    Private recursive worker — called by ``print_family``, not
+    directly by end users. Traverses the tree from root down:
+    child is printed first, then parents, then grandparents.
+ 
+    Parameters
+    ----------
+    person : Person or None
+        The person to print. None triggers the base case (return
+        immediately).
+    generation : int
+        Current depth in the tree (0 = child, 1 = parent, 2+ =
+        grandparent). Controls indentation and label text.
+    indent_length : int
+        Number of spaces per indentation level.
     """
     # ------------------------------------------------------------------ #
     # BASE CASE: If person is None, there's nothing to print.
@@ -718,6 +1067,32 @@ def create_family(
     generations: int = gen_constants.DEFAULT_GEN_COUNT,
 ) -> Person:
     """
+    Build a complete family tree and log elapsed time.
+ 
+    Public entry point that wraps the recursive ``_build_person``
+    worker with ``@timer`` so the entire tree construction is
+    timed as a single operation.
+ 
+    Parameters
+    ----------
+    generations : int, optional
+        Number of generations to create (1 = single person with
+        random alleles, 3 = child + parents + grandparents).
+        Defaults to ``gen_constants.DEFAULT_GEN_COUNT``.
+ 
+    Returns
+    -------
+    Person
+        The youngest person (root) of the family tree, with all
+        ancestors linked via ``parents`` attributes.
+ 
+    Examples
+    --------
+    >>> person = create_family(3)
+    >>> len(person.alleles)
+    2
+    >>> person.parents[0] is not None
+    True
     """
     return _build_person(generations)
 
@@ -730,6 +1105,28 @@ def print_family(
     indent_length: int = INDENT_LENGTH,
 ) -> None:
     """
+    Print a family tree to stdout and log elapsed time.
+ 
+    Public entry point that wraps the recursive ``_print_person``
+    worker with ``@timer`` so the entire traversal is timed as
+    a single operation.
+ 
+    Parameters
+    ----------
+    person : Person or None, optional
+        Root of the family tree to print. None prints nothing.
+    generation : int, keyword-only, optional
+        Starting generation depth for labels. Default is 0 (child).
+    indent_length : int, keyword-only, optional
+        Spaces per indentation level. Default is ``INDENT_LENGTH``.
+ 
+    Examples
+    --------
+    >>> person = create_family(3)
+    >>> print_family(person)
+    Child (Generation 0): blood type AO
+        Parent (Generation 1): blood type OB
+            ...
     """
     _print_person(person, generation, indent_length)
 # No need to define a Callable parameter in func signature to pass builders, since the
@@ -743,6 +1140,29 @@ def print_family(
 
 def main(argv: list[str] | None = None) -> ExitCode:
     """
+    Parse CLI arguments, build a family tree, and print results.
+ 
+    Orchestrates the full program lifecycle: argument parsing,
+    logging setup, seed configuration, tree construction, display,
+    and error handling.
+ 
+    Parameters
+    ----------
+    argv : list of str or None, optional
+        Command-line arguments to parse. Defaults to ``sys.argv[1:]``
+        when None (standard argparse behavior). Pass a list for
+        testing without invoking the real CLI.
+ 
+    Returns
+    -------
+    ExitCode
+        ``SUCCESS`` (0) on normal completion, ``FAILURE`` (1) on
+        error, or ``KEYBOARD_INTERRUPT`` (130) on Ctrl+C.
+ 
+    Examples
+    --------
+    >>> main(['-g', '3', '-s', '42', '-v'])  # doctest: +SKIP
+    ExitCode.SUCCESS
     """
     parser = argparse.ArgumentParser(
         description="Create family tree selecting random alleles "
