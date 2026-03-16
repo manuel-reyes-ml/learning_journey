@@ -197,6 +197,12 @@ class BmpConstants:
     @property
     def bpp(self) -> int:
         """
+        Compute bits per pixel from the byte-based pixel size.
+
+        Returns
+        -------
+        int
+            ``PIXEL_SIZE * 8`` (e.g., 3 bytes → 24 bits).
         """
         return self.PIXEL_SIZE * 8  # bits per pixel (3 bytes RGB)
 
@@ -241,12 +247,24 @@ class BrightnessConfig():
     @property
     def bright(self) -> int:
         """
+        Positive brightness offset applied to each pixel channel.
+
+        Returns
+        -------
+        int
+            Current brightness increase value (must be > 0).
         """
         return self._bright
     
     @property
     def dark(self) -> int:
         """
+        Negative brightness offset applied to each pixel channel.
+
+        Returns
+        -------
+        int
+            Current brightness decrease value (must be < 0).
         """
         return self._dark
     

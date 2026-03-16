@@ -161,7 +161,23 @@ def register_filter(name: str, description: str = "") -> RegisterOut:
 
 
 def timer(func: FilterFunc) -> FilterFunc:
-    """Measure and print execution time."""
+    """
+    Decorator that logs execution time of the wrapped function.
+
+    Uses ``time.perf_counter`` for high-resolution timing and
+    logs the elapsed duration at DEBUG level via the module logger.
+
+    Parameters
+    ----------
+    func : FilterFunc
+        The filter function to be timed.
+
+    Returns
+    -------
+    FilterFunc
+        Wrapped function that logs ``'{func_name} took {elapsed:.6f}s'``
+        after each call.
+    """
     @wraps(func)
     def wrapper(*args: Any, **kwargs: Any) -> Any:
         start = time.perf_counter()
@@ -714,6 +730,28 @@ def gen_brightness_filters(
     dark: int = brightness_cfg.dark,
 ) -> tuple[FilterFunc, FilterFunc]:
     """
+    Create, time, and register the brighten/darken filter pair.
+
+    Composes the factory → timer → register pipeline for both
+    brightness variants and registers them in the ``FILTERS``
+    dispatch table. Called at module import time with defaults,
+    and again from ``main()`` if the user provides custom
+    ``--bright`` or ``--dark`` CLI arguments.
+
+    Parameters
+    ----------
+    bright : int, optional
+        Positive offset for the brighten filter. Defaults to
+        ``brightness_cfg.bright``.
+    dark : int, optional
+        Negative offset for the darken filter. Defaults to
+        ``brightness_cfg.dark``.
+
+    Returns
+    -------
+    tuple of (FilterFunc, FilterFunc)
+        The ``(brighten, darken)`` filter functions, both timed
+        and registered in ``FILTERS``.
     """
     brighten = register_filter("brighten", "Increase pixel brightness")(
         timer(create_brightness_filter(bright, "brighten"))
@@ -775,7 +813,20 @@ brighten, darken = gen_brightness_filters()
 # =============================================================================
 
 def _log_closure_debug(filters: DictFuncs = FILTERS) -> None:
-    """One-time diagnostic: log captured closure variables."""
+    """
+    Log the captured closure variables of each registered filter.
+
+    Inspects ``__closure__`` on each filter function and its
+    ``__wrapped__`` original (if decorated by ``@wraps``) to
+    reveal the free variables captured by closures. Useful for
+    verifying that factory-created filters (brighten, darken)
+    captured the correct adjustment values.
+
+    Parameters
+    ----------
+    filters : DictFuncs, optional
+        Filter registry to inspect (default ``FILTERS``).
+    """
     for filter_info in filters.values():
         func: FilterFunc = filter_info.func
         # Non-closure functions have __closure__ = None
@@ -806,6 +857,17 @@ def _log_closure_debug(filters: DictFuncs = FILTERS) -> None:
                     
 def _log_inspect_sig(filters: DictFuncs = FILTERS) -> None:
     """
+    Log the original function signature of each registered filter.
+
+    Uses ``inspect.signature`` to display the parameter list
+    preserved by ``@wraps``, confirming that decorated functions
+    retain their original signatures for IDE autocomplete and
+    documentation tools.
+
+    Parameters
+    ----------
+    filters : DictFuncs, optional
+        Filter registry to inspect (default ``FILTERS``).
     """
     for filter_info in filters.values():
         func: FilterFunc = filter_info.func
