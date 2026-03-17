@@ -6,11 +6,11 @@
 # =============================================================================
 
 from __future__ import annotations
-from dataclasses import dataclass
+from dataclasses import dataclass, field, KW_ONLY
 from enum import IntEnum, StrEnum, unique
 from pathlib import Path
-from typing import Final
-
+from typing import Final, Any
+import logging
 
 
 # =============================================================================
@@ -23,6 +23,10 @@ __all__ = []
 # =============================================================================
 # CONSTANTS CONFIGURATION
 # =============================================================================
+
+# =====================================================
+# Constants
+# =====================================================
 
 
 # =====================================================
@@ -79,6 +83,76 @@ class FileDirectories:
         """
         """
         return self.LOG_DIR / self.create_log_fname()
+
+
+@dataclass(frozen=True, slots=True)
+class FileHandlerConfig:
+    """
+    Immutable configuration for the rotating log file handler.
+ 
+    All fields are frozen (read-only) constants that control log file
+    size, rotation, and encoding. Use the ``max_log_bytes`` property
+    to get the computed byte limit.
+ 
+    Attributes
+    ----------
+    LEVEL_DEFAULT : int
+        Default logging level for console output (``logging.INFO``).
+    ENCODING : str
+        Character encoding for log files.
+    BACKUP_COUNT : int
+        Number of rotated backup log files to retain.
+    FILE_MB : int
+        Maximum log file size in megabytes.
+    MEGABYTE : int
+        Bytes per kilobyte (1024).
+    KILOBYTE : int
+        Bytes per unit (1024).
+    """
+    LEVEL_DEFAULT: Final[int] = logging.INFO
+    ENCODING: Final[str] = "utf-8"
+    BACKUP_COUNT: Final[int] = 3
+    FILE_MB: Final[int] = 5
+    MEGABYTE: Final[int] = 1024
+    KILOBYTE: Final[int] = 1024
     
+    def negative_value(self, var: str) -> Exception:
+        """
+        """
+        return ValueError(f"{var} must be positive (> 0)")
     
+    # The position of __post_init__ in source code doesn't matter-
+    # Python's calls it automatically after the generated __init__
+    # finishes (in dataclasses).
+    def __post_init__(self) -> None:
+        if self.BACKUP_COUNT <= 0:
+            raise self.negative_value("BACKUP_COUNT")
+        if self.FILE_MB <= 0:
+            raise self.negative_value("FILE_MB")
+        if self.MEGABYTE <= 0:
+            raise self.negative_value("MEGABYTE")
+        if self.KILOBYTE <= 0:
+            raise self.negative_value("KILOBYTE")
     
+    @property
+    def max_log_bytes(self) -> int:
+        """
+        """
+        return self.FILE_MB * self.MEGABYTE * self.KILOBYTE
+        
+
+# Use @dataclass for internal logic, Pydantic BaseModel
+# at services boundaries (API, user validation).
+@dataclass(frozen=True, slots=True)
+class BenchmarkResult:
+    """
+    """
+    operation: str          # Positional or keyword
+    elapsed_seconds: float  # Positional or keyword
+    _: KW_ONLY              # Everything after is keyword-only
+    metadata: dict[str, Any] = field(default_factory=dict)
+
+
+# =====================================================
+# Dataclass Instantiation
+# =====================================================
