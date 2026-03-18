@@ -17,6 +17,11 @@ Programmatic usage::
 """
 # Adding public API exports makes the pakacge more professional
 
-from .bmp_main import main
+import sys
+
+try:
+    from py_src.bmp_main import main
+except ImportError as e:
+    sys.exit(f"Error: cannof find relative modules.\nDetails: {e}")
 
 __all__ = ["main"]
