@@ -8,7 +8,6 @@
 from __future__ import annotations
 from dataclasses import dataclass, field, KW_ONLY
 from enum import IntEnum, StrEnum, unique
-from re import S
 from typing import Final, Any, TypedDict
 from pathlib import Path
 import logging
@@ -149,7 +148,7 @@ class FileHandlerConfig:
         if self.KILOBYTE <= 0:
             raise self.negative_value("KILOBYTE")
     
-    @property
+    @property  # Access function's return as an attribute
     def max_log_bytes(self) -> int:
         """
         """
