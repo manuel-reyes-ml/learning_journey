@@ -18,7 +18,17 @@ import sys
 # EXPORTS
 # =============================================================================
 
-__all__ = []
+__all__ = [
+    # Constants
+    "MAX_WORD_LENGTH",
+    "default_fnames",
+    # Configuration
+    "ExitCode",
+    "file_dirs",
+    "fhandler_config",
+    "BenchmarkResult",
+    "ColoredFormatter",
+]
 
 
 # =============================================================================
@@ -29,7 +39,7 @@ __all__ = []
 # Constants
 # =====================================================
 
-MAX_WORD_LENGHT: Final[int] = 45
+MAX_WORD_LENGTH: Final[int] = 45
 default_fnames: DefaultFileNames = {
     "dictionaries": ("large", "small"),
     "keys": ("aca.txt", "austen.txt"),
