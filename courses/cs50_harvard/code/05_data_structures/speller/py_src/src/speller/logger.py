@@ -10,16 +10,15 @@ from logging.handlers import RotatingFileHandler
 import logging
 import sys
 
-try:
-    from speller.config import (
+from speller.config import (
         file_dirs,
         fhandler_config,
         FileDirectories,
         FileHandlerConfig,
         ColoredFormatter,
-    )
-except ImportError as e:
-    sys.exit(f"Error: Cannot find relative modules.\nDetails: {e}")
+)
+# No ImportError sys.exit() on regular module so the
+# error propagates to the caller (__main__.py).
     
 
 # =============================================================================
