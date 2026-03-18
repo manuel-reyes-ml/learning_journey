@@ -31,6 +31,47 @@ __all__ = ["config_logging"]
 
 
 # =============================================================================
+# INTERNAL HELPER FUNCTIONS
+# =============================================================================
+
+def _setup_chandler(
+    *,
+    level: int,
+    formatter: type[logging.Formatter],
+) -> logging.StreamHandler:
+    """
+    """
+    console_handler = logging.StreamHandler(sys.stderr)
+    console_handler.setLevel(level)
+    console_handler.setFormatter(formatter(
+        fmt='%(asctime)s : %(levelname)s : %(message)s',
+        datefmt='%H:%M:%S',
+    ))
+    return console_handler
+
+
+def _setup_fhandler(
+    file_dirs: FileDirectories = file_dirs,
+    fhandler_config: FileHandlerConfig = fhandler_config,
+) -> RotatingFileHandler:
+    """
+    """
+    file_handler = RotatingFileHandler(
+        filename=file_dirs.log_file,
+        maxBytes=fhandler_config.max_log_bytes,
+        backupCount=fhandler_config.BACKUP_COUNT,
+        encoding=fhandler_config.ENCODING,
+    ) 
+    file_handler.setLevel(logging.DEBUG)
+    
+    # %(name)s shows module name (speller.main)
+    file_handler.setFormatter(logging.Formatter(
+        fmt='%(asctime)s : %(name)s : %(levelname)s : %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S',
+    ))
+    return file_handler
+
+# =============================================================================
 # CORE FUNCTIONS
 # =============================================================================
 
@@ -57,12 +98,7 @@ def config_logging(
     level = logging.DEBUG if console_verbose else fhandler_config.LEVEL_DEFAULT
     formatter = custom_formatter if custom_console else logging.Formatter
     
-    console_handler = logging.StreamHandler(sys.stderr)
-    console_handler.setLevel(level)
-    console_handler.setFormatter(formatter(
-        fmt='%(asctime)s : %(levelname)s : %(message)s',
-        datefmt='%H:%M:%S',
-    ))
+    console_handler = _setup_chandler(level=level, formatter=formatter)
     package_logger.addHandler(console_handler)
     
     # 4. File handler - plain text, always captures DEBUG
@@ -71,18 +107,6 @@ def config_logging(
         # exist_ok=True: no error if directory already exists
         file_dirs.LOG_DIR.mkdir(parents=True, exist_ok=True)
         
-        file_handler = RotatingFileHandler(
-            filename=file_dirs.log_file,
-            maxBytes=fhandler_config.max_log_bytes,
-            backupCount=fhandler_config.BACKUP_COUNT,
-            encoding=fhandler_config.ENCODING,
-        )
-        file_handler.setLevel(logging.DEBUG)
-        # %(name)s shows module name (speller.main)
-        file_handler.setFormatter(logging.Formatter(
-            fmt='%(asctime)s : %(name)s : %(levelname)s : %(message)s',
-            datefmt='%Y-%m-%d %H:%M:%S',
-        ))
         package_logger.addHandler(file_handler)
         
     # 5. Prevent logs from bubbling up to Python's default root logger
