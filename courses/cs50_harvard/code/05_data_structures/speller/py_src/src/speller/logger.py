@@ -7,7 +7,6 @@
 
 from __future__ import annotations
 from logging.handlers import RotatingFileHandler
-from pathlib import Path
 import logging
 import sys
 
@@ -71,6 +70,7 @@ def _setup_fhandler(
     ))
     return file_handler
 
+
 # =============================================================================
 # CORE FUNCTIONS
 # =============================================================================
@@ -79,8 +79,6 @@ def config_logging(
     console_verbose: bool = False,
     log_to_file: bool = True,
     custom_console: bool = True,
-    file_dirs: FileDirectories = file_dirs,
-    fhandler_config: FileHandlerConfig = fhandler_config,
     custom_formatter: type[logging.Formatter] = ColoredFormatter,
 ) -> None:
     """
@@ -107,6 +105,7 @@ def config_logging(
         # exist_ok=True: no error if directory already exists
         file_dirs.LOG_DIR.mkdir(parents=True, exist_ok=True)
         
+        file_handler = _setup_fhandler()
         package_logger.addHandler(file_handler)
         
     # 5. Prevent logs from bubbling up to Python's default root logger
