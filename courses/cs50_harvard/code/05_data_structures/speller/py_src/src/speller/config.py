@@ -28,6 +28,9 @@ __all__ = [
     "fhandler_config",
     "BenchmarkResult",
     "ColoredFormatter",
+    # Class
+    "FileDirectories",
+    "FileHandlerConfig",
 ]
 
 
