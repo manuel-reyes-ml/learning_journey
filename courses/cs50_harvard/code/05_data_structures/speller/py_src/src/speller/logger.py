@@ -66,4 +66,25 @@ def config_logging(
     package_logger.addHandler(console_handler)
     
     # 4. File handler - plain text, always captures DEBUG
-    
+    if log_to_file:
+        # parents=True: create any missing parent directories
+        # exist_ok=True: no error if directory already exists
+        file_dirs.LOG_DIR.mkdir(parents=True, exist_ok=True)
+        
+        file_handler = RotatingFileHandler(
+            filename=file_dirs.log_file,
+            maxBytes=fhandler_config.max_log_bytes,
+            backupCount=fhandler_config.BACKUP_COUNT,
+            encoding=fhandler_config.ENCODING,
+        )
+        file_handler.setLevel(logging.DEBUG)
+        # %(name)s shows module name (speller.main)
+        file_handler.setFormatter(logging.Formatter(
+            fmt='%(asctime)s : %(name)s : %(levelname)s : %(message)s',
+            datefmt='%Y-%m-%d %H:%M:%S',
+        ))
+        package_logger.addHandler(file_handler)
+        
+    # 5. Prevent logs from bubbling up to Python's default root logger
+    # (prevents duplicate printing in some environments).
+    package_logger.propagate = False
