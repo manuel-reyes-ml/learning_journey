@@ -4,28 +4,19 @@
 
 from __future__ import annotations
 import logging
-import sys
-
-try:
-    from speller.main import main
-except ImportError as e:
-    sys.exit(f"Error: cannot find relative modules.\nDetails: {e}")
-    
-
-__all__ = ["main"]
 
 
+# Library logging pattern: stay silent unless the application configures
+# logging. The CLI entry point (__main__.py) calls config_logging() to
+# acivate console/file handlers.
 logging.getLogger(__name__).addHandler(logging.NullHandler())
-# This does exactly **one thing**: it silences the warning `"No handlers
-# could be found for logger 'speller'"` when someone imports your package
-# but doesn't configure logging themselves.
 
-# Without it, if your code calls `logger.warning("file not found")` and the user
-# of your package hasn't set up any logging, Python prints an ugly warning to
-# stderr. `NullHandler` is a "black hole" — it catches log messages and discards
-# them silently.
+# Package metadata
+__version__ = "1.0.0"
 
-# The key idea is **separation of concerns**:
-#   - the *library* (your `speller` package) should never decide *where* logs go. 
-#   - That's the *application's* job. This is why LangChain, scikit-learn, and Airflow
-#     all use this same pattern in their `__init__.py`.
+
+
+# __init__.py (runs on import)     → "What does this package OFFER to other code?"
+# __main__.py (runs on execution)  → "What happens when someone RUNS this package from the terminal?"
+
+# No ImportError sys.exit() on __init__.py because it kills any program that imports the package
