@@ -99,4 +99,33 @@ def timer(operation_name: str) -> Generator[dict[str, Any], None, None]:
 def timed(operation_name: str):
     """
     """
-    
+    # LAYER 1: receives the parameter (operation_name)
+    # Returns the actual decorator function
+    def decorator(func):
+        # LAYER 2: receives the function being decorated
+        # Returns the wrapper that replaces the original function
+        
+        @wraps(func)  # Preserve func.__name__, __.doc__, etc.
+        def wrapper(*args: Any, **kwargs: Any):
+            # LAYER 3: receives the arguments when the function is called
+            # This is what actually runs when you call load_dictionary(path)
+            
+            # Reuse the timer() context manager - DRY principle
+            # The timing logic exists in one place (timer), not duplicated here
+            with timer(operation_name) as t:
+                result = func(*args, **kwargs)  # Call the original function
+            
+            # Store the BenchmarkResult on the wrapper function object
+            # Functions are objects in Python - you can set attributes on them.
+            # This is how the caller accesses the timing data after the call.
+            wrapper.benchmark = t["result"]
+            
+            # Return the original function's return value unchanged.
+            # The caller doesn't know or care that timing happened.
+            return result
+        
+        # Initialize .benchmark to None before any call is made
+        wrapper.benchmark = None
+        
+        return wrapper
+    return decorator
