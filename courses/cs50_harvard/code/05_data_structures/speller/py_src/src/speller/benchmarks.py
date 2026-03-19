@@ -118,14 +118,14 @@ def timed(operation_name: str):
             # Store the BenchmarkResult on the wrapper function object
             # Functions are objects in Python - you can set attributes on them.
             # This is how the caller accesses the timing data after the call.
-            wrapper.benchmark = t["result"]
+            wrapper.benchmark = t["result"]  # type: ignore[attr-defined]
             
             # Return the original function's return value unchanged.
             # The caller doesn't know or care that timing happened.
             return result
         
         # Initialize .benchmark to None before any call is made
-        wrapper.benchmark = None
+        wrapper.benchmark = None  # type: ignore[attr-defined]
         
         return wrapper
     return decorator
