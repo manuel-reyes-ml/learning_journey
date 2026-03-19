@@ -6,9 +6,9 @@
 # =============================================================================
 
 from __future__ import annotations
-from dataclasses import dataclass, field, KW_ONLY
 from enum import IntEnum, StrEnum, unique
-from typing import Final, Any, TypedDict
+from typing import Final, TypedDict
+from dataclasses import dataclass
 from pathlib import Path
 import logging
 import sys
@@ -26,7 +26,6 @@ __all__ = [
     "ExitCode",
     "file_dirs",
     "fhandler_config",
-    "BenchmarkResult",
     "ColoredFormatter",
     # Class
     "FileDirectories",
@@ -37,7 +36,6 @@ __all__ = [
 # =============================================================================
 # CONSTANTS CONFIGURATION
 # =============================================================================
-
 # =====================================================
 # Constants
 # =====================================================
@@ -166,18 +164,6 @@ class FileHandlerConfig:
         """
         """
         return self.FILE_MB * self.MEGABYTE * self.KILOBYTE
-        
-
-# Use @dataclass for internal logic, Pydantic BaseModel
-# at services boundaries (API, user validation).
-@dataclass(frozen=True, slots=True)
-class BenchmarkResult:
-    """
-    """
-    operation: str          # Positional or keyword
-    elapsed_seconds: float  # Positional or keyword
-    _: KW_ONLY              # Everything after is keyword-only
-    metadata: dict[str, Any] = field(default_factory=dict)
 
 
 # =====================================================
