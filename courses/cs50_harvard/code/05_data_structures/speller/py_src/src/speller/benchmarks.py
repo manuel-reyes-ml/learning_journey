@@ -6,6 +6,7 @@
 # =============================================================================
 
 from __future__ import annotations
+
 from dataclasses import dataclass, field, KW_ONLY
 from typing import Any, Generator, Callable
 from contextlib import contextmanager
@@ -18,6 +19,7 @@ import time
 # LOGGER SETUP
 # =============================================================================
 
+# '__name__' will automatically be name 'speller.benchmarks'
 logger = logging.getLogger(__name__)
 
 
