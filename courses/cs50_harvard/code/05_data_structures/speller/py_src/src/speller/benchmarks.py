@@ -8,11 +8,24 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field, KW_ONLY
-from typing import Any, Generator, Callable
+
+# Runtime collection types → collections.abc
+from collections.abc import Generator, Callable
+
+# Type system concepts → typing
+from typing import Any, ParamSpec, TypeVar
+
 from contextlib import contextmanager
 from functools import wraps
 import logging
 import time
+
+## Simple Decision Rule
+# "Is it a CONTAINER or CALLABLE type?"
+#     YES → from collections.abc  (Generator, Iterator, Callable, Sequence, Mapping)
+
+# "Is it a TYPE SYSTEM concept?"
+#     YES → from typing  (Protocol, TypeVar, ParamSpec, Any, Final, TypedDict)
 
 
 # =============================================================================
@@ -38,16 +51,23 @@ __all__ = [
 # MODULE CONFIGURATION
 # =============================================================================
 # =====================================================
-# Type Aliases
+# Type Variables % Aliases
 # =====================================================
 
 # Define types locally if only used in the module
 
-# Syntax: Callable[[INPUT_TYPES], RETURN_TYPE]
-#   - Input parameters in a list
-type Wrapped = Callable[[Any], Any]
-type Decorator = Callable[[Callable], Wrapped]
-type DictMetaData = dict[str, BenchmarkResult]
+# Type variables for preserving decorated function signatures
+# P captures the function's parameter types as a group
+# T captures the function's return type
+# Together they ensure the decorator doesn't erase type info
+P = ParamSpec("P")
+T = TypeVar("T")
+
+# Container type for the timer context manager
+type TimerContainer = dict[str, Any]
+
+# 'Any' since the container is empty during the
+# 'with' block and only has data after.
 
 
 # =====================================================
@@ -68,13 +88,13 @@ class BenchmarkResult:
     _: KW_ONLY        # Everything after is keyword-only
     operation: str          
     elapsed_seconds: float  
-    metadata: DictMetaData = field(default_factory=dict)
+    metadata: dict[str, Any] = field(default_factory=dict)
     
     # __str__ is called by output func (logging, print)
     def __str__(self) -> str:
         """
         """
-        return f"{self.operation}: {self.elapsed_seconds:2f}s"
+        return f"{self.operation}: {self.elapsed_seconds:.2f}s"
 
 
 # =====================================================
@@ -106,13 +126,13 @@ class BenchmarkResult:
 # The `with` statement guarantees __exit__ is called, which makes it
 # perfect for resource cleanup: files, connections, locks, timers.
 @contextmanager
-def timer(operation_name: str) -> Generator[DictMetaData, None, None]:
+def timer(operation_name: str) -> Generator[TimerContainer, None, None]:
     """
     """
     # Mutable container - we yield this before timing is done, then we
     # fill it in AFTER the block completes.
     # The caller holds a reference to this same dict object
-    container: DictMetaData = {}
+    container: TimerContainer = {}
     
     # ===__enter__ phase ===
     # perf_counter() is monotonic (never goes backward) and high-resolution.
@@ -143,20 +163,44 @@ def timer(operation_name: str) -> Generator[DictMetaData, None, None]:
         elapsed,
     )
     
+    
+# Syntax: Callable[[INPUT_TYPES], RETURN_TYPE]
+#   - Input parameters in a list
+def timed(operation_name: str) -> Callable[[Callable[P, T]], Callable[P, T]]:
+    """
+    """
+#                                  ↑        ↑               ↑
+#                                  |        |               |
+#                                  |        input func      output func
+#                                  |        (same types)    (same types)
+#                                  |
+#                                  returns a decorator
+#
+# In English: "timed() returns a function that takes a
+#              Callable[P, T] and returns a Callable[P, T]"
+#
+# Which means: "whatever goes in comes out with the same types"
 
-def timed(operation_name: str) -> Decorator:
-    """
-    """
     # LAYER 1: receives the parameter (operation_name)
     # Returns the actual decorator function
-    def decorator(func: Callable) -> Wrapped:
+    
+    def decorator(func: Callable[P, T]) -> Callable[P, T]:
         # LAYER 2: receives the function being decorated
         # Returns the wrapper that replaces the original function
         
         @wraps(func)  # Preserve func.__name__, .__doc__, etc.
-        def wrapper(*args: Any, **kwargs: Any) -> Any:
+        def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
             # LAYER 3: receives the arguments when the function is called
             # This is what actually runs when you call load_dictionary(path)
+        #                   ↑                 ↑
+        #                   positional args   keyword args
+        #                   from P            from P
+        # If the original function is:
+        #   def load_dictionary(path: str, verbose: bool = False) -> bool
+
+        # Then P.args captures: (str,)
+        # And P.kwargs captures: {verbose: bool}
+        # And T captures: bool    
             
             # Reuse the timer() context manager - DRY principle
             # The timing logic exists in one place (timer), not duplicated here
@@ -305,3 +349,54 @@ def timed(operation_name: str) -> Decorator:
 # @wraps also preserves __module__, __qualname__, __annotations__,
 # and __dict__, which matters for mypy, pytest, and Sphinx docs.
 # =========================================================================
+
+
+# @timed("load")
+#def load_dictionary(path: str) -> bool:
+#    return True
+
+# Your code expects bool, but mypy can't verify because
+# the decorator's return type is Any
+# result: str = load_dictionary("large")  # ← mypy says "fine!" (it's not)
+
+# The decorator erased the original function's type information. After decoration, `mypy` thinks `load_dictionary` returns `Any` instead of `bool`.
+
+## What `TypeVar` and `ParamSpec` Solve
+
+# They let the decorator **preserve** the original function's exact types — parameters AND return type flow through unchanged:
+
+# BEFORE (Any):
+#   load_dictionary: (*Any) -> Any          ← type info lost
+
+# AFTER (ParamSpec + TypeVar):
+#   load_dictionary: (path: str) -> bool    ← type info preserved
+
+## How They Work
+#┌─────────────────────────────────────────────────────────────────┐
+#│              TypeVar and ParamSpec                               │
+#│─────────────────────────────────────────────────────────────────│
+#│                                                                  │
+#│  TypeVar("T")  — captures ONE type and reuses it                 │
+#│                                                                  │
+#│    T = TypeVar("T")                                              │
+#│    def identity(x: T) -> T: ...                                  │
+#│                                                                  │
+#│    identity(42)     → mypy knows return is int                   │
+#│    identity("hi")   → mypy knows return is str                   │
+#│    T "binds" to whatever type flows in, then flows out           │
+#│                                                                  │
+#│  ParamSpec("P")  — captures ALL parameters as a group            │
+#│                                                                  │
+#│    P = ParamSpec("P")                                            │
+#│    def wrapper(*args: P.args, **kwargs: P.kwargs): ...           │
+#│                                                                  │
+#│    If original func is (path: str, verbose: bool) -> bool        │
+#│    Then P captures (path: str, verbose: bool) as a unit          │
+#│    P.args = the positional args                                  │
+#│    P.kwargs = the keyword args                                   │
+#│                                                                  │
+#│  Together they let decorators say:                               │
+#│    "I take a function with parameters P returning T,             │
+#│     and I return a function with the SAME parameters P           │
+#│     returning the SAME type T"                                   │
+#└─────────────────────────────────────────────────────────────────┘
