@@ -8,7 +8,7 @@ import logging
 
 
 # Library logging pattern: stay silent unless the application configures
-# logging. The CLI entry point (__main__.py) calls config_logging() to
+# logging. The CLI entry point (__main__.py) calls configure_logging() to
 # acivate console/file handlers.
 logging.getLogger(__name__).addHandler(logging.NullHandler())
 

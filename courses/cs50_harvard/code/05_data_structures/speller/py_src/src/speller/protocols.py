@@ -14,6 +14,11 @@ from typing import Protocol, runtime_checkable
 # DICTIONARY PROTOCOL — Core interface for spell-checking backends
 # =============================================================================
 
+# Protocols define structural interfaces (contracts) — any class that
+# implements the required methods satisfies the protocol automatically.
+# No inheritance needed. This is Python's version of Go's interfaces
+# or TypeScript's structural typing.
+
 @runtime_checkable
 class DictionaryProtocol(Protocol):
     """
@@ -32,12 +37,7 @@ class DictionaryProtocol(Protocol):
         """
         """
         ...
-        
 
-# Protocols define structural interfaces (contracts) — any class that
-# implements the required methods satisfies the protocol automatically.
-# No inheritance needed. This is Python's version of Go's interfaces
-# or TypeScript's structural typing.
 
 # How Protocol works
 # ------------------
