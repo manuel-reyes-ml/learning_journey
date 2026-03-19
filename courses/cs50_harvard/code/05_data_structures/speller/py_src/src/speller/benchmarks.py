@@ -35,8 +35,13 @@ __all__ = []
 # Type Aliases
 # =====================================================
 
+# Define types locally if only used in the module
+
+# Syntax: Callable[[INPUT_TYPES], RETURN_TYPE]
+#   - Input parameters in a list
 type Wrapped = Callable[[Any], Any]
 type Decorator = Callable[[Callable], Wrapped]
+type DictMetaData = dict[str, BenchmarkResult]
 
 
 # =====================================================
@@ -45,14 +50,19 @@ type Decorator = Callable[[Callable], Wrapped]
 
 # Use @dataclass for internal logic, Pydantic BaseModel
 # at services boundaries (API, user validation).
+
+# frozen=True makes instances immutable.
+# slots=True prevents dynamic attribute creation and
+# reduces memory fooprint.
+# Together they create a truly locked-down data container.
 @dataclass(frozen=True, slots=True)
 class BenchmarkResult:
     """
     """
-    _: KW_ONLY              # Everything after is keyword-only
+    _: KW_ONLY        # Everything after is keyword-only
     operation: str          
     elapsed_seconds: float  
-    metadata: dict[str, Any] = field(default_factory=dict)
+    metadata: DictMetaData = field(default_factory=dict)
     
     # __str__ is called by output func (logging, print)
     def __str__(self) -> str:
@@ -65,14 +75,38 @@ class BenchmarkResult:
 # Decorators
 # ===================================================== 
 
+# Generator[dict[str, Any], None, None]
+#          ↑               ↑     ↑
+#          what yield      what   what
+#          sends OUT       you    return
+#                          send() gives back
+#                          IN
+# SendType = The caller can send() a value into the generator, and
+#       it arrives as the return value of the yield expression.
+# ReturnType = When the generator finishes (hits return), the value
+#       gets stuffed inside StopIteration exception. 
+# The caller can catch it:
+# try:
+#     next(gen)       # generator is exhausted
+# except StopIteration as e:
+#     print(e.value)  # ← the return value lives here
+
+# Iterator is the simpler type — it only specifies what comes out
+
+# A context manager is any object that implements two methods:
+#   __enter__()  — runs when the `with` block STARTS
+#   __exit__()   — runs when the `with` block ENDS (even if an error occurs)
+#
+# The `with` statement guarantees __exit__ is called, which makes it
+# perfect for resource cleanup: files, connections, locks, timers.
 @contextmanager
-def timer(operation_name: str) -> Generator[dict[str, Any], None, None]:
+def timer(operation_name: str) -> Generator[DictMetaData, None, None]:
     """
     """
     # Mutable container - we yield this before timing is done, then we
     # fill it in AFTER the block completes.
     # The caller holds a reference to this same dict object
-    container: dict[str, Any] = {}
+    container: DictMetaData = {}
     
     # ===__enter__ phase ===
     # perf_counter() is monotonic (never goes backward) and high-resolution.
