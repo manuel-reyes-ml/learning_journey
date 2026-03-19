@@ -6,6 +6,7 @@
 # =============================================================================
 
 from __future__ import annotations
+
 from logging.handlers import RotatingFileHandler
 import logging
 import sys
