@@ -129,3 +129,131 @@ def timed(operation_name: str):
         
         return wrapper
     return decorator
+
+
+# =========================================================================
+# SECTION 2: timer() — Context Manager (THE FOUNDATION)
+# =========================================================================
+#
+# HOW @contextmanager WORKS
+# =========================
+#
+# Normally, to create a context manager you write a class with
+# __enter__ and __exit__ methods:
+#
+#   class Timer:
+#       def __enter__(self):
+#           self.start = time.perf_counter()
+#           return self
+#       def __exit__(self, *exc):
+#           self.elapsed = time.perf_counter() - self.start
+#           return False
+#
+# That's 8+ lines of boilerplate. @contextmanager lets you write
+# the SAME thing as a generator function with a single `yield`:
+#
+#   @contextmanager
+#   def timer(name):
+#       start = time.perf_counter()     ← __enter__ (before yield)
+#       yield container                  ← the value `with ... as X` receives
+#       elapsed = time.perf_counter()    ← __exit__ (after yield)
+#
+# The @contextmanager decorator converts your generator into a proper
+# context manager. It:
+#   1. Calls your function up to `yield`     → this is __enter__
+#   2. Sends the yielded value to `as X`     → this is the return value
+#   3. Resumes after `yield` when the block ends → this is __exit__
+#
+# EXECUTION FLOW (step by step)
+# ==============================
+#
+#   with timer("load") as t:       # 1. Python calls timer("load")
+#                                   # 2. Function runs until yield
+#                                   # 3. t = the yielded dict {}
+#       dictionary.load(path)       # 4. YOUR CODE runs here
+#                                   # 5. Block ends → function resumes after yield
+#                                   # 6. elapsed is calculated
+#                                   # 7. BenchmarkResult stored in t["result"]
+#   print(t["result"])              # 8. You access the result
+#
+# WHY yield a DICT (mutable container)?
+# ======================================
+#
+# Problem: yield happens BEFORE the timed block runs, but we need
+# to store the result AFTER it completes. We can't yield a frozen
+# dataclass because we can't mutate it after yielding.
+#
+# Solution: yield a mutable dict. We fill it in AFTER the block:
+#
+#   yield container        ← empty dict goes to caller
+#   ...timing happens...
+#   container["result"] =  ← we can still write to it because
+#                             the caller has a REFERENCE to the
+#                             same dict object (Python passes by
+#                             reference for mutable objects)
+#
+# This is the same pattern used in pytest fixtures, FastAPI
+# dependencies, and SQLAlchemy session managers.
+# =========================================================================
+
+# =========================================================================
+# SECTION 3: timed() — Decorator (WRAPS the Context Manager)
+# =========================================================================
+#
+# HOW THE THREE-LAYER DECORATOR WORKS
+# =====================================
+#
+# A decorator with parameters needs THREE nested functions:
+#
+#   timed("load")                → returns `decorator`   (layer 1: receives NAME)
+#   decorator(load_dictionary)   → returns `wrapper`     (layer 2: receives FUNCTION)
+#   wrapper(*args, **kwargs)     → calls func + times it (layer 3: receives ARGUMENTS)
+#
+# Why three layers? Because Python evaluates decorators in two steps:
+#
+#   @timed("load")           # Step 1: Python calls timed("load") → gets `decorator`
+#   def load_dict(path):     # Step 2: Python calls decorator(load_dict) → gets `wrapper`
+#       ...
+#
+# After decoration, `load_dict` IS `wrapper`. When you call `load_dict(path)`,
+# you're actually calling `wrapper(path)`, which:
+#   1. Opens the timer context manager
+#   2. Calls the original load_dict inside the timed block
+#   3. Stores the BenchmarkResult on wrapper.benchmark
+#   4. Returns the original function's return value unchanged
+#
+# VISUAL FLOW
+# ============
+#
+#   @timed("load")
+#   def load_dict(path):
+#       return True
+#
+#   # What Python actually does:
+#   #   temp = timed("load")          → temp is `decorator`
+#   #   load_dict = temp(load_dict)   → load_dict is now `wrapper`
+#
+#   result = load_dict("large")
+#   #   → wrapper("large") is called
+#   #   → wrapper opens: with timer("load") as t:
+#   #   → wrapper calls: original_load_dict("large")
+#   #   → wrapper stores: wrapper.benchmark = t["result"]
+#   #   → wrapper returns: True (the original return value)
+#
+#   print(result)                    # True (unchanged)
+#   print(load_dict.benchmark)       # BenchmarkResult(operation="load", ...)
+#
+# WHY @wraps(func)?
+# ==================
+#
+# Without @wraps, the wrapper replaces the original function's metadata:
+#   load_dict.__name__  → "wrapper"  (WRONG — confuses debuggers and loggers)
+#   load_dict.__doc__   → wrapper's docstring (WRONG — hides original docs)
+#
+# With @wraps(func), the wrapper COPIES the original's metadata:
+#   load_dict.__name__  → "load_dict"  (CORRECT)
+#   load_dict.__doc__   → original docstring (CORRECT)
+#
+# @wraps also preserves __module__, __qualname__, __annotations__,
+# and __dict__, which matters for mypy, pytest, and Sphinx docs.
+# =========================================================================
