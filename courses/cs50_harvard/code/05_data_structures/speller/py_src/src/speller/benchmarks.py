@@ -7,8 +7,8 @@
 
 from __future__ import annotations
 from dataclasses import dataclass, field, KW_ONLY
+from typing import Any, Generator, Callable
 from contextlib import contextmanager
-from typing import Any, Generator
 from functools import wraps
 import logging
 import time
@@ -31,6 +31,14 @@ __all__ = []
 # =============================================================================
 # MODULE CONFIGURATION
 # =============================================================================
+# =====================================================
+# Type Aliases
+# =====================================================
+
+type Wrapped = Callable[[Any], Any]
+type Decorator = Callable[[Callable], Wrapped]
+
+
 # =====================================================
 # Dataclass Frozen Constants
 # ===================================================== 
@@ -96,17 +104,17 @@ def timer(operation_name: str) -> Generator[dict[str, Any], None, None]:
     )
     
 
-def timed(operation_name: str):
+def timed(operation_name: str) -> Decorator:
     """
     """
     # LAYER 1: receives the parameter (operation_name)
     # Returns the actual decorator function
-    def decorator(func):
+    def decorator(func: Callable) -> Wrapped:
         # LAYER 2: receives the function being decorated
         # Returns the wrapper that replaces the original function
         
-        @wraps(func)  # Preserve func.__name__, __.doc__, etc.
-        def wrapper(*args: Any, **kwargs: Any):
+        @wraps(func)  # Preserve func.__name__, .__doc__, etc.
+        def wrapper(*args: Any, **kwargs: Any) -> Any:
             # LAYER 3: receives the arguments when the function is called
             # This is what actually runs when you call load_dictionary(path)
             
