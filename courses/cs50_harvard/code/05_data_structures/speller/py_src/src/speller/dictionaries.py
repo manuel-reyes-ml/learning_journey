@@ -98,6 +98,7 @@ class HashTableDictionary:
     >>> dictionary.check("xyz")
     False
     """
+    
     def __init__(self) -> None:
         self._words: set[str] = set()
         self._loaded: bool = False
@@ -142,6 +143,7 @@ class HashTableDictionary:
             - We convert to Path internally for robust path operations
             - ``path.exists()`` is cleaner than ``os.path.exists(str)``
         """
+        
         path = Path(filepath)
         
         if not path.exists():

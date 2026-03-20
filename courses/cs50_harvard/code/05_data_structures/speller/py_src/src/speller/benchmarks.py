@@ -88,6 +88,7 @@ type TimerContainer = dict[str, Any]
 class BenchmarkResult:
     """
     """
+    
     _: KW_ONLY        # Everything after is keyword-only
     operation: str          
     elapsed_seconds: float  

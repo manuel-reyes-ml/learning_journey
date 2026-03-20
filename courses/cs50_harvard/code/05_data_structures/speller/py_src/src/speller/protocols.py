@@ -113,6 +113,7 @@ class DictionaryProtocol(Protocol):
         """
         ...
         
+        
     def check(self, word: str) -> bool:
         """Check if a word exists in the loaded dictionary.
 
@@ -130,6 +131,7 @@ class DictionaryProtocol(Protocol):
             True if the word is in the dictionary, False otherwise.
         """
         ...
+    
     
     def size(self) -> int:
         """Return the number of words in the loaded dictionary.
