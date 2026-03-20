@@ -31,7 +31,7 @@ logger = logging.getLogger(__name__)
 # EXPORTS
 # =============================================================================
 
-__all__ = []
+__all__ = ["HashTableDictionary"]
 
 
 
