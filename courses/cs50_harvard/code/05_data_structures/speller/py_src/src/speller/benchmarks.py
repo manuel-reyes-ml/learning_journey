@@ -32,7 +32,10 @@ import time
 # LOGGER SETUP
 # =============================================================================
 
-# '__name__' will automatically be name 'speller.benchmarks'
+# __name__ resolves to 'speller.dictionary' - follows the package hierarchy.
+# This logger is a CHILD of the 'speller' logger configured in logger.py.
+# Log messages flow upward: speller.dictionary -> speller -> handlers.
+# You never configure handlers here - that's logger.py / __main__.py's job.
 logger = logging.getLogger(__name__)
 
 
