@@ -7,7 +7,7 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, KW_ONLY
 from pathlib import Path
 import logging
 
@@ -49,7 +49,7 @@ __all__ = []
 class SpellerResult: 
     """
     """
-    
+    _: KW_ONLY
     misspelled_words: list[str]
     words_misspelled: int
     words_in_dictionary: int
@@ -111,3 +111,79 @@ class SpellerResult:
 # CORE FUNCTION
 # =============================================================================
         
+def run_speller(
+    dictionary: DictionaryProtocol,
+    text_path: str | Path,
+    dict_path: str | Path,
+) -> SpellerResult:
+    """
+    """
+    benchmarks: dict[str, BenchmarkResult] = {}
+    
+    # =================================================================
+    # STEP 1: Load dictionary (timed)
+    # =================================================================
+    # timer() context manager wraps the load call.
+    # After the 'with' block, t["result"] contains the BenchmarkResult.
+    with timer("load") as t:
+        loaded = dictionary.load(str(dict_path))
+    
+    benchmarks["load"] = t["result"]
+    
+    if not loaded:
+        logger.error("Could not load dictionary: %s", dict_path)
+        raise SystemExit(f"Could not load {dict_path}.")
+    
+    logger.info("Dictionary loaded: %d words", dictionary.size()) #NOTE: Try Pythonic exp (dunder)
+    
+    # =================================================================
+    # STEP 2: Check words (timed cumulatively)
+    # =================================================================
+    # The timer wraps the ENTIRE loop — not individual check() calls.
+    # This gives us total TIME IN check, matching CS50's output.
+    #
+    # extract_words() is a generator — it yields one word at a time.
+    # No intermediate list is created. The flow is:
+    #   generator yields word → we check it → generator yields next
+    #
+    # This is the streaming pipeline pattern:
+    #   [file bytes] → extract_words → check → accumulate results
+    misspelled_words: list[str] = []
+    words_in_text = 0
+    
+    with timer("check") as t:
+        for word in extract_words(text_path):
+            words_in_text +=1
+            
+            if not dictionary.check(word): #NOTE: Try Pythonic exp (dunder)
+                misspelled_words.append(word)
+                
+    benchmarks["check"] = t["result"]
+    
+    # =================================================================
+    # STEP 3: Get dictionary size (timed)
+    # =================================================================
+    with timer("size") as t:
+        words_in_dictionary = dictionary.size() #NOTE: Try Pythonic exp (dunder)
+        
+    benchmarks["size"] = t["result"] 
+    
+    # =================================================================
+    # STEP 4: Package results
+    # =================================================================
+    result = SpellerResult(
+        misspelled_words=misspelled_words,
+        words_misspelled=len(misspelled_words),
+        words_in_dictionary=words_in_dictionary,
+        words_in_text=words_in_text,
+        benchmarks=benchmarks,
+    )
+    
+    logger.info(
+        "Spell check complete: %d misspelled out of %d words",
+        result.words_misspelled,
+        result.words_in_text,
+    )
+    
+    return result
+    
