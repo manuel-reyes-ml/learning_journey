@@ -123,3 +123,9 @@ class HashTableDictionary:
             f"words={len(self._words):,}"
         )
         
+        
+    def unload(self) -> bool:
+        """
+        """
+        
+        
