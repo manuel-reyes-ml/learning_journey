@@ -11,7 +11,7 @@ from dataclasses import dataclass, field, KW_ONLY
 from pathlib import Path
 import logging
 
-from speller.benchmarks import BenchmarkResult, timer, timed
+from speller.benchmarks import BenchmarkResult, timer
 from speller.protocols import DictionaryProtocol
 from speller.text_processor import extract_words
 
@@ -49,14 +49,14 @@ __all__ = []
 class SpellerResult: 
     """
     """
-    _: KW_ONLY
+    _: KW_ONLY      # Everything after is keyword-only
     misspelled_words: list[str]
     words_misspelled: int
     words_in_dictionary: int
     words_in_text: int
     benchmarks: dict[str, BenchmarkResult] = field(default_factory=dict)
     
-    @property
+    @property  # access time_total as an attribute not time_total()
     def time_total(self) -> float:
         """
         """
@@ -110,12 +110,16 @@ class SpellerResult:
 # =============================================================================
 # CORE FUNCTION
 # =============================================================================
-        
+
+# CORRECT -  return data, let caller decide presentation.
+# This is command-query separation — a function either computes and returns
+# data (query), or performs an action (command), but not both. run_speller()
+# is a query. Printing is a command that __main__.py handles.
 def run_speller(
     dictionary: DictionaryProtocol,
     text_path: str | Path,
     dict_path: str | Path,
-) -> SpellerResult:
+) -> SpellerResult:  # pure computation, testable
     """
     """
     benchmarks: dict[str, BenchmarkResult] = {}
@@ -126,6 +130,8 @@ def run_speller(
     # timer() context manager wraps the load call.
     # After the 'with' block, t["result"] contains the BenchmarkResult.
     with timer("load") as t:
+        # dictionary.load() works with ANY implementation
+        # Dependency injection in action
         loaded = dictionary.load(str(dict_path))
     
     benchmarks["load"] = t["result"]
@@ -186,4 +192,17 @@ def run_speller(
     )
     
     return result
+
+
+# __main__.py is the COMPOSITION ROOT — the one place that picks the concrete class
+#   from speller.dictionary import HashTableDictionary
+#   from speller.speller import run_speller
+
+# dictionary = HashTableDictionary()     # concrete choice HERE
+# result = run_speller(dictionary, ...)  # injected via Protocol
+
+# Why this matters: when you write tests, you inject a MockDictionary
+# with predictable behavior. When you build Stage 2's database-backed
+# dictionary, you swap the implementation in __main__.py — speller.py
+# doesn't change at all.
     
