@@ -47,6 +47,10 @@ __all__ = []
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
 
+# The underscore prefix signals "internal to this module — not part of the public
+# API." These functions aren't in __all__, so from speller.text_processor
+# import * won't export them.
+
 def _consume_alpha(content: str, pos: int, length: int) -> int:
     """
     """
