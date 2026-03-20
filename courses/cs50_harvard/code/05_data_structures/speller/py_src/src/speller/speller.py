@@ -1,4 +1,38 @@
-"""
+"""Spell-checker orchestrator — wires all components together.
+
+Coordinates dictionary loading, text processing, spell checking,
+and benchmark reporting. This module depends on ABSTRACTIONS
+(``DictionaryProtocol``), not concrete implementations
+(``HashTableDictionary``). The concrete class is injected by
+the caller (``__main__.py``).
+
+This is the Dependency Inversion Principle in action:
+    - speller.py says "give me anything with load/check/size"
+    - __main__.py says "here's a HashTableDictionary"
+    - speller.py never imports dictionary.py
+
+CS50 Output Format
+-------------------
+The output must match CS50's ``speller.c`` exactly::
+
+    MISSPELLED WORDS
+
+    [list of misspelled words, one per line]
+
+    WORDS MISSPELLED:     [count]
+    WORDS IN DICTIONARY:  [count]
+    WORDS IN TEXT:        [count]
+    TIME IN load:         [seconds]
+    TIME IN check:        [seconds]
+    TIME IN size:         [seconds]
+    TIME IN TOTAL:        [seconds]
+
+Module Dependencies
+-------------------
+    config.py         → (none currently, but available for constants)
+    protocols.py      → DictionaryProtocol (interface contract)
+    benchmarks.py     → timer(), timed(), BenchmarkResult
+    text_processor.py → extract_words() (word generator)
 """
 
 # =============================================================================
@@ -50,8 +84,35 @@ __all__ = [
 # Together they create a truly locked-down data container.
 @dataclass(frozen=True, slots=True)
 class SpellerResult: 
+    """Immutable container for the complete spell-check result.
+
+    Holds all data needed to produce the CS50-format output report.
+    Using a dataclass instead of returning a tuple or dict because:
+    - Named fields are self-documenting (result.misspelled vs result[0])
+    - Type hints catch errors at compile time
+    - frozen=True prevents accidental mutation after creation
+    - The caller decides HOW to display results (print, log, write to file)
+
+    This is the same pattern you'll use in future projects:
+    - DataVault:    AnalysisResult (query, response, tokens, latency)
+    - PolicyPulse:  RetrievalResult (query, chunks, confidence, source)
+    - FormSense:    ExtractionResult (fields, confidence, routing)
+    - AFC:          BacktestResult (trades, returns, sharpe, drawdown)
+
+    Parameters
+    ----------
+    misspelled_words : list[str]
+        Words not found in the dictionary, in original case.
+    words_misspelled : int
+        Count of misspelled words.
+    words_in_dictionary : int
+        Total words loaded in dictionary.
+    words_in_text : int
+        Total words processed from text file.
+    benchmarks : dict[str, BenchmarkResult]
+        Timing results keyed by operation name.
     """
-    """
+
     _: KW_ONLY      # Everything after is keyword-only
     misspelled_words: list[str]
     words_misspelled: int
@@ -61,13 +122,37 @@ class SpellerResult:
     
     @property  # access time_total as an attribute not time_total()
     def time_total(self) -> float:
-        """
+        """Calculate total time across all benchmarked operations.
+
+        Uses a generator expression inside sum() — no intermediate list.
+        This is the same pattern as:
+            sum(sale.amount for sale in sales)  # Stage 1 DataVault
+            sum(score for score in model.evaluate())  # Stage 3 ML
+
+        Returns
+        -------
+        float
+            Sum of all benchmark elapsed_seconds values.
         """
         return sum(b.elapsed_seconds for b in self.benchmarks.values())
     
     
     def format_report(self) -> str:
-        """
+        """Format results to match CS50 speller.c output exactly.
+
+        Returns a string rather than printing directly because:
+        - Testable: assert result.format_report() == expected_output
+        - Flexible: caller decides destination (stdout, file, log)
+        - Composable: can be included in larger reports
+
+        This pattern is called "command-query separation":
+        - format_report() QUERIES the data (returns string, no side effects)
+        - The caller COMMANDS what to do with it (print, write, send)
+
+        Returns
+        -------
+        str
+            Formatted report matching CS50's exact output format.
         """
         lines: list[str] = []
         
@@ -123,7 +208,57 @@ def run_speller(
     text_path: str | Path,
     dict_path: str | Path,
 ) -> SpellerResult:  # pure computation, testable
-    """
+    """Run the spell checker — orchestrates all components.
+
+    This function:
+    1. Loads the dictionary (timed)
+    2. Extracts words from text (generator — streaming)
+    3. Checks each word against the dictionary (timed cumulatively)
+    4. Gets dictionary size (timed)
+    5. Packages everything into a SpellerResult
+
+    Parameters
+    ----------
+    dictionary : DictionaryProtocol
+        Any object satisfying the DictionaryProtocol interface.
+        Injected by __main__.py — this function doesn't know or care
+        whether it's a HashTableDictionary, a DatabaseDictionary,
+        or a MockDictionary for testing.
+    text_path : str or Path
+        Path to the text file to spell-check.
+    dict_path : str or Path
+        Path to the dictionary file to load.
+
+    Returns
+    -------
+    SpellerResult
+        Frozen dataclass containing all results and benchmarks.
+        The caller decides how to display it (format_report(), logging, etc.)
+
+    Raises
+    ------
+    SystemExit
+        If the dictionary fails to load (cannot proceed without it).
+
+    Notes
+    -----
+    Why accept DictionaryProtocol (not HashTableDictionary)?
+        Dependency injection — this function works with ANY dictionary
+        backend. For testing, you pass a MockDictionary. For Stage 2,
+        you could pass a DatabaseDictionary. No changes to speller.py.
+
+    Why return SpellerResult (not print directly)?
+        - Testable: assert result.words_misspelled == 30
+        - Composable: caller can log, print, write to file, or ignore
+        - No side effects: pure function (given same inputs → same output)
+        - This is command-query separation — compute and return, let the
+          caller decide what to do with the results
+
+    Why not use @timed decorator for check?
+        check() is called thousands of times (once per word). We need
+        the CUMULATIVE time, not individual call times. The timer()
+        context manager wraps the entire check loop to capture total time.
+        @timed is for one-shot operations like load() and size().
     """
     benchmarks: dict[str, BenchmarkResult] = {}
     
