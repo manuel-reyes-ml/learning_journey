@@ -34,6 +34,8 @@ logger = logging.getLogger(__name__)
 __all__ = ["HashTableDictionary"]
 
 
+# Notice that dictionary.py never imports DictionaryProtocol. It doesn't need to.
+# The module that uses the protocol (speller.py) imports it for type hints. 
 
 class HashTableDictionary:
     """
@@ -69,10 +71,12 @@ class HashTableDictionary:
                         continue
                     
                     self._words.add(word.lower())
-                    
+        
+        # OSError is the parent of FileNotFoundError, PermissionError, IsADirectoryError,
+        # and other file-related errors. Catching OSError handles all of them in one block.
+        # In production (Stage 2 pipelines, Stage 4 LLM apps), files can fail for many reasons
+        # beyond "not found" — permissions, disk full, encoding problems. OSError covers them all.
         except OSError as e:
-            # OSError catches file permission errors, encoding errors, etc.
-            # More specific than bare Exception, broader than FileNotFoundError.
             logger.error("Failed to read dictionary '%s': %s", path, e)
             return False
         
@@ -88,6 +92,8 @@ class HashTableDictionary:
     def check(self, word: str) -> bool:
         """
         """
+        # Without this guard, an unloaded dictionary silently returns False
+        # for every word — the entire text appears "misspelled."
         if not self._loaded:
             raise RuntimeError(
                 "Dictionary not loaded. Call load() before check()."
@@ -113,7 +119,9 @@ class HashTableDictionary:
         """
         return self.check(word)
     
-    
+    # type(self).__name__ instead of hardcoding "HashTableDictionary" means
+    # if someone subclasses your class, __repr__ automatically uses the subclass
+    # name. The :, format specifier adds thousand separators (143,091 instead of 143091).
     def __repr__(self) -> str:
         """
         """
@@ -130,4 +138,19 @@ class HashTableDictionary:
         self._words.clear()
         self._loaded = False
         return True
-        
+    
+    
+# Without dunder methods — works but verbose:
+#   dictionary.check("hello")     # explicit method call
+#   dictionary.size()              # explicit method call
+
+# With dunder methods — idiomatic Python:
+#   "hello" in dictionary          # __contains__ → calls check()
+#   len(dictionary)                # __len__ → calls size()
+
+# Both __len__ and __contains__ delegate to the Protocol methods (size()
+# and check()). The logic lives in one place (DRY), but users get two interfaces
+# — the explicit Protocol methods and the Pythonic dunder syntax.
+
+# This is how Python's built-in types work: "hello" in my_set calls set.__contains__(),
+# len(my_list) calls list.__len__(). Your class follows the same pattern.
