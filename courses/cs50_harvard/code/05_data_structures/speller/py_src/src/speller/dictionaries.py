@@ -42,6 +42,7 @@ class HashTableDictionary:
         self._words: set[str] = set()
         self._loaded: bool = False
         
+        
     def load(self, filepath: str) -> bool:
         """
         """
@@ -82,4 +83,43 @@ class HashTableDictionary:
             path.name,
         )
         return True
+    
+    
+    def check(self, word: str) -> bool:
+        """
+        """
+        if not self._loaded:
+            raise RuntimeError(
+                "Dictionary not loaded. Call load() before check()."
+            )
+        
+        return word.lower() in self._words
+    
+    
+    def size(self) -> int:
+        """
+        """
+        return len(self._words)
+    
+    
+    def __len__(self) -> int:
+        """
+        """
+        return self.size()
+    
+    
+    def __contains__(self, word: str) -> bool:
+        """
+        """
+        return self.check(word)
+    
+    
+    def __repr__(self) -> str:
+        """
+        """
+        return (
+            f"{type(self).__name__}("
+            f"loaded={self._loaded}, "
+            f"words={len(self._words):,}"
+        )
         
