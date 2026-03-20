@@ -127,5 +127,7 @@ class HashTableDictionary:
     def unload(self) -> bool:
         """
         """
-        
+        self._words.clear()
+        self._loaded = False
+        return True
         
