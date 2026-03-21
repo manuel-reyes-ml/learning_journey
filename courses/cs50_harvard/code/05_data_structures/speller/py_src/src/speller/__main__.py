@@ -217,3 +217,36 @@ if __name__ == "__main__":
 # Import: __name__ == "speller.__main__" → guard block skipped
 #   >>> from speller.__main__ import main
 #   >>> code = main()  # returns int, no sys.exit
+
+
+# =============================================================================
+# [project.scripts]: How pyproject.toml connects
+# =============================================================================
+
+# [project.scripts]
+# speller = "speller.__main__:main"
+
+# When the user types `speller texts/cat.txt`, pip's generated script calls `main()`
+# directly and handles the exit code — it doesn't go through the `if __name__` block.
+
+## Complete Module Flow
+# $ python -m speller --verbose dictionaries/small texts/cat.txt
+
+# 1. Python finds speller/__main__.py
+# 2. __init__.py runs → NullHandler set
+# 3. ImportError guard → all modules import successfully
+# 4. if __name__ == "__main__" → sys.exit(main())
+# 5. main() starts:
+#      a. _build_parser() → ArgumentParser created
+#      b. parse_args() → dictionary="dictionaries/small", text="texts/cat.txt", verbose=True
+#      c. config_logging(verbose=True) → DEBUG console + file handlers
+#      d. _validate_paths() → both files exist → None (success)
+#      e. HashTableDictionary() → concrete instance created
+#      f. run_speller(dictionary, text, dict) → SpellerResult returned
+#         ├── timer("load") → dictionary.load("dictionaries/small")
+#         ├── timer("check") → for word in extract_words("texts/cat.txt"):
+#         │                        dictionary.check(word)
+#         └── timer("size") → dictionary.size()
+#      g. print(result.format_report()) → CS50-format output
+#      h. return ExitCode.SUCCESS → 0
+# 6. sys.exit(0) → process exits cleanly
