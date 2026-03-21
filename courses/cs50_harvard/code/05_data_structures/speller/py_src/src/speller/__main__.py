@@ -111,7 +111,7 @@ def _validate_paths(
         return ExitCode.FILE_NOT_FOUND
     
     if not text_path.exists():
-        logger.error("Tet file not found: %s", text_path)
+        logger.error("Text file not found: %s", text_path)
         return ExitCode.FILE_NOT_FOUND
     
     return None
@@ -120,3 +120,89 @@ def _validate_paths(
 # =============================================================================
 # MAIN FUNCTION
 # =============================================================================
+
+def main() -> int:
+    """
+    """
+    # -- Step 1: Parse arguments --
+    parser = _build_parser()
+    args = parser.parse_args()
+    
+    # __ Step 2: Configure logging FIRST --
+    # Must happen before any logger.info/debug calls.
+    # --verbose flag controls console log level.
+    # --no-log-file disable the rotating file handler.
+    configure_logging(
+        console_verbose=args.verbose,
+        log_to_file=not args.no_log_file,
+        custom_console=True,
+    )
+    
+    logger.debug("Arguments parsed: %s", args)
+    
+    # -- Step 3: Convert and validate paths --
+    dict_path = Path(args.dictionary)
+    text_path = Path(args.text)
+    
+    validation_error = _validate_paths(dict_path, text_path)
+    if validation_error is not None:
+        return validation_error
+    
+    # -- Step 4: Create concrete dictionary -- 
+    # THIS IS THE COMPOSITION ROOT — the one place that picks
+    # the concrete implementation. Everything downstream depends
+    # on DictionaryProtocol (the abstraction), not this class.
+    #
+    # To swap implementations:
+    #   dictionary = DatabaseDictionary(conn_string)  # Stage 2
+    #   dictionary = MockDictionary()                 # testing
+    dictionary = HashTableDictionary()
+    
+    logger.info(
+        "Spell checking '%s' with dictionary '%s'",
+        text_path.name,
+        dict_path.name,
+    )
+    
+    # -- Step 5: RUn spell checker --
+    # run_speller() accepts DictionaryProtocol - it doesn´t know
+    # or care tjhat we passed a HashTableDictionary.
+    try:
+        result = run_speller(
+            dictionary=dictionary,
+            text_path=text_path,
+            dict_path=dict_path,
+        )
+    except SystemExit as e:
+        # run_speller raises SystemExit if dictionary fails to load
+        logger.error("Speller failed: %s", e)
+        return ExitCode.LOAD_FAILED
+    
+    # -- Step 6: Display results --
+    # format_report() returns a string — main() decides to print it.
+    # In a web app (Stage 1 Streamlit), you'd display it differently.
+    # In tests, you'd just check result.words_misspelled.
+    print(result.format_report())
+    
+    logger.debug("Spell check completed successfully")
+    
+    # -- Step 7: Return exit code --
+    return ExitCode.SUCCESS
+
+
+# =============================================================================
+# EXECUTION GUARD
+# =============================================================================
+
+# This block runs ONLY when the module is executed directly:
+#   $ python -m speller texts/cat.txt    → runs this block
+#   from speller.__main__ import main    → does NOT run this block
+#
+# sys.exit() lives HERE and ONLY here — never inside main().
+# main() returns an int, this block converts it to a process exit code.
+#
+# The shell can check the exit code:
+#   $ python -m speller texts/cat.txt && echo "success" || echo "failed"
+
+if __name__ == "__main__":
+    sys.exit(main())
