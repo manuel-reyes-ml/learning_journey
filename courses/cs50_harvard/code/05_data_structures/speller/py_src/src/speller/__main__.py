@@ -1,4 +1,40 @@
-"""
+"""CLI entry point for the speller package.
+
+Runs when the user executes::
+
+    $ python -m speller [dictionary] text
+    $ speller [dictionary] text          (via pyproject.toml scripts)
+
+This module is the COMPOSITION ROOT — the single place that:
+1. Parses CLI arguments
+2. Configures logging (before any speller logic runs)
+3. Creates concrete implementations (HashTableDictionary)
+4. Injects them into the orchestrator (run_speller)
+5. Handles display and exit codes
+
+No other module imports from __main__.py. This module imports
+from everything else. It's the top of the dependency chain.
+
+Dependency Chain (complete picture)
+------------------------------------
+    config.py            ← constants, enums (bottom — no internal imports)
+    protocols.py         ← DictionaryProtocol (bottom — no internal imports)
+    benchmarks.py        ← timer, timed, BenchmarkResult (imports nothing internal)
+    logger.py            ← config_logging, ColoredFormatter (imports config)
+    dictionary.py        ← HashTableDictionary (imports config)
+    text_processor.py    ← extract_words (imports config)
+    speller.py           ← run_speller, SpellerResult (imports protocols, benchmarks, text_processor)
+    __main__.py          ← THIS FILE (imports everything — composition root)
+
+CS50 CLI Behavior
+------------------
+Matches speller.c usage::
+
+    Usage: ./speller [DICTIONARY] text
+
+    argc == 2:  dictionary defaults to dictionaries/large, argv[1] is text
+    argc == 3:  argv[1] is dictionary, argv[2] is text
+    otherwise:  print usage and exit with code 1
 """
 
 # =============================================================================
@@ -51,7 +87,37 @@ logger = logging.getLogger(__name__)
 # Extracting parser construction into its own function means tests can parse
 # arguments without running the full program.
 def _build_parser() -> argparse.ArgumentParser:
-    """
+    """Build and return the argument parser.
+
+    Separated from main() for two reasons:
+    1. Single responsibility: parsing logic is isolated and testable
+    2. Testability: tests can call _build_parser().parse_args([...])
+       without running main()
+
+    CS50 CLI behavior to match::
+
+        Usage: ./speller [DICTIONARY] text
+
+        - 1 argument:  text file only (dictionary defaults to large)
+        - 2 arguments: dictionary file + text file
+        - 0 or 3+ arguments: usage error
+
+    Returns
+    -------
+    argparse.ArgumentParser
+        Configured parser ready to parse sys.argv.
+
+    Notes
+    -----
+    Why ``nargs='?'`` for dictionary?
+        The ``?`` means "zero or one argument." If provided, it's used.
+        If omitted, the ``default`` value is used. This replicates C's
+        ``(argc == 3) ? argv[1] : DICTIONARY`` ternary pattern.
+
+    Why ``type=str`` (not ``type=Path``)?
+        argparse returns strings by default. We convert to Path inside
+        main() where we also validate existence. Keeping argparse simple
+        and doing validation separately follows single responsibility.
     """
     # Without RawDescriptionHelpFormatter, argparse reformats your epilog text
     # — collapsing newlines and wrapping. It preserves your formatting so the
@@ -109,7 +175,36 @@ def _validate_paths(
     dict_path: Path,
     text_path: Path,
 ) -> ExitCode | None:
-    """
+    """Validate that required files exist before processing.
+
+    Separated from main() because validation is a distinct concern
+    from argument parsing and program execution. This function is
+    also independently testable.
+
+    Parameters
+    ----------
+    dict_path : Path
+        Path to the dictionary file.
+    text_path : Path
+        Path to the text file.
+
+    Returns
+    -------
+    ExitCode or None
+        ExitCode if validation fails, None if all paths are valid.
+
+    Notes
+    -----
+    Why return ExitCode instead of raising?
+        main() handles the exit logic. This function just reports
+        what it found. Separation of detection (here) from action
+        (main) keeps both functions simple.
+
+    Why check BEFORE calling run_speller()?
+        run_speller() has its own error handling, but catching missing
+        files here gives cleaner error messages. Fail fast — don't
+        load a 143K-word dictionary only to discover the text file
+        is missing.
     """
     if not dict_path.exists():
         logger.error("Dictionary file not found: %s", dict_path)
@@ -129,7 +224,41 @@ def _validate_paths(
 # The if __name__ block and pyproject.toml script call main() with no arguments,which
 # defaults to None, which triggers sys.argv reading. Your tests pass explicit lists.
 def main(argv: list[str] | None = None) -> ExitCode:
-    """
+    """Entry point for the speller CLI.
+
+    Parameters
+    ----------
+    argv : list[str] or None
+        Command-line arguments. If None, reads from sys.argv.
+        Pass explicitly for testing:
+            main(["texts/cat.txt"])
+            main(["--verbose", "dictionaries/small", "texts/cat.txt"])
+    
+    Orchestrates the full program lifecycle:
+    1. Parse arguments
+    2. Configure logging (respects --verbose and --no-log-file)
+    3. Validate file paths
+    4. Create dictionary (concrete implementation chosen HERE)
+    5. Run spell checker (dependency injection via Protocol)
+    6. Display results
+    7. Return exit code
+
+    Returns
+    -------
+    int
+        Exit code (0 for success, non-zero for errors).
+        Used by sys.exit() and by shell scripts checking $?.
+
+    Notes
+    -----
+    Why return int instead of calling sys.exit() directly?
+        Returning an int makes main() testable:
+            assert main() == ExitCode.SUCCESS
+        If main() called sys.exit() internally, tests would need
+        to catch SystemExit exceptions — messy and fragile.
+
+        sys.exit() is called ONE place: the if __name__ block at
+        the bottom. main() just returns the code.
     """
     # -- Step 1: Parse arguments --
     parser = _build_parser()
@@ -270,7 +399,6 @@ if __name__ == "__main__":
 # │      main(["--verbose", path]) │ [...]        │ your list       │
 # │                                │              │ (programmatic)  │
 # └─────────────────────────────────────────────────────────────────┘
-
 
 # =====================================================
 # [project.scripts]: How pyproject.toml connects
