@@ -126,12 +126,14 @@ def _validate_paths(
 # MAIN FUNCTION
 # =============================================================================
 
-def main() -> int:
+# The if __name__ block and pyproject.toml script call main() with no arguments,which
+# defaults to None, which triggers sys.argv reading. Your tests pass explicit lists.
+def main(argv: list[str] | None = None) -> ExitCode:
     """
     """
     # -- Step 1: Parse arguments --
     parser = _build_parser()
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
     
     # __ Step 2: Configure logging FIRST --
     # Must happen before any logger.info/debug calls.
@@ -220,8 +222,59 @@ if __name__ == "__main__":
 
 
 # =============================================================================
-# [project.scripts]: How pyproject.toml connects
+# SHORT REFERENCE GUIDES
 # =============================================================================
+# =====================================================
+# CLI Arguments And sys.argv
+# =====================================================
+
+# When you call parse_args() with NO arguments:
+#   args = parser.parse_args()
+# It implicitly reads from sys.argv[1:]
+# Same as: args = parser.parse_args(sys.argv[1:])
+
+# When you call parse_args() WITH arguments:
+#   args = parser.parse_args(["texts/cat.txt"])
+# It uses YOUR list instead of sys.argv
+
+# The flow:
+
+#   $ python -m speller --verbose texts/cat.txt
+
+#   sys.argv = ["speller/__main__.py", "--verbose", "texts/cat.txt"]
+#   sys.argv[1:] = ["--verbose", "texts/cat.txt"]    ← [1:] skips the script name
+
+#   parser.parse_args()       → reads sys.argv[1:] automatically
+#   parser.parse_args(None)   → same thing (None = use sys.argv[1:])
+#   parser.parse_args([...])  → uses YOUR list instead
+
+# def main(argv: list[str] | None = None) -> ExitCode:
+#     args = parser.parse_args(argv)
+
+# ┌─────────────────────────────────────────────────────────────────┐
+# │  Caller                        │ argv value   │ parse_args uses │
+# │────────────────────────────────│──────────────│─────────────────│
+# │  if __name__ == "__main__":    │              │                 │
+# │      sys.exit(main())          │ None         │ sys.argv[1:]    │
+# │                                │              │ (real CLI args) │
+# │────────────────────────────────│──────────────│─────────────────│
+# │  pyproject.toml script:        │              │                 │
+# │      speller texts/cat.txt     │ None         │ sys.argv[1:]    │
+# │                                │              │ (real CLI args) │
+# │────────────────────────────────│──────────────│─────────────────│
+# │  Test:                         │              │                 │
+# │      main(["texts/cat.txt"])   │ ["texts/..."]│ your list       │
+# │                                │              │ (controlled)    │
+# │────────────────────────────────│──────────────│─────────────────│
+# │  Another module:               │              │                 │
+# │      main(["--verbose", path]) │ [...]        │ your list       │
+# │                                │              │ (programmatic)  │
+# └─────────────────────────────────────────────────────────────────┘
+
+
+# =====================================================
+# [project.scripts]: How pyproject.toml connects
+# =====================================================
 
 # [project.scripts]
 # speller = "speller.__main__:main"
