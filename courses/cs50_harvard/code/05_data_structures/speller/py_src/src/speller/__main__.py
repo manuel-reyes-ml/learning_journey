@@ -7,6 +7,7 @@
 
 from __future__ import annotations
 
+from argparse import ArgumentParser
 import sys
 
 # =====================================================
@@ -47,3 +48,75 @@ logger = logging.getLogger(__name__)
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
     
+def _build_parser() -> argparse.ArgumentParser:
+    """
+    """
+    parser = ArgumentParser(
+        prog="speller",
+        description="Spell-check a text file against a dictionary",
+        epilog=(
+            "Examples:\n"
+            "   %(prog)s texts/cat.txt\n"
+            "   %(prog)s dictionaries/small texts/cat.txt\n"
+            "   %(prog)s --verbose texts/austen.txt"
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter
+    )
+    
+    # -- Positional arguments --
+    # nargs='?' makes dictionary optional
+    # When user provides 1 positional arg -> it goes to 'text' (not dictionary)
+    # When user provides 2 positional args -> first is dictionary, second is text
+    parser.add_argument(
+        "dictionary",
+        nargs="?",
+        default=str(file_dirs.DICT_DIR / "large"),
+        help=(
+            "Path to dictionary file. One word per line. "
+            "Default: dictionaries/large"
+        ),
+    )
+    
+    parser.add_argument(
+        "text",
+        help="Path to text file to spell-check (required).",
+    )
+    
+    # -- Optional flags --
+    parser.add_argument(
+        "-v", "--verbose",
+        action="store_true",
+        default=False,
+        help="Enable verbose output (DEBUG-level logging).",
+    )
+    
+    parser.add_argument(
+        "--no-log-file",
+        action="store_true",
+        default=False,
+        help="Disable file logging (console only).",
+    )
+    
+    return parser
+
+
+def _validate_paths(
+    dict_path: Path,
+    text_path: Path,
+) -> ExitCode | None:
+    """
+    """
+    if not dict_path.exists():
+        logger.error("Dictionary file not found: %s", dict_path)
+        return ExitCode.FILE_NOT_FOUND
+    
+    if not text_path.exists():
+        logger.error("Tet file not found: %s", text_path)
+        return ExitCode.FILE_NOT_FOUND
+    
+    return None
+
+
+# =============================================================================
+# MAIN FUNCTION
+# =============================================================================
