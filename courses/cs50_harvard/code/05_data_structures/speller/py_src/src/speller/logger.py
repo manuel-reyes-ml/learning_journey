@@ -129,6 +129,7 @@ def _setup_fhandler(
 # =============================================================================
 
 def configure_logging(
+    *,
     console_verbose: bool = False,
     log_to_file: bool = True,
     custom_console: bool = True,
