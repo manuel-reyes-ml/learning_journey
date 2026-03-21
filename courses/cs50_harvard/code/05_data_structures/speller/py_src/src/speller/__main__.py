@@ -47,10 +47,15 @@ logger = logging.getLogger(__name__)
 # =============================================================================
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
-    
+
+# Extracting parser construction into its own function means tests can parse
+# arguments without running the full program.
 def _build_parser() -> argparse.ArgumentParser:
     """
     """
+    # Without RawDescriptionHelpFormatter, argparse reformats your epilog text
+    # — collapsing newlines and wrapping. It preserves your formatting so the
+    # examples display cleanly.
     parser = ArgumentParser(
         prog="speller",
         description="Spell-check a text file against a dictionary",
@@ -114,7 +119,7 @@ def _validate_paths(
         logger.error("Text file not found: %s", text_path)
         return ExitCode.FILE_NOT_FOUND
     
-    return None
+    return None  # None means "all good"
 
 
 # =============================================================================
@@ -203,6 +208,12 @@ def main() -> int:
 #
 # The shell can check the exit code:
 #   $ python -m speller texts/cat.txt && echo "success" || echo "failed"
-
 if __name__ == "__main__":
     sys.exit(main())
+    
+# Execution: __name__ == "__main__" → runs sys.exit(main())
+#   $ python -m speller texts/cat.txt
+
+# Import: __name__ == "speller.__main__" → guard block skipped
+#   >>> from speller.__main__ import main
+#   >>> code = main()  # returns int, no sys.exit
