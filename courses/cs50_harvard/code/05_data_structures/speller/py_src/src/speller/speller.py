@@ -204,6 +204,7 @@ class SpellerResult:
 # data (query), or performs an action (command), but not both. run_speller()
 # is a query. Printing is a command that __main__.py handles.
 def run_speller(
+    *,
     dictionary: DictionaryProtocol,
     text_path: str | Path,
     dict_path: str | Path,
