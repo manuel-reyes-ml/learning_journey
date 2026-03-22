@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 from enum import IntEnum, StrEnum, unique
+from collections import namedtuple
 from typing import Final, TypedDict
 from dataclasses import dataclass
 from pathlib import Path
@@ -27,6 +28,7 @@ __all__ = [
     "ExitCode",
     "file_dirs",
     "fhandler_config",
+    "default_fnames",
     # Class
     "FileDirectories",
     "FileHandlerConfig",
@@ -41,6 +43,7 @@ __all__ = [
 # =====================================================
 
 MAX_WORD_LENGTH: Final[int] = 45
+DICT_FNAMES = namedtuple("DICT_FNAMES", ["large", "small"])
 
 
 # =====================================================
@@ -70,11 +73,11 @@ class DefaultDirs(StrEnum):
 class DefaultFileNames(TypedDict):
     """
     """
-    dictionaries: tuple[str, ...]
+    dictionaries: DICT_FNAMES
     keys: tuple[str, ...]
 
 default_fnames: DefaultFileNames = {
-    "dictionaries": ("large", "small"),
+    "dictionaries": DICT_FNAMES("large", "small"),
     "keys": ("aca.txt", "austen.txt"),
 }
 
