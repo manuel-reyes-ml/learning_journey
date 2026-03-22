@@ -170,6 +170,13 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Disable file logging (console only).",
     )
     
+    parser.add_argument(
+        "--show-misspelled",
+        action="store_true",
+        default=False,
+        help="Show all misspelled words from input txt file."
+    )
+    
     return parser
 
 
@@ -320,7 +327,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
     # format_report() returns a string — main() decides to print it.
     # In a web app (Stage 1 Streamlit), you'd display it differently.
     # In tests, you'd just check result.words_misspelled.
-    print(result.format_report())
+    print(result.format_report(show_words=args.show_misspelled))
     
     logger.debug("Spell check completed successfully\n")
     

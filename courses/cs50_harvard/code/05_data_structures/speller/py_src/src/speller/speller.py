@@ -137,7 +137,7 @@ class SpellerResult:
         return sum(b.elapsed_seconds for b in self.benchmarks.values())
     
     
-    def format_report(self) -> str:
+    def format_report(self, *, show_words: bool = False) -> str:
         """Format results to match CS50 speller.c output exactly.
 
         Returns a string rather than printing directly because:
@@ -160,8 +160,9 @@ class SpellerResult:
         lines.append("\nMISSPELLED WORDS\n")
         
         # Misspelled words list
-        for word in self.misspelled_words:
-            lines.append(word)
+        if show_words:
+            for word in self.misspelled_words:
+                lines.append(word)
             
         # Statistics (CS50 uses %-20s style alignment with 5 spaces)
         lines.append(f"\nWORDS MISSPELLED:     {self.words_misspelled}")
