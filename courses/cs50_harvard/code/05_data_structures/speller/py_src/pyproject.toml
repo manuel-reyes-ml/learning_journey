@@ -138,3 +138,69 @@ Issues = "https://github.com/manuel-reyes-ml/learning_journey/issues"
 #
 # Without this, setuptools can't find your modules and
 # `pip install -e .` would install an empty package.
+
+[tool.setuptools.packages.find]
+wehre = ["src"]
+
+
+# =============================================================================
+# PYTEST CONFIGURATION
+# =============================================================================
+# Replaces pytest.ini or [pytest] section in setup.cfg
+#
+# Install: pip install -e ".[test]"
+# Run:     pytest
+# Run:     pytest -v                    (verbose)
+# Run:     pytest --cov=speller         (with coverage)
+# Run:     pytest tests/test_dictionary.py  (specific file)
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+# Minimum pytest version required
+minversion = "8.0"
+
+# Default command-line options (always applied)
+# -ra: show summary of all test outcomes at the end
+# --strict-markers: error on unknown @pytest.mark decorators
+addopts = "-ra --strict-markers"
+
+# Register custom markers (prevents warnings)
+# Usage in tests: @pytest.mark.slow
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks integration tests (require real files)",
+]
+
+
+# =============================================================================
+# MYPY CONFIGURATION
+# =============================================================================
+# Static type checker — catches type errors WITHOUT running your code.
+# Replaces .mypy.ini or mypy.ini
+#
+# Run: mypy src/
+# Run: mypy src/speller/dictionary.py   (specific file)
+
+[tool.mypy]
+python_version = "3.11"
+
+# strict = true enables ALL of these individually:
+strict = true
+#   warn_return_any = true
+#   warn_unused_configs = true
+#   disallow_untyped_defs = true         ← every function needs type hints
+#   disallow_incomplete_defs = true
+#   check_untyped_defs = true
+#   disallow_untyped_decorators = true
+#   no_implicit_optional = true
+#   warn_redundant_casts = true
+#   warn_unused_ignores = true
+#   warn_no_return = true
+#   no_implicit_reexport = true
+#   strict_equality = true
+
+# Show error codes in output (e.g., [attr-defined], [arg-type])
+# Makes it easier to look up solutions
+show_error_codes = true
