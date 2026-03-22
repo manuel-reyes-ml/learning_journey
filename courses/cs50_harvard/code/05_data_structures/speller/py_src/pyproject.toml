@@ -204,3 +204,63 @@ strict = true
 # Show error codes in output (e.g., [attr-defined], [arg-type])
 # Makes it easier to look up solutions
 show_error_codes = true
+
+
+# =============================================================================
+# RUFF CONFIGURATION
+# =============================================================================
+# Fast Python linter + formatter (replaces flake8, isort, black, and more).
+# Written in Rust — 10-100x faster than Python-based linters.
+# Replaces .flake8, .isort.cfg, and pycodestyle.cfg
+#
+# Run:      ruff check src/               (lint)
+# Run:      ruff check src/ --fix         (lint and auto-fix)
+# Run:      ruff format src/              (format like black)
+
+[tool.ruff]
+# Target Python version (affects which syntax is allowed)
+target-version = "py311"
+
+# Maximum line length (88 is black's default, widely adopted)
+line-length = 88
+
+# Directories to exclude from linting
+exclude = [
+    "__pycache__",
+    ".git",
+    ".mypy_cache",
+    ".pytest_cache",
+    ".ruff_cache",
+    "*.egg-info",
+]
+
+[tool.ruff.lint]
+# Rule sets to enable:
+#   E = pycodestyle errors (basic style)
+#   W = pycodestyle warnings
+#   F = pyflakes (unused imports, undefined names)
+#   I = isort (import sorting)
+#   N = pep8-naming (naming conventions)
+#   D = pydocstyle (docstring style)
+#   UP = pyupgrade (modernize syntax)
+#   B = flake8-bugbear (common bugs)
+#   SIM = flake8-simplify (simplifiable code)
+#   RUF = ruff-specific rules
+select = ["E", "W", "F", "I", "N", "UP", "B", "SIM", "RUF"]
+
+# Rules to ignore
+ignore = [
+    "D100",    # Missing docstring in public module (we have them, just not all)
+    "D104",    # Missing docstring in public package (__init__.py)
+]
+
+[tool.ruff.lint.pydocstyle]
+# NumPy-style docstrings (matches your convention)
+convention = "numpy"
+
+[tool.ruff.lint.isort]
+# Force imports to be sorted and grouped consistently
+# Group 1: stdlib (import os, import sys)
+# Group 2: third-party (import pydantic, import pytest)
+# Group 3: local (from speller.config import ...)
+known-first-party = ["speller"]
