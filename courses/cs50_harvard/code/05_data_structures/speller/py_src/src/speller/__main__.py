@@ -283,6 +283,9 @@ def main(argv: list[str] | None = None) -> ExitCode:
         custom_console=True,
     )
     
+    if args.verbose:
+        logger.debug("Verbose mode enabled (console debug output)")
+    
     logger.debug("Arguments parsed: %s", args)
     
     # -- Step 3: Convert and validate paths --
