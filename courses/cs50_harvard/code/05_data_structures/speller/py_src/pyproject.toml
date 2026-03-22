@@ -140,7 +140,7 @@ Issues = "https://github.com/manuel-reyes-ml/learning_journey/issues"
 # `pip install -e .` would install an empty package.
 
 [tool.setuptools.packages.find]
-wehre = ["src"]
+where = ["src"]
 
 
 # =============================================================================
