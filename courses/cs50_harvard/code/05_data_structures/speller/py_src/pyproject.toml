@@ -17,3 +17,124 @@ requires = ["setuptools>=75.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 
+# =============================================================================
+# PROJECT METADATA
+# =============================================================================
+# Everything that describes your package: name, version, dependencies,
+# entry points, supported Python versions, etc.
+#
+# This replaces BOTH setup.py AND requirements.txt.
+
+[project]
+name = "cs50-speller"
+version = "1.0.0"
+description = "Production-grade spell checker inspired by CS50, built as a Python package"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.11"
+
+# Author information — shown on PyPI if you ever publish
+authors = [
+    {name = "Manuel Reyes", email = "manuelreyesv410@gmail.com"},
+]
+
+# Keywords help people find your package on PyPI
+# Also useful for GitHub topic tags
+keywords = [
+    "spell-checker",
+    "cs50",
+    "hash-table",
+    "cli",
+    "nlp",
+]
+
+# PyPI classifiers — categorize your package
+# Full list: https://pypi.org/classifiers/
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Text Processing :: Linguistic",
+    "Typing :: Typed",
+]
+
+
+# ─── Dependencies ───────────────────────────────────────────────
+# Runtime dependencies — installed automatically when someone does:
+#   pip install cs50-speller
+#
+# Your speller uses only stdlib modules (pathlib, logging, argparse,
+# dataclasses, etc.) so no external dependencies are needed.
+# If you needed external packages, list them here:
+#
+# dependencies = [
+#     "pydantic>=2.0",        # Stage 1: DataVault structured outputs
+#     "chromadb>=0.4",        # Stage 1: PolicyPulse vector store
+#     "google-generativeai",  # Stage 1: DataVault Gemini SDK
+# ]
+dependencies = []
+
+
+# ─── Optional Dependencies ──────────────────────────────────────
+# Groups of extras that are NOT required for the package to work,
+# but are needed for specific use cases.
+#
+# Install with:
+#   pip install -e ".[dev]"       ← installs dev tools
+#   pip install -e ".[test]"      ← installs test tools only
+#   pip install -e ".[dev,test]"  ← installs both groups
+#
+# This replaces requirements-dev.txt and requirements-test.txt
+
+[project.optional-dependencies]
+dev = [
+    "mypy>=1.0",
+    "ruff>=0.4",
+]
+test = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+]
+
+
+# ─── Entry Points (CLI Commands) ───────────────────────────────
+# Creates executable commands that work after installation.
+#
+# After `pip install -e .`, you can run:
+#   $ speller texts/cat.txt
+#
+# instead of:
+#   $ python -m speller texts/cat.txt
+#
+# The format is:  command_name = "package.module:function"
+# pip generates a wrapper script that calls this function.
+#
+# This is how Airflow registers `airflow`, dbt registers `dbt`,
+# ruff registers `ruff`, and LangChain registers `langchain-cli`.
+
+[project.scripts]
+speller = "speller.__main__:main"
+
+
+# ─── Project URLs ──────────────────────────────────────────────
+# Links shown on PyPI and in package metadata.
+# Also useful for GitHub repo linking.
+
+[project.urls]
+Homepage = "https://github.com/manuel-reyes-ml"
+Repository = "https://github.com/manuel-reyes-ml/learning_journey"
+Issues = "https://github.com/manuel-reyes-ml/learning_journey/issues"
+
+
+# =============================================================================
+# SETUPTOOLS CONFIGURATION
+# =============================================================================
+# Tell setuptools WHERE to find your package source code.
+# With the src/ layout, your package is inside src/speller/.
+#
+# Without this, setuptools can't find your modules and
+# `pip install -e .` would install an empty package.
