@@ -1,0 +1,19 @@
+# =============================================================================
+# BUILD SYSTEM
+# =============================================================================
+# Tells pip HOW to build your package. This runs when you do:
+#   pip install .           (install from source)
+#   pip install -e .        (install in editable/development mode)
+#   python -m build         (create distributable wheel)
+#
+# setuptools is the default build backend. Others exist (flit, hatch, poetry)
+# but setuptools is the most widely used and what you'll encounter in
+# production codebases.
+#
+# "wheel" is the standard Python package format (.whl files).
+
+[build-system]
+requires = ["setuptools>=75.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+
