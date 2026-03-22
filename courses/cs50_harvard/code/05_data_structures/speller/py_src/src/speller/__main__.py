@@ -62,7 +62,7 @@ try:
     import logging
     
     from speller.dictionaries import HashTableDictionary
-    from speller.config import ExitCode, file_dirs
+    from speller.config import ExitCode, file_dirs, default_fnames
     from speller.logger import configure_logging
     from speller.speller import run_speller
     
@@ -141,7 +141,9 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "dictionary",
         nargs="?",
-        default=str(file_dirs.DICT_DIR / "large"),
+        default=str(
+            file_dirs.DICT_DIR / default_fnames["dictionaries"].large  # "large"
+        ),
         help=(
             "Path to dictionary file. One word per line. "
             "Default: dictionaries/large"
@@ -320,7 +322,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
     # In tests, you'd just check result.words_misspelled.
     print(result.format_report())
     
-    logger.debug("Spell check completed successfully")
+    logger.debug("Spell check completed successfully\n")
     
     # -- Step 7: Return exit code --
     return ExitCode.SUCCESS
