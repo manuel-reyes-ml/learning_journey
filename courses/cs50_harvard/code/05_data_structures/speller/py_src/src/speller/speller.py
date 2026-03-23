@@ -280,7 +280,7 @@ def run_speller(
         logger.error("Could not load dictionary: %s", dict_path)
         raise SystemExit(f"Could not load {dict_path}.")
     
-    logger.info("Dictionary loaded: %d words", dictionary.size()) #NOTE: Try Pythonic exp (dunder)
+    logger.info("Dictionary loaded: %d words", len(dictionary)) #NOTE: Try Pythonic exp (dunder)
     
     # =================================================================
     # STEP 2: Check words (timed cumulatively)
@@ -301,7 +301,7 @@ def run_speller(
         for word in extract_words(text_path):
             words_in_text +=1
             
-            if not dictionary.check(word): #NOTE: Try Pythonic exp (dunder)
+            if word not in dictionary: #NOTE: Try Pythonic exp (dunder)
                 misspelled_words.append(word)
                 
     benchmarks["check"] = t["result"]
@@ -310,7 +310,7 @@ def run_speller(
     # STEP 3: Get dictionary size (timed)
     # =================================================================
     with timer("size") as t:
-        words_in_dictionary = dictionary.size() #NOTE: Try Pythonic exp (dunder)
+        words_in_dictionary = len(dictionary) #NOTE: Try Pythonic exp (dunder)
         
     benchmarks["size"] = t["result"] 
     

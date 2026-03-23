@@ -144,6 +144,30 @@ class DictionaryProtocol(Protocol):
         ...
 
 
+    def __len__(self) -> int:
+        """
+        """
+        ...
+        
+        
+    def __contains__(self, word: str) -> bool:
+        """
+        """
+        ...
+        
+        
+    def __repr__(self) -> str:
+        """
+        """
+        ...
+        
+        
+    def unload(self) -> bool:
+        """
+        """
+        ...
+
+
 # How Protocol works
 # ------------------
 # 1. Define a Protocol class with method signatures (this file)
