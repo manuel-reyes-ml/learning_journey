@@ -174,44 +174,48 @@ class SpellerResult:
         data_check = self.benchmarks.get("check")
         data_size = self.benchmarks.get("size")
         
+        # SAFER — access by key name (works regardless of how many items)
         txt_file = data_check.metadata.get("input_file") if data_check else None
         
         # Statistics (CS50 uses %-20s style alignment with 5 spaces)
         lines.append(f"\nWORDS MISSPELLED:     {self.words_misspelled}")
         lines.append(f"WORDS IN DICTIONARY:    {self.words_in_dictionary}")
         lines.append(f"WORDS IN TEXT:        {self.words_in_text}")
+        
+        # Text file specs: name and path
         lines.append(
-            "CHECKED FILE:    "
-            f"{txt_file.fname}" if txt_file else
+            f"CHECKED FILE:    {txt_file.fname}"
+            if txt_file else
             "CHECKED FILE:    -- file not registered -- "
         )
         lines.append(
-            "FILE PATH:    "
-            f"{txt_file.fpath}" if txt_file else
+            f"FILE PATH:    {txt_file.fpath}"
+            if txt_file else
             "FILE PATH:    -- file not registered -- "
         )
         
         # Benchmark timings
         lines.append(
-            "TIME IN load:     "
-            f"{data_load.elapsed_seconds:.2f}" if data_load else
+            f"TIME IN load:     {data_load.elapsed_seconds:.2f}"
+            if data_load else
             "TIME IN load:     0.00"
         )
         lines.append(
-            "TIME IN check:     "
-            f"{data_check.elapsed_seconds:.2f}" if data_check else
+            f"TIME IN check:     {data_check.elapsed_seconds:.2f}"
+            if data_check else
             "TIME IN check:     0.00"
         )
         lines.append(
-            "TIME IN size:     "
-            f"{data_size.elapsed_seconds:.2f}" if data_size else
+            f"TIME IN size:     {data_size.elapsed_seconds:.2f}"
+            if data_size else
             "TIME IN size:     0.00"
         )
         lines.append(f"TIME IN TOTAL:     {self.time_total:.2f}\n")
         
+        # Report to show in console
         main_report = "\n".join(lines)
         
-        # Misspelled words list
+        # Misspelled words list to log
         misspelled_report = (
             "\n".join(self.misspelled_words) 
             if log_misspelled else None

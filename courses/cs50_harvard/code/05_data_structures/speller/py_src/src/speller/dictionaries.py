@@ -306,7 +306,7 @@ class HashTableDictionary:
         return (
             f"{type(self).__name__}("
             f"loaded={self._loaded}, "
-            f"words={len(self._words):,}"
+            f"words={len(self._words):,})"
         )
         
         
