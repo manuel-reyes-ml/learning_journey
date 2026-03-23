@@ -16,6 +16,7 @@ from collections.abc import Generator, Callable
 from typing import Any, ParamSpec, TypeVar
 
 from contextlib import contextmanager
+from pathlib import Path
 from functools import wraps
 import logging
 import time
@@ -130,9 +131,15 @@ class BenchmarkResult:
 # The `with` statement guarantees __exit__ is called, which makes it
 # perfect for resource cleanup: files, connections, locks, timers.
 @contextmanager
-def timer(operation_name: str) -> Generator[TimerContainer, None, None]:
+def timer(
+    operation_name: str,
+    *,
+    input_file: str | Path | None = None,
+) -> Generator[TimerContainer, None, None]:
     """
     """
+    path = Path(input_file) if input_file else None
+    
     # Mutable container - we yield this before timing is done, then we
     # fill it in AFTER the block completes.
     # The caller holds a reference to this same dict object
@@ -159,6 +166,7 @@ def timer(operation_name: str) -> Generator[TimerContainer, None, None]:
     container["result"] = BenchmarkResult(
         operation=operation_name,
         elapsed_seconds=elapsed,
+        metadata={f"{path.name}": path} if path else {},
     )
     
     logger.debug(
