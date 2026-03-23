@@ -171,18 +171,20 @@ class SpellerResult:
         data_check = self.benchmarks.get("check")
         data_size = self.benchmarks.get("size")
         
+        txt_file = data_check.metadata.get("input_file") if data_check else None
+        
         # Statistics (CS50 uses %-20s style alignment with 5 spaces)
         lines.append(f"\nWORDS MISSPELLED:     {self.words_misspelled}")
         lines.append(f"WORDS IN DICTIONARY:    {self.words_in_dictionary}")
         lines.append(f"WORDS IN TEXT:        {self.words_in_text}")
         lines.append(
             "CHECKED FILE:    "
-            f"{data_check.metadata.keys()}" if data_check else
+            f"{txt_file.fname}" if txt_file else
             "CHECKED FILE:    -- file not registered -- "
         )
         lines.append(
             "FILE PATH:    "
-            f"{data_check.metadata.values()}" if data_check else
+            f"{txt_file.fpath}" if txt_file else
             "FILE PATH:    -- file not registered -- "
         )
         

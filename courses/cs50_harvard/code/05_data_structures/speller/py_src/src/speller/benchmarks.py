@@ -11,6 +11,7 @@ from dataclasses import dataclass, field, KW_ONLY
 
 # Runtime collection types → collections.abc
 from collections.abc import Generator, Callable
+from collections import namedtuple
 
 # Type system concepts → typing
 from typing import Any, ParamSpec, TypeVar
@@ -54,6 +55,13 @@ __all__ = [
 # =============================================================================
 # MODULE CONFIGURATION
 # =============================================================================
+# =====================================================
+# Constants
+# =====================================================
+
+FDATA = namedtuple("FDATA", ["fname", "fpath"])
+
+
 # =====================================================
 # Type Variables % Aliases
 # =====================================================
@@ -166,7 +174,9 @@ def timer(
     container["result"] = BenchmarkResult(
         operation=operation_name,
         elapsed_seconds=elapsed,
-        metadata={f"{path.name}": path} if path else {},
+        metadata={
+            "input_file": FDATA(path.name, path)
+        } if path else {},
     )
     
     logger.debug(
