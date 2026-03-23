@@ -312,32 +312,40 @@ def main(argv: list[str] | None = None) -> ExitCode:
         dict_path.name,
     )
     
-    # -- Step 5: RUn spell checker --
+    # -- Step 5: Run spell checker --
     # run_speller() accepts DictionaryProtocol - it doesn´t know
     # or care tjhat we passed a HashTableDictionary.
+    success = False
     try:
         result = run_speller(
             dictionary=dictionary,
             text_path=text_path,
             dict_path=dict_path,
         )
+        
+        # -- Step 6: Display results --
+        # format_report() returns a string — main() decides to print it.
+        # In a web app (Stage 1 Streamlit), you'd display it differently.
+        # In tests, you'd just check result.words_misspelled.
+        print(result.format_report(log_misspelled=args.show_misspelled))
+        
+        # -- Step 7: Return exit code --
+        success = True
+        return ExitCode.SUCCESS
+
     except SystemExit as e:
         # run_speller raises SystemExit if dictionary fails to load
         logger.error("Speller failed: %s", e)
         return ExitCode.LOAD_FAILED
     
-    # -- Step 6: Display results --
-    # format_report() returns a string — main() decides to print it.
-    # In a web app (Stage 1 Streamlit), you'd display it differently.
-    # In tests, you'd just check result.words_misspelled.
-    print(result.format_report(log_misspelled=args.show_misspelled))
+    finally:
+        if success:
+            logger.info("\nProgram completed.\n")
+            logger.debug("Spell check completed successfully\n")
+        else:
+            logger.warning("\nProgram terminated with errors.\n")
     
-    logger.debug("Spell check completed successfully\n")
-    
-    # -- Step 7: Return exit code --
-    return ExitCode.SUCCESS
-
-
+   
 # =============================================================================
 # EXECUTION GUARD
 # =============================================================================
