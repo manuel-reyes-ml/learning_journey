@@ -218,7 +218,7 @@ def extract_words(filepath: str | Path) -> Iterator[str]:
         - CS50's test files are small (< 2MB). For Stage 2 multi-GB files,
           you'd read in fixed-size chunks instead
     """
-    path = Path(filepath)
+    path = Path(filepath) if isinstance(filepath, str) else filepath
     
     logger.debug("Extracting words from '%s", path.name)
     

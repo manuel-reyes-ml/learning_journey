@@ -146,7 +146,7 @@ def timer(
 ) -> Generator[TimerContainer, None, None]:
     """
     """
-    path = Path(input_file) if input_file else None
+    path = Path(input_file) if isinstance(input_file, str) else input_file
     
     # Mutable container - we yield this before timing is done, then we
     # fill it in AFTER the block completes.
