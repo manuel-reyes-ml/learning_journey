@@ -64,7 +64,7 @@ try:
     from speller.dictionaries import HashTableDictionary
     from speller.config import ExitCode, file_dirs, default_fnames
     from speller.logger import configure_logging
-    from speller.speller import run_speller
+    from speller.speller import run_speller, REPORT
     
 except ImportError as e:
     sys.exit(f"Error missing speller module.\nDetails: {e}")
@@ -226,6 +226,19 @@ def _validate_paths(
     return None  # None means "all good"
 
 
+def _print_reports(reports: REPORT, infile_name: str) -> bool:
+    """
+    """
+    if reports.misspelled:
+        file_dirs.MISS_DIR.mkdir(parents=True, exist_ok=True)
+        out_file = file_dirs.MISS_DIR / f"misspelled_{infile_name}"
+        out_file.write_text(reports.misspelled, encoding="utf-8")
+    
+    print(reports.main)
+    
+    return True
+    
+
 # =============================================================================
 # MAIN FUNCTION
 # =============================================================================
@@ -327,16 +340,21 @@ def main(argv: list[str] | None = None) -> ExitCode:
         # format_report() returns a string — main() decides to print it.
         # In a web app (Stage 1 Streamlit), you'd display it differently.
         # In tests, you'd just check result.words_misspelled.
-        print(result.format_report(log_misspelled=args.show_misspelled))
+        reports: REPORT = result.format_report(log_misspelled=args.show_misspelled)
+        success = _print_reports(reports, text_path.name)
         
         # -- Step 7: Return exit code --
-        success = True
         return ExitCode.SUCCESS
 
     except SystemExit as e:
         # run_speller raises SystemExit if dictionary fails to load
         logger.error("Speller failed: %s", e)
         return ExitCode.LOAD_FAILED
+    
+    except Exception as e:  # Catches every other exception in program
+        # Appears as logging.error, provides Python's traceback info
+        logger.exception(f"Unexpected Error: {e}")
+        return ExitCode.FAILURE
     
     finally:
         if success:
