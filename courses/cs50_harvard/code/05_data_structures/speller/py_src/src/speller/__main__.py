@@ -43,7 +43,6 @@ Matches speller.c usage::
 
 from __future__ import annotations
 
-from argparse import ArgumentParser
 import sys
 
 # =====================================================
@@ -122,7 +121,7 @@ def _build_parser() -> argparse.ArgumentParser:
     # Without RawDescriptionHelpFormatter, argparse reformats your epilog text
     # — collapsing newlines and wrapping. It preserves your formatting so the
     # examples display cleanly.
-    parser = ArgumentParser(
+    parser = argparse.ArgumentParser(
         prog="speller",
         description="Spell-check a text file against a dictionary",
         epilog=(
@@ -226,17 +225,16 @@ def _validate_paths(
     return None  # None means "all good"
 
 
-def _print_reports(reports: REPORT, infile_name: str) -> bool:
+def _print_reports(reports: REPORT, infile_name: str) -> None:
     """
     """
     if reports.misspelled:
         file_dirs.MISS_DIR.mkdir(parents=True, exist_ok=True)
         out_file = file_dirs.MISS_DIR / f"misspelled_{infile_name}"
         out_file.write_text(reports.misspelled, encoding="utf-8")
+        logger.info("Misspelled words saved to '%s'", out_file)
     
     print(reports.main)
-    
-    return True
     
 
 # =============================================================================
@@ -341,9 +339,10 @@ def main(argv: list[str] | None = None) -> ExitCode:
         # In a web app (Stage 1 Streamlit), you'd display it differently.
         # In tests, you'd just check result.words_misspelled.
         reports: REPORT = result.format_report(log_misspelled=args.show_misspelled)
-        success = _print_reports(reports, text_path.name)
+        _print_reports(reports, text_path.name)
         
         # -- Step 7: Return exit code --
+        success = True
         return ExitCode.SUCCESS
 
     except SystemExit as e:
@@ -353,15 +352,19 @@ def main(argv: list[str] | None = None) -> ExitCode:
     
     except Exception as e:  # Catches every other exception in program
         # Appears as logging.error, provides Python's traceback info
-        logger.exception(f"Unexpected Error: {e}")
+        logger.exception("Unexpected Error: %s", e)
         return ExitCode.FAILURE
+    
+    # Why %s over f-string in logging? The f-string is evaluated immediately even if the log level
+    # is disabled. The %s format is only evaluated if the message actually gets logged. This is a
+    # performance pattern that matters in hot loops (Stage 2 ETL, Stage 3 training).
     
     finally:
         if success:
-            logger.info("\nProgram completed.\n")
+            logger.info("Program completed.\n")
             logger.debug("Spell check completed successfully\n")
         else:
-            logger.warning("\nProgram terminated with errors.\n")
+            logger.warning("Program terminated with errors.\n")
     
    
 # =============================================================================
