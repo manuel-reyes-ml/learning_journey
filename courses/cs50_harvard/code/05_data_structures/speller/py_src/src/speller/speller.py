@@ -44,6 +44,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field, KW_ONLY
 from pathlib import Path
 import logging
+from collections import namedtuple
 
 from speller.benchmarks import BenchmarkResult, timer
 from speller.protocols import DictionaryProtocol
@@ -73,6 +74,13 @@ __all__ = [
     "SpellerResult",
     "run_speller",
 ]
+
+
+# =============================================================================
+# CONSTANTS
+# =============================================================================
+
+REPORT = namedtuple("REPORT", ["main", "misspelled"])
 
 
 # =============================================================================
@@ -138,7 +146,7 @@ class SpellerResult:
         return sum(b.elapsed_seconds for b in self.benchmarks.values())
     
     
-    def format_report(self, *, log_misspelled: bool = False) -> str:
+    def format_report(self, *, log_misspelled: bool = False) -> REPORT:
         """Format results to match CS50 speller.c output exactly.
 
         Returns a string rather than printing directly because:
@@ -159,11 +167,6 @@ class SpellerResult:
         
         # Header
         lines.append("\nMISSPELLED WORDS\n")
-        
-        # Misspelled words list
-        if log_misspelled:
-            for word in self.misspelled_words:
-                lines.append(word)
         
         # .get() with a default BenchmarkResult avoids KeyError if
         # a benchmark wasn´t recorded (defensive prorgramming)
@@ -206,7 +209,15 @@ class SpellerResult:
         )
         lines.append(f"TIME IN TOTAL:     {self.time_total:.2f}\n")
         
-        return "\n".join(lines)
+        main_report = "\n".join(lines)
+        
+        # Misspelled words list
+        misspelled_report = (
+            "\n".join(self.misspelled_words) 
+            if log_misspelled else None
+        )
+        
+        return REPORT(main_report, misspelled_report)
     
 
 # =============================================================================
