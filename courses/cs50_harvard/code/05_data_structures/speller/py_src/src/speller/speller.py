@@ -181,6 +181,16 @@ class SpellerResult:
         lines.append(f"{'WORDS MISSPELLED:':<22}{self.words_misspelled}")
         lines.append(f"{'WORDS IN DICTIONARY:':<22}{self.words_in_dictionary}")
         lines.append(f"{'WORDS IN TEXT:':<22}{self.words_in_text}")
+        #                  ↑             ↑↑
+        #                  │             ││
+        #               the text         │└── 22 characters total width
+        #                                └─── < means left-align (pad RIGHT with spaces)
+        
+        ## The Three Alignment Specifiers
+
+        # f"{'text':<20}"     left-align    → 'text                '
+        # f"{'text':>20}"     right-align   → '                text'
+        # f"{'text':^20}"     center        → '        text        '
         
         # Text file specs: name and path
         lines.append(
