@@ -48,6 +48,7 @@ import logging
 from speller.benchmarks import BenchmarkResult, timer
 from speller.protocols import DictionaryProtocol
 from speller.text_processor import extract_words
+from speller.config import file_dirs
 
 # No ImportError sys.exit() on regular module so the
 # error propagates to the caller (__main__.py).
@@ -137,7 +138,7 @@ class SpellerResult:
         return sum(b.elapsed_seconds for b in self.benchmarks.values())
     
     
-    def format_report(self, *, show_words: bool = False) -> str:
+    def format_report(self, *, log_misspelled: bool = False) -> str:
         """Format results to match CS50 speller.c output exactly.
 
         Returns a string rather than printing directly because:
@@ -160,35 +161,45 @@ class SpellerResult:
         lines.append("\nMISSPELLED WORDS\n")
         
         # Misspelled words list
-        if show_words:
+        if log_misspelled:
             for word in self.misspelled_words:
                 lines.append(word)
-            
+        
+        # .get() with a default BenchmarkResult avoids KeyError if
+        # a benchmark wasn´t recorded (defensive prorgramming)
+        data_load = self.benchmarks.get("load")
+        data_check = self.benchmarks.get("check")
+        data_size = self.benchmarks.get("size")
+        
         # Statistics (CS50 uses %-20s style alignment with 5 spaces)
         lines.append(f"\nWORDS MISSPELLED:     {self.words_misspelled}")
         lines.append(f"WORDS IN DICTIONARY:    {self.words_in_dictionary}")
         lines.append(f"WORDS IN TEXT:        {self.words_in_text}")
+        lines.append(
+            "CHECKED FILE:    "
+            f"{data_check.metadata.keys()}" if data_check else
+            "CHECKED FILE:    -- file not registered -- "
+        )
+        lines.append(
+            "FILE PATH:    "
+            f"{data_check.metadata.values()}" if data_check else
+            "FILE PATH:    -- file not registered -- "
+        )
         
         # Benchmark timings
-        # .get() with a default BenchmarkResult avoids KeyError if
-        # a benchmark wasn´t recorded (defensive prorgramming)
-        time_load = self.benchmarks.get("load")
-        time_check = self.benchmarks.get("check")
-        time_size = self.benchmarks.get("size")
-        
         lines.append(
             "TIME IN load:     "
-            f"{time_load.elapsed_seconds:.2f}" if time_load else
+            f"{data_load.elapsed_seconds:.2f}" if data_load else
             "TIME IN load:     0.00"
         )
         lines.append(
             "TIME IN check:     "
-            f"{time_check.elapsed_seconds:.2f}" if time_check else
+            f"{data_check.elapsed_seconds:.2f}" if data_check else
             "TIME IN check:     0.00"
         )
         lines.append(
             "TIME IN size:     "
-            f"{time_size.elapsed_seconds:.2f}" if time_size else
+            f"{data_size.elapsed_seconds:.2f}" if data_size else
             "TIME IN size:     0.00"
         )
         lines.append(f"TIME IN TOTAL:     {self.time_total:.2f}\n")
@@ -297,7 +308,7 @@ def run_speller(
     misspelled_words: list[str] = []
     words_in_text = 0
     
-    with timer("check") as t:
+    with timer("check", input_file=text_path) as t:
         for word in extract_words(text_path):
             words_in_text +=1
             
