@@ -98,6 +98,8 @@ class DictionaryProtocol(Protocol):
     Full signature checking happens at mypy compile time.
     """
 
+    # The Rule: Protocol Contains What the CONSUMER Uses
+    
     def load(self, filepath: str) -> bool:
         """Load dictionary from a source into memory.
 
@@ -151,18 +153,6 @@ class DictionaryProtocol(Protocol):
         
         
     def __contains__(self, word: str) -> bool:
-        """
-        """
-        ...
-        
-        
-    def __repr__(self) -> str:
-        """
-        """
-        ...
-        
-        
-    def unload(self) -> bool:
         """
         """
         ...
