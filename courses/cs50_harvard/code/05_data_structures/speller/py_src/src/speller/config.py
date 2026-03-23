@@ -58,6 +58,7 @@ class ExitCode(IntEnum):
     USAGE_ERROR = 1
     FILE_NOT_FOUND = 2
     LOAD_FAILED = 3
+    FAILURE = 4
     
 
 @unique
