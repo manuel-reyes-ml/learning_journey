@@ -68,6 +68,7 @@ class DefaultDirs(StrEnum):
     KEYS = "keys"
     TXT = "texts"
     LOG = "logs"
+    MISS = "misspelled"
 
 
 class DefaultFileNames(TypedDict):
@@ -101,6 +102,7 @@ class FileDirectories:
     KEYS_DIR: Final[Path] = ROOT_DIR / DefaultDirs.KEYS
     TXT_DIR: Final[Path] = ROOT_DIR / DefaultDirs.TXT
     LOG_DIR: Final[Path] = ROOT_DIR / DefaultDirs.LOG
+    MISS_DIR: Final[Path] = ROOT_DIR / DefaultDirs.MISS
     
     def create_log_fname(self) -> str:
         """
