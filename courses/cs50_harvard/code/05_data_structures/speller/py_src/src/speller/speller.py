@@ -45,11 +45,11 @@ from dataclasses import dataclass, field, KW_ONLY
 from pathlib import Path
 import logging
 from collections import namedtuple
+from typing import Final
 
 from speller.benchmarks import BenchmarkResult, timer
 from speller.protocols import DictionaryProtocol
 from speller.text_processor import extract_words
-from speller.config import file_dirs
 
 # No ImportError sys.exit() on regular module so the
 # error propagates to the caller (__main__.py).
@@ -80,6 +80,7 @@ __all__ = [
 # CONSTANTS
 # =============================================================================
 
+COL: Final[int] = 22
 REPORT = namedtuple("REPORT", ["main", "misspelled"])
 
 
@@ -178,9 +179,9 @@ class SpellerResult:
         txt_file = data_check.metadata.get("input_file") if data_check else None
         
         # Statistics (CS50 uses %-20s style alignment with 5 spaces)
-        lines.append(f"{'WORDS MISSPELLED:':<22}{self.words_misspelled}")
-        lines.append(f"{'WORDS IN DICTIONARY:':<22}{self.words_in_dictionary}")
-        lines.append(f"{'WORDS IN TEXT:':<22}{self.words_in_text}")
+        lines.append(f"{'WORDS MISSPELLED:':<{COL}}{self.words_misspelled}")
+        lines.append(f"{'WORDS IN DICTIONARY:':<{COL}}{self.words_in_dictionary}")
+        lines.append(f"{'WORDS IN TEXT:':<{COL}}{self.words_in_text}")
         #                  ↑             ↑↑
         #                  │             ││
         #               the text         │└── 22 characters total width
@@ -194,33 +195,33 @@ class SpellerResult:
         
         # Text file specs: name and path
         lines.append(
-            f"{'CHECKED FILE:':<22}{txt_file.fname}"
+            f"{'CHECKED FILE:':<{COL}}{txt_file.fname}"
             if txt_file else
-            f"{'CHECKED FILE:':<22}{'-- file not registered --'}"
+            f"{'CHECKED FILE:':<{COL}}-- file not registered --"
         )
         lines.append(
-            f"{'FILE PATH:':<22}{txt_file.fpath}"
+            f"{'FILE PATH:':<{COL}}{txt_file.fpath}"
             if txt_file else
-            f"{'FILE PATH:':<22}{'-- file not registered --'}"
+            f"{'FILE PATH:':<{COL}}-- file not registered --"
         )
         
         # Benchmark timings
         lines.append(
-            f"{'TIME IN load:':<22}{data_load.elapsed_seconds:.2f}"
+            f"{'TIME IN load:':<{COL}}{data_load.elapsed_seconds:.2f}"
             if data_load else
-            f"{'TIME IN load:':<22}{'0.00'}"
+            f"{'TIME IN load:':<{COL}}0.00"
         )
         lines.append(
-            f"{'TIME IN check:':<22}{data_check.elapsed_seconds:.2f}"
+            f"{'TIME IN check:':<{COL}}{data_check.elapsed_seconds:.2f}"
             if data_check else
-            f"{'TIME IN check:'}{'0.00'}"
+            f"{'TIME IN check:':<{COL}}0.00"
         )
         lines.append(
-            f"{'TIME IN size:':<22}{data_size.elapsed_seconds:.2f}"
+            f"{'TIME IN size:':<{COL}}{data_size.elapsed_seconds:.2f}"
             if data_size else
-            f"{'TIME IN size:'}{'0.00'}"
+            f"{'TIME IN size:':<{COL}}0.00"
         )
-        lines.append(f"{'TIME IN TOTAL:':<22}{self.time_total:.2f}\n")
+        lines.append(f"{'TIME IN TOTAL:':<{COL}}{self.time_total:.2f}\n")
         
         # Report to show in console
         main_report = "\n".join(lines)
