@@ -31,11 +31,14 @@ Module Dependencies
 
 from __future__ import annotations
 
+from dataclasses import dataclass, KW_ONLY, field
 from pathlib import Path
 import logging
+from typing import Callable
 
 from speller.config import MAX_WORD_LENGTH
-from speller.register import register_class
+from speller.protocols import DictionaryProtocol
+from speller.speller import SpellerResult
 
 # No ImportError sys.exit() on regular module so the
 # error propagates to the caller (__main__.py).
@@ -56,11 +59,69 @@ logger = logging.getLogger(__name__)
 # EXPORTS
 # =============================================================================
 
-__all__ = ["HashTableDictionary", "ListDictionary"]
+__all__ = [
+    "DictInfo",
+    "dicts",
+    "HashTableDictionary", 
+    "ListDictionary"
+]
 
 
-# Notice that dictionary.py never imports DictionaryProtocol. It doesn't need to.
-# The module that uses the protocol (speller.py) imports it for type hints. 
+# =============================================================================
+# MODULE CONFIGURATION
+# =============================================================================
+
+dicts: dict[str, DictInfo] = {}
+
+
+# =====================================================
+# Type Aliases
+# =====================================================
+
+type RegDecorator = Callable[[type[DictionaryProtocol]], type[DictionaryProtocol]]
+
+
+# =====================================================
+# Dict Metadata Configuration
+# =====================================================
+
+@dataclass
+class DictInfo:
+    """
+    """
+    
+    # Required fields (no default) must come first
+    # Optional fields with defaults afterwards
+    _: KW_ONLY  # Everything after this is keyword-only
+    dict_class: type[DictionaryProtocol]
+    name: str
+    description: str
+    results: dict[str, SpellerResult] = field(default_factory=dict)
+
+
+# =============================================================================
+# DICTIONARY REGISTRY
+# =============================================================================
+
+def register_class(name: str, description: str = "") -> RegDecorator:
+    """
+    """
+    def decorator(dict_class: type[DictionaryProtocol]) -> type[DictionaryProtocol]:
+        dicts[dict_class.__name__] = DictInfo(
+            dict_class=dict_class,
+            name=name,
+            description=description or dict_class.__doc__ or "",
+        )
+        return dict_class
+    return decorator
+
+
+# =============================================================================
+# DICTIONARY CLASSES
+# =============================================================================
+
+# Notice that dictionary.py imports DictionaryProtocol. It doesn't need to for
+# the class builder. We use it here and on speller.py for type hints. 
 
 @register_class("hash")
 class HashTableDictionary:

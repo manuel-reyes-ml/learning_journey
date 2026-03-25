@@ -60,7 +60,7 @@ try:
     import argparse
     import logging
     
-    from speller.register import dicts
+    from speller.dictionaries import dicts
     from speller.config import ExitCode, file_dirs, default_fnames
     from speller.logger import configure_logging
     from speller.speller import run_speller, REPORT
