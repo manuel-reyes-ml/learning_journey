@@ -35,6 +35,7 @@ from pathlib import Path
 import logging
 
 from speller.config import MAX_WORD_LENGTH
+from speller.register import register_class
 
 # No ImportError sys.exit() on regular module so the
 # error propagates to the caller (__main__.py).
@@ -61,6 +62,7 @@ __all__ = ["HashTableDictionary", "ListDictionary"]
 # Notice that dictionary.py never imports DictionaryProtocol. It doesn't need to.
 # The module that uses the protocol (speller.py) imports it for type hints. 
 
+@register_class("hash")
 class HashTableDictionary:
     """Spell-check dictionary backed by a Python ``set`` (hash table).
 
@@ -320,6 +322,7 @@ class HashTableDictionary:
         return True
 
 
+@register_class("list")
 class ListDictionary:
     """Spell-check dictionary backed by a Python ``set`` (hash table).
 
