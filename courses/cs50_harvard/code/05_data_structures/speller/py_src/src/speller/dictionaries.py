@@ -131,7 +131,11 @@ def register_class(name: str, description: str = "") -> RegDecorator:
 # Notice that dictionary.py imports DictionaryProtocol. It doesn't need to for
 # the class builder. We use it here and on speller.py for type hints. 
 
-@register_class("hash")
+@register_class(
+    "hash",
+    "Use Set as hash table data structure "
+    "for dictionary container.",
+)
 class HashTableDictionary:
     """Spell-check dictionary backed by a Python ``set`` (hash table).
 
@@ -391,7 +395,10 @@ class HashTableDictionary:
         return True
 
 
-@register_class("list")
+@register_class(
+    "list",
+    "Use a List data structure as dictionary container.",
+)
 class ListDictionary:
     """Spell-check dictionary backed by a Python ``set`` (hash table).
 
