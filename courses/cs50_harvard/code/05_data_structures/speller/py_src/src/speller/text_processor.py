@@ -220,7 +220,7 @@ def extract_words(filepath: str | Path) -> Iterator[str]:
     """
     path = Path(filepath) if isinstance(filepath, str) else filepath
     
-    logger.debug("Extracting words from '%s", path.name)
+    logger.debug("Extracting words from '%s'", path.name)
     
     content = path.read_text(encoding="utf-8")
     length = len(content)
