@@ -335,6 +335,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 text_path=text_path,
                 dict_path=dict_path,
                 ops_name=name,
+                description=data.description,
             )
             result = data.results["speller_result"]
             
@@ -369,7 +370,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
     # is disabled. The %s format is only evaluated if the message actually gets logged. This is a
     # performance pattern that matters in hot loops (Stage 2 ETL, Stage 3 training).
     
-    finally:
+    finally:   # Always runs (error or no erros)
         if success:
             logger.info("Program completed.\n")
             logger.debug("Spell check completed successfully\n")
