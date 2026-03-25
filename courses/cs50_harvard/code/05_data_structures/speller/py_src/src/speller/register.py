@@ -29,7 +29,11 @@ logger = logging.getLogger(__name__)
 # EXPORTS
 # =============================================================================
 
-__all__ = ["DictInfo", "register_class"]
+__all__ = [
+    "DictInfo",
+    "dicts",
+    "register_class",
+]
 
 
 # =============================================================================
@@ -69,6 +73,8 @@ class DictInfo:
 # DICTIONARY REGISTRY
 # =============================================================================
 
+# A decorator factory is just a function that takes custom parameters 
+# and generates a decorator.
 def register_class(name: str, description: str = "") -> RegDecorator:
     """
     """
@@ -84,3 +90,5 @@ def register_class(name: str, description: str = "") -> RegDecorator:
         # so @wraps would do nothing useful.
     return decorator
 
+# Instantiate by key - calling a class creates an instance
+# dictionary = dicts["hash"]() -> HashTableDictionary()
