@@ -60,7 +60,7 @@ try:
     import argparse
     import logging
     
-    from speller.dictionaries import HashTableDictionary
+    from speller.register import dicts
     from speller.config import ExitCode, file_dirs, default_fnames
     from speller.logger import configure_logging
     from speller.speller import run_speller, REPORT
@@ -307,39 +307,45 @@ def main(argv: list[str] | None = None) -> ExitCode:
     if validation_error is not None:
         return validation_error
     
-    # -- Step 4: Create concrete dictionary -- 
-    # THIS IS THE COMPOSITION ROOT — the one place that picks
-    # the concrete implementation. Everything downstream depends
-    # on DictionaryProtocol (the abstraction), not this class.
-    #
-    # To swap implementations:
-    #   dictionary = DatabaseDictionary(conn_string)  # Stage 2
-    #   dictionary = MockDictionary()                 # testing
-    dictionary = HashTableDictionary()
-    
     logger.info(
         "Spell checking '%s' with dictionary '%s'",
         text_path.name,
         dict_path.name,
     )
     
-    # -- Step 5: Run spell checker --
-    # run_speller() accepts DictionaryProtocol - it doesn´t know
-    # or care tjhat we passed a HashTableDictionary.
     success = False
     try:
-        result = run_speller(
-            dictionary=dictionary,
-            text_path=text_path,
-            dict_path=dict_path,
-        )
+        for name, data in dicts.items():
+            
+            # -- Step 4: Create concrete dictionary -- 
+            # THIS IS THE COMPOSITION ROOT — the one place that picks
+            # the concrete implementation. Everything downstream depends
+            # on DictionaryProtocol (the abstraction), not this class.
+            #
+            # To swap implementations:
+            #   dictionary = DatabaseDictionary(conn_string)  # Stage 2
+            #   dictionary = MockDictionary()                 # testing
+            dictionary = data.dict_class()
+            
+            # -- Step 5: Run spell checker --
+            # run_speller() accepts DictionaryProtocol - it doesn´t know
+            # or care what we passed a HashTableDictionary.
+            data.results["speller_result"] = run_speller(
+                dictionary=dictionary,
+                text_path=text_path,
+                dict_path=dict_path,
+                ops_name=name,
+            )
+            result = data.results["speller_result"]
+            
+            show_misspelled = args.show_misspelled if name == "hash" else False
         
-        # -- Step 6: Display results --
-        # format_report() returns a string — main() decides to print it.
-        # In a web app (Stage 1 Streamlit), you'd display it differently.
-        # In tests, you'd just check result.words_misspelled.
-        reports: REPORT = result.format_report(log_misspelled=args.show_misspelled)
-        _print_reports(reports, text_path.name)
+            # -- Step 6: Display results --
+            # format_report() returns a string — main() decides to print it.
+            # In a web app (Stage 1 Streamlit), you'd display it differently.
+            # In tests, you'd just check result.words_misspelled.
+            reports: REPORT = result.format_report(log_misspelled=show_misspelled)
+            _print_reports(reports, text_path.name)
         
         # -- Step 7: Return exit code --
         success = True
