@@ -44,6 +44,7 @@ Matches speller.c usage::
 from __future__ import annotations
 
 import sys
+from typing import cast
 
 # =====================================================
 # Impor Guard
@@ -79,9 +80,29 @@ except ImportError as e:
 logger = logging.getLogger(__name__)
 
 
+
+# =============================================================================
+# CONSTANTS
+# =============================================================================
+
+ops_list: str = ", ".join(dicts.keys())
+
+
 # =============================================================================
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
+
+def _validate_ops(ops_names: list[str]) -> OpsName:
+    """
+    """
+    clean_names = [name.strip().lower() for name in ops_names]
+    clean_names = cast(OpsName, clean_names)
+    
+    def pass_string(clean_names: OpsName) -> OpsName:
+        return clean_names
+    
+    return pass_string(clean_names)
+
 
 # Extracting parser construction into its own function means tests can parse
 # arguments without running the full program.
@@ -134,12 +155,13 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     
     # -- Positional arguments --
-    # nargs='?' makes dictionary optional
+    # nargs='?' makes dictionary optional, returns a single str.
+    # nargs='*', nargs='+', nargs='N' return lists.
     # When user provides 1 positional arg -> it goes to 'text' (not dictionary)
     # When user provides 2 positional args -> first is dictionary, second is text
     parser.add_argument(
         "dictionary",
-        nargs="?",
+        nargs="?",  # zero or one
         type=str,
         default=str(
             file_dirs.DICT_DIR / default_fnames["dictionaries"].large  # "large"
@@ -151,9 +173,19 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     
     parser.add_argument(
-        "text",
+        "text",  # positional argument required
         type=str,
         help="Path to text file to spell-check (required).",
+    )
+    
+    # -- Keyword arguments --
+    parser.add_argument(
+        "-o", "--operations",
+        required=True,
+        nargs="+",  # one or more
+        type=str,
+        help="Data structure you would like to use. "
+             f"Enter at least one. Available: {ops_list}"
     )
     
     # -- Optional flags --
@@ -317,7 +349,10 @@ def main(argv: list[str] | None = None) -> ExitCode:
     
     success = False
     try:
-        for name, data in dicts.items():
+        ops_names = _validate_ops(args.operations)
+        
+        for operation in ops_names:
+            data = dicts[operation]
             
             # -- Step 4: Create concrete dictionary -- 
             # THIS IS THE COMPOSITION ROOT — the one place that picks
@@ -341,7 +376,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
             )
             result = data.results["speller_result"]
             
-            show_misspelled = args.show_misspelled if name == "hash" else False
+            show_misspelled = args.show_misspelled if operation == "hash" else False
         
             # -- Step 6: Display results --
             # format_report() returns a string — main() decides to print it.
