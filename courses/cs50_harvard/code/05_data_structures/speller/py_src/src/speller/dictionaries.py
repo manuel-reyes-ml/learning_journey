@@ -103,6 +103,8 @@ class DictInfo:
 # DICTIONARY REGISTRY
 # =============================================================================
 
+# A decorator factory is just a function that takes custom parameters 
+# and generates a decorator.
 def register_class(name: str, description: str = "") -> RegDecorator:
     """
     """
@@ -112,8 +114,14 @@ def register_class(name: str, description: str = "") -> RegDecorator:
             name=name,
             description=description or dict_class.__doc__ or "",
         )
-        return dict_class
+        return dict_class  # Return unchanged class
+        # class goes in, class comes out. The class' __name__, __doc__, __qualname__
+        # are all intact because you never created a replacement. Nothing to fix,
+        # so @wraps would do nothing useful.
     return decorator
+
+# Instantiate by key - calling a class creates an instance
+# dictionary = dicts["hash"]() -> HashTableDictionary()
 
 
 # =============================================================================
