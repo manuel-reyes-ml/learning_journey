@@ -7,11 +7,12 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, KW_ONLY
+from dataclasses import dataclass, KW_ONLY, field
 import logging
 from typing import Callable
 
 from speller.protocols import DictionaryProtocol
+from speller.speller import SpellerResult
 
 
 # =============================================================================
@@ -50,7 +51,7 @@ dicts: dict[str, DictInfo] = {}
 # Type Aliases
 # =====================================================
 
-type RegDecorator = Callable[[DictionaryProtocol], DictionaryProtocol]
+type RegDecorator = Callable[[type[DictionaryProtocol]], type[DictionaryProtocol]]
 
 
 # =====================================================
@@ -64,9 +65,11 @@ class DictInfo:
     # Required fields (no default) must come first
     # Optional fields with defaults afterwards
     _: KW_ONLY  # Everything after this is keyword-only
-    dict_class: DictionaryProtocol
+    dict_class: type[DictionaryProtocol]
     name: str
     description: str
+    
+    results: dict[str, SpellerResult] = field(default_factory=dict)
 
 
 # =============================================================================
@@ -78,10 +81,10 @@ class DictInfo:
 def register_class(name: str, description: str = "") -> RegDecorator:
     """
     """
-    def decorator(dict_class: DictionaryProtocol) -> DictionaryProtocol:
+    def decorator(dict_class: type[DictionaryProtocol]) -> type[DictionaryProtocol]:
         dicts[name] = DictInfo(
             dict_class=dict_class,
-            name=type(dict_class).__name__,
+            name=dict_class.__name__,
             description=description or dict_class.__doc__ or "",
         )
         return dict_class # Return unchanged class
