@@ -351,6 +351,10 @@ def main(argv: list[str] | None = None) -> ExitCode:
         success = True
         return ExitCode.SUCCESS
 
+    except KeyboardInterrupt:
+        logger.warning("Interrupted by user. Exiting.")
+        return ExitCode.KEYBOARD_INTERRUPT
+    
     except SystemExit as e:
         # run_speller raises SystemExit if dictionary fails to load
         logger.error("Speller failed: %s", e)

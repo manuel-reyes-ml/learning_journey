@@ -59,6 +59,7 @@ class ExitCode(IntEnum):
     FILE_NOT_FOUND = 2
     LOAD_FAILED = 3
     FAILURE = 4
+    KEYBOARD_INTERRUPT = 130
     
 
 @unique
