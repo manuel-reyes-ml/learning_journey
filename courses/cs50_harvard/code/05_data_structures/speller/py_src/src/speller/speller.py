@@ -168,7 +168,7 @@ class SpellerResult:
         lines: list[str] = []
         
         # Header
-        lines.append(f"\nMISSPELLED WORDS --{self.ops_name}--\n")
+        lines.append(f"\nMISSPELLED WORDS -- {self.ops_name} --\n")
         
         # .get() with a default BenchmarkResult avoids KeyError if
         # a benchmark wasn´t recorded (defensive prorgramming)
@@ -305,6 +305,8 @@ def run_speller(
     """
     benchmarks: dict[str, BenchmarkResult] = {}
     
+    logger.debug("Running Speller with '%s'", ops_name)
+    
     # =================================================================
     # STEP 1: Load dictionary (timed)
     # =================================================================
@@ -321,7 +323,11 @@ def run_speller(
         logger.error("Could not load dictionary: %s", dict_path)
         raise SystemExit(f"Could not load {dict_path}.")
     
-    logger.info("Dictionary loaded: %d words", len(dictionary)) #NOTE: Try Pythonic exp (dunder)
+    logger.info(
+        "Dictionary loaded: %d words in '%s'", 
+        len(dictionary),  # NOTE: Try Pythonic exp (dunder)
+        ops_name,
+    ) 
     
     # =================================================================
     # STEP 2: Check words (timed cumulatively)
