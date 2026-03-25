@@ -124,6 +124,7 @@ class SpellerResult:
     """
 
     _: KW_ONLY      # Everything after is keyword-only
+    ops_name: str
     misspelled_words: list[str]
     words_misspelled: int
     words_in_dictionary: int
@@ -167,7 +168,7 @@ class SpellerResult:
         lines: list[str] = []
         
         # Header
-        lines.append("\nMISSPELLED WORDS\n")
+        lines.append(f"\nMISSPELLED WORDS --{self.ops_name}--\n")
         
         # .get() with a default BenchmarkResult avoids KeyError if
         # a benchmark wasn´t recorded (defensive prorgramming)
@@ -248,6 +249,7 @@ def run_speller(
     dictionary: DictionaryProtocol,
     text_path: str | Path,
     dict_path: str | Path,
+    ops_name: str,
 ) -> SpellerResult:  # pure computation, testable
     """Run the spell checker — orchestrates all components.
 
@@ -357,6 +359,7 @@ def run_speller(
     # STEP 4: Package results
     # =================================================================
     result = SpellerResult(
+        ops_name=ops_name,
         misspelled_words=misspelled_words,
         words_misspelled=len(misspelled_words),
         words_in_dictionary=words_in_dictionary,
