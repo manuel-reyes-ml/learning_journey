@@ -61,7 +61,7 @@ try:
     import logging
     
     from speller.dictionaries import dicts
-    from speller.config import ExitCode, file_dirs, default_fnames
+    from speller.config import ExitCode, file_dirs, default_fnames, OpsName
     from speller.logger import configure_logging
     from speller.speller import run_speller, REPORT
     
@@ -140,6 +140,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "dictionary",
         nargs="?",
+        type=str,
         default=str(
             file_dirs.DICT_DIR / default_fnames["dictionaries"].large  # "large"
         ),
@@ -151,6 +152,7 @@ def _build_parser() -> argparse.ArgumentParser:
     
     parser.add_argument(
         "text",
+        type=str,
         help="Path to text file to spell-check (required).",
     )
     
@@ -334,7 +336,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 dictionary=dictionary,
                 text_path=text_path,
                 dict_path=dict_path,
-                ops_name=name,
+                ops_name=data.name,
                 description=data.description,
             )
             result = data.results["speller_result"]

@@ -109,9 +109,9 @@ def register_class(name: str, description: str = "") -> RegDecorator:
     """
     """
     def decorator(dict_class: type[DictionaryProtocol]) -> type[DictionaryProtocol]:
-        dicts[dict_class.__name__] = DictInfo(
+        dicts[name] = DictInfo(
             dict_class=dict_class,
-            name=name,
+            name=dict_class.__name__,
             description=description or dict_class.__doc__ or "",
         )
         return dict_class  # Return unchanged class
