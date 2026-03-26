@@ -32,6 +32,7 @@ Module Dependencies
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
+import bisect
 from dataclasses import dataclass, KW_ONLY, field
 from pathlib import Path
 import logging
@@ -555,6 +556,33 @@ class ListDictionary(_BaseDictionary):  # inherits from ABC
 
     # satisfies Protocol via inherited methods
 
+
+@register_class(
+    "sorted",
+    "Use sorted list - O(log n) binary search lookup."
+)
+class SortedListDictionary(_BaseDictionary):
+    """
+    """
+    
+    def _create_container(self) -> list[str]:
+        return []
+    
+    
+    def _add_word(self, word: str) -> None:
+        bisect.insort(self._words, word)  # insert in sorted order
+        
+        
+    def check(self, word: str) -> bool:
+        """Override base check() to use binary search instead of 'in'."""
+        if not self._loaded:
+            raise RuntimeError(
+                "Dictionary not loaded. Call load() before check()."
+            )
+            
+        normalized = word.lower()
+        i = bisect.bisect_left(self._words, normalized)
+        return i < len(self._words) and self._words[i] == normalized
 
 
 # The relationship:
