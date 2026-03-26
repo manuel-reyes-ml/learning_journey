@@ -162,7 +162,6 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "dictionary",
         nargs="?",  # zero or one
-        type=str,
         default=str(
             file_dirs.DICT_DIR / default_fnames["dictionaries"].large  # "large"
         ),
@@ -174,7 +173,6 @@ def _build_parser() -> argparse.ArgumentParser:
     
     parser.add_argument(
         "text",  # positional argument required
-        type=str,
         help="Path to text file to spell-check (required).",
     )
     
@@ -183,7 +181,6 @@ def _build_parser() -> argparse.ArgumentParser:
         "-o", "--operations",
         required=True,
         nargs="+",  # one or more
-        type=str,
         help="Data structure you would like to use. "
              f"Enter at least one. Available: {ops_list}"
     )
@@ -397,6 +394,10 @@ def main(argv: list[str] | None = None) -> ExitCode:
         # run_speller raises SystemExit if dictionary fails to load
         logger.error("Speller failed: %s", e)
         return ExitCode.LOAD_FAILED
+    
+    except (KeyError, TypeError) as e:
+        logger.error("Operation argument failed: %s", e)
+        return ExitCode.USAGE_ERROR
     
     except Exception as e:  # Catches every other exception in program
         # Appears as logging.error, provides Python's traceback info
