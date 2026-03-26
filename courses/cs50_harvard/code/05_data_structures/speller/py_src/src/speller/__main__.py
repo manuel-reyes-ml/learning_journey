@@ -100,6 +100,9 @@ def _validate_ops(ops_names: list[str]) -> OpsName:
         name.strip().strip(string.punctuation).lower() 
         for name in ops_names
     ]
+    # cast() tells the type checker to treat a value as a specific type.
+    # At runtime, clean_names is still the exact same list[str] object,
+    # cast() just silenced the type checker. It´s purely a hint.
     clean_names = cast(OpsName, clean_names)
     
     def pass_string(clean_names: OpsName) -> OpsName:
@@ -369,7 +372,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
             
             # -- Step 5: Run spell checker --
             # run_speller() accepts DictionaryProtocol - it doesn´t know
-            # or care what we passed a HashTableDictionary.
+            # or care that we passed a HashTableDictionary.
             data.results["speller_result"] = run_speller(
                 dictionary=dictionary,
                 text_path=text_path,

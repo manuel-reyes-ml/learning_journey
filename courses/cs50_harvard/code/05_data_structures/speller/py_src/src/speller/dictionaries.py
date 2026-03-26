@@ -98,6 +98,16 @@ class DictInfo:
     description: str
     results: dict[str, SpellerResult] = field(default_factory=dict)
 
+# Tells pyright this is an INSTANCE
+#   dict_class: DictionaryProtocol          # an object with .load(), .check()
+
+# Tells pyright this is a CLASS
+#   dict_class: type[DictionaryProtocol]    # a class you can call with ()
+
+# type[X] means "the class itself, not an instance of it." Pyright knows
+# dict_class() is valid because you're calling a class constructor, which
+# returns an instance of DictionaryProtocol.
+
 
 # =============================================================================
 # DICTIONARY REGISTRY
@@ -121,7 +131,7 @@ def register_class(name: str, description: str = "") -> RegDecorator:
     return decorator
 
 # Instantiate by key - calling a class creates an instance
-# dictionary = dicts["hash"]() -> HashTableDictionary()
+# dictionary = dicts["hash"].dict_class() -> HashTableDictionary()
 
 
 # =============================================================================

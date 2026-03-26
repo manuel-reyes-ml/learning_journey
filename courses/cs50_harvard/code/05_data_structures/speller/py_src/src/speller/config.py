@@ -52,6 +52,7 @@ DICT_FNAMES = namedtuple("DICT_FNAMES", ["large", "small"])
 # Type Aliases
 # =====================================================
 
+# Only these exact values are allowed
 type OpsName = Literal["hash", "list"]
 
 
