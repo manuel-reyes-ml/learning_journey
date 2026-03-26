@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from enum import IntEnum, StrEnum, unique
 from collections import namedtuple
-from typing import Final, TypedDict, Literal
+from typing import Final, TypedDict
 from dataclasses import dataclass
 from pathlib import Path
 import logging
@@ -24,8 +24,6 @@ __all__ = [
     # Constants
     "MAX_WORD_LENGTH",
     "default_fnames",
-    # Type Aliases
-    "OpsName",
     # Configuration
     "ExitCode",
     "file_dirs",
@@ -46,14 +44,6 @@ __all__ = [
 
 MAX_WORD_LENGTH: Final[int] = 45
 DICT_FNAMES = namedtuple("DICT_FNAMES", ["large", "small"])
-
-
-# =====================================================
-# Type Aliases
-# =====================================================
-
-# Only these exact values are allowed
-type OpsName = Literal["hash", "list"]
 
 
 # =====================================================

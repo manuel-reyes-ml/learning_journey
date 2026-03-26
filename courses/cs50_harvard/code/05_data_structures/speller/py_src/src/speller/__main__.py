@@ -45,7 +45,7 @@ from __future__ import annotations
 
 import string
 import sys
-from typing import cast
+
 
 # =====================================================
 # Impor Guard
@@ -63,7 +63,7 @@ try:
     import logging
     
     from speller.dictionaries import dicts
-    from speller.config import ExitCode, file_dirs, default_fnames, OpsName
+    from speller.config import ExitCode, file_dirs, default_fnames
     from speller.logger import configure_logging
     from speller.speller import run_speller, REPORT
     
@@ -93,22 +93,25 @@ ops_list: str = ", ".join(dicts.keys())
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
 
-def _validate_ops(ops_names: list[str]) -> OpsName:
+def _validate_ops(ops_names: list[str]) -> list[str]:
     """
     """
     clean_names = [
-        name.strip().strip(string.punctuation).lower() 
+        name.strip().strip(string.punctuation).lower()
         for name in ops_names
     ]
-    # cast() tells the type checker to treat a value as a specific type.
-    # At runtime, clean_names is still the exact same list[str] object,
-    # cast() just silenced the type checker. It´s purely a hint.
-    clean_names = cast(OpsName, clean_names)
     
-    def pass_string(clean_names: OpsName) -> OpsName:
-        return clean_names
-    
-    return pass_string(clean_names)
+    for name in clean_names:
+        # This validates against the actual registry,
+        # which is the single source of truth.
+        if name not in dicts:
+            raise KeyError(
+                "Unknown operation '%s'. Available: %s",
+                name,
+                ops_list,
+            )
+            
+    return clean_names
 
 
 # Extracting parser construction into its own function means tests can parse
