@@ -43,7 +43,6 @@ Matches speller.c usage::
 
 from __future__ import annotations
 
-import string
 import sys
 
 
@@ -61,6 +60,7 @@ try:
     from pathlib import Path
     import argparse
     import logging
+    import string
     
     from speller.dictionaries import dicts
     from speller.config import ExitCode, file_dirs, default_fnames
@@ -106,9 +106,7 @@ def _validate_ops(ops_names: list[str]) -> list[str]:
         # which is the single source of truth.
         if name not in dicts:
             raise KeyError(
-                "Unknown operation '%s'. Available: %s",
-                name,
-                ops_list,
+                f"Unknown operation '{name}'. Available: {ops_list}"
             )
             
     return clean_names
@@ -189,12 +187,9 @@ def _build_parser() -> argparse.ArgumentParser:
     # -- Keyword arguments --
     parser.add_argument(
         "-o", "--operations",
-        required=True,
         nargs="+",  # one or more
-        help=(
-            "Data structure you would like to use. "
-            f"Enter at least one. Available: {ops_list}"
-        ),
+        default=["hash"],
+        help=f"Data structure(s) to use. Default: hash. Available: {ops_list}",
     )
     
     # -- Optional flags --
@@ -385,7 +380,8 @@ def main(argv: list[str] | None = None) -> ExitCode:
             )
             result = data.results["speller_result"]
             
-            show_misspelled = args.show_misspelled if operation == "hash" else False
+            # Show for the FIRST operation only (avoid duplicate files)
+            show_misspelled = args.show_misspelled and (operation == ops_names[0])
         
             # -- Step 6: Display results --
             # format_report() returns a string — main() decides to print it.
