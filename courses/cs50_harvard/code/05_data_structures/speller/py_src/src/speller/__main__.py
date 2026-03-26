@@ -43,6 +43,7 @@ Matches speller.c usage::
 
 from __future__ import annotations
 
+import string
 import sys
 from typing import cast
 
@@ -95,7 +96,10 @@ ops_list: str = ", ".join(dicts.keys())
 def _validate_ops(ops_names: list[str]) -> OpsName:
     """
     """
-    clean_names = [name.strip().lower() for name in ops_names]
+    clean_names = [
+        name.strip().strip(string.punctuation).lower() 
+        for name in ops_names
+    ]
     clean_names = cast(OpsName, clean_names)
     
     def pass_string(clean_names: OpsName) -> OpsName:
@@ -181,8 +185,10 @@ def _build_parser() -> argparse.ArgumentParser:
         "-o", "--operations",
         required=True,
         nargs="+",  # one or more
-        help="Data structure you would like to use. "
-             f"Enter at least one. Available: {ops_list}"
+        help=(
+            "Data structure you would like to use. "
+            f"Enter at least one. Available: {ops_list}"
+        ),
     )
     
     # -- Optional flags --
@@ -204,7 +210,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "--show-misspelled",
         action="store_true",
         default=False,
-        help="Show all misspelled words from input txt file."
+        help="Show all misspelled words from input txt file.",
     )
     
     return parser
