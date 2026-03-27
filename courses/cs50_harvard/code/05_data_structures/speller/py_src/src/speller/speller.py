@@ -123,13 +123,16 @@ class SpellerResult:
         Timing results keyed by operation name.
     """
 
+    # Required fields (no default) must come first
+    # Optional fields with defaults afterwards
     _: KW_ONLY      # Everything after is keyword-only
-    ops_name: str
-    description: str
     misspelled_words: list[str]
     words_misspelled: int
     words_in_dictionary: int
     words_in_text: int
+    
+    ops_name: str = ""
+    description: str = ""
     benchmarks: dict[str, BenchmarkResult] = field(default_factory=dict)
     
     @property  # access time_total as an attribute not time_total()
@@ -253,8 +256,6 @@ def run_speller(
     dictionary: DictionaryProtocol,
     text_path: str | Path,
     dict_path: str | Path,
-    ops_name: str,
-    description: str,
 ) -> SpellerResult:  # pure computation, testable
     """Run the spell checker — orchestrates all components.
 
@@ -310,8 +311,6 @@ def run_speller(
     """
     benchmarks: dict[str, BenchmarkResult] = {}
     
-    logger.debug("Running Speller with '%s'", ops_name)
-    
     # =================================================================
     # STEP 1: Load dictionary (timed)
     # =================================================================
@@ -329,9 +328,8 @@ def run_speller(
         raise SystemExit(f"Could not load {dict_path}.")
     
     logger.info(
-        "Dictionary loaded: %d words in '%s'", 
+        "Dictionary loaded: %d words", 
         len(dictionary),  # NOTE: Try Pythonic exp (dunder)
-        ops_name,
     ) 
     
     # =================================================================
@@ -370,8 +368,6 @@ def run_speller(
     # STEP 4: Package results
     # =================================================================
     result = SpellerResult(
-        ops_name=ops_name,
-        description=description,
         misspelled_words=misspelled_words,
         words_misspelled=len(misspelled_words),
         words_in_dictionary=words_in_dictionary,
