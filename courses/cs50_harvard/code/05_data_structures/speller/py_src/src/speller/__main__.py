@@ -63,9 +63,9 @@ try:
     import logging
     import string
     
-    from speller.dictionaries import dicts
     from speller.config import ExitCode, file_dirs, default_fnames
     from speller.logger import configure_logging
+    from speller.register import dicts
     from speller.speller import run_speller, REPORT
     
 except ImportError as e:
@@ -378,7 +378,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
             logger.debug("Running Speller with '%s'", data.name)
             
             data.results["speller_result"] = run_speller(
-                dictionary=dictionary,
+                dictionary=dictionary, 
                 text_path=text_path,
                 dict_path=dict_path,
             )
