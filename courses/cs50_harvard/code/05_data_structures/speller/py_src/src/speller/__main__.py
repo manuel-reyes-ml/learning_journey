@@ -387,6 +387,9 @@ def main(argv: list[str] | None = None) -> ExitCode:
             result = data.results["speller_result"]
             
             # "Update" by creating a NEW frozen instance (original unchanged)
+            # replace() doesn't mutate — it copies all fields into a new frozen instance with the
+            # specified fields overridden. The original object is untouched. This is the idiomatic
+            # pattern for "updating" immutable data in Python.
             result = replace(
                 result,
                 ops_name=data.name,
