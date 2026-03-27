@@ -32,7 +32,7 @@ Module Dependencies
 from __future__ import annotations
 
 from abc import ABC, abstractmethod
-import bisect
+import bisect   # Binary Search
 from dataclasses import dataclass, KW_ONLY, field
 from pathlib import Path
 import logging
@@ -557,9 +557,15 @@ class ListDictionary(_BaseDictionary):  # inherits from ABC
     # satisfies Protocol via inherited methods
 
 
+# WHEN ADDING A Dictionary: Three lines for the container, and an override for check()
+# — everything else is inherited. The @register_class decorator automatically adds it
+# to the registry. The CLI immediately supports -o sorted without any changes to
+# __main__.py, speller.py, or protocols.py.
+#
+# That's the power of Protocol + ABC + Registry working together.
 @register_class(
     "sorted",
-    "Use sorted list - O(log n) binary search lookup."
+    "Use sorted list - O(log n) binary search lookup.",
 )
 class SortedListDictionary(_BaseDictionary):
     """
@@ -578,12 +584,34 @@ class SortedListDictionary(_BaseDictionary):
         if not self._loaded:
             raise RuntimeError(
                 "Dictionary not loaded. Call load() before check()."
-            )
-            
+            ) 
         normalized = word.lower()
+        
+        # ── bisect_left: "Where would this value go?" ──
+        # Returns the INDEX where the value would be inserted
+        # to keep the list sorted. If the value exists, returns
+        # the position BEFORE (left of) the existing entry.
         i = bisect.bisect_left(self._words, normalized)
+        
         return i < len(self._words) and self._words[i] == normalized
+        #      ↑                        ↑
+        #      BOUNDS CHECK              VALUE CHECK
+        #      "is i within the list?"   "is the word actually there?"
 
+        # Without bounds check:
+        # bisect_left(["ant", "bat"], "zebra") → returns 2
+        # self._words[2] → IndexError! (list only has indices 0, 1)
+
+        # Without value check:
+        # bisect_left(["ant", "cat"], "bat") → returns 1
+        # self._words[1] → "cat" (not "bat"!)
+        # bisect tells you where "bat" WOULD go, not that it EXISTS
+
+
+
+# =============================================================================
+# REFERENCE GUIDES
+# =============================================================================
 
 # The relationship:
 #   Protocol:  speller.py says "I need load/check/size"
@@ -625,3 +653,89 @@ class SortedListDictionary(_BaseDictionary):
 
 # This is how Python's built-in types work: "hello" in my_set calls set.__contains__(),
 # len(my_list) calls list.__len__(). Your class follows the same pattern.
+
+# =====================================================
+# What BISECT does:
+# =====================================================
+# bisect finds where a value belongs in a sorted list using binary search — O(log n) instead of O(n).
+#┌─────────────────────────────────────────────────────────────────┐
+#│              LINEAR SEARCH vs BINARY SEARCH                      │
+#│─────────────────────────────────────────────────────────────────│
+#│                                                                  │
+#│  Sorted list: [apple, banana, cherry, dog, elephant, fish, grape]│
+#│  Looking for: "dog"                                              │
+#│                                                                  │
+#│  LINEAR SEARCH (word in my_list):                                │
+#│    Check "apple"    → no                                         │
+#│    Check "banana"   → no                                         │
+#│    Check "cherry"   → no                                         │
+#│    Check "dog"      → YES! (4 comparisons)                       │
+#│    Worst case: check ALL 143,091 words → O(n)                    │
+#│                                                                  │
+#│  BINARY SEARCH (bisect):                                         │
+#│    Middle = "dog"   → FOUND! (1 comparison)                      │
+#│    But usually:                                                   │
+#│    Middle = "cherry" → "dog" > "cherry" → search RIGHT half      │
+#│    Middle = "fish"   → "dog" < "fish"   → search LEFT half       │
+#│    Middle = "dog"    → FOUND! (3 comparisons)                    │
+#│    Worst case: log₂(143,091) = ~17 comparisons → O(log n)       │
+#│                                                                  │
+#│  143,091 comparisons vs 17 comparisons.                          │
+#└─────────────────────────────────────────────────────────────────┘
+
+# sorted_list = [10, 20, 30, 40, 50]
+
+# ── bisect_left: "Where would this value go?" ──
+# Returns the INDEX where the value would be inserted
+# to keep the list sorted. If the value exists, returns
+# the position BEFORE (left of) the existing entry.
+
+# bisect.bisect_left(sorted_list, 30)    # → 2 (30 is at index 2)
+# bisect.bisect_left(sorted_list, 25)    # → 2 (25 would go before 30)
+# bisect.bisect_left(sorted_list, 5)     # → 0 (5 would go at the start)
+# bisect.bisect_left(sorted_list, 99)    # → 5 (99 would go at the end)
+
+# ── bisect_right: same but position AFTER existing entry ──
+# bisect.bisect_right(sorted_list, 30)   # → 3 (after the existing 30)
+
+# ── insort: INSERT and keep sorted ──
+# Equivalent to: find position + list.insert()
+# but done in one step
+# bisect.insort(sorted_list, 25)
+# sorted_list is now [10, 20, 25, 30, 40, 50]
+
+# How SortedListDictionary._add_word uses insort:
+
+# self._words = []
+
+# bisect.insort(self._words, "dog")     # [dog]
+# bisect.insort(self._words, "ant")     # [ant, dog]
+# bisect.insort(self._words, "cat")     # [ant, cat, dog]
+# bisect.insort(self._words, "bat")     # [ant, bat, cat, dog]
+
+# insort = bisect_left + list.insert in one call
+# The list stays sorted after every insertion
+# No need to sort() at the end
+
+
+## Performance Comparison for Your Speller
+
+# Dictionary: 143,091 words
+# Text: aca.txt (376,904 word checks)
+
+# ┌──────────────────────┬───────────────┬────────────────────────┐
+# │ Backend              │ check() cost  │ Total checks (376K)    │
+# │──────────────────────┼───────────────┼────────────────────────│
+# │ HashTableDictionary  │ O(1)          │ 376,904 operations     │
+# │ (set — hash table)   │ ~1 comparison │ Fast                   │
+# │──────────────────────┼───────────────┼────────────────────────│
+# │ SortedListDictionary │ O(log n)      │ 376,904 × 17 steps    │
+# │ (sorted list)        │ ~17 compares  │ = ~6.4M comparisons    │
+# │──────────────────────┼───────────────┼────────────────────────│
+# │ ListDictionary       │ O(n)          │ 376,904 × 143,091     │
+# │ (unsorted list)      │ ~143K compares│ = ~53 BILLION compares │
+# └──────────────────────┴───────────────┴────────────────────────┘
+
+# hash:   seconds
+# sorted: noticeably slower
+# list:   minutes to hours (O(n) × O(n) = O(n²))
