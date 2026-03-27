@@ -104,11 +104,14 @@ def _validate_ops(ops_names: list[str]) -> list[str]:
     for name in clean_names:
         # This validates against the actual registry,
         # which is the single source of truth.
-        if name not in dicts:
+        if name not in dicts and (name != "all"):
             raise KeyError(
                 f"Unknown operation '{name}'. Available: {ops_list}"
             )
-            
+
+        if name == "all":
+            clean_names = [name for name, _ in dicts.items()]
+    
     return clean_names
 
 
