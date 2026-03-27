@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from enum import IntEnum, StrEnum, unique
 from collections import namedtuple
-from typing import Final, TypedDict
+from typing import Final, TypedDict, Required, NotRequired
 from dataclasses import dataclass
 from pathlib import Path
 import logging
@@ -73,15 +73,14 @@ class DefaultDirs(StrEnum):
     MISS = "misspelled"
 
 
-class DefaultFileNames(TypedDict):
+class DefaultFileNames(TypedDict, total=False):
     """
     """
-    dictionaries: DICT_FNAMES
-    keys: tuple[str, ...]
+    dictionaries: Required[DICT_FNAMES]  # Must be present
+    keys: NotRequired[tuple[str, ...]]   # Optional
 
 default_fnames: DefaultFileNames = {
     "dictionaries": DICT_FNAMES("large", "small"),
-    "keys": ("aca.txt", "austen.txt"),
 }
 
 
