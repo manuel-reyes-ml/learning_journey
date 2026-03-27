@@ -57,6 +57,7 @@ import sys
 #
 # Every other module lets ImportError propagate upward to here.
 try:
+    from dataclasses import replace
     from pathlib import Path
     import argparse
     import logging
@@ -374,14 +375,23 @@ def main(argv: list[str] | None = None) -> ExitCode:
             # -- Step 5: Run spell checker --
             # run_speller() accepts DictionaryProtocol - it doesn´t know
             # or care that we passed a HashTableDictionary.
+            logger.debug("Running Speller with '%s'", data.name)
+            
             data.results["speller_result"] = run_speller(
                 dictionary=dictionary,
                 text_path=text_path,
                 dict_path=dict_path,
+            )
+            
+            # Create initial result (ops_name, description empty)
+            result = data.results["speller_result"]
+            
+            # "Update" by creating a NEW frozen instance (original unchanged)
+            result = replace(
+                result,
                 ops_name=data.name,
                 description=data.description,
             )
-            result = data.results["speller_result"]
             
             # Show for the FIRST operation only (avoid duplicate files)
             show_misspelled = args.show_misspelled and (operation == ops_names[0])
