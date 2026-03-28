@@ -1,4 +1,42 @@
-"""
+"""Logging configuration for the speller package.
+ 
+Provides :func:`configure_logging`, the single entry point that
+attaches all handlers to the ``"speller"`` root logger.  Every module
+in the package calls ``logging.getLogger(__name__)`` to get a child
+logger; this module is the only place that attaches handlers and sets
+levels.
+ 
+Two-handler strategy
+--------------------
+Console handler (``StreamHandler``)
+    Colored output via :class:`ColoredFormatter`.  Level controlled
+    by ``--verbose`` flag at runtime.
+ 
+File handler (``RotatingFileHandler``)
+    Plain text.  Always captures ``DEBUG`` level.  Rotates at
+    ``FILE_MB`` megabytes with ``BACKUP_COUNT`` backups.
+ 
+Library logging pattern
+-----------------------
+:data:`logging.NullHandler` added in ``__init__.py`` follows the
+standard Python library convention: a library must never configure
+logging on import.  Only the *application* entry point
+(``__main__.py``) calls :func:`configure_logging` to activate real
+handlers.  This prevents log pollution when the package is imported
+by other programs.
+ 
+Roadmap relevance
+-----------------
+Identical structure reused across every future project: one
+:func:`configure_logging`, one root logger per package, child loggers
+per module via ``__name__``.
+ 
+References
+----------
+.. [1] Python Docs — Logging HOWTO
+   https://docs.python.org/3/howto/logging.html
+.. [2] Python Docs — RotatingFileHandler
+   https://docs.python.org/3/library/logging.handlers.html
 """
 
 # =============================================================================
@@ -92,7 +130,26 @@ def _setup_chandler(
     level: int,
     formatter: type[logging.Formatter],
 ) -> logging.StreamHandler:
-    """
+    """Create and configure a console (stream) logging handler.
+ 
+    Writes to ``sys.stderr`` so log output and program output
+    (``stdout``) remain on separate streams and can be redirected
+    independently.
+ 
+    Parameters
+    ----------
+    level : int
+        Minimum log level for this handler (e.g. ``logging.INFO``).
+        Derived from the ``--verbose`` flag in ``__main__.py``.
+    formatter : type[logging.Formatter]
+        Formatter class to instantiate.  Pass plain
+        ``logging.Formatter`` in tests to suppress ANSI color codes
+        from captured output.
+ 
+    Returns
+    -------
+    logging.StreamHandler
+        Fully configured handler ready to add to a logger.
     """
     console_handler = logging.StreamHandler(sys.stderr)
     console_handler.setLevel(level)
@@ -107,7 +164,33 @@ def _setup_fhandler(
     file_dirs: FileDirectories = file_dirs,
     fhandler_config: FileHandlerConfig = fhandler_config,
 ) -> RotatingFileHandler:
-    """
+    """Create and configure a rotating file logging handler.
+ 
+    Always captures ``DEBUG`` level regardless of console verbosity so
+    full diagnostic information is available on disk even when the
+    console shows only ``INFO``.  Rotates at
+    :attr:`~speller.config.FileHandlerConfig.max_log_bytes` and keeps
+    :attr:`~speller.config.FileHandlerConfig.BACKUP_COUNT` backups.
+ 
+    Parameters
+    ----------
+    file_dirs : FileDirectories, optional
+        Provides the log file path.  Defaults to the module-level
+        singleton from ``config.py``.
+    fhandler_config : FileHandlerConfig, optional
+        Provides size and rotation settings.  Defaults to the
+        module-level singleton from ``config.py``.
+ 
+    Returns
+    -------
+    RotatingFileHandler
+        Fully configured handler ready to add to a logger.
+ 
+    Notes
+    -----
+    The log directory is created by :func:`configure_logging` before
+    this function is called.  Directory creation is a side effect and
+    belongs at the call site, not inside a handler factory.
     """
     file_handler = RotatingFileHandler(
         filename=file_dirs.log_file,
@@ -136,7 +219,46 @@ def configure_logging(
     custom_console: bool = True,
     custom_formatter: type[logging.Formatter] = ColoredFormatter,
 ) -> None:
-    """
+    """Configure all handlers for the package root logger.
+ 
+    Must be called once at program startup (inside ``main()`` in
+    ``__main__.py``) before any log messages are emitted.  Safe to
+    call multiple times — existing handlers are cleared first to
+    prevent duplicate output.
+ 
+    Parameters
+    ----------
+    console_verbose : bool, optional
+        ``True`` sets the console handler to ``DEBUG`` so all messages
+        appear in the terminal.  ``False`` (default) shows ``INFO``
+        and above.  Controlled by the ``--verbose`` CLI flag.
+    log_to_file : bool, optional
+        ``True`` (default) attaches a :class:`RotatingFileHandler`
+        writing ``DEBUG``-level logs to disk.  ``False`` disables file
+        logging.  Controlled by the ``--no-log-file`` CLI flag.
+    custom_console : bool, optional
+        ``True`` (default) uses :class:`ColoredFormatter` for the
+        console handler.  Set ``False`` in tests to suppress ANSI codes.
+    custom_formatter : type[logging.Formatter], optional
+        Formatter class to use when ``custom_console=True``.  Defaults
+        to :class:`ColoredFormatter`.  Injectable for testing.
+ 
+    Notes
+    -----
+    Logger hierarchy::
+ 
+        speller                 ← root package logger (configured here)
+        ├── speller.benchmarks
+        ├── speller.config
+        ├── speller.dictionaries
+        ├── speller.register
+        ├── speller.speller
+        └── speller.text_processor
+ 
+    Child loggers propagate messages upward to ``speller``, which
+    dispatches them to the console and file handlers.
+    ``propagate = False`` on the root logger prevents messages reaching
+    Python's global root logger and being printed twice.
     """
     # 1. Grab the top-level logger for the package
     # CUR_DIR.name gives the current directory in string "speller"
