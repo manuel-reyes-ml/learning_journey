@@ -456,7 +456,7 @@ class HashTableDictionary(_BaseDictionary[set[str]]):  # inherits from ABC
     
     
     def _add_word(self, word: str) -> None:
-        return self._words.add(word)
+        self._words.add(word)
     
     # satisfies Protocol via inherited methods
  
@@ -508,7 +508,7 @@ class ListDictionary(_BaseDictionary[list[str]]):  # inherits from ABC
     
     
     def _add_word(self, word: str) -> None:
-        return self._words.append(word)
+        self._words.append(word)
 
     # satisfies Protocol via inherited methods
 
