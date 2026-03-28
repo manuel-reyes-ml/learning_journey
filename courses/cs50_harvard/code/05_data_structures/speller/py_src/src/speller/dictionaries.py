@@ -119,6 +119,13 @@ class _BaseDictionary(ABC):  # shared implementation
         self._loaded: bool = False
         
         
+    def _ensure_loaded(self) -> None:
+        """
+        """
+        if not self._loaded:
+            raise RuntimeError("Dictionary not loaded. Call load() before check().")
+        
+        
     # =================================================================
     # ABSTRACT METHODS — Subclasses MUST implement these
     # =================================================================
@@ -278,10 +285,7 @@ class _BaseDictionary(ABC):  # shared implementation
         """
         # Without this guard, an unloaded dictionary silently returns False
         # for every word — the entire text appears "misspelled."
-        if not self._loaded:
-            raise RuntimeError(
-                "Dictionary not loaded. Call load() before check()."
-            )
+        self._ensure_loaded()
         
         return word.lower() in self._words
     
@@ -506,10 +510,10 @@ class SortedListDictionary(_BaseDictionary):
         
     def check(self, word: str) -> bool:
         """Override base check() to use binary search instead of 'in'."""
-        if not self._loaded:
-            raise RuntimeError(
-                "Dictionary not loaded. Call load() before check()."
-            ) 
+        # Without this guard, an unloaded dictionary silently returns False
+        # for every word — the entire text appears "misspelled."
+        self._ensure_loaded()
+        
         normalized = word.lower()
         
         # ── bisect_left: "Where would this value go?" ──
