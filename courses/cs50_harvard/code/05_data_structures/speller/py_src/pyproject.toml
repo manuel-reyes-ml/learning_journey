@@ -31,7 +31,7 @@ version = "1.0.0"
 description = "Production-grade spell checker inspired by CS50, built as a Python package"
 readme = "README.md"
 license = {text = "MIT"}
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 
 # Author information — shown on PyPI if you ever publish
 authors = [
