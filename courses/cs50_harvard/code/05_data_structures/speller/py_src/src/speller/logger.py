@@ -18,6 +18,7 @@ from speller.config import (
         FileDirectories,
         FileHandlerConfig,
 )
+
 # No ImportError sys.exit() on regular module so the
 # error propagates to the caller (__main__.py).
     
@@ -26,7 +27,7 @@ from speller.config import (
 # EXPORTS
 # =============================================================================
 
-__all__ = ["configure_logging"]
+__all__ = ["ColoredFormatter", "configure_logging"]
 
 
 # =============================================================================
