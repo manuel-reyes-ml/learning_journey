@@ -67,10 +67,21 @@ __all__ = [
 
 
 # =============================================================================
+# MODULE CONFIGURATION
+# =============================================================================
+# =====================================================
+# Constants
+# =====================================================
+
+# Constrained TypeVar: exactly set[str] or list[str], nothing else
+WordContainer = TypeVar("WordContainer", set[str], list[str])
+
+
+# =============================================================================
 # ABSTRACT BASE CLASS — Shared Implementation
 # =============================================================================
 
-class _BaseDictionary(ABC):  # shared implementation 
+class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation 
     """Shared spell-check dictionary logic.
 
     Underscore prefix because this class is INTERNAL — external code
@@ -117,7 +128,7 @@ class _BaseDictionary(ABC):  # shared implementation
     """
     
     def __init__(self) -> None:
-        self._words = self._create_container()
+        self._words: WordContainer = self._create_container()
         self._loaded: bool = False
         
         
@@ -133,7 +144,7 @@ class _BaseDictionary(ABC):  # shared implementation
     # =================================================================
     
     @abstractmethod
-    def _create_container(self) -> set[str] | list[str]:
+    def _create_container(self) -> WordContainer:
         """Create the empty word container.
 
         Returns
@@ -388,7 +399,7 @@ class _BaseDictionary(ABC):  # shared implementation
     "hash",
     "Use Set as hash table - O(1) average lookup.",
 )
-class HashTableDictionary(_BaseDictionary):  # inherits from ABC
+class HashTableDictionary(_BaseDictionary[set[str]]):  # inherits from ABC
     """Spell-check dictionary backed by a Python ``set`` (hash table).
 
     Satisfies ``DictionaryProtocol`` through structural typing — no
@@ -440,7 +451,7 @@ class HashTableDictionary(_BaseDictionary):  # inherits from ABC
     "list",
     "Use a List - O(n) linear search lookup.",
 )
-class ListDictionary(_BaseDictionary):  # inherits from ABC
+class ListDictionary(_BaseDictionary[list[str]]):  # inherits from ABC
     """Spell-check dictionary backed by a Python ``set`` (hash table).
 
     Satisfies ``DictionaryProtocol`` through structural typing — no
@@ -498,7 +509,7 @@ class ListDictionary(_BaseDictionary):  # inherits from ABC
     "sorted",
     "Use sorted list - O(log n) binary search lookup.",
 )
-class SortedListDictionary(_BaseDictionary):
+class SortedListDictionary(_BaseDictionary[list[str]]):
     """
     """
     
