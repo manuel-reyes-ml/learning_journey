@@ -76,11 +76,20 @@ __all__ = [
 # Constrained TypeVar: exactly set[str] or list[str], nothing else
 WordContainer = TypeVar("WordContainer", set[str], list[str])
 
+# A plain TypeVar says "any type at all." The bound= argument adds a constraint:
+# "any type, as long as it's a subclass of this."
+# T = TypeVar("T")              # accepts literally anything
+# T = TypeVar("T", bound=int)   # accepts int, bool, or any subclass of int
+                               # rejects str, list, dict, etc.
+
 
 # =============================================================================
 # ABSTRACT BASE CLASS — Shared Implementation
 # =============================================================================
 
+# Generic[WordContainer] means: "_BaseDictionary is parameterised over WordContainer.
+# Each sublcass declares what WordContainer resolves to. Pyright tracks WordContainer
+# through the entire class - no invariance violation"
 class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation 
     """Shared spell-check dictionary logic.
 
@@ -143,11 +152,14 @@ class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation
     # ABSTRACT METHODS — Subclasses MUST implement these
     # =================================================================
     
+    # The key insight: WordContainer is resolved once per instance, not once per
+    # method call. Every method on that instance sees the same WordContainer.
+    
     @abstractmethod
     def _create_container(self) -> WordContainer:
         """Create the empty word container.
 
-        Returns
+        Returns 
         -------
         set[str] or list[str]
             Empty container for storing dictionary words.
@@ -395,6 +407,8 @@ class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation
 # Notice that dictionary.py imports DictionaryProtocol. It doesn't need to for
 # the class builder. We use it here and on speller.py for type hints. 
 
+# The moment you write `_BaseDictionary[set[str]]`, the type checker substitutes
+# `set[str]` everywhere `WordContainer` appears in `_BaseDictionary`:
 @register_class(
     "hash",
     "Use Set as hash table - O(1) average lookup.",
