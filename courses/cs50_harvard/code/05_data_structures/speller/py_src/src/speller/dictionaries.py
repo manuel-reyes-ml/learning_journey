@@ -35,6 +35,7 @@ from abc import ABC, abstractmethod
 import bisect   # Binary Search
 from pathlib import Path
 import logging
+from typing import TypeVar, Generic
 
 from speller.config import MAX_WORD_LENGTH
 from speller.register import register_class
@@ -60,7 +61,8 @@ logger = logging.getLogger(__name__)
 
 __all__ = [
     "HashTableDictionary", 
-    "ListDictionary"
+    "ListDictionary",
+    "SortedListDictionary",
 ]
 
 
