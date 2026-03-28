@@ -1,4 +1,52 @@
-"""
+"""Timing utilities for spell-checker operations.
+ 
+Provides two complementary timing interfaces:
+ 
+``timer()``
+    A ``@contextmanager`` that wraps any code block and writes a
+    :class:`BenchmarkResult` into a mutable dict container after the
+    block completes.  Used in ``speller.py`` for cumulative loop
+    timing — e.g. the per-word ``check()`` loop — where a decorator
+    cannot be applied.
+ 
+``timed()``
+    A decorator factory that wraps a single function call and attaches
+    the :class:`BenchmarkResult` to ``func.benchmark``.  Best for
+    one-shot operations such as ``load()`` and ``size()``.
+ 
+Both interfaces produce :class:`BenchmarkResult` instances (frozen
+dataclasses) so callers always receive the same structured data
+regardless of which interface was used.
+ 
+Design notes
+------------
+``timer()`` yields a *mutable* ``dict`` before timing is complete.
+The caller receives a reference to that dict; after the ``with`` block
+ends the result is written back into it.  This is the canonical
+pattern used by pytest fixtures, FastAPI dependencies, and SQLAlchemy
+session managers — yield setup data, populate results post-yield.
+ 
+``timed()`` preserves the decorated function\'s full type signature via
+``ParamSpec`` and ``TypeVar``, so pyright sees the real parameter and
+return types rather than ``Any``.
+ 
+Roadmap relevance
+-----------------
+The ``timer`` / ``BenchmarkResult`` pair reappears in every Stage 1+
+project:
+ 
+- DataVault:    LLM API call latency.
+- PolicyPulse:  retrieval latency per RAG chunk batch.
+- AFC:          per-bar execution time in the backtesting loop.
+ 
+References
+----------
+.. [1] PEP 343 — The "with" Statement
+   https://peps.python.org/pep-0343/
+.. [2] PEP 612 — Parameter Specification Variables (ParamSpec)
+   https://peps.python.org/pep-0612/
+.. [3] contextlib — Utilities for with-statement contexts
+   https://docs.python.org/3/library/contextlib.html
 """
 
 # =============================================================================
@@ -95,7 +143,35 @@ type TimerContainer = dict[str, Any]
 # Together they create a truly locked-down data container.
 @dataclass(frozen=True, slots=True)
 class BenchmarkResult:
-    """
+    """Immutable container for a single timed operation.
+ 
+    Produced by :func:`timer` (accessed as ``t["result"]``) and stored
+    on a decorated function as ``func.benchmark`` after :func:`timed`
+    completes.  ``frozen=True`` and ``slots=True`` make this the same
+    locked-down pattern used by :class:`~speller.speller.SpellerResult`.
+ 
+    Parameters
+    ----------
+    operation : str
+        Human-readable label for the timed operation
+        (e.g. ``"load"``, ``"check"``, ``"size"``).
+    elapsed_seconds : float
+        Wall-clock duration measured with :func:`time.perf_counter`.
+        Always monotonic — never jumps backward during NTP sync.
+    metadata : dict of {str : Any}, optional
+        Arbitrary key/value context attached at call time.
+        :func:`timer` stores ``{"input_file": FDATA(name, path)}``
+        when ``input_file`` is provided.
+ 
+    Examples
+    --------
+    >>> with timer("load") as t:
+    ...     pass
+    >>> result = t["result"]
+    >>> print(result)
+    load: 0.00s
+    >>> isinstance(result.elapsed_seconds, float)
+    True
     """
     
     _: KW_ONLY        # Everything after is keyword-only
@@ -105,7 +181,22 @@ class BenchmarkResult:
     
     # __str__ is called by output func (logging, print)
     def __str__(self) -> str:
-        """
+        """Return a concise human-readable summary.
+ 
+        Called automatically by ``print()``, ``str()``, and logging
+        formatters.  Matches the style used in CS50\'s speller.c report
+        (``"load: 0.14s"``).
+ 
+        Returns
+        -------
+        str
+            ``"<operation>: <elapsed>s"`` rounded to two decimal places.
+ 
+        Examples
+        --------
+        >>> result = BenchmarkResult(operation="load", elapsed_seconds=0.1423)
+        >>> str(result)
+        \'load: 0.14s\'
         """
         return f"{self.operation}: {self.elapsed_seconds:.2f}s"
 
@@ -144,7 +235,57 @@ def timer(
     *,
     input_file: str | Path | None = None,
 ) -> Generator[TimerContainer, None, None]:
-    """
+    """Context manager that times the enclosed code block.
+ 
+    Yields an empty ``dict`` container before the block runs.  After
+    the ``with`` block exits, writes a :class:`BenchmarkResult` into
+    ``container["result"]``.  The caller holds a reference to the same
+    dict throughout, so the result is accessible after the block even
+    though it did not exist at yield time.
+ 
+    Parameters
+    ----------
+    operation_name : str
+        Label for this timing event (e.g. ``"load"``, ``"check"``).
+    input_file : str or Path or None, optional
+        When provided, stored in ``result.metadata["input_file"]`` as
+        ``FDATA(fname, fpath)`` for report generation.
+ 
+    Yields
+    ------
+    TimerContainer
+        Empty ``dict`` at yield time.  After the block ends it
+        contains ``{"result": BenchmarkResult}``.
+ 
+    Examples
+    --------
+    Basic timing::
+ 
+        with timer("load") as t:
+            dictionary.load(path)
+        print(t["result"])           # load: 0.08s
+ 
+    With file metadata::
+ 
+        with timer("check", input_file=text_path) as t:
+            for word in extract_words(text_path):
+                dictionary.check(word)
+        meta = t["result"].metadata["input_file"]
+        print(meta.fname)            # "austen.txt"
+ 
+    Notes
+    -----
+    Why ``time.perf_counter()`` instead of ``time.time()``?
+        ``perf_counter`` is monotonic — it never decreases during NTP
+        clock adjustments.  ``time.time()`` can jump backward, making
+        benchmark results unreliable in long-running processes.
+ 
+    Why yield a mutable ``dict`` instead of a frozen dataclass?
+        The ``yield`` happens *before* the timed block runs; the result
+        only exists *after* it ends.  A frozen dataclass cannot be
+        mutated post-yield.  Yielding a plain ``dict`` and writing into
+        it after the block is the minimal pattern that works — the same
+        approach used by pytest fixtures and SQLAlchemy session managers.
     """
     path = Path(input_file) if isinstance(input_file, str) else input_file
     
@@ -189,7 +330,53 @@ def timer(
 # Syntax: Callable[[INPUT_TYPES], RETURN_TYPE]
 #   - Input parameters in a list
 def timed(operation_name: str) -> Callable[[Callable[P, T]], Callable[P, T]]:
-    """
+    """Decorator factory that times a single function call.
+ 
+    Wraps the decorated function in a :func:`timer` context manager.
+    After each call, attaches the :class:`BenchmarkResult` to the
+    wrapper as ``func.benchmark``.  Uses ``ParamSpec`` and ``TypeVar``
+    to preserve the original function\'s complete type signature —
+    pyright sees the real parameter and return types, not ``Any``.
+ 
+    Parameters
+    ----------
+    operation_name : str
+        Label passed to :func:`timer` (e.g. ``"load"``).
+ 
+    Returns
+    -------
+    Callable[[Callable[P, T]], Callable[P, T]]
+        A decorator that accepts a function and returns a
+        type-preserving wrapper with an additional ``.benchmark``
+        attribute initialised to ``None`` before the first call.
+ 
+    Examples
+    --------
+    ::
+ 
+        @timed("load")
+        def load_dictionary(path: str) -> bool:
+            ...
+ 
+        result = load_dictionary("dictionaries/large")  # bool preserved
+        print(load_dictionary.benchmark)  # BenchmarkResult(operation="load", ...)
+ 
+    Notes
+    -----
+    Why not use ``@timed`` for ``check()`` in ``speller.py``?
+        ``check()`` runs once per word — potentially hundreds of
+        thousands of times per text file.  Per-call decorator overhead
+        would dominate the measurement.  Use :func:`timer` to wrap the
+        *entire loop* for cumulative time instead.
+ 
+    Why three nested functions?
+        A parameterised decorator requires two evaluation steps:
+ 
+        1. ``timed("load")``         → returns ``decorator``
+        2. ``decorator(func)``       → returns ``wrapper``
+        3. ``wrapper(*args, ...)``   → runs func and stores timing
+ 
+        A decorator without parameters only needs two layers.
     """
 #                                  ↑        ↑               ↑
 #                                  |        |               |
