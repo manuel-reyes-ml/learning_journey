@@ -1,28 +1,51 @@
-"""Hash table dictionary implementation for spell checking.
-
-Implements ``DictionaryProtocol`` using Python's built-in ``set`` as
-the underlying hash table. Provides O(1) average-case lookup for
-spell checking operations.
-
-C → Python Mapping
--------------------
-This module replaces CS50's ``dictionary.c`` where you would manually
-build a hash table with linked-list buckets, malloc nodes, and free
-memory. Python's ``set`` IS a hash table internally — it handles
-hashing, collision resolution, and dynamic resizing automatically.
-
-    C (dictionary.c)                 Python (dictionary.py)
-    ──────────────────               ──────────────────────
-    node *table[N]                   self._words: set[str]
-    malloc(sizeof(node))             self._words.add(word)
-    strcasecmp(word, node->word)     word.lower() in self._words
-    free(node) in unload()           Garbage collector (automatic)
-    hash(word[0]) - 'A' (26 buckets) Python uses ~2x set size buckets
-
+"""Dictionary backends for the speller package.
+ 
+Provides three concrete implementations of ``DictionaryProtocol``, all
+built on the ``_BaseDictionary`` abstract base class:
+ 
+- :class:`HashTableDictionary` — ``set``-backed, O(1) average lookup.
+- :class:`ListDictionary`      — unsorted ``list``-backed, O(n) lookup.
+- :class:`SortedListDictionary` — sorted ``list`` + binary search, O(log n).
+ 
+Each class is registered automatically at import time via the
+``@register_class`` decorator.  ``__main__.py`` selects the active
+backend by registry key (``"hash"``, ``"list"``, ``"sorted"``).
+ 
+Template Method Pattern
+-----------------------
+``_BaseDictionary`` defines the algorithm skeleton in ``load()`` and
+``check()``.  Subclasses supply only the two variable steps:
+ 
+    _create_container() → returns the empty container (set or list)
+    _add_word(word)     → inserts a word into that container
+ 
+Everything else — file reading, case normalisation, guards, dunders,
+logging — is inherited unchanged.
+ 
+Generic[WordContainer]
+----------------------
+``_BaseDictionary`` is parameterised over ``WordContainer``, a
+``TypeVar`` constrained to ``set[str]`` or ``list[str]``.  Subclasses
+specialise it (e.g. ``_BaseDictionary[set[str]]``) so pyright tracks
+the exact container type through every method without an invariance
+violation.
+ 
+C → Python Mapping (HashTableDictionary)
+-----------------------------------------
+This module replaces CS50's ``dictionary.c``::
+ 
+    C (dictionary.c)                Python (HashTableDictionary)
+    ─────────────────               ────────────────────────────
+    node *table[N]                  self._words: set[str]
+    malloc(sizeof(node))            self._words.add(word)
+    strcasecmp(word, node->word)    word.lower() in self._words
+    free(node) in unload()          Garbage collector (automatic)
+    hash(word[0])-'A' (26 buckets)  Python uses ~2× set size buckets
+ 
 Module Dependencies
 -------------------
     config.py     → MAX_WORD_LENGTH (constant)
-    protocols.py  → DictionaryProtocol (interface contract)
+    register.py   → register_class() (decorator), dicts (registry)
 """
 
 # =============================================================================
@@ -130,19 +153,67 @@ class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation
 
     Attributes
     ----------
-    _words : set[str] or list[str]
-        Created by subclass via _create_container().
+    _words : WordContainer
+        Typed as the constrained ``TypeVar`` ``WordContainer``
+        (either ``set[str]`` or ``list[str]``).  The concrete type
+        is determined by the subclass at specialisation time
+        (e.g. ``_BaseDictionary[set[str]]`` → ``_words`` is
+        ``set[str]``).  Created by :meth:`_create_container`.
     _loaded : bool
-        Tracks whether load() has been called successfully.
+        Set to ``True`` after :meth:`load` completes successfully.
+        Guards :meth:`check` and :meth:`size` against use before
+        the dictionary has been populated.
+ 
+    Type Parameters
+    ---------------
+    WordContainer : TypeVar
+        Constrained to ``set[str]`` or ``list[str]``.  Resolved once
+        per subclass — pyright propagates the concrete type through
+        every inherited method.
     """
     
     def __init__(self) -> None:
+        """Initialise the word container and loaded flag.
+ 
+        Called automatically by Python when a subclass is instantiated.
+        Delegates container creation to the abstract
+        :meth:`_create_container` so each subclass controls its own
+        storage type while sharing this initialisation logic.
+ 
+        Notes
+        -----
+        ``_words`` is typed as ``WordContainer`` — the constrained
+        ``TypeVar`` is resolved by the subclass declaration
+        (``_BaseDictionary[set[str]]`` or ``_BaseDictionary[list[str]]``),
+        giving pyright full visibility of the concrete container type
+        without an invariance violation.
+        """
         self._words: WordContainer = self._create_container()
         self._loaded: bool = False
         
         
     def _ensure_loaded(self) -> None:
-        """
+        """Raise ``RuntimeError`` if the dictionary has not been loaded.
+ 
+        Centralises the guard logic so every method that requires a
+        populated dictionary calls one line instead of duplicating the
+        ``if not self._loaded`` check.  Fail-fast principle: an
+        informative error at the call site beats a silent wrong answer.
+ 
+        Raises
+        ------
+        RuntimeError
+            If :meth:`load` has not been called, or if it returned
+            ``False`` (load failed).
+ 
+        Examples
+        --------
+        Called at the top of :meth:`check` and
+        :meth:`SortedListDictionary.check`::
+ 
+            def check(self, word: str) -> bool:
+                self._ensure_loaded()   # raises here if not ready
+                return word.lower() in self._words
         """
         if not self._loaded:
             raise RuntimeError("Dictionary not loaded. Call load() before check().")
@@ -188,43 +259,51 @@ class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation
     # =================================================================
     
     def load(self, filepath: str) -> bool:
-        """Load dictionary file into the hash table (set).
-
-        Reads the file line by line, strips whitespace, converts to
-        lowercase, and adds each word to the internal set. Uses a
-        context manager (``with``) to guarantee the file handle is
-        closed even if an error occurs.
-
+        """Load a dictionary file into the word container.
+ 
+        Reads the file line by line, strips whitespace, skips empty
+        lines and words longer than ``MAX_WORD_LENGTH``, converts each
+        valid word to lowercase, then delegates insertion to the
+        abstract :meth:`_add_word`.  Uses a ``with`` block to guarantee
+        the file handle is closed even if an error occurs.
+ 
         Parameters
         ----------
         filepath : str
-            Path to dictionary file. One lowercase word per line.
-            Default in CS50 is ``dictionaries/large`` (143,091 words).
-
+            Path to the dictionary file.  One word per line.
+            CS50\'s default is ``dictionaries/large`` (143,091 words).
+ 
         Returns
         -------
         bool
-            True if dictionary loaded successfully, False otherwise.
-
+            ``True`` if the dictionary loaded successfully,
+            ``False`` if the file was not found or could not be read.
+ 
         Notes
         -----
-        Why ``set.add()`` and not ``list.append()``?
-            - ``set`` uses a hash table internally → O(1) average lookup
-            - ``list`` would require O(n) linear search for every check()
-            - With 143,091 words and thousands of checks per text file,
-              O(1) vs O(n) is the difference between instant and slow
-
-        Why lowercase on load AND on check?
-            - Dictionary file contains lowercase words ("hello")
-            - Text files contain mixed case ("Hello", "HELLO", "hello")
-            - Normalizing both sides to lowercase ensures case-insensitive
-              matching without storing multiple versions of each word
-
+        Why lowercase on load?
+            Storing words in lowercase means :meth:`check` only needs
+            to normalise the incoming word once — ``word.lower() in
+            self._words`` — regardless of the mixed-case text input.
+ 
         Why ``Path(filepath)`` wrapping?
-            - The Protocol defines filepath as ``str`` for flexibility
-              (callers might pass a string or a Path)
-            - We convert to Path internally for robust path operations
-            - ``path.exists()`` is cleaner than ``os.path.exists(str)``
+            :class:`pathlib.Path` provides ``.exists()``,
+            ``.name``, and consistent cross-platform path handling.
+            The ``filepath: str`` signature matches
+            ``DictionaryProtocol`` for compatibility; conversion to
+            ``Path`` is an internal detail.
+ 
+        Why catch ``OSError`` rather than ``FileNotFoundError``?
+            ``OSError`` is the parent of ``FileNotFoundError``,
+            ``PermissionError``, ``IsADirectoryError``, and others.
+            A single ``except OSError`` handles every file-system
+            failure mode — disk full, bad permissions, wrong type —
+            which matters in Stage 2 production pipelines.
+ 
+        Why skip words longer than ``MAX_WORD_LENGTH``?
+            Matches CS50\'s ``#define LENGTH 45``.  The text processor
+            also enforces this limit so long tokens are never passed to
+            :meth:`check`.
         """
         
         path = Path(filepath)
@@ -270,43 +349,47 @@ class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation
     
     def check(self, word: str) -> bool:
         """Check if a word exists in the loaded dictionary.
-
-        Case-insensitive: "Hello", "HELLO", and "hello" all match
-        a dictionary entry of "hello" because we normalize with
-        ``.lower()`` before lookup.
-
+ 
+        Case-insensitive: ``"Hello"``, ``"HELLO"``, and ``"hello"``
+        all match a dictionary entry of ``"hello"`` because the lookup
+        normalises the incoming word with ``.lower()``.
+ 
         Parameters
         ----------
         word : str
-            The word to look up. Case does not matter.
-
+            The word to look up.  Case does not matter.
+ 
         Returns
         -------
         bool
-            True if the word is in the dictionary, False otherwise.
-
+            ``True`` if the normalised word is in the dictionary,
+            ``False`` otherwise.
+ 
         Raises
         ------
         RuntimeError
-            If called before ``load()`` has been called successfully.
-            This prevents silent bugs where an unloaded dictionary
-            reports every word as misspelled.
-
+            If called before :meth:`load` has been called successfully.
+            Delegated to :meth:`_ensure_loaded` — fail fast rather
+            than silently reporting every word as misspelled.
+ 
         Notes
         -----
-        Why raise instead of returning False?
-            - Returning False silently would mean every word is "misspelled"
-            - The caller might not realize the dictionary isn't loaded
-            - A RuntimeError makes the bug immediately visible
-            - This is the "fail fast" principle — catch bugs early
-
-        What ``word.lower() in self._words`` does under the hood:
-            1. ``word.lower()`` creates a normalized copy → "HELLO" → "hello"
-            2. ``in self._words`` calls ``set.__contains__()``
-            3. Python hashes "hello" → gets bucket index
-            4. Checks bucket for matching entry → O(1) average
-            This is the SAME operation as the C hash table lookup,
-            but Python handles the hashing and collision resolution.
+        The lookup expression ``word.lower() in self._words`` resolves
+        differently depending on the concrete ``WordContainer``:
+ 
+        - ``set[str]``  → calls ``set.__contains__()`` → O(1) average
+          (Python hashes the normalised word and checks the bucket).
+        - ``list[str]`` → calls ``list.__contains__()`` → O(n) linear
+          scan (used only by :class:`ListDictionary` as a benchmark).
+ 
+        :class:`SortedListDictionary` overrides this method to use
+        :func:`bisect.bisect_left` for O(log n) lookup instead of the
+        linear ``in`` operator.
+ 
+        Why raise instead of returning ``False`` when not loaded?
+            Returning ``False`` silently would flag every word as
+            misspelled.  A ``RuntimeError`` surfaces the bug immediately
+            at the call site — the "fail fast" principle.
         """
         # Without this guard, an unloaded dictionary silently returns False
         # for every word — the entire text appears "misspelled."
@@ -335,38 +418,66 @@ class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation
     
     def __len__(self) -> int:
         """Support ``len(dictionary)`` — Pythonic interface.
-
-        This dunder method makes HashTableDictionary satisfy the
-        ``collections.abc.Sized`` protocol. Any object with ``__len__``
-        can be used with Python's built-in ``len()`` function.
-
-        Why BOTH size() and __len__()?
-            - ``size()`` satisfies DictionaryProtocol (explicit method name)
-            - ``__len__()`` satisfies Python's Sized protocol (Pythonic)
-            - ``__len__`` delegates to ``size()`` — single source of truth
-            - DRY principle: the logic lives in one place (size())
-
-        Where you'll reuse this pattern:
-            - DataVault: len(results) on query result objects
-            - PolicyPulse: len(chunks) on retrieval results
-            - Stage 2: len(batch) on ETL pipeline batches
+ 
+        Delegates to :meth:`size` so the logic lives in one place (DRY).
+        Defined in ``_BaseDictionary`` and inherited by all three
+        concrete classes.
+ 
+        Making ``__len__`` delegate to ``size()`` — rather than the
+        reverse — preserves ``DictionaryProtocol`` compatibility:
+        ``size()`` is the named Protocol method; ``__len__`` is the
+        Pythonic sugar that wraps it.
+ 
+        Returns
+        -------
+        int
+            Number of words currently loaded in the dictionary.
+ 
+        Notes
+        -----
+        Satisfies ``collections.abc.Sized`` — any object with
+        ``__len__`` works with Python\'s built-in ``len()``.
+ 
+        Roadmap relevance:
+            - DataVault: ``len(results)`` on query-result objects.
+            - PolicyPulse: ``len(chunks)`` on retrieval batches.
+            - Stage 2 ETL: ``len(batch)`` on pipeline windows.
         """
         return self.size()
     
     
     def __contains__(self, word: str) -> bool:
-        """Support ``"hello" in dictionary`` — Pythonic interface.
-
-        This dunder method makes HashTableDictionary satisfy the
-        ``collections.abc.Container`` protocol. It enables the
-        natural Python syntax ``word in dictionary`` instead of
-        ``dictionary.check(word)``.
-
-        Why BOTH check() and __contains__()?
-            - ``check()`` satisfies DictionaryProtocol (explicit interface)
-            - ``__contains__()`` satisfies Python's Container protocol
-            - Enables idiomatic Python: ``if word in dictionary:``
-            - ``__contains__`` delegates to ``check()`` — DRY principle
+        """Support ``word in dictionary`` — Pythonic interface.
+ 
+        Delegates to :meth:`check` so the logic lives in one place (DRY).
+        Defined in ``_BaseDictionary`` and inherited by all three
+        concrete classes.  Enables the natural Python idiom::
+ 
+            if word in dictionary:   # __contains__ → check()
+                ...
+ 
+        rather than the more verbose explicit call::
+ 
+            if dictionary.check(word):
+                ...
+ 
+        Parameters
+        ----------
+        word : str
+            Word to look up (case-insensitive, normalised in
+            :meth:`check`).
+ 
+        Returns
+        -------
+        bool
+            ``True`` if the word is in the dictionary.
+ 
+        Notes
+        -----
+        Satisfies ``collections.abc.Container``.  Combined with
+        ``__len__``, the class also satisfies ``collections.abc.Sized``
+        — together these are the two requirements for
+        ``collections.abc.Collection``.
         """
         return self.check(word)
     
@@ -376,12 +487,24 @@ class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation
     # name. The :, format specifier adds thousand separators (143,091 instead of 143091).
     def __repr__(self) -> str:
         """Developer-facing string representation.
-
-        ``__repr__`` is for DEVELOPERS (debugging, logging).
-        ``__str__`` is for USERS (display, print).
-
-        Convention: __repr__ should look like a valid constructor call
-        when possible, or at minimum identify the object uniquely.
+ 
+        Uses ``type(self).__name__`` rather than a hard-coded class name
+        so any future subclass automatically gets the correct label in
+        logs and reprs.  The ``:,`` format specifier adds thousand
+        separators for readability (``143,091`` instead of ``143091``).
+ 
+        Returns
+        -------
+        str
+            ``"ClassName(loaded=True, words=143,091)"``
+ 
+        Notes
+        -----
+        Convention: ``__repr__`` targets developers (debugging, logging,
+        interactive shell); ``__str__`` targets end users (print,
+        display).  Only ``__repr__`` is defined here because the
+        developer view is sufficient — Python falls back to ``__repr__``
+        when ``__str__`` is absent.
         """
         return (
             f"{type(self).__name__}("
@@ -391,9 +514,22 @@ class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation
         
         
     def unload(self) -> bool:
-        """Clear dictionary from memory. Python's GC handles this
-        automatically, but explicit unload provides API symmetry
-        with load().
+        """Clear the dictionary from memory and reset the loaded flag.
+ 
+        Returns
+        -------
+        bool
+            Always ``True`` — provided for API symmetry with
+            :meth:`load`.
+ 
+        Notes
+        -----
+        Python's garbage collector reclaims the memory automatically
+        once ``self._words`` is cleared, so explicit unloading is not
+        required for correctness.  This method exists to match CS50\'s
+        ``unload()`` function signature and to give callers a clear
+        way to signal intent when reloading with a different dictionary
+        file in the same process.
         """
         self._words.clear()
         self._loaded = False
@@ -466,41 +602,50 @@ class HashTableDictionary(_BaseDictionary[set[str]]):  # inherits from ABC
     "Use a List - O(n) linear search lookup.",
 )
 class ListDictionary(_BaseDictionary[list[str]]):  # inherits from ABC
-    """Spell-check dictionary backed by a Python ``set`` (hash table).
-
+    """Spell-check dictionary backed by an unsorted Python ``list``.
+ 
     Satisfies ``DictionaryProtocol`` through structural typing — no
-    inheritance needed. This class has ``load()``, ``check()``, and
-    ``size()`` with matching signatures, so mypy and ``isinstance()``
-    recognize it as a valid ``DictionaryProtocol`` implementation.
-
-    Why NOT inherit from DictionaryProtocol?
-    -----------------------------------------
-    Protocol uses structural typing (duck typing with type safety).
-    Inheriting from a Protocol makes YOUR class also a Protocol,
-    which is almost never what you want. Just implement the methods.
-
+    inheritance required.  Stores words in insertion order and uses
+    Python\'s linear ``in`` operator for lookup.
+ 
+    This implementation exists as a **performance baseline** to
+    demonstrate the O(n) lookup cost relative to
+    :class:`HashTableDictionary` (O(1)) and
+    :class:`SortedListDictionary` (O(log n)).
+ 
     Attributes
     ----------
-    _words : set[str]
-        Internal hash table storing lowercase dictionary words.
-        Private (underscore prefix) because external code should use
-        check(), not access the set directly.
+    _words : list[str]
+        Unsorted word store.  Order follows the dictionary file —
+        typically alphabetical for CS50\'s word lists, but not
+        guaranteed.
     _loaded : bool
-        Tracks whether load() has been called successfully.
-        Prevents check() from silently returning False on an
-        unloaded dictionary (which would flag every word as misspelled).
-
+        Set to ``True`` after :meth:`load` completes successfully.
+ 
     Examples
     --------
-    >>> dictionary = HashTableDictionary()
-    >>> dictionary.load("dictionaries/large")
+    >>> dictionary = ListDictionary()
+    >>> dictionary.load("dictionaries/small")
     True
-    >>> dictionary.size()
-    143091
-    >>> dictionary.check("hello")
+    >>> dictionary.check("cat")
     True
     >>> dictionary.check("xyz")
     False
+ 
+    Notes
+    -----
+    Performance (143,091 words, 376,904 checks against ``aca.txt``):
+ 
+    .. code-block:: text
+ 
+        Backend               check() cost   Total checks (376 K)
+        ────────────────────  ─────────────  ─────────────────────
+        HashTableDictionary   O(1)           ~376 K comparisons
+        SortedListDictionary  O(log n)       ~6.4 M comparisons
+        ListDictionary        O(n)           ~53 B comparisons  ← this class
+ 
+    Use ``ListDictionary`` only to observe and measure linear-search
+    cost — never in production.
     """
     
     def _create_container(self) -> list[str]:
@@ -524,7 +669,47 @@ class ListDictionary(_BaseDictionary[list[str]]):  # inherits from ABC
     "Use sorted list - O(log n) binary search lookup.",
 )
 class SortedListDictionary(_BaseDictionary[list[str]]):
-    """
+    """Spell-check dictionary backed by a sorted ``list`` with binary search.
+ 
+    Stores words in ascending alphabetical order using
+    :func:`bisect.insort` during :meth:`load`, then uses
+    :func:`bisect.bisect_left` for O(log n) lookup in an overridden
+    :meth:`check`.
+ 
+    Satisfies ``DictionaryProtocol`` through structural typing.
+ 
+    Attributes
+    ----------
+    _words : list[str]
+        Sorted word store.  :func:`bisect.insort` maintains ascending
+        order on every insertion during :meth:`load`.
+    _loaded : bool
+        Set to ``True`` after :meth:`load` completes successfully.
+ 
+    Examples
+    --------
+    >>> dictionary = SortedListDictionary()
+    >>> dictionary.load("dictionaries/large")
+    True
+    >>> dictionary.check("hello")
+    True
+    >>> dictionary.check("xyz")
+    False
+ 
+    Notes
+    -----
+    Trade-off vs :class:`HashTableDictionary`:
+ 
+    - **Load** — O(n log n): ``bisect.insort`` pays a logarithmic cost
+      per insertion to maintain sorted order.  ``set.add()`` is O(1).
+    - **Check** — O(log n): ~17 comparisons for 143 K words vs O(1)
+      for the hash table, but orders of magnitude faster than
+      :class:`ListDictionary`\'s O(n) linear scan.
+    - **Memory** — ``list`` is slightly more compact than ``set``
+      (no hash-table overhead), but the difference is negligible here.
+ 
+    Prefer this backend when ordered iteration over the word list is
+    required, or as a teaching example for binary search mechanics.
     """
     
     def _create_container(self) -> list[str]:
@@ -536,7 +721,48 @@ class SortedListDictionary(_BaseDictionary[list[str]]):
         
         
     def check(self, word: str) -> bool:
-        """Override base check() to use binary search instead of 'in'."""
+        """Check if a word exists using binary search — O(log n).
+ 
+        Overrides :meth:`_BaseDictionary.check` to replace the linear
+        ``in`` operator with :func:`bisect.bisect_left` on the sorted
+        word list.
+ 
+        Parameters
+        ----------
+        word : str
+            The word to look up.  Case-insensitive: normalised to
+            lowercase before the search.
+ 
+        Returns
+        -------
+        bool
+            ``True`` if the normalised word is found, ``False``
+            otherwise.
+ 
+        Raises
+        ------
+        RuntimeError
+            If called before :meth:`load` has been called successfully.
+            Delegated to :meth:`_ensure_loaded`.
+ 
+        Notes
+        -----
+        Two conditions are required for a successful lookup:
+ 
+        1. **Bounds check** — ``bisect_left`` returns
+           ``len(self._words)`` when the target exceeds every element.
+           Without ``i < len(self._words)``, the next line would raise
+           :class:`IndexError`.
+ 
+        2. **Value check** — ``bisect_left`` returns the *insertion
+           position*, not a confirmation of presence.
+           ``self._words[i] == normalized`` verifies the word actually
+           exists at that position::
+ 
+               sorted_list = ["ant", "cat", "dog"]
+               bisect_left(sorted_list, "bat")   # → 1 (insert here)
+               sorted_list[1]                    # → "cat"  (not "bat"!)
+        """
         # Without this guard, an unloaded dictionary silently returns False
         # for every word — the entire text appears "misspelled."
         self._ensure_loaded()
