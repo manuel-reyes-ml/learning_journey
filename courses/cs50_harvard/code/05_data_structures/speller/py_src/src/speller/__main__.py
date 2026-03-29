@@ -95,7 +95,40 @@ ops_list: str = ", ".join(dicts.keys())
 # =============================================================================
 
 def _validate_ops(ops_names: list[str]) -> list[str]:
-    """
+    """Validate and normalise requested backend operation names.
+ 
+    Strips whitespace and punctuation from each name, lower-cases it,
+    and checks it against the live :data:`~speller.register.dicts`
+    registry.  Expands the special value ``"all"`` into every
+    registered key.
+ 
+    Parameters
+    ----------
+    ops_names : list of str
+        Raw operation names from the ``-o`` / ``--operations`` argument.
+ 
+    Returns
+    -------
+    list of str
+        Cleaned, validated operation names ready for iteration.
+        Order matches the input (or the registry insertion order for
+        ``"all"``).
+ 
+    Raises
+    ------
+    KeyError
+        If any name (after cleaning) is not in :data:`dicts` and is
+        not the literal string ``"all"``.  The error message lists all
+        available operations.
+ 
+    Examples
+    --------
+    >>> _validate_ops(["hash"])
+    [\'hash\']
+    >>> _validate_ops(["all"])
+    [\'hash\', \'list\', \'sorted\']   # depends on registered backends
+    >>> _validate_ops(["unknown"])
+    KeyError: "Unknown operation \'unknown\'. Available: hash, list, sorted"
     """
     clean_names = [
         name.strip().strip(string.punctuation).lower()
@@ -268,7 +301,28 @@ def _validate_paths(
 
 
 def _print_reports(reports: REPORT, infile_name: str) -> None:
-    """
+    """Write the misspelled-words file (if requested) and print the report.
+ 
+    If ``reports.misspelled`` is not ``None``, creates the misspelled
+    words output directory and writes the word list to a file named
+    ``misspelled_<infile_name>``.  Always prints ``reports.main`` to
+    ``stdout``.
+ 
+    Parameters
+    ----------
+    reports : REPORT
+        Named tuple from :meth:`~speller.speller.SpellerResult.format_report`.
+        ``reports.main`` is the CS50-format summary string.
+        ``reports.misspelled`` is a newline-joined word list, or
+        ``None`` if ``--show-misspelled`` was not requested.
+    infile_name : str
+        Base name of the checked text file (e.g. ``"austen.txt"``).
+        Used to construct the output filename.
+ 
+    Notes
+    -----
+    Directory creation uses ``mkdir(parents=True, exist_ok=True)`` so
+    the call is idempotent — no error if the directory already exists.
     """
     if reports.misspelled:
         file_dirs.MISS_DIR.mkdir(parents=True, exist_ok=True)
