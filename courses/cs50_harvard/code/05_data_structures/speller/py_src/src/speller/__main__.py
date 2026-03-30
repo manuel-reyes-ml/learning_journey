@@ -43,7 +43,7 @@ Matches speller.c usage::
 
 from __future__ import annotations
 
-import sys
+import sys 
 
 
 # =====================================================
@@ -63,7 +63,9 @@ try:
     import logging
     import string
     
+    from speller.benchmarks import BenchmarkResult
     from speller.config import ExitCode, file_dirs, default_fnames
+    from speller.load_dictionary import load_dictionary
     from speller.logger import configure_logging
     from speller.register import dicts
     from speller.speller import run_speller, REPORT
@@ -199,6 +201,13 @@ def _build_parser() -> argparse.ArgumentParser:
         formatter_class=argparse.RawDescriptionHelpFormatter
     )
     
+    parser.add_argument(
+        "text",  # positional argument required
+        nargs="?",  # was required - now optional (zero or one)
+        default=None,
+        help="Path to text file to spell-check. Omit when using --dir.",
+    )
+    
     # -- Positional arguments --
     # nargs='?' makes dictionary optional, returns a single str.
     # nargs='*', nargs='+', nargs='N' return lists.
@@ -214,13 +223,6 @@ def _build_parser() -> argparse.ArgumentParser:
             "Path to dictionary file. One word per line. "
             "Default: dictionaries/large"
         ),
-    )
-    
-    parser.add_argument(
-        "text",  # positional argument required
-        nargs="?",  # was required - now optional (zero or one)
-        default=None,
-        help="Path to text file to spell-check. Omit when using --dir.",
     )
     
     # -- Keyword arguments --
@@ -445,10 +447,6 @@ def main(argv: list[str] | None = None) -> ExitCode:
         logger.error("No text files found. Provide a file or --dir path.")
         return ExitCode.FILE_NOT_FOUND
     
-    validation_error = _validate_paths(dict_path, text_path)
-    if validation_error is not None:
-        return validation_error
-    
     logger.info(
         "Spell checking '%s' with dictionary '%s'",
         text_paths,
@@ -457,7 +455,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
     
     success = False
     try:
-        ops_names = _validate_ops(args.operations)
+        ops_names = _validate_ops(args.op)
         
         for operation in ops_names:
             data = dicts[operation]
@@ -472,39 +470,49 @@ def main(argv: list[str] | None = None) -> ExitCode:
             #   dictionary = MockDictionary()                 # testing
             dictionary = data.dict_class()
             
+            # Load dictionary ONCE for this backend
+            loaded_dict, t_result = load_dictionary(dictionary=dictionary, dict_path=dict_path)
+            
             # -- Step 5: Run spell checker --
             # run_speller() accepts DictionaryProtocol - it doesn´t know
             # or care that we passed a HashTableDictionary.
             logger.debug("Running Speller with '%s'", data.name)
             
-            data.results["speller_result"] = run_speller(
-                dictionary=dictionary, 
-                text_path=text_path,
-                dict_path=dict_path,
-            )
+            # Now iterate over all text files - no dictionary reload
+            for text_path in text_paths:
+                validation_error = _validate_paths(dict_path, text_path)
+                if validation_error is not None:
+                    logger.warning("Skipping '%s': not found", text_path)
+                    continue    # skip bad files, don't abort the batch
+                
+                benchmarks: dict[str, BenchmarkResult] = {}
+                
+                benchmarks["load"] = t_result
+                data.results[text_path.name] = run_speller(
+                    dictionary=loaded_dict, 
+                    text_path=text_path,
+                    benchmarks=benchmarks,
+                )
+                
+                # "Update" by creating a NEW frozen instance (original unchanged)
+                # replace() doesn't mutate — it copies all fields into a new frozen instance with the
+                # specified fields overridden. The original object is untouched. This is the idiomatic
+                # pattern for "updating" immutable data in Python.
+                result = replace(
+                    data.results[text_path.name],  # initial results[] (ops_name, description empty)
+                    ops_name=data.name,
+                    description=data.description,
+                )
             
-            # Create initial result (ops_name, description empty)
-            result = data.results["speller_result"]
-            
-            # "Update" by creating a NEW frozen instance (original unchanged)
-            # replace() doesn't mutate — it copies all fields into a new frozen instance with the
-            # specified fields overridden. The original object is untouched. This is the idiomatic
-            # pattern for "updating" immutable data in Python.
-            result = replace(
-                result,
-                ops_name=data.name,
-                description=data.description,
-            )
-            
-            # Show for the FIRST operation only (avoid duplicate files)
-            show_misspelled = args.show_misspelled and (operation == ops_names[0])
+                # Show for the FIRST operation only (avoid duplicate files)
+                show_misspelled = args.show_misspelled and (operation == ops_names[0])
         
-            # -- Step 6: Display results --
-            # format_report() returns a string — main() decides to print it.
-            # In a web app (Stage 1 Streamlit), you'd display it differently.
-            # In tests, you'd just check result.words_misspelled.
-            reports: REPORT = result.format_report(log_misspelled=show_misspelled)
-            _print_reports(reports, text_path.name)
+                # -- Step 6: Display results --
+                # format_report() returns a string — main() decides to print it.
+                # In a web app (Stage 1 Streamlit), you'd display it differently.
+                # In tests, you'd just check result.words_misspelled.
+                reports: REPORT = result.format_report(log_misspelled=show_misspelled)
+                _print_reports(reports, text_path.name)
         
         # -- Step 7: Return exit code --
         success = True
