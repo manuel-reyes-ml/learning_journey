@@ -19,8 +19,8 @@ Deep dive into how computers actually store and manage data in memory. Learn hex
 
 - [x] Lecture: Memory, pointers, and allocation
 - [x] Sections: Pointer arithmetic and memory layout
-- [ ] Problem Set 4: Filter (Less/More), Recover
-- [ ] Lab 4: Smiley / Volume
+- [x] Problem Set 4: Filter (Less/More), Recover
+- [x] Lab 4: Smiley / Volume
 
 ---
 
