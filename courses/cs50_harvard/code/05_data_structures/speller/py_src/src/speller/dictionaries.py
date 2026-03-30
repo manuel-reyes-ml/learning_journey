@@ -97,7 +97,7 @@ __all__ = [
 # =====================================================
 
 # Constrained TypeVar: exactly set[str] or list[str], nothing else
-WordContainer = TypeVar("WordContainer", set[str], list[str])
+WordContainer = TypeVar("WordContainer", set[str], list[str], dict[str, None])
 
 # A plain TypeVar says "any type at all." The bound= argument adds a constraint:
 # "any type, as long as it's a subclass of this."
@@ -788,6 +788,22 @@ class SortedListDictionary(_BaseDictionary[list[str]]):
         # bisect_left(["ant", "cat"], "bat") → returns 1
         # self._words[1] → "cat" (not "bat"!)
         # bisect tells you where "bat" WOULD go, not that it EXISTS
+
+
+@register_class(
+    "dict",
+    "Use Dictionary as hash table - O(1) average lookup.",
+)
+class DictDictionary(_BaseDictionary[dict[str, None]]):  # inherits from ABC
+    """
+    """
+    
+    def _create_container(self) -> dict[str, None]:
+        return {}
+    
+    
+    def _add_word(self, word: str) -> None:
+        self._words[word] = None
 
 
 
