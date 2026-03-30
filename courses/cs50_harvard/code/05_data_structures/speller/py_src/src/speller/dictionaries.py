@@ -805,6 +805,29 @@ class DictDictionary(_BaseDictionary[dict[str, None]]):  # inherits from ABC
     def _add_word(self, word: str) -> None:
         self._words[word] = None
 
+    # satisfies Protocol via inherited methods
+    
+# A singleton is an object that exists exactly once in memory. No matter how many
+# times you reference it, you always get the same object--Python never creates
+# a second copy.
+
+# Python creates None once when the interpreter starts, stores it at a fixed memory
+# address, and reuses that address everywhere. When you write None anywhere in your code,
+# Python doesn't allocate anything — it just hands back the pointer it already has.
+
+# When you build a 143,091-word dictionary:
+# dict[str, str] with ""
+#   words = {"cat": "", "dog": "", "bird": ""}
+# Python allocates: 3 string keys + 3 string values ("" objects)
+# Even though "" looks empty, it's still a str object in memory
+
+# dict[str, None]
+#   words = {"cat": None, "dog": None, "bird": None}
+# Python allocates: 3 string keys + 0 new objects
+# All three values point to the ONE None that already exists
+# With 143,091 entries, dict[str, None] avoids creating 143,091 empty string objects.
+# Each value slot holds a pointer to the same None that was already there.
+
 
 
 # =============================================================================
@@ -937,3 +960,14 @@ class DictDictionary(_BaseDictionary[dict[str, None]]):  # inherits from ABC
 # hash:   seconds
 # sorted: noticeably slower
 # list:   minutes to hours (O(n) × O(n) = O(n²))
+
+# =====================================================
+# Built-in Singletons
+# =====================================================
+# None   # the absence of a value
+# True   # boolean true
+# False  # boolean false
+
+# All three: always use `is` to check, never `==`
+# if x is None: ...    # correct
+# if x == None: ...    # works but wrong style — mypy will warn you
