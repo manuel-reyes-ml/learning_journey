@@ -78,7 +78,7 @@ speller/
 ├── benchmarks.py         timer() context manager + timed() decorator
 ├── register.py           Plugin registry: DictInfo, dicts{}, register_class()
 ├── logger.py             ColoredFormatter + configure_logging()
-├── dictionaries.py       _BaseDictionary[WordContainer] ABC + three concrete backends
+├── dictionaries.py       _BaseDictionary[WordContainer] ABC + four concrete backends
 ├── text_processor.py     Character-level state machine (generator)
 └── speller.py            Orchestrator + SpellerResult (dependency injection)
 ```
@@ -116,25 +116,29 @@ __main__.py ────────────── imports EVERYTHING (compo
 **`Generic[WordContainer]` over Union or Protocol on mutable attributes** — `_words` is a mutable instance attribute. Declaring it as `set[str] | list[str]` causes pyright to reject `.add()` and `.append()` calls (union can't be narrowed inside methods). A Protocol on a mutable attribute triggers an invariance error. `Generic[WordContainer]` with a constrained `TypeVar` resolves the concrete type per subclass at specialisation time — no invariance violation.
 
 ```python
-WordContainer = TypeVar("WordContainer", set[str], list[str])
+WordContainer = TypeVar("WordContainer", set[str], list[str], dict[str, None])
 
 class _BaseDictionary(ABC, Generic[WordContainer]):
     self._words: WordContainer = self._create_container()  # unresolved
 
 class HashTableDictionary(_BaseDictionary[set[str]]):      # W = set[str]
     def _add_word(self, word: str) -> None:
-        self._words.add(word)    # pyright knows _words IS set[str] ✓
+        self._words.add(word)       # pyright knows _words IS set[str] ✓
 
 class ListDictionary(_BaseDictionary[list[str]]):          # W = list[str]
     def _add_word(self, word: str) -> None:
-        self._words.append(word) # pyright knows _words IS list[str] ✓
+        self._words.append(word)    # pyright knows _words IS list[str] ✓
+
+class DictDictionary(_BaseDictionary[dict[str, None]]):    # W = dict[str, None]
+    def _add_word(self, word: str) -> None:
+        self._words[word] = None    # pyright knows _words IS dict[str, None] ✓
 ```
 
 **Plugin registry** — each backend self-registers at import time via `@register_class`. `__main__.py` selects backends by key from `dicts{}` — it never imports or names a concrete class. Adding a new backend requires zero changes to `__main__.py`, `speller.py`, or `protocols.py`.
 
 ```python
-@register_class("sorted", "Use sorted list - O(log n) binary search lookup.")
-class SortedListDictionary(_BaseDictionary[list[str]]): ...
+@register_class("dict", "Use Dictionary as hash table - O(1) average lookup.")
+class DictDictionary(_BaseDictionary[dict[str, None]]): ...
 ```
 
 **Dataclass over Pydantic** — `BenchmarkResult` and `SpellerResult` are frozen dataclasses (6.5x faster creation, 2.5x less memory than Pydantic). Pydantic is reserved for service boundaries in future projects.
@@ -147,15 +151,16 @@ class SortedListDictionary(_BaseDictionary[list[str]]): ...
 
 ## Dictionary Backends
 
-Three backends demonstrate the same algorithm with different data structures. All satisfy `DictionaryProtocol` through structural typing and self-register via `@register_class`.
+Four backends demonstrate the same algorithm with different data structures. All satisfy `DictionaryProtocol` through structural typing and self-register via `@register_class`.
 
 | Backend | Key | Container | Load | Check | 376K checks |
 |---|---|---|---|---|---|
 | `HashTableDictionary` | `hash` | `set[str]` | O(n) | **O(1)** avg | ~376K ops |
+| `DictDictionary` | `dict` | `dict[str, None]` | O(n) | **O(1)** avg | ~376K ops |
 | `SortedListDictionary` | `sorted` | sorted `list[str]` | O(n log n) | **O(log n)** | ~6.4M ops |
 | `ListDictionary` | `list` | unsorted `list[str]` | O(n) | **O(n)** | ~53B ops |
 
-`SortedListDictionary` uses `bisect.insort` on load and `bisect.bisect_left` on check. `ListDictionary` exists as a performance baseline only — never use in production.
+`DictDictionary` uses `None` as a singleton sentinel — all 143,091 value slots point to the same `None` object, avoiding per-entry allocation. Algorithmically equivalent to `HashTableDictionary` but uses ~2× the memory (dict has key + hash + value pointer; set has key + hash only). `SortedListDictionary` uses `bisect.insort` on load and `bisect.bisect_left` on check. `ListDictionary` exists as a performance baseline only — never use in production.
 
 ---
 
@@ -208,10 +213,13 @@ python -m speller texts/austen.txt
 # Select a specific backend
 speller -o sorted texts/austen.txt
 
-# Run multiple backends and compare
-speller -o hash sorted texts/austen.txt
+# Run the dict backend
+speller -o dict texts/austen.txt
 
-# Run all three backends
+# Run multiple backends and compare
+speller -o hash dict sorted texts/austen.txt
+
+# Run all four backends
 speller -o all texts/austen.txt
 
 # Verbose mode (DEBUG-level console output)
@@ -362,7 +370,7 @@ speller/
 - `src/` **layout** — Prevents accidental imports during testing
 - **Type hints** — Full type annotations, `mypy --strict` compliant
 - `from __future__ import annotations` — Deferred evaluation in every module
-- `TypeVar` **with constraints** — `WordContainer = TypeVar("WordContainer", set[str], list[str])` solves mypy invariance in Generic class hierarchies
+- `TypeVar` **with constraints** — `WordContainer = TypeVar("WordContainer", set[str], list[str], dict[str, None])` solves mypy invariance in Generic class hierarchies
 - `ParamSpec` **+** `TypeVar` — Type-safe decorators preserving function signatures
 - **NumPy-style docstrings** — Consistent documentation across all public APIs
 - `__all__` **exports** — Explicit public API per module
@@ -384,7 +392,7 @@ The text processor replicates `speller.c`'s character-by-character state machine
 | Tool | Purpose |
 | --- | --- |
 | Python 3.12+ | Language (`type X = ...` syntax, PEP 695) |
-| `set` / `list` / `bisect` (built-in) | Three dictionary backends |
+| `set` / `list` / `dict` / `bisect` (built-in) | Four dictionary backends |
 | `argparse` | CLI argument parsing |
 | `logging` + `RotatingFileHandler` | Structured logging |
 | `dataclasses` | Immutable result containers |
@@ -404,13 +412,14 @@ The text processor replicates `speller.c`'s character-by-character state machine
 Building this project taught me production Python patterns that directly apply to GenAI engineering:
 
 1. **Protocol > ABC for external interfaces** — `DictionaryProtocol` lets `speller.py` accept any backend without importing concrete classes. The same pattern powers swappable LLM backends in DataVault.
-2. **ABC Template Method for internal hierarchies** — `_BaseDictionary` defines the algorithm once; subclasses fill in two lines. Three backends, zero duplicated logic.
+2. **ABC Template Method for internal hierarchies** — `_BaseDictionary` defines the algorithm once; subclasses fill in two lines. Four backends, zero duplicated logic.
 3. **`Generic[T]` solves the invariance problem** — mutable instance attributes in class hierarchies must use `Generic[WordContainer]`, not Union or Protocol. This distinction matters the moment you build `LLMProvider[ResponseT]` or `DataSource[RecordT]`.
 4. **Plugin registry separates registration from use** — `@register_class` means `__main__.py` never names a concrete class. Add a new backend: three lines in `dictionaries.py`, zero changes anywhere else.
-5. **Dataclass vs Pydantic boundary** — internal logic uses frozen dataclasses for speed; Pydantic is reserved for API/validation boundaries.
-6. **Generator streaming** is the foundation for LLM token streaming, RAG chunk retrieval, and ETL pipeline processing.
-7. `pyproject.toml` replaces 5+ config files and is non-negotiable for modern Python.
-8. **Dependency injection via Protocol** makes every component independently testable — `MockDictionary` is five lines and no files required.
+5. **Singletons matter for memory** — `dict[str, None]` avoids 143,091 empty string allocations vs `dict[str, ""]`. `None` is a singleton; `""` is not guaranteed to be.
+6. **Dataclass vs Pydantic boundary** — internal logic uses frozen dataclasses for speed; Pydantic is reserved for API/validation boundaries.
+7. **Generator streaming** is the foundation for LLM token streaming, RAG chunk retrieval, and ETL pipeline processing.
+8. `pyproject.toml` replaces 5+ config files and is non-negotiable for modern Python.
+9. **Dependency injection via Protocol** makes every component independently testable — `MockDictionary` is five lines and no files required.
 
 ---
 
