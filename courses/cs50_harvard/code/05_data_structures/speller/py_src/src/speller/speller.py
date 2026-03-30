@@ -73,6 +73,7 @@ logger = logging.getLogger(__name__)
 __all__ = [
     "SpellerResult",
     "run_speller",
+    "benchmarks",
 ]
 
 
@@ -81,6 +82,7 @@ __all__ = [
 # =============================================================================
 
 COL: Final[int] = 22
+benchmarks: dict[str, BenchmarkResult] = {}
 REPORT = namedtuple("REPORT", ["main", "misspelled"])
 
 
@@ -241,7 +243,7 @@ class SpellerResult:
         )
         
         return REPORT(main_report, misspelled_report)
-    
+
 
 # =============================================================================
 # CORE FUNCTION
@@ -255,7 +257,6 @@ def run_speller(
     *,
     dictionary: DictionaryProtocol,
     text_path: str | Path,
-    dict_path: str | Path,
 ) -> SpellerResult:  # pure computation, testable
     """Run the spell checker — orchestrates all components.
 
@@ -309,28 +310,11 @@ def run_speller(
         context manager wraps the entire check loop to capture total time.
         @timed is for one-shot operations like load() and size().
     """
-    benchmarks: dict[str, BenchmarkResult] = {}
-    
     # =================================================================
     # STEP 1: Load dictionary (timed)
     # =================================================================
-    # timer() context manager wraps the load call.
-    # After the 'with' block, t["result"] contains the BenchmarkResult.
-    with timer("load") as t:
-        # dictionary.load() works with ANY implementation
-        # Dependency injection in action
-        loaded = dictionary.load(str(dict_path))
-    
-    benchmarks["load"] = t["result"]
-    
-    if not loaded:
-        logger.error("Could not load dictionary: %s", dict_path)
-        raise SystemExit(f"Could not load {dict_path}.")
-    
-    logger.info(
-        "Dictionary loaded: %d words", 
-        len(dictionary),  # NOTE: Try Pythonic exp (dunder)
-    ) 
+    # Dictionary load needs to run only once for the batch txt file(s)
+    # A separate function is implemented in load_dictionary module
     
     # =================================================================
     # STEP 2: Check words (timed cumulatively)
