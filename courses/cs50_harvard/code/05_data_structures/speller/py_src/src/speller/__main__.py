@@ -218,15 +218,30 @@ def _build_parser() -> argparse.ArgumentParser:
     
     parser.add_argument(
         "text",  # positional argument required
-        help="Path to text file to spell-check (required).",
+        nargs="?",  # was required - now optional (zero or one)
+        default=None,
+        help="Path to text file to spell-check. Omit when using --dir.",
     )
     
     # -- Keyword arguments --
     parser.add_argument(
-        "-o", "--operations",
+        "--op",
         nargs="+",  # one or more
         default=["hash"],
+        metavar="OPERATIONS",
         help=f"Data structure(s) to use. Default: hash. Available: {ops_list}",
+    )
+    
+    parser.add_argument(
+        "--dir",
+        type=Path,
+        default=None,
+        metavar="DIRECTORY",
+        help=(
+            "Process all .txt files in this directory. "
+            "When provided, 'text' argument is optional. "
+            " Example: --dir texts/"
+        ),
     )
     
     # -- Optional flags --
@@ -298,6 +313,33 @@ def _validate_paths(
         return ExitCode.FILE_NOT_FOUND
     
     return None  # None means "all good"
+
+
+def _resolve_text_paths(args: argparse.Namespace) -> list[Path]:
+    """
+    """
+    paths: list[Path] = []
+    seen: set[Path] = set()
+    
+    # Single file from positional arg (existing behavior, unchanged)
+    if args.text:
+        p = Path(args.text)
+        if p.exists() and p not in seen:
+            paths.append(p)
+            seen.add(p)
+            
+    # Directory glob - same pattern as black/ruff/mypy
+    if args.dir:
+        dir_path = Path(args.dir)
+        if not dir_path.is_dir():
+            logger.error("--dir path is not a directory: %s", dir_path)
+            return []
+        for txt_file in sorted(dir_path.glob("*.txt")):  # sorted = deterministic order
+            if txt_file not in seen:
+                paths.append(txt_file)
+                seen.add(txt_file)
+                
+    return paths       
 
 
 def _print_reports(reports: REPORT, infile_name: str) -> None:
@@ -397,7 +439,11 @@ def main(argv: list[str] | None = None) -> ExitCode:
     
     # -- Step 3: Convert and validate paths --
     dict_path = Path(args.dictionary)
-    text_path = Path(args.text)
+    
+    text_paths: list[Path] = _resolve_text_paths(args)
+    if not text_paths:  # If no files in directory provided
+        logger.error("No text files found. Provide a file or --dir path.")
+        return ExitCode.FILE_NOT_FOUND
     
     validation_error = _validate_paths(dict_path, text_path)
     if validation_error is not None:
@@ -405,7 +451,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
     
     logger.info(
         "Spell checking '%s' with dictionary '%s'",
-        text_path.name,
+        text_paths,
         dict_path.name,
     )
     
