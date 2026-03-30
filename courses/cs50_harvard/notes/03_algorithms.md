@@ -5,7 +5,7 @@
 **Instructor:** David J. Malan  
 **Week:** 3  
 **Started:** Nov 2025  
-**Status:** In progress
+**Status:** Completed
 
 ---
 
