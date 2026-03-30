@@ -73,7 +73,6 @@ logger = logging.getLogger(__name__)
 __all__ = [
     "SpellerResult",
     "run_speller",
-    "benchmarks",
 ]
 
 
@@ -82,7 +81,6 @@ __all__ = [
 # =============================================================================
 
 COL: Final[int] = 22
-benchmarks: dict[str, BenchmarkResult] = {}
 REPORT = namedtuple("REPORT", ["main", "misspelled"])
 
 
@@ -257,6 +255,7 @@ def run_speller(
     *,
     dictionary: DictionaryProtocol,
     text_path: str | Path,
+    benchmarks: dict[str, BenchmarkResult] = {},
 ) -> SpellerResult:  # pure computation, testable
     """Run the spell checker — orchestrates all components.
 
