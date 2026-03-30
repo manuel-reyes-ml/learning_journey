@@ -19,8 +19,8 @@ Introduction to algorithms - step-by-step procedures for solving problems. Learn
 
 - [x] Lecture: Algorithms and efficiency
 - [x] Sections: Searching and sorting
-- [ ] Problem Set 3: Plurality, Runoff/Tideman
-- [ ] Lab 3: Sort
+- [x] Problem Set 3: Plurality, Runoff/Tideman
+- [x] Lab 3: Sort
 
 ---
 
