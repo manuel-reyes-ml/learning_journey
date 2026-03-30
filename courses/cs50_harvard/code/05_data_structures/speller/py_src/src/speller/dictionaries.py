@@ -1,22 +1,23 @@
 """Dictionary backends for the speller package.
  
-Provides three concrete implementations of ``DictionaryProtocol``, all
+Provides four concrete implementations of ``DictionaryProtocol``, all
 built on the ``_BaseDictionary`` abstract base class:
  
-- :class:`HashTableDictionary` — ``set``-backed, O(1) average lookup.
-- :class:`ListDictionary`      — unsorted ``list``-backed, O(n) lookup.
+- :class:`HashTableDictionary`  — ``set``-backed, O(1) average lookup.
+- :class:`ListDictionary`       — unsorted ``list``-backed, O(n) lookup.
 - :class:`SortedListDictionary` — sorted ``list`` + binary search, O(log n).
+- :class:`DictDictionary`       — ``dict[str, None]``-backed, O(1) average lookup.
  
 Each class is registered automatically at import time via the
 ``@register_class`` decorator.  ``__main__.py`` selects the active
-backend by registry key (``"hash"``, ``"list"``, ``"sorted"``).
+backend by registry key (``"hash"``, ``"list"``, ``"sorted"``, ``"dict"``).
  
 Template Method Pattern
 -----------------------
 ``_BaseDictionary`` defines the algorithm skeleton in ``load()`` and
 ``check()``.  Subclasses supply only the two variable steps:
  
-    _create_container() → returns the empty container (set or list)
+    _create_container() → returns the empty container (set, list, or dict)
     _add_word(word)     → inserts a word into that container
  
 Everything else — file reading, case normalisation, guards, dunders,
@@ -25,10 +26,10 @@ logging — is inherited unchanged.
 Generic[WordContainer]
 ----------------------
 ``_BaseDictionary`` is parameterised over ``WordContainer``, a
-``TypeVar`` constrained to ``set[str]`` or ``list[str]``.  Subclasses
-specialise it (e.g. ``_BaseDictionary[set[str]]``) so pyright tracks
-the exact container type through every method without an invariance
-violation.
+``TypeVar`` constrained to ``set[str]``, ``list[str]``, or
+``dict[str, None]``.  Subclasses specialise it
+(e.g. ``_BaseDictionary[set[str]]``) so pyright tracks the exact
+container type through every method without an invariance violation.
  
 C → Python Mapping (HashTableDictionary)
 -----------------------------------------
@@ -83,9 +84,10 @@ logger = logging.getLogger(__name__)
 # =============================================================================
 
 __all__ = [
-    "HashTableDictionary", 
+    "HashTableDictionary",
     "ListDictionary",
     "SortedListDictionary",
+    "DictDictionary",
 ]
 
 
@@ -96,7 +98,9 @@ __all__ = [
 # Constants
 # =====================================================
 
-# Constrained TypeVar: exactly set[str] or list[str], nothing else
+# Constrained TypeVar: exactly set[str], list[str], or dict[str, None] — nothing else.
+# Adding dict[str, None] enables DictDictionary: O(1) key lookup using None as a
+# zero-cost sentinel value (None is a singleton — no new objects allocated per entry).
 WordContainer = TypeVar("WordContainer", set[str], list[str], dict[str, None])
 
 # A plain TypeVar says "any type at all." The bound= argument adds a constraint:
@@ -121,7 +125,7 @@ class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation
     directly. It exists solely to eliminate code duplication.
 
     Subclasses MUST implement:
-    - _create_container() → return the empty container (set or list)
+    - _create_container() → return the empty container (set, list, or dict)
     - _add_word(word)     → add a word to the container
 
     Everything else is inherited: load, check, size, dunders, unload.
@@ -155,10 +159,11 @@ class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation
     ----------
     _words : WordContainer
         Typed as the constrained ``TypeVar`` ``WordContainer``
-        (either ``set[str]`` or ``list[str]``).  The concrete type
-        is determined by the subclass at specialisation time
-        (e.g. ``_BaseDictionary[set[str]]`` → ``_words`` is
-        ``set[str]``).  Created by :meth:`_create_container`.
+        (``set[str]``, ``list[str]``, or ``dict[str, None]``).
+        The concrete type is determined by the subclass at
+        specialisation time (e.g. ``_BaseDictionary[set[str]]``
+        → ``_words`` is ``set[str]``).  Created by
+        :meth:`_create_container`.
     _loaded : bool
         Set to ``True`` after :meth:`load` completes successfully.
         Guards :meth:`check` and :meth:`size` against use before
@@ -167,9 +172,9 @@ class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation
     Type Parameters
     ---------------
     WordContainer : TypeVar
-        Constrained to ``set[str]`` or ``list[str]``.  Resolved once
-        per subclass — pyright propagates the concrete type through
-        every inherited method.
+        Constrained to ``set[str]``, ``list[str]``, or
+        ``dict[str, None]``.  Resolved once per subclass — pyright
+        propagates the concrete type through every inherited method.
     """
     
     def __init__(self) -> None:
@@ -230,12 +235,14 @@ class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation
     def _create_container(self) -> WordContainer:
         """Create the empty word container.
 
-        Returns 
+        Returns
         -------
-        set[str] or list[str]
+        set[str] or list[str] or dict[str, None]
             Empty container for storing dictionary words.
-            HashTableDictionary returns set().
-            ListDictionary returns [].
+            HashTableDictionary  returns ``set()``.
+            ListDictionary       returns ``[]``.
+            SortedListDictionary returns ``[]``.
+            DictDictionary       returns ``{}``.
         """
         ...
         
@@ -248,8 +255,10 @@ class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation
         ----------
         word : str
             Lowercase word to store.
-            HashTableDictionary calls self._words.add(word).
-            ListDictionary calls self._words.append(word).
+            HashTableDictionary  calls ``self._words.add(word)``.
+            ListDictionary       calls ``self._words.append(word)``.
+            SortedListDictionary calls ``bisect.insort(self._words, word)``.
+            DictDictionary       calls ``self._words[word] = None``.
         """
         ...
         
@@ -377,10 +386,12 @@ class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation
         The lookup expression ``word.lower() in self._words`` resolves
         differently depending on the concrete ``WordContainer``:
  
-        - ``set[str]``  → calls ``set.__contains__()`` → O(1) average
+        - ``set[str]``        → calls ``set.__contains__()``  → O(1) average
           (Python hashes the normalised word and checks the bucket).
-        - ``list[str]`` → calls ``list.__contains__()`` → O(n) linear
+        - ``list[str]``       → calls ``list.__contains__()`` → O(n) linear
           scan (used only by :class:`ListDictionary` as a benchmark).
+        - ``dict[str, None]`` → calls ``dict.__contains__()`` → O(1) average
+          (checks keys only — the ``None`` values are never read).
  
         :class:`SortedListDictionary` overrides this method to use
         :func:`bisect.bisect_left` for O(log n) lookup instead of the
@@ -420,7 +431,7 @@ class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation
         """Support ``len(dictionary)`` — Pythonic interface.
  
         Delegates to :meth:`size` so the logic lives in one place (DRY).
-        Defined in ``_BaseDictionary`` and inherited by all three
+        Defined in ``_BaseDictionary`` and inherited by all four
         concrete classes.
  
         Making ``__len__`` delegate to ``size()`` — rather than the
@@ -450,7 +461,7 @@ class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation
         """Support ``word in dictionary`` — Pythonic interface.
  
         Delegates to :meth:`check` so the logic lives in one place (DRY).
-        Defined in ``_BaseDictionary`` and inherited by all three
+        Defined in ``_BaseDictionary`` and inherited by all four
         concrete classes.  Enables the natural Python idiom::
  
             if word in dictionary:   # __contains__ → check()
@@ -795,7 +806,87 @@ class SortedListDictionary(_BaseDictionary[list[str]]):
     "Use Dictionary as hash table - O(1) average lookup.",
 )
 class DictDictionary(_BaseDictionary[dict[str, None]]):  # inherits from ABC
-    """
+    """Spell-check dictionary backed by a Python ``dict[str, None]``.
+
+    Satisfies ``DictionaryProtocol`` through structural typing — no
+    inheritance required.  Stores words as **keys** with ``None`` as
+    the value, exploiting the fact that ``word in my_dict`` checks
+    keys only.  Lookup is O(1) average — identical algorithmic
+    complexity to :class:`HashTableDictionary`.
+
+    Why ``dict[str, None]`` and not ``set[str]``?
+    ----------------------------------------------
+    This backend demonstrates an important Python memory concept:
+    using a dict as a set-like structure with an explicit sentinel
+    value.  ``None`` is a **singleton** — Python creates it once at
+    interpreter start and reuses the same object everywhere.  Every
+    value slot in the dict holds a pointer to that single ``None``
+    rather than allocating a new object per entry.
+
+    Memory comparison for 143,091 words:
+
+    .. code-block:: text
+
+        Container          Approx memory    Per-entry overhead
+        ─────────────────  ─────────────    ──────────────────
+        set[str]           ~8–12 MB         key + hash only
+        dict[str, None]    ~16–20 MB        key + hash + pointer to None (singleton)
+        dict[str, str]     ~20–25 MB        key + hash + new str object per entry
+
+    The ``set[str]``-backed :class:`HashTableDictionary` is more
+    memory-efficient for pure membership testing.  Use
+    ``DictDictionary`` when you want to understand the dict-vs-set
+    trade-off, or as a foundation for backends that store
+    **meaningful** values (e.g. part-of-speech tags, confidence
+    scores, or frequency counts) without restructuring the hierarchy.
+
+    Attributes
+    ----------
+    _words : dict[str, None]
+        Word store keyed by lowercase word.  All values are ``None``
+        — the dict is used purely for O(1) key-membership testing.
+        Private (underscore prefix) because external code should call
+        :meth:`check`, not access ``_words`` directly.
+    _loaded : bool
+        Set to ``True`` after :meth:`load` completes successfully.
+
+    Examples
+    --------
+    >>> dictionary = DictDictionary()
+    >>> dictionary.load("dictionaries/large")
+    True
+    >>> dictionary.size()
+    143091
+    >>> dictionary.check("hello")
+    True
+    >>> dictionary.check("xyz")
+    False
+    >>> "hello" in dictionary          # __contains__ → check()
+    True
+
+    Notes
+    -----
+    **Algorithmic equivalence to** :class:`HashTableDictionary`:
+
+    Both ``set.__contains__()`` and ``dict.__contains__()`` compute a
+    hash of the key and probe the internal hash table — O(1) average.
+    In practice :class:`HashTableDictionary` is faster and uses half
+    the memory because a ``set`` has no value slots.
+
+    **When dict values become meaningful (Stage 3+ pattern)**::
+
+        # Stage 3 — ML-powered spell correction with confidence scores
+        class MLDictionary(_BaseDictionary[dict[str, float]]):
+            def _add_word(self, word: str) -> None:
+                self._words[word] = model.confidence(word)
+
+            def check(self, word: str) -> bool:
+                self._ensure_loaded()
+                score = self._words.get(word.lower(), 0.0)
+                return score >= CONFIDENCE_THRESHOLD
+
+    That evolution requires only a new subclass — ``_BaseDictionary``,
+    ``speller.py``, and ``protocols.py`` are unchanged.
     """
     
     def _create_container(self) -> dict[str, None]:
@@ -949,6 +1040,9 @@ class DictDictionary(_BaseDictionary[dict[str, None]]):  # inherits from ABC
 # │──────────────────────┼───────────────┼────────────────────────│
 # │ HashTableDictionary  │ O(1)          │ 376,904 operations     │
 # │ (set — hash table)   │ ~1 comparison │ Fast                   │
+# │──────────────────────┼───────────────┼────────────────────────│
+# │ DictDictionary       │ O(1)          │ 376,904 operations     │
+# │ (dict[str, None])    │ ~1 comparison │ Fast (2× memory of set)│
 # │──────────────────────┼───────────────┼────────────────────────│
 # │ SortedListDictionary │ O(log n)      │ 376,904 × 17 steps    │
 # │ (sorted list)        │ ~17 compares  │ = ~6.4M comparisons    │
