@@ -36,7 +36,6 @@ from __future__ import annotations
 
 # Runtime collection types → collections.abc
 from collections.abc import Iterator
-from pathlib import Path
 import logging
 
 from speller.config import MAX_WORD_LENGTH
@@ -154,7 +153,7 @@ def _consume_alnum(content: str, pos: int, length: int) -> int:
 # CORE FUNCTIONS
 # =============================================================================
 
-def extract_words(filepath: str | Path) -> Iterator[str]:
+def extract_words(content: str, path_name: str) -> Iterator[str]:
     """Extract words from a text file, matching CS50 speller.c behavior.
 
     Yields words one at a time using the generator pattern (constant
@@ -218,14 +217,7 @@ def extract_words(filepath: str | Path) -> Iterator[str]:
         - CS50's test files are small (< 2MB). For Stage 2 multi-GB files,
           you'd read in fixed-size chunks instead
     """
-    path = Path(filepath) if isinstance(filepath, str) else filepath
-    
-    logger.debug("Extracting words from '%s'", path.name)
-    
-    try:
-        content = path.read_text(encoding="utf-8")
-    except UnicodeDecodeError as e:
-        raise SystemExit(f"Decode Error in {path.name}: {e}") from e
+    logger.debug("Extracting words from '%s'", path_name)
     
     length = len(content)
     pos = 0
@@ -296,7 +288,7 @@ def extract_words(filepath: str | Path) -> Iterator[str]:
         if valid and word_chars:
             yield "".join(word_chars)
             
-    logger.debug("Finished extracting words from '%s'", path.name)
+    logger.debug("Finished extracting words from '%s'", path_name)
     
 
 # This is the first **state machine** in your portfolio.
