@@ -42,9 +42,11 @@ Module Dependencies
 from __future__ import annotations
 
 from dataclasses import dataclass, field, KW_ONLY
+import itertools
 from pathlib import Path
 import logging
 from collections import namedtuple
+from collections.abc import Iterator
 from typing import Final
 
 from speller.benchmarks import BenchmarkResult, timer
@@ -53,6 +55,13 @@ from speller.text_processor import extract_words
 
 # No ImportError sys.exit() on regular module so the
 # error propagates to the caller (__main__.py).
+
+## Simple Decision Rule
+# "Is it a CONTAINER or CALLABLE type?"
+#     YES → from collections.abc  (Generator, Iterator, Callable, Sequence, Mapping)
+
+# "Is it a TYPE SYSTEM concept?"
+#     YES → from typing  (Protocol, TypeVar, ParamSpec, Any, Final, TypedDict)
 
 
 # =============================================================================
@@ -256,7 +265,7 @@ def run_speller(
     dictionary: DictionaryProtocol,
     text_path: str | Path,
     benchmarks: dict[str, BenchmarkResult] = {},
-) -> SpellerResult:  # pure computation, testable
+) -> SpellerResult | None:  # pure computation, testable
     """Run the spell checker — orchestrates all components.
 
     This function:
@@ -327,11 +336,27 @@ def run_speller(
     #
     # This is the streaming pipeline pattern:
     #   [file bytes] → extract_words → check → accumulate results
+    path = Path(text_path) if isinstance(text_path, str) else text_path
+    
     misspelled_words: list[str] = []
     words_in_text = 0
     
-    with timer("check", input_file=text_path) as t:
-        for word in extract_words(text_path):
+    with timer("check", input_file=path) as t:
+        try:
+            content = path.read_text(encoding="utf-8")
+            words: Iterator[str] = extract_words(content, path.name)
+            first = next(words)
+        except UnicodeDecodeError as e:
+            logger.error("Decode Error in %s: %s", path.name, e)
+            return
+        except StopIteration:
+            logger.warning(
+                "Skipping '%s': file empty or no valid words found",
+                path.name
+            )
+            return
+        
+        for word in itertools.chain([first], words):
             words_in_text +=1
             
             if word not in dictionary: #NOTE: Try Pythonic exp (dunder)
