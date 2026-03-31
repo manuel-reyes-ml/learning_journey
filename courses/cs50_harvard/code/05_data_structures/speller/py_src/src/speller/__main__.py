@@ -68,7 +68,7 @@ try:
     from speller.load_dictionary import load_dictionary
     from speller.logger import configure_logging
     from speller.register import dicts
-    from speller.speller import run_speller, REPORT
+    from speller.speller import run_speller, REPORT, SpellerResult
     
 except ImportError as e:
     sys.exit(f"Error missing speller module.\nDetails: {e}")
@@ -227,7 +227,7 @@ def _build_parser() -> argparse.ArgumentParser:
     
     # -- Keyword arguments --
     parser.add_argument(
-        "--op",
+        "--ops",
         nargs="+",  # one or more
         default=["hash"],
         metavar="OPERATIONS",
@@ -443,20 +443,15 @@ def main(argv: list[str] | None = None) -> ExitCode:
         return path_validation
     
     text_paths: list[Path] = _resolve_text_paths(args)
-    if not text_paths:  # If no files in directory provided
+    # If no files in directory provided
+    if not text_paths:
         logger.error("No text files found. Provide a file or --dir path.")
         return ExitCode.FILE_NOT_FOUND
-    
-    logger.info(
-        "Spell checking '%s' with dictionary '%s'",
-        text_paths,
-        dict_path.name,
-    )
     
     success = False
     try:
         # _validate_ops() returns a list of valid ops
-        for operation in _validate_ops(args.op):
+        for operation in _validate_ops(args.ops):
             data = dicts[operation]
             
             # -- Step 4: Create concrete dictionary -- 
@@ -478,27 +473,41 @@ def main(argv: list[str] | None = None) -> ExitCode:
             
             # Now iterate over all text files - no dictionary reload
             for text_path in text_paths:
-                path_validation = _validate_paths(text_path, path_name="text")
+                path_validation: ExitCode | None = _validate_paths(text_path, path_name="text")
                 if path_validation is not None:
                     logger.warning("Skipping '%s': not found", text_path)
                     continue    # skip bad files, don't abort the batch
+                
+                logger.info(
+                    "Spell checking '%s' with dictionary '%s', in %s",
+                    text_path.name,
+                    dict_path.name,
+                    type(loaded_dict).__name__,
+                )
                 
                 benchmarks: dict[str, BenchmarkResult] = {}
                 benchmarks["load"] = load_result
                 
                 # Initial results[] (ops_name, description empty)
+                # data.results[str]: Type hints = ... fail, because in Python we cannot annotate
+                # a subscript assignment. PEP 526 only allows annotations on: 
+                #   - Simple names: x: int = 5
+                #   - Attribute access: self.x: int = 5
                 data.results[text_path.name] = run_speller(
                     dictionary=loaded_dict, 
                     text_path=text_path,
                     benchmarks=benchmarks,
                 )
+                result: SpellerResult | None = data.results[text_path.name]
+                if result is None:
+                    continue
                 
                 # "Update" by creating a NEW frozen instance (original unchanged)
                 # replace() doesn't mutate — it copies all fields into a new frozen instance with the
                 # specified fields overridden. The original object is untouched. This is the idiomatic
                 # pattern for "updating" immutable data in Python.
                 result = replace(
-                    data.results[text_path.name],
+                    result,
                     ops_name=data.name,
                     description=data.description,
                 )
