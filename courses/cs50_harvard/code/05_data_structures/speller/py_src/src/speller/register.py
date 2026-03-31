@@ -141,7 +141,7 @@ class DictInfo:
     name: str
     description: str
     # Optional fields with defaults afterwards
-    results: dict[str, SpellerResult] = field(default_factory=dict)
+    results: dict[str, SpellerResult | None] = field(default_factory=dict)
 
 # Tells pyright this is an INSTANCE
 #   dict_class: DictionaryProtocol          # an object with .load(), .check()
