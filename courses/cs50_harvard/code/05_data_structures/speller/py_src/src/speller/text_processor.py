@@ -222,7 +222,11 @@ def extract_words(filepath: str | Path) -> Iterator[str]:
     
     logger.debug("Extracting words from '%s'", path.name)
     
-    content = path.read_text(encoding="utf-8")
+    try:
+        content = path.read_text(encoding="utf-8")
+    except UnicodeDecodeError as e:
+        raise SystemExit(f"Decode Error in {path.name}: {e}") from e
+    
     length = len(content)
     pos = 0
     
