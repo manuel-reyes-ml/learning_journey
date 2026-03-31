@@ -272,8 +272,9 @@ def _build_parser() -> argparse.ArgumentParser:
 
 
 def _validate_paths(
-    dict_path: Path,
-    text_path: Path,
+    raw_path: Path,
+    *,
+    path_name: str = "path",
 ) -> ExitCode | None:
     """Validate that required files exist before processing.
 
@@ -306,12 +307,8 @@ def _validate_paths(
         load a 143K-word dictionary only to discover the text file
         is missing.
     """
-    if not dict_path.exists():
-        logger.error("Dictionary file not found: %s", dict_path)
-        return ExitCode.FILE_NOT_FOUND
-    
-    if not text_path.exists():
-        logger.error("Text file not found: %s", text_path)
+    if not raw_path.exists():
+        logger.error("%s file not found: %s", path_name.title(), raw_path)
         return ExitCode.FILE_NOT_FOUND
     
     return None  # None means "all good"
@@ -441,6 +438,9 @@ def main(argv: list[str] | None = None) -> ExitCode:
     
     # -- Step 3: Convert and validate paths --
     dict_path = Path(args.dictionary)
+    path_validation = _validate_paths(dict_path, path_name="dictionary")
+    if path_validation is not None:
+        return path_validation
     
     text_paths: list[Path] = _resolve_text_paths(args)
     if not text_paths:  # If no files in directory provided
@@ -455,9 +455,8 @@ def main(argv: list[str] | None = None) -> ExitCode:
     
     success = False
     try:
-        ops_names = _validate_ops(args.op)
-        
-        for operation in ops_names:
+        # _validate_ops() returns a list of valid ops
+        for operation in _validate_ops(args.op):
             data = dicts[operation]
             
             # -- Step 4: Create concrete dictionary -- 
@@ -468,10 +467,9 @@ def main(argv: list[str] | None = None) -> ExitCode:
             # To swap implementations:
             #   dictionary = DatabaseDictionary(conn_string)  # Stage 2
             #   dictionary = MockDictionary()                 # testing
-            dictionary = data.dict_class()
             
             # Load dictionary ONCE for this backend
-            loaded_dict, t_result = load_dictionary(dictionary=dictionary, dict_path=dict_path)
+            loaded_dict, load_result = load_dictionary(dictionary=data.dict_class(), dict_path=dict_path)
             
             # -- Step 5: Run spell checker --
             # run_speller() accepts DictionaryProtocol - it doesn´t know
@@ -480,14 +478,15 @@ def main(argv: list[str] | None = None) -> ExitCode:
             
             # Now iterate over all text files - no dictionary reload
             for text_path in text_paths:
-                validation_error = _validate_paths(dict_path, text_path)
-                if validation_error is not None:
+                path_validation = _validate_paths(text_path, path_name="text")
+                if path_validation is not None:
                     logger.warning("Skipping '%s': not found", text_path)
                     continue    # skip bad files, don't abort the batch
                 
                 benchmarks: dict[str, BenchmarkResult] = {}
+                benchmarks["load"] = load_result
                 
-                benchmarks["load"] = t_result
+                # Initial results[] (ops_name, description empty)
                 data.results[text_path.name] = run_speller(
                     dictionary=loaded_dict, 
                     text_path=text_path,
@@ -499,13 +498,16 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 # specified fields overridden. The original object is untouched. This is the idiomatic
                 # pattern for "updating" immutable data in Python.
                 result = replace(
-                    data.results[text_path.name],  # initial results[] (ops_name, description empty)
+                    data.results[text_path.name],
                     ops_name=data.name,
                     description=data.description,
                 )
             
                 # Show for the FIRST operation only (avoid duplicate files)
-                show_misspelled = args.show_misspelled and (operation == ops_names[0])
+                show_misspelled = (
+                    args.show_misspelled 
+                    and (operation == _validate_ops(args.op)[0])
+                )
         
                 # -- Step 6: Display results --
                 # format_report() returns a string — main() decides to print it.
