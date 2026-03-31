@@ -208,7 +208,7 @@ class SpellerResult:
             f"{'CHECKED FILE:':<{COL}}-- file not registered --"
         )
         lines.append(
-            f"{'FILE PATH:':<{COL}}{txt_file.fpath}"
+            f"{'FILE PATH:':<{COL}}{txt_file.fpath.parent}/"
             if txt_file else
             f"{'FILE PATH:':<{COL}}-- file not registered --"
         )
