@@ -96,61 +96,6 @@ ops_list: str = ", ".join(dicts.keys())
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
 
-def _validate_ops(ops_names: list[str]) -> list[str]:
-    """Validate and normalise requested backend operation names.
- 
-    Strips whitespace and punctuation from each name, lower-cases it,
-    and checks it against the live :data:`~speller.register.dicts`
-    registry.  Expands the special value ``"all"`` into every
-    registered key.
- 
-    Parameters
-    ----------
-    ops_names : list of str
-        Raw operation names from the ``-o`` / ``--operations`` argument.
- 
-    Returns
-    -------
-    list of str
-        Cleaned, validated operation names ready for iteration.
-        Order matches the input (or the registry insertion order for
-        ``"all"``).
- 
-    Raises
-    ------
-    KeyError
-        If any name (after cleaning) is not in :data:`dicts` and is
-        not the literal string ``"all"``.  The error message lists all
-        available operations.
- 
-    Examples
-    --------
-    >>> _validate_ops(["hash"])
-    [\'hash\']
-    >>> _validate_ops(["all"])
-    [\'hash\', \'list\', \'sorted\']   # depends on registered backends
-    >>> _validate_ops(["unknown"])
-    KeyError: "Unknown operation \'unknown\'. Available: hash, list, sorted"
-    """
-    clean_names = [
-        name.strip().strip(string.punctuation).lower()
-        for name in ops_names
-    ]
-    
-    for name in clean_names:
-        # This validates against the actual registry,
-        # which is the single source of truth.
-        if name not in dicts and (name != "all"):
-            raise KeyError(
-                f"Unknown operation '{name}'. Available: {ops_list}"
-            )
-
-        if name == "all":
-            clean_names = [name for name, _ in dicts.items()]
-    
-    return clean_names
-
-
 # Extracting parser construction into its own function means tests can parse
 # arguments without running the full program.
 def _build_parser() -> argparse.ArgumentParser:
@@ -341,6 +286,61 @@ def _resolve_text_paths(args: SpellerArgs) -> list[Path]:
                 seen.add(txt_file)
                 
     return paths       
+
+
+def _validate_ops(ops_names: list[str]) -> list[str]:
+    """Validate and normalise requested backend operation names.
+ 
+    Strips whitespace and punctuation from each name, lower-cases it,
+    and checks it against the live :data:`~speller.register.dicts`
+    registry.  Expands the special value ``"all"`` into every
+    registered key.
+ 
+    Parameters
+    ----------
+    ops_names : list of str
+        Raw operation names from the ``-o`` / ``--operations`` argument.
+ 
+    Returns
+    -------
+    list of str
+        Cleaned, validated operation names ready for iteration.
+        Order matches the input (or the registry insertion order for
+        ``"all"``).
+ 
+    Raises
+    ------
+    KeyError
+        If any name (after cleaning) is not in :data:`dicts` and is
+        not the literal string ``"all"``.  The error message lists all
+        available operations.
+ 
+    Examples
+    --------
+    >>> _validate_ops(["hash"])
+    [\'hash\']
+    >>> _validate_ops(["all"])
+    [\'hash\', \'list\', \'sorted\']   # depends on registered backends
+    >>> _validate_ops(["unknown"])
+    KeyError: "Unknown operation \'unknown\'. Available: hash, list, sorted"
+    """
+    clean_names = [
+        name.strip().strip(string.punctuation).lower()
+        for name in ops_names
+    ]
+    
+    for name in clean_names:
+        # This validates against the actual registry,
+        # which is the single source of truth.
+        if name not in dicts and (name != "all"):
+            raise KeyError(
+                f"Unknown operation '{name}'. Available: {ops_list}"
+            )
+
+        if name == "all":
+            clean_names = [name for name, _ in dicts.items()]
+    
+    return clean_names
 
 
 def _print_reports(reports: REPORT, infile_name: str) -> None:
