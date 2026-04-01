@@ -66,6 +66,7 @@ __all__ = [
     # Class
     "FileDirectories",
     "FileHandlerConfig",
+    "SpellerArgs",
 ]
 
 
@@ -334,6 +335,20 @@ class FileHandlerConfig:
         """
         return self.FILE_MB * self.MEGABYTE * self.KILOBYTE
 
+
+@dataclass(frozen=True)
+class SpellerArgs:
+    """
+    """
+    
+    text: str | None
+    dictionary: str
+    operations: list[str]
+    directory: Path | None
+    verbose: bool
+    no_log_file: bool
+    show_misspelled: bool
+    
 
 # =====================================================
 # Dataclass Instantiation
