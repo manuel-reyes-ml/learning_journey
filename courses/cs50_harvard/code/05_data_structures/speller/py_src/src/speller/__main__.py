@@ -314,13 +314,8 @@ def _validate_paths(
     return None  # None means "all good"
 
 
-# argparse.Namespace is the object that parser.parse_args() returns. It's
-# essentially a simple container that holds your parsed CLI arguments as
-# dot-access attributes.
-#
-# The tradeoff is that argparse.Namespace attribute access is typed as Any — Pyright can't verify
-# that args.text actually exists, because argparse builds the namespace dynamically at runtime.
-# That's just an argparse limitation, not something you did wrong.
+# The production pattern to know to get full type safety on CLI args, you define a typed
+# dataclass so you can access each arg directly as an attribute at static level.
 def _resolve_text_paths(args: SpellerArgs) -> list[Path]:
     """
     """
@@ -427,6 +422,9 @@ def main(argv: list[str] | None = None) -> ExitCode:
     # -- Step 1: Parse arguments --
     parser = _build_parser()
     raw: argparse.Namespace = parser.parse_args(argv)
+    
+    # Convert from Namespace to SpellerArgs attributes
+    # That gives you full Pyright coverage for the rest of main()
     args = SpellerArgs(
         text=raw.text,
         dictionary=raw.dictionary,
@@ -683,7 +681,7 @@ if __name__ == "__main__":
 
 
 # =====================================================
-# argparse.NameSpace Object
+# argparse.Namespace Object
 # =====================================================
 
 # argparse.Namespace is the object that parser.parse_args() returns. It's
