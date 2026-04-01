@@ -57,14 +57,15 @@ import sys
 #
 # Every other module lets ImportError propagate upward to here.
 try:
-    from dataclasses import replace
+    from dataclasses import replace, dataclass
     from pathlib import Path
     import argparse
     import logging
     import string
+    from typing import Final
     
     from speller.benchmarks import BenchmarkResult
-    from speller.config import ExitCode,  SpellerArgs, file_dirs, default_fnames
+    from speller.config import ExitCode, file_dirs, default_fnames
     from speller.load_dictionary import load_dictionary
     from speller.logger import configure_logging
     from speller.register import dicts
@@ -86,10 +87,35 @@ logger = logging.getLogger(__name__)
 
 
 # =============================================================================
-# CONSTANTS
+# MODULE CONFIGURATION
 # =============================================================================
+# =====================================================
+# Constants
+# =====================================================
 
-ops_list: str = ", ".join(dicts.keys())
+ops_list: Final[str] = ", ".join(dicts.keys())
+
+
+# =====================================================
+# Frozen Dataclass
+# ===================================================== 
+
+# SpellerArgs is a CLI-layer concern-it represents parsed
+# command-line arguments and belongs here.
+#
+# frozen=True makes instances immutable.
+@dataclass(frozen=True)
+class SpellerArgs:
+    """
+    """
+    
+    text: str | None
+    dictionary: str
+    operations: list[str]
+    directory: Path | None
+    verbose: bool
+    no_log_file: bool
+    show_misspelled: bool
 
 
 # =============================================================================

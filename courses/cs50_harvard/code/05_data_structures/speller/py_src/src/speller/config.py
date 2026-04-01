@@ -66,7 +66,6 @@ __all__ = [
     # Class
     "FileDirectories",
     "FileHandlerConfig",
-    "SpellerArgs",
 ]
 
 
@@ -343,20 +342,6 @@ class FileHandlerConfig:
             Maximum size in bytes (default: 5 × 1 024 × 1 024 = 5 242 880).
         """
         return self.FILE_MB * self.MEGABYTE * self.KILOBYTE
-
-
-@dataclass(frozen=True)
-class SpellerArgs:
-    """
-    """
-    
-    text: str | None
-    dictionary: str
-    operations: list[str]
-    directory: Path | None
-    verbose: bool
-    no_log_file: bool
-    show_misspelled: bool
     
 
 # =====================================================
