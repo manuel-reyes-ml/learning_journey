@@ -64,7 +64,7 @@ try:
     import string
     
     from speller.benchmarks import BenchmarkResult
-    from speller.config import ExitCode, file_dirs, default_fnames
+    from speller.config import ExitCode,  SpellerArgs, file_dirs, default_fnames
     from speller.load_dictionary import load_dictionary
     from speller.logger import configure_logging
     from speller.register import dicts
@@ -321,7 +321,7 @@ def _validate_paths(
 # The tradeoff is that argparse.Namespace attribute access is typed as Any — Pyright can't verify
 # that args.text actually exists, because argparse builds the namespace dynamically at runtime.
 # That's just an argparse limitation, not something you did wrong.
-def _resolve_text_paths(args: argparse.Namespace) -> list[Path]:
+def _resolve_text_paths(args: SpellerArgs) -> list[Path]:
     """
     """
     paths: list[Path] = []
@@ -335,8 +335,8 @@ def _resolve_text_paths(args: argparse.Namespace) -> list[Path]:
             seen.add(p)
             
     # Directory glob - same pattern as black/ruff/mypy
-    if args.dir:
-        dir_path = Path(args.dir)
+    if args.directory:
+        dir_path = Path(args.directory)
         if not dir_path.is_dir():
             logger.error("--dir path is not a directory: %s", dir_path)
             return []
@@ -426,7 +426,16 @@ def main(argv: list[str] | None = None) -> ExitCode:
     """
     # -- Step 1: Parse arguments --
     parser = _build_parser()
-    args = parser.parse_args(argv)
+    raw: argparse.Namespace = parser.parse_args(argv)
+    args = SpellerArgs(
+        text=raw.text,
+        dictionary=raw.dictionary,
+        operations=raw.ops, 
+        directory=raw.dir,
+        verbose=raw.verbose,
+        no_log_file=raw.no_log_file,
+        show_misspelled=raw.show_misspelled,
+    )
     
     # __ Step 2: Configure logging FIRST --
     # Must happen before any logger.info/debug calls.
@@ -458,7 +467,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
     success = False
     try:
         # _validate_ops() returns a list of valid ops
-        for operation in _validate_ops(args.ops):
+        for operation in _validate_ops(args.operations):
             data = dicts[operation]
             
             # -- Step 4: Create concrete dictionary -- 
@@ -522,7 +531,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 # Show for the FIRST operation only (avoid duplicate files)
                 show_misspelled = (
                     args.show_misspelled 
-                    and (operation == _validate_ops(args.op)[0])
+                    and (operation == _validate_ops(args.operations)[0])
                 )
         
                 # -- Step 6: Display results --
@@ -671,3 +680,18 @@ if __name__ == "__main__":
 #      g. print(result.format_report()) → CS50-format output
 #      h. return ExitCode.SUCCESS → 0
 # 6. sys.exit(0) → process exits cleanly
+
+
+# =====================================================
+# argparse.NameSpace Object
+# =====================================================
+
+# argparse.Namespace is the object that parser.parse_args() returns. It's
+# essentially a simple container that holds your parsed CLI arguments as
+# dot-access attributes.
+#
+# The tradeoff is that argparse.Namespace attribute access is typed as Any — Pyright can't verify
+# that args.text actually exists, because argparse builds the namespace dynamically at runtime.
+# That's just an argparse limitation, not something you did wrong.
+#
+#   def _resolve_text_paths(args: argparse.Namespace) -> list[Path]:
