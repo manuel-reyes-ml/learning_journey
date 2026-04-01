@@ -491,7 +491,10 @@ def main(argv: list[str] | None = None) -> ExitCode:
     success = False
     try:
         # _validate_ops() returns a list of valid ops
-        for operation in _validate_ops(args.operations):
+        validated_ops: list[str] = _validate_ops(args.operations)
+        first_op = validated_ops[0]
+        
+        for operation in validated_ops:
             data = dicts[operation]
             
             # -- Step 4: Create concrete dictionary -- 
@@ -516,7 +519,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 path_validation: ExitCode | None = _validate_paths(text_path, path_name="text")
                 if path_validation is not None:
                     logger.warning("Skipping '%s': not found", text_path)
-                    continue    # skip bad files, don't abort the batch
+                    continue    # skip missing files, don't abort the batch
                 
                 logger.info(
                     "Spell checking '%s' with dictionary '%s', in %s",
@@ -540,7 +543,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 )
                 result: SpellerResult | None = data.results[text_path.name]
                 if result is None:
-                    continue
+                    continue    # skip bad files, don't abort the batch
                 
                 # "Update" by creating a NEW frozen instance (original unchanged)
                 # replace() doesn't mutate — it copies all fields into a new frozen instance with the
@@ -553,10 +556,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 )
             
                 # Show for the FIRST operation only (avoid duplicate files)
-                show_misspelled = (
-                    args.show_misspelled 
-                    and (operation == _validate_ops(args.operations)[0])
-                )
+                show_misspelled = (args.show_misspelled and (operation == first_op))
         
                 # -- Step 6: Display results --
                 # format_report() returns a string — main() decides to print it.
