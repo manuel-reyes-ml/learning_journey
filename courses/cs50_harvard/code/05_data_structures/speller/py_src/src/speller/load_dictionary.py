@@ -11,7 +11,7 @@ import logging
 from pathlib import Path
 
 from speller.benchmarks import timer, BenchmarkResult
-from speller.speller import DictionaryProtocol
+from speller.protocols import DictionaryProtocol
 
 # No ImportError sys.exit() on regular module so the
 # error propagates to the caller (__main__.py).
