@@ -43,7 +43,8 @@ Matches speller.c usage::
 
 from __future__ import annotations
 
-import sys 
+import sys
+from tkinter.constants import TRUE 
 
 
 # =====================================================
@@ -302,7 +303,7 @@ def _resolve_text_paths(args: SpellerArgs) -> list[Path]:
             
     # Directory glob - same pattern as black/ruff/mypy
     if args.directory:
-        dir_path = Path(args.directory)
+        dir_path = args.directory  # <- args.directory is already Path | None
         if not dir_path.is_dir():
             logger.error("--dir path is not a directory: %s", dir_path)
             return []
@@ -355,16 +356,16 @@ def _validate_ops(ops_names: list[str]) -> list[str]:
         for name in ops_names
     ]
     
+    if "all" in clean_names:
+        return list(dicts.keys())  # <- clear intent, no mutation during iteration
+    
     for name in clean_names:
         # This validates against the actual registry,
         # which is the single source of truth.
-        if name not in dicts and (name != "all"):
+        if name not in dicts:
             raise KeyError(
                 f"Unknown operation '{name}'. Available: {ops_list}"
             )
-
-        if name == "all":
-            clean_names = [name for name, _ in dicts.items()]
     
     return clean_names
 
@@ -571,6 +572,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
 
     except KeyboardInterrupt:
         logger.warning("Interrupted by user. Exiting.")
+        success = True
         return ExitCode.KEYBOARD_INTERRUPT
     
     except SystemExit as e:
