@@ -264,7 +264,7 @@ def run_speller(
     *,
     dictionary: DictionaryProtocol,
     text_path: str | Path,
-    benchmarks: dict[str, BenchmarkResult] = {},
+    benchmarks: dict[str, BenchmarkResult] | None = None,  # <- None sentinel
 ) -> SpellerResult | None:  # pure computation, testable
     """Run the spell checker — orchestrates all components.
 
@@ -318,6 +318,11 @@ def run_speller(
         context manager wraps the entire check loop to capture total time.
         @timed is for one-shot operations like load() and size().
     """
+    path = Path(text_path) if isinstance(text_path, str) else text_path
+    
+    if benchmarks is None:
+        benchmarks = {}  # new dict created fresh each call
+    
     # =================================================================
     # STEP 1: Load dictionary (timed)
     # =================================================================
@@ -336,7 +341,6 @@ def run_speller(
     #
     # This is the streaming pipeline pattern:
     #   [file bytes] → extract_words → check → accumulate results
-    path = Path(text_path) if isinstance(text_path, str) else text_path
     
     misspelled_words: list[str] = []
     words_in_text = 0
