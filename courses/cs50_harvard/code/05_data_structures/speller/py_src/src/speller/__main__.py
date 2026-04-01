@@ -314,6 +314,13 @@ def _validate_paths(
     return None  # None means "all good"
 
 
+# argparse.Namespace is the object that parser.parse_args() returns. It's
+# essentially a simple container that holds your parsed CLI arguments as
+# dot-access attributes.
+#
+# The tradeoff is that argparse.Namespace attribute access is typed as Any — Pyright can't verify
+# that args.text actually exists, because argparse builds the namespace dynamically at runtime.
+# That's just an argparse limitation, not something you did wrong.
 def _resolve_text_paths(args: argparse.Namespace) -> list[Path]:
     """
     """
@@ -321,7 +328,7 @@ def _resolve_text_paths(args: argparse.Namespace) -> list[Path]:
     seen: set[Path] = set()
     
     # Single file from positional arg (existing behavior, unchanged)
-    if args.text:
+    if args.text:  # Pyright knows args has dynamic attributes
         p = Path(args.text)
         if p.exists() and p not in seen:
             paths.append(p)
