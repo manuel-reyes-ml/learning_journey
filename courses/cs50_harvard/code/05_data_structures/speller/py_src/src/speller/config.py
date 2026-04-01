@@ -113,6 +113,7 @@ class ExitCode(IntEnum):
     >>> ExitCode.SUCCESS == 0            # True — IntEnum compares to int
     True
     """
+    
     SUCCESS = 0
     USAGE_ERROR = 1
     FILE_NOT_FOUND = 2
@@ -148,6 +149,7 @@ class DefaultDirs(StrEnum):
     >>> Path("project") / DefaultDirs.DICT
     PosixPath(\'project/dictionaries\')
     """
+    
     DICT = "dictionaries"
     KEYS = "keys"
     TXT = "texts"
@@ -171,8 +173,10 @@ class DefaultFileNames(TypedDict, total=False):
     keys : tuple of str, optional
         Reserved for future API key filenames.  Not used in Stage 1.
     """
+    
     dictionaries: Required[DICT_FNAMES]  # Must be present
     keys: NotRequired[tuple[str, ...]]   # Optional
+
 
 # Build dictionary using DefaultFileNames structure
 default_fnames: DefaultFileNames = {
@@ -220,6 +224,7 @@ class FileDirectories:
     >>> dirs.log_file.name
     \'speller.log\'
     """
+    
     CUR_DIR: Final[Path] = Path(__file__).resolve().parent  # speller/
     ROOT_DIR: Final[Path] = CUR_DIR.parents[1]  # py_src/
     
@@ -241,6 +246,7 @@ class FileDirectories:
             Log filename, e.g. ``"speller.log"``.
         """
         return f"{self.CUR_DIR.name}.log"
+    
     
     @property  # Access function's return as an attribute
     def log_file(self) -> Path:
@@ -281,6 +287,7 @@ class FileHandlerConfig:
     KILOBYTE : int
         Bytes per unit (1024).
     """
+    
     LEVEL_DEFAULT: Final[int] = logging.INFO
     ENCODING: Final[str] = "utf-8"
     BACKUP_COUNT: Final[int] = 3
@@ -306,6 +313,7 @@ class FileHandlerConfig:
         """
         return ValueError(f"{var} must be positive (> 0)")
     
+    
     # The position of __post_init__ in source code doesn't matter-
     # Python's calls it automatically after the generated __init__
     # finishes (in dataclasses).
@@ -318,6 +326,7 @@ class FileHandlerConfig:
             raise self.negative_value("MEGABYTE")
         if self.KILOBYTE <= 0:
             raise self.negative_value("KILOBYTE")
+    
     
     @property  # Access function's return as an attribute
     def max_log_bytes(self) -> int:
