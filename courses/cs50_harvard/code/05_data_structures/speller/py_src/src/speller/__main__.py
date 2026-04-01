@@ -420,8 +420,8 @@ def main(argv: list[str] | None = None) -> ExitCode:
         the bottom. main() just returns the code.
     """
     # -- Step 1: Parse arguments --
-    parser = _build_parser()
-    raw: argparse.Namespace = parser.parse_args(argv)
+    # _build_parser() returns an ArgumentParser object
+    raw: argparse.Namespace = _build_parser().parse_args(argv)
     
     # Convert from Namespace to SpellerArgs attributes
     # That gives you full Pyright coverage for the rest of main()
