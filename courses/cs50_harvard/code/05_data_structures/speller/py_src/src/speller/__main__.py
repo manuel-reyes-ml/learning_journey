@@ -532,19 +532,22 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 benchmarks: dict[str, BenchmarkResult] = {}
                 benchmarks["load"] = load_result
                 
-                # Initial results[] (ops_name, description empty)
-                # data.results[str]: Type hints = ... fail, because in Python we cannot annotate
-                # a subscript assignment. PEP 526 only allows annotations on: 
-                #   - Simple names: x: int = 5
-                #   - Attribute access: self.x: int = 5
-                data.results[text_path.name] = run_speller(
-                    dictionary=loaded_dict, 
-                    text_path=text_path,
-                    benchmarks=benchmarks,
-                )
-                result: SpellerResult | None = data.results[text_path.name]
-                if result is None:
+                try:
+                    # Initial results[] (ops_name, description empty)
+                    # data.results[str]: Type hints = ... fail, because in Python we cannot annotate
+                    # a subscript assignment. PEP 526 only allows annotations on: 
+                    #   - Simple names: x: int = 5
+                    #   - Attribute access: self.x: int = 5
+                    data.results[text_path.name] = run_speller(
+                        dictionary=loaded_dict, 
+                        text_path=text_path,
+                        benchmarks=benchmarks,
+                    )
+                except ValueError as e:
+                    logger.warning("Skipping file: %s", e)
                     continue    # skip bad files, don't abort the batch
+                
+                result: SpellerResult = data.results[text_path.name]
                 
                 # "Update" by creating a NEW frozen instance (original unchanged)
                 # replace() doesn't mutate — it copies all fields into a new frozen instance with the
