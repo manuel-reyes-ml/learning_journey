@@ -265,7 +265,7 @@ def run_speller(
     dictionary: DictionaryProtocol,
     text_path: str | Path,
     benchmarks: dict[str, BenchmarkResult] | None = None,  # <- None sentinel
-) -> SpellerResult | None:  # pure computation, testable
+) -> SpellerResult:  # pure computation, testable
     """Run the spell checker — orchestrates all components.
 
     This function:
@@ -351,14 +351,10 @@ def run_speller(
             words: Iterator[str] = extract_words(content, path.name)
             first = next(words)
         except UnicodeDecodeError as e:
-            logger.error("Decode Error in %s: %s", path.name, e)
-            return
+            raise ValueError(f"Cannot decode '{path.name}': {e}") from e
+        
         except StopIteration:
-            logger.warning(
-                "Skipping '%s': file empty or no valid words found",
-                path.name
-            )
-            return
+            raise ValueError(f"No valid words in '{path.name}'") from None
         
         for word in itertools.chain([first], words):
             words_in_text +=1
