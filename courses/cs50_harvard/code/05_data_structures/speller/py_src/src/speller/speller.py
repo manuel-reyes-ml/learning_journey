@@ -346,6 +346,9 @@ def run_speller(
     words_in_text = 0
     
     with timer("check", input_file=path) as t:
+        # The exception pattern keeps the boundary clean. Raises ValueError because something
+        # went wrong in its domain-bad encoding, empty file. main() catches it and translates
+        # it to an ExitCode at the CLI boundary. That translation is exatly main()'s job.
         try:
             content = path.read_text(encoding="utf-8")
             words: Iterator[str] = extract_words(content, path.name)

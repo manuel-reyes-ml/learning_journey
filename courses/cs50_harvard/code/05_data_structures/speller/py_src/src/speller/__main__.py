@@ -243,6 +243,8 @@ def _build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+# Returns ExitCode correctly since its only consumer is main().
+# It exists specifically to serve exit code logic. 
 def _validate_paths(
     raw_path: Path,
     *,
