@@ -44,7 +44,6 @@ Matches speller.c usage::
 from __future__ import annotations
 
 import sys
-from tkinter.constants import TRUE 
 
 
 # =====================================================
@@ -297,7 +296,7 @@ def _resolve_text_paths(args: SpellerArgs) -> list[Path]:
     seen: set[Path] = set()
     
     # Single file from positional arg (existing behavior, unchanged)
-    if args.text:  # Pyright knows args has dynamic attributes
+    if args.text:  # SpellerArgs gives Pyright full static coverage here
         p = Path(args.text)
         if p.exists() and p not in seen:
             paths.append(p)
@@ -577,7 +576,6 @@ def main(argv: list[str] | None = None) -> ExitCode:
 
     except KeyboardInterrupt:
         logger.warning("Interrupted by user. Exiting.")
-        success = True
         return ExitCode.KEYBOARD_INTERRUPT
     
     except SystemExit as e:
