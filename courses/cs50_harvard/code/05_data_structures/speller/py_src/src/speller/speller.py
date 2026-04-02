@@ -278,25 +278,37 @@ def run_speller(
     Parameters
     ----------
     dictionary : DictionaryProtocol
-        Any object satisfying the DictionaryProtocol interface.
-        Injected by __main__.py — this function doesn't know or care
-        whether it's a HashTableDictionary, a DatabaseDictionary,
-        or a MockDictionary for testing.
+        A pre-loaded dictionary instance satisfying
+        :class:`~speller.protocols.DictionaryProtocol`.
+        Injected by ``__main__.py`` after :func:`~speller.load_dictionary.load_dictionary`
+        has already called ``load()`` — this function performs no loading.
+        Works with any backend: ``HashTableDictionary``, ``DatabaseDictionary``
+        (Stage 2), ``MockDictionary`` (testing).
     text_path : str or Path
         Path to the text file to spell-check.
-    dict_path : str or Path
-        Path to the dictionary file to load.
+    benchmarks : dict of {str : BenchmarkResult} or None, optional
+        Timing results accumulated so far (e.g. ``{"load": result}``
+        from :func:`~speller.load_dictionary.load_dictionary`).
+        ``None`` (default) creates a fresh ``{}`` each call — avoids
+        the mutable default argument footgun where a shared ``{}``
+        would carry state across batch iterations.
 
     Returns
     -------
     SpellerResult
         Frozen dataclass containing all results and benchmarks.
-        The caller decides how to display it (format_report(), logging, etc.)
+        The caller decides how to display it
+        (``format_report()``, logging, write to file).
 
     Raises
     ------
-    SystemExit
-        If the dictionary fails to load (cannot proceed without it).
+    ValueError
+        If the text file cannot be decoded as UTF-8
+        (``UnicodeDecodeError`` is re-raised with context preserved).
+        If the file is empty or contains no extractable words
+        (``StopIteration`` is suppressed — implementation detail).
+        The caller (``main()``) catches ``ValueError`` per file and
+        continues the batch; other files are not affected.
 
     Notes
     -----
