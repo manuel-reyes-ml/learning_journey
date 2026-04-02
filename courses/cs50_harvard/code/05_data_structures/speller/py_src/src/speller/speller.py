@@ -354,9 +354,14 @@ def run_speller(
             words: Iterator[str] = extract_words(content, path.name)
             first = next(words)
         except UnicodeDecodeError as e:
+            # from e - the original exception adds diagnostic value. Keep it visible.
             raise ValueError(f"Cannot decode '{path.name}': {e}") from e
         
+        # StopIteration is Python internals signal, not a real error.
+        # Shows an Iterator or Generator was exhausted.
         except StopIteration:
+            # from None - the original exception is an implementation detail
+            # or internal signal. Hide it.
             raise ValueError(f"No valid words in '{path.name}'") from None
         
         for word in itertools.chain([first], words):
@@ -395,6 +400,10 @@ def run_speller(
     return result
 
 
+# =============================================================================
+# SHORT REFERENCE GUIDES
+# =============================================================================
+
 # __main__.py is the COMPOSITION ROOT — the one place that picks the concrete class
 #   from speller.dictionary import HashTableDictionary
 #   from speller.speller import run_speller
@@ -406,4 +415,30 @@ def run_speller(
 # with predictable behavior. When you build Stage 2's database-backed
 # dictionary, you swap the implementation in __main__.py — speller.py
 # doesn't change at all.
-    
+
+
+# =====================================================
+# Chained Raise Exceptions
+# =====================================================
+
+# from e  — confusing to the caller
+# StopIteration
+# The above exception was the direct cause of the following exception:
+# ValueError: No valid words in 'empty.txt'
+
+# from None — clean
+# ValueError: No valid words in 'empty.txt'
+
+# The mechanical detail
+# Both work by setting dunder attributes on the raised exception:
+#   raise ValueError("msg") from e     # sets __cause__ = e,    __suppress_context__ = True
+#   raise ValueError("msg") from None  # sets __cause__ = None, __suppress_context__ = True
+#   raise ValueError("msg")            # sets __cause__ = None, __suppress_context__ = False
+                                       # Python still shows __context__ (implicit chaining)
+
+# That third case is the subtle one — a bare raise ValueError("msg") inside an except block still chains implicitly via __context__, showing the original exception with "During handling of the above exception, another exception occurred." from None is the only way to fully suppress that.
+
+# The decision rule
+#   from e — the original exception adds diagnostic value. Keep it visible.
+#   from None — the original exception is an implementation detail or internal signal. Hide it.
+#   bare raise — fine for quick scripts, but in production code you're leaving implicit chaining on that may or may not be useful depending on context.
