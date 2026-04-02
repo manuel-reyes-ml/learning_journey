@@ -106,7 +106,45 @@ ops_list: Final[str] = ", ".join(dicts.keys())
 # frozen=True makes instances immutable.
 @dataclass(frozen=True)
 class SpellerArgs:
-    """
+    """Typed container for parsed CLI arguments.
+
+    Converts ``argparse.Namespace`` — whose attributes are typed as
+    ``Any`` — into a fully typed, immutable dataclass.  This gives
+    Pyright complete static coverage for all ``args.*`` accesses in
+    ``main()`` and helper functions, catching typos and type mismatches
+    at analysis time rather than runtime.
+
+    ``frozen=True`` prevents accidental mutation after construction.
+    Constructed once in ``main()`` immediately after ``parse_args()``;
+    passed by value to helper functions.
+
+    Attributes
+    ----------
+    text : str or None
+        Path to a single text file.  ``None`` when only ``--dir``
+        is provided.
+    dictionary : str
+        Path to the dictionary file.  Defaults to
+        ``dictionaries/large`` when omitted from the CLI.
+    operations : list of str
+        Validated backend operation names (e.g. ``["hash", "sorted"]``).
+        Defaults to ``["hash"]``.
+    directory : Path or None
+        Directory to glob for ``.txt`` files.  ``None`` when
+        ``--dir`` is not provided.
+    verbose : bool
+        ``True`` enables ``DEBUG``-level console logging.
+    no_log_file : bool
+        ``True`` disables the rotating file handler.
+    show_misspelled : bool
+        ``True`` writes misspelled words to ``misspelled/`` directory.
+
+    Notes
+    -----
+    This is the typed-dataclass CLI args pattern described in the
+    ``argparse.Namespace`` reference at the bottom of this module.
+    The same pattern applies to every future project's CLI layer:
+    ``DataVaultArgs``, ``PolicyPulseArgs``, ``FormSenseArgs``.
     """
     
     text: str | None
@@ -257,10 +295,13 @@ def _validate_paths(
 
     Parameters
     ----------
-    dict_path : Path
-        Path to the dictionary file.
-    text_path : Path
-        Path to the text file.
+    raw_path : Path
+        The filesystem path to validate.  Can be a dictionary file,
+        a text file, or any path that must exist before processing.
+    path_name : str, optional
+        Human-readable label used in the error log message
+        (e.g. ``"dictionary"``, ``"text"``).  Title-cased automatically.
+        Defaults to ``"path"``.
 
     Returns
     -------
@@ -290,7 +331,52 @@ def _validate_paths(
 # The production pattern to know to get full type safety on CLI args, you define a typed
 # dataclass so you can access each arg directly as an attribute at static level.
 def _resolve_text_paths(args: SpellerArgs) -> list[Path]:
-    """
+    """Resolve the ordered, deduplicated list of text files to process.
+
+    Supports three calling modes:
+
+    - **Single file only** — ``args.text`` is set, ``args.directory``
+      is ``None``.  Returns a one-element list.
+    - **Directory only** — ``args.directory`` is set, ``args.text``
+      is ``None``.  Returns all ``*.txt`` files in sorted order.
+    - **Both** — single file first, then directory files.
+      Deduplicates so the single file is not processed twice if it
+      lives inside the directory.
+
+    Parameters
+    ----------
+    args : SpellerArgs
+        Parsed and typed CLI arguments.  Uses ``args.text`` and
+        ``args.directory``.
+
+    Returns
+    -------
+    list of Path
+        Ordered, deduplicated list of ``.txt`` files ready for
+        iteration.  Empty list signals that no valid input was found;
+        the caller (``main()``) maps this to
+        :attr:`~speller.config.ExitCode.FILE_NOT_FOUND`.
+
+    Notes
+    -----
+    Why ``sorted()`` for the directory glob?
+        ``Path.glob()`` returns results in filesystem order, which
+        varies by OS and filesystem.  ``sorted()`` makes the batch
+        order deterministic — same output every run, same log entries
+        in the same order.  Essential for reproducible benchmarks and
+        test assertions.
+
+    Why a ``seen`` set for deduplication?
+        If the user passes ``texts/cat.txt`` as a positional arg AND
+        ``--dir texts/``, ``cat.txt`` would appear twice without the
+        set.  Processing the same file twice wastes time and produces
+        duplicate report entries.
+
+    Why return an empty list instead of raising?
+        Returning an empty list separates detection (here) from action
+        (``main()``).  ``main()`` decides the exit code and log message;
+        this function just reports what it found.  The same pattern as
+        :func:`_validate_paths`.
     """
     paths: list[Path] = []
     seen: set[Path] = set()
