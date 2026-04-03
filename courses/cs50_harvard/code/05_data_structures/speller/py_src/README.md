@@ -8,10 +8,10 @@ A Python reimplementation of [CS50's Speller](https://cs50.harvard.edu/x/psets/5
 
 ## What It Does
 
-Spell-checks a text file against a dictionary and reports statistics with performance benchmarks. Run multiple backends in a single invocation to compare data structures side by side:
+Spell-checks text files against a dictionary and reports statistics with performance benchmarks. Run multiple backends in a single invocation to compare data structures side by side. Process an entire directory of files in one command — the dictionary loads once and is reused across the full batch:
 
 ```
-$ speller -o hash sorted texts/austen.txt
+$ speller --ops hash sorted texts/austen.txt
 
 MISSPELLED WORDS -- HashTableDictionary --
 
@@ -50,7 +50,7 @@ Misspelled words are saved to `misspelled/<filename>` when `--show-misspelled` i
 
 CS50's Speller is a C exercise about hash tables and memory management. This project asks: *what happens when you reimplement it in Python with production standards?*
 
-The answer: every pattern here — Protocol interfaces, ABC Template Method, plugin registry, `Generic[T]` class hierarchies, frozen dataclasses, generator streaming, context manager timing, `pyproject.toml` packaging — transfers directly to the [7 portfolio projects](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html) in my roadmap. It's not a toy spell checker; it's a training ground for GenAI application architecture.
+The answer: every pattern here — Protocol interfaces, ABC Template Method, plugin registry, `Generic[T]` class hierarchies, frozen dataclasses, generator streaming, context manager timing, batch pipeline architecture, `pyproject.toml` packaging — transfers directly to the [7 portfolio projects](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html) in my roadmap. It's not a toy spell checker; it's a training ground for GenAI application architecture.
 
 | Pattern Learned Here | Used Next In |
 | --- | --- |
@@ -61,6 +61,8 @@ The answer: every pattern here — Protocol interfaces, ABC Template Method, plu
 | `@dataclass(frozen=True)` vs Pydantic | DataVault (structured outputs) |
 | Generator streaming (`yield`) | PolicyPulse (RAG chunk retrieval) |
 | `@contextmanager` timing | All 7 projects (benchmark pipelines) |
+| Batch pipeline (load once, iterate N) | PolicyPulse (batch doc ingestion), FormSense (batch form processing) |
+| Layer-boundary exception handling | All 7 projects (domain raises, CLI layer translates) |
 | `pyproject.toml` packaging | All 7 projects |
 | Dependency injection | FormSense (swappable extraction backends) |
 | `pytest` fixtures | All 7 projects (CI/CD via GitHub Actions) |
@@ -72,7 +74,7 @@ The answer: every pattern here — Protocol interfaces, ABC Template Method, plu
 ```
 speller/
 ├── __init__.py           NullHandler logging + version + side-effect backend registration
-├── __main__.py           CLI entry point (composition root)
+├── __main__.py           CLI entry point (composition root) + SpellerArgs typed dataclass
 ├── config.py             Constants, enums, path resolution
 ├── protocols.py          DictionaryProtocol (structural typing)
 ├── benchmarks.py         timer() context manager + timed() decorator
@@ -80,7 +82,8 @@ speller/
 ├── logger.py             ColoredFormatter + configure_logging()
 ├── dictionaries.py       _BaseDictionary[WordContainer] ABC + four concrete backends
 ├── text_processor.py     Character-level state machine (generator)
-└── speller.py            Orchestrator + SpellerResult (dependency injection)
+├── load_dictionary.py    load_dictionary() — loads once for the full batch pipeline
+└── speller.py            Orchestrator + SpellerResult (check + size, no loading)
 ```
 
 ### Dependency Chain
@@ -100,6 +103,7 @@ benchmarks.py ──────────── standalone (stdlib only)
 logger.py ──────────────── imports config
 text_processor.py ──────── imports config
 
+load_dictionary.py ─────── imports protocols, benchmarks
 speller.py ─────────────── imports protocols, benchmarks, text_processor
 __main__.py ────────────── imports EVERYTHING (composition root)
                            reads dicts{} from register
@@ -139,6 +143,48 @@ class DictDictionary(_BaseDictionary[dict[str, None]]):    # W = dict[str, None]
 ```python
 @register_class("dict", "Use Dictionary as hash table - O(1) average lookup.")
 class DictDictionary(_BaseDictionary[dict[str, None]]): ...
+```
+
+**Load once, iterate N — batch pipeline separation** — `load_dictionary.py` handles the expensive `load()` call once per backend, returning the populated instance. `run_speller()` receives an already-loaded dictionary and handles only the check loop. Without this separation, a batch of N files would reload 143,091 words N times. The same pattern applies in every Stage 2+ project: ChromaDB client loaded once before ingesting N documents, Gemini Vision client initialised once before processing N forms.
+
+```python
+# load_dictionary.py — runs once per backend
+loaded_dict, load_result = load_dictionary(dictionary=HashTableDictionary(), dict_path=dict_path)
+
+# run_speller() — runs N times, no reload
+for text_path in text_paths:
+    result = run_speller(dictionary=loaded_dict, text_path=text_path, benchmarks={"load": load_result})
+```
+
+**Layer-boundary exception handling** — `run_speller()` raises `ValueError` for per-file errors (bad encoding, empty file). `main()` catches `ValueError` at the CLI boundary, logs a warning, and continues the batch — other files are not affected. `SystemExit` is reserved for fatal errors (dictionary fails to load) where no further processing is possible. Domain functions never import `ExitCode`; the CLI layer translates domain exceptions to exit codes.
+
+```python
+# speller.py — domain layer raises, doesn't decide exit codes
+except UnicodeDecodeError as e:
+    raise ValueError(f"Cannot decode '{path.name}': {e}") from e   # from e: context preserved
+except StopIteration:
+    raise ValueError(f"No valid words in '{path.name}'") from None  # from None: impl detail hidden
+
+# __main__.py — CLI layer catches and translates
+except ValueError as e:
+    logger.warning("Skipping file: %s", e)
+    continue
+```
+
+**Typed dataclass CLI args** — `argparse.Namespace` attributes are typed as `Any` at static analysis time. Immediately converting `raw: argparse.Namespace` to a `SpellerArgs` frozen dataclass in `main()` gives Pyright complete static coverage for all `args.*` accesses in `main()` and every helper function. The same pattern applies to every future project's CLI layer: `DataVaultArgs`, `PolicyPulseArgs`, `FormSenseArgs`.
+
+```python
+raw: argparse.Namespace = _build_parser().parse_args(argv)
+
+args = SpellerArgs(          # fully typed from this point forward
+    text=raw.text,
+    dictionary=raw.dictionary,
+    operations=raw.ops,
+    directory=raw.dir,
+    verbose=raw.verbose,
+    no_log_file=raw.no_log_file,
+    show_misspelled=raw.show_misspelled,
+)
 ```
 
 **Dataclass over Pydantic** — `BenchmarkResult` and `SpellerResult` are frozen dataclasses (6.5x faster creation, 2.5x less memory than Pydantic). Pydantic is reserved for service boundaries in future projects.
@@ -211,16 +257,25 @@ speller dictionaries/small texts/cat.txt
 python -m speller texts/austen.txt
 
 # Select a specific backend
-speller -o sorted texts/austen.txt
+speller --ops sorted texts/austen.txt
 
 # Run the dict backend
-speller -o dict texts/austen.txt
+speller --ops dict texts/austen.txt
 
 # Run multiple backends and compare
-speller -o hash dict sorted texts/austen.txt
+speller --ops hash dict sorted texts/austen.txt
 
 # Run all four backends
-speller -o all texts/austen.txt
+speller --ops all texts/austen.txt
+
+# Process all .txt files in a directory (dictionary loads once for the full batch)
+speller --dir texts/
+
+# Combine single file and directory (single file runs first, no duplicates)
+speller texts/cat.txt --dir texts/
+
+# Batch with a specific backend
+speller --ops sorted --dir texts/
 
 # Verbose mode (DEBUG-level console output)
 speller --verbose texts/constitution.txt
@@ -263,7 +318,7 @@ pytest -s
 | `test_benchmarks.py` | Context manager testing, `pytest.approx` |
 | `test_dictionary.py` | `parametrize`, Protocol `isinstance`, integration markers |
 | `test_text_processor.py` | Factory fixture, `parametrize` with IDs, generator materialization |
-| `test_speller.py` | `MockDictionary` injection, `SystemExit` testing |
+| `test_speller.py` | `MockDictionary` injection, `ValueError` testing |
 | `test_main.py` | `argv` injection, `capsys`, argparse testing |
 
 The dependency injection payoff — `MockDictionary` satisfies `DictionaryProtocol` structurally, no files or disk needed:
@@ -280,7 +335,6 @@ def test_run_speller_counts(tmp_text_file):
     result = run_speller(
         dictionary=MockDictionary(),
         text_path=tmp_text_file,
-        dict_path="fake/path",
     )
     assert result.words_misspelled == 1
 ```
@@ -338,6 +392,7 @@ speller/
 │       ├── logger.py
 │       ├── dictionaries.py
 │       ├── text_processor.py
+│       ├── load_dictionary.py
 │       └── speller.py
 ├── tests/
 │   ├── __init__.py
@@ -372,6 +427,8 @@ speller/
 - `from __future__ import annotations` — Deferred evaluation in every module
 - `TypeVar` **with constraints** — `WordContainer = TypeVar("WordContainer", set[str], list[str], dict[str, None])` solves mypy invariance in Generic class hierarchies
 - `ParamSpec` **+** `TypeVar` — Type-safe decorators preserving function signatures
+- **Typed dataclass CLI args** — `argparse.Namespace` converted to `SpellerArgs` frozen dataclass immediately after parsing; Pyright has full static coverage for all subsequent attribute access
+- **Layer-boundary exception handling** — domain functions raise `ValueError`; the CLI layer catches and translates to `ExitCode`; `from e` preserves diagnostic context, `from None` suppresses internal signals
 - **NumPy-style docstrings** — Consistent documentation across all public APIs
 - `__all__` **exports** — Explicit public API per module
 - `logging` **over** `print` — `NullHandler` library pattern + `RotatingFileHandler`
@@ -393,9 +450,10 @@ The text processor replicates `speller.c`'s character-by-character state machine
 | --- | --- |
 | Python 3.12+ | Language (`type X = ...` syntax, PEP 695) |
 | `set` / `list` / `dict` / `bisect` (built-in) | Four dictionary backends |
+| `itertools.chain` | Peek-ahead generator pattern in batch check loop |
 | `argparse` | CLI argument parsing |
 | `logging` + `RotatingFileHandler` | Structured logging |
-| `dataclasses` | Immutable result containers |
+| `dataclasses` | Immutable result containers + typed CLI args |
 | `typing.Protocol` | Structural typing interfaces |
 | `typing.Generic` + `TypeVar` | Parameterised class hierarchies |
 | `contextlib.contextmanager` | Benchmark timing |
@@ -420,6 +478,8 @@ Building this project taught me production Python patterns that directly apply t
 7. **Generator streaming** is the foundation for LLM token streaming, RAG chunk retrieval, and ETL pipeline processing.
 8. `pyproject.toml` replaces 5+ config files and is non-negotiable for modern Python.
 9. **Dependency injection via Protocol** makes every component independently testable — `MockDictionary` is five lines and no files required.
+10. **Load once, iterate N** — separating the expensive initialisation step from the per-item processing loop is the core pattern for batch ETL, bulk document ingestion, and any pipeline where startup cost dominates. `load_dictionary.py` makes this explicit and reusable.
+11. **Layer-boundary exception handling** — domain functions raise typed exceptions (`ValueError`); the CLI layer catches and maps to exit codes. `from e` preserves diagnostic context for real errors; `from None` hides internal Python signals (`StopIteration`) that are implementation details, not user-facing errors.
 
 ---
 
