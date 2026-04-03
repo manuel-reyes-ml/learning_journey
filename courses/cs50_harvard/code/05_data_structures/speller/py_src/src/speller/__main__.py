@@ -599,10 +599,11 @@ def main(argv: list[str] | None = None) -> ExitCode:
         logger.error("No text files found. Provide a file or --dir path.")
         return ExitCode.FILE_NOT_FOUND
     
-    success = False
+    # Variables to  build General Report
     files_not_found = 0
-    files_in_dir = 0
     files_with_error= {}
+   
+    success = False
     try:
         # _validate_ops() returns a list of valid ops
         validated_ops: list[str] = _validate_ops(args.operations)
@@ -627,12 +628,15 @@ def main(argv: list[str] | None = None) -> ExitCode:
             # run_speller() accepts DictionaryProtocol - it doesn´t know
             # or care that we passed a HashTableDictionary.
             logger.debug("Running Speller with '%s'", data.name)
+
+            files_in_dir = len(text_paths)
             
             # Now iterate over all text files - no dictionary reload
             for text_path in text_paths:
                 path_validation: ExitCode | None = _validate_paths(text_path, path_name="text")
                 if path_validation is not None:
                     logger.warning("Skipping '%s': not found", text_path)
+                    files_not_found += 1
                     continue    # skip missing files, don't abort the batch
                 
                 logger.info(
