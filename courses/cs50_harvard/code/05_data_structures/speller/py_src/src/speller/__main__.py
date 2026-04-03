@@ -62,7 +62,7 @@ try:
     import argparse
     import logging
     import string
-    from typing import Final
+    from typing import Final, TypedDict, Required, NotRequired
     
     from speller.benchmarks import BenchmarkResult
     from speller.config import ExitCode, file_dirs, default_fnames
@@ -95,6 +95,19 @@ logger = logging.getLogger(__name__)
 
 ops_list: Final[str] = ", ".join(dicts.keys())
 
+
+# =====================================================
+# Class Constants Configuration
+# =====================================================
+
+class FileErrorData(TypedDict, total=False):
+    """
+    """
+    
+    error_decode: Required[list[str]]
+    error_empty: Required[list[str]]
+    error_other: NotRequired[list[str]]
+    
 
 # =====================================================
 # Frozen Dataclass
@@ -155,6 +168,16 @@ class SpellerArgs:
     no_log_file: bool
     show_misspelled: bool
 
+
+@dataclass(frozen=True, slots=True)
+class GeneralReport:
+    """
+    """
+    
+    files_not_found: int
+    files_in_dir: int
+    files_with_error: FileErrorData
+    
 
 # =============================================================================
 # INTERNAL HELPER FUNCTIONS
@@ -577,6 +600,9 @@ def main(argv: list[str] | None = None) -> ExitCode:
         return ExitCode.FILE_NOT_FOUND
     
     success = False
+    files_not_found = 0
+    files_in_dir = 0
+    files_with_error= {}
     try:
         # _validate_ops() returns a list of valid ops
         validated_ops: list[str] = _validate_ops(args.operations)
