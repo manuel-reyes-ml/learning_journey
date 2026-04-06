@@ -12,7 +12,7 @@
 [![Timeline](https://img.shields.io/badge/Timeline-37%20Months%20(5%20Stages)-blue)]()
 [![GenAI-First](https://img.shields.io/badge/🤖_GenAI--First-2026_Market_Advantage-blueviolet)]()
 
-📋 **[View Complete 37-Month Interactive Roadmap (v8) →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
+📋 **[View Complete 37-Month Interactive Roadmap (v8.2) →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
 
 ---
 
@@ -40,6 +40,7 @@
 - ✅ **Production system deployed** - Live ETL pipeline saving $15K/year with public code
 - ✅ **7 production-grade projects** - From ETL foundations to RAG, Multimodal AI, and statistical research systems
 - ✅ **GenAI integration from Day 1** - LLM SDKs (Gemini, OpenAI, Claude), RAG, Multimodal AI, Pydantic structured outputs, PandasAI, Cursor AI
+- ✅ **Evaluation-driven development** - DeepEval + pytest integrated into every project; RAGAS RAG Triad metrics; Docker containerization across all repos
 - ✅ **Skills progression by design** - Each project introduces new capabilities that build on the previous
 - ✅ **Domain expertise** - 15+ years data experience, 8 years finance, 6 years trading
 - ✅ **Measurable business impact** - 95% efficiency gains, documented results
@@ -61,19 +62,22 @@ Each stage combines traditional data skills with GenAI augmentation:
 ```
 Foundation: Python, SQL, Statistics, Visualization
 + GenAI Layer: IBM GenAI Engineering cert, LLM SDKs (Gemini, OpenAI, Claude), RAG, Multimodal AI, Pydantic, Streamlit, PandasAI, Cursor AI
-= Result: AI-powered dashboards with natural language interfaces + production GenAI applications
++ Evaluation Layer: DeepEval + pytest integration, RAGAS (RAG Triad metrics), LangSmith observability
++ Containerization: Docker fundamentals, Dockerfile for every project
+= Result: AI-powered dashboards with natural language interfaces + production GenAI applications with evaluation-driven development
 ```
 
 **Stage 2: GenAI Data Engineer + AI Systems Architect** 📅 PLANNED  
 ```
-Foundation: AWS, Airflow, PySpark, PostgreSQL
+Foundation: AWS, Airflow, PySpark, PostgreSQL, BigQuery
 + AI Systems Layer: Vector DBs (Pinecone/Weaviate/Qdrant), RAG infrastructure, embedding pipelines
++ Containerization: Docker & Kubernetes Masterclass, production container orchestration
 = Result: AI-first data pipelines feeding LLM systems with unstructured data ETL
 ```
 
 **Stage 3: ML Engineer + Local LLM Specialist** 📅 PLANNED
 ```
-Foundation: scikit-learn, TensorFlow, PyTorch, MLOps
+Foundation: scikit-learn, TensorFlow/Keras, PyTorch, MLOps, NVIDIA DLI certification
 + LLM Layer: Ollama (local LLMs), fine-tuning (LoRA/QLoRA/PEFT), on-premise AI for finance
 = Result: Private AI systems solving finance's data privacy problem
 ```
@@ -109,6 +113,8 @@ Foundation: Production architecture, thought leadership
 
 > **7 projects ordered by skills progression** — each builds on the previous, from ETL foundations to flagship research system.
 
+> **🏗️ Production GitHub Standard (v8.2):** Every project ships with: architecture diagram (Mermaid), Dockerfile, evaluation metrics table (DeepEval + pytest), demo GIF, and "What I Learned" section. All projects include DeepEval evaluation framework and Docker containerization support.
+
 ### 1. **[1099 Reconciliation ETL Pipeline](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline)** ✅ Live Production
 
 Automated Python ETL pipeline reconciling retirement plan distribution data between Relius and Matrix financial systems at Daybright Financial.
@@ -140,7 +146,7 @@ Natural language analytics for retirement plan operations with PII protection, A
 | **Hybrid Analytics** | Pre-built dashboards + AI chat (works even without API key) |
 | **Structured Outputs** | Pydantic-validated AI responses with type-safe schemas |
 
-**Tech:** Python • pandas • Streamlit • Gemini SDK • PandasAI • Pydantic • GitHub Actions CI
+**Tech:** Python • pandas • Streamlit • Gemini SDK • PandasAI • Pydantic • DeepEval • Docker • GitHub Actions CI
 
 **New skills introduced:** + LLM SDK, PandasAI, Streamlit, Pydantic structured outputs, PII handling
 
@@ -163,9 +169,9 @@ RAG chatbot that answers employee policy questions with cited sources and auto-e
 | **Smart Escalation** | Confidence < 0.7 → auto-generate HR ticket with context |
 | **RAG Pipeline** | Document → Chunk → Embed → Retrieve → Generate |
 
-**Tech:** Python • ChromaDB • Gemini Embeddings • Streamlit • Pydantic • GitHub Actions CI
+**Tech:** Python • ChromaDB • Gemini Embeddings • Streamlit • Pydantic • DeepEval • RAGAS • Docker • GitHub Actions CI
 
-**New skills introduced:** + Embeddings, ChromaDB, RAG pipeline, semantic search, ticket escalation
+**New skills introduced:** + Embeddings, ChromaDB, RAG pipeline, semantic search, ticket escalation, RAG Triad evaluation
 
 ---
 
@@ -186,7 +192,7 @@ Multimodal AI system that reads retirement plan distribution forms (handwritten 
 | **Smart Routing** | Complete → operations ticket \| Incomplete → email to advisor |
 | **Confidence** | Field-level extraction confidence scoring |
 
-**Tech:** Python • Gemini Vision SDK • Streamlit • Pydantic • GitHub Actions CI
+**Tech:** Python • Gemini Vision SDK • Streamlit • Pydantic • DeepEval • Docker • GitHub Actions CI
 
 **New skills introduced:** + Multimodal AI (Vision LLM), form extraction, business rule validation, email automation
 
@@ -210,7 +216,7 @@ Operations teams lack visibility into workflow demand patterns, leading to react
 | **Insights Generation** | Traditional business metrics | **AI-generated commentary** for stakeholders |
 | **Data Privacy** | PII handling, synthetic data for GitHub | AI with privacy guardrails, read-only access |
 
-**Tech:** Python • pandas • Streamlit • Gemini SDK • PandasAI • Plotly • GitHub Actions CI
+**Tech:** Python • pandas • Streamlit • Gemini SDK • PandasAI • Plotly • DeepEval • Docker • GitHub Actions CI
 
 **New skills introduced:** + Enterprise real data integration, advanced analytics, stakeholder reporting
 
@@ -233,7 +239,7 @@ Consumer-facing dashboard that helps households optimize streaming subscriptions
 | **Savings Engine** | Cost-per-view analytics + annual savings projections |
 | **Guardrails** | Price validation, financial disclaimers, scope limits |
 
-**Tech:** Python • httpx async • Watchmode/TMDB APIs • Streamlit • Gemini SDK • Pydantic • GitHub Actions CI
+**Tech:** Python • httpx async • Watchmode/TMDB APIs • Streamlit • Gemini SDK • Pydantic • DeepEval • LangSmith • Docker • GitHub Actions CI
 
 **New skills introduced:** + External API integration, consumer UX, optimization algorithms, async HTTP
 
@@ -259,7 +265,7 @@ Consumer-facing dashboard that helps households optimize streaming subscriptions
 
 **What makes it defensible:** Walk-forward validation • Survivorship bias controls • Modern stack (DuckDB, Parquet) • Progressive architecture through all career stages
 
-**Tech:** Python • DuckDB • Parquet • httpx async • edgartools • yfinance • Wikipedia API • Gemini SDK • PandasAI • Streamlit • GitHub Actions CI
+**Tech:** Python • DuckDB • Parquet • httpx async • edgartools • yfinance • Wikipedia API • Gemini SDK • PandasAI • Streamlit • DeepEval • Docker • GitHub Actions CI
 
 **New skills introduced:** + Statistical methodology, DuckDB lakehouse, async data collection, multi-source alternative data
 
@@ -324,7 +330,7 @@ learning_journey/
 │
 ├── 📂 docs/                              # Documentation & guides
 │   ├── index.html                        # GitHub Pages landing page
-│   ├── roadmap.html                      # Interactive 37-month GenAI-first roadmap (v8)
+│   ├── roadmap.html                      # Interactive 37-month GenAI-first roadmap (v8.2)
 │   └── activation-plans/                 # Structured learning guides
 │       ├── README.md                     # Guide overview
 │       ├── WEEK_01_MASTER_ACTIVATION_PLAN.md
@@ -352,7 +358,9 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 ### **Stage 1: GenAI-First Data Analyst & AI Engineer** (Months 1-5) 🟢 ACTIVE
 
 **Core Skills:** Python • SQL • Statistics • Visualization • Power BI/Tableau  
-**GenAI Skills:** LLM SDKs (Gemini, OpenAI, Claude) • RAG (ChromaDB) • Multimodal AI (Gemini Vision) • Pydantic • Streamlit • PandasAI • Cursor AI • Prompt Engineering
+**GenAI Skills:** LLM SDKs (Gemini, OpenAI, Claude) • RAG (ChromaDB) • Multimodal AI (Gemini Vision) • Pydantic • Streamlit • PandasAI • Cursor AI • Prompt Engineering  
+**Evaluation:** DeepEval + pytest • RAGAS (RAG Triad) • LangSmith  
+**Containerization:** Docker fundamentals (KodeKloud)
 
 **Learning Path:**
 - CS50 (Harvard) - Computer Science fundamentals
@@ -365,6 +373,8 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 - 🤖 Generative AI Data Analyst Specialization (Vanderbilt)
 - 🤖 ChatGPT Prompt Engineering (DeepLearning.AI)
 - 🤖 30 Days of Streamlit Challenge — Build AI UIs fast
+- 🧪 **Building & Evaluating Advanced RAG** (DeepLearning.AI) — RAG Triad metrics, evaluation-driven development
+- 🐳 **Docker for Beginners with Hands-on Labs** (KodeKloud/Coursera) — Containerization fundamentals
 
 **Key Deliverables (7 projects, easy → flagship):**
 1. **1099 ETL Pipeline** ✅ — Production system, $15K savings (Foundation: ETL + Testing + CI/CD)
@@ -381,8 +391,9 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 
 ### **Stage 2: GenAI Data Engineer + AI Systems Architect** (Months 6-15) 📅 Planned
 
-**Core Skills:** AWS • Airflow • PySpark • PostgreSQL • Data warehousing  
-**AI Systems Skills:** Vector DBs (Pinecone/Weaviate/Qdrant) • RAG infrastructure • Embedding pipelines • Unstructured data ETL
+**Core Skills:** AWS • Airflow • PySpark • PostgreSQL • BigQuery • Data warehousing  
+**AI Systems Skills:** Vector DBs (Pinecone/Weaviate/Qdrant) • RAG infrastructure • Embedding pipelines • Unstructured data ETL  
+**Containerization:** Docker & Kubernetes Masterclass (Months 12-13)
 
 **Key Deliverable:** All 7 projects evolve — Cloud deployment, production databases, scheduled pipelines
 
@@ -390,7 +401,7 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 
 ### **Stage 3: ML Engineer + Local LLM Specialist** (Months 16-29) 📅 Planned
 
-**Core Skills:** scikit-learn • TensorFlow • PyTorch • MLOps  
+**Core Skills:** scikit-learn • TensorFlow/Keras • PyTorch • MLOps • NVIDIA DLI certification  
 **LLM Skills:** Ollama (local LLMs) • Fine-tuning (LoRA/QLoRA/PEFT) • On-premise AI for finance
 
 **Key Deliverable:** Fine-tuned financial LLM solving finance's data privacy problem
@@ -436,14 +447,24 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 - **Streamlit** - AI-powered web app interfaces
 - **PandasAI** - Natural language data querying for dashboard integration
 
+**AI Evaluation (v8.2 Cross-Project Standard):**
+- **DeepEval + pytest** - Evaluation-driven development integrated into CI/CD for all projects
+- **RAGAS** - RAG Triad metrics (Context Relevance, Groundedness, Answer Relevance) for PolicyPulse
+- **LangSmith** - LLM observability, tracing, and debugging for StreamSmart and beyond
+
+**Containerization:**
+- **Docker** - Dockerfile for every portfolio project (Stage 1 fundamentals via KodeKloud course)
+
 **Analysis:**
 - **ChatGPT Plus** - Advanced Data Analysis, code generation, debugging
 
 **Learning:**
-- IBM GenAI Engineering Professional Certificate (RAG, LangChain, fine-tuning, deployment)
+- IBM GenAI Engineering Professional Certificate (RAG, LangChain, fine-tuning, deployment) — Stage 1 primary
 - Vanderbilt GenAI Specialization (CLUE/TRUST/CAPTURE frameworks)
 - DeepLearning.AI Prompt Engineering (API integration, production patterns)
 - AI Python for Beginners (Andrew Ng's AI-first Python foundation)
+- Building & Evaluating Advanced RAG (DeepLearning.AI) — RAG Triad evaluation with TruLens/DeepEval
+- Docker for Beginners with Hands-on Labs (KodeKloud/Coursera) — Containerization fundamentals
 
 ### **Integration Principles**
 
@@ -456,8 +477,8 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 
 | Stage | AI Tools & Frameworks |
 |-------|----------------------|
-| **2** | Vector DBs (Pinecone/Weaviate) + RAG infrastructure + Embedding pipelines |
-| **3** | Ollama (local LLMs) + Fine-tuning (LoRA/QLoRA/PEFT) + Generative AI with LLMs (AWS) |
+| **2** | Vector DBs (Pinecone/Weaviate) + RAG infrastructure + Embedding pipelines + Docker & Kubernetes Masterclass + BigQuery |
+| **3** | Ollama (local LLMs) + Fine-tuning (LoRA/QLoRA/PEFT) + Generative AI with LLMs (AWS) + NVIDIA DLI |
 | **4** | MCP (Anthropic) + LangGraph + CrewAI + Andrew Ng's Agentic AI + Multi-agent systems |
 | **5** | Automated Testing for LLMOps + CI/CD for AI + Production evaluation + Monitoring |
 
@@ -469,6 +490,8 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 **Data:** pandas, NumPy, Matplotlib, Seaborn, Plotly  
 **Databases:** SQLite, DuckDB, ChromaDB, PostgreSQL  
 **AI/GenAI:** LLM SDKs (Gemini, OpenAI, Claude), Gemini Vision, Pydantic, LangChain, Streamlit, PandasAI, Cursor AI, ChatGPT Plus  
+**Evaluation:** DeepEval + pytest, RAGAS (RAG Triad), LangSmith observability  
+**Containerization:** Docker (Stage 1 fundamentals), Docker & Kubernetes (Stage 2)  
 **Platforms:** Coursera, DataCamp, DeepLearning.AI
 
 ```bash
