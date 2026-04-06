@@ -10,11 +10,13 @@
 
 Each project introduces new capabilities that build on the previous — demonstrating systematic skill growth, not scattered tutorials.
 
+> 🏗️ **Production Standard (v8.2):** Every project ships with architecture diagram (Mermaid), Dockerfile, evaluation metrics table (DeepEval + pytest), demo GIF, and "What I Learned" section.
+
 | # | Project | What It Does | New Skills Added | Status |
 |---|---------|-------------|-----------------|--------|
 | 1 | 🧾 **[1099 Reconciliation Pipeline](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline)** | ETL reconciling retirement plan data between financial systems | ETL, pandas, pytest, CI/CD | ✅ **Production** |
 | 2 | 🔐 **[DataVault Analyst](https://github.com/manuel-reyes-ml/datavault-analyst)** | PII-safe "Chat With Your Data" for retirement plan operations | + LLM SDK, PandasAI, Pydantic, PII governance | 📅 Next |
-| 3 | 📋 **[PolicyPulse](https://github.com/manuel-reyes-ml/policypulse)** | RAG chatbot answering HR policy questions with cited sources | + Embeddings, ChromaDB, RAG, semantic search | 📅 Planned |
+| 3 | 📋 **[PolicyPulse](https://github.com/manuel-reyes-ml/policypulse)** | RAG chatbot answering HR policy questions with cited sources | + Embeddings, ChromaDB, RAG, semantic search, RAG Triad evaluation | 📅 Planned |
 | 4 | 📄 **[FormSense](https://github.com/manuel-reyes-ml/formsense)** | Vision AI reads handwritten distribution forms and routes them | + Multimodal AI (Gemini Vision), business rule validation | 📅 Planned |
 | 5 | 📊 **[Operations-Demand-Intelligence](https://github.com/manuel-reyes-ml/operations-demand-intelligence)** | AI-powered workflow demand analysis for staffing decisions | + Enterprise real data, advanced analytics, Plotly | 🚧 In Dev |
 | 6 | 📺 **[StreamSmart Optimizer](https://github.com/manuel-reyes-ml/streamsmart-optimizer)** | AI streaming subscription rotation advisor with live APIs | + External APIs, consumer UX, async HTTP, optimization | 📅 Planned |
@@ -65,11 +67,15 @@ Each project lives in its own repo for clean version control, focused documentat
 
 **Code:** Type hints • NumPy-style docstrings • error handling • modular design • clean commit history
 
-**Testing & CI:** pytest • GitHub Actions CI • synthetic test data (no client PII)
+**Testing & CI:** pytest • DeepEval evaluation framework • GitHub Actions CI • synthetic test data (no client PII)
 
 **AI Integration:** Production guardrails (read-only, cost controls, disclaimers) • transparent AI assistance • Pydantic-validated outputs
 
-**Documentation:** Problem → solution → impact • architecture diagrams • setup instructions • demo links
+**AI Evaluation:** DeepEval + pytest across all projects • RAGAS RAG Triad metrics (PolicyPulse) • LangSmith observability (StreamSmart)
+
+**Containerization:** Dockerfile in every project • Docker for Beginners (KodeKloud) foundation
+
+**Documentation:** Problem → solution → impact • Mermaid architecture diagrams • setup instructions • demo GIF • "What I Learned" section
 
 ---
 
@@ -78,7 +84,7 @@ Each project lives in its own repo for clean version control, focused documentat
 | Resource | Link |
 |----------|------|
 | 📊 **Portfolio Hub** | [data-portfolio](https://github.com/manuel-reyes-ml/data-portfolio) |
-| 📋 **Interactive Roadmap** | [37-Month Roadmap (v8)](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html) |
+| 📋 **Interactive Roadmap** | [37-Month Roadmap (v8.2)](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html) |
 | 👤 **GitHub Profile** | [@manuel-reyes-ml](https://github.com/manuel-reyes-ml) |
 | 🔗 **LinkedIn** | [Manuel Reyes](https://linkedin.com/in/mr410) |
 
