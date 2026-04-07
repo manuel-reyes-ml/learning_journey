@@ -58,7 +58,7 @@ import sys
 # Every other module lets ImportError propagate upward to here.
 try:
     from collections import defaultdict
-    from dataclasses import replace, dataclass
+    from dataclasses import replace, dataclass, KW_ONLY
     from pathlib import Path
     import argparse
     import logging
@@ -170,14 +170,38 @@ class SpellerArgs:
     show_misspelled: bool
 
 
+# frozen=True makes instances immutable.
+# slots=True prevents dynamic attribute creation and
+# reduces memory fooprint.
+# Together they create a truly locked-down data container.
 @dataclass(frozen=True, slots=True)
 class GeneralReport:
     """
     """
-    
+    # Required fields (no default) must come first
+    # Optional fields with defaults afterwards
+    _: KW_ONLY  # Everything after is keyword-only
     files_not_found: int
     files_in_dir: int
     files_with_error: FileErrorData
+    
+    def format_general_report(self) -> str:
+        """
+        """
+        lines: list[str] = []
+        
+        # Header
+        lines.append("\n")
+        lines.append("=" * 80)
+        lines.append("GENERAL REPORT")
+        lines.append("=" * 80)
+        
+        # Statistics
+        lines.append(f"{'\nFiles not found:':<22}{self.files_not_found}")
+        lines.append(f"{'Files in directory:':<22}{self.files_in_dir}")
+        lines.append(f"{'Files with error:':<22}{self.files_with_error}")
+        
+        return "\n".join(lines)
     
 
 # =============================================================================
