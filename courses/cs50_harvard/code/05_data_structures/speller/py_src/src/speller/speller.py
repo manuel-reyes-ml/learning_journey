@@ -367,7 +367,10 @@ def run_speller(
             first = next(words)
         except UnicodeDecodeError as e:
             # from e - the original exception adds diagnostic value. Keep it visible.
-            raise ValueError(f"Cannot decode '{path.name}': {e}") from e
+            raise UnicodeDecodeError(
+                e.encoding, e.object, e.start, e.end,
+                f"Cannot decode '{path.name}': {e}",
+            ) from e
         
         # StopIteration is Python internals signal, not a real error.
         # Shows an Iterator or Generator was exhausted.
