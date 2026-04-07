@@ -57,6 +57,7 @@ import sys
 #
 # Every other module lets ImportError propagate upward to here.
 try:
+    from collections import defaultdict
     from dataclasses import replace, dataclass
     from pathlib import Path
     import argparse
@@ -601,7 +602,8 @@ def main(argv: list[str] | None = None) -> ExitCode:
     
     # Variables to  build General Report
     files_not_found = 0
-    files_with_error= {}
+    # defaultdict() to initialize values as empty lists
+    files_with_error= defaultdict(list[str])
    
     success = False
     try:
@@ -660,8 +662,17 @@ def main(argv: list[str] | None = None) -> ExitCode:
                         text_path=text_path,
                         benchmarks=benchmarks,
                     )
+                except UnicodeDecodeError as e:
+                    logger.warning("Skipping file: %s", e)
+                    files_with_error["error_decode"].append(text_path.name)
+                    continue    # skip bad files, don't abort the batch
                 except ValueError as e:
                     logger.warning("Skipping file: %s", e)
+                    files_with_error["error_empty"].append(text_path.name)
+                    continue    # skip bad files, don't abort the batch
+                except Exception as e:
+                    logger.warning("Exception: Skipping file: %s", e)
+                    files_with_error["error_other"].append(text_path.name)
                     continue    # skip bad files, don't abort the batch
                 
                 result: SpellerResult = data.results[text_path.name]
