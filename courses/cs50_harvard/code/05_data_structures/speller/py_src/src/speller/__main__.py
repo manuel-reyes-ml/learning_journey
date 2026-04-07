@@ -197,9 +197,11 @@ class GeneralReport:
         lines.append("=" * 80)
         
         # Statistics
-        lines.append(f"{'\nFiles not found:':<22}{self.files_not_found}")
-        lines.append(f"{'Files in directory:':<22}{self.files_in_dir}")
-        lines.append(f"{'Files with error:':<22}{self.files_with_error}")
+        lines.append("\n")
+        lines.append(f"{'FILES NOT FOUND':<22}{self.files_not_found}")
+        lines.append(f"{'FILES IN DIRECTORY:':<22}{self.files_in_dir}")
+        lines.append(f"{'FILES WITH ERROR:':<22}{self.files_with_error}")
+        lines.append("\n")
         
         return "\n".join(lines)
     
@@ -505,7 +507,7 @@ def _validate_ops(ops_names: list[str]) -> list[str]:
     return clean_names
 
 
-def _print_reports(reports: REPORT, infile_name: str) -> None:
+def _print_reports(reports: REPORT | str, infile_name: str = "file") -> None:
     """Write the misspelled-words file (if requested) and print the report.
  
     If ``reports.misspelled`` is not ``None``, creates the misspelled
@@ -529,13 +531,13 @@ def _print_reports(reports: REPORT, infile_name: str) -> None:
     Directory creation uses ``mkdir(parents=True, exist_ok=True)`` so
     the call is idempotent — no error if the directory already exists.
     """
-    if reports.misspelled:
+    if isinstance(reports, REPORT) and reports.misspelled:
         file_dirs.MISS_DIR.mkdir(parents=True, exist_ok=True)
         out_file = file_dirs.MISS_DIR / f"misspelled_{infile_name}"
         out_file.write_text(reports.misspelled, encoding="utf-8")
         logger.info("Misspelled words saved to '%s'", out_file)
     
-    print(reports.main)
+    print(reports if isinstance(reports, str) else reports.main)
     
 
 # =============================================================================
@@ -625,6 +627,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         return ExitCode.FILE_NOT_FOUND
     
     # Variables to  build General Report
+    files_in_dir = 0
     files_not_found = 0
     # defaultdict() to initialize values as empty lists
     files_with_error= defaultdict(list[str])
@@ -720,6 +723,13 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 # In tests, you'd just check result.words_misspelled.
                 reports: REPORT = result.format_report(log_misspelled=show_misspelled)
                 _print_reports(reports, text_path.name)
+        
+        general_report = GeneralReport(
+            files_not_found=files_not_found,
+            files_in_dir=files_in_dir,
+            files_with_error=files_with_error,
+        )
+        _print_reports(general_report.format_general_report())
         
         # -- Step 7: Return exit code --
         success = True
