@@ -727,7 +727,11 @@ def main(argv: list[str] | None = None) -> ExitCode:
         general_report = GeneralReport(
             files_not_found=files_not_found,
             files_in_dir=files_in_dir,
-            files_with_error=files_with_error,
+            files_with_error=FileErrorData(  
+                error_decode=files_with_error["error_decode"],
+                error_empty=files_with_error["error_empty"],
+                error_other=files_with_error["error_other"],
+            ),  # Construct FileErrorData with defaultdict values
         )
         _print_reports(general_report.format_general_report())
         
