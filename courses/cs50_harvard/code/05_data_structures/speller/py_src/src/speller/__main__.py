@@ -717,13 +717,14 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 # Show for the FIRST operation only (avoid duplicate files)
                 show_misspelled = (args.show_misspelled and (operation == first_op))
         
-                # -- Step 6: Display results --
+                # -- Step 6: Display SpellerResult reports --
                 # format_report() returns a string — main() decides to print it.
                 # In a web app (Stage 1 Streamlit), you'd display it differently.
                 # In tests, you'd just check result.words_misspelled.
                 reports: REPORT = result.format_report(log_misspelled=show_misspelled)
                 _print_reports(reports, text_path.name)
         
+        # -- Step 7: Buils and display GeneralReport reports --
         general_report = GeneralReport(
             files_not_found=files_not_found,
             files_in_dir=files_in_dir,
@@ -735,7 +736,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         )
         _print_reports(general_report.format_general_report())
         
-        # -- Step 7: Return exit code --
+        # -- Step 8: Return exit code --
         success = True
         return ExitCode.SUCCESS
 
