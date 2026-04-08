@@ -142,6 +142,9 @@ Issues = "https://github.com/manuel-reyes-ml/learning_journey/issues"
 [tool.setuptools.packages.find]
 where = ["src"]
 
+[tool.setuptools.package-data]
+speller = ["py.typed"]
+
 
 # =============================================================================
 # PYTEST CONFIGURATION
