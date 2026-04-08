@@ -371,7 +371,7 @@ def run_speller(
             # constructor signature that requires exactly 5 positional arguments:
             raise UnicodeDecodeError(
                 e.encoding, e.object, e.start, e.end,
-                f"Cannot decode '{path.name}': {e}",
+                f"Cannot decode '{path.name}': {e.reason}",
             ) from e
         
         # StopIteration is Python internals signal, not a real error.
@@ -453,9 +453,27 @@ def run_speller(
 #   raise ValueError("msg")            # sets __cause__ = None, __suppress_context__ = False
                                        # Python still shows __context__ (implicit chaining)
 
-# That third case is the subtle one — a bare raise ValueError("msg") inside an except block still chains implicitly via __context__, showing the original exception with "During handling of the above exception, another exception occurred." from None is the only way to fully suppress that.
+# That third case is the subtle one — a bare raise ValueError("msg") inside an except block still
+# chains implicitly via __context__, showing the original exception with "During handling of the above
+# exception, another exception occurred." from None is the only way to fully suppress that.
 
 # The decision rule
 #   from e — the original exception adds diagnostic value. Keep it visible.
 #   from None — the original exception is an implementation detail or internal signal. Hide it.
-#   bare raise — fine for quick scripts, but in production code you're leaving implicit chaining on that may or may not be useful depending on context.
+#   bare raise — fine for quick scripts, but in production code you're leaving implicit chaining
+#   on that may or may not be useful depending on context.
+
+
+# =====================================================
+# UnicodeDecodeError details
+# =====================================================
+
+# UnicodeDecodeError inherits from UnicodeError, which stores all 5 constructor arguments as
+# attributes. reason is the human-readable explanation of why the decode failed:
+
+# except UnicodeDecodeError as e:
+#     print(e.encoding)  # "utf-8"
+#     print(e.object)    # b'\xff\xfe...'  ← the raw bytes that failed
+#     print(e.start)     # 0              ← index where the bad byte starts
+#     print(e.end)       # 1              ← index where the bad byte ends
+#     print(e.reason)    # "invalid start byte"  ← the WHY
