@@ -367,6 +367,8 @@ def run_speller(
             first = next(words)
         except UnicodeDecodeError as e:
             # from e - the original exception adds diagnostic value. Keep it visible.
+            # UnicodeDecodeError is not a normal exception — it has a rigid C-level
+            # constructor signature that requires exactly 5 positional arguments:
             raise UnicodeDecodeError(
                 e.encoding, e.object, e.start, e.end,
                 f"Cannot decode '{path.name}': {e}",
