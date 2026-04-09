@@ -164,19 +164,35 @@ class SpellerResult:
     def format_report(self, *, log_misspelled: bool = False) -> REPORT:
         """Format results to match CS50 speller.c output exactly.
 
-        Returns a string rather than printing directly because:
-        - Testable: assert result.format_report() == expected_output
-        - Flexible: caller decides destination (stdout, file, log)
-        - Composable: can be included in larger reports
+        Returns a :class:`REPORT` namedtuple rather than printing
+        directly — the caller decides the output destination (stdout,
+        log file, test assertion).  This is command-query separation:
+        ``format_report()`` *queries* the data; the caller *commands*
+        what to do with the result.
 
-        This pattern is called "command-query separation":
-        - format_report() QUERIES the data (returns string, no side effects)
-        - The caller COMMANDS what to do with it (print, write, send)
+        Parameters
+        ----------
+        log_misspelled : bool, optional
+            If ``True``, the returned :attr:`REPORT.misspelled` field
+            contains a newline-joined string of all misspelled words
+            for writing to a file.  If ``False`` (default),
+            :attr:`REPORT.misspelled` is ``None``.
 
         Returns
         -------
-        str
-            Formatted report matching CS50's exact output format.
+        REPORT
+            Named tuple with two fields:
+
+            - ``main`` — the full CS50-format summary string, always
+              populated.
+            - ``misspelled`` — newline-joined misspelled word list, or
+              ``None`` when ``log_misspelled=False``.
+
+        Notes
+        -----
+        Returning ``REPORT`` instead of a plain ``str`` separates the
+        console summary from the optional misspelled-words file content.
+        :func:`~speller.__main__._print_reports` handles both fields.
         """
         lines: list[str] = []
         
