@@ -211,6 +211,19 @@ def register_class(name: str, description: str = "") -> RegDecorator:
        handled automatically by the ``__init__.py`` side-effect import.
     """
     def decorator(dict_class: type[DictionaryProtocol]) -> type[DictionaryProtocol]:
+        """Insert ``dict_class`` into :data:`dicts` and return it unchanged.
+
+        Parameters
+        ----------
+        dict_class : type[DictionaryProtocol]
+            The concrete dictionary class being registered.
+
+        Returns
+        -------
+        type[DictionaryProtocol]
+            The same class passed in, unmodified.  ``@functools.wraps``
+            is unnecessary — there is no wrapper function substituted.
+        """
         dicts[name] = DictInfo(
             dict_class=dict_class,
             name=dict_class.__name__,
