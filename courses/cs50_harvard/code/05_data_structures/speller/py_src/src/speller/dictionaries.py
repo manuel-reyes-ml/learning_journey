@@ -59,7 +59,7 @@ from abc import ABC, abstractmethod
 import bisect   # Binary Search
 from pathlib import Path
 import logging
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, override
 
 from speller.config import MAX_WORD_LENGTH
 from speller.register import register_class
@@ -729,8 +729,13 @@ class SortedListDictionary(_BaseDictionary[list[str]]):
     
     def _add_word(self, word: str) -> None:
         bisect.insort(self._words, word)  # insert in sorted order
-        
-        
+    
+    
+    # Override the parent's check method
+    # Apply override decorator to a subclass method that overrides a base class method.
+    # Static type checkers will warn if the base class is modified such that the overridden method
+    # no longer exists — avoiding accidentally turning a method override into dead code.
+    @override
     def check(self, word: str) -> bool:
         """Check if a word exists using binary search — O(log n).
  
