@@ -102,7 +102,25 @@ ops_list: Final[str] = ", ".join(dicts.keys())
 # =====================================================
 
 class FileErrorData(TypedDict, total=False):
-    """
+    """Typed mapping for per-batch file error tracking.
+
+    Uses ``TypedDict`` with ``Required`` / ``NotRequired`` to enforce
+    that both error lists must always be present while ``error_other``
+    is optional.  Populated via a ``defaultdict(list)`` in ``main()``
+    and read when constructing :class:`GeneralReport`.
+
+    Fields
+    ------
+    error_decode : list of str
+        Filenames that raised :exc:`UnicodeDecodeError` during text
+        extraction.  Required — always present, may be empty.
+    error_empty : list of str
+        Filenames that contained no extractable words (empty files or
+        files with only digits/punctuation).  Required — always present,
+        may be empty.
+    error_other : list of str, optional
+        Filenames that raised an unexpected :exc:`Exception`.  Not
+        required — omitted when no unexpected errors occurred.
     """
     
     error_decode: Required[list[str]]
@@ -176,8 +194,39 @@ class SpellerArgs:
 # Together they create a truly locked-down data container.
 @dataclass(frozen=True, slots=True)
 class GeneralReport:
+    """Immutable summary of a complete batch spell-check run.
+
+    Aggregates file-level statistics across all text files processed
+    in a single ``main()`` invocation.  ``frozen=True`` prevents
+    accidental mutation after construction; ``slots=True`` reduces
+    memory footprint.
+
+    Constructed once at the end of ``main()`` after all text files
+    have been processed.  The same result-container pattern used by
+    :class:`~speller.speller.SpellerResult` — compute all data first,
+    then display via :meth:`format_general_report`.
+
+    Attributes
+    ----------
+    files_not_found : int
+        Count of text paths that did not exist on disk.
+    files_in_dir : int
+        Total number of ``.txt`` files resolved for the batch
+        (single file + directory glob, deduplicated).
+    files_with_error : FileErrorData
+        Categorised error lists keyed by error type.  See
+        :class:`FileErrorData` for field details.
+
+    Notes
+    -----
+    The same frozen-result-dataclass pattern applies to every future
+    project:
+
+    - DataVault:   ``AnalysisReport`` (token usage, latency, error counts)
+    - PolicyPulse: ``RAGBatchReport`` (retrieval counts, RAGAS scores)
+    - AFC:         ``BacktestReport`` (trade counts, drawdown, Sharpe)
     """
-    """
+    
     # Required fields (no default) must come first
     # Optional fields with defaults afterwards
     _: KW_ONLY  # Everything after is keyword-only
@@ -186,7 +235,25 @@ class GeneralReport:
     files_with_error: FileErrorData
     
     def format_general_report(self) -> str:
-        """
+        """Format the batch summary into a human-readable report string.
+
+        Builds a fixed-width text report aligned to match the
+        :meth:`~speller.speller.SpellerResult.format_report` style.
+        Returns a string rather than printing directly so the caller
+        decides the output destination (stdout, log file, test assertion).
+
+        Returns
+        -------
+        str
+            Multi-line report including a ``GENERAL REPORT`` header,
+            file counts, and the full :class:`FileErrorData` breakdown.
+
+        Notes
+        -----
+        Command-query separation: this method *queries* the data and
+        returns a string.  :func:`_print_reports` is the *command* that
+        decides to print it.  The same separation applies to
+        :meth:`~speller.speller.SpellerResult.format_report`.
         """
         lines: list[str] = []
         
@@ -724,7 +791,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 reports: REPORT = result.format_report(log_misspelled=show_misspelled)
                 _print_reports(reports, text_path.name)
         
-        # -- Step 7: Buils and display GeneralReport reports --
+        # -- Step 7: Builds and display GeneralReport report --
         general_report = GeneralReport(
             files_not_found=files_not_found,
             files_in_dir=files_in_dir,
