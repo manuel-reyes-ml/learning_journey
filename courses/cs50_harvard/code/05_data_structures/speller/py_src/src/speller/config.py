@@ -317,6 +317,26 @@ class FileHandlerConfig:
     # Python's calls it automatically after the generated __init__
     # finishes (in dataclasses).
     def __post_init__(self) -> None:
+        """Validate that all numeric configuration fields are positive.
+
+        Called automatically by the dataclass machinery after ``__init__``
+        completes.  Raises :exc:`ValueError` (via :meth:`negative_value`)
+        for any field that is zero or negative, because a log handler
+        configured with non-positive values will fail silently at runtime.
+
+        Raises
+        ------
+        ValueError
+            If any of ``BACKUP_COUNT``, ``FILE_MB``, ``MEGABYTE``, or
+            ``KILOBYTE`` is less than or equal to zero.
+
+        Notes
+        -----
+        ``frozen=True`` dataclasses still support ``__post_init__`` —
+        the freeze constraint applies to attribute *assignment after*
+        init, not to the init process itself.  All validation here runs
+        before the instance is returned to the caller.
+        """
         if self.BACKUP_COUNT <= 0:
             raise self.negative_value("BACKUP_COUNT")
         if self.FILE_MB <= 0:
