@@ -599,10 +599,12 @@ class HashTableDictionary(_BaseDictionary[set[str]]):  # inherits from ABC
     """
     
     def _create_container(self) -> set[str]:
+        """Return an empty ``set`` — O(1) average lookup container."""
         return set()
     
     
     def _add_word(self, word: str) -> None:
+        """Add ``word`` to the set via ``set.add()``."""
         self._words.add(word)
     
     # satisfies Protocol via inherited methods
@@ -660,10 +662,12 @@ class ListDictionary(_BaseDictionary[list[str]]):  # inherits from ABC
     """
     
     def _create_container(self) -> list[str]:
+        """Return an empty ``list`` — O(n) linear-search container."""
         return []
     
     
     def _add_word(self, word: str) -> None:
+        """Append ``word`` to the list in insertion order."""
         self._words.append(word)
 
     # satisfies Protocol via inherited methods
@@ -724,10 +728,12 @@ class SortedListDictionary(_BaseDictionary[list[str]]):
     """
     
     def _create_container(self) -> list[str]:
+        """Return an empty ``list`` — maintained in sorted order by ``_add_word``."""
         return []
     
     
     def _add_word(self, word: str) -> None:
+        """Insert ``word`` in alphabetical order via :func:`bisect.insort`."""
         bisect.insort(self._words, word)  # insert in sorted order
     
     
@@ -895,10 +901,12 @@ class DictDictionary(_BaseDictionary[dict[str, None]]):  # inherits from ABC
     """
     
     def _create_container(self) -> dict[str, None]:
+        """Return an empty ``dict[str, None]`` — O(1) key-lookup container."""
         return {}
     
     
     def _add_word(self, word: str) -> None:
+        """Store ``word`` as a key with ``None`` sentinel value."""
         self._words[word] = None
 
     # satisfies Protocol via inherited methods
