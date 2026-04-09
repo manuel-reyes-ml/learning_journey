@@ -394,11 +394,37 @@ def timed(operation_name: str) -> Callable[[Callable[P, T]], Callable[P, T]]:
     # Returns the actual decorator function
     
     def decorator(func: Callable[P, T]) -> Callable[P, T]:
+        """Wrap ``func`` with timing logic and return the wrapper.
+
+        Parameters
+        ----------
+        func : Callable[P, T]
+            The function to wrap.  Its full type signature is captured
+            via ``ParamSpec`` ``P`` and ``TypeVar`` ``T``.
+
+        Returns
+        -------
+        Callable[P, T]
+            A wrapper with the same signature as ``func`` plus a
+            ``.benchmark`` attribute initialised to ``None``.
+        """
         # LAYER 2: receives the function being decorated
         # Returns the wrapper that replaces the original function
         
         @wraps(func)  # Preserve func.__name__, .__doc__, etc.
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
+            """Execute ``func`` inside a :func:`timer` block.
+
+            Returns
+            -------
+            T
+                The original return value of ``func``, unchanged.
+
+            Notes
+            -----
+            After each call, ``wrapper.benchmark`` is updated to the
+            :class:`BenchmarkResult` for that invocation.
+            """
             # LAYER 3: receives the arguments when the function is called
             # This is what actually runs when you call load_dictionary(path)
         #                   ↑                 ↑
