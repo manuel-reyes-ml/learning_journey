@@ -46,7 +46,7 @@ References
 from __future__ import annotations
 
 from logging.handlers import RotatingFileHandler
-from typing import Final
+from typing import Final, override
 import logging
 import sys
 
@@ -108,7 +108,37 @@ class ColoredFormatter(logging.Formatter):
     RESET: Final[str] = "\033[0m"
     
     # Override the parent's format method
+    # Apply override decorator to a subclass method that overrides a base class method.
+    # Static type checkers will warn if the base class is modified such that the overridden method
+    # no longer exists — avoiding accidentally turning a method override into dead code.
+    @override
     def format(self, record: logging.LogRecord) -> str:
+        """Format a log record with ANSI color codes for the record's level.
+
+        Overrides :meth:`logging.Formatter.format`.  Calls the parent
+        implementation first to produce the fully formatted message string
+        (timestamp, level name, message body), then wraps the result in
+        the ANSI escape sequence for the record's log level.
+
+        Parameters
+        ----------
+        record : logging.LogRecord
+            The log record to format.  Provided automatically by the
+            logging framework — callers never pass this directly.
+
+        Returns
+        -------
+        str
+            The formatted message string wrapped in ANSI color codes,
+            followed by :attr:`RESET` to prevent color bleed into
+            subsequent terminal output.
+
+        Notes
+        -----
+        ``super().format(record)`` is called before color wrapping so
+        that exception tracebacks appended by the parent formatter are
+        also wrapped in the level's color, matching the message style.
+        """
         # Step 1: Get the color for this log level
         color = self.COLORS.get(record.levelno, self.RESET)
         
