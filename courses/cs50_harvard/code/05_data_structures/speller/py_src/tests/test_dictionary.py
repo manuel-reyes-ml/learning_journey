@@ -6,6 +6,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+import pytest
 
 from speller.register import dicts  # triggers __ini__.py -> registration
 from speller.protocols import DictionaryProtocol
@@ -24,11 +25,13 @@ class TestProtocolSatisfaction:
     isinstance() works because DictionaryProtocol is @runtime_checkable.
     """
     
-    def test_satisfies_protocol(self) -> None:
+    # Using pytest-idiomatic version using parametrize - which gives each backend its own pass/fail
+    # row in the output.
+    @pytest.mark.parametrize("key", list(dicts.keys()))
+    def test_satisfies_protocol(self, key: str) -> None:
         """HashTableDictionary passes isinstance check for Protocol."""
-        for _, dict_info in dicts.items():
-            dictionary = dict_info.dict_class()
-            assert isinstance(dictionary, DictionaryProtocol)
+        dictionary = dicts[key].dict_class()
+        assert isinstance(dictionary, DictionaryProtocol)
    
         
 # =============================================================================
