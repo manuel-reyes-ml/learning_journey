@@ -99,3 +99,99 @@ class TestLoad:
 # =============================================================================
 # CHECKING
 # =============================================================================
+
+class TestCheck:
+    """Test word checking behavior."""
+    
+    def test_check_finds_existing_word(
+        self, loaded_dictionary: DictionaryProtocol
+    ) -> None:
+        """check() returns True for a word in the dictionary."""
+        assert loaded_dictionary.check("cat") is True
+        
+    def test_check_is_case_insensitive(
+        self, loaded_dictionary: DictionaryProtocol
+    ) -> None:
+        """check() matches regardless of case.
+
+        "Cat", "CAT", and "cat" should all match a dictionary
+        entry of "cat".
+        """
+        assert loaded_dictionary.check("cat") is True
+        assert loaded_dictionary.check("Cat") is True
+        assert loaded_dictionary.check("CAT") is True
+        
+    def test_check_rejects_missing_word(
+        self, loaded_dictionary: DictionaryProtocol
+    ) -> None:
+        """check() returns False for a word NOT in the dictionary."""
+        assert loaded_dictionary.check("xyz") is False
+        
+    def test_check_raises_if_not_loaded(
+        self, empty_dictionary: DictionaryProtocol
+    ) -> None:
+        """check() raises RuntimeError if dictionary not loaded.
+
+        This is the "fail fast" guard — prevents silent bugs where
+        an unloaded dictionary reports every word as misspelled.
+
+        pytest.raises() with match= verifies both the exception
+        TYPE and the error MESSAGE.
+        """
+        # match= checks that the exception's error message contains a specific
+        # pattern, not just that the right exception type was raised.
+        #
+        # This only passes if a RunTime is raised and its message
+        # contains "not loaded".If the wrong RunTime fires, the test fails.
+        with pytest.raises(RuntimeError, match="not loaded"):
+            empty_dictionary.check("hello")
+            
+    @pytest.mark.parametrize(
+        "word, expected",
+        [
+            ("the", True),      # common word
+            ("cat", True),      # in test dictionary
+            ("xyz", False),     # not in dictionary
+            ("THE", True),      # uppercase version
+            ("", False),        # empty string
+        ],
+        # --- HOW @pytest.mark.parametrize WORKS ---
+        #
+        # Instead of writing 5 separate test functions that do the
+        # same thing with different inputs, parametrize runs the SAME
+        # test function multiple times with different arguments.
+        #
+        # pytest output shows each case separately:
+        #   test_check_parametrized[the-True]     PASSED
+        #   test_check_parametrized[cat-True]      PASSED
+        #   test_check_parametrized[xyz-False]     PASSED
+        #   test_check_parametrized[THE-True]      PASSED
+        #   test_check_parametrized[-False]        PASSED
+        #
+        # The string after [brackets] is auto-generated from the args.
+        #
+        # Format:
+        #   @pytest.mark.parametrize("param_names", [list_of_tuples])
+        #   def test_something(self, param_names, ...):
+        #
+        # Each tuple in the list becomes one test invocation.
+        # The tuple values are unpacked into the parameter names.
+    )
+    def test_check_parametrized(
+        self,
+        loaded_dictionary: DictionaryProtocol,
+        word: str,
+        expected: bool,
+    ) -> None:
+        """check() returns correct result for various inputs.
+
+        Uses @pytest.mark.parametrize to test multiple word/expected
+        pairs with a single test function. DRY — one assertion logic,
+        many data points.
+        """
+        assert loaded_dictionary.check(word) is expected
+        
+
+# =============================================================================
+# SIZE AND DUNDERS
+# =============================================================================
