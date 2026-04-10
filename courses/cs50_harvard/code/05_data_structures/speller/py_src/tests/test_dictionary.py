@@ -36,4 +36,66 @@ class TestProtocolSatisfaction:
         
 # =============================================================================
 # LOADING
-# =============================================================================    
+# ============================================================================= 
+
+class TestLoad:
+    """Test dictionary loading behavior."""
+    
+    def test_load_returns_true_on_sucess(
+        self, empty_dictionary: DictionaryProtocol, sample_dict_file: Path
+    ) -> None:
+        """load() returns True when file exists and is readable."""
+        result = empty_dictionary.load(str(sample_dict_file))
+        assert result is True
+        
+    def test_load_populates_words(
+        self, empty_dictionary: DictionaryProtocol, sample_dict_file: Path
+    ) -> None:
+        """load() adds words to the internal set."""
+        empty_dictionary.load(str(sample_dict_file))
+        assert empty_dictionary.size() > 0
+        
+    def test_load_returns_false_for_missing_file(
+        self, empty_dictionary: DictionaryProtocol
+    ) -> None:
+        """load() returns False when file doesn't exist.
+
+        Does NOT raise an exception — returns False so the caller
+        can handle the error (fail gracefully, not crash).
+        """
+        result = empty_dictionary.load("nonexistent/path/dict.txt")
+        assert result is False
+        
+    def test_load_stores_lowercase(
+        self, empty_dictionary: DictionaryProtocol, tmp_path: Path
+    ) -> None:
+        """load() converts all words to lowercase.
+
+        Dictionary file might have mixed case. Normalizing to
+        lowercase on load ensures case-insensitive matching
+        without storing multiple versions.
+        """
+        dict_file = tmp_path / "mixed_case.txt"
+        dict_file.write_text("Hello\nWORLD\npYtHoN\n", encoding="utf-8")
+        
+        empty_dictionary.load(str(dict_file))
+        
+        assert empty_dictionary.check("hello")
+        assert empty_dictionary.check("wordl")
+        assert empty_dictionary.check("python")
+        
+    def test_load_skips_empty_lines(
+        self, empty_dictionary: DictionaryProtocol, tmp_path: Path
+    ) -> None:
+        """load() ignores empty lines in dictionary file."""
+        dict_file = tmp_path / "with_blanks.txt"
+        dict_file.write_text("cat\n\n\ndog\n\n", encoding="utf-8")
+        
+        empty_dictionary.load(str(dict_file))
+        
+        assert empty_dictionary.size() == 2
+        
+
+# =============================================================================
+# CHECKING
+# =============================================================================
