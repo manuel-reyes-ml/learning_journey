@@ -1,4 +1,17 @@
-"""
+"""Tests for speller.config module.
+
+Tests constants, enums, frozen dataclasses, and path resolution.
+These tests verify the foundation of the entire package — if config
+is wrong, everything built on top breaks.
+
+Pytest Patterns Introduced
+--------------------------
+- Basic assertions (assert value == expected)
+- Testing enum values and membership
+- Testing frozen dataclass immutability
+- Testing @property computed values
+- Testing __post_init__ validation
+- pytest.raises() for expected exceptions
 """
 
 from __future__ import annotations
