@@ -1,3 +1,5 @@
+# Test files must start with 'test_' so they are auto-discovery by pytest
+
 """Tests for speller.config module.
 
 Tests constants, enums, frozen dataclasses, and path resolution.
@@ -15,7 +17,6 @@ Pytest Patterns Introduced
 """
 
 from __future__ import annotations
-from math import e
 
 import pytest
 
@@ -31,6 +32,9 @@ from speller.config import (
 # =============================================================================
 # CONSTANTS
 # =============================================================================
+
+# Test classes must start with capital T, colleted by class-name pattern
+# Test functions/methods must start with 'test_', collected by function-name pattern
 
 class TestConstants:
     """Test module-level constants.
@@ -159,6 +163,11 @@ class TestFileHandlerConfig:
         This tests the VALIDATION logic — frozen dataclass fields
         are validated during construction, not after.
         """
+        # match= checks that the exception's error message contains a specific
+        # pattern, not just that the right exception type was raised.
+        #
+        # This only passes if a ValueError is raised and its message
+        # contains "BACKUP_COUNT".If the wrong ValueError fires, the test fails.
         with pytest.raises(ValueError, match="BACKUP_COUNT"):
             FileHandlerConfig(BACKUP_COUNT=-1)
             
@@ -174,3 +183,26 @@ class TestFileHandlerConfig:
         assert config.BACKUP_COUNT == 5
         assert config.max_log_bytes == 10 * 1024 * 1024
         
+
+
+# =============================================================================
+# REFERENCE GUIDES
+# =============================================================================
+# =====================================================
+# pytest.raises(Exception, match=)
+# =====================================================  
+
+# What match= actually does
+# match= is a regex pattern run against str(exception). It uses re.search(),
+# which means it looks for the pattern anywhere in the message — you don't
+# need to match the full string.
+
+# All of these would match ValueError("BACKUP_COUNT must be positive (> 0)")
+#   match="BACKUP_COUNT"           # substring match
+#   match="must be positive"       # different part of the message
+#   match=r"BACKUP_COUNT.*positive" # regex — anything between the two words
+#   match="BACKUP"                 # partial word match
+
+# Use match= when the same exception type can be raised from multiple paths and
+# you need to confirm you hit the right one. In your FileHandlerConfig, four fields
+# each raise ValueError — without match=, you can't tell which guard fired.
