@@ -121,7 +121,7 @@ class TestLoad:
         empty_dictionary.load(str(dict_file))
         
         assert empty_dictionary.check("hello")
-        assert empty_dictionary.check("wordl")
+        assert empty_dictionary.check("world")
         assert empty_dictionary.check("python")
         
     def test_load_skips_empty_lines(
