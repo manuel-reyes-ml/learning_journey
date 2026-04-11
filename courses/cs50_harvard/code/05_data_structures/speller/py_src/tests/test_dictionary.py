@@ -8,7 +8,6 @@ from __future__ import annotations
 from pathlib import Path
 import pytest
 
-from speller.dictionaries import HashTableDictionary
 from speller.register import dicts  # triggers __ini__.py -> registration
 from speller.protocols import DictionaryProtocol
 
@@ -278,12 +277,13 @@ class TestWithLargeDictionary:
     
     @pytest.mark.integration
     def test_large_dict_word_count(
-        self, large_dict_path: Path
+        self, 
+        empty_dictionary: DictionaryProtocol,
+        large_dict_path: Path,
     ) -> None:
         """Large dictionary contains exactly 143,091 words."""
-        dictionary = HashTableDictionary()
-        dictionary.load(str(large_dict_path))
-        assert dictionary.size() == 143_091
+        empty_dictionary.load(str(large_dict_path))
+        assert empty_dictionary.size() == 143_091
         
     @pytest.mark.integration
     @pytest.mark.parametrize(
@@ -298,12 +298,12 @@ class TestWithLargeDictionary:
     )
     def test_large_dict_check(
         self,
+        empty_dictionary: DictionaryProtocol,
         large_dict_path: Path,
         word: str,
         expected: bool,
     ) -> None:
         """Spot-check words against the real dictionary."""
-        dictionary = HashTableDictionary()
-        dictionary.load(str(large_dict_path))
-        assert dictionary.check(word) is expected
+        empty_dictionary.load(str(large_dict_path))
+        assert empty_dictionary.check(word) is expected
         
