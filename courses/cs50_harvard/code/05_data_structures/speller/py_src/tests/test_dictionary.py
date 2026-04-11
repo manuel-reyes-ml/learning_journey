@@ -8,6 +8,7 @@ from __future__ import annotations
 from pathlib import Path
 import pytest
 
+from speller.dictionaries import HashTableDictionary
 from speller.register import dicts  # triggers __ini__.py -> registration
 from speller.protocols import DictionaryProtocol
 
@@ -256,3 +257,53 @@ class TestSizeAndDunders:
         assert loaded_dictionary.size() == 0
         with pytest.raises(RuntimeError):
             loaded_dictionary.check("cat")
+            
+            
+# =============================================================================
+# INTEGRATION WITH REAL DICTIONARY
+# =============================================================================
+
+class TestWithLargeDictionary:
+    """Integration tests using the real CS50 large dictionary.
+
+    These tests are slower (loading 143K words) so they're marked
+    with @pytest.mark.integration. Run them explicitly:
+        pytest -m integration
+
+    Or exclude them for fast feedback:
+        pytest -m "not integration"
+
+    The markers are registered in pyproject.toml [tool.pytest.ini_options].
+    """
+    
+    @pytest.mark.integration
+    def test_large_dict_word_count(
+        self, large_dict_path: Path
+    ) -> None:
+        """Large dictionary contains exactly 143,091 words."""
+        dictionary = HashTableDictionary()
+        dictionary.load(str(large_dict_path))
+        assert dictionary.size() == 143_091
+        
+    @pytest.mark.integration
+    @pytest.mark.parametrize(
+        "word, expected",
+        [
+            ("hello", True),
+            ("python", True),
+            ("Bingley", False),     # proper noun - not in dictionary
+            ("xyz", False),
+            ("pneumonoultramicroscopicsilicovolcanoconiosis", True),    # longest word
+        ],
+    )
+    def test_large_dict_check(
+        self,
+        large_dict_path: Path,
+        word: str,
+        expected: bool,
+    ) -> None:
+        """Spot-check words against the real dictionary."""
+        dictionary = HashTableDictionary()
+        dictionary.load(str(large_dict_path))
+        assert dictionary.check(word) is expected
+        
