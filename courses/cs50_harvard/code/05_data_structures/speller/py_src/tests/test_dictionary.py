@@ -13,6 +13,37 @@ from speller.protocols import DictionaryProtocol
 
 
 # =============================================================================
+# OVERRIDE confest.py fixtures (for this file only)
+# =============================================================================
+
+# When the thing that varies is the object under test (the dictionary backend), parametrize
+# the fixture that produces it. Every test that uses that fixture automatically runs once
+# per backend — zero changes to the test methods themselves.
+@pytest.fixture(params=list(dicts.keys()))
+def empty_dictionary(request: pytest.FixtureRequest) -> DictionaryProtocol:
+    """Unloaded instance of every registered backend.
+
+    params=list(dicts.keys()) makes pytest run every test that uses
+    this fixture once per registered backend key ("hash", "list",
+    "sorted", "dict"). request.param holds the current key.
+
+    This locally overrides the conftest.py fixture of the same name
+    for this file only — conftest remains unchanged.
+    """
+    return dicts[request.param].dict_class()
+
+@pytest.fixture(params=list(dicts.keys()))
+def loaded_dictionary(
+    request: pytest.FixtureRequest,
+    sample_dict_file: Path,
+) -> DictionaryProtocol:
+    """Loaded instance of every registered backend."""
+    d = dicts[request.param].dict_class()
+    d.load(str(sample_dict_file))
+    return d
+    
+    
+# =============================================================================
 # PROTOCOL SATISFACTION
 # =============================================================================
 
