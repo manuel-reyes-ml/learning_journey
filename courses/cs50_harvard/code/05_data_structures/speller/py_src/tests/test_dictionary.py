@@ -315,6 +315,8 @@ class TestWithLargeDictionary:
     The markers are registered in pyproject.toml [tool.pytest.ini_options].
     """
     
+    # pytest.mark.integration -> It's a custom marker that lets us filter tests at the
+    # CLI level without changing any code.
     @pytest.mark.integration
     def test_large_dict_word_count(
         self, 
@@ -383,3 +385,45 @@ class TestWithLargeDictionary:
 #   @pytest.fixture(params=list(dicts.keys()))
 #   def empty_dictionary(request: pytest.FixtureRequest):
 #       return dicts[request.param].dict_class()
+
+
+# =============================================================================
+# HOW pytest.mark.integration WORKS END TO END
+# =============================================================================
+
+# ── Step 1: Register the marker in pyproject.toml ────────────────────────────
+#
+# [tool.pytest.ini_options]
+# markers = [
+#     "integration: marks integration tests (require real files)",
+# ]
+#
+# Registration is required because addopts includes --strict-markers.
+# Without it, pytest raises an error on any unknown marker name.
+
+# ── Step 2: Tag the test ─────────────────────────────────────────────────────
+#
+# @pytest.mark.integration
+# def test_large_dict_word_count(self, large_dict_path: Path) -> None:
+#     ...
+
+# ── Step 3: Filter at the CLI ────────────────────────────────────────────────
+#
+# pytest -m integration            → run ONLY integration tests
+# pytest -m "not integration"      → run everything EXCEPT integration (fast)
+# pytest tests/test_dictionary.py -m "not integration"  → file + filter
+# pytest                           → run all tests (no filter)
+
+# ── Why this matters in your workflow ────────────────────────────────────────
+#
+# Your test suite has two speeds:
+#
+#   Fast tests (mocks, tmp files)  → milliseconds → run on every save
+#   Integration tests (143K dict)  → seconds      → run before commit
+#
+# During active development: pytest -m "not integration"  (instant feedback)
+# Before pushing to GitHub:  pytest                       (full suite)
+#
+# This is the same pattern production CI pipelines use:
+#   - Fast unit stage   → runs on every pull request
+#   - Integration stage → runs on merge to main
