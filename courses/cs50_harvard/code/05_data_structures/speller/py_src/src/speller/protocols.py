@@ -185,7 +185,13 @@ class DictionaryProtocol(Protocol):
         Returns
         -------
         bool
-            ``True`` if the word is present.
+            ``True`` if the word is present.0
+        """
+        ...
+
+
+    def unload(self) -> bool:
+        """
         """
         ...
 
