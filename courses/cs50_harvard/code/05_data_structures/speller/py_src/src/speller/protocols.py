@@ -185,13 +185,36 @@ class DictionaryProtocol(Protocol):
         Returns
         -------
         bool
-            ``True`` if the word is present.0
+            ``True`` if the word is present
         """
         ...
 
 
     def unload(self) -> bool:
-        """
+        """Clear all words from memory and reset the loaded state.
+
+        Releases the internal word container and resets any loaded
+        flag so the instance can be reloaded with a different
+        dictionary file in the same process.
+
+        Returns
+        -------
+        bool
+            ``True`` if the dictionary was cleared successfully.
+            Implementations should always return ``True`` — provided
+            for API symmetry with :meth:`load`.
+
+        Notes
+        -----
+        Python's garbage collector reclaims memory automatically once
+        the word container is cleared, so explicit unloading is not
+        required for correctness.  This method exists to signal intent
+        clearly when reloading a backend within the same process, and
+        to satisfy type checkers that verify full Protocol compliance.
+
+        Any call to :meth:`check` after ``unload()`` must raise
+        :exc:`RuntimeError` — the same guard as before :meth:`load`
+        is first called.
         """
         ...
 
