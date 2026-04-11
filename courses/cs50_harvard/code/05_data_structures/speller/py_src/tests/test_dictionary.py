@@ -1,6 +1,17 @@
 # Test files must start with 'test_' so they are auto-discovery by pytest
+"""Tests for speller.dictionaries module.
 
-"""
+Tests the HashTableDictionary class: loading, checking, size, dunders,
+and error handling. Uses fixtures from conftest.py for file paths
+and pre-loaded dictionary instances.
+
+Pytest Patterns Introduced
+--------------------------
+- @pytest.mark.parametrize — run same test with multiple inputs
+- Fixture chaining (loaded_dictionary depends on sample_dict_file)
+- Testing Protocol satisfaction with isinstance()
+- Negative testing (RuntimeError, missing files)
+- Testing dunder methods (__len__, __contains__, __repr__)
 """
 
 from __future__ import annotations
