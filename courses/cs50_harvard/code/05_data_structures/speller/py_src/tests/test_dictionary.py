@@ -21,6 +21,10 @@ from speller.protocols import DictionaryProtocol
 # per backend — zero changes to the test methods themselves.
 @pytest.fixture(params=list(dicts.keys()))
 def empty_dictionary(request: pytest.FixtureRequest) -> DictionaryProtocol:
+        #                 ↑
+        # pytest sees this parameter name "request" and injects
+        # its own FixtureRequest object automatically — same way
+        # it injects tmp_path or capsys by name
     """Unloaded instance of every registered backend.
 
     params=list(dicts.keys()) makes pytest run every test that uses
@@ -31,10 +35,15 @@ def empty_dictionary(request: pytest.FixtureRequest) -> DictionaryProtocol:
     for this file only — conftest remains unchanged.
     """
     return dicts[request.param].dict_class()
+    #                ↑
+    # First run:  request.param == "hash"   → HashTableDictionary()
+    # Second run: request.param == "list"   → ListDictionary()
+    # Third run:  request.param == "sorted" → SortedListDictionary()
+    # Fourth run: request.param == "dict"   → DictDictionary()
 
 @pytest.fixture(params=list(dicts.keys()))
 def loaded_dictionary(
-    request: pytest.FixtureRequest,
+    request: pytest.FixtureRequest,  # type annotation for the built-in request object that pytest injects
     sample_dict_file: Path,
 ) -> DictionaryProtocol:
     """Loaded instance of every registered backend."""
@@ -337,4 +346,40 @@ class TestWithLargeDictionary:
         """Spot-check words against the real dictionary."""
         empty_dictionary.load(str(large_dict_path))
         assert empty_dictionary.check(word) is expected
-        
+
+
+
+# =============================================================================
+# REFERENCE GUIDES
+# =============================================================================
+# =====================================================
+# Pytest 'request' Object
+# ===================================================== 
+
+# pytest.FixtureRequest is the type annotation for the built-in request object that pytest
+# automatically injects into any fixture. It gives the fixture metadata about its own
+# execution context.
+
+# What request provides
+#   pythonrequest.param        # the current parameter value when fixture uses params=
+#   request.fixturename        # the name of the fixture being executed
+#   request.node               # the test item currently being collected
+#   request.scope              # "function", "class", "module", or "session" 
+
+# request is just a built-in fixture
+# It works exactly like tmp_path or capsys — pytest recognizes the parameter name request and
+# injects the object automatically. The pytest.FixtureRequest type annotation is only there to
+# make pyright aware of what .param and .node are. Without it, pyright would type request as
+# Any and lose all static coverage.
+
+# You only need request when using params=
+# A fixture without params= never needs request:
+#   No params= → no request needed
+#   @pytest.fixture
+#   def empty_dictionary() -> HashTableDictionary:
+#       return HashTableDictionary()
+
+#   params= → request.param holds the current value
+#   @pytest.fixture(params=list(dicts.keys()))
+#   def empty_dictionary(request: pytest.FixtureRequest):
+#       return dicts[request.param].dict_class()
