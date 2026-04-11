@@ -195,3 +195,64 @@ class TestCheck:
 # =============================================================================
 # SIZE AND DUNDERS
 # =============================================================================
+
+class TestSizeAndDunders:
+    """Test size(), __len__, __contains__, and __repr__."""
+    
+    def test_size_empty(
+        self, empty_dictionary: DictionaryProtocol
+    ) -> None:
+        """size() returns 0 for unloaded dictionary."""
+        assert empty_dictionary.size() == 0
+        
+    def test_size_after_load(
+        self, loaded_dictionary: DictionaryProtocol
+    ) -> None:
+        """size() returns correct count after loading."""
+        assert loaded_dictionary.size() > 0
+        
+    def test_len_matches_size(
+        self, loaded_dictionary: DictionaryProtocol
+    ) -> None:
+        """len(dictionary) returns same value as dictionary.size().
+
+        __len__ delegates to size() — DRY principle.
+        """
+        assert len(loaded_dictionary) == loaded_dictionary.size()
+        
+    def test_contains_existing_word(
+        self, loaded_dictionary: DictionaryProtocol
+    ) -> None:
+        """'word in dictionary' returns True for existing words.
+
+        Tests the Pythonic __contains__ syntax.
+        """
+        assert "cat" in loaded_dictionary
+        
+    def test_contains_missing_word(
+        self, loaded_dictionary: DictionaryProtocol
+    ) -> None:
+        """'word in dictionary' returns False for missing words."""
+        assert "xyz" not in loaded_dictionary
+        
+    def test_repr_format(
+        self, loaded_dictionary: DictionaryProtocol
+    ) -> None:
+        """__repr__ includes class name, loaded status, and word count."""
+        r = repr(loaded_dictionary)
+        
+        # type(class_instance).__name__ gets the class name "HashTableDictionary"
+        assert type(loaded_dictionary).__name__ in r
+        assert "loaded=True" in r
+        
+    def test_unload_clears_dictionary(
+        self, loaded_dictionary: DictionaryProtocol
+    ) -> None:
+        """unload() resets the dictionary to empty state."""
+        assert loaded_dictionary.size() > 0
+        
+        loaded_dictionary.unload()
+        
+        assert loaded_dictionary.size() == 0
+        with pytest.raises(RuntimeError):
+            loaded_dictionary.check("cat")
