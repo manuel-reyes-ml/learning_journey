@@ -1,5 +1,17 @@
 # Test files must start with 'test_' so they are auto-discovery by pytest
-"""
+"""Tests for speller.benchmarks module.
+
+Tests the BenchmarkResult dataclass, timer() context manager, and
+timed() decorator. These tests verify timing utilities that every
+module in the package depends on.
+
+Pytest Patterns Introduced
+--------------------------
+- Testing frozen dataclass creation and immutability
+- Testing context managers (with statement in tests)
+- Testing decorators (function attributes after decoration)
+- pytest.approx() for floating-point comparison
+- Assertions on dictionary contents
 """
 
 from __future__ import annotations
