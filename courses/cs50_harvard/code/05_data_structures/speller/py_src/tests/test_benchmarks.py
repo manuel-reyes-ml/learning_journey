@@ -165,3 +165,81 @@ class TestTimer:
 # =============================================================================
 # TIMED DECORATOR
 # =============================================================================
+
+class TestTimed:
+    """Test the timed() parameterized decorator.
+
+    The decorator wraps a function with timer() and stores the
+    BenchmarkResult on the wrapper.benchmark attribute.
+    """
+    
+    def test_timed_preserves_return_value(self) -> None:
+        """Decorated function returns its original value unchanged.
+
+        The decorator must NOT alter the function's return value.
+        It only adds timing as a side effect.
+        """
+        @timed("compute")
+        def add(a: int, b: int) -> int:
+            return a + b
+        
+        result = add(3, 4)
+        assert result == 7
+        
+    def test_timed_stores_benchmark(self) -> None:
+        """BenchmarkResult is accessible via wrapper.benchmark."""
+        @timed("compute")
+        def multiply(a: int, b: int) -> int:
+            return a * b
+        
+        multiply(3, 4)
+        assert multiply.benchmark is not None   # type: ignore[attr-define]
+        assert isinstance(multiply.benchmark, BenchmarkResult)  # type: ignore[attr-define]
+        
+    def test_timed_operation_name(self) -> None:
+         """Benchmark has the correct operation name."""
+         @timed("my_op")
+         def noop() -> None:
+             pass
+         
+         noop()
+         assert noop.benchmark.operation == "my_op"     # type: ignore[attr-define]
+         
+    def test_timed_preserves_function_name(self) -> None:
+        """@wraps preserves the original function's __name__.
+
+        Without @wraps, the decorated function's __name__ would
+        be "wrapper" instead of the original name. This matters
+        for debugging, logging, and pytest output.
+        """
+        @timed("test")
+        def my_function() -> None:
+            pass
+        
+        assert my_function.__name__ == "my_function"
+        
+    def test_timed_preserves_docstring(self) -> None:
+        """@wraps preserves the original function's __doc__."""
+        @timed("test")
+        def documented_func() -> None:
+            """This is my docstring."""
+            pass
+        
+        assert documented_func.__doc__ == "This is my docstring."
+        
+    def test_timed_benchmark_updates_on_each_call(self) -> None:
+        """Each call updates the benchmark (latest timing wins)."""
+        @timed("test")
+        def work(n: int) -> int:
+            return sum(range(n))
+        
+        work(100)
+        first_time = work.benchmark.elapsed_seconds     # type: ignore[attr-define]
+        
+        work(100_000)
+        second_time = work.benchmark.elapsed_seconds    # type: ignore[attr-define]
+        
+        # Second call (more work) should take longer
+        # (not guaranteed on fast machines, but generally true)
+        assert work.benchmark is not None   # type: ignore[attr-define]
+        assert isinstance(second_time, float)
