@@ -76,6 +76,20 @@ class TestBasicExtraction:
             ("hello     world", "spaces.txt", ["hello", "world"]),      # words with multiple spaces
             ("hello\nworld\npython\n", "newlines.txt", ["hello", "world", "python"]),  # words with delimiters
         ],
+        # --- HOW @pytest.mark.parametrize WORKS ---
+        #
+        # Instead of writing 6 separate test functions that do the
+        # same thing with different inputs, parametrize runs the SAME
+        # test function multiple times with different arguments.
+        #
+        # The string after [brackets] is auto-generated from the args.
+        #
+        # Format:
+        #   @pytest.mark.parametrize("param_names", [list_of_tuples])
+        #   def test_something(self, param_names, ...):
+        #
+        # Each tuple in the list becomes one test invocation.
+        # The tuple values are unpacked into the parameter names.
     )
     def test_content_extraction(self, content: str, path_name: str, expected: list[str]) -> None:
         """Extract words from a simple sentence."""
