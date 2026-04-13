@@ -445,3 +445,77 @@ class TestCS50Validation:
         content = path.read_text(encoding="utf-8")
         word_count = sum(1 for _ in extract_words(content, path.name))
         assert word_count == expected_word_count
+        
+        
+# =============================================================================
+# HOW pytest.skip() WORKS
+# =============================================================================
+
+# pytest.skip() immediately stops the current test and marks it as SKIPPED —
+# not passed, not failed. It is a deliberate, documented decision to not run
+# a test under certain conditions.
+
+# ── How it works ─────────────────────────────────────────────────────────────
+#
+# @pytest.mark.integration
+# def test_cat_txt_zero_misspelled(self, texts_dir: Path) -> None:
+#     text_path = texts_dir / "cat.txt"
+#     if not text_path.exists():
+#         pytest.skip(f"Text file not found: {text_path}")
+#
+#     # Everything below only runs if the file exists
+#     result = run_speller(...)
+#     assert result.words_misspelled == 0
+#
+# When pytest.skip() is called, Python raises a special internal exception
+# (Skipped) that pytest intercepts. Execution stops immediately at that line —
+# nothing below runs.
+
+# ── What it looks like in output ─────────────────────────────────────────────
+#
+# test_cat_txt_zero_misspelled   SKIPPED (Text file not found: .../cat.txt)
+#
+# The skip reason string appears in the output. At the end of the session
+# pytest shows a summary:
+#
+#     5 passed, 1 skipped, 0 failed
+#
+# Skipped tests never count as failures — they don't break CI.
+
+# ── Why it's used in your integration tests ───────────────────────────────────
+#
+# Integration tests depend on real files (cat.txt, constitution.txt,
+# dictionaries/large) that live in the project directory. These files exist
+# on your machine but may not exist in every environment — a fresh clone
+# without CS50 data files, a minimal CI container, or someone running just
+# the package tests.
+#
+# Rather than failing with a confusing FileNotFoundError deep inside the test,
+# pytest.skip() surfaces a clear human-readable reason at the test boundary.
+
+# ── The three skip options ────────────────────────────────────────────────────
+#
+# 1. pytest.skip() called inside the test body — CONDITIONAL, runtime check.
+#    Use when the condition can only be evaluated while the test is running,
+#    like whether a specific file exists on the current machine.
+#
+#    if not text_path.exists():
+#        pytest.skip(f"Text file not found: {text_path}")
+#
+# 2. @pytest.mark.skip — UNCONDITIONAL, always skipped.
+#    Use when a test is known broken or not yet implemented.
+#
+#    @pytest.mark.skip(reason="not implemented yet")
+#    def test_something() -> None:
+#        ...
+#
+# 3. @pytest.mark.skipif — CONDITIONAL, evaluated at collection time.
+#    Use when the condition is known before the test runs, like the OS or
+#    Python version.
+#
+#    @pytest.mark.skipif(sys.platform == "win32", reason="POSIX paths only")
+#    def test_something() -> None:
+#        ...
+#
+# The inline pytest.skip() used in your integration tests is the right choice
+# because file existence can only be confirmed at runtime.
