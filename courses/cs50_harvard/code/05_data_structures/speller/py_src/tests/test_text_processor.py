@@ -322,3 +322,83 @@ class TestInterface:
 # INTEGRATION — REAL CS50 TEXT FILES
 # =============================================================================
 
+class TestCS50Validation:
+    """Validate word counts against CS50 answer keys.
+
+    These tests compare extract_words() output against the known
+    word counts from the CS50 staff solution. If counts don't match,
+    the text_processor state machine has a bug.
+
+    Calling pattern matches speller.py exactly:
+        content = path.read_text(encoding="utf-8")
+        count = sum(1 for _ in extract_words(content, path.name))
+
+    # =============================================================================
+    # HOW pytest.mark.integration WORKS END TO END
+    # =============================================================================
+
+    # ── Step 1: Register the marker in pyproject.toml ────────────────────────────
+    #
+    # [tool.pytest.ini_options]
+    # markers = [
+    #     "integration: marks integration tests (require real files)",
+    # ]
+    #
+    # Registration is required because addopts includes --strict-markers.
+    # Without it, pytest raises an error on any unknown marker name.
+
+    # ── Step 2: Tag the test ─────────────────────────────────────────────────────
+    #
+    # @pytest.mark.integration
+    # def test_word_count_matches_cs50(...) -> None:
+    #     ...
+
+    # ── Step 3: Filter at the CLI ────────────────────────────────────────────────
+    #
+    # pytest -m integration            → run ONLY integration tests
+    # pytest -m "not integration"      → run everything EXCEPT integration (fast)
+    # pytest tests/test_text_processor.py -m "not integration"  → file + filter
+    # pytest                           → run all tests (no filter)
+
+    # ── Why this matters in your workflow ────────────────────────────────────────
+    #
+    # Your test suite has two speeds:
+    #
+    #   Fast tests (content strings)  → milliseconds → run on every save
+    #   Integration tests (real files) → seconds     → run before commit
+    #
+    # During active development: pytest -m "not integration"  (instant feedback)
+    # Before pushing to GitHub:  pytest                       (full suite)
+    #
+    # This is the same pattern production CI pipelines use:
+    #   - Fast unit stage   → runs on every pull request
+    #   - Integration stage → runs on merge to main
+    """
+    
+    @pytest.mark.integration
+    @pytest.mark.parametrize(
+        "text_file, expected_word_count",
+        [
+            ("cat.txt", 6),
+            ("constitution.txt", 7573),
+        ],
+        ids=["cat", "constitution"],
+    )
+    def test_word_count_matches_cs50(
+        self,
+        texts_dir: Path,
+        text_file: str,
+        expected_word_count: int,
+    ) -> None:
+        """Word count matches CS50's expected count.
+
+        Reads the file manually before calling extract_words(),
+        matching the exact pattern used in speller.py.
+        """
+        path = texts_dir / text_file
+        if not path.exists():
+            pytest.skip(f"Text file not found: {path}")
+            
+        content = path.read_text(encoding="utf-8")
+        word_count = sum(1 for _ in extract_words(content, path.name))
+        assert word_count == expected_word_count
