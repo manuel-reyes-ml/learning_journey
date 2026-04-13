@@ -63,40 +63,21 @@ class TestBasicExtraction:
     path_name is a logging label; "test.txt" is used as a placeholder.
     """
     
-    def test_simple_sentence(self) -> None:
+    @pytest.mark.parametrize(
+        "content, path_name, expected",
+        [
+            ("The cat sat on the mat", "test.txt", ["The", "cat", "sat", "on", "the", "mat"]),  # simple sentence
+            ("Hello WORLD Python", "test.txt", ["Hello", "WORLD", "Python"]),  # preserves original case 
+            ("", "empty.txt", []),                                      # empty content
+            ("hello", "single.txt", ["hello"]),                         # single word no space
+            ("hello     world", "spaces.txt", ["hello", "world"]),      # words with multiple spaces
+            ("hello\nworld\npython\n", "newlines.txt", ["hello", "world", "python"])  # words with delimiters
+        ],
+    )
+    def test_content_extraction(self, content: str, path_name: str, expected: list[str]) -> None:
         """Extract words from a simple sentence."""
-        words = list(extract_words("The cat sat on the mat", "test.txt"))
-        assert words == ["The", "cat", "sat", "on", "the", "mat"]
-        
-    def test_preserves_original_case(self) -> None:
-        """Words are yielded in original case (not lowered).
-
-        Case normalization is dictionary.check()'s job, not
-        text_processor's. Preserving case ensures misspelled
-        words are printed as they appear in the original text.
-        """
-        words = list(extract_words("Hello WORLD Python", "test.txt"))
-        assert words == ["Hello", "WORLD", "Python"]
-        
-    def test_empty_content(self) -> None:
-        """Empty content string yields no words."""
-        words = list(extract_words("", "empty.txt"))
-        assert words == []
-        
-    def test_single_word(self) -> None:
-        """Single word with no surrounding whitespace."""
-        words = list(extract_words("hello", "single.txt"))
-        assert words == ["hello"]
-        
-    def test_multiple_spaces(self) -> None:
-        """Multiple spaces between words are treated as delimiters."""
-        words = list(extract_words("hello   world", "spaces.txt"))
-        assert words == ["hello", "world"]
-        
-    def test_newlines_as_delimiters(self) -> None:
-        """Newlines act as word delimiters."""
-        words = list(extract_words("hello\nworld\npython\n", "newlines.txt"))
-        assert words == ["hello", "world", "python"]
+        words = list(extract_words(content, path_name))
+        assert words == expected
         
     def test_returns_iterator(self) -> None:
         """extract_words returns an iterator (generator), not a list.
@@ -121,3 +102,9 @@ class TestBasicExtraction:
         words_a = list(extract_words(content, "label_a.txt"))
         words_b = list(extract_words(content, "label_b.txy"))
         assert words_a == words_b == ["cat", "dog"]
+        
+        
+# =============================================================================
+# APOSTROPHE HANDLING
+# =============================================================================
+
