@@ -67,14 +67,18 @@ class TestBasicExtraction:
     """
     
     @pytest.mark.parametrize(
-        "content, path_name, expected",
+        "content, expected",
         [
-            ("The cat sat on the mat", "test.txt", ["The", "cat", "sat", "on", "the", "mat"]),  # simple sentence
-            ("Hello WORLD Python", "test.txt", ["Hello", "WORLD", "Python"]),  # preserves original case 
-            ("", "empty.txt", []),                                      # empty content
-            ("hello", "single.txt", ["hello"]),                         # single word no space
-            ("hello     world", "spaces.txt", ["hello", "world"]),      # words with multiple spaces
-            ("hello\nworld\npython\n", "newlines.txt", ["hello", "world", "python"]),  # words with delimiters
+            ("The cat sat on the mat", ["The", "cat", "sat", "on", "the", "mat"]),  # simple sentence
+            ("Hello WORLD Python", ["Hello", "WORLD", "Python"]),  # preserves original case 
+            ("", []),                                      # empty content
+            ("hello", ["hello"]),                         # single word no space
+            ("hello     world", ["hello", "world"]),      # words with multiple spaces
+            ("hello\nworld\npython\n", ["hello", "world", "python"]),  # words with delimiters
+        ],
+        ids=[
+            "simple_sentence", "original_case", "empty",
+            "single_word", "multi_spaces", "delimiters"
         ],
         # --- HOW @pytest.mark.parametrize WORKS ---
         #
@@ -91,9 +95,11 @@ class TestBasicExtraction:
         # Each tuple in the list becomes one test invocation.
         # The tuple values are unpacked into the parameter names.
     )
-    def test_content_extraction(self, content: str, path_name: str, expected: list[str]) -> None:
+    def test_content_extraction(
+        self, content: str, expected: list[str]
+    ) -> None:
         """Extract words from a simple sentence."""
-        words = list(extract_words(content, path_name))
+        words = list(extract_words(content,"basic_content.txt"))
         assert words == expected
         
     def test_returns_iterator(self) -> None:
@@ -134,17 +140,20 @@ class TestApostrophes:
     """
     
     @pytest.mark.parametrize(
-        "content, path_name, expected",
+        "content, expected",
         [
-            ("it's don't can't", "apos.txt", ["it's", "don't", "can't"]),  # apostrophe inside a word is included
-            ("'hello world", "start_apos.txt", ["hello", "world"]),  # apostrohpe at start of word is NOT included
-            ("cat's dog's", "possessive.txt", ["cat's", "dog's"]),   # possesive forms are trated as single words
+            ("it's don't can't", ["it's", "don't", "can't"]),  # apostrophe inside a word is included
+            ("'hello world", ["hello", "world"]),  # apostrohpe at start of word is NOT included
+            ("cat's dog's", ["cat's", "dog's"]),   # possesive forms are trated as single words
         ],
+        ids=["inside_word", "start_word", "possesive"],
     )
-    def test_apostrophe_in_content(self, content: str, path_name: str, expected: list[str]) -> None:
+    def test_apostrophe_in_content(
+        self, content: str, expected: list[str]
+    ) -> None:
         """
         """
-        words = list(extract_words(content, path_name))
+        words = list(extract_words(content, "apos.txt"))
         assert words == expected
         
         
@@ -162,19 +171,25 @@ class TestDigitHandling:
     """
     
     @pytest.mark.parametrize(
-        "content, path_name, expected",
+        "content, expected",
         [
-            ("123 hello 456 world", "digits.txt", ["hello", "world"]),     # pure digit sequences
-            ("abc123def next", "mid_digit.txt", ["next"]),  # digit mid-word
-            ("123abc_next", "start_digit.txt", ["next"]),   # digit at word start
-            ("hello word123 world", "word_digit.txt", ["hello", "world"]), # valid word before and after
-            ("Section 401k plan", "section.txt", ["Section", "plan"]),     # section numbers mixed with text
+            ("123 hello 456 world", ["hello", "world"]),     # pure digit sequences
+            ("abc123def next", ["next"]),  # digit mid-word
+            ("123abc_next", ["next"]),     # digit at word start
+            ("hello word123 world", ["hello", "world"]),     # valid word before and after
+            ("Section 401k plan", ["Section", "plan"]),      # section numbers mixed with text
+        ],
+        ids=[
+            "sequences", "mid-word", "word-start", 
+            "mid-sentence", "section",
         ],
     )
-    def test_digits_in_content(self, content: str, path_name: str, expected: list[str]) -> None:
+    def test_digits_in_content(
+        self, content: str, expected: list[str]
+    ) -> None:
         """
         """
-        words = list(extract_words(content, path_name))
+        words = list(extract_words(content, "digits.txt"))
         assert words == expected
         
         
