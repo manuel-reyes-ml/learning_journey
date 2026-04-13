@@ -56,6 +56,9 @@ def make_text_file(tmp_path: Path) -> Callable[[str, str], Path]:
 # BASIC EXTRACTION
 # =============================================================================
 
+# Test classes must start with capital T, colleted by class-name pattern
+# Test functions/methods must start with 'test_', collected by function-name pattern
+
 class TestBasicExtraction:
     """Test fundamental word extraction behavior.
  
