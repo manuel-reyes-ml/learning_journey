@@ -1,5 +1,33 @@
 # Test files must start with 'test_' so they are auto-discovery by pytest
-"""
+"""Tests for speller.text_processor module.
+ 
+Tests the extract_words() generator — the character-level state
+machine that must exactly match CS50's speller.c behavior. This
+is the most critical test file because text_processor has the
+most edge cases.
+ 
+Interface
+---------
+extract_words(content: str, path_name: str) -> Iterator[str]
+ 
+The function receives file content already decoded into a Python str,
+plus a label string used only for DEBUG log messages. It performs NO
+file I/O. File reading is the caller's responsibility (speller.py):
+ 
+    content = path.read_text(encoding="utf-8")
+    words = extract_words(content, path.name)
+ 
+This separation follows the single-responsibility principle:
+- speller.py      → file I/O + encoding
+- text_processor  → character-level state machine
+ 
+Pytest Patterns Used
+--------------------
+- Passing content strings directly — no tmp files needed for most tests
+- make_text_file factory fixture for integration-style tests
+- @pytest.mark.parametrize with IDs for readable test output
+- Testing edge cases systematically (empty, digits, apostrophes, length)
+- pytest.mark.integration for slow tests with real CS50 files
 """
 
 from __future__ import annotations
