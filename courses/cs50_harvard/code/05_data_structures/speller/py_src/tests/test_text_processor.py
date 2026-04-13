@@ -222,3 +222,38 @@ class TestWordLength:
 # PUNCTUATION HANDLING
 # =============================================================================
 
+class TestPunctuation:
+    """Test punctuation characters as word delimiters."""
+    
+    @pytest.mark.parametrize(
+        "content, expected",
+        [
+            ("hello, world", ["hello", "world"]),
+            ("hello. world", ["hello", "world"]),
+            ("hello! world", ["hello", "world"]),
+            ("hello? world", ["hello", "world"]),
+            ("hello; world", ["hello", "world"]),
+            ("hello: world", ["hello", "world"]),
+            ("(hello) world", ["hello", "world"]),
+            ('"hello" world', ["hello", "world"]),
+            ("hello-world", ["hello", "world"]),
+        ],
+        # IDs make test output more readable:
+        #   test_punctuation_as_delimiter[comma]       PASSED
+        #   test_punctuation_as_delimiter[period]      PASSED
+        ids=[
+            "comma", "period", "exclamation", "question",
+            "semicolon", "colon", "parens", "quotes", "hyphen",
+        ],
+    )
+    def test_punctuation_as_delimiter(
+        self, content: str, expected: list[str]
+    ) -> None:
+        """All punctuation characters act as word delimiters."""
+        words = list(extract_words(content, "punctuation.txt"))
+        assert words == expected
+        
+        
+# =============================================================================
+# INTERFACE CONTRACT
+# =============================================================================
