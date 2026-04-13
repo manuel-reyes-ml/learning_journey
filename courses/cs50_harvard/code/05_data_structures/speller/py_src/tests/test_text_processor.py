@@ -181,3 +181,44 @@ class TestDigitHandling:
 # =============================================================================
 # WORD LENGTH — MAX_WORD_LENGTH (45)
 # =============================================================================
+
+class TestWordLength:
+    """Test word length handling — MAX_WORD_LENGTH = 45.
+
+    CS50's #define LENGTH 45 was chosen specifically to accommodate
+    the longest word in the English language.
+    """
+    
+    def test_word_at_max_length(self) -> None:
+        """Word at exactly 45 characters is accepted."""
+        word_45 = "a" * 45
+        words = list(extract_words(f"{word_45} next", "max.txt"))
+        assert word_45 in words
+        
+    def test_word_over_max_length(self) -> None:
+        """Word over 45 characters is discarded.
+
+        The state machine consumes the remaining alpha characters
+        and continues from the next delimiter — "next" is not lost.
+        """
+        word_46 = "a" * 46
+        words = list(extract_words(f"{word_46} next", "over_max.txt"))
+        assert word_46 not in words
+        assert "next" in words
+        
+    def test_pneumonoultramicroscopicsilicovolcanoconiosis(self) -> None:
+        """The famous 45-character word is accepted.
+
+        CS50's LENGTH constant (45) was specifically chosen to
+        accommodate this word — a useful boundary-condition test.
+        """
+        long_word = "pneumonoultramicroscopicsilicovolcanoconiosis"
+        assert len(long_word) == 45
+        words = list(extract_words(f"{long_word} end", "long_word.txt"))
+        assert long_word in words
+        
+        
+# =============================================================================
+# PUNCTUATION HANDLING
+# =============================================================================
+
