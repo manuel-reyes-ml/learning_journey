@@ -257,3 +257,68 @@ class TestPunctuation:
 # =============================================================================
 # INTERFACE CONTRACT
 # =============================================================================
+
+class TestInterface:
+    """Verify the extract_words(content, path_name) calling contract.
+
+    extract_words() does NO file I/O. It receives pre-decoded content
+    as a str. path_name is a label for DEBUG logging only.
+
+    The production calling pattern (from speller.py):
+        content = path.read_text(encoding="utf-8")
+        words = extract_words(content, path.name)
+
+    These tests confirm that contract and replace the old TestPathHandling
+    class which assumed extract_words() accepted file paths directly.
+    """
+    
+    def test_accepts_plain_string(self) -> None:
+        """extract_words works with any decoded string content."""
+        words = list(extract_words("hello world", "label.txt"))
+        assert words == ["hello", "world"]
+        
+    def test_accepts_multiline_string(self) -> None:
+        """extract_words works with multiline content strings."""
+        content = "line one\nline two\nline three"
+        words = list(extract_words(content, "multi.txt"))
+        assert words == ["line", "one", "line", "two", "line", "three"]
+        
+    def test_path_name_any_string_accepted(self) -> None:
+        """path_name can be any string — it is a logging label only.
+
+        Callers typically pass path.name for readable log output,
+        but any string is valid. extract_words() never opens a file.
+        """
+        words_a = list(extract_words("cat", "real_file.txt"))
+        words_b = list(extract_words("cat", "any_string_at_all"))
+        assert words_a == words_b == ["cat"]
+        
+    def test_production_call_pattern(self, make_text_file) -> None:
+        """Mirrors the exact call pattern used in speller.py.
+
+        run_speller() does:
+            content = path.read_text(encoding="utf-8")
+            words = extract_words(content, path.name)
+
+        This test verifies that reading a file and passing its decoded
+        content produces the same result as passing the string directly.
+        """
+        raw = "The cat sat on the mat"
+        path: Path = make_text_file(raw)
+        
+        # Production pattern - read file, then call extract_words
+        content = path.read_text(encoding="utf-8")
+        words_from_file = list(extract_words(content, path.name))
+        
+        # Direct string - must product identical results
+        words_from_string = list(extract_words(raw, path.name))
+        
+        assert words_from_file == words_from_string == [
+            "The", "cat", "sat", "on", "the", "mat"
+        ]
+        
+        
+# =============================================================================
+# INTEGRATION — REAL CS50 TEXT FILES
+# =============================================================================
+
