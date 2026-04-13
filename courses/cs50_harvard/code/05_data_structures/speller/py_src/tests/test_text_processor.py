@@ -71,7 +71,7 @@ class TestBasicExtraction:
             ("", "empty.txt", []),                                      # empty content
             ("hello", "single.txt", ["hello"]),                         # single word no space
             ("hello     world", "spaces.txt", ["hello", "world"]),      # words with multiple spaces
-            ("hello\nworld\npython\n", "newlines.txt", ["hello", "world", "python"])  # words with delimiters
+            ("hello\nworld\npython\n", "newlines.txt", ["hello", "world", "python"]),  # words with delimiters
         ],
     )
     def test_content_extraction(self, content: str, path_name: str, expected: list[str]) -> None:
@@ -106,5 +106,32 @@ class TestBasicExtraction:
         
 # =============================================================================
 # APOSTROPHE HANDLING
+# =============================================================================
+
+class TestApostrophes:
+    """Test apostrophe handling — matches speller.c rules exactly.
+
+    Rules from speller.c:
+    - Apostrophe MID-WORD (index > 0): included in word → "it's"
+    - Apostrophe at START (index == 0): treated as delimiter → "hello"
+    """
+    
+    @pytest.mark.parametrize(
+        "content, path_name, expected",
+        [
+            ("it's don't can't", "apos.txt", ["it's", "don't", "can't"]),  # apostrophe inside a word is included
+            ("'hello world", "start_apos.txt", ["hello", "world"]),  # apostrohpe at start of word is NOT included
+            ("cat's dog's", "possessive.txt", ["cat's", "dog's"]),   # possesive forms are trated as single words
+        ],
+    )
+    def test_apostrophe_in_content(self, content: str, path_name: str, expected: list[str]) -> None:
+        """
+        """
+        words = list(extract_words(content, path_name))
+        assert words == expected
+        
+        
+# =============================================================================
+# DIGIT HANDLING — THE TRICKY PART
 # =============================================================================
 
