@@ -152,3 +152,32 @@ class TestApostrophes:
 # DIGIT HANDLING — THE TRICKY PART
 # =============================================================================
 
+class TestDigitHandling:
+    """Test digit behavior — must match speller.c exactly.
+
+    Critical rules:
+    - Digit OUTSIDE a word: consume remaining alnum, skip entire token
+    - Digit MID-WORD: discard word being built AND consume remaining alnum
+    - The consumption affects the position of the NEXT word
+    """
+    
+    @pytest.mark.parametrize(
+        "content, path_name, expected",
+        [
+            ("123 hello 456 world", "digits.txt", ["hello", "world"]),     # pure digit sequences
+            ("abc123def next", "mid_digit.txt", ["next"]),  # digit mid-word
+            ("123abc_next", "start_digit.txt", ["next"]),   # digit at word start
+            ("hello word123 world", "word_digit.txt", ["hello", "world"]), # valid word before and after
+            ("Section 401k plan", "section.txt", ["Section", "plan"]),     # section numbers mixed with text
+        ],
+    )
+    def test_digits_in_content(self, content: str, path_name: str, expected: list[str]) -> None:
+        """
+        """
+        words = list(extract_words(content, path_name))
+        assert words == expected
+        
+        
+# =============================================================================
+# WORD LENGTH — MAX_WORD_LENGTH (45)
+# =============================================================================
