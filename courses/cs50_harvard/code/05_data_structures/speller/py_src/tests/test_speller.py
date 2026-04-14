@@ -8,6 +8,8 @@ from pydoc import text
 import pytest
 
 from speller.benchmarks import BenchmarkResult
+from speller.protocols import DictionaryProtocol
+from speller.register import dicts
 from speller.speller import REPORT, SpellerResult, run_speller
 
 # MockDictionary and FailingDictionary are in conftest.py.
@@ -16,6 +18,36 @@ from speller.speller import REPORT, SpellerResult, run_speller
 # inline (e.g. MockDictionary(words={...}) inside a test body).
 from tests.conftest import FailingDictionary, MockDictionary
 
+
+# =============================================================================
+# OVERRIDE confest.py fixtures (for this file only)
+# =============================================================================
+
+# When the thing that varies is the object under test (the dictionary backend), parametrize
+# the fixture that produces it. Every test that uses that fixture automatically runs once
+# per backend — zero changes to the test methods themselves.
+@pytest.fixture(params=list(dicts.keys()))
+def empty_dictionary(request: pytest.FixtureRequest) -> DictionaryProtocol:
+    #                 ↑
+    # pytest sees this parameter name "request" and injects
+    # its own FixtureRequest object automatically — same way
+    # it injects tmp_path or capsys by name
+    """Unloaded instance of every registered backend.
+
+    params=list(dicts.keys()) makes pytest run every test that uses
+    this fixture once per registered backend key ("hash", "list",
+    "sorted", "dict"). request.param holds the current key.
+
+    This locally overrides the conftest.py fixture of the same name
+    for this file only — conftest remains unchanged.
+    """
+    return dicts[request.param].dict_class()
+    #                ↑
+    # First run:  request.param == "hash"   → HashTableDictionary()
+    # Second run: request.param == "list"   → ListDictionary()
+    # Third run:  request.param == "sorted" → SortedListDictionary()
+    # Fourth run: request.param == "dict"   → DictDictionary()
+    
 
 # =============================================================================
 # SPELLERRESULT DATACLASS
@@ -496,6 +528,7 @@ class TestRunSpellerIntegration:
     @pytest.mark.integration
     def test_cat_txt_zero_misspelled(
         self,
+        empty_dictionary: DictionaryProtocol,
         large_dict_path: Path,
         texts_dir: Path,
     ) -> None:
@@ -504,7 +537,6 @@ class TestRunSpellerIntegration:
         The simplest validation: "A cat is not a caterpillar"
         — all 6 words are in the large dictionary.
         """
-        from speller.dictionaries import HashTableDictionary
         from speller.load_dictionary import load_dictionary
         
         text_path = texts_dir / "cat.txt"
@@ -512,7 +544,7 @@ class TestRunSpellerIntegration:
             pytest.skip(f"Text file not found: {text_path}")
         
         loaded_dict, load_result = load_dictionary(
-            dictionary=HashTableDictionary(),
+            dictionary=empty_dictionary,
             dict_path=large_dict_path,
         )
         
