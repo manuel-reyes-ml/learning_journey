@@ -118,3 +118,59 @@ class TestBuildParser:
 # =============================================================================
 # PATH VALIDATION
 # =============================================================================
+
+class TestValidatePaths:
+    """Test _validate_paths() helper function.
+
+    _validate_paths() returns ExitCode on failure, None on success.
+    This separation of detection from action makes both the helper
+    and main() simpler and independently testable.
+    """
+    
+    def test_valid_path_return_none(
+        self, sample_dict_file: Path, sample_text_file: Path
+    ) -> None:
+        """Both files exist → returns None (success).
+
+        None means "no error" — the absence of a value.
+        This is a common Python pattern: return None for success,
+        return a specific value for specific failures.
+        """
+        result_dict = _validate_paths(
+            sample_dict_file,
+            path_name=sample_dict_file.name
+        )
+        result_text = _validate_paths(
+            sample_text_file,
+            path_name=sample_text_file.name
+        )
+        
+        assert result_dict is None
+        assert result_text is None
+        
+    def test_missing_path_returns_exit_code(
+        self, sample_text_file: Path
+    ) -> None:
+        """Missing dictionary → returns FILE_NOT_FOUND."""
+        result = _validate_paths(
+            Path("nonexisting_dic.txt"),
+            path_name=Path("nonexistent_dict.txt").name,
+        )
+        assert result == ExitCode.FILE_NOT_FOUND
+        
+
+# =============================================================================
+# MAIN FUNCTION
+# =============================================================================
+
+class TestMain:
+    """Test the main() entry point.
+
+    main(argv=...) is testable because it accepts an explicit
+    argument list instead of reading sys.argv directly. This is
+    the pattern we established early in the project.
+
+    Without the argv parameter, every test would need:
+        monkeypatch.setattr("sys.argv", ["speller", "texts/cat.txt"])
+    — fragile and ugly.
+    """
