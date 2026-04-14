@@ -420,3 +420,63 @@ class TestRunSpeller:
 # LOAD_DICTIONARY — ERROR PATH TESTING
 # =============================================================================
 
+class TestLoadDictionary:
+    """Test load_dictionary() with a FailingDictionary.
+
+    FailingDictionary.load() always returns False, simulating a
+    corrupted or unreadable dictionary file at the load step.
+
+    The SystemExit for load failure belongs here — in load_dictionary()
+    — not in run_speller(), because run_speller() never calls load().
+    Testing it in the right place keeps each component's contract clear.
+    """
+    
+    def test_failing_dictionary_raises_system_exit(
+        self,
+        failing_dictionary: FailingDictionary,
+        sample_dict_file: Path,
+    ) -> None:
+        """load_dictionary() raises SystemExit when load() returns False.
+
+        This is NEGATIVE TESTING — verifying that error paths work
+        correctly is just as important as testing happy paths.
+
+        FailingDictionary.load() always returns False, triggering the
+        SystemExit inside load_dictionary(). main() catches it and maps
+        it to ExitCode.LOAD_FAILED.
+        """
+        from speller.load_dictionary import load_dictionary
+        
+        with pytest.raises(SystemExit):
+            load_dictionary(
+                dictionary=failing_dictionary,
+                dict_path=sample_dict_file,
+            )
+            
+    def test_successful_load_returns_tuple(
+        self,
+        mock_dictionary: MockDictionary,
+        sample_dict_file: Path,
+    ) -> None:
+        """load_dictionary() returns (dictionary, BenchmarkResult) on success.
+
+        The 2-tuple keeps the call site clean with unpacking:
+            loaded_dict, load_result = load_dictionary(...)
+        """
+        from speller.load_dictionary import load_dictionary
+        
+        loaded_dict, load_result = load_dictionary(
+            dictionary=mock_dictionary,
+            dict_path=sample_dict_file,
+        )
+        
+        assert loaded_dict is mock_dictionary
+        assert isinstance(load_result, BenchmarkResult)
+        assert load_result.operation == "load"
+        assert load_result.elapsed_seconds >= 0
+        
+
+# =============================================================================
+# INTEGRATION — REAL FILES
+# =============================================================================
+
