@@ -1,4 +1,46 @@
-"""
+"""Tests for speller.speller module.
+ 
+Tests the run_speller() orchestrator and SpellerResult dataclass.
+This is where DEPENDENCY INJECTION pays off — we inject MockDictionary
+and FailingDictionary (from conftest.py) instead of using real files.
+ 
+No real dictionary files needed. No slow I/O. Fast, deterministic,
+isolated tests. This is the testing pattern for every future project:
+- DataVault:   MockLLMProvider → test analysis pipeline
+- PolicyPulse: MockVectorStore → test RAG retrieval
+- FormSense:   MockExtractor → test form processing
+- AFC:         MockDataSource → test backtesting engine
+ 
+Architecture note
+-----------------
+run_speller(*, dictionary, text_path, benchmarks=None) -> SpellerResult
+ 
+run_speller() receives a PRE-LOADED dictionary — it does NOT call
+load() itself. Dictionary loading was separated into load_dictionary.py.
+This means:
+ 
+- run_speller() benchmarks: "check" and "size" only by default
+- "load" only appears if the CALLER pre-populates the benchmarks dict
+  before passing it to run_speller() — matching main()'s batch pattern:
+ 
+      benchmarks["load"] = load_result        # from load_dictionary()
+      result = run_speller(                   # adds "check" and "size"
+          dictionary=loaded_dict,
+          text_path=text_path,
+          benchmarks=benchmarks,
+      )
+ 
+- FailingDictionary (load returns False) must be tested against
+  load_dictionary(), NOT run_speller()
+ 
+Pytest Patterns Used
+--------------------
+- Dependency injection (MockDictionary via conftest.py fixtures)
+- Testing frozen dataclass properties (@property)
+- Testing named tuple returns (REPORT namedtuple)
+- pytest.raises() with SystemExit (in TestLoadDictionary)
+- Combining fixtures (mock + temp files)
+- pytest.mark.integration for real-file tests
 """
 
 from __future__ import annotations
