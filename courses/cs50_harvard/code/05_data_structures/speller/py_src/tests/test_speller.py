@@ -480,3 +480,52 @@ class TestLoadDictionary:
 # INTEGRATION — REAL FILES
 # =============================================================================
 
+class TestRunSpellerIntegration:
+    """Integration tests with real HashTableDictionary and text files.
+
+    These tests exercise the full pipeline: real dictionary loading,
+    real text processing, real spell checking. They're slower but
+    catch integration bugs that mock-based tests miss.
+
+    The load step mirrors main()'s batch pattern exactly:
+        loaded_dict, load_result = load_dictionary(dictionary=..., dict_path=...)
+        benchmarks = {"load": load_result}
+        result = run_speller(dictionary=loaded_dict, text_path=..., benchmarks=benchmarks)
+    """
+    
+    @pytest.mark.integration
+    def test_cat_txt_zero_misspelled(
+        self,
+        large_dict_path: Path,
+        texts_dir: Path,
+    ) -> None:
+        """cat.txt should have 0 misspelled words with the large dictionary.
+
+        The simplest validation: "A cat is not a caterpillar"
+        — all 6 words are in the large dictionary.
+        """
+        from speller.dictionaries import HashTableDictionary
+        from speller.load_dictionary import load_dictionary
+        
+        text_path = texts_dir / "cat.txt"
+        if not text_path.exists():
+            pytest.skip(f"Text file not found: {text_path}")
+        
+        loaded_dict, load_result = load_dictionary(
+            dictionary=HashTableDictionary(),
+            dict_path=large_dict_path,
+        )
+        
+        result = run_speller(
+            dictionary=loaded_dict,
+            text_path=text_path,
+            benchmarks={"load": load_result},
+        )
+        
+        assert result.words_misspelled == 0
+        assert result.words_in_text == 6
+        assert result.words_in_dictionary == 143091
+        # All three benchmarks present when load_dictionary is used
+        assert "load" in result.benchmarks
+        assert "check" in result.benchmarks
+        assert "size" in result.benchmarks
