@@ -4,6 +4,8 @@
 from __future__ import annotations
 
 from pathlib import Path
+from turtle import exitonclick
+from _pytest.outcomes import Exit
 import pytest
 
 from speller.config import ExitCode
@@ -174,3 +176,107 @@ class TestMain:
         monkeypatch.setattr("sys.argv", ["speller", "texts/cat.txt"])
     — fragile and ugly.
     """
+    
+    def test_missing_file_returns_error(self) -> None:
+        """main() returns FILE_NOT_FOUND for nonexistent text file.
+
+        We pass --no-log-file to avoid creating log directories
+        during tests.
+        """
+        result = main(["--no-log-file", "nonexistent.txt"])
+        assert result == ExitCode.FILE_NOT_FOUND
+        
+    def test_missing_dictionary_returns_error(self) -> None:
+        """main() returns FILE_NOT_FOUND for nonexistent dictionary."""
+        result = main([
+            "--no-log-file",
+            "texts/cat.txt",
+            "nonexistent_dict.txt",
+        ])
+        assert result == ExitCode.FILE_NOT_FOUND
+        
+    @pytest.mark.integration
+    def test_successful_run(
+        self,
+        large_dict_path: Path,
+        texts_dir: Path,
+        capsys: pytest.CaptureFixture[str],
+    ) -> None:
+        """main() returns SUCCESS for valid inputs.
+
+        capsys is a built-in pytest fixture that captures stdout
+        and stderr. After the function runs, capsys.readouterr()
+        returns a named tuple with .out and .err attributes.
+
+        This lets us verify:
+        1. main() returns the correct exit code
+        2. The output contains expected text
+        Without capsys, we'd have to redirect stdout manually.
+        """
+        text_path = texts_dir / "cat.txt"
+        if not text_path.exists():
+            pytest.skip(f"Text file not found: {text_path}")
+            
+        result = main([
+            "--no-log-file",
+            str(text_path),
+            str(large_dict_path),
+        ])
+        
+        assert result == ExitCode.SUCCESS
+        
+        # Verify output was printed
+        captured = capsys.readouterr()
+        assert "WORDS MISSPELLED:" in captured.out
+        assert "WORDS IN DICTIONARY:" in captured.out
+        
+    @pytest.mark.integration
+    def test_cat_txt_output(
+        self,
+        large_dict_path: Path,
+        texts_dir: Path,
+        capsys: pytest.CaptureFixture[str],
+    ) -> None:
+        """cat.txt should show 0 misspelled, 6 words in text."""
+        text_path = texts_dir / "cat.txt"
+        if not text_path.exists():
+            pytest.skip(f"Text file not found: {text_path}")
+            
+        main([
+            "--no-log-file",
+            str(text_path),
+            str(large_dict_path),
+        ])
+        
+        captured = capsys.readouterr()
+        # Check for exact values in output
+        assert "0" in captured.out
+        assert "143091" in captured.out
+        assert "6" in captured.out
+    
+    # captured.out catches the report from print(). captured.err catches all log
+    # messages regardless of level — including INFO and DEBUG.
+    
+    @pytest.mark.integration
+    def test_verbose_enables_debug_output(
+        self,
+        large_dict_path: Path,
+        texts_dir: Path,
+        capsys: pytest.CaptureFixture[str],
+    ) -> None:
+        """--verbose flag enables DEBUG-level console output."""
+        text_path = texts_dir / "cat.txt"
+        if not text_path.exists():
+            pytest.skip(f"Text file not found: {text_path}")
+            
+        main([
+            "--verbose",
+            "--no-log-file",
+            str(text_path),
+            str(large_dict_path),
+        ])
+        
+        # Debug messages as well as all logging levels go to stderr (via logging StreamHandler)
+        captured = capsys.readouterr()
+        # Verbose mode should produce debug-level output on stderr
+        assert len(captured.err) > 0
