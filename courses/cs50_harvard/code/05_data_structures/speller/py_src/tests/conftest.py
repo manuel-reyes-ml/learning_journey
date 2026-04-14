@@ -469,6 +469,11 @@ class MockDictionary:
     def __contains__(self, word: str) -> bool:
         """Support 'word in dictionary' — delegates to check()."""
         return self.check(word)
+    
+    def unload(self) -> bool:
+        """Pretend to unload - always succeeds"""
+        self._loaded = False
+        return True 
 
 
 class FailingDictionary:
