@@ -4,8 +4,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from re import M
-from unittest import result
+from pydoc import text
 import pytest
 
 from speller.benchmarks import BenchmarkResult
@@ -233,5 +232,191 @@ class TestFormatReport:
 # RUN_SPELLER — THE ORCHESTRATOR
 # =============================================================================
 
+class TestRunSpeller:
+    """Test run_speller() using injected mock dictionaries.
 
+    THIS IS THE DEPENDENCY INJECTION PAYOFF.
+
+    run_speller(*, dictionary, text_path, benchmarks=None) accepts
+    DictionaryProtocol — it doesn't know or care that we're passing
+    a MockDictionary. The function works identically with:
+    - MockDictionary       (tests — fast, deterministic, no file I/O)
+    - HashTableDictionary  (production — real dictionary files)
+    - DatabaseDictionary   (Stage 2 — PostgreSQL-backed)
+
+    No changes to run_speller() code. Ever.
+
+    What run_speller() does NOT do:
+    - It does NOT call dictionary.load() — loading is the caller's job
+      (done in load_dictionary.py before the batch loop in main())
+    - Therefore "load" does NOT appear in result.benchmarks by default
+    - Only "check" and "size" are benchmarked inside run_speller()
+    """
+    
+    def test_basic_spell_check(
+        self,
+        mock_dictionary: MockDictionary,
+        sample_text_file: Path,
+    ) -> None:
+        """run_speller returns a SpellerResult with correct structure."""
+        result = run_speller(
+            dictionary=mock_dictionary,
+            text_path=sample_text_file,
+        )
         
+        assert isinstance(result, SpellerResult)
+        assert result.words_in_text > 0
+        assert isinstance(result.words_misspelled, int)
+        
+    def test_all_words_found(self, tmp_path: Path) -> None:
+        """When all words are in the dictionary, nothing is misspelled."""
+        text_file = tmp_path / "test_txt"
+        text_file.write_text("cat dog", encoding="utf-8")
+       
+        result = run_speller(
+           dictionary=MockDictionary(words={"cat", "dog"}),
+           text_path=text_file,
+        )
+        
+        assert result.words_misspelled == 0
+        assert result.misspelled_words == []
+        assert result.words_in_text == 2
+        
+    def test_misspelled_words_detected(self, tmp_path: Path) -> None:
+        """Words not in dictionary appear in misspelled_words list."""
+        text_file = tmp_path / "test.txt"
+        text_file.write_text("cat xyz dog qqq", encoding="utf-8")
+        
+        result = run_speller(
+            dictionary=MockDictionary(words={"cat", "dog"}),
+            text_path=text_file,
+        )
+        
+        assert result.words_misspelled == 2
+        assert "xyz" in result.misspelled_words
+        assert "qqq" in result.misspelled_words
+        
+    def test_check_and_size_benchmarks_recorded(
+        self,
+        mock_dictionary: MockDictionary,
+        sample_text_file: Path,
+    ) -> None:
+        """run_speller records 'check' and 'size' benchmarks only.
+
+        run_speller() does NOT call load() — that responsibility
+        belongs to load_dictionary.py (called once before the batch
+        loop in main()). Therefore only 'check' and 'size' appear
+        in benchmarks by default.
+        """
+        result = run_speller(
+            dictionary=mock_dictionary,
+            text_path=sample_text_file,
+        ) 
+     
+        assert "check" in result.benchmarks
+        assert "size" in result.benchmarks
+        assert "load" not in result.benchmarks  # load is caller's job
+        
+        for benchmark in result.benchmarks.values():
+            assert isinstance(benchmark, BenchmarkResult)
+            assert benchmark.elapsed_seconds >= 0
+            
+    def test_caller_provided_benchmarks_are_merged(
+        self,
+        mock_dictionary: MockDictionary,
+        sample_text_file: Path,
+    ) -> None:
+        """Pre-populated benchmarks dict is extended, not replaced.
+
+        This mirrors main()'s batch loop pattern:
+            benchmarks["load"] = load_result        # load_dictionary()
+            result = run_speller(                   # adds "check", "size"
+                dictionary=loaded_dict,
+                text_path=text_path,
+                benchmarks=benchmarks,
+            )
+            # result.benchmarks now has all three: load, check, size
+        """
+        load_benchmark = BenchmarkResult(operation="load", elapsed_seconds=0.05)
+        
+        result = run_speller(
+            dictionary=mock_dictionary,
+            text_path=sample_text_file,
+            benchmarks={"load": load_benchmark},
+        )
+        
+        assert "load" in result.benchmarks
+        assert "check" in result.benchmarks
+        assert "size" in result.benchmarks
+        assert result.benchmarks["load"].elapsed_seconds == 0.05
+        
+    def test_dictionary_size_reported(
+        self,
+        mock_dictionary: MockDictionary,
+        sample_text_file: Path,
+    ) -> None:
+        """words_in_dictionary matches the mock dictionary size."""
+        result = run_speller(
+            dictionary=mock_dictionary,
+            text_path=sample_text_file,
+        )
+        
+        assert result.words_in_dictionary == mock_dictionary.size()
+        
+    def test_keyword_only_arguments(self) -> None:
+        """run_speller requires keyword arguments (* in signature).
+
+        The * in 'def run_speller(*, dictionary, text_path, ...)'
+        forces ALL arguments to be keyword-only. Any positional
+        call raises TypeError — this prevents argument-order bugs.
+        """
+        with pytest.raises(TypeError):
+            run_speller(
+                MockDictionary(),  # type: ignore[misc] - positional - should fail
+                "texts/cat.txt",
+            )
+        
+    def test_preserves_original_case_in_misspelled(
+        self, tmp_path: Path
+    ) -> None:
+        """Misspelled words retain their original case.
+
+        text_processor yields "Bingley" (original case).
+        dictionary.check() normalizes to "bingley" for lookup.
+        The misspelled list should contain "Bingley", not "bingley".
+        """
+        text_file = tmp_path / "test.txt"
+        text_file.write_text("Hello Bingley world", encoding="utf-8")
+        
+        result = run_speller(
+            dictionary=MockDictionary(words={"hello", "world"}),
+            text_path=text_file,
+        )
+        
+        assert "Bingley" in result.misspelled_words
+        
+    def test_benchmarks_none_creates_fresh_dict(
+        self,
+        mock_dictionary: MockDictionary,
+        tmp_path: Path,
+    ) -> None:
+        """benchmarks=None (default) creates a new dict each call.
+
+        The None sentinel avoids the mutable default argument footgun
+        where a shared {} would accumulate state across batch iterations.
+        Two consecutive calls must produce independent result objects.
+        """
+        text_file = tmp_path / "test.txt"
+        text_file.write_text("cat dog", encoding="utf-8")
+        
+        result_a = run_speller(dictionary=mock_dictionary, text_path=text_file)
+        result_b = run_speller(dictionary=mock_dictionary, text_path=text_file)
+        
+        assert result_a is not result_b
+        assert result_a.benchmarks is not result_b.benchmarks
+        
+        
+# =============================================================================
+# LOAD_DICTIONARY — ERROR PATH TESTING
+# =============================================================================
+
