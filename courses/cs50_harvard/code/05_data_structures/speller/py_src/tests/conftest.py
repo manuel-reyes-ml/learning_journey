@@ -506,6 +506,11 @@ class FailingDictionary:
     def __contains__(self, word: str) -> bool:
         """Always returns False (nothing is 'in' a failed dictionary)."""
         return False
+    
+    def unload(self) -> bool:
+        """Pretend to unload - always succeeds"""
+        self._loaded = False
+        return True 
 
 
 # =============================================================================
