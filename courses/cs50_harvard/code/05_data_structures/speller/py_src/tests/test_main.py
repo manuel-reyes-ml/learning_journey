@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import logging
 from pathlib import Path
 import pytest
 
@@ -111,7 +112,7 @@ class TestBuildParser:
         assert args.dictionary == "dictionaries/small"
         assert args.text == "texts/cat.txt"
         
-    def test_missing_text_argument(self, parser:argparse.ArgumentParser) -> None:
+    def test_missing_text_argument(self, parser: argparse.ArgumentParser) -> None:
         """No arguments at all should cause SystemExit.
 
         argparse raises SystemExit(2) for invalid arguments.
@@ -265,21 +266,29 @@ class TestMain:
         self,
         large_dict_path: Path,
         texts_dir: Path,
-        capsys: pytest.CaptureFixture[str],
+        caplog: pytest.LogCaptureFixture,
     ) -> None:
         """--verbose flag enables DEBUG-level console output."""
         text_path = texts_dir / "cat.txt"
         if not text_path.exists():
             pytest.skip(f"Text file not found: {text_path}")
+        
+        with caplog.at_level(logging.DEBUG, logger="speller.__main__"):   
+            main([
+                "--verbose",
+                "--no-log-file",
+                str(text_path),
+                str(large_dict_path),
+            ])
             
-        main([
-            "--verbose",
-            "--no-log-file",
-            str(text_path),
-            str(large_dict_path),
-        ])
+        assert len(caplog.records) > 0
+        
+        record = caplog.records[0]
+        assert record.levelname == "DEBUG"
+        assert "Verbose mode enabled" in record.message
+        assert record.name == "speller.__main__"
         
         # Debug messages as well as all logging levels go to stderr (via logging StreamHandler)
-        captured = capsys.readouterr()
+        # captured = capsys.readouterr()
         # Verbose mode should produce debug-level output on stderr
-        assert len(captured.err) > 0
+        # assert len(captured.err) > 0
