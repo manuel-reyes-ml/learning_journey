@@ -3,9 +3,8 @@
 
 from __future__ import annotations
 
+import argparse
 from pathlib import Path
-from turtle import exitonclick
-from _pytest.outcomes import Exit
 import pytest
 
 from speller.config import ExitCode
@@ -16,6 +15,19 @@ from speller.config import ExitCode
 # Testing private functions is acceptable when they contain
 # significant logic worth verifying independently.
 from speller.__main__ import _build_parser, _validate_paths, main
+
+
+# =============================================================================
+# HELPER — Create Argument parser
+# =============================================================================
+# This is a LOCAL fixture (not in conftest.py) because only this
+# test file needs it. Fixtures used by one file stay in that file.
+
+@pytest.fixture
+def parser() -> argparse.ArgumentParser:
+    """
+    """
+    return _build_parser()
 
 
 # =============================================================================
@@ -30,69 +42,61 @@ class TestBuildParser:
     running the full spell-check pipeline.
     """
     
-    def test_text_only(self) -> None:
+    def test_text_only(self, parser: argparse.ArgumentParser) -> None:
         """Single argument goes to 'text', dictionary uses default.
 
         Matches C: argc == 2, argv[1] is the text file.
         """
-        parser = _build_parser()
         args = parser.parse_args(["texts/cat.txt"])
         
         assert args.text == "texts/cat.txt" 
         # Dictionary should have the default path
         assert "large" in args.dictionary
         
-    def test_dictionary_and_text(self) -> None:
+    def test_dictionary_and_text(self, parser: argparse.ArgumentParser) -> None:
         """Two arguments: first is dictionary, second is text.
 
         Matches C: argc == 3, argv[1] is dictionary, argv[2] is text.
         """
-        parser = _build_parser()
         args = parser.parse_args(["texts/cat.txt", "dictionaries/small"])
         
         assert args.dictionary == "dictionaries/small"
         assert args.text == "texts/cat.txt"
         
-    def test_verbose_flag(self) -> None:
+    def test_verbose_flag(self, parser: argparse.ArgumentParser) -> None:
         """--verbose flag is parsed as boolean."""
-        parser = _build_parser()
         args = parser.parse_args(["--verbose", "texts/cat.txt"])
         
         assert args.verbose is True
         
-    def test_verbose_short_flag(self) -> None:
+    def test_verbose_short_flag(self, parser: argparse.ArgumentParser) -> None:
         """-v is the short form of --verbose."""
-        parser = _build_parser()
         args = parser.parse_args(["-v", "texts/cat.txt"])
         
         assert args.verbose is True
         
-    def test_no_log_file_flag(self) -> None:
+    def test_no_log_file_flag(self, parser: argparse.ArgumentParser) -> None:
         """--no-log-file disables file logging."""
-        parser = _build_parser()
         args = parser.parse_args(["--no-log-file", "texts/cat.txt"])
         
         assert args.no_log_file is True
         
-    def test_show_misspelled_flag(self) -> None:
+    def test_show_misspelled_flag(self, parser: argparse.ArgumentParser) -> None:
         """--show-misspelled enables misspelled word output."""
-        parser = _build_parser()
         args = parser.parse_args(["--show-misspelled", "texts/cat.txt"])
         
         assert args.show_misspelled is True
         
-    def test_defaults(self) -> None:
+    def test_defaults(self, parser: argparse.ArgumentParser) -> None:
         """Default values when no optional flags are provided."""
-        parser = _build_parser()
         args = parser.parse_args(["texts/cat.txt"])
         
         assert args.verbose is False
         assert args.no_log_file is False
         assert args.show_misspelled is False
         
-    def test_all_flags_combined(self) -> None:
+    def test_all_flags_combined(self, parser: argparse.ArgumentParser) -> None:
         """All optional flags can be combined."""
-        parser = _build_parser()
         args = parser.parse_args([
             "--verbose",
             "--no-log-file",
@@ -107,12 +111,11 @@ class TestBuildParser:
         assert args.dictionary == "dictionaries/small"
         assert args.text == "texts/cat.txt"
         
-    def test_missing_text_argument(self) -> None:
+    def test_missing_text_argument(self, parser:argparse.ArgumentParser) -> None:
         """No arguments at all should cause SystemExit.
 
         argparse raises SystemExit(2) for invalid arguments.
         """
-        parser = _build_parser()
         with pytest.raises(SystemExit):
             parser.parse_args(["--ops"])
             
