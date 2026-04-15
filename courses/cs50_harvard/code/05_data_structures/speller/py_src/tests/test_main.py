@@ -260,6 +260,15 @@ class TestMain:
     
     # captured.out catches the report from print(). captured.err catches all log
     # messages regardless of level — including INFO and DEBUG.
+    #
+    # │  WHY caplog OVER capsys FOR LOGGING                             │
+    # │  capsys captures the formatted string:                          │
+    # │    "14:30:45 : INFO : Dictionary loaded: 143091 words"          │
+    # │  caplog captures the structured LogRecord object:              │
+    # │    record.levelname == "INFO"                                   │
+    # │    record.message == "Dictionary loaded: 143091 words"          │
+    # │    record.name == "speller.load_dictionary"   
+    
     
     @pytest.mark.integration
     def test_verbose_enables_debug_output(
@@ -280,13 +289,19 @@ class TestMain:
                 str(text_path),
                 str(large_dict_path),
             ])
-            
+        
+        # │  caplog lets you assert on level and message separately,        │
+        # │  without depending on the exact log format string.   
         assert len(caplog.records) > 0
         
         record = caplog.records[0]
         assert record.levelname == "DEBUG"
         assert "Verbose mode enabled" in record.message
         assert record.name == "speller.__main__"
+        
+        # caplog's capture handler sits on the root logger. With propagate = False on "speller",
+        # records emitted by "speller.__main__" flow up to "speller" and stop there — they never
+        # reach root, so caplog never sees them.
         
         # Debug messages as well as all logging levels go to stderr (via logging StreamHandler)
         # captured = capsys.readouterr()
