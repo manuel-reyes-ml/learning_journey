@@ -315,6 +315,6 @@ def configure_logging(
         file_handler = _setup_fhandler()
         package_logger.addHandler(file_handler)
         
-    # 5. Prevent logs from bubbling up to Python's default root logger
+    # 5. When 'False' - prevents logs from bubbling up to Python's default root logger
     # (prevents duplicate printing in some environments).
-    package_logger.propagate = False
+    package_logger.propagate = True
