@@ -186,6 +186,7 @@ class SpellerArgs:
     verbose: bool
     no_log_file: bool
     show_misspelled: bool
+    no_custom_console: bool
 
 
 # frozen=True makes instances immutable.
@@ -392,6 +393,13 @@ def _build_parser() -> argparse.ArgumentParser:
         action="store_true",
         default=False,
         help="Show all misspelled words from input txt file.",
+    )
+    
+    parser.add_argument(
+        "--no-custom-console",
+        action="store_true",
+        default=False,
+        help="Disable use of Colored Formatter and use regular logging.Formatter",
     )
     
     return parser
@@ -664,6 +672,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         verbose=raw.verbose,
         no_log_file=raw.no_log_file,
         show_misspelled=raw.show_misspelled,
+        no_custom_console=raw.no_custom_console,
     )
     
     # __ Step 2: Configure logging FIRST --
@@ -673,7 +682,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
     configure_logging(
         console_verbose=args.verbose,
         log_to_file=not args.no_log_file,
-        custom_console=True,
+        custom_console=not args.no_custom_console,
     )
     
     if args.verbose:
