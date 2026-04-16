@@ -9,10 +9,11 @@ from __future__ import annotations
 
 import json
 import logging
+from logging.handlers import RotatingFileHandler
 from typing import Any, Final, override
 from string.templatelib import Template, Interpolation
 
-from speller.config import file_dirs, fhandler_config
+from speller.config import file_dirs, fhandler_config, FileDirectories, FileHandlerConfig
 
 
 # =============================================================================
@@ -20,6 +21,93 @@ from speller.config import file_dirs, fhandler_config
 # =============================================================================
 
 __all__ = []
+
+
+# =============================================================================
+# INTERNAL HELPER FUNCTIONS
+# =============================================================================
+
+def _setup_chandler(
+    *,
+    level: int,
+    formatter: type[logging.Formatter],
+) -> logging.StreamHandler:
+    """Create and configure a console (stream) logging handler.
+ 
+    Writes to ``sys.stderr`` so log output and program output
+    (``stdout``) remain on separate streams and can be redirected
+    independently.
+ 
+    Parameters
+    ----------
+    level : int
+        Minimum log level for this handler (e.g. ``logging.INFO``).
+        Derived from the ``--verbose`` flag in ``__main__.py``.
+    formatter : type[logging.Formatter]
+        Formatter class to instantiate.  Pass plain
+        ``logging.Formatter`` in tests to suppress ANSI color codes
+        from captured output.
+ 
+    Returns
+    -------
+    logging.StreamHandler
+        Fully configured handler ready to add to a logger.
+    """ 
+    console_handler = logging.StreamHandler()
+    console_handler.setLevel(level)
+    console_handler.setFormatter(formatter(
+        fmt='%(asctime)s : %(levelname)s : %(message)s',
+        datefmt='%H:%M:%S',
+    ))
+    return console_handler
+
+
+def _setup_fhandler(
+    file_dirs: FileDirectories = file_dirs,
+    fhandler_config: FileHandlerConfig = fhandler_config,
+) -> RotatingFileHandler:
+    """Create and configure a rotating file logging handler.
+ 
+    Always captures ``DEBUG`` level regardless of console verbosity so
+    full diagnostic information is available on disk even when the
+    console shows only ``INFO``.  Rotates at
+    :attr:`~speller.config.FileHandlerConfig.max_log_bytes` and keeps
+    :attr:`~speller.config.FileHandlerConfig.BACKUP_COUNT` backups.
+ 
+    Parameters
+    ----------
+    file_dirs : FileDirectories, optional
+        Provides the log file path.  Defaults to the module-level
+        singleton from ``config.py``.
+    fhandler_config : FileHandlerConfig, optional
+        Provides size and rotation settings.  Defaults to the
+        module-level singleton from ``config.py``.
+ 
+    Returns
+    -------
+    RotatingFileHandler
+        Fully configured handler ready to add to a logger.
+ 
+    Notes
+    -----
+    The log directory is created by :func:`configure_logging` before
+    this function is called.  Directory creation is a side effect and
+    belongs at the call site, not inside a handler factory.
+    """
+    file_handler = RotatingFileHandler(
+        filename=file_dirs.log_file,
+        maxBytes=fhandler_config.max_log_bytes,
+        backupCount=fhandler_config.BACKUP_COUNT,
+        encoding=fhandler_config.ENCODING,
+    )
+    file_handler.setLevel(logging.DEBUG)
+    
+    # %(name)s shows module name (speller.main)
+    file_handler.setFormatter(logging.Formatter(
+        fmt='%(asctime)s : %(name)s : %(levelname)s : %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S',
+    ))
+    return file_handler
 
 
 # =============================================================================
@@ -250,3 +338,44 @@ class JsonTemplateFormatter(logging.Formatter):
 # =============================================================================
 # CONFIGURATION FUNCTION
 # =============================================================================
+
+def configure_template_logging(
+    *,
+    console_verbose: bool = False,
+    log_to_file: bool = True,
+) -> None:
+    """Configure logging with template-aware formatters.
+
+    Drop-in replacement for :func:`~speller.logger.configure_logging`
+    that uses :class:`TemplateMessageFormatter` for console and
+    :class:`JsonTemplateFormatter` for file output.
+
+    Both formatters are backward compatible — plain ``str`` log
+    messages work exactly as before.  Only ``Template`` messages
+    get the enhanced dual rendering.
+
+    Parameters
+    ----------
+    console_verbose : bool, optional
+        ``True`` sets console to DEBUG.  ``False`` (default) shows INFO+.
+    log_to_file : bool, optional
+        ``True`` (default) writes structured JSON to disk.
+    """
+    # 1. Grab the top-level logger for the package
+    # CUR_DIR.name gives the current directory in string "speller"
+    package_logger = logging.getLogger(file_dirs.CUR_DIR.name)
+    package_logger.setLevel(logging.DEBUG)
+    
+    # 2. Prevent duplicate handlers if this function is called multiple times
+    if package_logger.hasHandlers():
+        package_logger.handlers.clear()
+        
+    # 3. Console handler: colored human-readable output, respected the 'level' parameter
+    level = logging.DEBUG if console_verbose else fhandler_config.LEVEL_DEFAULT
+    console_handler = _setup_chandler(level=level, formatter=TemplateMessageFormatter)
+    package_logger.addHandler(console_handler)
+    
+    
+    
+    
+    
