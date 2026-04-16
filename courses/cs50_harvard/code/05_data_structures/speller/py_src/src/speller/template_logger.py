@@ -286,6 +286,10 @@ class TemplateMessageFormatter(logging.Formatter):
     }
     RESET: Final[str] = "\033[0m"
     
+    # Override the parent's format method
+    # Apply override decorator to a subclass method that overrides a base class method.
+    # Static type checkers will warn if the base class is modified such that the overridden method
+    # no longer exists — avoiding accidentally turning a method override into dead code.
     @override
     def format(self, record: logging.LogRecord) -> str:
         """Format a log record, rendering any Template to human text.
@@ -355,6 +359,10 @@ class JsonTemplateFormatter(logging.Formatter):
          "values": {"count": 143091}}
     """
     
+    # Override the parent's format method
+    # Apply override decorator to a subclass method that overrides a base class method.
+    # Static type checkers will warn if the base class is modified such that the overridden method
+    # no longer exists — avoiding accidentally turning a method override into dead code.
     @override
     def format(self, record: logging.LogRecord) -> str:
         """Format a log record as a JSON line.
@@ -394,6 +402,7 @@ def configure_template_logging(
     *,
     console_verbose: bool = False,
     log_to_file: bool = True,
+    custom_console: bool = True,
 ) -> None:
     """Configure logging with template-aware formatters.
 
@@ -415,7 +424,7 @@ def configure_template_logging(
     # 1. Grab the top-level logger for the package
     # CUR_DIR.name gives the current directory in string "speller"
     package_logger = logging.getLogger(file_dirs.CUR_DIR.name)
-    package_logger.setLevel(logging.DEBUG)
+    package_logger.setLevel(logging.DEBUG)  # Let handlers decide their own level
     
     # 2. Prevent duplicate handlers if this function is called multiple times
     if package_logger.hasHandlers():
@@ -423,7 +432,9 @@ def configure_template_logging(
         
     # 3. Console handler: colored human-readable output, respected the 'level' parameter
     level = logging.DEBUG if console_verbose else fhandler_config.LEVEL_DEFAULT
-    console_handler = _setup_chandler(level=level, formatter=TemplateMessageFormatter)
+    formatter = TemplateMessageFormatter if custom_console else logging.Formatter
+    
+    console_handler = _setup_chandler(level=level, formatter=formatter)
     package_logger.addHandler(console_handler)
     
     # 4. File handler - structured JSON output -  always captures DEBUG
