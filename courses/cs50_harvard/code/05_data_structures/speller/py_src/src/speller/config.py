@@ -42,8 +42,7 @@ dataclass singletons — reappears as ``LLMConfig`` in DataVault,
 from __future__ import annotations
 
 from enum import IntEnum, StrEnum, unique
-from collections import namedtuple
-from typing import Final, TypedDict, Required, NotRequired
+from typing import Final, NamedTuple, TypedDict, Required, NotRequired
 from dataclasses import dataclass
 from pathlib import Path
 import logging
@@ -77,7 +76,6 @@ __all__ = [
 # =====================================================
 
 MAX_WORD_LENGTH: Final[int] = 45
-DICT_FNAMES = namedtuple("DICT_FNAMES", ["large", "small"])
 
 
 # =====================================================
@@ -156,6 +154,17 @@ class DefaultDirs(StrEnum):
     MISS = "misspelled"
 
 
+# The class-based form gives you typed fields that Pyright can validate at every
+# access site, docstring support, default values, and it follows PEP 8 class naming.
+# This lets you introduce optional fields without breaking call sites, which is
+# useful during staged migrations.
+class DictFileNames(NamedTuple):
+    """Default dictionary filenames."""
+    
+    large: str
+    small: str
+    
+
 class DefaultFileNames(TypedDict, total=False):
     """Typed mapping for default filename configuration.
  
@@ -173,13 +182,13 @@ class DefaultFileNames(TypedDict, total=False):
         Reserved for future API key filenames.  Not used in Stage 1.
     """
     
-    dictionaries: Required[DICT_FNAMES]  # Must be present
+    dictionaries: Required[DictFileNames]  # Must be present
     keys: NotRequired[tuple[str, ...]]   # Optional
 
 
 # Build dictionary using DefaultFileNames structure
 default_fnames: DefaultFileNames = {
-    "dictionaries": DICT_FNAMES("large", "small"),
+    "dictionaries": DictFileNames("large", "small"),
 }
 
 
