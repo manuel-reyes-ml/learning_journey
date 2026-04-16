@@ -20,7 +20,13 @@ from speller.config import file_dirs, fhandler_config, FileDirectories, FileHand
 # EXPORTS
 # =============================================================================
 
-__all__ = []
+__all__ = [
+    "render_message",
+    "extract_values",
+    "TemplateMessageFormatter",
+    "JsonTemplateFormatter",
+    "configure_template_logging",
+]
 
 
 # =============================================================================
