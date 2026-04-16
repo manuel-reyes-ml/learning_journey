@@ -55,14 +55,14 @@ References
 
 from __future__ import annotations
 
+from ast import Name
 from dataclasses import dataclass, field, KW_ONLY
 
 # Runtime collection types → collections.abc
 from collections.abc import Generator, Callable
-from collections import namedtuple
 
 # Type system concepts → typing
-from typing import Any, ParamSpec, TypeVar
+from typing import Any, ParamSpec, TypeVar, NamedTuple
 
 from contextlib import contextmanager
 from pathlib import Path
@@ -103,13 +103,6 @@ __all__ = [
 # =============================================================================
 # MODULE CONFIGURATION
 # =============================================================================
-# =====================================================
-# Constants
-# =====================================================
-
-FDATA = namedtuple("FDATA", ["fname", "fpath"])
-
-
 # =====================================================
 # Type Variables % Aliases
 # =====================================================
@@ -200,6 +193,17 @@ class BenchmarkResult:
         """
         return f"{self.operation}: {self.elapsed_seconds:.2f}s"
 
+
+# The class-based form gives you typed fields that Pyright can validate at every
+# access site, docstring support, default values, and it follows PEP 8 class naming.
+# This lets you introduce optional fields without breaking call sites, which is
+# useful during staged migrations.
+class FileData(NamedTuple):
+    """Metadata for a timed file operation."""
+    
+    fname: str
+    fpath: Path
+    
 
 # =====================================================
 # Decorators
@@ -316,7 +320,7 @@ def timer(
         operation=operation_name,
         elapsed_seconds=elapsed,
         metadata={
-            "input_file": FDATA(path.name, path)
+            "input_file": FileData(path.name, path)
         } if path else {},
     )
     
