@@ -103,7 +103,7 @@ def _setup_fhandler(
     file_handler.setLevel(logging.DEBUG)
     
     # %(name)s shows module name (speller.main)
-    file_handler.setFormatter(logging.Formatter(
+    file_handler.setFormatter(JsonTemplateFormatter(
         fmt='%(asctime)s : %(name)s : %(levelname)s : %(message)s',
         datefmt='%Y-%m-%d %H:%M:%S',
     ))
@@ -375,7 +375,16 @@ def configure_template_logging(
     console_handler = _setup_chandler(level=level, formatter=TemplateMessageFormatter)
     package_logger.addHandler(console_handler)
     
-    
-    
-    
+    # 4. File handler - structured JSON output -  always captures DEBUG
+    if log_to_file:
+        # parents=True: create any missing parent directories
+        # exist_ok=True: no error if directory already exists
+        file_dirs.LOG_DIR.mkdir(parents=True, exist_ok=True)
+        
+        file_handler = _setup_fhandler()
+        package_logger.addHandler(file_handler)
+        
+    # 5. When 'False' - prevents logs from bubbling up to Python's default root logger
+    # (prevents duplicate printing in some environments).    
+    package_logger.propagate = True
     
