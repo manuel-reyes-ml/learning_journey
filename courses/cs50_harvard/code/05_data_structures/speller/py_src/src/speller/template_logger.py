@@ -119,3 +119,62 @@ def extract_values(template: Template) -> dict[str, Any]:
 # CUSTOM FORMATTER CLASSES
 # =============================================================================
 
+class TemplateMessageFormatter(logging.Formatter):
+    """Formatter that renders Template objects as colored human text.
+
+    Extends the same pattern as :class:`~speller.logger.ColoredFormatter`
+    but adds Template awareness.  When ``record.msg`` is a ``Template``,
+    it renders it via :func:`render_message` before the parent formats
+    the timestamp and level.
+
+    When ``record.msg`` is a plain ``str`` (normal log call), it falls
+    through to standard ``Formatter`` behavior — fully backward compatible.
+
+    Attributes
+    ----------
+    COLORS : dict of {int : str}
+        ANSI color codes per log level (same as ColoredFormatter).
+    RESET : str
+        ANSI reset code.
+    """
+    
+    COLORS: Final[dict[int, str]] = {
+        logging.DEBUG:    "\033[90m",    # Gray
+        logging.INFO:     "\033[92m",    # Green
+        logging.WARNING:  "\033[93m",    # Yellow
+        logging.ERROR:    "\033[91m",    # Red
+        logging.CRITICAL: "\033[1;91m",  # Bold Red
+    }
+    RESET: Final[str] = "\033[0m"
+    
+    @override
+    def format(self, record: logging.LogRecord) -> str:
+        """Format a log record, rendering any Template to human text.
+
+        The key insight: ``record.msg`` holds whatever was passed to
+        ``logger.info()``.  If it's a Template, we render it BEFORE
+        the parent class calls ``getMessage()`` (which would just
+        call ``str()`` on it and lose the structured data).
+
+        Parameters
+        ----------
+        record : logging.LogRecord
+            The log record to format.
+
+        Returns
+        -------
+        str
+            Colored, human-readable log line.
+        """
+        # ─── Template-aware rendering ───
+        # Check if the message is a Template BEFORE the parent processes it.
+        # This is the interception point that t-strings enable.
+        if isinstance(record.msg, Template):
+            record.msg = render_message(record.msg)
+            record.args = None # Clear args - already rendered
+            
+        color = self.COLORS.get(record.levelno, self.RESET)
+        message = super().format(record)
+        return f"{color}{message}{self.RESET}"
+    
+    
