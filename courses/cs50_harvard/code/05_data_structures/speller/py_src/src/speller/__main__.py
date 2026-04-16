@@ -70,7 +70,7 @@ try:
     from speller.load_dictionary import load_dictionary
     from speller.logger import configure_logging
     from speller.register import dicts
-    from speller.speller import run_speller, REPORT, SpellerResult
+    from speller.speller import run_speller, Report, SpellerResult
     
 except ImportError as e:
     sys.exit(f"Error missing speller module.\nDetails: {e}")
@@ -574,7 +574,7 @@ def _validate_ops(ops_names: list[str]) -> list[str]:
     return clean_names
 
 
-def _print_reports(reports: REPORT | str, infile_name: str = "file") -> None:
+def _print_reports(reports: Report | str, infile_name: str = "file") -> None:
     """Write the misspelled-words file (if requested) and print the report.
  
     If ``reports.misspelled`` is not ``None``, creates the misspelled
@@ -598,7 +598,7 @@ def _print_reports(reports: REPORT | str, infile_name: str = "file") -> None:
     Directory creation uses ``mkdir(parents=True, exist_ok=True)`` so
     the call is idempotent — no error if the directory already exists.
     """
-    if isinstance(reports, REPORT) and reports.misspelled:
+    if isinstance(reports, Report) and reports.misspelled:
         file_dirs.MISS_DIR.mkdir(parents=True, exist_ok=True)
         out_file = file_dirs.MISS_DIR / f"misspelled_{infile_name}"
         out_file.write_text(reports.misspelled, encoding="utf-8")
@@ -788,7 +788,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 # format_report() returns a string — main() decides to print it.
                 # In a web app (Stage 1 Streamlit), you'd display it differently.
                 # In tests, you'd just check result.words_misspelled.
-                reports: REPORT = result.format_report(log_misspelled=show_misspelled)
+                reports: Report = result.format_report(log_misspelled=show_misspelled)
                 _print_reports(reports, text_path.name)
         
         # -- Step 7: Builds and display GeneralReport report --
