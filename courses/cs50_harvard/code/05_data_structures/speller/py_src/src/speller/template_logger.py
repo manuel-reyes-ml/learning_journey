@@ -178,3 +178,75 @@ class TemplateMessageFormatter(logging.Formatter):
         return f"{color}{message}{self.RESET}"
     
     
+class JsonTemplateFormatter(logging.Formatter):
+    """Formatter that renders Template objects as structured JSON.
+
+    When ``record.msg`` is a ``Template``, produces a single JSON line
+    containing:
+
+    - ``timestamp`` — ISO-format time
+    - ``level`` — log level name
+    - ``module`` — logger name (e.g. ``speller.load_dictionary``)
+    - ``message`` — human-readable rendered text
+    - ``values`` — dict of every interpolated variable and its value
+
+    This is the format consumed by log aggregation tools (ELK, Datadog,
+    CloudWatch Logs Insights).  Each interpolated variable becomes a
+    searchable, filterable field.
+
+    When ``record.msg`` is a plain ``str``, falls back to a simple
+    JSON structure with just ``message`` (no ``values``).
+
+    Examples
+    --------
+    Given::
+
+        count = 143091
+        logger.info(t"Dictionary loaded: {count} words")
+
+    Console handler (TemplateMessageFormatter) outputs::
+
+        14:30:45 : INFO : Dictionary loaded: 143091 words
+
+    File handler (JsonTemplateFormatter) outputs::
+
+        {"timestamp": "2026-04-15 14:30:45", "level": "INFO",
+         "module": "speller.load_dictionary",
+         "message": "Dictionary loaded: 143091 words",
+         "values": {"count": 143091}}
+    """
+    
+    @override
+    def format(self, record: logging.LogRecord) -> str:
+        """Format a log record as a JSON line.
+
+        Parameters
+        ----------
+        record : logging.LogRecord
+            The log record to format.
+
+        Returns
+        -------
+        str
+            Single-line JSON string.
+        """
+        log_entry: dict[str, Any] = {
+            "timestamp": self.formatTime(record, datefmt="%Y-%m-%d %H:%M:%S"),
+            "level": record.levelname,
+            "module": record.name,
+        }
+        
+        if isinstance(record.msg, Template):
+            log_entry["message"] = render_message(record.msg)
+            log_entry["values"] = extract_values(record.msg)
+            record.args = None
+        else:
+            # Fallback for plain string log calls - backward compatible
+            log_entry["message"] = record.getMessage()
+            
+        return json.dumps(log_entry)
+
+
+# =============================================================================
+# CONFIGURATION FUNCTION
+# =============================================================================
