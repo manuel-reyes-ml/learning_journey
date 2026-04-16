@@ -41,13 +41,13 @@ Module Dependencies
 
 from __future__ import annotations
 
+from ast import Name
 from dataclasses import dataclass, field, KW_ONLY
 import itertools
 from pathlib import Path
 import logging
-from collections import namedtuple
 from collections.abc import Iterator
-from typing import Final
+from typing import Final, NamedTuple
 
 from speller.benchmarks import BenchmarkResult, timer
 from speller.protocols import DictionaryProtocol
@@ -82,6 +82,7 @@ logger = logging.getLogger(__name__)
 __all__ = [
     "SpellerResult",
     "run_speller",
+    "Report",
 ]
 
 
@@ -90,12 +91,26 @@ __all__ = [
 # =============================================================================
 
 COL: Final[int] = 22
-REPORT = namedtuple("REPORT", ["main", "misspelled"])
 
 
 # =============================================================================
 # RESULT CONTAINER
 # =============================================================================
+
+# The class-based form gives you typed fields that Pyright can validate at every
+# access site, docstring support, default values, and it follows PEP 8 class
+# naming, (Report not REPORT). This lets you introduce optional fields without
+# breaking call sites, which is useful during staged migrations.
+#
+# Notice how Report.misspelled can now have a default of None — the current code
+# passes None for this field in several places but the functional namedtuple can't
+# express that without a workaround.
+class Report(NamedTuple):
+    """Formatted spell-check report."""
+    
+    main: str
+    misspelled: str | None = None
+    
 
 # frozen=True makes instances immutable.
 # slots=True prevents dynamic attribute creation and
@@ -161,7 +176,7 @@ class SpellerResult:
         return sum(b.elapsed_seconds for b in self.benchmarks.values())
     
     
-    def format_report(self, *, log_misspelled: bool = False) -> REPORT:
+    def format_report(self, *, log_misspelled: bool = False) -> Report:
         """Format results to match CS50 speller.c output exactly.
 
         Returns a :class:`REPORT` namedtuple rather than printing
@@ -265,7 +280,7 @@ class SpellerResult:
             if log_misspelled else None
         )
         
-        return REPORT(main_report, misspelled_report)
+        return Report(main_report, misspelled_report)
 
 
 # =============================================================================
