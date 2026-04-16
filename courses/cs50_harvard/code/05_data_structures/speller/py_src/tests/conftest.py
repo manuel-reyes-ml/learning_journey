@@ -70,10 +70,10 @@ Every project gets its own conftest.py:
 from __future__ import annotations
 
 from pathlib import Path
-
 import pytest
 
 from speller.dictionaries import HashTableDictionary
+from speller.protocols import DictionaryProtocol
 
 
 # =============================================================================
@@ -416,13 +416,22 @@ def loaded_dictionary(sample_dict_file: Path) -> HashTableDictionary:
 #   FormSense:   MockExtractor (no Gemini Vision API calls)
 #   AFC:         MockDataSource (no SEC API rate limiting)
 
-
-class MockDictionary:
+# When your mock classes rely purely on structural typing (duck typing), 
+# this technically satisfies the Protocol, adding explicit Protocol
+# inheritance to your test doubles gives you a compile-time safety net: if you
+# ever add a new method to DictionaryProtocol, Pyright will immediately flag
+# your mocks as incomplete.
+class MockDictionary(DictionaryProtocol):
     """Test double that satisfies DictionaryProtocol.
 
     Provides deterministic, predictable behavior for testing
     run_speller() without real file I/O. The words set is
     configurable so each test can control what's "in the dictionary."
+    
+    Explicit inheritance isn't required (structural typing works
+    (duck typing)), but it gives Pyright a compile-time check: if
+    DictionaryProtocol gains a new method, this class immediately
+    shows an error.
 
     NO INHERITANCE from DictionaryProtocol needed:
       - Has load() → bool           ✓ matches Protocol
@@ -438,6 +447,13 @@ class MockDictionary:
         Words to include in the mock dictionary.
         Defaults to {"the", "cat", "sat", "on", "mat"}.
     """
+    
+    # You already use slots=True on all your dataclasses — applying it to your mock
+    # classes shows consistent engineering discipline. It prevents accidental attribute
+    # creation (a real bug source in test doubles) and the default behavior of a dataclass
+    # is mutable, which makes them great for objects that evolve through your pipeline — but
+    # for mocks, you want tight control over what attributes exist.
+    __slots__ = ("_words", "_loaded")
 
     def __init__(self, words: set[str] | None = None) -> None:
         # If no words provided, use a default set that matches
@@ -476,7 +492,11 @@ class MockDictionary:
         return True 
 
 
-class FailingDictionary:
+# This is a nuance worth learning: structural typing catches errors at call sites;
+# explicit inheritance catches them at definition sites. In production, you want both
+# — and explaining this distinction in your PR or README shows deep understanding of
+# Python's type system.
+class FailingDictionary(DictionaryProtocol):
     """Mock dictionary that ALWAYS fails to load.
 
     Used to test error handling paths — what happens when
