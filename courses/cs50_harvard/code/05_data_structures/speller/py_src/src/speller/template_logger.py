@@ -1,4 +1,49 @@
-"""
+"""Template-string logging formatters for the speller package.
+
+Extends the two-handler strategy from ``logger.py`` with t-string
+(PEP 750) awareness.  When a ``Template`` object is passed to a
+logger call, these formatters can render it in two ways:
+
+Human-readable (console)
+    :class:`TemplateMessageFormatter` renders the ``Template`` exactly
+    like an f-string would — colored, timestamped, readable.
+
+Structured JSON (file / observability)
+    :class:`JsonTemplateFormatter` extracts every interpolated variable
+    into a JSON object alongside the rendered message.  This is the
+    pattern used by production observability stacks (Datadog, ELK,
+    CloudWatch) where you need both a human summary AND machine-
+    parseable fields.
+
+How t-strings work (quick reference)
+-------------------------------------
+An f-string evaluates immediately to ``str``::
+
+    f"Loaded {count} words"  → "Loaded 143091 words"
+
+A t-string evaluates to a ``Template`` object::
+
+    t"Loaded {count} words"  → Template('Loaded ', Interpolation(value=143091), ' words')
+
+The ``Template`` is iterable.  Each element is either a ``str``
+(static text) or an ``Interpolation`` (a variable with its value,
+expression text, and format spec — all preserved separately).
+
+This separation is what lets different formatters render the SAME
+log call in completely different ways.
+
+Roadmap relevance
+-----------------
+- DataVault:   structured logging for LLM API calls (tokens, cost, latency as JSON fields)
+- PolicyPulse: dual output — console for developer, JSON for observability pipeline
+- AFC:         trade execution logs with structured fields for backtesting analysis
+
+References
+----------
+.. [1] PEP 750 — Template Strings
+   https://peps.python.org/pep-0750/
+.. [2] PEP 750 Examples — Logging
+   https://github.com/t-strings/pep750-examples
 """
 
 # =============================================================================
