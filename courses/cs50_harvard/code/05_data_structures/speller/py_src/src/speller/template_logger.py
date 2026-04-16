@@ -25,3 +25,97 @@ __all__ = []
 # =============================================================================
 # CORE FUNCTIONS — Template Processing
 # =============================================================================
+
+def render_message(template: Template) -> str:
+    """Render a Template as a human-readable string (f-string equivalent).
+
+    Iterates over the Template's parts and reconstructs the final
+    string, applying any format specs to interpolated values.
+
+    This replicates what an f-string does automatically — but here
+    YOU control the rendering.  The same Template can be rendered
+    differently by different functions (this one for humans,
+    :func:`extract_values` for machines).
+
+    Parameters
+    ----------
+    template : Template
+        A t-string ``Template`` object from ``string.templatelib``.
+
+    Returns
+    -------
+    str
+        The fully rendered string, identical to what an f-string
+        would have produced.
+
+    Examples
+    --------
+    >>> count = 143091
+    >>> render_message(t"Loaded {count} words")
+    'Loaded 143091 words'
+    >>> render_message(t"Time: {0.1423:.2f}s")
+    'Time: 0.14s'
+    """
+    parts: list[str] = []
+    
+    for item in template:
+        # ─── Structural pattern matching (Python 3.10+) ───
+        # match/case is the idiomatic way to process Template parts.
+        # Each element is either a str (static text) or an
+        # Interpolation (a variable with metadata).
+        match item:
+            case str() as text:
+                # Static text - pass through unchanged
+                parts.append(text)
+            case Interpolation() as interp:
+                # Dynamic value - apply format spec if present
+                # interp.value = the actual Python object (int, str, etc.)
+                # interp.format_spec = the format string after ':' (e.g. ".2f")
+                # interp.expression = the source code text (e.g. "count")
+                if interp.format_spec:
+                    parts.append(format(interp.value, interp.format_spec))
+                else:
+                    parts.append(str(interp.value))
+    
+    return "".join(parts)
+
+
+def extract_values(template: Template) -> dict[str, Any]:
+    """Extract interpolated values from a Template as a dictionary.
+
+    Pulls out every ``Interpolation`` and maps its source expression
+    to its runtime value.  This is the machine-readable counterpart
+    to :func:`render_message`.
+
+    Parameters
+    ----------
+    template : Template
+        A t-string ``Template`` object.
+
+    Returns
+    -------
+    dict of {str : Any}
+        Mapping of expression text to runtime value.
+        Example: ``{"count": 143091, "path": "dictionaries/large"}``
+
+    Examples
+    --------
+    >>> count = 143091
+    >>> extract_values(t"Loaded {count} words")
+    {'count': 143091}
+    """
+    values: dict[str, Any] = {}
+    
+    for item in template:
+        match item:
+            case Interpolation() as interp:
+                #interp.expression is the source text: "count", "path.name", etc.
+                values[interp.expression] = interp.value
+                
+    return values
+
+
+# =============================================================================
+# CUSTOM FORMATTER CLASSES
+# =============================================================================
+
