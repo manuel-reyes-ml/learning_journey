@@ -223,7 +223,7 @@ def _setup_fhandler(
     belongs at the call site, not inside a handler factory.
     """
     file_handler = RotatingFileHandler(
-        filename=file_dirs.log_file,
+        filename=file_dirs.log_file.flog_path,
         maxBytes=fhandler_config.max_log_bytes,
         backupCount=fhandler_config.BACKUP_COUNT,
         encoding=fhandler_config.ENCODING,
