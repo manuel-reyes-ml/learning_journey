@@ -329,8 +329,23 @@ class TemplateMessageFormatter(logging.Formatter):
         # ─── Template-aware rendering ───
         # Check if the message is a Template BEFORE the parent processes it.
         # This is the interception point that t-strings enable.
+        # If msg is a Template, render it into a local variable instead of
+        # overwriting record.msg. Mutating the record breaks downstream
+        # handlers — they all receive the SAME LogRecord instance.
         if isinstance(record.msg, Template):
-            record.msg = render_message(record.msg)
+            rendered = render_message(record.msg)
+            
+            # Build a shallow copy of the record with the rendered message,
+            # leaving the original intact for other handlers
+            #
+            # --- Why logging.makeLogRecord(record.__dict__) works ---
+            # This is a Python logging idiom worth adding to your toolkit. makeLogRecord() is a stdlib
+            # helper that creates a fresh LogRecord from a dictionary of attributes. Passing
+            # record.__dict__ gives you a shallow copy with all the same metadata (level, timestamp,
+            # logger name, etc.) but as a separate object — so mutating it doesn't leak to other handlers.
+            # Think of it the same way you already think about dataclasses.replace() in your __main__.py
+            record = logging.makeLogRecord(record.__dict__)
+            record.msg = rendered
             record.args = None # Clear args - already rendered
             
         color = self.COLORS.get(record.levelno, self.RESET)
@@ -403,7 +418,8 @@ class JsonTemplateFormatter(logging.Formatter):
         if isinstance(record.msg, Template):
             log_entry["message"] = render_message(record.msg)
             log_entry["values"] = extract_values(record.msg)
-            record.args = None
+            # No mutation — we just READ from record.msg
+            # record.args = None
         else:
             # Fallback for plain string log calls - backward compatible
             log_entry["message"] = record.getMessage()
