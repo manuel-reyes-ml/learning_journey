@@ -173,6 +173,13 @@ class BenchmarkResult:
     metadata: dict[str, Any] = field(default_factory=dict)
     
     # __str__ is called by output func (logging, print)
+    # Define __str__  to control how print() and str() render it.
+    # BenchmarkResult.__str__ returns "load: 0.14s":
+    # result = BenchmarkResult(operation="load", elapsed_seconds=0.1423)
+    #   print(result)                # → "load: 0.14s"   (calls __str__)
+    #   str(result)                  # → "load: 0.14s"   (calls __str__)
+    #   format(result, "")           # → "load: 0.14s"   (empty spec → falls back to __str__)
+    #   f"{result}"                  # → "load: 0.14s"   (same — syntax sugar)
     def __str__(self) -> str:
         """Return a concise human-readable summary.
  
@@ -192,8 +199,20 @@ class BenchmarkResult:
         \'load: 0.14s\'
         """
         return f"{self.operation}: {self.elapsed_seconds:.2f}s"
-
-
+    
+    def __format__(self, spec: str) -> str:
+        """
+        """
+        match spec:
+            case "json":
+                return f'{{"op": "{self.operation}", "s": {self.elapsed_seconds}}}'
+        return str(self)  # Default: delegate to __str__   
+    
+    # Then f"{result:json}" or format(result, "json") would produce JSON output. This is how
+    # libraries like datetime let you write f"{now:%Y-%m-%d}" — the format spec is a custom
+    # mini-language parsed by datetime.__format__     
+        
+        
 # The class-based form gives you typed fields that Pyright can validate at every
 # access site, docstring support, default values, and it follows PEP 8 class naming.
 # This lets you introduce optional fields without breaking call sites, which is
@@ -639,3 +658,166 @@ def timed(operation_name: str) -> Callable[[Callable[P, T]], Callable[P, T]]:
 #│     and I return a function with the SAME parameters P           │
 #│     returning the SAME type T"                                   │
 #└─────────────────────────────────────────────────────────────────┘
+
+
+# =====================================================
+# Python format() Spec Mini-Language
+# =====================================================
+
+# The format_spec string passed to format(value, spec) — or written after
+# the colon in f-strings and t-strings — follows this grammar:
+#
+#   [[fill]align][sign][#][0][width][,][.precision][type]
+#
+# Every field is optional. Build from right to left: start with the type,
+# then add precision, width, alignment, padding as needed.
+
+
+# =====================================================
+# FLOATS — precision and fixed-point
+# =====================================================
+
+# format(0.1423, ".2f")           → "0.14"           fixed-point, 2 decimals
+# format(0.1, ".4f")              → "0.1000"         trailing zeros preserved
+# format(3.14159, ".0f")          → "3"              no decimals (rounded)
+# format(143091.5, ",.2f")        → "143,091.50"     thousands separator + decimals
+# format(0.000001234, ".3e")      → "1.234e-06"      scientific notation
+# format(0.85, ".1%")             → "85.0%"          percentage (×100 + %)
+
+# Your existing usage:
+#   f"{self.elapsed_seconds:.2f}s"           → "0.14s"
+#   f"{result.time_total:.4f}"               → "0.2010"
+
+
+# =====================================================
+# INTEGERS — padding, bases, separators
+# =====================================================
+
+# format(42, "d")                 → "42"             decimal (default for int)
+# format(42, "05d")               → "00042"          zero-pad to width 5
+# format(143091, ",")             → "143,091"        thousands separator
+# format(255, "x")                → "ff"             hexadecimal (lowercase)
+# format(255, "X")                → "FF"             hexadecimal (uppercase)
+# format(255, "#x")               → "0xff"           hex with prefix
+# format(8, "b")                  → "1000"           binary
+# format(8, "08b")                → "00001000"       binary, zero-padded to 8
+# format(64, "o")                 → "100"            octal
+
+
+# =====================================================
+# STRINGS — alignment and width
+# =====================================================
+
+# format("hi", "<10")             → "hi        "     left-align, width 10
+# format("hi", ">10")             → "        hi"    right-align, width 10
+# format("hi", "^10")             → "    hi    "    center, width 10
+# format("hi", "*^10")            → "****hi****"    center with fill char '*'
+# format("hi", ".3")              → "hi"             max width 3 (truncation)
+# format("hello world", ".5")     → "hello"          truncate to 5 chars
+
+# Your existing usage:
+#   f"{'WORDS MISSPELLED':<22}"              → "WORDS MISSPELLED      "
+#   f"{'TIME IN load':<22}{elapsed:.2f}"     → "TIME IN load          0.14"
+
+
+# =====================================================
+# SIGN CONTROL
+# =====================================================
+
+# format(42, "+d")                → "+42"            always show sign
+# format(-42, "+d")               → "-42"            negative sign shown
+# format(42, " d")                → " 42"            space for positive, "-" for negative
+# format(-42, " d")               → "-42"
+
+
+# =====================================================
+# ALIGNMENT CHARACTERS
+# =====================================================
+
+# <   left-align       (default for strings)
+# >   right-align      (default for numbers)
+# ^   center
+# =   pad AFTER the sign, before the digits — useful for "+0000042"
+
+
+# =====================================================
+# COMMON PATTERNS IN PRODUCTION LOGGING
+# =====================================================
+
+# Timing:             f"{elapsed:.2f}s"               → "0.14s"
+# Byte counts:        f"{n_bytes:,} bytes"            → "143,091 bytes"
+# Percentages:        f"{accuracy:.1%}"               → "94.3%"
+# Table columns:      f"{label:<20}{value:>10}"       → "WORDS MISSPELLED              30"
+# Progress:           f"{done:>3}/{total}"            → " 42/100"
+# IDs (zero-padded):  f"{user_id:08d}"                → "00001234"
+# Memory in MB:       f"{bytes / 1024**2:.2f} MB"     → "5.25 MB"
+
+
+# =====================================================
+# NESTED FIELDS — width/precision from variables
+# =====================================================
+
+# Width and precision can come from nested expressions:
+#
+#   width = 10
+#   value = 3.14159
+#   f"{value:>{width}.2f}"          → "      3.14"
+#   format(value, f">{width}.2f")   → "      3.14"
+#
+# This is exactly what render_message() does internally — at runtime it
+# assembles the spec string from Interpolation.format_spec and applies it
+# via format(). The mechanism is the same; only the call site differs.
+
+
+# =====================================================
+# CUSTOM __format__ — YOUR OWN FORMAT SPECS
+# =====================================================
+
+# Any class can implement __format__(self, spec) to respond to custom specs:
+#
+#   @dataclass(frozen=True, slots=True)
+#   class BenchmarkResult:
+#       operation: str
+#       elapsed_seconds: float
+#
+#       def __format__(self, spec: str) -> str:
+#           if spec == "json":
+#               return f'{{"op": "{self.operation}", "s": {self.elapsed_seconds}}}'
+#           if spec == "short":
+#               return f"{self.operation[:4]}:{self.elapsed_seconds:.1f}s"
+#           return str(self)      # default → delegates to __str__
+#
+#   format(result, "json")          → '{"op": "load", "s": 0.14}'
+#   format(result, "short")         → "load:0.1s"
+#   f"{result}"                     → "load: 0.14s"        (empty spec → __str__)
+#
+# This is the same pattern datetime uses: f"{now:%Y-%m-%d}" works because
+# datetime.__format__ parses the strftime codes. Worth knowing for Stage 2+
+# when you build LLMResponse, RetrievalResult, and TradeSignal dataclasses.
+
+
+# =====================================================
+# DECISION TABLE — WHEN TO USE WHICH
+# =====================================================
+
+# ┌─────────────────────────────┬────────────────────────────────────────┐
+# │ Situation                    │ Use                                    │
+# │──────────────────────────────┼────────────────────────────────────────│
+# │ Spec is known at write time  │ f-string:    f"{x:.2f}"                │
+# │ Spec comes from a variable   │ format():    format(x, spec)           │
+# │ Spec stored in a data struct │ format():    format(x, config.fmt)     │
+# │ Need to delegate to a method │ format():    format(x, custom_spec)    │
+# │ Processing Template objects  │ format():    interp.value + .format_spec│
+# │ No custom formatting needed  │ str():       str(x)                    │
+# └─────────────────────────────┴────────────────────────────────────────┘
+
+
+# =====================================================
+# REFERENCES
+# =====================================================
+# Python Docs — Format Specification Mini-Language:
+#   https://docs.python.org/3/library/string.html#format-specification-mini-language
+# Python Docs — format() built-in:
+#   https://docs.python.org/3/library/functions.html#format
+# PyFormat — visual cheatsheet:
+#   https://pyformat.info/
