@@ -187,6 +187,7 @@ class SpellerArgs:
     no_log_file: bool
     show_misspelled: bool
     no_custom_console: bool
+    template_logging: bool
 
 
 # frozen=True makes instances immutable.
@@ -382,6 +383,20 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     
     parser.add_argument(
+        "--no-custom-console",
+        action="store_true",
+        default=False,
+        help="Disable use of Colored Formatter and use regular logging.Formatter",
+    )
+    
+    parser.add_argument(
+        "-t", "--template-logging",
+        action="store_true",
+        help="Use t-string (PEP 750) logging with JSON file output. "
+             "Requires Python 3.14+.",
+    )
+    
+    parser.add_argument(
         "--no-log-file",
         action="store_true",
         default=False,
@@ -393,13 +408,6 @@ def _build_parser() -> argparse.ArgumentParser:
         action="store_true",
         default=False,
         help="Show all misspelled words from input txt file.",
-    )
-    
-    parser.add_argument(
-        "--no-custom-console",
-        action="store_true",
-        default=False,
-        help="Disable use of Colored Formatter and use regular logging.Formatter",
     )
     
     return parser
@@ -673,18 +681,40 @@ def main(argv: list[str] | None = None) -> ExitCode:
         no_log_file=raw.no_log_file,
         show_misspelled=raw.show_misspelled,
         no_custom_console=raw.no_custom_console,
+        template_logging=raw.template_logging,
     )
     
-    # __ Step 2: Configure logging FIRST --
+    # -- Step 2: Configure logging FIRST --
     # Must happen before any logger.info/debug calls.
     # --verbose flag controls console log level.
     # --no-log-file disable the rotating file handler.
-    configure_logging(
-        console_verbose=args.verbose,
-        log_to_file=not args.no_log_file,
-        custom_console=not args.no_custom_console,
-    )
-    
+    #
+    # ─── Select logging backend based on CLI flag ───
+    #   Both functions have the same parameter signature — they're interchangeable
+    #   at the composition root. This is the Strategy pattern applied to logging:
+    #   the flag selects WHICH configuration runs, but the rest of main() doesn't
+    #   know or care which one was picked.
+    #
+    #   Why import configure_template_logging locally inside the if block? Because
+    #   t-strings require Python 3.14. If a user on Python 3.12 runs without the flag,
+    #   the import never executes and the program works fine. If they use the flag
+    #   on 3.12, they get a clear ImportError instead of a mysterious crash elsewhere.
+    #   This is lazy import as a feature-gate pattern.
+    if args.template_logging:
+        from speller.template_logger import configure_template_logging
+        configure_template_logging(
+            console_verbose=args.verbose,
+            log_to_file=not args.no_log_file,
+            custom_console=not args.no_custom_console,
+        )
+        logger.info("Template (t-string) logging mode enabled")
+    else:
+        configure_logging(
+            console_verbose=args.verbose,
+            log_to_file=not args.no_log_file,
+            custom_console=not args.no_custom_console,
+        )
+        
     if args.verbose:
         logger.debug("Verbose mode enabled (console debug output)")
     
