@@ -349,8 +349,8 @@ class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation
         
         self._loaded = True
         logger.info(
-            "Loaded %d words from '%s'",
-            len(self._words),
+            "Loaded %s words from '%s'",
+            format(len(self._words),","),  # format number to use ',' separator and return str
             path.name,
         )
         return True

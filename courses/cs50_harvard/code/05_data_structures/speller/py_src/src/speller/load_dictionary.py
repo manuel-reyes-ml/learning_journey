@@ -144,7 +144,7 @@ def load_dictionary(
         raise SystemExit(f"Could not load {dict_path}.")
     
     logger.info(
-        "Dictionary loaded: %d words",
-        len(dictionary),
+        "Dictionary loaded: %s words",
+        format(len(dictionary),","),  # format number to use ',' separator and return str
     )
     return dictionary, t["result"]

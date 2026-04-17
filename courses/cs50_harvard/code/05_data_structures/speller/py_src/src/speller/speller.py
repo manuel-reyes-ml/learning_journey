@@ -227,11 +227,11 @@ class SpellerResult:
         txt_file = data_check.metadata.get("input_file") if data_check else None
         
         # Statistics (CS50 uses %-20s style alignment with 5 spaces)
-        lines.append(f"{'WORDS MISSPELLED:':<{COL}}{self.words_misspelled}")
-        lines.append(f"{'WORDS IN DICTIONARY:':<{COL}}{self.words_in_dictionary}")
-        lines.append(f"{'WORDS IN TEXT:':<{COL}}{self.words_in_text}")
-        #                  ↑             ↑↑
-        #                  │             ││
+        lines.append(f"{'WORDS MISSPELLED:':<{COL}}{self.words_misspelled:,}")
+        lines.append(f"{'WORDS IN DICTIONARY:':<{COL}}{self.words_in_dictionary:,}")
+        lines.append(f"{'WORDS IN TEXT:':<{COL}}{self.words_in_text:,}")
+        #                  ↑             ↑↑                         ↑  
+        #                  │             ││                         |__ means apply separator: 100,000
         #               the text         │└── 22 characters total width
         #                                └─── < means left-align (pad RIGHT with spaces)
         
