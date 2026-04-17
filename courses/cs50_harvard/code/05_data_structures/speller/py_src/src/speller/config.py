@@ -192,6 +192,14 @@ default_fnames: DefaultFileNames = {
 }
 
 
+class LogFilesPath(NamedTuple):
+    """
+    """
+    
+    flog_path: Path
+    tlog_path: Path
+
+
 # =====================================================
 # Dataclass Frozen Constants
 # ===================================================== 
@@ -242,7 +250,7 @@ class FileDirectories:
     LOG_DIR: Final[Path] = ROOT_DIR / DefaultDirs.LOG
     MISS_DIR: Final[Path] = ROOT_DIR / DefaultDirs.MISS
     
-    def create_log_fname(self) -> str:
+    def create_log_fname(self) -> tuple[str, str]:
         """Build the log filename from the package directory name.
  
         Uses ``CUR_DIR.name`` (``"speller"``) so the filename stays in
@@ -253,11 +261,14 @@ class FileDirectories:
         str
             Log filename, e.g. ``"speller.log"``.
         """
-        return f"{self.CUR_DIR.name}.log"
+        f_string = f"{self.CUR_DIR.name}.log"
+        t_string = f"{self.CUR_DIR.name}_json.log"
+        
+        return f_string, t_string
     
     
     @property  # Access function's return as an attribute
-    def log_file(self) -> Path:
+    def log_file(self) -> LogFilesPath:
         """Full resolved path to the rotating log file.
  
         Combines :attr:`LOG_DIR` with the result of
@@ -268,7 +279,12 @@ class FileDirectories:
         Path
             Absolute path, e.g. ``…/py_src/logs/speller.log``.
         """
-        return self.LOG_DIR / self.create_log_fname()
+        f_string, t_string = self.create_log_fname()
+        
+        flog_path = self.LOG_DIR / f_string
+        tlog_path = self.LOG_DIR / t_string
+        
+        return LogFilesPath(flog_path, tlog_path)
 
 
 @dataclass(frozen=True, slots=True)
