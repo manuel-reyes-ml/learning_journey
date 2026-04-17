@@ -218,6 +218,23 @@ def render_message(template: Template) -> str:
     
     return "".join(parts)
 
+# Here's the problem: when someone writes t"Time: {elapsed:.2f}s", the Template stores:
+#   interp.value → the raw float, e.g. 0.1423
+#   interp.format_spec → the string ".2f"
+# These are separate — the Template preserves them independently so you can process each
+# before combining.
+#
+# But you can't write f"{interp.value:interp.format_spec}" (f-strings don't allow dynamic format
+# specs like that). You need a function that takes a value and a format spec as separate arguments
+# and returns the formatted string.
+# That function is format(). It's the runtime equivalent of f-string formatting.
+#
+# format() is the visible piece of a trio most Python developers don't realize are connected:
+#   f"{value:.2f}"           ←  syntax sugar
+#   format(value, ".2f")     ←  the function
+#   value.__format__(".2f")  ←  the dunder method underneath
+# All three produce the exact same result. The first calls the second, which calls the third.
+
 
 def extract_values(template: Template) -> dict[str, Any]:
     """Extract interpolated values from a Template as a dictionary.
@@ -449,4 +466,12 @@ def configure_template_logging(
     # 5. When 'False' - prevents logs from bubbling up to Python's default root logger
     # (prevents duplicate printing in some environments).    
     package_logger.propagate = True
+    
+    
+# =============================================================================
+# SHORT REFERENCE GUIDES
+# =============================================================================
+# =====================================================
+# CLI Arguments And sys.argv
+# =====================================================
     
