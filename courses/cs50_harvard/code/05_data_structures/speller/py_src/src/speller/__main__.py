@@ -701,7 +701,11 @@ def main(argv: list[str] | None = None) -> ExitCode:
     #   on 3.12, they get a clear ImportError instead of a mysterious crash elsewhere.
     #   This is lazy import as a feature-gate pattern.
     if args.template_logging:
-        from speller.template_logger import configure_template_logging
+        try:
+            from speller.template_logger import configure_template_logging
+        except ImportError as e:
+            sys.exit(f"Error: Template obj available in Python 3.14+. Details: {e}")
+        
         configure_template_logging(
             console_verbose=args.verbose,
             log_to_file=not args.no_log_file,
