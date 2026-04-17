@@ -648,3 +648,223 @@ def configure_template_logging(
 #   https://docs.python.org/3/library/functions.html#format
 # PyFormat — visual cheatsheet:
 #   https://pyformat.info/
+
+
+# =============================================================================
+# REFERENCE GUIDE — LogRecord ATTRIBUTES
+# =============================================================================
+#
+# A LogRecord holds ALL context about a single log event. Python creates one
+# automatically every time you call logger.info(), logger.debug(), etc., and
+# passes it to every handler attached to the logger.
+#
+# Formatters read these attributes via %(name)s placeholders in their format
+# string, OR via record.name attribute access in custom formatters like yours.
+#
+# The list below is exhaustive — most code uses only 5-6 of these.
+
+
+# =====================================================
+# CORE MESSAGE ATTRIBUTES (what you log)
+# =====================================================
+
+# record.msg           → The raw message object passed to logger.info/debug/etc.
+#                        Normally a str, but can be ANY object (Template, dict,
+#                        custom class). This is what your formatter inspects
+#                        with isinstance(record.msg, Template).
+#                        Format spec: %(msg)s  (rare — usually use %(message)s)
+
+# record.args          → Arguments passed AFTER the message for %-style
+#                        formatting. For logger.info("x=%s", 42), args is (42,).
+#                        For logger.info("plain msg"), args is None.
+#                        Format spec: not directly accessible — merged into message.
+
+# record.message       → The FINAL rendered message (msg % args).
+#                        Computed lazily — only exists after record.getMessage()
+#                        or formatter.format() is called. This is what you
+#                        USUALLY want in format strings.
+#                        Format spec: %(message)s
+
+
+# =====================================================
+# LEVEL / SEVERITY ATTRIBUTES
+# =====================================================
+
+# record.levelname     → Human-readable level name: "DEBUG", "INFO", "WARNING",
+#                        "ERROR", "CRITICAL".
+#                        Format spec: %(levelname)s
+#                        Your code: record.levelname (in JsonTemplateFormatter)
+
+# record.levelno       → Integer level value: 10, 20, 30, 40, 50.
+#                        Used for comparisons (record.levelno >= logging.WARNING).
+#                        Format spec: %(levelno)d
+#                        Your code: record.levelno (in ColoredFormatter.COLORS.get)
+
+
+# =====================================================
+# LOGGER IDENTITY ATTRIBUTES
+# =====================================================
+
+# record.name          → Logger name (usually __name__ of the module that logged).
+#                        Example: "speller.load_dictionary"
+#                        Format spec: %(name)s
+#                        Your code: record.name (in JsonTemplateFormatter)
+
+
+# =====================================================
+# SOURCE LOCATION ATTRIBUTES (where the log came from)
+# =====================================================
+
+# record.pathname      → Full file path where the log call occurred.
+#                        Example: "/home/manuel/speller/load_dictionary.py"
+#                        Format spec: %(pathname)s
+
+# record.filename      → Basename of pathname (just the filename).
+#                        Example: "load_dictionary.py"
+#                        Format spec: %(filename)s
+
+# record.module        → Module name without extension.
+#                        Example: "load_dictionary"
+#                        Format spec: %(module)s
+
+# record.funcName      → Name of the function that issued the log call.
+#                        Example: "load_dictionary"
+#                        Format spec: %(funcName)s
+
+# record.lineno        → Line number in the source file.
+#                        Example: 142
+#                        Format spec: %(lineno)d
+
+
+# =====================================================
+# TIMING ATTRIBUTES
+# =====================================================
+
+# record.created       → Unix timestamp when LogRecord was created.
+#                        float, e.g. 1713369045.123 — seconds since epoch.
+#                        Format spec: %(created)f
+
+# record.asctime       → Human-readable timestamp string.
+#                        Example: "2026-04-17 14:30:45,123"
+#                        Only populated AFTER formatter.formatTime() is called.
+#                        Format spec: %(asctime)s
+#                        Your code: self.formatTime(record, datefmt=...) in JsonTemplateFormatter
+
+# record.msecs         → Millisecond portion of created (0-999).
+#                        Format spec: %(msecs)d
+
+# record.relativeCreated → Milliseconds since the logging module was loaded.
+#                          Useful for relative timing in a single run.
+#                          Format spec: %(relativeCreated)d
+
+
+# =====================================================
+# PROCESS / THREAD ATTRIBUTES (concurrency context)
+# =====================================================
+
+# record.process       → Process ID (PID) that created the record.
+#                        Format spec: %(process)d
+
+# record.processName   → Process name from multiprocessing module.
+#                        Format spec: %(processName)s
+
+# record.thread        → Thread ID (integer).
+#                        Format spec: %(thread)d
+
+# record.threadName    → Thread name (e.g. "MainThread").
+#                        Format spec: %(threadName)s
+
+# record.taskName      → asyncio task name (Python 3.12+).
+#                        Format spec: %(taskName)s
+
+
+# =====================================================
+# EXCEPTION ATTRIBUTES (populated only when logging an exception)
+# =====================================================
+
+# record.exc_info      → Tuple of (exc_type, exc_value, traceback) OR None.
+#                        Populated by logger.exception() or logger.error(exc_info=True).
+
+# record.exc_text      → Cached formatted traceback string. Starts as None,
+#                        filled in by formatter.formatException() on first call.
+
+# record.stack_info    → Stack frame info as a string, for logger.xxx(stack_info=True).
+
+
+# =====================================================
+# EXTRA FIELDS (custom context injection)
+# =====================================================
+
+# Any keys you pass via the 'extra' dict become direct attributes of the record:
+#
+#     logger.info("User action", extra={"user_id": 42, "ip": "10.0.0.1"})
+#
+# Inside a formatter, you access them like any other attribute:
+#     record.user_id   # → 42
+#     record.ip        # → "10.0.0.1"
+#
+# This is the OFFICIAL way to add structured fields to log records WITHOUT
+# t-strings. T-strings let you avoid the 'extra' dance by extracting
+# interpolated variables automatically.
+
+
+# =====================================================
+# THE ATTRIBUTES YOU'LL ACTUALLY USE
+# =====================================================
+
+# In 90% of custom formatters, you read only these SIX:
+#
+#     record.msg         ← the raw message (Template, str, dict, etc.)
+#     record.args        ← args for %-formatting
+#     record.levelname   ← "INFO", "ERROR", etc.
+#     record.levelno     ← integer level for comparisons
+#     record.name        ← "speller.load_dictionary"
+#     record.exc_info    ← exception tuple or None
+#
+# Plus ONE method call:
+#     self.formatTime(record, datefmt=...)   ← produces record.asctime
+
+
+# =====================================================
+# HOW YOUR CODE USES THEM
+# =====================================================
+
+# TemplateMessageFormatter:
+#   record.msg       → checked isinstance(msg, Template)
+#   record.levelno   → looked up in COLORS dict
+#   super().format() → reads msg, args, levelname, asctime internally
+#
+# JsonTemplateFormatter:
+#   record.msg       → checked isinstance(msg, Template)
+#   record.levelname → copied into JSON "level" field
+#   record.name      → copied into JSON "module" field
+#   self.formatTime  → produces "timestamp" field
+#
+# ColoredFormatter (logger.py):
+#   record.levelno   → looked up in COLORS dict
+#   super().format() → reads msg, args, levelname, asctime internally
+
+
+# =====================================================
+# INSPECTING ALL ATTRIBUTES ON A LIVE RECORD
+# =====================================================
+
+# For debugging your formatter, dump all attributes with:
+#
+#     def format(self, record: logging.LogRecord) -> str:
+#         import pprint
+#         pprint.pprint(record.__dict__)   # Shows EVERY attribute
+#         ...
+#
+# This is the same trick that powers logging.makeLogRecord(record.__dict__) —
+# every attribute lives in the record's __dict__, so you can inspect or copy
+# the entire state with standard dict operations.
+
+
+# =====================================================
+# REFERENCES
+# =====================================================
+# Python Docs — LogRecord attributes table:
+#   https://docs.python.org/3/library/logging.html#logrecord-attributes
+# Python Docs — LogRecord class:
+#   https://docs.python.org/3/library/logging.html#logrecord-objects
