@@ -419,6 +419,14 @@ class JsonTemplateFormatter(logging.Formatter):
         }
         # author attr created in __main__ logger.info() using 'extra' dict
         
+        # record.exc_info is the gateway to exception logging — when someone calls
+        # logger.exception("..."), the traceback tuple lands here.
+        # This turns your JSON logger into a proper observability tool — full tracebacks
+        # become searchable fields in Datadog or ELK.
+        if record.exc_info:
+            log_entry["exception"] = self.formatException(record.exc_info)
+        
+        
         if isinstance(record.msg, Template):
             log_entry["message"] = render_message(record.msg)
             log_entry["values"] = extract_values(record.msg)
