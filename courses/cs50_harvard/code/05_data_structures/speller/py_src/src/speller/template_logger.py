@@ -413,8 +413,11 @@ class JsonTemplateFormatter(logging.Formatter):
             "timestamp": self.formatTime(record, datefmt="%Y-%m-%d %H:%M:%S"),
             "level": record.levelname,
             "module": record.name,
+            "function": record.funcName,
+            "line_no": record.lineno,  # line in script where logger.info, .debug, etc is created
             "author": record.author if hasattr(record, "author") else None,  # type: ignore[misc]
         }
+        # author attr created in __main__ logger.info() using 'extra' dict
         
         if isinstance(record.msg, Template):
             log_entry["message"] = render_message(record.msg)
