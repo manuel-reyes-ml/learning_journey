@@ -782,8 +782,11 @@ def main(argv: list[str] | None = None) -> ExitCode:
                     text_name = text_path.name
                     dict_name = dict_path.name
                     backend = type(loaded_dict).__name__  # getting class name
+                    # The extra dict is the pre-t-string way to attach structured data.
+                    # Access as 'record.author'
                     logger.info(
-                        t"Spell checking '{text_name}' with dictionary '{dict_name}', in {backend}"
+                        t"Spell checking '{text_name}' with dictionary '{dict_name}', in {backend}",
+                        extra={"author": "manuel_reyes"},
                     )
                 else:
                     logger.info(
