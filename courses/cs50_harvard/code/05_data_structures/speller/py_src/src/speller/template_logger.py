@@ -408,11 +408,12 @@ class JsonTemplateFormatter(logging.Formatter):
         -------
         str
             Single-line JSON string.
-        """
+        """ 
         log_entry: dict[str, Any] = {
             "timestamp": self.formatTime(record, datefmt="%Y-%m-%d %H:%M:%S"),
             "level": record.levelname,
             "module": record.name,
+            "author": record.author if hasattr(record, "author") else None,  # type: ignore[misc]
         }
         
         if isinstance(record.msg, Template):
