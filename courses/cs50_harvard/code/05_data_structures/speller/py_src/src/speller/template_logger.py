@@ -436,7 +436,7 @@ class JsonTemplateFormatter(logging.Formatter):
             # Fallback for plain string log calls - backward compatible
             log_entry["message"] = record.getMessage()
             
-        return json.dumps(log_entry)
+        return json.dumps(log_entry, indent=2)
 
 
 # =============================================================================
