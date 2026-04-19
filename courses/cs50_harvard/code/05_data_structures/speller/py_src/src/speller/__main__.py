@@ -778,6 +778,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
                     files_not_found += 1
                     continue    # skip missing files, don't abort the batch
                 
+                # Use t-strings or f-strings (regular string) for logger.info()
                 if args.template_logging:
                     text_name = text_path.name
                     dict_name = dict_path.name
