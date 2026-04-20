@@ -13,7 +13,7 @@
 - [x] 03: Algorithms
 - [x] 04: Memory
 - [x] 05: Data Structures
-- [ ] 06: Python
+- [x] 06: Python
 - [ ] 07: SQL
 - [ ] 08: HTML, CSS, JavaScript
 - [ ] 09: Flask
