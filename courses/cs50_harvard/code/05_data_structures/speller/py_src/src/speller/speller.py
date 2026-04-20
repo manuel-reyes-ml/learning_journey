@@ -47,6 +47,7 @@ import itertools
 from pathlib import Path
 import logging
 from collections.abc import Iterator
+from rich.console import Console
 from typing import Final, NamedTuple
 
 from speller.benchmarks import BenchmarkResult, timer
@@ -92,6 +93,10 @@ __all__ = [
 
 COL: Final[int] = 22
 
+# Module-level console — one instance used everywhere in this module
+# Output goes to stderr to match your logging pattern (keeps stdout clean
+# for programmatic piping)
+console = Console(stderr=False)
 
 # =============================================================================
 # RESULT CONTAINER
@@ -212,10 +217,10 @@ class SpellerResult:
         lines: list[str] = []
         
         # Header
-        lines.append(f"\nMISSPELLED WORDS -- {self.ops_name} --")
+        lines.append(f"\n[bold cyan]MISSPELLED WORDS -- {self.ops_name} --[/bold cyan]")
         
         # Description
-        lines.append(f"\n{self.description}\n")
+        lines.append(f"\n[cyan]{self.description}[/cyan]\n")
         
         # .get() with a default BenchmarkResult avoids KeyError if
         # a benchmark wasn´t recorded (defensive prorgramming)
@@ -226,10 +231,16 @@ class SpellerResult:
         # SAFER — access by key name (works regardless of how many items)
         txt_file = data_check.metadata.get("input_file") if data_check else None
         
+         # Color choice — red for misspelled if any, green if zero
+        misspelled_color = "red" if self.words_misspelled > 0 else "green"
+        
         # Statistics (CS50 uses %-20s style alignment with 5 spaces)
-        lines.append(f"{'WORDS MISSPELLED:':<{COL}}{self.words_misspelled:,}")
-        lines.append(f"{'WORDS IN DICTIONARY:':<{COL}}{self.words_in_dictionary:,}")
-        lines.append(f"{'WORDS IN TEXT:':<{COL}}{self.words_in_text:,}")
+        lines.append(
+            f"[cyan]{'WORDS MISSPELLED:':<{COL}}[/cyan]"
+            f"[bold {misspelled_color}]{self.words_misspelled:,}[/bold {misspelled_color}]"
+        )
+        lines.append(f"[cyan]{'WORDS IN DICTIONARY:':<{COL}}[/cyan][bold]{self.words_in_dictionary:,}[/bold]")
+        lines.append(f"[cyan]{'WORDS IN TEXT:':<{COL}}[/cyan][bold]{self.words_in_text:,}[/bold]")
         #                  ↑             ↑↑                         ↑  
         #                  │             ││                         |__ means apply separator: 100,000
         #               the text         │└── 22 characters total width
@@ -254,22 +265,33 @@ class SpellerResult:
         )
         
         # Benchmark timings
+        for op, benchmark in self.benchmarks.items():
+            label = f"TIME in {op}:"
+            lines.append(
+                f"[dim cyan]{label:<{COL}}[/dim cyan][dim]{benchmark.elapsed_seconds:.2f}[/dim]"
+                if benchmark else
+                f"[dim cyan]{label:<{COL}}[/dim cyan][dim]0.00[/dim]"
+            )
+                    
+        # lines.append(
+        #     f"{'TIME IN load:':<{COL}}{data_load.elapsed_seconds:.2f}"
+        #     if data_load else
+        #     f"{'TIME IN load:':<{COL}}0.00"
+        # )
+        # lines.append(
+        #     f"{'TIME IN check:':<{COL}}{data_check.elapsed_seconds:.2f}"
+        #     if data_check else
+        #     f"{'TIME IN check:':<{COL}}0.00"
+        # )
+        # lines.append(
+        #     f"{'TIME IN size:':<{COL}}{data_size.elapsed_seconds:.2f}"
+        #    if data_size else
+        #     f"{'TIME IN size:':<{COL}}0.00"
+        # )
+        
         lines.append(
-            f"{'TIME IN load:':<{COL}}{data_load.elapsed_seconds:.2f}"
-            if data_load else
-            f"{'TIME IN load:':<{COL}}0.00"
-        )
-        lines.append(
-            f"{'TIME IN check:':<{COL}}{data_check.elapsed_seconds:.2f}"
-            if data_check else
-            f"{'TIME IN check:':<{COL}}0.00"
-        )
-        lines.append(
-            f"{'TIME IN size:':<{COL}}{data_size.elapsed_seconds:.2f}"
-            if data_size else
-            f"{'TIME IN size:':<{COL}}0.00"
-        )
-        lines.append(f"{'TIME IN TOTAL:':<{COL}}{self.time_total:.2f}\n")
+            f"[bold cyan]{'TIME IN TOTAL:':<{COL}}[/bold cyan]"
+            f"[bold]{self.time_total:.2f}[/bold]\n")
         
         # Report to show in console
         main_report = "\n".join(lines)
