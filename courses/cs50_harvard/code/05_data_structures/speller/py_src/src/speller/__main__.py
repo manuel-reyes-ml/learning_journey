@@ -43,6 +43,7 @@ Matches speller.c usage::
 
 from __future__ import annotations
 
+from rich.table import Table
 import sys
 
 
@@ -286,6 +287,32 @@ class GeneralReport:
         lines.append("\n")
         
         return "\n".join(lines)
+    
+    
+    def format_table(self) -> Table:
+        """
+        """
+        table = Table(
+            title="[bold blue]General Report[/bold blue]",
+            show_header=False,
+            box=None,  # no borders for a clean look
+            padding=(0, 2),
+        )
+        table.add_column(style="blue")
+        table.add_column(style="bold")
+        
+        table.add_row("FILES NOT FOUND:", str(self.files_not_found))
+        table.add_row("FILES IN DIRECTORY:", str(self.files_in_dir))
+        
+        # Error categories - one row per non-empty category, colored red
+        for category, filenames in self.files_with_error.items():
+            if filenames:
+                table.add_row(
+                    f"[red]{category.upper()}:[/red]",
+                    f"[red]{', '.join(filenames)}[/red]",
+                )
+                
+        return table
     
 
 # =============================================================================
