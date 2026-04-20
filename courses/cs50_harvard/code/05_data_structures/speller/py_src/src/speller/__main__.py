@@ -289,6 +289,10 @@ class GeneralReport:
         return "\n".join(lines)
     
     
+    # Note the return type changed from str to Table. console.print(table) knows how to
+    # render it automatically. This is the beauty of rich's architecture — any object that
+    # follows the Console Protocol (tables, panels, trees, markdown, syntax-highlighted code)
+    # can be passed to console.print().
     def format_table(self) -> Table:
         """
         """
@@ -306,7 +310,7 @@ class GeneralReport:
         
         # Error categories - one row per non-empty category, colored red
         for category, filenames in self.files_with_error.items():
-            if filenames:
+            if filenames and isinstance(filenames, list):
                 table.add_row(
                     f"[red]{category.upper()}:[/red]",
                     f"[red]{', '.join(filenames)}[/red]",
@@ -314,6 +318,17 @@ class GeneralReport:
                 
         return table
     
+    # Why this design respects your existing architecture
+    # Your current code uses command-query separation — format_report() queries the data and
+    # returns a string; the caller (_print_reports()) commands what to do with it. This is the
+    # right pattern, and rich fits into it cleanly:
+    #   - Data layer (SpellerResult) — unchanged, still frozen dataclass
+    #   - Formatting layer (format_report()) — now emits markup instead of plain text
+    #   - Rendering layer (_print_reports() + console.print()) — interprets markup and outputs colored text
+    # A test could still assert on the REPORT.main string, because markup tags are just regular string
+    #
+    # characters until rendered. That preserves your test suite's independence from ANSI codes. 
+
 
 # =============================================================================
 # INTERNAL HELPER FUNCTIONS
