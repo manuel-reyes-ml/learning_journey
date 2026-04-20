@@ -41,7 +41,6 @@ Module Dependencies
 
 from __future__ import annotations
 
-from ast import Name
 from dataclasses import dataclass, field, KW_ONLY
 import itertools
 from pathlib import Path
@@ -224,9 +223,9 @@ class SpellerResult:
         
         # .get() with a default BenchmarkResult avoids KeyError if
         # a benchmark wasn´t recorded (defensive prorgramming)
-        data_load = self.benchmarks.get("load")
+        # data_load = self.benchmarks.get("load")
         data_check = self.benchmarks.get("check")
-        data_size = self.benchmarks.get("size")
+        # data_size = self.benchmarks.get("size")
         
         # SAFER — access by key name (works regardless of how many items)
         txt_file = data_check.metadata.get("input_file") if data_check else None
@@ -253,11 +252,14 @@ class SpellerResult:
         # f"{'text':^20}"     center        → '        text        '
         
         # Text file specs: name and path
+        # [yellow] for the filename follows the Unix convention for identifiers/links/files
         lines.append(
             f"[cyan]{'CHECKED FILE:':<{COL}}[/cyan][yellow]{txt_file.fname}[/yellow]"
             if txt_file else
             f"[cyan]{'CHECKED FILE:':<{COL}}[cyan][dim italic]-- file not registered --[/dim italic]"
         )
+        # [dim green] for the path mirrors how most shells color directory paths
+        # Gives users a visual cue they already recognize from other terminal tools
         lines.append(
             f"[cyan]{'FILE PATH:':<{COL}}[/cyan][dim green]{txt_file.fpath.parent}/[/dim green]"
             if txt_file else
@@ -272,7 +274,8 @@ class SpellerResult:
                 if benchmark else
                 f"[dim cyan]{label:<{COL}}[/dim cyan][dim]0.00[/dim]"
             )
-                    
+        
+        # --- Old Benchmark timings -------------------------------       
         # lines.append(
         #     f"{'TIME IN load:':<{COL}}{data_load.elapsed_seconds:.2f}"
         #     if data_load else
