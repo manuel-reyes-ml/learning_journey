@@ -318,6 +318,11 @@ class GeneralReport:
                 
         return table
     
+    
+    def __rich__(self) -> Table:
+        """Rich Console Protocol hook — called by console.print(report)."""
+        return self.format_table()
+    
     # Why this design respects your existing architecture
     # Your current code uses command-query separation — format_report() queries the data and
     # returns a string; the caller (_print_reports()) commands what to do with it. This is the
