@@ -614,13 +614,19 @@ def _print_reports(reports: Report | str, infile_name: str = "file") -> None:
     Directory creation uses ``mkdir(parents=True, exist_ok=True)`` so
     the call is idempotent — no error if the directory already exists.
     """
-    if isinstance(reports, Report) and reports.misspelled:
-        file_dirs.MISS_DIR.mkdir(parents=True, exist_ok=True)
-        out_file = file_dirs.MISS_DIR / f"misspelled_{infile_name}"
-        out_file.write_text(reports.misspelled, encoding="utf-8")
-        logger.info("Misspelled words saved to '%s'", out_file)
+    from speller.speller import console  # import the module-level console
     
-    print(reports if isinstance(reports, str) else reports.main)
+    if isinstance(reports, Report):
+        console.print(reports.main)
+        
+        if reports.misspelled is not None:
+            file_dirs.MISS_DIR.mkdir(parents=True, exist_ok=True)
+            out_file = file_dirs.MISS_DIR / f"misspelled_{infile_name}"
+            out_file.write_text(reports.misspelled, encoding="utf-8")
+            logger.info("Misspelled words saved to '%s'", out_file)
+    
+    else:
+        console.print(reports)
     
 
 # =============================================================================
