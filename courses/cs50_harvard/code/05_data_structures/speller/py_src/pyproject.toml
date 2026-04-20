@@ -67,16 +67,15 @@ classifiers = [
 # Runtime dependencies — installed automatically when someone does:
 #   pip install cs50-speller
 #
-# Your speller uses only stdlib modules (pathlib, logging, argparse,
-# dataclasses, etc.) so no external dependencies are needed.
-# If you needed external packages, list them here:
+# rich: Used for styled terminal output (tables, colors, panels).
+# If you needed additional external packages, list them here:
 #
 # dependencies = [
 #     "pydantic>=2.0",        # Stage 1: DataVault structured outputs
 #     "chromadb>=0.4",        # Stage 1: PolicyPulse vector store
 #     "google-generativeai",  # Stage 1: DataVault Gemini SDK
 # ]
-dependencies = []
+dependencies = ["rich>=13.0"]
 
 
 # ─── Optional Dependencies ──────────────────────────────────────
