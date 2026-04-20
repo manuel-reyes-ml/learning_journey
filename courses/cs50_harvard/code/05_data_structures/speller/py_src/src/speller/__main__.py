@@ -189,6 +189,7 @@ class SpellerArgs:
     show_misspelled: bool
     no_custom_console: bool
     template_logging: bool
+    table_report: bool
 
 
 # frozen=True makes instances immutable.
@@ -470,6 +471,13 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Show all misspelled words from input txt file.",
     )
     
+    parser.add_argument(
+        "--table-report",
+        action="store_true",
+        default=False,
+        help="Enable General report as an enriched table",
+    )
+    
     return parser
 
 
@@ -748,6 +756,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         show_misspelled=raw.show_misspelled,
         no_custom_console=raw.no_custom_console,
         template_logging=raw.template_logging,
+        table_report=raw.table_report,
     )
     
     # -- Step 2: Configure logging FIRST --
