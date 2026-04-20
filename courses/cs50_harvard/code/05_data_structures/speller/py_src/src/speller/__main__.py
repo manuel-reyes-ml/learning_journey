@@ -261,15 +261,28 @@ class GeneralReport:
         
         # Header
         lines.append("\n")
-        lines.append("=" * 80)
-        lines.append("GENERAL REPORT")
-        lines.append("=" * 80)
+        lines.append("[bold blue]" + "=" * 80 + "[/bold blue]")
+        lines.append("[bold blue]GENERAL REPORT[bold blue]")
+        lines.append("[bold blue]" + "=" * 80 + "[/bold blue]")
+        
+        # Color choice - red if error, green if clean run
+        has_errors = (
+            self.files_not_found > 0
+            or any(self.files_with_error.values())
+        )
+        summary_color = "red" if has_errors else "green"
         
         # Statistics
         lines.append("\n")
-        lines.append(f"{'FILES NOT FOUND':<22}{self.files_not_found}")
-        lines.append(f"{'FILES IN DIRECTORY:':<22}{self.files_in_dir}")
-        lines.append(f"{'FILES WITH ERROR:':<22}{self.files_with_error}")
+        lines.append(
+            f"[blue]{'FILES NOT FOUND':<22}[/blue]"
+            f"[bold {summary_color}]{self.files_not_found}[/bold {summary_color}]"
+        )
+        lines.append(f"[blue]{'FILES IN DIRECTORY:':<22}[/blue][bold]{self.files_in_dir}[/bold]")
+        lines.append(
+            f"[blue]{'FILES WITH ERROR:':<22}[/blue]"
+            f"[bold {summary_color}]{self.files_with_error}[/bold {summary_color}]"
+        )
         lines.append("\n")
         
         return "\n".join(lines)
