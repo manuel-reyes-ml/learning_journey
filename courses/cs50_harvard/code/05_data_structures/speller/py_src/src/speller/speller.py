@@ -254,14 +254,14 @@ class SpellerResult:
         
         # Text file specs: name and path
         lines.append(
-            f"{'CHECKED FILE:':<{COL}}{txt_file.fname}"
+            f"[cyan]{'CHECKED FILE:':<{COL}}[/cyan][yellow]{txt_file.fname}[/yellow]"
             if txt_file else
-            f"{'CHECKED FILE:':<{COL}}-- file not registered --"
+            f"[cyan]{'CHECKED FILE:':<{COL}}[cyan][dim italic]-- file not registered --[/dim italic]"
         )
         lines.append(
-            f"{'FILE PATH:':<{COL}}{txt_file.fpath.parent}/"
+            f"[cyan]{'FILE PATH:':<{COL}}[/cyan][dim green]{txt_file.fpath.parent}/[/dim green]"
             if txt_file else
-            f"{'FILE PATH:':<{COL}}-- file not registered --"
+            f"[cyan]{'FILE PATH:':<{COL}}[/cyan][dim italic]-- file not registered --[/dim italic]"
         )
         
         # Benchmark timings
