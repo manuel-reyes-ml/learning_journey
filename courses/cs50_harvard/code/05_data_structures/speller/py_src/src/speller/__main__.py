@@ -835,7 +835,10 @@ def main(argv: list[str] | None = None) -> ExitCode:
     files_in_dir = 0
     files_not_found = 0
     # defaultdict() to initialize values as empty lists
-    files_with_error= defaultdict(list[str])
+    # list[str] is a type annotation, not a factory function. 'defaultdict[list[str]]' works
+    # by accident because list[str]() produces an empty list, but it's semantically wrong. 
+    # Use defaultdict(list) (untyped factory) and annotate the variable.
+    files_with_error: defaultdict[str, list[str]] = defaultdict(list)
    
     success = False
     try:
