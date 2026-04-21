@@ -453,18 +453,20 @@ def _build_parser() -> argparse.ArgumentParser:
         help="Disable use of Colored Formatter and use regular logging.Formatter",
     )
     
-    parser.add_argument(
+    # Enforce mutual exclusion between --structured-logging and --template-logging.
+    # The cleanest way is to wrap both flags in an add_mutually_exclusive_group.
+    logging_group = parser.add_mutually_exclusive_group()
+    logging_group.add_argument(
         "-t", "--template-logging",
         action="store_true",
         help="Use t-string (PEP 750) logging with JSON file output. "
              "Requires Python 3.14+.",
     )
-    
-    parser.add_argument(
+    logging_group.add_argument(
         "-s", "--structured-logging",
         action="store_true",
         default=False,
-        help="Use structlog with JSON file output and ConsoleRenderer. "
+        help="Use structlog with NDJSON file output and ConsoleRenderer. "
              "Enable contextvars binding for richer observability.",
     )
     
