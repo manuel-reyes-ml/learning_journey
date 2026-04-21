@@ -53,7 +53,7 @@ __all__ = []
 # 4. TimeStamper("iso") → add "timestamp" field in ISO-8601
 # 5. StackInfoRenderer  → format stack_info if present
 # 6. format_exc_info    → serialize exc_info tuples into "exception" field
-_SHARED_PROCESSOR: Final[list[Processor]] = [
+_SHARED_PROCESSORS: Final[list[Processor]] = [
     structlog.contextvars.merge_contextvars,
     structlog.stdlib.add_logger_name,
     structlog.stdlib.add_log_level,
@@ -121,7 +121,7 @@ def _setup_chandler(
     console_handler.setFormatter(
         structlog.stdlib.ProcessorFormatter(
             # Runs ONLY on non-structlog (stdlib) log records
-            foreign_pre_chain=_SHARED_PROCESSOR,
+            foreign_pre_chain=_SHARED_PROCESSORS,
             # Runs on ALL records (structlog + stdlib) before rendering
             processors=[
                 structlog.stdlib.ProcessorFormatter.remove_processors_meta,
@@ -191,7 +191,7 @@ def _setup_fhandler(
     file_handler.setFormatter(
         structlog.stdlib.ProcessorFormatter(
             # Runs ONLY on non-structlog (stdlib) log records
-            foreign_pre_chain=_SHARED_PROCESSOR,
+            foreign_pre_chain=_SHARED_PROCESSORS,
             # Runs on ALL records before rendering
             processors=[
                 structlog.stdlib.ProcessorFormatter.remove_processors_meta,
@@ -205,3 +205,121 @@ def _setup_fhandler(
 # =============================================================================
 # CORE FUNCTIONS
 # =============================================================================
+
+def configure_structured_logging(
+    *,
+    console_verbose: bool = False,
+    log_to_file: bool = True,
+    custom_console: bool = True,
+) -> None:
+    """Configure structlog + stdlib logging for the speller package.
+ 
+    Must be called once at program startup (inside ``main()`` in
+    ``__main__.py``) before any log messages are emitted.  Safe to
+    call multiple times — existing handlers are cleared first to
+    prevent duplicate output.
+ 
+    Parameter signature mirrors :func:`~speller.logger.configure_logging`
+    and :func:`~speller.template_logger.configure_template_logging`
+    so the composition root can treat all three backends
+    interchangeably via the Strategy pattern.
+ 
+    Parameters
+    ----------
+    console_verbose : bool, optional
+        ``True`` sets the console handler to ``DEBUG`` so all messages
+        appear in the terminal.  ``False`` (default) shows ``INFO``
+        and above.  Controlled by the ``--verbose`` CLI flag.
+    log_to_file : bool, optional
+        ``True`` (default) attaches a :class:`RotatingFileHandler`
+        writing ``DEBUG``-level NDJSON logs to disk.  ``False``
+        disables file logging.  Controlled by the ``--no-log-file``
+        CLI flag.
+    custom_console : bool, optional
+        ``True`` (default) enables ANSI colors in the console
+        renderer.  Set ``False`` in tests to suppress colors from
+        captured output.
+ 
+    Notes
+    -----
+    Two-phase configuration
+        structlog is configured in TWO places that must agree:
+ 
+        1. :func:`structlog.configure` — defines the processor chain
+           used by ``structlog.get_logger()`` calls.  Ends with
+           ``ProcessorFormatter.wrap_for_formatter``, which hands
+           the event_dict off to stdlib logging rather than rendering
+           it directly.
+        2. :class:`~structlog.stdlib.ProcessorFormatter` on each
+           handler — runs ``foreign_pre_chain`` on stdlib entries
+           and the final renderer on all entries.
+ 
+        The ``_SHARED_PROCESSORS`` list is reused in both places so
+        the output format is identical regardless of which API
+        (structlog or stdlib) emitted the log.
+ 
+    Logger hierarchy::
+ 
+        speller                 ← root package logger (configured here)
+        ├── speller.benchmarks
+        ├── speller.config
+        ├── speller.dictionaries
+        ├── speller.register
+        ├── speller.speller
+        └── speller.text_processor
+ 
+        Both ``structlog.get_logger(__name__)`` and
+        ``logging.getLogger(__name__)`` resolve to the same underlying
+        hierarchy — the structlog logger factory wraps stdlib loggers.
+    """
+    # ─── 1. Configure structlog itself ──────────────────────────────
+    # The final processor (wrap_for_formatter) converts the event_dict
+    # into a form that logging.LogRecord.msg can hold. The handler's
+    # ProcessorFormatter unwraps it on the way out.
+    structlog.configure(
+        processors=[
+            *_SHARED_PROCESSORS,
+            # MUST be last, Hands off to stdlib logging instead of rendering.
+            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+        ],
+        # stdlib.BoundLogger knows logging's method names (info/debug/...)
+        # and delegates to the wrapped logging.Logger.
+        wrapper_class=structlog.stdlib.BoundLogger,
+        # stdlib.LoggerFactory creates a logging.Logger when structlog
+        # needs one. Auto-deduces the caller's module name.
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        # Cache the bound logger after the first call. Safe because
+        # we reconfigure idempotently via handler clearing below.
+        cache_logger_on_first_use=True,
+    )
+    
+    # ─── 2. Grab the top-level package logger ───────────────────────
+    # Same package_logger pattern as speller.logger.configure_logging —
+    # child loggers (speller.dictionaries, speller.speller, ...)
+    # propagate messages upward to this one.
+    package_logger = logging.getLogger(file_dirs.CUR_DIR.name)
+    package_logger.setLevel(logging.DEBUG)  # Let handlers decide their own level
+    
+    # ─── 3. Prevent duplicate handlers on re-configuration ──────────
+    if package_logger.hasHandlers():
+        package_logger.handlers.clear()
+        
+    # ─── 4. Console handler — pretty key=value, color optional ──────
+    level = logging.DEBUG if console_verbose else fhandler_config.LEVEL_DEFAULT
+    console_handler = _setup_chandler(level=level, custom_console=custom_console)
+    package_logger.addHandler(console_handler)
+    
+    # ─── 5. File handler — NDJSON, always captures DEBUG ────────────
+    if log_to_file:
+        # parents=True: create any missing parent directories
+        # exist_ok=True: no error if directory already exists
+        file_dirs.LOG_DIR.mkdir(parents=True, exist_ok=True)
+        file_handler = _setup_fhandler()
+        package_logger.addHandler(file_handler)
+        
+    # ─── 6. Propagation control ─────────────────────────────────────
+    # Same choice as speller.logger.configure_logging — propagate to
+    # root so parent loggers (if any) see these messages.  Set False
+    # if you notice double-printing in specific environments. 
+    package_logger.propagate = True
+  
