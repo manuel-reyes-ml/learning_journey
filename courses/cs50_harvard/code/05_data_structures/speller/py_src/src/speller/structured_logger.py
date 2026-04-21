@@ -323,3 +323,51 @@ def configure_structured_logging(
     # if you notice double-printing in specific environments. 
     package_logger.propagate = True
   
+
+def get_structured_logger(name: str | None = None) -> structlog.stdlib.BoundLogger:
+    """Return a structlog bound logger with correct type hints.
+ 
+    Thin wrapper around :func:`structlog.stdlib.get_logger` that
+    makes the return type statically visible to Pyright.
+ 
+    Parameters
+    ----------
+    name : str or None, optional
+        Logger name.  Conventionally ``__name__`` of the caller.
+        If ``None``, structlog auto-deduces the caller's module.
+ 
+    Returns
+    -------
+    structlog.stdlib.BoundLogger
+        Bound logger with ``.info()``, ``.debug()``, ``.bind()``,
+        etc.  Accepts keyword arguments as first-class fields::
+ 
+            log = get_structured_logger(__name__)
+            log.info("dictionary_loaded", word_count=143091, backend="hash")
+ 
+    Examples
+    --------
+    In a module that wants structured logging::
+ 
+        from speller.structured_logger import get_structured_logger
+        log = get_structured_logger(__name__)
+ 
+        log.info("event_name", key1=value1, key2=value2)
+        log.bind(request_id="abc").info("sub_event", another_key=42)
+ 
+    In a module that wants to stay stdlib (most of the package)::
+ 
+        import logging
+        logger = logging.getLogger(__name__)  # unchanged
+        logger.info("Loaded %s words", count)  # unchanged
+ 
+    Both APIs produce identical output when
+    :func:`configure_structured_logging` has been called, because
+    they share the same handlers and processor pipeline.
+    """
+    if name is None:
+        return structlog.stdlib.get_logger()
+    return structlog.stdlib.get_logger(name)
+
+
+
