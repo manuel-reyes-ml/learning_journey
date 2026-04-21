@@ -370,4 +370,91 @@ def get_structured_logger(name: str | None = None) -> structlog.stdlib.BoundLogg
     return structlog.stdlib.get_logger(name)
 
 
-
+# =============================================================================
+# REFERENCE GUIDES
+# =============================================================================
+ 
+# How the pieces connect
+# ──────────────────────
+#
+#   structlog.get_logger().info("evt", k=v)      logging.getLogger().info("msg")
+#              │                                             │
+#              │ (structlog path)                            │ (stdlib path)
+#              ▼                                             ▼
+#     _SHARED_PROCESSORS                            logging.LogRecord created
+#     (merge_contextvars, add_log_level,                    │
+#      TimeStamper, ...)                                    │
+#              │                                             │
+#              ▼                                             │
+#     ProcessorFormatter.wrap_for_formatter                  │
+#              │                                             │
+#              └──────────────┬──────────────────────────────┘
+#                             │
+#                             ▼
+#                  ProcessorFormatter on handler
+#                  ├── foreign_pre_chain (stdlib only):
+#                  │       _SHARED_PROCESSORS
+#                  └── processors (both):
+#                          remove_processors_meta
+#                          ConsoleRenderer or JSONRenderer
+#                             │
+#                             ▼
+#              ┌──────────────┴──────────────┐
+#              │                             │
+#       Console handler                File handler
+#       ConsoleRenderer                JSONRenderer
+#              │                             │
+#              ▼                             ▼
+#   2026-04-21T14:30:45Z        {"timestamp": "2026-04-21T...",
+#   [info  ] dictionary_loaded   "level": "info",
+#            backend=hash         "logger": "speller.load_dictionary",
+#            word_count=143091    "event": "dictionary_loaded",
+#                                 "backend": "hash",
+#                                 "word_count": 143091}
+#
+ 
+# =====================================================
+# Processor Contract
+# =====================================================
+#
+# A structlog processor is ANY callable with signature:
+#     (logger, method_name, event_dict) -> event_dict
+#
+# The chain runs left-to-right. Each processor reads/adds/removes
+# keys in event_dict and returns it. The LAST processor (the
+# renderer) returns a str/bytes that gets handed to the wrapped
+# logger's output method.
+#
+# Example — writing your own processor:
+#
+#     def add_version(logger, method_name, event_dict):
+#         event_dict["app_version"] = "1.0.0"
+#         return event_dict
+#
+# Then add it anywhere in _SHARED_PROCESSORS. Every log event
+# will now include {"app_version": "1.0.0"}.
+ 
+ 
+# =====================================================
+# Context Variables — the killer feature
+# =====================================================
+#
+# structlog.contextvars.bind_contextvars() stores keys in Python's
+# contextvars module.  Every subsequent log call in this execution
+# context automatically includes those keys via merge_contextvars.
+#
+#     structlog.contextvars.bind_contextvars(file="austen.txt", run_id=42)
+#
+#     # In some_function() called downstream — no need to pass file/run_id:
+#     log.info("words_extracted", count=125203)
+#
+#     # Output includes ALL bound context:
+#     # {"event": "words_extracted", "count": 125203,
+#     #  "file": "austen.txt", "run_id": 42, ...}
+#
+#     structlog.contextvars.clear_contextvars()  # reset for next iteration
+#
+# Safe across threading AND asyncio boundaries — uses the same
+# contextvars primitive that asyncio tasks use for coroutine-local
+# state.  Stage 2+ RAG pipelines and Stage 4+ LangGraph agents
+# will rely on this for request-scoped logging.
