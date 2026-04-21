@@ -43,7 +43,6 @@ Matches speller.c usage::
 
 from __future__ import annotations
 
-from rich.table import Table
 import sys
 
 
@@ -63,6 +62,8 @@ try:
     from pathlib import Path
     import argparse
     import logging
+    from rich.panel import Panel
+    from rich.table import Table
     import string
     from typing import Final, TypedDict, Required, NotRequired
     
@@ -71,7 +72,7 @@ try:
     from speller.load_dictionary import load_dictionary
     from speller.logger import configure_logging
     from speller.register import dicts
-    from speller.speller import run_speller, Report, SpellerResult
+    from speller.speller import run_speller, Report, SpellerResult, console
     
 except ImportError as e:
     sys.exit(f"Error missing speller module.\nDetails: {e}")
@@ -689,8 +690,6 @@ def _print_reports(
     Directory creation uses ``mkdir(parents=True, exist_ok=True)`` so
     the call is idempotent — no error if the directory already exists.
     """
-    from speller.speller import console  # import the module-level console
-    
     if isinstance(reports, Report):
         console.print(reports.main)
         
@@ -851,6 +850,9 @@ def main(argv: list[str] | None = None) -> ExitCode:
             
             # Load dictionary ONCE for this backend
             loaded_dict, load_result = load_dictionary(dictionary=data.dict_class(), dict_path=dict_path)
+            
+            # rich.panel.Panel wraps any content in a decorated box with a title:
+            console.print(Panel("Dictionary loaded successfully", title="[green]SUCCESS[/green]"))
             
             # -- Step 5: Run spell checker --
             # run_speller() accepts DictionaryProtocol - it doesn´t know
