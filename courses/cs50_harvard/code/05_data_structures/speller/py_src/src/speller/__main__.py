@@ -459,6 +459,7 @@ def _build_parser() -> argparse.ArgumentParser:
     logging_group.add_argument(
         "-t", "--template-logging",
         action="store_true",
+        default=False,
         help="Use t-string (PEP 750) logging with JSON file output. "
              "Requires Python 3.14+.",
     )
@@ -819,6 +820,21 @@ def main(argv: list[str] | None = None) -> ExitCode:
             custom_console=not args.no_custom_console,
         )
         logger.info("Template (t-string) logging mode enabled")
+    
+    elif args.structured_logging:
+        # Lazy import: structlog is only required when this flag is set.
+        # Keeps the package importable even if the dependency is missing.
+        try:
+            from speller.structured_logger import configure_structured_logging
+        except ImportError as e:
+            sys.exit(f"Error: structlog not installed. Details: {e}")
+        
+        configure_structured_logging(
+            console_verbose=args.verbose,
+            log_to_file=not args.no_log_file,
+            custom_console=not args.no_custom_console,
+        )    
+            
     else:
         configure_logging(
             console_verbose=args.verbose,
