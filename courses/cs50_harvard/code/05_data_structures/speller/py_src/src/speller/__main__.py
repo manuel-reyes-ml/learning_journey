@@ -299,7 +299,6 @@ class GeneralReport:
         """
         """
         table = Table(
-            title="[bold blue]GENERAl REPORT[/bold blue]",
             show_header=True,
             box=None,  # no borders for a clean look
             padding=(0, 2),
@@ -702,6 +701,14 @@ def _print_reports(
     else:
         if table_report:
             print()  # Print a new line ('\n') by default
+            # rich.panel.Panel wraps any content in a decorated box with a title.
+            console.print(
+                Panel(
+                    "[cyan]GENERAL REPORT[/cyan]",
+                    expand=False,
+                    border_style="cyan",
+                )
+            )
             # Using __rich__ dunder method to be called by console.print() automatically
             # __rich__ returns a Table object that Console parses it.
             console.print(reports)
