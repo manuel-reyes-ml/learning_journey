@@ -193,7 +193,21 @@ default_fnames: DefaultFileNames = {
 
 
 class LogFilesPath(NamedTuple):
-    """
+    """Resolved paths for each logging backend's output file.
+
+    Three backends produce three separate files so they can run
+    side-by-side and be diffed for comparison.
+
+    Attributes
+    ----------
+    flog_path : Path
+        Plain-text output from :mod:`speller.logger` → ``speller.log``.
+    tlog_path : Path
+        Custom JSON (PEP 750 t-strings) from
+        :mod:`speller.template_logger` → ``speller_json.log``.
+    slog_path : Path
+        NDJSON output from :mod:`speller.structured_logger`
+        → ``speller_structured.log``.
     """
     
     flog_path: Path
@@ -252,15 +266,15 @@ class FileDirectories:
     MISS_DIR: Final[Path] = ROOT_DIR / DefaultDirs.MISS
     
     def create_log_fname(self) -> tuple[str, str, str]:
-        """Build the log filename from the package directory name.
- 
-        Uses ``CUR_DIR.name`` (``"speller"``) so the filename stays in
-        sync with any future package rename without manual updates.
- 
+        """Build the three log filenames from the package directory name.
+
+        Uses ``CUR_DIR.name`` (``"speller"``) so filenames stay in sync
+        with any future package rename without manual updates.
+
         Returns
         -------
-        str
-            Log filename, e.g. ``"speller.log"``.
+        tuple of (str, str, str)
+            ``(plain_log, json_log, structured_log)`` filenames.
         """
         f_string = f"{self.CUR_DIR.name}.log"
         t_string = f"{self.CUR_DIR.name}_json.log"
@@ -271,15 +285,15 @@ class FileDirectories:
     
     @property  # Access function's return as an attribute
     def log_file(self) -> LogFilesPath:
-        """Full resolved path to the rotating log file.
- 
+        """Full resolved paths to the three rotating log files.
+
         Combines :attr:`LOG_DIR` with the result of
-        :meth:`create_log_fname`.
- 
+        :meth:`create_log_fname` for each backend.
+
         Returns
         -------
-        Path
-            Absolute path, e.g. ``…/py_src/logs/speller.log``.
+        LogFilesPath
+            NamedTuple of absolute paths — one per backend.
         """
         f_string, t_string, s_string = self.create_log_fname()
         
