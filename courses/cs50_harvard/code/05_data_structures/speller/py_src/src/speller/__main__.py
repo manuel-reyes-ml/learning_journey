@@ -190,6 +190,7 @@ class SpellerArgs:
     show_misspelled: bool
     no_custom_console: bool
     template_logging: bool
+    structured_logging: bool
     table_report: bool
 
 
@@ -457,6 +458,14 @@ def _build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Use t-string (PEP 750) logging with JSON file output. "
              "Requires Python 3.14+.",
+    )
+    
+    parser.add_argument(
+        "-s", "--structured-logging",
+        action="store_true",
+        default=False,
+        help="Use structlog with JSON file output and ConsoleRenderer. "
+             "Enable contextvars binding for richer observability.",
     )
     
     parser.add_argument(
@@ -776,6 +785,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         show_misspelled=raw.show_misspelled,
         no_custom_console=raw.no_custom_console,
         template_logging=raw.template_logging,
+        structured_logging=raw.structured_logging,
         table_report=raw.table_report,
     )
     
