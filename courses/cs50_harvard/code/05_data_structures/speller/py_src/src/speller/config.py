@@ -278,7 +278,7 @@ class FileDirectories:
         """
         f_string = f"{self.CUR_DIR.name}.log"
         t_string = f"{self.CUR_DIR.name}_json.log"
-        s_string = f"{self.CUR_DIR.name}_json_slog.log"
+        s_string = f"{self.CUR_DIR.name}_structured.log"
         
         return f_string, t_string, s_string
     
