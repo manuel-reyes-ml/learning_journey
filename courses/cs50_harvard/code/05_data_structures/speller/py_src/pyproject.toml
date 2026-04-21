@@ -75,7 +75,10 @@ classifiers = [
 #     "chromadb>=0.4",        # Stage 1: PolicyPulse vector store
 #     "google-generativeai",  # Stage 1: DataVault Gemini SDK
 # ]
-dependencies = ["rich>=13.0"]
+dependencies = [
+    "rich>=13.0",
+    "structlog>=25.0",
+]
 
 
 # ─── Optional Dependencies ──────────────────────────────────────
