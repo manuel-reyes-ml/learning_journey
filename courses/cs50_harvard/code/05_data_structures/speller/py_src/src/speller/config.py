@@ -198,6 +198,7 @@ class LogFilesPath(NamedTuple):
     
     flog_path: Path
     tlog_path: Path
+    slog_path: Path
 
 
 # =====================================================
@@ -250,7 +251,7 @@ class FileDirectories:
     LOG_DIR: Final[Path] = ROOT_DIR / DefaultDirs.LOG
     MISS_DIR: Final[Path] = ROOT_DIR / DefaultDirs.MISS
     
-    def create_log_fname(self) -> tuple[str, str]:
+    def create_log_fname(self) -> tuple[str, str, str]:
         """Build the log filename from the package directory name.
  
         Uses ``CUR_DIR.name`` (``"speller"``) so the filename stays in
@@ -263,8 +264,9 @@ class FileDirectories:
         """
         f_string = f"{self.CUR_DIR.name}.log"
         t_string = f"{self.CUR_DIR.name}_json.log"
+        s_string = f"{self.CUR_DIR.name}_json_slog.log"
         
-        return f_string, t_string
+        return f_string, t_string, s_string
     
     
     @property  # Access function's return as an attribute
@@ -279,12 +281,13 @@ class FileDirectories:
         Path
             Absolute path, e.g. ``…/py_src/logs/speller.log``.
         """
-        f_string, t_string = self.create_log_fname()
+        f_string, t_string, s_string = self.create_log_fname()
         
         flog_path = self.LOG_DIR / f_string
         tlog_path = self.LOG_DIR / t_string
+        slog_path = self.LOG_DIR / s_string
         
-        return LogFilesPath(flog_path, tlog_path)
+        return LogFilesPath(flog_path, tlog_path, slog_path)
 
 
 @dataclass(frozen=True, slots=True)
