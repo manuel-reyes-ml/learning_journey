@@ -298,8 +298,8 @@ class GeneralReport:
         """
         """
         table = Table(
-            title="[bold blue]General Report[/bold blue]",
-            show_header=False,
+            title="[bold blue]GENERAl REPORT[/bold blue]",
+            show_header=True,
             box=None,  # no borders for a clean look
             padding=(0, 2),
         )
@@ -316,7 +316,9 @@ class GeneralReport:
                     f"[red]{category.upper()}:[/red]",
                     f"[red]{', '.join(filenames)}[/red]",
                 )
-                
+        
+        table.add_row()
+            
         return table
     
     
@@ -658,7 +660,12 @@ def _validate_ops(ops_names: list[str]) -> list[str]:
     return clean_names
 
 
-def _print_reports(reports: Report | str, infile_name: str = "file") -> None:
+def _print_reports(
+    reports: Report | GeneralReport,
+    infile_name: str = "file",
+    *,
+    table_report: bool = False,
+) -> None:
     """Write the misspelled-words file (if requested) and print the report.
  
     If ``reports.misspelled`` is not ``None``, creates the misspelled
@@ -694,7 +701,14 @@ def _print_reports(reports: Report | str, infile_name: str = "file") -> None:
             logger.info("Misspelled words saved to '%s'", out_file)
     
     else:
-        console.print(reports)
+        if table_report:
+            print()  # Print a new line ('\n') by default
+            # Using __rich__ dunder method to be called by console.print() automatically
+            # __rich__ returns a Table object that Console parses it.
+            console.print(reports)
+        else:
+            # Print out regular string with color mark ups
+            console.print(reports.format_general_report())
     
 
 # =============================================================================
@@ -779,7 +793,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         try:
             from speller.template_logger import configure_template_logging
         except ImportError as e:
-            sys.exit(f"Error: Template obj available in Python 3.14+. Details: {e}")
+            sys.exit(f"Error: Template lib available in Python 3.14+. Details: {e}")
         
         configure_template_logging(
             console_verbose=args.verbose,
@@ -931,7 +945,8 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 error_other=files_with_error["error_other"],
             ),  # Construct FileErrorData with defaultdict values
         )
-        _print_reports(general_report.format_general_report())
+        
+        _print_reports(general_report, table_report=args.table_report)
         
         # -- Step 8: Return exit code --
         success = True
