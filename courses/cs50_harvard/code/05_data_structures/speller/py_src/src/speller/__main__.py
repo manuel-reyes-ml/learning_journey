@@ -907,6 +907,20 @@ def main(argv: list[str] | None = None) -> ExitCode:
                     files_not_found += 1
                     continue    # skip missing files, don't abort the batch
                 
+                # ─── Structlog contextvars binding (per-file scope) ───
+                # Every log call downstream in run_speller() and its
+                # callees automatically includes these fields in the
+                # NDJSON output - without the emitting code knowing.
+                # This is the Stage 2+ request-scoped logging pattern.
+                if args.structured_logging:
+                    import structlog
+                    structlog.contextvars.clear_contextvars()
+                    structlog.contextvars.bind_contextvars(
+                        file=text_path.name,
+                        backend=type(loaded_dict).__name__,
+                        operation=operation,
+                    )
+                
                 # Use t-strings or f-strings (regular string) for logger.info()
                 if args.template_logging:
                     text_name = text_path.name
