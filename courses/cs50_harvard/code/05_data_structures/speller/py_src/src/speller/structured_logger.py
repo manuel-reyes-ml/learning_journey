@@ -958,3 +958,456 @@ def get_structured_logger(name: str | None = None) -> structlog.stdlib.BoundLogg
 #   https://www.structlog.org/en/stable/contextvars.html
 # Python Docs — logging.LogRecord:
 #   https://docs.python.org/3/library/logging.html#logrecord-objects
+
+
+# =============================================================================
+# ADDENDUM — STANDALONE STRUCTLOG SETUP AND USAGE
+# =============================================================================
+#
+# This addendum documents the OTHER mode of structlog — standalone, with no
+# stdlib logging.Logger involved at all.  We do NOT use this mode in the
+# speller; the production-standard choice is structlog-on-stdlib (the main
+# reference guide above).  This section exists so you know:
+#
+#   1. How standalone structlog differs from what we actually run
+#   2. When standalone is the right choice (rare)
+#   3. How to recognise standalone config in other codebases you read
+#
+# Rule of thumb: if you're ever unsure which mode a codebase is in, check
+# the LAST processor and the logger_factory.  Two markers settle it:
+#
+#   ┌──────────────────────────────────────────────────────────────────┐
+#   │  Marker                        │ Standalone      │ Stdlib-wrap  │
+#   │────────────────────────────────┼─────────────────┼──────────────│
+#   │  Last processor                │ A renderer      │ wrap_for_   │
+#   │                                │ (Console/JSON)  │ formatter    │
+#   │  logger_factory                │ PrintLogger-    │ stdlib.      │
+#   │                                │ Factory,        │ LoggerFactory│
+#   │                                │ WriteLogger-    │              │
+#   │                                │ Factory         │              │
+#   │  wrapper_class                 │ make_filtering_ │ stdlib.      │
+#   │                                │ bound_logger or │ BoundLogger  │
+#   │                                │ BoundLogger     │              │
+#   │  logging.getLogger() calls     │ Separate,       │ Same         │
+#   │  elsewhere in codebase         │ uncaptured path │ hierarchy    │
+#   └──────────────────────────────────────────────────────────────────┘
+#
+# =============================================================================
+
+
+# =====================================================
+# WHAT STANDALONE STRUCTLOG ACTUALLY IS
+# =====================================================
+#
+# In standalone mode, structlog owns the ENTIRE pipeline:
+#
+#   ┌──────────────────────┐
+#   │  1. BoundLogger      │  ← generic structlog.BoundLogger
+#   │     (wrapper_class)  │     or make_filtering_bound_logger()
+#   └──────────┬───────────┘
+#              │
+#              ▼
+#   ┌──────────────────────┐
+#   │  2. Processor chain  │  ← ends with a REAL renderer
+#   │                      │     (ConsoleRenderer or JSONRenderer)
+#   └──────────┬───────────┘
+#              │ final processor returns a str (or bytes)
+#              ▼
+#   ┌──────────────────────┐
+#   │  3. PrintLogger or   │  ← writes the str directly to a file/stream
+#   │     WriteLogger      │     no logging.Logger, no handlers,
+#   │                      │     no LogRecord, no hierarchy
+#   └──────────────────────┘
+#
+# The key difference from structlog-on-stdlib:
+#   - No logging.Logger is ever created
+#   - No LogRecord is ever created
+#   - No handler/formatter/propagation machinery exists
+#   - structlog's own PrintLogger/WriteLogger does the I/O directly
+#
+# That means ROTATION, MULTIPLE HANDLERS, PROPAGATION, SHARING WITH
+# THIRD-PARTY LIBRARY LOGS — none of that exists out of the box.  You'd
+# have to re-implement any of those features yourself.
+
+
+# =====================================================
+# MINIMAL STANDALONE CONFIG — DEV MODE
+# =====================================================
+#
+# The simplest useful standalone setup: colored output to the terminal,
+# no file logging.  This is what structlog's default looks like when you
+# just call get_logger() without calling configure() first.
+#
+#   import logging
+#   import structlog
+#
+#   structlog.configure(
+#       processors=[
+#           # 1. Merge any contextvars-bound key/values
+#           structlog.contextvars.merge_contextvars,
+#           # 2. Add "level": "info" / "error" / ...
+#           structlog.processors.add_log_level,
+#           # 3. Handle stack_info=True if passed
+#           structlog.processors.StackInfoRenderer(),
+#           # 4. Switch the exception formatter for pretty tracebacks
+#           structlog.dev.set_exc_info,
+#           # 5. Add "timestamp": "2026-04-22T..."
+#           structlog.processors.TimeStamper(fmt="iso"),
+#           # 6. FINAL RENDERER — turns event_dict into a colored string.
+#           #    THIS IS THE LINE THAT DIFFERS FROM STRUCTLOG-ON-STDLIB.
+#           #    Here the renderer runs INSIDE structlog.
+#           #    In stdlib-wrap mode, a handler's ProcessorFormatter would
+#           #    do the rendering instead.
+#           structlog.dev.ConsoleRenderer(),
+#       ],
+#       # Filter by level BEFORE the chain runs — fastest option.
+#       # make_filtering_bound_logger uses logging's level NAMES but
+#       # does NOT actually use the stdlib logging module.
+#       wrapper_class=structlog.make_filtering_bound_logger(logging.INFO),
+#       # Plain dict for context storage (OrderedDict is the default).
+#       context_class=dict,
+#       # PrintLogger writes directly to sys.stdout (or any TextIO).
+#       # No handlers, no LogRecord, no hierarchy.
+#       logger_factory=structlog.PrintLoggerFactory(),
+#       # Build the bound logger once at first use and cache it.
+#       # Safe because we only configure once at startup.
+#       cache_logger_on_first_use=True,
+#   )
+#
+#   log = structlog.get_logger()
+#   log.info("dictionary_loaded", word_count=143091, backend="hash")
+#   # → 2026-04-22T14:28:50Z [info  ] dictionary_loaded
+#   #   backend=hash word_count=143091
+
+
+# =====================================================
+# STANDALONE CONFIG — PRODUCTION JSON MODE
+# =====================================================
+#
+# For a "12-factor app" style container deployment where you write ONLY
+# JSON to stdout and let the platform (Kubernetes, Docker, ECS) collect
+# the logs.
+#
+#   import logging
+#   import structlog
+#
+#   structlog.configure(
+#       processors=[
+#           structlog.contextvars.merge_contextvars,
+#           structlog.processors.add_log_level,
+#           structlog.processors.TimeStamper(fmt="iso"),
+#           structlog.processors.StackInfoRenderer(),
+#           structlog.processors.format_exc_info,
+#           # Final renderer — JSON instead of Console.
+#           structlog.processors.JSONRenderer(),
+#       ],
+#       wrapper_class=structlog.make_filtering_bound_logger(logging.INFO),
+#       context_class=dict,
+#       # WriteLogger is slightly faster than PrintLogger. Defaults to
+#       # stdout; pass a file object to write elsewhere.
+#       logger_factory=structlog.WriteLoggerFactory(),
+#       cache_logger_on_first_use=True,
+#   )
+#
+#   log = structlog.get_logger()
+#   log.info("dictionary_loaded", word_count=143091, backend="hash")
+#   # → {"event": "dictionary_loaded", "word_count": 143091,
+#   #    "backend": "hash", "level": "info",
+#   #    "timestamp": "2026-04-22T14:28:50.147Z"}
+#
+# For file output, pass an open file handle to WriteLoggerFactory:
+#
+#   log_file = open("/var/log/app.log", "a", encoding="utf-8")
+#   logger_factory=structlog.WriteLoggerFactory(file=log_file)
+#
+# ⚠ NO ROTATION.  You'd need external tooling (logrotate on Linux, or
+# roll your own) because WriteLogger doesn't implement any file-size or
+# time-based rollover.  This is one of the big reasons production
+# projects pick the structlog-on-stdlib mode instead — you inherit
+# RotatingFileHandler and TimedRotatingFileHandler for free.
+
+
+# =====================================================
+# END-TO-END PROCESSING FLOW — STANDALONE MODE
+# =====================================================
+#
+# Same setup assumptions as the main reference guide:
+#   - configure() has been called once at startup
+#   - bind_contextvars(file="austen.txt", run_id=42) was called earlier
+#
+# User code (no change from Path A):
+#
+#   log = structlog.get_logger()
+#   log.info("dictionary_loaded", word_count=143091, backend="hash")
+#
+# ─── STEP S1: get_logger() returns a proxy ─────────────────────────────
+#
+# structlog.get_logger() returns a lazy BoundLoggerLazyProxy.  At first
+# actual use (.info/.bind/etc), the proxy builds the real bound logger:
+#   1. Calls the logger_factory → returns a PrintLogger or WriteLogger
+#   2. Wraps it in the wrapper_class (make_filtering_bound_logger result)
+#   3. Caches the wrapped logger because cache_logger_on_first_use=True
+#
+# Notice what's DIFFERENT from stdlib-wrap mode:
+#   - No logging.Logger anywhere
+#   - No LogRecord anywhere
+#   - The "logger at the bottom" is a PrintLogger/WriteLogger whose only
+#     job is to call file.write(str) + file.flush()
+#
+# ─── STEP S2: Level filter runs BEFORE the chain ──────────────────────
+#
+# make_filtering_bound_logger(logging.INFO) builds a specialized class
+# where methods BELOW the configured level are compiled to just
+# `return None`.  So log.debug(...) with a level-INFO filter never
+# enters the processor chain at all — zero overhead.
+#
+# log.info(...) with a level-INFO filter continues normally.
+#
+# ─── STEP S3: BoundLogger builds the initial event_dict ────────────────
+#
+# Same as Path A:
+#     event_dict = {
+#         "event": "dictionary_loaded",
+#         "word_count": 143091,
+#         "backend": "hash",
+#     }
+#
+# ─── STEP S4: Processor chain runs in order ────────────────────────────
+#
+# Same processors as Path A up through format_exc_info… but the LAST
+# processor is different.  Instead of wrap_for_formatter (the stdlib
+# bridge), the last processor is a REAL RENDERER that returns a str.
+#
+# Processor 1: contextvars.merge_contextvars
+#     event_dict += {"file": "austen.txt", "run_id": 42}
+#
+# Processor 2: add_log_level
+#     event_dict += {"level": "info"}
+#
+# Processor 3: TimeStamper(fmt="iso")
+#     event_dict += {"timestamp": "2026-04-22T14:28:50.147Z"}
+#
+# Processor 4: StackInfoRenderer() — no-op here
+# Processor 5: format_exc_info — no-op here
+#
+# Processor 6 (FINAL): JSONRenderer()
+#   Receives the fully enriched event_dict and returns a STRING:
+#     '{"event": "dictionary_loaded", "word_count": 143091, ...}'
+#
+#   (Or ConsoleRenderer in dev mode → returns a colored string.)
+#
+# ─── STEP S5: PrintLogger/WriteLogger writes the string ────────────────
+#
+# structlog's BoundLogger takes the string returned by the final
+# processor and calls the matching method on the underlying logger:
+#
+#     self._logger.info(rendered_string)
+#
+# PrintLogger.info just does:
+#     print(rendered_string, file=self._file, flush=True)
+#
+# WriteLogger.info does the same thing slightly faster (no print()
+# overhead, direct file.write()+flush() calls).
+#
+# DONE.  The string is in the file/stream.  No LogRecord was ever made,
+# no handler was ever consulted, no hierarchy was ever walked.
+
+
+# =====================================================
+# VISUAL: Standalone vs stdlib-wrap (side by side)
+# =====================================================
+#
+#   ┌─── STANDALONE STRUCTLOG ─────┐    ┌─── STRUCTLOG-ON-STDLIB ─────┐
+#   │                              │    │                              │
+#   │  log.info("evt", k=v)        │    │  log.info("evt", k=v)        │
+#   │         │                    │    │         │                    │
+#   │         ▼                    │    │         ▼                    │
+#   │  BoundLogger                 │    │  stdlib.BoundLogger          │
+#   │  (+ level filter)            │    │                              │
+#   │         │                    │    │         │                    │
+#   │         ▼                    │    │         ▼                    │
+#   │  Processor chain runs:       │    │  Processor chain runs:       │
+#   │  • merge_contextvars         │    │  • merge_contextvars         │
+#   │  • add_log_level             │    │  • add_log_level             │
+#   │  • TimeStamper               │    │  • TimeStamper               │
+#   │  • StackInfoRenderer         │    │  • StackInfoRenderer         │
+#   │  • format_exc_info           │    │  • format_exc_info           │
+#   │  • ConsoleRenderer ←RENDERS  │    │  • wrap_for_formatter ←WRAP  │
+#   │    (returns str)             │    │    (returns wrapped dict)    │
+#   │         │                    │    │         │                    │
+#   │         ▼                    │    │         ▼                    │
+#   │  PrintLogger.info(str)       │    │  logging.Logger.info(...)    │
+#   │         │                    │    │         │                    │
+#   │         ▼                    │    │         ▼                    │
+#   │  file.write(str) + flush     │    │  LogRecord propagates up     │
+#   │                              │    │    hierarchy                 │
+#   │  ═══ END ═══                 │    │         │                    │
+#   │                              │    │         ▼                    │
+#   │                              │    │  Handler.emit()              │
+#   │                              │    │         │                    │
+#   │                              │    │         ▼                    │
+#   │                              │    │  ProcessorFormatter runs     │
+#   │                              │    │  (incl. foreign_pre_chain    │
+#   │                              │    │   for stdlib-origin records) │
+#   │                              │    │         │                    │
+#   │                              │    │         ▼                    │
+#   │                              │    │  Final renderer              │
+#   │                              │    │  (ConsoleRenderer or JSON)   │
+#   │                              │    │         │                    │
+#   │                              │    │         ▼                    │
+#   │                              │    │  Stream/file I/O             │
+#   │                              │    │                              │
+#   │                              │    │  ═══ END ═══                 │
+#   └──────────────────────────────┘    └──────────────────────────────┘
+
+
+# =====================================================
+# WHEN STANDALONE IS THE RIGHT CHOICE
+# =====================================================
+#
+# Standalone mode is CORRECT, not just acceptable, in a few specific
+# scenarios.  If you're ever building one of these, use it without guilt:
+#
+# 1. ── Tiny CLI utilities or scripts ──
+#    A 200-line CLI tool that imports no third-party libraries and
+#    doesn't need rotation.  Simpler config, one less concept.
+#    PrintLoggerFactory → stdout, use a shell redirect for file output.
+#
+# 2. ── 12-factor containerized apps (JSON to stdout) ──
+#    In Docker/Kubernetes/ECS, the platform collects stdout and ships
+#    it to the log aggregator.  Rotation is the platform's job, not
+#    yours.  WriteLoggerFactory + JSONRenderer is the minimal setup.
+#    Some teams prefer this for clarity — no stdlib handler zoo.
+#
+# 3. ── Doctests and library code ──
+#    structlog's own docs note WriteLogger is "very useful for testing
+#    and examples since logging is finicky in doctests".  If you're
+#    writing reusable library code that should NOT impose a logging
+#    config on consumers, standalone mode avoids polluting the root
+#    logger.
+#
+# 4. ── Performance-critical hot paths ──
+#    Marginally faster than stdlib-wrap because you skip LogRecord
+#    creation and handler dispatch.  Rarely decisive.
+#
+# DO NOT use standalone when:
+#   - You integrate with third-party libraries that log via stdlib
+#     (pandas, chromadb, langchain, httpx, SQLAlchemy, FastAPI, requests,
+#      openai, google.generativeai — basically all of them)
+#   - You want rotation, multiple handlers, or propagation
+#   - You're building for the roadmap from Stage 2 onward — vendor logs
+#     will flood stdlib, and you want to capture them in your pipeline
+
+
+# =====================================================
+# GOTCHA: Mixing modes is BAD
+# =====================================================
+#
+# You can't "also use stdlib logging on the side" while structlog is in
+# standalone mode.  The two systems would be fully independent:
+#
+#   Your structlog log calls  →  WriteLogger → app.log
+#   Third-party lib log calls →  stdlib root logger → ??? (unhandled)
+#
+# So you get pretty JSON for your code and unformatted garbage from
+# pandas/ChromaDB leaking to stderr through the default root handler.
+#
+# This is exactly the failure mode that structlog-on-stdlib fixes.
+# If you find yourself tempted to mix — stop and switch modes.
+
+
+# =====================================================
+# QUICK REFERENCE — STANDALONE PRIMITIVES
+# =====================================================
+#
+# ── Logger factories (the "underlying logger" producer) ──────────────
+#
+#   PrintLoggerFactory(file=sys.stdout)
+#     • Wraps file.write() in print() calls.
+#     • Slightly slower than WriteLogger.
+#     • Supports passing a name positional arg to get_logger()
+#       (silently ignored — PrintLogger doesn't use logger names).
+#
+#   WriteLoggerFactory(file=sys.stdout)
+#     • Direct file.write() + flush().
+#     • ~30% faster than PrintLoggerFactory in benchmarks.
+#     • Added in structlog 22.1.0.
+#
+#   BytesLoggerFactory(file=sys.stdout.buffer)
+#     • For renderers that output bytes (e.g. orjson JSONRenderer).
+#     • Skip str → bytes encoding step for raw speed.
+#     • Rarely needed unless you've measured the encode overhead.
+#
+# ── Wrapper classes (the thing .info()/.debug() methods live on) ────
+#
+#   structlog.BoundLogger
+#     • The generic default.  Proxies unknown methods to the wrapped
+#       logger via __getattr__.  Works with anything.
+#
+#   structlog.make_filtering_bound_logger(min_level)
+#     • Returns a specialized class where methods below min_level are
+#       compiled to `return None`.  Fastest level filter in structlog —
+#       drops events BEFORE any processor runs.  No logging module used.
+#     • Preferred for standalone mode.  Shown in official docs.
+#
+#   structlog.stdlib.BoundLogger   ← DO NOT USE IN STANDALONE MODE
+#     • This is specifically for stdlib-wrap mode.  Requires the
+#       underlying logger to be a logging.Logger.  Will crash if
+#       paired with PrintLogger/WriteLogger.
+#
+# ── Renderers (the final processor; returns str or bytes) ────────────
+#
+#   structlog.dev.ConsoleRenderer(colors=True, pad_event=30)
+#     • Human-readable, aligned, ANSI-colored.
+#     • Syntax-highlights tracebacks when rich is installed.
+#     • Dev-only.  Don't ship colors to production log aggregators.
+#
+#   structlog.processors.JSONRenderer()
+#     • One JSON object per event.  Production default.
+#     • Pair with orjson for 3-5x speed:
+#         JSONRenderer(serializer=orjson.dumps)
+#
+#   structlog.processors.KeyValueRenderer(key_order=[...])
+#     • logfmt-style output: event="hi" level=info timestamp=...
+#     • Compromise between human-readable and machine-parseable.
+
+
+# =====================================================
+# DECISION SUMMARY FOR OUR ROADMAP
+# =====================================================
+#
+# The speller uses structlog-on-stdlib.  Every Stage 1+ project in the
+# roadmap will also use structlog-on-stdlib, for one overriding reason:
+# EVERY third-party library in the roadmap logs via stdlib.
+#
+#   Stage 1:  google.generativeai, chromadb, pydantic, langchain, httpx
+#   Stage 2:  apache-airflow, boto3, psycopg2, pinecone, kafka-python
+#   Stage 3:  sklearn, xgboost, ray, ollama, torch
+#   Stage 4:  langgraph, langchain_mcp, openai-agents
+#   Stage 5:  prometheus_client, opentelemetry, fastapi, uvicorn
+#
+# Running any of these in standalone mode means their logs either
+# disappear or flood an unconfigured stderr.  Running them under
+# stdlib-wrap mode means their logs automatically get:
+#   - ISO timestamps
+#   - Request IDs from bind_contextvars
+#   - NDJSON output queryable with jq/DuckDB
+#   - Routed to the same rotating file handler as your code
+#
+# That's the compounding value that makes stdlib-wrap the production
+# standard — and why the speller's pattern carries forward unchanged.
+
+
+# =====================================================
+# REFERENCES
+# =====================================================
+# structlog — Getting Started (shows standalone config):
+#   https://www.structlog.org/en/stable/getting-started.html
+# structlog — Loggers (PrintLogger, WriteLogger, BytesLogger):
+#   https://www.structlog.org/en/stable/api.html#loggers
+# structlog — make_filtering_bound_logger:
+#   https://www.structlog.org/en/stable/api.html#structlog.make_filtering_bound_logger
+# structlog — "12 factor app" JSON-to-stdout pattern:
+#   https://www.structlog.org/en/stable/standard-library.html
+# Better Stack — Comprehensive Python Logging with Structlog:
+#   https://betterstack.com/community/guides/logging/structlog/
