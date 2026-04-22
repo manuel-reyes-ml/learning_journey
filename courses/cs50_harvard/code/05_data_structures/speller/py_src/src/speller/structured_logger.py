@@ -8,12 +8,12 @@
 from __future__ import annotations
 
 from logging.handlers import RotatingFileHandler
-from typing import Final
+from typing import Final, Any
 import logging
 import sys
 
 import structlog
-from structlog.types import Processor
+from structlog.types import Processor, WrappedLogger, EventDict
 
 from speller.config import (
     file_dirs,
@@ -62,10 +62,39 @@ _SHARED_PROCESSORS: Final[list[Processor]] = [
     structlog.processors.format_exc_info,
 ]
 
+_KEY_ORDER: Final[list[str]] = ["timestamp", "level", "logger", "event"]
+
 
 # =============================================================================
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
+
+def _reorder_keys(preferred_order: list[str]) -> Processor:
+    """Processor factory: move specified keys to the front of the event_dict.
+
+    Preserves insertion order for any keys not in preferred_order.
+    Apply BEFORE the renderer in the ProcessorFormatter's processors list.
+
+    Parameters
+    ----------
+    preferred_order : list of str
+        Keys to pull to the front, in the desired order.
+        Example: ``["timestamp", "level", "logger", "event"]``.
+
+    Returns
+    -------
+    Processor
+        A callable compatible with structlog's processor protocol.
+    """
+    def processor(logger: WrappedLogger, method_name: str, event_dict: EventDict) -> EventDict:
+        ordered: dict[str, Any] = {}
+        for key in preferred_order:
+            if key in event_dict:
+                ordered[key] = event_dict.pop(key)
+        ordered.update(event_dict)
+        return ordered
+    return processor
+    
 
 def _setup_chandler(
     *,
@@ -125,6 +154,7 @@ def _setup_chandler(
             # Runs on ALL records (structlog + stdlib) before rendering
             processors=[
                 structlog.stdlib.ProcessorFormatter.remove_processors_meta,
+                _reorder_keys(_KEY_ORDER),
                 structlog.dev.ConsoleRenderer(colors=custom_console),
             ]
         )
@@ -195,6 +225,7 @@ def _setup_fhandler(
             # Runs on ALL records before rendering
             processors=[
                 structlog.stdlib.ProcessorFormatter.remove_processors_meta,
+                _reorder_keys(_KEY_ORDER),
                 structlog.processors.JSONRenderer(),
             ],   
         )
