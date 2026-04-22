@@ -34,6 +34,8 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
+from unittest import result
+import structlog
 
 from speller.benchmarks import timer, BenchmarkResult
 from speller.protocols import DictionaryProtocol
@@ -50,7 +52,8 @@ from speller.protocols import DictionaryProtocol
 # This logger is a CHILD of the 'speller' logger configured in logger.py.
 # Log messages flow upward: speller.dictionary -> speller -> handlers.
 # You never configure handlers here - that's logger.py / __main__.py's job.
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)            # for narrative
+slog = structlog.stdlib.get_logger(__name__)    # for structured events
 
 
 # =============================================================================
@@ -146,5 +149,13 @@ def load_dictionary(
     logger.info(
         "Dictionary loaded: %s words",
         format(len(dictionary),","),  # format number to use ',' separator and return str
+    )
+    
+    slog.info(
+        "dictionary_loaded",
+        backend=type(dictionary).__name__,
+        word_count=len(dictionary),
+        path=str(dict_path),
+        load_time_s=t["result"].elapsed_seconds,
     )
     return dictionary, t["result"]
