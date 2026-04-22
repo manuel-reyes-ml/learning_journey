@@ -276,20 +276,66 @@ def configure_structured_logging(
     # The final processor (wrap_for_formatter) converts the event_dict
     # into a form that logging.LogRecord.msg can hold. The handler's
     # ProcessorFormatter unwraps it on the way out.
+    #
+    # That's why actual renderers don't appear in this list — rendering happens downstream
+    # at the handler. The handlers, not structlog.configure(), decide console-pretty vs JSON.
+    # This is exactly what lets you have two handlers with different renderers.
     structlog.configure(
         processors=[
-            *_SHARED_PROCESSORS,
+            *_SHARED_PROCESSORS,  # unpacks your 6 shared processors:
+            #   1. contextvars.merge_contextvars  → adds any bound context
+            #   2. stdlib.add_logger_name          → adds "logger": "speller.foo"
+            #   3. stdlib.add_log_level            → adds "level": "info"
+            #   4. TimeStamper(fmt="iso")          → adds "timestamp": "2026-04-21T..."
+            #   5. StackInfoRenderer()             → formats stack_info if present
+            #   6. format_exc_info                 → serializes exceptions
+            
             # MUST be last, Hands off to stdlib logging instead of rendering.
-            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+            # This is not a renderer. It's a bridge. It takes the enriched event_dict and
+            # wraps it in a format that a stdlib logging.LogRecord can carry as its msg field.
+            # Then the ProcessorFormatter attached to each handler unwraps it on the other side
+            # and applies the real renderer (your ConsoleRenderer or JSONRenderer).
+            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,  # the 7th processor
         ],
+        
         # stdlib.BoundLogger knows logging's method names (info/debug/...)
         # and delegates to the wrapped logging.Logger.
+        # What it is: The class of the object returned by structlog.get_logger(). When your code
+        # does log.info("event", k=v), it's calling .info() on an instance of this class.
+        # Why this specific one?: structlog.stdlib.BoundLogger is purpose-built to play nicely
+        # with stdlib logging.
+        #   - It has hardcoded .debug(), .info(), .warning(), .error(), .critical(), .exception()
+        #     methods that mirror logging.Logger.
+        #   - It knows how to pass exc_info, stack_info, and stacklevel through to the underlying
+        #     logging.Logger correctly.
+        #   - It supports %s-style positional args via PositionalArgumentsFormatter (not strictly
+        #     used here but wired up).
         wrapper_class=structlog.stdlib.BoundLogger,
+
         # stdlib.LoggerFactory creates a logging.Logger when structlog
         # needs one. Auto-deduces the caller's module name.
+        # What it is: A factory (a callable) that produces the underlying logger object.
+        # Why this specific one: When structlog.get_logger("speller.dictionaries") is called, this
+        # factory runs logging.getLogger("speller.dictionaries") internally and returns that
+        # logging.Logger instance. That logger is then wrapped in a stdlib.BoundLogger (parameter 2)
+        # and returned to you.
+        #
+        # Why LoggerFactory() not LoggerFactory: It's an instantiated factory, not the class itself.
+        # configure() calls the factory — logger_factory() — and you want the result of 
+        # LoggerFactory()(...) which returns a logging.Logger.
         logger_factory=structlog.stdlib.LoggerFactory(),
+        
         # Cache the bound logger after the first call. Safe because
         # we reconfigure idempotently via handler clearing below.
+        # What it is: A performance optimization. Default is False.
+        # What True does: After the first call, the assembled bound logger is cached inside the
+        # proxy. Subsequent calls skip the assembly step.
+        # The trade-off:
+        #   - True → faster in hot loops (e.g. your for word in extract_words(...) check loop in
+        #     Stage 2+ when you're logging per-iteration), but reconfiguration after the first log
+        #     call has no effect on already-cached loggers.
+        #   - False → every log call re-assembles, slightly slower, but reconfiguration always
+        #     takes effect.
         cache_logger_on_first_use=True,
     )
     
