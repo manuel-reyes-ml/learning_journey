@@ -455,6 +455,17 @@ def _build_parser() -> argparse.ArgumentParser:
     
     # Enforce mutual exclusion between --structured-logging and --template-logging.
     # The cleanest way is to wrap both flags in an add_mutually_exclusive_group.
+    #
+    # When you wrap two or more flags in a mutually exclusive group, argparse enforces
+    # at the command-line parsing layer that at most one of them can be set in any given
+    # invocation. If the user passes two, argparse itself raises an error and exits
+    # before your main() function ever runs.
+    #
+    # By default, passing neither flag is still valid. That's what you want here — passing
+    # neither drops through to your default configure_logging() path. If you wanted to require
+    # exactly one of them, you'd pass required=True:
+    #   pythonlogging_group = parser.add_mutually_exclusive_group(required=True)
+    # Now the user MUST pass either -t or -s
     logging_group = parser.add_mutually_exclusive_group()
     logging_group.add_argument(
         "-t", "--template-logging",
@@ -914,7 +925,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 # This is the Stage 2+ request-scoped logging pattern.
                 if args.structured_logging:
                     import structlog
-                    structlog.contextvars.clear_contextvars()
+                    structlog.contextvars.clear_contextvars()  # clears vars before assignment for each run
                     structlog.contextvars.bind_contextvars(
                         file=text_path.name,
                         backend=type(loaded_dict).__name__,
