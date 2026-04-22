@@ -504,3 +504,457 @@ def get_structured_logger(name: str | None = None) -> structlog.stdlib.BoundLogg
 # contextvars primitive that asyncio tasks use for coroutine-local
 # state.  Stage 2+ RAG pipelines and Stage 4+ LangGraph agents
 # will rely on this for request-scoped logging.
+
+
+# =============================================================================
+# END-TO-END PROCESSING FLOW — REFERENCE GUIDE
+# =============================================================================
+# 
+# Two API paths converge on ONE set of handlers. This guide traces both paths
+# step-by-step so you can debug, extend, or reason about any log call.
+#
+# Setup assumed for all examples below:
+#   - configure_structured_logging() has been called once at startup
+#   - bind_contextvars(file="austen.txt", run_id=42) was called previously
+#   - Two handlers attached to the "speller" package logger:
+#       • console → ProcessorFormatter + ConsoleRenderer
+#       • file    → ProcessorFormatter + JSONRenderer
+#
+# =============================================================================
+
+
+# =====================================================
+# THE THREE OBJECTS AT PLAY
+# =====================================================
+#
+# Every structlog log call involves THREE distinct objects. Once you see
+# these as separate, the configure() parameters stop feeling magical.
+#
+# ┌──────────────────────────────┐
+# │  1. BoundLogger              │  ← the object YOUR code calls .info() on
+# │     (wrapper_class)          │    holds bind() context
+# └──────────────┬───────────────┘
+#                │ runs the processor chain on .info()
+#                ▼
+# ┌──────────────────────────────┐
+# │  2. Processor chain          │  ← transforms event_dict step by step
+# │     (processors list)        │    (add timestamp, log level, etc.)
+# └──────────────┬───────────────┘
+#                │ final processor hands result to...
+#                ▼
+# ┌──────────────────────────────┐
+# │  3. Underlying logger        │  ← the object that actually writes output
+# │     (produced by             │    in our setup: a stdlib logging.Logger
+# │      logger_factory)         │
+# └──────────────────────────────┘
+#
+# configure() wires these three together. After that, your application code
+# never touches the wiring — it only calls log.info(), log.bind(), etc.
+
+
+# =====================================================
+# PATH A — structlog.get_logger() call
+# =====================================================
+#
+# User code:
+#
+#   log = structlog.stdlib.get_logger("speller.benchmarks")
+#   log.info("dictionary_loaded", word_count=143091, backend="hash")
+#
+# ─── STEP A1: get_logger() resolves the bound logger ──────────────────
+#
+# structlog asks the logger_factory (stdlib.LoggerFactory) to produce the
+# underlying logger:
+#     logging.getLogger("speller.benchmarks")  →  logging.Logger instance
+#
+# That logging.Logger is wrapped inside a wrapper_class (stdlib.BoundLogger).
+# With cache_logger_on_first_use=True, this wrapped logger is cached in a
+# proxy so subsequent .info() calls skip re-assembly.
+#
+# Returned to you: `log` — a stdlib.BoundLogger
+#
+# ─── STEP A2: .info() builds the initial event_dict ───────────────────
+#
+# The first argument becomes "event"; all kwargs become fields:
+#
+#     event_dict = {
+#         "event": "dictionary_loaded",
+#         "word_count": 143091,
+#         "backend": "hash",
+#     }
+#
+# ─── STEP A3: Processor chain runs in order ───────────────────────────
+#
+# Each processor receives (logger, method_name, event_dict) and returns
+# a (possibly modified) event_dict passed to the next processor.
+#
+# Processor 1: contextvars.merge_contextvars
+#   Pulls in any previously bound contextvars.
+#     event_dict += {"file": "austen.txt", "run_id": 42}
+#
+# Processor 2: stdlib.add_logger_name
+#   Reads the wrapped logger's name and adds it.
+#     event_dict += {"logger": "speller.benchmarks"}
+#
+# Processor 3: stdlib.add_log_level
+#   Adds the method name ("info", "debug", ...) as the level.
+#     event_dict += {"level": "info"}
+#
+# Processor 4: TimeStamper(fmt="iso")
+#   Adds ISO-8601 timestamp.
+#     event_dict += {"timestamp": "2026-04-21T14:30:45.123Z"}
+#
+# Processor 5: StackInfoRenderer()
+#   No-op here (no stack_info=True was passed). Would format a stack
+#   trace into the event_dict if requested.
+#
+# Processor 6: format_exc_info
+#   No-op here (no exception in context). Would serialize exc_info into
+#   a structured "exception" field if called via log.exception().
+#
+# Processor 7: stdlib.ProcessorFormatter.wrap_for_formatter  ← THE HAND-OFF
+#   This is NOT a renderer. It wraps the event_dict so it can ride inside
+#   a stdlib LogRecord.msg field. Must be last in the chain — anything
+#   after it would receive the wrapped object and crash or drop data.
+#
+# Final event_dict at this point:
+#     {
+#         "event": "dictionary_loaded",
+#         "word_count": 143091,
+#         "backend": "hash",
+#         "file": "austen.txt",
+#         "run_id": 42,
+#         "logger": "speller.benchmarks",
+#         "level": "info",
+#         "timestamp": "2026-04-21T14:30:45.123Z",
+#     }
+#
+# ─── STEP A4: Control passes to stdlib logging ────────────────────────
+#
+# The underlying logging.Logger (from A1) receives a LogRecord where
+# msg = wrapped event_dict. structlog's job ends here.
+#
+# The LogRecord propagates UP the logger hierarchy via stdlib rules:
+#     speller.benchmarks  →  speller  →  root
+#
+# Every handler attached along the way processes the record.
+#
+# ─── STEP A5: Each handler's ProcessorFormatter renders the event ─────
+#
+# Because this record originated in structlog, ProcessorFormatter's
+# foreign_pre_chain is SKIPPED. Only the `processors` list runs.
+#
+# Console handler:
+#     processors=[
+#         remove_processors_meta,      # strip _record, _from_structlog
+#         ConsoleRenderer(colors=True),
+#     ]
+#     →  "2026-04-21T14:30:45Z [info     ] dictionary_loaded
+#         [speller.benchmarks] backend=hash file=austen.txt
+#         run_id=42 word_count=143091"
+#
+# File handler:
+#     processors=[
+#         remove_processors_meta,
+#         JSONRenderer(),
+#     ]
+#     →  {"event": "dictionary_loaded", "word_count": 143091,
+#         "backend": "hash", "file": "austen.txt", "run_id": 42,
+#         "logger": "speller.benchmarks", "level": "info",
+#         "timestamp": "2026-04-21T14:30:45.123Z"}
+
+
+# =====================================================
+# PATH B — stdlib logging.getLogger() call
+# =====================================================
+#
+# User code — note: EXISTING code in dictionaries.py, speller.py, etc.
+#                   never changes to use this new logging system:
+#
+#   logger = logging.getLogger(__name__)                # "speller.dictionaries"
+#   logger.info("Loaded %s words from '%s'", 143091, "large")
+#
+# ─── STEP B1: getLogger() returns the stdlib logger directly ──────────
+#
+# No structlog wrapping happens here. You get a plain logging.Logger.
+# But crucially — this is the SAME logging.Logger instance that
+# stdlib.LoggerFactory would produce for the same name.  Path A and
+# Path B share the same underlying logger hierarchy.
+#
+# ─── STEP B2: .info() creates a LogRecord the stdlib way ──────────────
+#
+# stdlib logging builds a logging.LogRecord:
+#     record.name     = "speller.dictionaries"
+#     record.levelno  = logging.INFO
+#     record.msg      = "Loaded %s words from '%s'"  (plain str)
+#     record.args     = (143091, "large")            (for %-formatting)
+#
+# NO event_dict exists yet. NO processors have run yet.
+#
+# ─── STEP B3: Record propagates up the logger hierarchy ───────────────
+#
+# Same propagation as Path A:
+#     speller.dictionaries  →  speller  →  root
+#
+# Every handler on each ancestor logger receives the record.
+#
+# ─── STEP B4: Each handler's ProcessorFormatter renders the event ─────
+#
+# Because this record did NOT originate in structlog, ProcessorFormatter
+# runs foreign_pre_chain FIRST to manufacture an event_dict comparable
+# to what structlog would have produced.
+#
+# ProcessorFormatter begins by constructing a skeleton event_dict:
+#     {
+#         "event": "Loaded 143091 words from 'large'",
+#         # ^ stdlib's %-formatting has been applied to msg + args
+#         "_record": <LogRecord ...>,      # internal bookkeeping
+#         "_from_structlog": False,        # internal bookkeeping
+#     }
+#
+# Then foreign_pre_chain runs — which, in our config, is _SHARED_PROCESSORS.
+# This is the SAME list used in structlog.configure(), minus the
+# wrap_for_formatter terminator (which wouldn't make sense at the handler
+# stage anyway).
+#
+# Processor 1: contextvars.merge_contextvars
+#     event_dict += {"file": "austen.txt", "run_id": 42}
+#   ★ THE MAGIC — stdlib calls ALSO inherit bound context, because
+#     merge_contextvars reads Python's contextvars module directly.
+#
+# Processor 2: stdlib.add_logger_name
+#     event_dict += {"logger": "speller.dictionaries"}
+#
+# Processor 3: stdlib.add_log_level
+#     event_dict += {"level": "info"}
+#
+# Processor 4: TimeStamper(fmt="iso")
+#     event_dict += {"timestamp": "2026-04-21T14:30:45.456Z"}
+#
+# Processors 5 & 6: StackInfoRenderer + format_exc_info
+#     No-ops here (no stack_info or exc_info).
+#
+# ─── STEP B5: Main processors list runs on all records ────────────────
+#
+# After foreign_pre_chain (stdlib only) OR wrap_for_formatter (structlog
+# only), BOTH paths converge and run the handler's main `processors`
+# list:
+#
+# Processor:  ProcessorFormatter.remove_processors_meta
+#   Strips _record and _from_structlog from event_dict so they don't
+#   appear in the final output.
+#
+# Processor:  ConsoleRenderer() or JSONRenderer()  (the real renderer)
+#   Console output:
+#     "2026-04-21T14:30:45Z [info     ] Loaded 143091 words from 'large'
+#      [speller.dictionaries] file=austen.txt run_id=42"
+#
+#   File output:
+#     {"event": "Loaded 143091 words from 'large'",
+#      "file": "austen.txt", "run_id": 42,
+#      "logger": "speller.dictionaries", "level": "info",
+#      "timestamp": "2026-04-21T14:30:45.456Z"}
+
+
+# =====================================================
+# VISUAL: Both paths converging
+# =====================================================
+#
+#   ┌─────── Path A (structlog) ────────┐      ┌──── Path B (stdlib) ────┐
+#   │                                    │      │                          │
+#   │  log.info("evt", k=v)              │      │  logger.info("msg %s",x)│
+#   │        │                           │      │        │                 │
+#   │        ▼                           │      │        ▼                 │
+#   │  BoundLogger builds event_dict    │      │  LogRecord created       │
+#   │        │                           │      │  (no event_dict yet)    │
+#   │        ▼                           │      │        │                 │
+#   │  _SHARED_PROCESSORS runs           │      │        │                 │
+#   │  (from configure's processors=)   │      │        │                 │
+#   │        │                           │      │        │                 │
+#   │        ▼                           │      │        │                 │
+#   │  wrap_for_formatter                │      │        │                 │
+#   │  (packages event_dict for stdlib) │      │        │                 │
+#   │        │                           │      │        │                 │
+#   └────────┼───────────────────────────┘      └────────┼─────────────────┘
+#            │                                            │
+#            ▼                                            ▼
+#       logging.Logger.info(wrapped_event_dict)   logging.Logger.info(msg, *args)
+#                  │                                      │
+#                  │   (both now stdlib LogRecords)       │
+#                  │                                      │
+#                  └────────┬─────────────────────────────┘
+#                           │
+#                           ▼
+#                  Record propagates up hierarchy:
+#                  speller.<module>  →  speller  →  root
+#                           │
+#                           ▼
+#                  Each handler's ProcessorFormatter runs
+#                           │
+#                ┌──────────┴──────────┐
+#                │                     │
+#                ▼                     ▼
+#        _from_structlog=True    _from_structlog=False
+#        skip foreign_pre_chain  run foreign_pre_chain
+#                │               (_SHARED_PROCESSORS)
+#                │                     │
+#                └──────────┬──────────┘
+#                           ▼
+#                  remove_processors_meta
+#                           │
+#                           ▼
+#                  ConsoleRenderer OR JSONRenderer
+#                           │
+#                  ┌────────┴────────┐
+#                  ▼                 ▼
+#             stderr (pretty)   logs/speller_structured.log (NDJSON)
+
+
+# =====================================================
+# WHY _SHARED_PROCESSORS APPEARS IN TWO PLACES
+# =====================================================
+#
+# Look at configure_structured_logging() and you'll see _SHARED_PROCESSORS
+# referenced in TWO spots:
+#
+#   1. structlog.configure(processors=[*_SHARED_PROCESSORS, ...])
+#      → runs on Path A events (structlog-originated)
+#
+#   2. ProcessorFormatter(foreign_pre_chain=_SHARED_PROCESSORS, ...)
+#      → runs on Path B events (stdlib-originated)
+#
+# Using the SAME list in both places is intentional. It guarantees that a
+# log event emitted via stdlib has the same enriched fields as a log event
+# emitted via structlog — timestamps, log levels, bound context, exception
+# formatting. Consistent output regardless of which API was used.
+#
+# If the lists diverged, you'd get inconsistent output:
+#   - stdlib calls might be missing timestamps
+#   - structlog calls might not inherit bound context
+#   - Different log levels might be formatted differently
+#
+# The DRY constant prevents that drift.
+
+
+# =====================================================
+# WHAT CHANGES WHEN YOU CALL log.exception()
+# =====================================================
+#
+# Inside an except block:
+#
+#   try:
+#       ...
+#   except ValueError as e:
+#       log.exception("dictionary_load_failed", path=str(p))
+#
+# This triggers the two no-op processors from before:
+#
+# Processor 5: StackInfoRenderer()
+#   If stack_info=True was passed, formats the stack into a "stack" field.
+#
+# Processor 6: format_exc_info
+#   Reads the current exc_info tuple from sys.exc_info() and serializes:
+#     event_dict += {
+#         "exception": "Traceback (most recent call last):\n...",
+#         # or as a structured list if ExceptionDictTransformer is used
+#     }
+#
+# The "exc_info" key is replaced by the rendered "exception" string. In
+# the NDJSON output, this means tracebacks become queryable JSON fields
+# instead of multi-line text blobs — much easier to ship to Datadog/ELK.
+
+
+# =====================================================
+# WHAT CHANGES WHEN YOU CALL log.bind()
+# =====================================================
+#
+#   request_log = log.bind(request_id="abc-123")
+#   request_log.info("llm_call", tokens=1500)
+#
+# .bind() does NOT bind to contextvars (merge_contextvars won't see it).
+# Instead it returns a NEW BoundLogger whose private context dict contains
+# {"request_id": "abc-123"}.
+#
+# When request_log.info() is called, the initial event_dict includes the
+# bound context BEFORE the processor chain runs:
+#
+#     event_dict = {
+#         "event": "llm_call",
+#         "tokens": 1500,
+#         "request_id": "abc-123",   # ← from .bind()
+#     }
+#
+# Differences from bind_contextvars:
+#   .bind()              .bind_contextvars()
+#   ─────────────────    ─────────────────────────────────
+#   Logger-local          Context-local (thread/async-scope)
+#   Only this logger      Any logger in this context
+#   Returns new logger    Mutates global contextvars state
+#   Stdlib calls: NO      Stdlib calls: YES (via foreign_pre_chain)
+#
+# Rule of thumb:
+#   - Per-request/per-batch context that MUST reach stdlib code too:
+#     → bind_contextvars (what configure_structured_logging enables)
+#   - Per-logger local context that only affects THIS logger's calls:
+#     → .bind()
+
+
+# =====================================================
+# DEBUGGING: "Why doesn't my field show up?"
+# =====================================================
+#
+# Symptom                         | Likely cause
+# ────────────────────────────────┼─────────────────────────────────────
+# Field missing from stdlib       | foreign_pre_chain doesn't include the
+# log calls only                  | processor that adds it. Check that
+#                                 | _SHARED_PROCESSORS is in both places.
+# ────────────────────────────────┼─────────────────────────────────────
+# Field missing from structlog    | Processor is in foreign_pre_chain only,
+# log calls only                  | not in configure's processors. Move it
+#                                 | to _SHARED_PROCESSORS.
+# ────────────────────────────────┼─────────────────────────────────────
+# bind_contextvars values absent  | merge_contextvars missing from the
+#                                 | chain, or clear_contextvars() was
+#                                 | called too early.
+# ────────────────────────────────┼─────────────────────────────────────
+# _record / _from_structlog in    | remove_processors_meta missing from
+# output                          | ProcessorFormatter.processors.
+# ────────────────────────────────┼─────────────────────────────────────
+# Double output (two lines per    | package_logger.propagate=True AND
+# log call)                       | root logger has handlers attached.
+#                                 | Set propagate=False or clear root.
+# ────────────────────────────────┼─────────────────────────────────────
+# New reconfigure has no effect   | cache_logger_on_first_use=True
+#                                 | cached the pre-reconfigure state.
+#                                 | Set to False, OR reconfigure BEFORE
+#                                 | the first log call.
+
+
+# =====================================================
+# MENTAL MODEL SUMMARY (one paragraph)
+# =====================================================
+#
+# structlog.configure() wires the LEFT HALF of the pipeline — everything
+# that happens BEFORE stdlib logging gets involved. The ProcessorFormatter
+# on each handler wires the RIGHT HALF — everything that happens AFTER
+# stdlib logging has a LogRecord in hand. The two halves share the
+# _SHARED_PROCESSORS list as common ground to produce consistent output
+# regardless of which API the emitting code used. wrap_for_formatter is
+# the bridge connecting the two halves for structlog calls; foreign_pre_chain
+# is the bridge for stdlib calls. Both paths converge on the same handlers
+# and the same final renderer.
+
+
+# =====================================================
+# REFERENCES
+# =====================================================
+# structlog — Configuration:
+#   https://www.structlog.org/en/stable/configuration.html
+# structlog — Standard Library Logging:
+#   https://www.structlog.org/en/stable/standard-library.html
+# structlog — Processors:
+#   https://www.structlog.org/en/stable/processors.html
+# structlog — Context Variables:
+#   https://www.structlog.org/en/stable/contextvars.html
+# Python Docs — logging.LogRecord:
+#   https://docs.python.org/3/library/logging.html#logrecord-objects
