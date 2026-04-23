@@ -151,6 +151,7 @@ def load_dictionary(
         format(len(dictionary),","),  # format number to use ',' separator and return str
     )
     
+    # Structured event - queryable metrics
     slog.info(
         "dictionary_loaded",
         backend=type(dictionary).__name__,
