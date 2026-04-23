@@ -254,7 +254,7 @@ def _setup_fhandler_indent(
             processors=[
                 structlog.stdlib.ProcessorFormatter.remove_processors_meta,
                 _reorder_keys(_KEY_ORDER),
-                structlog.processors.JSONRenderer(indent=2),
+                structlog.processors.JSONRenderer(indent=2),  # indent JSON output to improve readability
             ],
         )
     )
@@ -414,7 +414,7 @@ def configure_structured_logging(
     console_handler = _setup_chandler(level=level, custom_console=custom_console)
     package_logger.addHandler(console_handler)
     
-    # ─── 5. File handler — NDJSON, always captures DEBUG ────────────
+    # ─── 5. File handlers — NDJSON, always captures DEBUG ────────────
     if log_to_file:
         # parents=True: create any missing parent directories
         # exist_ok=True: no error if directory already exists
@@ -422,6 +422,7 @@ def configure_structured_logging(
         file_handler = _setup_fhandler()
         package_logger.addHandler(file_handler)
         
+        # Generate JSON log with indentation = 2 for human readability
         file_handler_indent = _setup_fhandler_indent()
         package_logger.addHandler(file_handler_indent)
         
