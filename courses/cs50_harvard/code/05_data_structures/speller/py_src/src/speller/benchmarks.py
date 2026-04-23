@@ -55,7 +55,6 @@ References
 
 from __future__ import annotations
 
-from ast import Name
 from dataclasses import dataclass, field, KW_ONLY
 
 # Runtime collection types → collections.abc

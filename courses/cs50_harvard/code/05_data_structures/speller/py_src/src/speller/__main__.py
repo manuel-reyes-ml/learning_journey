@@ -47,7 +47,7 @@ import sys
 
 
 # =====================================================
-# Impor Guard
+# Import Guard
 # =====================================================
 
 # __main__.py is the FRONT DOOR — if imports fail, give a friendly
