@@ -213,6 +213,7 @@ class LogFilesPath(NamedTuple):
     flog_path: Path
     tlog_path: Path
     slog_path: Path
+    slog_indent_path: Path
 
 
 # =====================================================
@@ -265,7 +266,7 @@ class FileDirectories:
     LOG_DIR: Final[Path] = ROOT_DIR / DefaultDirs.LOG
     MISS_DIR: Final[Path] = ROOT_DIR / DefaultDirs.MISS
     
-    def create_log_fname(self) -> tuple[str, str, str]:
+    def create_log_fname(self) -> tuple[str, ...]:
         """Build the three log filenames from the package directory name.
 
         Uses ``CUR_DIR.name`` (``"speller"``) so filenames stay in sync
@@ -279,8 +280,9 @@ class FileDirectories:
         f_string = f"{self.CUR_DIR.name}.log"
         t_string = f"{self.CUR_DIR.name}_json.log"
         s_string = f"{self.CUR_DIR.name}_structured.log"
+        s_indent_string = f"{self.CUR_DIR.name}_structured_indent.log"
         
-        return f_string, t_string, s_string
+        return f_string, t_string, s_string, s_indent_string
     
     
     @property  # Access function's return as an attribute
@@ -295,13 +297,19 @@ class FileDirectories:
         LogFilesPath
             NamedTuple of absolute paths — one per backend.
         """
-        f_string, t_string, s_string = self.create_log_fname()
+        f_string, t_string, s_string, s_indent_string = self.create_log_fname()
         
         flog_path = self.LOG_DIR / f_string
         tlog_path = self.LOG_DIR / t_string
         slog_path = self.LOG_DIR / s_string
+        sindentlog_path = self.LOG_DIR / s_indent_string
         
-        return LogFilesPath(flog_path, tlog_path, slog_path)
+        return LogFilesPath(
+            flog_path,
+            tlog_path,
+            slog_path,
+            sindentlog_path
+        )
 
 
 @dataclass(frozen=True, slots=True)
