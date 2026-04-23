@@ -62,6 +62,7 @@ try:
     from pathlib import Path
     import argparse
     import logging
+    from rich.console import Console
     from rich.panel import Panel
     from rich.table import Table
     import string
@@ -72,7 +73,7 @@ try:
     from speller.load_dictionary import load_dictionary
     from speller.logger import configure_logging
     from speller.register import dicts
-    from speller.speller import run_speller, Report, SpellerResult, console
+    from speller.speller import run_speller, Report, SpellerResult, get_console
     
 except ImportError as e:
     sys.exit(f"Error missing speller module.\nDetails: {e}")
@@ -87,6 +88,7 @@ except ImportError as e:
 # the verbosity level. This ensures --verbose flag controls log output
 logger = logging.getLogger(__name__)
 
+console: Console = get_console()
 
 
 # =============================================================================
@@ -688,6 +690,7 @@ def _print_reports(
     infile_name: str = "file",
     *,
     table_report: bool = False,
+    console: Console,
 ) -> None:
     """Write the misspelled-words file (if requested) and print the report.
  
@@ -727,9 +730,9 @@ def _print_reports(
             # rich.panel.Panel wraps any content in a decorated box with a title.
             console.print(
                 Panel(
-                    "[cyan]GENERAL REPORT[/cyan]",
+                    "[bold blue]GENERAL REPORT[/bold blue]",
                     expand=False,
-                    border_style="cyan",
+                    border_style="blue",
                 )
             )
             # Using __rich__ dunder method to be called by console.print() automatically
@@ -998,7 +1001,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 # In a web app (Stage 1 Streamlit), you'd display it differently.
                 # In tests, you'd just check result.words_misspelled.
                 reports: Report = result.format_report(log_misspelled=show_misspelled)
-                _print_reports(reports, text_path.name)
+                _print_reports(reports, text_path.name, console=console)
         
         # -- Step 7: Builds and display GeneralReport report --
         general_report = GeneralReport(
@@ -1011,7 +1014,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
             ),  # Construct FileErrorData with defaultdict values
         )
         
-        _print_reports(general_report, table_report=args.table_report)
+        _print_reports(general_report, table_report=args.table_report, console=console)
         
         # -- Step 8: Return exit code --
         success = True
