@@ -83,6 +83,7 @@ __all__ = [
     "SpellerResult",
     "run_speller",
     "Report",
+    "get_console",
 ]
 
 
@@ -92,10 +93,6 @@ __all__ = [
 
 COL: Final[int] = 22
 
-# Module-level console — one instance used everywhere in this module
-# Output goes to stderr to match your logging pattern (keeps stdout clean
-# for programmatic piping)
-console = Console(stderr=False)
 
 # =============================================================================
 # RESULT CONTAINER
@@ -306,6 +303,18 @@ class SpellerResult:
         )
         
         return Report(main_report, misspelled_report)
+
+
+# =============================================================================
+# INTERNAL HELPER FUNCTIONS
+# =============================================================================
+
+def get_console() -> Console:
+    """
+    """
+    # Output goes to stderr to match your logging pattern (keeps stdout clean
+    # for programmatic piping)
+    return Console(stderr=False)
 
 
 # =============================================================================
