@@ -78,6 +78,7 @@ classifiers = [
 dependencies = [
     "rich>=13.0",
     "structlog>=25.0",
+    "platformdirs>=4.0",
 ]
 
 
