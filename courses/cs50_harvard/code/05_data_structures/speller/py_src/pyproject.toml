@@ -13,7 +13,7 @@
 # "wheel" is the standard Python package format (.whl files).
 
 [build-system]
-requires = ["setuptools>=75.0", "wheel"]
+requires = ["setuptools>=77.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 
@@ -27,10 +27,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cs50-speller"
-version = "1.0.0"
+version = "0.2.0"
 description = "Production-grade spell checker inspired by CS50, built as a Python package"
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.12"
 
 # Author information — shown on PyPI if you ever publish
@@ -53,11 +54,10 @@ keywords = [
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Education",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14"
     "Topic :: Text Processing :: Linguistic",
     "Typing :: Typed",
 ]
@@ -97,6 +97,8 @@ dependencies = [
 dev = [
     "mypy>=1.0",
     "ruff>=0.4",
+    "build>=1.0",           # <- for 'python -m build'
+    "pre-commit>=3.0",      # <- when we add pre-commit next
 ]
 test = [
     "pytest>=8.0",
@@ -191,7 +193,7 @@ markers = [
 # Run: mypy src/speller/dictionary.py   (specific file)
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.12"
 
 # strict = true enables ALL of these individually:
 strict = true
@@ -226,7 +228,7 @@ show_error_codes = true
 
 [tool.ruff]
 # Target Python version (affects which syntax is allowed)
-target-version = "py311"
+target-version = "py312"
 
 # Maximum line length (88 is black's default, widely adopted)
 line-length = 88
