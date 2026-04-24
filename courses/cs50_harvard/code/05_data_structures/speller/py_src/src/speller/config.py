@@ -78,6 +78,14 @@ __all__ = [
 
 MAX_WORD_LENGTH: Final[int] = 45
 
+# What platformdirs does?
+# Given an app name, it returns the right place to write files on the current OS. 
+# The library knows about:
+#   - Linux: XDG Base Directory Specification (~/.local/share, ~/.config, ~/.cache, ~/.local/state)
+#   - macOS: Apple's guidance (~/Library/Application Support, ~/Library/Caches, ~/Library/Logs)
+#   - Windows: AppData\Local and AppData\Roaming via CSIDL APIs
+#   - Android: App-private storage conventions
+#
 # Module-level singleton - configured once, used everywhere
 _PLATFORM_DIRS: Final[PlatformDirs] = PlatformDirs(
     appname="speller",
@@ -265,6 +273,24 @@ class FileDirectories:
     \'speller.log\'
     """
     
+    # Every path in FileDirectories is computed relative to where config.py physically
+    # lives on disk. That's what __file__ means — the absolute path to the source file
+    # being executed.
+    # Because you ran pip install -e . (editable install), __file__ points into your repo:
+    #    __file__  → /Users/manuelreyes/.../speller/py_src/src/speller/config.py
+    #    CUR_DIR   → /Users/manuelreyes/.../speller/py_src/src/speller
+    #    ROOT_DIR  → /Users/manuelreyes/.../speller/py_src
+    #    LOG_DIR   → /Users/manuelreyes/.../speller/py_src/logs   ✓ writable
+    # Editable installs create a link back to your source tree rather than copying files into site-packages.
+    # So __file__ still resolves to your working directory. Every path works.
+    #
+    # The moment someone does pip install speller (non-editable, from a wheel), Python copies your code
+    # into site-packages:
+    #    __file__  → /usr/lib/python3.13/site-packages/speller/config.py
+    #    CUR_DIR   → /usr/lib/python3.13/site-packages/speller
+    #    ROOT_DIR  → /usr/lib/python3.13                          ✗ SYSTEM dir
+    #    LOG_DIR   → /usr/lib/python3.13/logs                     ✗ PermissionError
+    #
     # --- Bundled, read-only resources (stay where the code  is) -----
     CUR_DIR: Final[Path] = Path(__file__).resolve().parent  # speller/
     ROOT_DIR: Final[Path] = CUR_DIR.parents[1]              # py_src/
