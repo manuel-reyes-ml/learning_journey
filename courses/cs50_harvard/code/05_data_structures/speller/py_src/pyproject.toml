@@ -147,6 +147,7 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 speller = ["py.typed"]
+"speller.data" = ["dictionaries/*", "texts/*", "keys/*"]
 
 
 # =============================================================================
