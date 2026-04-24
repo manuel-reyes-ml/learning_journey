@@ -45,6 +45,7 @@ from enum import IntEnum, StrEnum, unique
 from typing import Final, NamedTuple, TypedDict, Required, NotRequired
 from dataclasses import dataclass
 from pathlib import Path
+from platformdirs import PlatformDirs
 import logging
 import sys
 
@@ -76,6 +77,13 @@ __all__ = [
 # =====================================================
 
 MAX_WORD_LENGTH: Final[int] = 45
+
+# Module-level singleton - configured once, used everywhere
+_PLATFORM_DIRS: Final[PlatformDirs] = PlatformDirs(
+    appname="speller",
+    appauthor="manuelreyes",  # Used on Windows only; harmless on Unix
+    ensure_exists=True,       # Create dirs on first access
+)
 
 
 # =====================================================
@@ -257,14 +265,17 @@ class FileDirectories:
     \'speller.log\'
     """
     
+    # --- Bundled, read-only resources (stay where the code  is) -----
     CUR_DIR: Final[Path] = Path(__file__).resolve().parent  # speller/
-    ROOT_DIR: Final[Path] = CUR_DIR.parents[1]  # py_src/
+    ROOT_DIR: Final[Path] = CUR_DIR.parents[1]              # py_src/
     
     DICT_DIR: Final[Path] = ROOT_DIR / DefaultDirs.DICT
     KEYS_DIR: Final[Path] = ROOT_DIR / DefaultDirs.KEYS
     TXT_DIR: Final[Path] = ROOT_DIR / DefaultDirs.TXT
-    LOG_DIR: Final[Path] = ROOT_DIR / DefaultDirs.LOG
-    MISS_DIR: Final[Path] = ROOT_DIR / DefaultDirs.MISS
+    
+    # --- Writable, per-user paths (resilved by platformdirs) --------
+    LOG_DIR: Final[Path] = _PLATFORM_DIRS.user_log_path
+    MISS_DIR: Final[Path] = _PLATFORM_DIRS.user_data_path / DefaultDirs.MISS
     
     def create_log_fname(self) -> tuple[str, ...]:
         """Build the three log filenames from the package directory name.
