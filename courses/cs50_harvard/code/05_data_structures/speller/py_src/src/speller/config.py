@@ -273,11 +273,11 @@ class FileDirectories:
     KEYS_DIR: Final[Path] = ROOT_DIR / DefaultDirs.KEYS
     TXT_DIR: Final[Path] = ROOT_DIR / DefaultDirs.TXT
     
-    # --- Writable, per-user paths (resilved by platformdirs) --------
+    # --- Writable, per-user paths (resolved by platformdirs) --------
     LOG_DIR: Final[Path] = _PLATFORM_DIRS.user_log_path
     MISS_DIR: Final[Path] = _PLATFORM_DIRS.user_data_path / DefaultDirs.MISS
     
-    def create_log_fname(self) -> tuple[str, ...]:
+    def create_log_fname(self) -> tuple[str, ...]:  
         """Build the three log filenames from the package directory name.
 
         Uses ``CUR_DIR.name`` (``"speller"``) so filenames stay in sync
