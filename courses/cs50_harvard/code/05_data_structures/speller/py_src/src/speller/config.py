@@ -44,6 +44,7 @@ from __future__ import annotations
 from enum import IntEnum, StrEnum, unique
 from typing import Final, NamedTuple, TypedDict, Required, NotRequired
 from dataclasses import dataclass
+from importlib.resources import files
 from pathlib import Path
 from platformdirs import PlatformDirs
 import logging
@@ -85,6 +86,7 @@ MAX_WORD_LENGTH: Final[int] = 45
 #   - macOS: Apple's guidance (~/Library/Application Support, ~/Library/Caches, ~/Library/Logs)
 #   - Windows: AppData\Local and AppData\Roaming via CSIDL APIs
 #   - Android: App-private storage conventions
+#   - AWS:
 #
 # Module-level singleton - configured once, used everywhere
 _PLATFORM_DIRS: Final[PlatformDirs] = PlatformDirs(
@@ -275,7 +277,10 @@ class FileDirectories:
     
     # Every path in FileDirectories is computed relative to where config.py physically
     # lives on disk. That's what __file__ means — the absolute path to the source file
-    # being executed.
+    # being executed:
+    #   CUR_DIR: Final[Path] = Path(__file__).resolve().parent  # speller/
+    #   ROOT_DIR: Final[Path] = CUR_DIR.parents[1]              # py_src/
+    #
     # Because you ran pip install -e . (editable install), __file__ points into your repo:
     #    __file__  → /Users/manuelreyes/.../speller/py_src/src/speller/config.py
     #    CUR_DIR   → /Users/manuelreyes/.../speller/py_src/src/speller
@@ -291,17 +296,25 @@ class FileDirectories:
     #    ROOT_DIR  → /usr/lib/python3.13                          ✗ SYSTEM dir
     #    LOG_DIR   → /usr/lib/python3.13/logs                     ✗ PermissionError
     #
-    # --- Bundled, read-only resources (stay where the code  is) -----
-    CUR_DIR: Final[Path] = Path(__file__).resolve().parent  # speller/
-    ROOT_DIR: Final[Path] = CUR_DIR.parents[1]              # py_src/
-    
-    DICT_DIR: Final[Path] = ROOT_DIR / DefaultDirs.DICT
-    KEYS_DIR: Final[Path] = ROOT_DIR / DefaultDirs.KEYS
-    TXT_DIR: Final[Path] = ROOT_DIR / DefaultDirs.TXT
+    # --- Bundled, read-only resources (via importlib.resources) -----
+    #
+    # `files(anchor)` returns a Traversable. For a normal disk install,
+    # this is a pathlib.Path — behaves identically to your current code.
+    # For zipped/frozen installs, the Traversable still works via
+    # Traversable.read_text() etc.
+    DICT_DIR: Final = files("speller.data") / DefaultDirs.DICT
+    TXT_DIR: Final = files("speller.data") / DefaultDirs.TXT
+    KEYS_DIR: Final = files("speller.data") / DefaultDirs.KEYS
     
     # --- Writable, per-user paths (resolved by platformdirs) --------
     LOG_DIR: Final[Path] = _PLATFORM_DIRS.user_log_path
     MISS_DIR: Final[Path] = _PLATFORM_DIRS.user_data_path / DefaultDirs.MISS
+    
+    # `CUR_DIR` is no longer needed by path resolution, but keep it
+    # for the existing `create_log_fname()` method which uses
+    # `self.CUR_DIR.name` for the log filename. It's now purely a
+    # naming helper, not a path anchor.
+    CUR_DIR: Final[Path] = Path(__file__).resolve().parent  # speller/
     
     def create_log_fname(self) -> tuple[str, ...]:  
         """Build the three log filenames from the package directory name.
