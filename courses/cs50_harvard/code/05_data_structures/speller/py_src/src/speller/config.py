@@ -302,6 +302,9 @@ class FileDirectories:
     # this is a pathlib.Path — behaves identically to your current code.
     # For zipped/frozen installs, the Traversable still works via
     # Traversable.read_text() etc.
+    #
+    # Notice that I did not annotate DICT_DIR and TXT_DIR as Path. That's deliberate — they're Traversables.
+    # The runtime type for disk installs is PosixPath (I verified this), but the static type is Traversable.
     DICT_DIR: Final = files("speller.data") / DefaultDirs.DICT
     TXT_DIR: Final = files("speller.data") / DefaultDirs.TXT
     KEYS_DIR: Final = files("speller.data") / DefaultDirs.KEYS
