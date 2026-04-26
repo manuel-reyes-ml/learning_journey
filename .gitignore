@@ -1,3 +1,9 @@
+# Build outputs
+build/
+dist/
+*.egg-info/
+src/*.egg-info/
+
 # Virtual environments
 venv/
 env/
@@ -13,6 +19,8 @@ __pycache__
 *.pyo
 *.egg-info/
 .pytest_cache/
+.mypy_cache/
+.ruff_cache/
 
 # IDEs
 .vscode/
