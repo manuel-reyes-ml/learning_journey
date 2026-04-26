@@ -187,6 +187,7 @@ class SpellerArgs:
     dictionary: str
     operations: list[str]
     directory: Path | None
+    demo: bool
     verbose: bool
     no_log_file: bool
     show_misspelled: bool
@@ -441,6 +442,13 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     
     # -- Optional flags --
+    parser.add_argument(
+        "--demo",
+        action="store_true",
+        default=False,
+        help="Use a bundled sample text instead of a user file",
+    )
+    
     parser.add_argument(
         "-v", "--verbose",
         action="store_true",
@@ -797,6 +805,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         dictionary=raw.dictionary,
         operations=raw.ops, 
         directory=raw.dir,
+        demo=raw.demo,
         verbose=raw.verbose,
         no_log_file=raw.no_log_file,
         show_misspelled=raw.show_misspelled,
