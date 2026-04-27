@@ -61,6 +61,7 @@ from dataclasses import dataclass, field, KW_ONLY
 from collections.abc import Generator, Callable
 
 # Type system concepts → typing
+from importlib.resources.abc import Traversable
 from typing import Any, ParamSpec, TypeVar, NamedTuple
 
 from contextlib import contextmanager
@@ -220,7 +221,7 @@ class FileData(NamedTuple):
     """Metadata for a timed file operation."""
     
     fname: str
-    fpath: Path
+    fpath: Path | Traversable
     
 
 # =====================================================
@@ -255,7 +256,7 @@ class FileData(NamedTuple):
 def timer(
     operation_name: str,
     *,
-    input_file: str | Path | None = None,
+    input_file: str | Path | Traversable | None = None,
 ) -> Generator[TimerContainer, None, None]:
     """Context manager that times the enclosed code block.
  
