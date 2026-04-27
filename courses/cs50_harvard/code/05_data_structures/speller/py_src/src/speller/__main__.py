@@ -101,6 +101,11 @@ console: Console = get_console()
 
 ops_list: Final[str] = ", ".join(dicts.keys())
 
+# Module-level sentinel: --dir flag passed without a value.
+# A path containing NUL bytes can never collide with a real
+# filesystem path, so equality comparison is unambiguous.
+_USE_BUNDLED_DIR: Final[Path] = Path("\x00BUNDLED_TEXTS\x00")
+
 
 # =====================================================
 # Class Constants Configuration
@@ -432,13 +437,17 @@ def _build_parser() -> argparse.ArgumentParser:
     
     parser.add_argument(
         "--dir",
+        nargs="?",                  # zero or one value
         type=Path,
-        default=None,
+        default=None,               # flag absent
+        const=_USE_BUNDLED_DIR,     # flag present, no value -> bundled
         metavar="DIRECTORY",
         help=(
             "Process all .txt files in this directory. "
             "When provided, 'text' argument is optional. "
-            " Example: --dir texts/"
+            " Example: --dir texts/ -- "
+            " Pair with --demo and omit the value to use bundled samples: "
+            "`speller --demo --dir`."
         ),
     )
     
@@ -819,7 +828,8 @@ def main(argv: list[str] | None = None) -> ExitCode:
     """
     # -- Step 1: Parse arguments --
     # _build_parser() returns an ArgumentParser object
-    raw: argparse.Namespace = _build_parser().parse_args(argv)
+    parser = _build_parser()
+    raw: argparse.Namespace = parser.parse_args(argv)
     
     # Convert from Namespace to SpellerArgs attributes
     # That gives you full Pyright coverage for the rest of main()
@@ -837,6 +847,12 @@ def main(argv: list[str] | None = None) -> ExitCode:
         structured_logging=raw.structured_logging,
         table_report=raw.table_report,
     )
+    
+    if args.directory == _USE_BUNDLED_DIR and not args.demo:
+        parser.error(
+            "--dir without a path is only valid with --demo. "
+                    "Either pass `--demo --dir`or `--dir <path>`."
+        )
     
     # -- Step 2: Configure logging FIRST --
     # Must happen before any logger.info/debug calls.
