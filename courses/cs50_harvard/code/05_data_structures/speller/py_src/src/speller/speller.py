@@ -42,6 +42,7 @@ Module Dependencies
 from __future__ import annotations
 
 from dataclasses import dataclass, field, KW_ONLY
+from importlib.resources.abc import Traversable
 import itertools
 from pathlib import Path
 import logging
@@ -328,7 +329,7 @@ def get_console() -> Console:
 def run_speller(
     *,
     dictionary: DictionaryProtocol,
-    text_path: str | Path,
+    text_path: str | Path | Traversable,
     benchmarks: dict[str, BenchmarkResult] | None = None,  # <- None sentinel
 ) -> SpellerResult:  # pure computation, testable
     """Run the spell checker — orchestrates all components.
