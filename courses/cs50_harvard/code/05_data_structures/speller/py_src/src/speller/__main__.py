@@ -631,6 +631,13 @@ def _resolve_text_paths(args: SpellerArgs) -> list[Path | Traversable]:
             if text_path not in seen:
                 paths.append(text_path)
                 seen.add(text_path)
+                
+        if args.directory:
+            dir_path = file_dirs.TXT_DIR
+            for txt_file in dir_path.iterdir():
+                if txt_file not in seen:
+                    paths.append(txt_file)
+                    seen.add(txt_file)
     
     else:
         # Single file from positional arg (existing behavior, unchanged)
@@ -640,16 +647,16 @@ def _resolve_text_paths(args: SpellerArgs) -> list[Path | Traversable]:
                 paths.append(p)
                 seen.add(p)
                 
-    # Directory glob - same pattern as black/ruff/mypy
-    if args.directory:
-        dir_path = args.directory  # <- args.directory is already Path | None
-        if not dir_path.is_dir():
-            logger.error("--dir path is not a directory: %s", dir_path)
-            return []
-        for txt_file in sorted(dir_path.glob("*.txt")):  # sorted = deterministic order
-            if txt_file not in seen:
-                paths.append(txt_file)
-                seen.add(txt_file)
+        # Directory glob - same pattern as black/ruff/mypy
+        if args.directory:
+            dir_path = args.directory  # <- args.directory is already Path | None
+            if not dir_path.is_dir():
+                logger.error("--dir path is not a directory: %s", dir_path)
+                return []
+            for txt_file in sorted(dir_path.glob("*.txt")):  # sorted = deterministic order
+                if txt_file not in seen:
+                    paths.append(txt_file)
+                    seen.add(txt_file)
                 
     return paths       
 
