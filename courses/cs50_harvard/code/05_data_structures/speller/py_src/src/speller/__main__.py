@@ -59,6 +59,7 @@ import sys
 try:
     from collections import defaultdict
     from dataclasses import replace, dataclass, KW_ONLY
+    from importlib.resources.abc import Traversable
     from pathlib import Path
     import argparse
     import logging
@@ -519,7 +520,7 @@ def _build_parser() -> argparse.ArgumentParser:
 # Returns ExitCode correctly since its only consumer is main().
 # It exists specifically to serve exit code logic. 
 def _validate_paths(
-    raw_path: Path,
+    raw_path: Path | Traversable,
     *,
     path_name: str = "path",
 ) -> ExitCode | None:
@@ -557,7 +558,7 @@ def _validate_paths(
         load a 143K-word dictionary only to discover the text file
         is missing.
     """
-    if not raw_path.exists():
+    if not raw_path.is_file():
         logger.error("%s file not found: %s", path_name.title(), raw_path)
         return ExitCode.FILE_NOT_FOUND
     
@@ -566,7 +567,7 @@ def _validate_paths(
 
 # The production pattern to know to get full type safety on CLI args, you define a typed
 # dataclass so you can access each arg directly as an attribute at static level.
-def _resolve_text_paths(args: SpellerArgs) -> list[Path]:
+def _resolve_text_paths(args: SpellerArgs) -> list[Path | Traversable]:
     """Resolve the ordered, deduplicated list of text files to process.
 
     Supports three calling modes:
@@ -614,16 +615,31 @@ def _resolve_text_paths(args: SpellerArgs) -> list[Path]:
         this function just reports what it found.  The same pattern as
         :func:`_validate_paths`.
     """
-    paths: list[Path] = []
-    seen: set[Path] = set()
+    paths: list[Path | Traversable] = []
+    seen: set[Path | Traversable] = set()
     
-    # Single file from positional arg (existing behavior, unchanged)
-    if args.text:  # SpellerArgs gives Pyright full static coverage here
-        p = Path(args.text)
-        if p.exists() and p not in seen:
-            paths.append(p)
-            seen.add(p)
-            
+    if args.demo:
+        if args.text:
+            # User wants to bundle samples - look inside the installed package
+            text_path = file_dirs.TXT_DIR / args.text
+            if not text_path.is_file():
+                bundled = sorted(p.name for p in file_dirs.TXT_DIR.iterdir())
+                raise SystemExit(
+                    f"Bundled sample '{args.text}' not found. "
+                    f"Available: {bundled}"
+                )
+            if text_path not in seen:
+                paths.append(text_path)
+                seen.add(text_path)
+    
+    else:
+        # Single file from positional arg (existing behavior, unchanged)
+        if args.text:  # SpellerArgs gives Pyright full static coverage here
+            p = Path(args.text)
+            if p.exists() and p not in seen:
+                paths.append(p)
+                seen.add(p)
+                
     # Directory glob - same pattern as black/ruff/mypy
     if args.directory:
         dir_path = args.directory  # <- args.directory is already Path | None
@@ -876,7 +892,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
     if path_validation is not None:
         return path_validation
     
-    text_paths: list[Path] = _resolve_text_paths(args)
+    text_paths: list[Path | Traversable] = _resolve_text_paths(args)
     # If no files in directory provided
     if not text_paths:
         logger.error("No text files found. Provide a file or --dir path.")
