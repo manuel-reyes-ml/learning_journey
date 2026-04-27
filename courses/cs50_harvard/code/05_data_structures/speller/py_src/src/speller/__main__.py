@@ -626,7 +626,7 @@ def _resolve_text_paths(args: SpellerArgs) -> list[Path | Traversable]:
                 bundled = sorted(p.name for p in file_dirs.TXT_DIR.iterdir())
                 raise SystemExit(
                     f"Bundled sample '{args.text}' not found. "
-                    f"Available: {bundled}"
+                    f"Available: {", ".join(bundled)}"
                 )
             if text_path not in seen:
                 paths.append(text_path)
