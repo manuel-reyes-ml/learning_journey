@@ -1077,6 +1077,10 @@ def main(argv: list[str] | None = None) -> ExitCode:
         _print_reports(general_report, table_report=args.table_report, console=console)
         
         # -- Step 8: Return exit code --
+        if args.structured_logging:
+            import structlog
+            structlog.contextvars.clear_contextvars()  # Clear variables for final log mssgs
+            
         success = True
         return ExitCode.SUCCESS
 
