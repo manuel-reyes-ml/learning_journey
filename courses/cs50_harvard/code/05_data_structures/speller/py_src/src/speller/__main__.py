@@ -445,7 +445,7 @@ def _build_parser() -> argparse.ArgumentParser:
         help=(
             "Process all .txt files in this directory. "
             "When provided, 'text' argument is optional. "
-            " Example: --dir texts/ -- "
+            " Example: --dir texts/ "
             " Pair with --demo and omit the value to use bundled samples: "
             "`speller --demo --dir`."
         ),
@@ -626,13 +626,13 @@ def _resolve_text_paths(args: SpellerArgs) -> list[Path | Traversable]:
     """
     paths: list[Path | Traversable] = []
     seen: set[Path | Traversable] = set()
+    bundled = sorted(p.name for p in file_dirs.TXT_DIR.iterdir())
     
     if args.demo:
         if args.text:
             # User wants to bundle samples - look inside the installed package
             text_path = file_dirs.TXT_DIR / args.text
             if not text_path.is_file():
-                bundled = sorted(p.name for p in file_dirs.TXT_DIR.iterdir())
                 raise SystemExit(
                     f"Bundled sample '{args.text}' not found. "
                     f"Available: {", ".join(bundled)}"
@@ -654,6 +654,13 @@ def _resolve_text_paths(args: SpellerArgs) -> list[Path | Traversable]:
             if p.exists() and p not in seen:
                 paths.append(p)
                 seen.add(p)
+            elif p.name in bundled:
+                logger.warning(
+                    "Did you mean to use a bundled sample? Try: "
+                        f"speller --demo {p.name}"
+                )
+                console.print(f"[bold yellow]Bundle samples available: [/bold yellow]"
+                              f"[yellow]{", ".join(bundled)}[yellow]")
                 
         # Directory glob - same pattern as black/ruff/mypy
         if args.directory and isinstance(args.directory, Path):
