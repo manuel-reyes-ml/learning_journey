@@ -101,10 +101,10 @@ console: Console = get_console()
 
 ops_list: Final[str] = ", ".join(dicts.keys())
 
-# Module-level sentinel: --dir flag passed without a value.
-# A path containing NUL bytes can never collide with a real
-# filesystem path, so equality comparison is unambiguous.
-_USE_BUNDLED_DIR: Final[Path] = Path("\x00BUNDLED_TEXTS\x00")
+# Sentinel for `--dir` flag passed without a value. A unique singleton
+# object — comparison with `is` is unambiguous (PEP 661 pattern).
+# Cannot be confused with any user-supplied Path or with None.
+_USE_BUNDLED_DIR: Final = object()
 
 
 # =====================================================
@@ -192,7 +192,7 @@ class SpellerArgs:
     text: str | None
     dictionary: str
     operations: list[str]
-    directory: Path | None
+    directory: Path | Traversable | None
     demo: bool
     verbose: bool
     no_log_file: bool
@@ -642,8 +642,7 @@ def _resolve_text_paths(args: SpellerArgs) -> list[Path | Traversable]:
                 seen.add(text_path)
                 
         if args.directory:
-            dir_path = file_dirs.TXT_DIR
-            for txt_file in dir_path.iterdir():
+            for txt_file in args.directory.iterdir():
                 if txt_file not in seen:
                     paths.append(txt_file)
                     seen.add(txt_file)
@@ -657,7 +656,7 @@ def _resolve_text_paths(args: SpellerArgs) -> list[Path | Traversable]:
                 seen.add(p)
                 
         # Directory glob - same pattern as black/ruff/mypy
-        if args.directory:
+        if args.directory and isinstance(args.directory, Path):
             dir_path = args.directory  # <- args.directory is already Path | None
             if not dir_path.is_dir():
                 logger.error("--dir path is not a directory: %s", dir_path)
@@ -831,13 +830,30 @@ def main(argv: list[str] | None = None) -> ExitCode:
     parser = _build_parser()
     raw: argparse.Namespace = parser.parse_args(argv)
     
+    # Resolve --dir sentinel into a real Path (or None for "no batch mode"),
+    # before constructing SpellerArgs. That keeps the dataclass clean.
+    if raw.dir is _USE_BUNDLED_DIR:
+        if not raw.demo:
+            # parser.error() is the idiomatic argparse exit-with-message function — it
+            # integrates cleanly with your existing ExitCode flow because it never returns.
+            # exits with code 2.
+            parser.error(
+                "--dir without a path is only valid with --demo. "
+                        "Either pass `--demo --dir`or `--dir <path>`."
+            )
+        resolved_dir: Path | Traversable | None = file_dirs.TXT_DIR
+    elif raw.dir is None:
+        resolved_dir = None
+    else:
+        resolved_dir = Path(raw.dir)
+    
     # Convert from Namespace to SpellerArgs attributes
     # That gives you full Pyright coverage for the rest of main()
     args = SpellerArgs(
         text=raw.text,
         dictionary=raw.dictionary,
         operations=raw.ops, 
-        directory=raw.dir,
+        directory=resolved_dir,
         demo=raw.demo,
         verbose=raw.verbose,
         no_log_file=raw.no_log_file,
@@ -847,12 +863,6 @@ def main(argv: list[str] | None = None) -> ExitCode:
         structured_logging=raw.structured_logging,
         table_report=raw.table_report,
     )
-    
-    if args.directory == _USE_BUNDLED_DIR and not args.demo:
-        parser.error(
-            "--dir without a path is only valid with --demo. "
-                    "Either pass `--demo --dir`or `--dir <path>`."
-        )
     
     # -- Step 2: Configure logging FIRST --
     # Must happen before any logger.info/debug calls.
