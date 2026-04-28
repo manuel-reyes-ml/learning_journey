@@ -27,7 +27,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "cs50-speller"
-version = "0.2.0"
+version = "0.3.0"
 description = "Production-grade spell checker inspired by CS50, built as a Python package"
 readme = "README.md"
 license = "MIT"
