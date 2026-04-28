@@ -905,7 +905,8 @@ def main(argv: list[str] | None = None) -> ExitCode:
             console_verbose=args.verbose,
             log_to_file=not args.no_log_file,
             custom_console=not args.no_custom_console,
-        )    
+        )
+        logger.info("Structured logging mode enabled") 
             
     else:
         configure_logging(
@@ -913,6 +914,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
             log_to_file=not args.no_log_file,
             custom_console=not args.no_custom_console,
         )
+        logger.info("Regular logging mode enabled")
         
     if args.verbose:
         logger.debug("Verbose mode enabled (console debug output)")
