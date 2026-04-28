@@ -19,3 +19,11 @@ make wheel-test
 # After merging to main — tidy up
 make clean
 ```
+
+
+
+```bash
+# Build a wheel in dist/, and clean all current artifacts
+make build
+```
+
