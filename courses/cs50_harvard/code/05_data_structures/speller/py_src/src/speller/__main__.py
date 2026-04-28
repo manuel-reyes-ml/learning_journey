@@ -1077,10 +1077,6 @@ def main(argv: list[str] | None = None) -> ExitCode:
         _print_reports(general_report, table_report=args.table_report, console=console)
         
         # -- Step 8: Return exit code --
-        if args.structured_logging:
-            import structlog
-            structlog.contextvars.clear_contextvars()  # Clear variables for final log mssgs
-            
         success = True
         return ExitCode.SUCCESS
 
@@ -1107,6 +1103,10 @@ def main(argv: list[str] | None = None) -> ExitCode:
     # performance pattern that matters in hot loops (Stage 2 ETL, Stage 3 training).
     
     finally:   # Always runs (error or no erros)
+        if args.structured_logging:
+            import structlog
+            structlog.contextvars.clear_contextvars()  # Clear variables for final log mssgs
+            
         if success:
             logger.info("Program completed.\n")
             logger.debug("Spell check completed successfully\n")
