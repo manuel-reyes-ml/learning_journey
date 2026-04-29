@@ -20,7 +20,8 @@ make wheel-test
 make clean
 ```
 
-
+Trigger to remove all current artifacts in build/ and dist and then
+build a new wheel and recreate build/ and dist/ files
 
 ```bash
 # Build a wheel in dist/, and clean all current artifacts
