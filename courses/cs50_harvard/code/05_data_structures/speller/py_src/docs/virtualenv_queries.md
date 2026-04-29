@@ -15,6 +15,11 @@ source /tmp/speller_test/bin/activate          # macOS / Linux (bash, zsh)
 # Verify no packages are installed in that venv (just pip)
 pip list
 
+# Verify if any package is being recognized inside venv
+which speller
+# Healthy: /Users/manuelreyes/.../venvs/speller_test/bin/speller
+# Shadowed: /Users/manuelreyes/.local/bin/speller   ← wrong venv
+
 # Install newly created packaged inside venv for testing
 pip install dist/cs50_speller-0.2.0-py3-none-any.whl 
 ```
