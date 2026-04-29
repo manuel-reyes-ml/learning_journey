@@ -1119,13 +1119,8 @@ def main(argv: list[str] | None = None) -> ExitCode:
         if args.structured_logging:
             import structlog
             structlog.contextvars.clear_contextvars()  # Clear variables for final log mssgs
-            
-        if success:
-            logger.info("Program completed.\n")
-            logger.debug("Spell check completed successfully\n")
-        else:
-            logger.warning("Program terminated with errors.\n")
-            
+        
+        # Report out each log file currently saved in log directory selected by platformdirs
         for log_file in file_dirs.log_file:
             if log_file.exists():
                 logger.info(
@@ -1133,6 +1128,13 @@ def main(argv: list[str] | None = None) -> ExitCode:
                     log_file.name,
                     log_file,
                 )
+            
+        if success:
+            logger.info("Program completed.\n")
+            logger.debug("Spell check completed successfully\n")
+        else:
+            logger.warning("Program terminated with errors.\n")
+            
     
    
 # =============================================================================
