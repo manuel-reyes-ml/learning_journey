@@ -257,17 +257,24 @@ exclude = [
 #   RUF = ruff-specific rules
 select = ["E", "W", "F", "I", "N", "UP", "B", "SIM", "RUF"]
 
+# This is the production-grade move: declare your intent in config, don't bury it 
+# under per-line # noqas.
+# Allow common typographic characters in comments/docstrings (RUF003 and RUF002).
+# Codepoints documented inline so reviewers don't need a Unicode lookup.
+allowed-confusables = [
+    "\u2014",  # — em-dash
+    "\u2013",  # – en-dash
+    "\u2018",  # ' left single quote
+    "\u2019",  # ' right single quote (apostrophe)
+    "\u201C",  # " left double quote
+    "\u201D",  # " right double quote
+]
+
 # Rules to ignore
 ignore = [
     "D100",    # Missing docstring in public module (we have them, just not all)
     "D104",    # Missing docstring in public package (__init__.py)
 ]
-
-# This is the production-grade move: declare your intent in config, don't bury it 
-# under per-line # noqas.
-# Allow em-dashes and other typographic characters in comments/docstrings
-[tool.ruff.link]
-allowed-confusables = ["-", "-", "'", """, """]
 
 [tool.ruff.lint.pydocstyle]
 # NumPy-style docstrings (matches your convention)
