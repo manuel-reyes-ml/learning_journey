@@ -263,6 +263,12 @@ ignore = [
     "D104",    # Missing docstring in public package (__init__.py)
 ]
 
+# This is the production-grade move: declare your intent in config, don't bury it 
+# under per-line # noqas.
+# Allow em-dashes and other typographic characters in comments/docstrings
+[tool.ruff.link]
+allowed-confusables = ["-", "-", "'", """, """]
+
 [tool.ruff.lint.pydocstyle]
 # NumPy-style docstrings (matches your convention)
 convention = "numpy"
