@@ -985,7 +985,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
             )
 
             # -- Step 5: Run spell checker --
-            # run_speller() accepts DictionaryProtocol - it doesn´t know
+            # run_speller() accepts DictionaryProtocol - it doesn't know
             # or care that we passed a HashTableDictionary.
             logger.debug("Running Speller with '%s'", data.name)
 

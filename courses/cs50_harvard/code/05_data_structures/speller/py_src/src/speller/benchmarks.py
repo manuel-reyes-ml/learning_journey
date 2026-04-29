@@ -63,9 +63,9 @@ from collections.abc import Callable, Generator
 from contextlib import contextmanager
 from dataclasses import KW_ONLY, dataclass, field
 from functools import wraps
-
 from importlib.resources.abc import Traversable
 from pathlib import Path
+
 # Type system concepts → typing
 from typing import Any, NamedTuple, ParamSpec, TypeVar
 

@@ -51,7 +51,6 @@ from typing import Final, NamedTuple, NotRequired, Required, TypedDict
 
 from platformdirs import PlatformDirs
 
-
 # =============================================================================
 # EXPORTS
 # =============================================================================
