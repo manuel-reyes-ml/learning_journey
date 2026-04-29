@@ -55,20 +55,19 @@ References
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field, KW_ONLY
-
-# Runtime collection types → collections.abc
-from collections.abc import Generator, Callable
-
-# Type system concepts → typing
-from importlib.resources.abc import Traversable
-from typing import Any, ParamSpec, TypeVar, NamedTuple
-
-from contextlib import contextmanager
-from pathlib import Path
-from functools import wraps
 import logging
 import time
+
+# Runtime collection types → collections.abc
+from collections.abc import Callable, Generator
+from contextlib import contextmanager
+from dataclasses import KW_ONLY, dataclass, field
+from functools import wraps
+
+from importlib.resources.abc import Traversable
+from pathlib import Path
+# Type system concepts → typing
+from typing import Any, NamedTuple, ParamSpec, TypeVar
 
 ## Simple Decision Rule
 # "Is it a CONTAINER or CALLABLE type?"
@@ -95,8 +94,8 @@ logger = logging.getLogger(__name__)
 
 __all__ = [
     "BenchmarkResult",
-    "timer",
     "timed",
+    "timer",
 ]
 
 

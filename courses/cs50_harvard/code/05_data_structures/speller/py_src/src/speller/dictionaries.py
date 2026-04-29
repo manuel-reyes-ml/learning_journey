@@ -55,11 +55,11 @@ Module Dependencies
 
 from __future__ import annotations
 
-from abc import ABC, abstractmethod
 import bisect  # Binary Search
-from pathlib import Path
 import logging
-from typing import TypeVar, Generic, override
+from abc import ABC, abstractmethod
+from pathlib import Path
+from typing import Generic, TypeVar, override
 
 from speller.config import MAX_WORD_LENGTH
 from speller.register import register_class
@@ -84,10 +84,10 @@ logger = logging.getLogger(__name__)
 # =============================================================================
 
 __all__ = [
+    "DictDictionary",
     "HashTableDictionary",
     "ListDictionary",
     "SortedListDictionary",
-    "DictDictionary",
 ]
 
 
@@ -321,7 +321,7 @@ class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation
         try:
             # Context manager guarantees file.close() even if exception occurs.
             # encoding="utf-8" is explicit - never rely on platform default.
-            with open(path, "r", encoding="utf-8") as dict_file:
+            with open(path, encoding="utf-8") as dict_file:
                 for line in dict_file:
                     word = line.strip()
 

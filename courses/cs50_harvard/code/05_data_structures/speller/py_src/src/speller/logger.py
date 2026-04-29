@@ -45,16 +45,16 @@ References
 
 from __future__ import annotations
 
-from logging.handlers import RotatingFileHandler
-from typing import Final, override
 import logging
 import sys
+from logging.handlers import RotatingFileHandler
+from typing import Final, override
 
 from speller.config import (
-    file_dirs,
-    fhandler_config,
     FileDirectories,
     FileHandlerConfig,
+    fhandler_config,
+    file_dirs,
 )
 
 # No ImportError sys.exit() on regular module so the

@@ -41,14 +41,15 @@ Module Dependencies
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field, KW_ONLY
-from importlib.resources.abc import Traversable
 import itertools
-from pathlib import Path
 import logging
 from collections.abc import Iterator
-from rich.console import Console
+from dataclasses import KW_ONLY, dataclass, field
+from importlib.resources.abc import Traversable
+from pathlib import Path
 from typing import Final, NamedTuple
+
+from rich.console import Console
 
 from speller.benchmarks import BenchmarkResult, timer
 from speller.protocols import DictionaryProtocol
@@ -81,10 +82,10 @@ logger = logging.getLogger(__name__)
 # =============================================================================
 
 __all__ = [
-    "SpellerResult",
-    "run_speller",
     "Report",
+    "SpellerResult",
     "get_console",
+    "run_speller",
 ]
 
 

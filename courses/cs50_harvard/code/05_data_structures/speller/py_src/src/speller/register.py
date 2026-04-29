@@ -48,13 +48,12 @@ The same registry scales to every future Stage 1+ project:
 
 from __future__ import annotations
 
-from dataclasses import dataclass, KW_ONLY, field
 import logging
-from typing import Callable
+from collections.abc import Callable
+from dataclasses import KW_ONLY, dataclass, field
 
 from speller.protocols import DictionaryProtocol
 from speller.speller import SpellerResult
-
 
 # No ImportError sys.exit() on regular module so the
 # error propagates to the caller (__main__.py).

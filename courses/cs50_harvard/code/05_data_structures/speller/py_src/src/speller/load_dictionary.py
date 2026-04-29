@@ -34,10 +34,10 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from unittest import result
+
 import structlog
 
-from speller.benchmarks import timer, BenchmarkResult
+from speller.benchmarks import BenchmarkResult, timer
 from speller.protocols import DictionaryProtocol
 
 # No ImportError sys.exit() on regular module so the

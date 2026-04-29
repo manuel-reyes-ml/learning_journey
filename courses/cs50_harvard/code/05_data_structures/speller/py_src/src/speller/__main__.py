@@ -45,7 +45,6 @@ from __future__ import annotations
 
 import sys
 
-
 # =====================================================
 # Import Guard
 # =====================================================
@@ -57,24 +56,25 @@ import sys
 #
 # Every other module lets ImportError propagate upward to here.
 try:
-    from collections import defaultdict
-    from dataclasses import replace, dataclass, KW_ONLY
-    from importlib.resources.abc import Traversable
-    from pathlib import Path
     import argparse
     import logging
+    import string
+    from collections import defaultdict
+    from dataclasses import KW_ONLY, dataclass, replace
+    from importlib.resources.abc import Traversable
+    from pathlib import Path
+    from typing import Final, NotRequired, Required, TypedDict
+
     from rich.console import Console
     from rich.panel import Panel
     from rich.table import Table
-    import string
-    from typing import Final, TypedDict, Required, NotRequired
 
     from speller.benchmarks import BenchmarkResult
-    from speller.config import ExitCode, file_dirs, default_fnames
+    from speller.config import ExitCode, default_fnames, file_dirs
     from speller.load_dictionary import load_dictionary
     from speller.logger import configure_logging
     from speller.register import dicts
-    from speller.speller import run_speller, Report, SpellerResult, get_console
+    from speller.speller import Report, SpellerResult, get_console, run_speller
 
 except ImportError as e:
     sys.exit(f"Error missing speller module.\nDetails: {e}")

@@ -34,9 +34,10 @@ Module Dependencies
 
 from __future__ import annotations
 
+import logging
+
 # Runtime collection types → collections.abc
 from collections.abc import Iterator
-import logging
 
 from speller.config import MAX_WORD_LENGTH
 

@@ -41,14 +41,15 @@ dataclass singletons — reappears as ``LLMConfig`` in DataVault,
 
 from __future__ import annotations
 
-from enum import IntEnum, StrEnum, unique
-from typing import Final, NamedTuple, TypedDict, Required, NotRequired
-from dataclasses import dataclass
-from importlib.resources import files
-from pathlib import Path
-from platformdirs import PlatformDirs
 import logging
 import sys
+from dataclasses import dataclass
+from enum import IntEnum, StrEnum, unique
+from importlib.resources import files
+from pathlib import Path
+from typing import Final, NamedTuple, NotRequired, Required, TypedDict
+
+from platformdirs import PlatformDirs
 
 
 # =============================================================================

@@ -6,19 +6,19 @@
 
 from __future__ import annotations
 
-from logging.handlers import RotatingFileHandler
-from typing import Final, Any
 import logging
 import sys
+from logging.handlers import RotatingFileHandler
+from typing import Any, Final
 
 import structlog
-from structlog.types import Processor, WrappedLogger, EventDict
+from structlog.types import EventDict, Processor, WrappedLogger
 
 from speller.config import (
-    file_dirs,
-    fhandler_config,
     FileDirectories,
     FileHandlerConfig,
+    fhandler_config,
+    file_dirs,
 )
 
 # No ImportError sys.exit() on regular module so the

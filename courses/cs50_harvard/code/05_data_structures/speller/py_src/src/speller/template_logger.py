@@ -55,27 +55,26 @@ from __future__ import annotations
 import json
 import logging
 from logging.handlers import RotatingFileHandler
+from string.templatelib import Interpolation, Template
 from typing import Any, Final, override
-from string.templatelib import Template, Interpolation
 
 from speller.config import (
-    file_dirs,
-    fhandler_config,
     FileDirectories,
     FileHandlerConfig,
+    fhandler_config,
+    file_dirs,
 )
-
 
 # =============================================================================
 # EXPORTS
 # =============================================================================
 
 __all__ = [
-    "render_message",
-    "extract_values",
-    "TemplateMessageFormatter",
     "JsonTemplateFormatter",
+    "TemplateMessageFormatter",
     "configure_template_logging",
+    "extract_values",
+    "render_message",
 ]
 
 

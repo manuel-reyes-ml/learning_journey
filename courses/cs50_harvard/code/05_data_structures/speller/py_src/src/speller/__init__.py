@@ -55,7 +55,6 @@ from __future__ import annotations
 
 import logging
 
-
 # Library logging pattern: stay silent unless the application configures
 # logging. The CLI entry point (__main__.py) calls configure_logging() to
 # acivate console/file handlers.
@@ -75,7 +74,7 @@ __version__ = "1.0.0"
 # The leading underscore means: don't touch this."
 from speller import dictionaries as _dicts_module  # noqa: F401
 
-# The # noqa: F401 comment tells ruff/flake8 "yes, I know I didn't use this
+# The
 # import — it's intentional." This is a well-known Python pattern for plugin registration.
 
 
