@@ -626,6 +626,9 @@ def _resolve_text_paths(args: SpellerArgs) -> list[Path | Traversable]:
     """
     paths: list[Path | Traversable] = []
     seen: set[Path | Traversable] = set()
+    
+    # iterdir() is a directory listing — it returns every immediate child,
+    # no filtering, no recursion.
     bundled = sorted(p.name for p in file_dirs.TXT_DIR.iterdir())
     
     if args.demo:
@@ -640,7 +643,7 @@ def _resolve_text_paths(args: SpellerArgs) -> list[Path | Traversable]:
             if text_path not in seen:
                 paths.append(text_path)
                 seen.add(text_path)
-                
+        
         if args.directory:
             for txt_file in args.directory.iterdir():
                 if txt_file not in seen:
@@ -668,6 +671,9 @@ def _resolve_text_paths(args: SpellerArgs) -> list[Path | Traversable]:
             if not dir_path.is_dir():
                 logger.error("--dir path is not a directory: %s", dir_path)
                 return []
+            
+            # glob(pattern) is a search — it returns only entries matching a shell-style
+            # wildcard pattern, and with ** can recurse arbitrarily deep.
             for txt_file in sorted(dir_path.glob("*.txt")):  # sorted = deterministic order
                 if txt_file not in seen:
                     paths.append(txt_file)
