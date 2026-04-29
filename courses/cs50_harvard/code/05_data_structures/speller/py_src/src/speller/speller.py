@@ -221,7 +221,7 @@ class SpellerResult:
         lines.append(f"\n[cyan]{self.description}[/cyan]\n")
 
         # .get() with a default BenchmarkResult avoids KeyError if
-        # a benchmark wasn´t recorded (defensive prorgramming)
+        # a benchmark wasn't recorded (defensive prorgramming)
         # data_load = self.benchmarks.get("load")
         data_check = self.benchmarks.get("check")
         # data_size = self.benchmarks.get("size")
