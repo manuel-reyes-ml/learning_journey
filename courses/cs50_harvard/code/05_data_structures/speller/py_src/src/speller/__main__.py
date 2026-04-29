@@ -1125,6 +1125,14 @@ def main(argv: list[str] | None = None) -> ExitCode:
             logger.debug("Spell check completed successfully\n")
         else:
             logger.warning("Program terminated with errors.\n")
+            
+        for log_file in file_dirs.log_file:
+            if log_file.exists():
+                logger.info(
+                    "%s saved in %s",
+                    log_file.name,
+                    log_file,
+                )
     
    
 # =============================================================================
