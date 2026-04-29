@@ -1,23 +1,23 @@
 """Timing utilities for spell-checker operations.
- 
+
 Provides two complementary timing interfaces:
- 
+
 ``timer()``
     A ``@contextmanager`` that wraps any code block and writes a
     :class:`BenchmarkResult` into a mutable dict container after the
     block completes.  Used in ``speller.py`` for cumulative loop
     timing — e.g. the per-word ``check()`` loop — where a decorator
     cannot be applied.
- 
+
 ``timed()``
     A decorator factory that wraps a single function call and attaches
     the :class:`BenchmarkResult` to ``func.benchmark``.  Best for
     one-shot operations such as ``load()`` and ``size()``.
- 
+
 Both interfaces produce :class:`BenchmarkResult` instances (frozen
 dataclasses) so callers always receive the same structured data
 regardless of which interface was used.
- 
+
 Design notes
 ------------
 ``timer()`` yields a *mutable* ``dict`` before timing is complete.
@@ -25,20 +25,20 @@ The caller receives a reference to that dict; after the ``with`` block
 ends the result is written back into it.  This is the canonical
 pattern used by pytest fixtures, FastAPI dependencies, and SQLAlchemy
 session managers — yield setup data, populate results post-yield.
- 
+
 ``timed()`` preserves the decorated function\'s full type signature via
 ``ParamSpec`` and ``TypeVar``, so pyright sees the real parameter and
 return types rather than ``Any``.
- 
+
 Roadmap relevance
 -----------------
 The ``timer`` / ``BenchmarkResult`` pair reappears in every Stage 1+
 project:
- 
+
 - DataVault:    LLM API call latency.
 - PolicyPulse:  retrieval latency per RAG chunk batch.
 - AFC:          per-bar execution time in the backtesting loop.
- 
+
 References
 ----------
 .. [1] PEP 343 — The "with" Statement
@@ -125,10 +125,11 @@ type TimerContainer = dict[str, Any]
 
 # =====================================================
 # Dataclass Frozen Constants
-# ===================================================== 
+# =====================================================
 
 # Use @dataclass for internal logic, Pydantic BaseModel
 # at services boundaries (API, user validation).
+
 
 # frozen=True makes instances immutable.
 # slots=True prevents dynamic attribute creation and
@@ -137,12 +138,12 @@ type TimerContainer = dict[str, Any]
 @dataclass(frozen=True, slots=True)
 class BenchmarkResult:
     """Immutable container for a single timed operation.
- 
+
     Produced by :func:`timer` (accessed as ``t["result"]``) and stored
     on a decorated function as ``func.benchmark`` after :func:`timed`
     completes.  ``frozen=True`` and ``slots=True`` make this the same
     locked-down pattern used by :class:`~speller.speller.SpellerResult`.
- 
+
     Parameters
     ----------
     operation : str
@@ -155,7 +156,7 @@ class BenchmarkResult:
         Arbitrary key/value context attached at call time.
         :func:`timer` stores ``{"input_file": FDATA(name, path)}``
         when ``input_file`` is provided.
- 
+
     Examples
     --------
     >>> with timer("load") as t:
@@ -166,12 +167,12 @@ class BenchmarkResult:
     >>> isinstance(result.elapsed_seconds, float)
     True
     """
-    
-    _: KW_ONLY        # Everything after is keyword-only
-    operation: str          
-    elapsed_seconds: float  
+
+    _: KW_ONLY  # Everything after is keyword-only
+    operation: str
+    elapsed_seconds: float
     metadata: dict[str, Any] = field(default_factory=dict)
-    
+
     # __str__ is called by output func (logging, print)
     # Define __str__  to control how print() and str() render it.
     # BenchmarkResult.__str__ returns "load: 0.14s":
@@ -182,16 +183,16 @@ class BenchmarkResult:
     #   f"{result}"                  # → "load: 0.14s"   (same — syntax sugar)
     def __str__(self) -> str:
         """Return a concise human-readable summary.
- 
+
         Called automatically by ``print()``, ``str()``, and logging
         formatters.  Matches the style used in CS50\'s speller.c report
         (``"load: 0.14s"``).
- 
+
         Returns
         -------
         str
             ``"<operation>: <elapsed>s"`` rounded to two decimal places.
- 
+
         Examples
         --------
         >>> result = BenchmarkResult(operation="load", elapsed_seconds=0.1423)
@@ -199,34 +200,33 @@ class BenchmarkResult:
         \'load: 0.14s\'
         """
         return f"{self.operation}: {self.elapsed_seconds:.2f}s"
-    
+
     def __format__(self, spec: str) -> str:
-        """
-        """
+        """ """
         match spec:
             case "json":
                 return f'{{"op": "{self.operation}", "s": {self.elapsed_seconds}}}'
-        return str(self)  # Default: delegate to __str__   
-    
+        return str(self)  # Default: delegate to __str__
+
     # Then f"{result:json}" or format(result, "json") would produce JSON output. This is how
     # libraries like datetime let you write f"{now:%Y-%m-%d}" — the format spec is a custom
-    # mini-language parsed by datetime.__format__     
-        
-        
+    # mini-language parsed by datetime.__format__
+
+
 # The class-based form gives you typed fields that Pyright can validate at every
 # access site, docstring support, default values, and it follows PEP 8 class naming.
 # This lets you introduce optional fields without breaking call sites, which is
 # useful during staged migrations.
 class FileData(NamedTuple):
     """Metadata for a timed file operation."""
-    
+
     fname: str
     fpath: Path | Traversable
-    
+
 
 # =====================================================
 # Decorators
-# ===================================================== 
+# =====================================================
 
 # Generator[dict[str, Any], None, None]
 #          ↑               ↑     ↑
@@ -237,7 +237,7 @@ class FileData(NamedTuple):
 # SendType = The caller can send() a value into the generator, and
 #       it arrives as the return value of the yield expression.
 # ReturnType = When the generator finishes (hits return), the value
-#       gets stuffed inside StopIteration exception. 
+#       gets stuffed inside StopIteration exception.
 # The caller can catch it:
 # try:
 #     next(gen)       # generator is exhausted
@@ -245,6 +245,7 @@ class FileData(NamedTuple):
 #     print(e.value)  # ← the return value lives here
 
 # Iterator is the simpler type — it only specifies what comes out
+
 
 # A context manager is any object that implements two methods:
 #   __enter__()  — runs when the `with` block STARTS
@@ -259,13 +260,13 @@ def timer(
     input_file: str | Path | Traversable | None = None,
 ) -> Generator[TimerContainer, None, None]:
     """Context manager that times the enclosed code block.
- 
+
     Yields an empty ``dict`` container before the block runs.  After
     the ``with`` block exits, writes a :class:`BenchmarkResult` into
     ``container["result"]``.  The caller holds a reference to the same
     dict throughout, so the result is accessible after the block even
     though it did not exist at yield time.
- 
+
     Parameters
     ----------
     operation_name : str
@@ -273,36 +274,36 @@ def timer(
     input_file : str or Path or None, optional
         When provided, stored in ``result.metadata["input_file"]`` as
         ``FDATA(fname, fpath)`` for report generation.
- 
+
     Yields
     ------
     TimerContainer
         Empty ``dict`` at yield time.  After the block ends it
         contains ``{"result": BenchmarkResult}``.
- 
+
     Examples
     --------
     Basic timing::
- 
+
         with timer("load") as t:
             dictionary.load(path)
         print(t["result"])           # load: 0.08s
- 
+
     With file metadata::
- 
+
         with timer("check", input_file=text_path) as t:
             for word in extract_words(text_path):
                 dictionary.check(word)
         meta = t["result"].metadata["input_file"]
         print(meta.fname)            # "austen.txt"
- 
+
     Notes
     -----
     Why ``time.perf_counter()`` instead of ``time.time()``?
         ``perf_counter`` is monotonic — it never decreases during NTP
         clock adjustments.  ``time.time()`` can jump backward, making
         benchmark results unreliable in long-running processes.
- 
+
     Why yield a mutable ``dict`` instead of a frozen dataclass?
         The ``yield`` happens *before* the timed block runs; the result
         only exists *after* it ends.  A frozen dataclass cannot be
@@ -311,79 +312,77 @@ def timer(
         approach used by pytest fixtures and SQLAlchemy session managers.
     """
     path = Path(input_file) if isinstance(input_file, str) else input_file
-    
+
     # Mutable container - we yield this before timing is done, then we
     # fill it in AFTER the block completes.
     # The caller holds a reference to this same dict object
     container: TimerContainer = {}
-    
+
     # ===__enter__ phase ===
     # perf_counter() is monotonic (never goes backward) and high-resolution.
     # time.time() can jump backward during NTP sync - neer use it for benchmarks.
     start = time.perf_counter()
-    
+
     logger.debug("Starting timer for '%s'", operation_name)
-    
+
     # === yield phase ===
     # Control passes to the caller's 'with' block.
     # Everything between 'yield' and the next line runs the caller's code.
     yield container
-    
+
     # === __exit__ phase ===
     # The caller's 'with' block has finished. Calculate elapsed time.
     elapsed = time.perf_counter() - start
-    
+
     # Store the result in the mutable container.
     # The caller can access it because they hold a reference to the same dict
     container["result"] = BenchmarkResult(
         operation=operation_name,
         elapsed_seconds=elapsed,
-        metadata={
-            "input_file": FileData(path.name, path)
-        } if path else {},
+        metadata={"input_file": FileData(path.name, path)} if path else {},
     )
-    
+
     logger.debug(
         "Timer '%s' completed: %.6fs",
         operation_name,
         elapsed,
     )
-    
-    
+
+
 # Syntax: Callable[[INPUT_TYPES], RETURN_TYPE]
 #   - Input parameters in a list
 def timed(operation_name: str) -> Callable[[Callable[P, T]], Callable[P, T]]:
     """Decorator factory that times a single function call.
- 
+
     Wraps the decorated function in a :func:`timer` context manager.
     After each call, attaches the :class:`BenchmarkResult` to the
     wrapper as ``func.benchmark``.  Uses ``ParamSpec`` and ``TypeVar``
     to preserve the original function\'s complete type signature —
     pyright sees the real parameter and return types, not ``Any``.
- 
+
     Parameters
     ----------
     operation_name : str
         Label passed to :func:`timer` (e.g. ``"load"``).
- 
+
     Returns
     -------
     Callable[[Callable[P, T]], Callable[P, T]]
         A decorator that accepts a function and returns a
         type-preserving wrapper with an additional ``.benchmark``
         attribute initialised to ``None`` before the first call.
- 
+
     Examples
     --------
     ::
- 
+
         @timed("load")
         def load_dictionary(path: str) -> bool:
             ...
- 
+
         result = load_dictionary("dictionaries/large")  # bool preserved
         print(load_dictionary.benchmark)  # BenchmarkResult(operation="load", ...)
- 
+
     Notes
     -----
     Why not use ``@timed`` for ``check()`` in ``speller.py``?
@@ -391,31 +390,31 @@ def timed(operation_name: str) -> Callable[[Callable[P, T]], Callable[P, T]]:
         thousands of times per text file.  Per-call decorator overhead
         would dominate the measurement.  Use :func:`timer` to wrap the
         *entire loop* for cumulative time instead.
- 
+
     Why three nested functions?
         A parameterised decorator requires two evaluation steps:
- 
+
         1. ``timed("load")``         → returns ``decorator``
         2. ``decorator(func)``       → returns ``wrapper``
         3. ``wrapper(*args, ...)``   → runs func and stores timing
- 
+
         A decorator without parameters only needs two layers.
     """
-#                                  ↑        ↑               ↑
-#                                  |        |               |
-#                                  |        input func      output func
-#                                  |        (same types)    (same types)
-#                                  |
-#                                  returns a decorator
-#
-# In English: "timed() returns a function that takes a
-#              Callable[P, T] and returns a Callable[P, T]"
-#
-# Which means: "whatever goes in comes out with the same types"
+    #                                  ↑        ↑               ↑
+    #                                  |        |               |
+    #                                  |        input func      output func
+    #                                  |        (same types)    (same types)
+    #                                  |
+    #                                  returns a decorator
+    #
+    # In English: "timed() returns a function that takes a
+    #              Callable[P, T] and returns a Callable[P, T]"
+    #
+    # Which means: "whatever goes in comes out with the same types"
 
     # LAYER 1: receives the parameter (operation_name)
     # Returns the actual decorator function
-    
+
     def decorator(func: Callable[P, T]) -> Callable[P, T]:
         """Wrap ``func`` with timing logic and return the wrapper.
 
@@ -433,7 +432,7 @@ def timed(operation_name: str) -> Callable[[Callable[P, T]], Callable[P, T]]:
         """
         # LAYER 2: receives the function being decorated
         # Returns the wrapper that replaces the original function
-        
+
         @wraps(func)  # Preserve func.__name__, .__doc__, etc.
         def wrapper(*args: P.args, **kwargs: P.kwargs) -> T:
             """Execute ``func`` inside a :func:`timer` block.
@@ -450,34 +449,35 @@ def timed(operation_name: str) -> Callable[[Callable[P, T]], Callable[P, T]]:
             """
             # LAYER 3: receives the arguments when the function is called
             # This is what actually runs when you call load_dictionary(path)
-        #                   ↑                 ↑
-        #                   positional args   keyword args
-        #                   from P            from P
-        # If the original function is:
-        #   def load_dictionary(path: str, verbose: bool = False) -> bool
+            #                   ↑                 ↑
+            #                   positional args   keyword args
+            #                   from P            from P
+            # If the original function is:
+            #   def load_dictionary(path: str, verbose: bool = False) -> bool
 
-        # Then P.args captures: (str,)
-        # And P.kwargs captures: {verbose: bool}
-        # And T captures: bool    
-            
+            # Then P.args captures: (str,)
+            # And P.kwargs captures: {verbose: bool}
+            # And T captures: bool
+
             # Reuse the timer() context manager - DRY principle
             # The timing logic exists in one place (timer), not duplicated here
             with timer(operation_name) as t:
                 result = func(*args, **kwargs)  # Call the original function
-            
+
             # Store the BenchmarkResult on the wrapper function object
             # Functions are objects in Python - you can set attributes on them.
             # This is how the caller accesses the timing data after the call.
             wrapper.benchmark = t["result"]  # type: ignore[attr-defined]
-            
+
             # Return the original function's return value unchanged.
             # The caller doesn't know or care that timing happened.
             return result
-        
+
         # Initialize .benchmark to None before any call is made
         wrapper.benchmark = None  # type: ignore[attr-defined]
-        
+
         return wrapper
+
     return decorator
 
 
@@ -610,7 +610,7 @@ def timed(operation_name: str) -> Callable[[Callable[P, T]], Callable[P, T]]:
 
 
 # @timed("load")
-#def load_dictionary(path: str) -> bool:
+# def load_dictionary(path: str) -> bool:
 #    return True
 
 # Your code expects bool, but mypy can't verify because
@@ -630,34 +630,34 @@ def timed(operation_name: str) -> Callable[[Callable[P, T]], Callable[P, T]]:
 #   load_dictionary: (path: str) -> bool    ← type info preserved
 
 ## How They Work
-#┌─────────────────────────────────────────────────────────────────┐
-#│              TypeVar and ParamSpec                               │
-#│─────────────────────────────────────────────────────────────────│
-#│                                                                  │
-#│  TypeVar("T")  — captures ONE type and reuses it                 │
-#│                                                                  │
-#│    T = TypeVar("T")                                              │
-#│    def identity(x: T) -> T: ...                                  │
-#│                                                                  │
-#│    identity(42)     → mypy knows return is int                   │
-#│    identity("hi")   → mypy knows return is str                   │
-#│    T "binds" to whatever type flows in, then flows out           │
-#│                                                                  │
-#│  ParamSpec("P")  — captures ALL parameters as a group            │
-#│                                                                  │
-#│    P = ParamSpec("P")                                            │
-#│    def wrapper(*args: P.args, **kwargs: P.kwargs): ...           │
-#│                                                                  │
-#│    If original func is (path: str, verbose: bool) -> bool        │
-#│    Then P captures (path: str, verbose: bool) as a unit          │
-#│    P.args = the positional args                                  │
-#│    P.kwargs = the keyword args                                   │
-#│                                                                  │
-#│  Together they let decorators say:                               │
-#│    "I take a function with parameters P returning T,             │
-#│     and I return a function with the SAME parameters P           │
-#│     returning the SAME type T"                                   │
-#└─────────────────────────────────────────────────────────────────┘
+# ┌─────────────────────────────────────────────────────────────────┐
+# │              TypeVar and ParamSpec                               │
+# │─────────────────────────────────────────────────────────────────│
+# │                                                                  │
+# │  TypeVar("T")  — captures ONE type and reuses it                 │
+# │                                                                  │
+# │    T = TypeVar("T")                                              │
+# │    def identity(x: T) -> T: ...                                  │
+# │                                                                  │
+# │    identity(42)     → mypy knows return is int                   │
+# │    identity("hi")   → mypy knows return is str                   │
+# │    T "binds" to whatever type flows in, then flows out           │
+# │                                                                  │
+# │  ParamSpec("P")  — captures ALL parameters as a group            │
+# │                                                                  │
+# │    P = ParamSpec("P")                                            │
+# │    def wrapper(*args: P.args, **kwargs: P.kwargs): ...           │
+# │                                                                  │
+# │    If original func is (path: str, verbose: bool) -> bool        │
+# │    Then P captures (path: str, verbose: bool) as a unit          │
+# │    P.args = the positional args                                  │
+# │    P.kwargs = the keyword args                                   │
+# │                                                                  │
+# │  Together they let decorators say:                               │
+# │    "I take a function with parameters P returning T,             │
+# │     and I return a function with the SAME parameters P           │
+# │     returning the SAME type T"                                   │
+# └─────────────────────────────────────────────────────────────────┘
 
 
 # =====================================================

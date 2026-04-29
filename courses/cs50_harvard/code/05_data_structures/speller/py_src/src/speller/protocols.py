@@ -67,6 +67,7 @@ __all__ = ["DictionaryProtocol"]
 # No inheritance needed. This is Python's version of Go's interfaces
 # or TypeScript's structural typing.
 
+
 @runtime_checkable
 class DictionaryProtocol(Protocol):
     """Interface any dictionary backend must satisfy.
@@ -106,7 +107,7 @@ class DictionaryProtocol(Protocol):
     """
 
     # The Rule: Protocol Contains What the CONSUMER Uses
-    
+
     def load(self, filepath: str) -> bool:
         """Load dictionary from a source into memory.
 
@@ -121,8 +122,7 @@ class DictionaryProtocol(Protocol):
             True if dictionary was loaded successfully, False otherwise.
         """
         ...
-        
-        
+
     def check(self, word: str) -> bool:
         """Check if a word exists in the loaded dictionary.
 
@@ -140,8 +140,7 @@ class DictionaryProtocol(Protocol):
             True if the word is in the dictionary, False otherwise.
         """
         ...
-    
-    
+
     def size(self) -> int:
         """Return the number of words in the loaded dictionary.
 
@@ -152,43 +151,40 @@ class DictionaryProtocol(Protocol):
         """
         ...
 
-
     def __len__(self) -> int:
         """Declare that implementations must support ``len(dictionary)``.
- 
+
         Including ``__len__`` in the Protocol means pyright will flag
         any implementation that forgets to provide it, and any code
         that calls ``len(dictionary)`` on a ``DictionaryProtocol``
         variable gets a known return type instead of ``Any``.
- 
+
         Returns
         -------
         int
             Number of words currently loaded.
         """
         ...
-        
-        
+
     def __contains__(self, word: str) -> bool:
         """Declare that implementations must support ``word in dictionary``.
- 
+
         Including ``__contains__`` in the Protocol means pyright will
         flag any implementation that forgets to provide it, and the
         ``word in dictionary`` expression in ``run_speller()`` is
         fully type-safe against any ``DictionaryProtocol`` variable.
- 
+
         Parameters
         ----------
         word : str
             The word to look up.
- 
+
         Returns
         -------
         bool
             ``True`` if the word is present
         """
         ...
-
 
     def unload(self) -> bool:
         """Clear all words from memory and reset the loaded state.

@@ -99,6 +99,7 @@ COL: Final[int] = 22
 # RESULT CONTAINER
 # =============================================================================
 
+
 # The class-based form gives you typed fields that Pyright can validate at every
 # access site, docstring support, default values, and it follows PEP 8 class
 # naming, (Report not REPORT). This lets you introduce optional fields without
@@ -109,17 +110,17 @@ COL: Final[int] = 22
 # express that without a workaround.
 class Report(NamedTuple):
     """Formatted spell-check report."""
-    
+
     main: str
     misspelled: str | None = None
-    
+
 
 # frozen=True makes instances immutable.
 # slots=True prevents dynamic attribute creation and
 # reduces memory fooprint.
 # Together they create a truly locked-down data container.
 @dataclass(frozen=True, slots=True)
-class SpellerResult: 
+class SpellerResult:
     """Immutable container for the complete spell-check result.
 
     Holds all data needed to produce the CS50-format output report.
@@ -151,16 +152,16 @@ class SpellerResult:
 
     # Required fields (no default) must come first
     # Optional fields with defaults afterwards
-    _: KW_ONLY      # Everything after is keyword-only
+    _: KW_ONLY  # Everything after is keyword-only
     misspelled_words: list[str]
     words_misspelled: int
     words_in_dictionary: int
     words_in_text: int
-    
+
     ops_name: str = ""
     description: str = ""
     benchmarks: dict[str, BenchmarkResult] = field(default_factory=dict)
-    
+
     @property  # access time_total as an attribute not time_total()
     def time_total(self) -> float:
         """Calculate total time across all benchmarked operations.
@@ -176,8 +177,7 @@ class SpellerResult:
             Sum of all benchmark elapsed_seconds values.
         """
         return sum(b.elapsed_seconds for b in self.benchmarks.values())
-    
-    
+
     def format_report(self, *, log_misspelled: bool = False) -> Report:
         """Format results to match CS50 speller.c output exactly.
 
@@ -212,68 +212,72 @@ class SpellerResult:
         :func:`~speller.__main__._print_reports` handles both fields.
         """
         lines: list[str] = []
-        
+
         # Header
         lines.append(f"\n[bold cyan]MISSPELLED WORDS -- {self.ops_name} --[/bold cyan]")
-        
+
         # Description
         lines.append(f"\n[cyan]{self.description}[/cyan]\n")
-        
+
         # .get() with a default BenchmarkResult avoids KeyError if
         # a benchmark wasn´t recorded (defensive prorgramming)
         # data_load = self.benchmarks.get("load")
         data_check = self.benchmarks.get("check")
         # data_size = self.benchmarks.get("size")
-        
+
         # SAFER — access by key name (works regardless of how many items)
         txt_file = data_check.metadata.get("input_file") if data_check else None
-        
-         # Color choice — red for misspelled if any, green if zero
+
+        # Color choice — red for misspelled if any, green if zero
         misspelled_color = "red" if self.words_misspelled > 0 else "green"
-        
+
         # Statistics (CS50 uses %-20s style alignment with 5 spaces)
         lines.append(
             f"[cyan]{'WORDS MISSPELLED:':<{COL}}[/cyan]"
             f"[bold {misspelled_color}]{self.words_misspelled:,}[/bold {misspelled_color}]"
         )
-        lines.append(f"[cyan]{'WORDS IN DICTIONARY:':<{COL}}[/cyan][bold]{self.words_in_dictionary:,}[/bold]")
-        lines.append(f"[cyan]{'WORDS IN TEXT:':<{COL}}[/cyan][bold]{self.words_in_text:,}[/bold]")
-        #                  ↑             ↑↑                         ↑  
+        lines.append(
+            f"[cyan]{'WORDS IN DICTIONARY:':<{COL}}[/cyan][bold]{self.words_in_dictionary:,}[/bold]"
+        )
+        lines.append(
+            f"[cyan]{'WORDS IN TEXT:':<{COL}}[/cyan][bold]{self.words_in_text:,}[/bold]"
+        )
+        #                  ↑             ↑↑                         ↑
         #                  │             ││                         |__ means apply separator: 100,000
         #               the text         │└── 22 characters total width
         #                                └─── < means left-align (pad RIGHT with spaces)
-        
+
         ## The Three Alignment Specifiers
 
         # f"{'text':<20}"     left-align    → 'text                '
         # f"{'text':>20}"     right-align   → '                text'
         # f"{'text':^20}"     center        → '        text        '
-        
+
         # Text file specs: name and path
         # [yellow] for the filename follows the Unix convention for identifiers/links/files
         lines.append(
             f"[cyan]{'CHECKED FILE:':<{COL}}[/cyan][yellow]{txt_file.fname}[/yellow]"
-            if txt_file else
-            f"[cyan]{'CHECKED FILE:':<{COL}}[cyan][dim italic]-- file not registered --[/dim italic]"
+            if txt_file
+            else f"[cyan]{'CHECKED FILE:':<{COL}}[cyan][dim italic]-- file not registered --[/dim italic]"
         )
         # [dim green] for the path mirrors how most shells color directory paths
         # Gives users a visual cue they already recognize from other terminal tools
         lines.append(
             f"[cyan]{'FILE PATH:':<{COL}}[/cyan][dim green]{txt_file.fpath.parent}/[/dim green]"
-            if txt_file else
-            f"[cyan]{'FILE PATH:':<{COL}}[/cyan][dim italic]-- file not registered --[/dim italic]"
+            if txt_file
+            else f"[cyan]{'FILE PATH:':<{COL}}[/cyan][dim italic]-- file not registered --[/dim italic]"
         )
-        
+
         # Benchmark timings
         for op, benchmark in self.benchmarks.items():
             label = f"TIME in {op}:"
             lines.append(
                 f"[dim cyan]{label:<{COL}}[/dim cyan][dim]{benchmark.elapsed_seconds:.2f}[/dim]"
-                if benchmark else
-                f"[dim cyan]{label:<{COL}}[/dim cyan][dim]0.00[/dim]"
+                if benchmark
+                else f"[dim cyan]{label:<{COL}}[/dim cyan][dim]0.00[/dim]"
             )
-        
-        # --- Old Benchmark timings -------------------------------       
+
+        # --- Old Benchmark timings -------------------------------
         # lines.append(
         #     f"{'TIME IN load:':<{COL}}{data_load.elapsed_seconds:.2f}"
         #     if data_load else
@@ -289,20 +293,18 @@ class SpellerResult:
         #    if data_size else
         #     f"{'TIME IN size:':<{COL}}0.00"
         # )
-        
+
         lines.append(
             f"[bold cyan]{'TIME IN TOTAL:':<{COL}}[/bold cyan]"
-            f"[bold]{self.time_total:.2f}[/bold]\n")
-        
+            f"[bold]{self.time_total:.2f}[/bold]\n"
+        )
+
         # Report to show in console
         main_report = "\n".join(lines)
-        
+
         # Misspelled words list to log
-        misspelled_report = (
-            "\n".join(self.misspelled_words) 
-            if log_misspelled else None
-        )
-        
+        misspelled_report = "\n".join(self.misspelled_words) if log_misspelled else None
+
         return Report(main_report, misspelled_report)
 
 
@@ -310,9 +312,9 @@ class SpellerResult:
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
 
+
 def get_console() -> Console:
-    """
-    """
+    """ """
     # Output goes to stderr to match your logging pattern (keeps stdout clean
     # for programmatic piping)
     return Console(stderr=False)
@@ -321,6 +323,7 @@ def get_console() -> Console:
 # =============================================================================
 # CORE FUNCTION
 # =============================================================================
+
 
 # CORRECT -  return data, let caller decide presentation.
 # This is command-query separation — a function either computes and returns
@@ -397,16 +400,16 @@ def run_speller(
         @timed is for one-shot operations like load() and size().
     """
     path = Path(text_path) if isinstance(text_path, str) else text_path
-    
+
     if benchmarks is None:
         benchmarks = {}  # new dict created fresh each call
-    
+
     # =================================================================
     # STEP 1: Load dictionary (timed)
     # =================================================================
     # Dictionary load needs to run only once for the batch txt file(s)
     # A separate function is implemented in load_dictionary module
-    
+
     # =================================================================
     # STEP 2: Check words (timed cumulatively)
     # =================================================================
@@ -419,10 +422,10 @@ def run_speller(
     #
     # This is the streaming pipeline pattern:
     #   [file bytes] → extract_words → check → accumulate results
-    
+
     misspelled_words: list[str] = []
     words_in_text = 0
-    
+
     with timer("check", input_file=path) as t:
         # The exception pattern keeps the boundary clean. Raises ValueError because something
         # went wrong in its domain-bad encoding, empty file. main() catches it and translates
@@ -436,33 +439,36 @@ def run_speller(
             # UnicodeDecodeError is not a normal exception — it has a rigid C-level
             # constructor signature that requires exactly 5 positional arguments:
             raise UnicodeDecodeError(
-                e.encoding, e.object, e.start, e.end,
+                e.encoding,
+                e.object,
+                e.start,
+                e.end,
                 f"Cannot decode '{path.name}': {e.reason}",
             ) from e
-        
+
         # StopIteration is Python internals signal, not a real error.
         # Shows an Iterator or Generator was exhausted.
         except StopIteration:
             # from None - the original exception is an implementation detail
             # or internal signal. Hide it.
             raise ValueError(f"No valid words in '{path.name}'") from None
-        
+
         for word in itertools.chain([first], words):
-            words_in_text +=1
-            
-            if word not in dictionary: #NOTE: Try Pythonic exp (dunder)
+            words_in_text += 1
+
+            if word not in dictionary:  # NOTE: Try Pythonic exp (dunder)
                 misspelled_words.append(word)
-                
+
     benchmarks["check"] = t["result"]
-    
+
     # =================================================================
     # STEP 3: Get dictionary size (timed)
     # =================================================================
     with timer("size") as t:
-        words_in_dictionary = len(dictionary) #NOTE: Try Pythonic exp (dunder)
-        
-    benchmarks["size"] = t["result"] 
-    
+        words_in_dictionary = len(dictionary)  # NOTE: Try Pythonic exp (dunder)
+
+    benchmarks["size"] = t["result"]
+
     # =================================================================
     # STEP 4: Package results
     # =================================================================
@@ -473,13 +479,13 @@ def run_speller(
         words_in_text=words_in_text,
         benchmarks=benchmarks,
     )
-    
+
     logger.info(
         "Spell check complete: %d misspelled out of %d words",
         result.words_misspelled,
         result.words_in_text,
     )
-    
+
     return result
 
 
@@ -517,7 +523,7 @@ def run_speller(
 #   raise ValueError("msg") from e     # sets __cause__ = e,    __suppress_context__ = True
 #   raise ValueError("msg") from None  # sets __cause__ = None, __suppress_context__ = True
 #   raise ValueError("msg")            # sets __cause__ = None, __suppress_context__ = False
-                                       # Python still shows __context__ (implicit chaining)
+# Python still shows __context__ (implicit chaining)
 
 # That third case is the subtle one — a bare raise ValueError("msg") inside an except block still
 # chains implicitly via __context__, showing the original exception with "During handling of the above

@@ -12,6 +12,6 @@ filesystem in production deployments.
 """
 
 # Five lines, but it tells a future reviewer (or yourself in six months)
-# exactly what this directory is for and why it's structured this way. 
+# exactly what this directory is for and why it's structured this way.
 # This kind of docstring is the difference between "code that works" and
 # "production-grade code."

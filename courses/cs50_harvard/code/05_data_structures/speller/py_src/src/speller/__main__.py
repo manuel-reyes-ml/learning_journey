@@ -68,17 +68,17 @@ try:
     from rich.table import Table
     import string
     from typing import Final, TypedDict, Required, NotRequired
-    
+
     from speller.benchmarks import BenchmarkResult
     from speller.config import ExitCode, file_dirs, default_fnames
     from speller.load_dictionary import load_dictionary
     from speller.logger import configure_logging
     from speller.register import dicts
     from speller.speller import run_speller, Report, SpellerResult, get_console
-    
+
 except ImportError as e:
     sys.exit(f"Error missing speller module.\nDetails: {e}")
-    
+
 
 # =============================================================================
 # LOGGER SETUP
@@ -111,6 +111,7 @@ _USE_BUNDLED_DIR: Final = object()
 # Class Constants Configuration
 # =====================================================
 
+
 class FileErrorData(TypedDict, total=False):
     """Typed mapping for per-batch file error tracking.
 
@@ -132,15 +133,16 @@ class FileErrorData(TypedDict, total=False):
         Filenames that raised an unexpected :exc:`Exception`.  Not
         required — omitted when no unexpected errors occurred.
     """
-    
+
     error_decode: Required[list[str]]
     error_empty: Required[list[str]]
     error_other: NotRequired[list[str]]
-    
+
 
 # =====================================================
 # Frozen Dataclass
-# ===================================================== 
+# =====================================================
+
 
 # SpellerArgs is a CLI-layer concern-it represents parsed
 # command-line arguments and belongs here.
@@ -188,7 +190,7 @@ class SpellerArgs:
     The same pattern applies to every future project's CLI layer:
     ``DataVaultArgs``, ``PolicyPulseArgs``, ``FormSenseArgs``.
     """
-    
+
     text: str | None
     dictionary: str
     operations: list[str]
@@ -241,14 +243,14 @@ class GeneralReport:
     - PolicyPulse: ``RAGBatchReport`` (retrieval counts, RAGAS scores)
     - AFC:         ``BacktestReport`` (trade counts, drawdown, Sharpe)
     """
-    
+
     # Required fields (no default) must come first
     # Optional fields with defaults afterwards
     _: KW_ONLY  # Everything after is keyword-only
     files_not_found: int
     files_in_dir: int
     files_with_error: FileErrorData
-    
+
     def format_general_report(self) -> str:
         """Format the batch summary into a human-readable report string.
 
@@ -271,43 +273,40 @@ class GeneralReport:
         :meth:`~speller.speller.SpellerResult.format_report`.
         """
         lines: list[str] = []
-        
+
         # Header
         lines.append("\n")
         lines.append("[bold blue]" + "=" * 80 + "[/bold blue]")
         lines.append("[bold blue]GENERAL REPORT[bold blue]")
         lines.append("[bold blue]" + "=" * 80 + "[/bold blue]")
-        
+
         # Color choice - red if error, green if clean run
-        has_errors = (
-            self.files_not_found > 0
-            or any(self.files_with_error.values())
-        )
+        has_errors = self.files_not_found > 0 or any(self.files_with_error.values())
         summary_color = "red" if has_errors else "green"
-        
+
         # Statistics
         lines.append("\n")
         lines.append(
             f"[blue]{'FILES NOT FOUND':<22}[/blue]"
             f"[bold {summary_color}]{self.files_not_found}[/bold {summary_color}]"
         )
-        lines.append(f"[blue]{'FILES IN DIRECTORY:':<22}[/blue][bold]{self.files_in_dir}[/bold]")
+        lines.append(
+            f"[blue]{'FILES IN DIRECTORY:':<22}[/blue][bold]{self.files_in_dir}[/bold]"
+        )
         lines.append(
             f"[blue]{'FILES WITH ERROR:':<22}[/blue]"
             f"[bold {summary_color}]{self.files_with_error}[/bold {summary_color}]"
         )
         lines.append("\n")
-        
+
         return "\n".join(lines)
-    
-    
+
     # Note the return type changed from str to Table. console.print(table) knows how to
     # render it automatically. This is the beauty of rich's architecture — any object that
     # follows the Console Protocol (tables, panels, trees, markdown, syntax-highlighted code)
     # can be passed to console.print().
     def format_table(self) -> Table:
-        """
-        """
+        """ """
         table = Table(
             show_header=True,
             box=None,  # no borders for a clean look
@@ -315,10 +314,10 @@ class GeneralReport:
         )
         table.add_column(style="blue")
         table.add_column(style="bold")
-        
+
         table.add_row("FILES NOT FOUND:", str(self.files_not_found))
         table.add_row("FILES IN DIRECTORY:", str(self.files_in_dir))
-        
+
         # Error categories - one row per non-empty category, colored red
         for category, filenames in self.files_with_error.items():
             if filenames and isinstance(filenames, list):
@@ -326,16 +325,15 @@ class GeneralReport:
                     f"[red]{category.upper()}:[/red]",
                     f"[red]{', '.join(filenames)}[/red]",
                 )
-        
+
         table.add_row()
-            
+
         return table
-    
-    
+
     def __rich__(self) -> Table:
         """Rich Console Protocol hook — called by console.print(report)."""
         return self.format_table()
-    
+
     # Why this design respects your existing architecture
     # Your current code uses command-query separation — format_report() queries the data and
     # returns a string; the caller (_print_reports()) commands what to do with it. This is the
@@ -345,12 +343,13 @@ class GeneralReport:
     #   - Rendering layer (_print_reports() + console.print()) — interprets markup and outputs colored text
     # A test could still assert on the REPORT.main string, because markup tags are just regular string
     #
-    # characters until rendered. That preserves your test suite's independence from ANSI codes. 
+    # characters until rendered. That preserves your test suite's independence from ANSI codes.
 
 
 # =============================================================================
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
+
 
 # Extracting parser construction into its own function means tests can parse
 # arguments without running the full program.
@@ -399,16 +398,16 @@ def _build_parser() -> argparse.ArgumentParser:
             "   %(prog)s dictionaries/small texts/cat.txt\n"
             "   %(prog)s --verbose texts/austen.txt"
         ),
-        formatter_class=argparse.RawDescriptionHelpFormatter
+        formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    
+
     parser.add_argument(
         "text",  # positional argument required
         nargs="?",  # was required - now optional (zero or one)
         default=None,
         help="Path to text file to spell-check. Omit when using --dir.",
     )
-    
+
     # -- Positional arguments --
     # nargs='?' makes dictionary optional, returns a single str.
     # nargs='*', nargs='+', nargs='N' return lists.
@@ -421,11 +420,10 @@ def _build_parser() -> argparse.ArgumentParser:
             file_dirs.DICT_DIR / default_fnames["dictionaries"].large  # "large"
         ),
         help=(
-            "Path to dictionary file. One word per line. "
-            "Default: dictionaries/large"
+            "Path to dictionary file. One word per line. Default: dictionaries/large"
         ),
     )
-    
+
     # -- Keyword arguments --
     parser.add_argument(
         "--ops",
@@ -434,13 +432,13 @@ def _build_parser() -> argparse.ArgumentParser:
         metavar="OPERATIONS",
         help=f"Data structure(s) to use. Default: hash. Available: {ops_list}",
     )
-    
+
     parser.add_argument(
         "--dir",
-        nargs="?",                  # zero or one value
+        nargs="?",  # zero or one value
         type=Path,
-        default=None,               # flag absent
-        const=_USE_BUNDLED_DIR,     # flag present, no value -> bundled
+        default=None,  # flag absent
+        const=_USE_BUNDLED_DIR,  # flag present, no value -> bundled
         metavar="DIRECTORY",
         help=(
             "Process all .txt files in this directory. "
@@ -450,7 +448,7 @@ def _build_parser() -> argparse.ArgumentParser:
             "`speller --demo --dir`."
         ),
     )
-    
+
     # -- Optional flags --
     parser.add_argument(
         "--demo",
@@ -458,21 +456,22 @@ def _build_parser() -> argparse.ArgumentParser:
         default=False,
         help="Use a bundled sample text instead of a user file",
     )
-    
+
     parser.add_argument(
-        "-v", "--verbose",
+        "-v",
+        "--verbose",
         action="store_true",
         default=False,
         help="Enable verbose output (DEBUG-level logging).",
     )
-    
+
     parser.add_argument(
         "--no-custom-console",
         action="store_true",
         default=False,
         help="Disable use of Colored Formatter and use regular logging.Formatter",
     )
-    
+
     # Enforce mutual exclusion between --structured-logging and --template-logging.
     # The cleanest way is to wrap both flags in an add_mutually_exclusive_group.
     #
@@ -488,46 +487,48 @@ def _build_parser() -> argparse.ArgumentParser:
     # Now the user MUST pass either -t or -s
     logging_group = parser.add_mutually_exclusive_group()
     logging_group.add_argument(
-        "-t", "--template-logging",
+        "-t",
+        "--template-logging",
         action="store_true",
         default=False,
         help="Use t-string (PEP 750) logging with JSON file output. "
-             "Requires Python 3.14+.",
+        "Requires Python 3.14+.",
     )
     logging_group.add_argument(
-        "-s", "--structured-logging",
+        "-s",
+        "--structured-logging",
         action="store_true",
         default=False,
         help="Use structlog with NDJSON file output and ConsoleRenderer. "
-             "Enable contextvars binding for richer observability.",
+        "Enable contextvars binding for richer observability.",
     )
-    
+
     parser.add_argument(
         "--no-log-file",
         action="store_true",
         default=False,
         help="Disable file logging (console only).",
     )
-    
+
     parser.add_argument(
         "--show-misspelled",
         action="store_true",
         default=False,
         help="Show all misspelled words from input txt file.",
     )
-    
+
     parser.add_argument(
         "--table-report",
         action="store_true",
         default=False,
         help="Enable General report as an enriched table",
     )
-    
+
     return parser
 
 
 # Returns ExitCode correctly since its only consumer is main().
-# It exists specifically to serve exit code logic. 
+# It exists specifically to serve exit code logic.
 def _validate_paths(
     raw_path: Path | Traversable,
     *,
@@ -570,7 +571,7 @@ def _validate_paths(
     if not raw_path.is_file():
         logger.error("%s file not found: %s", path_name.title(), raw_path)
         return ExitCode.FILE_NOT_FOUND
-    
+
     return None  # None means "all good"
 
 
@@ -626,11 +627,11 @@ def _resolve_text_paths(args: SpellerArgs) -> list[Path | Traversable]:
     """
     paths: list[Path | Traversable] = []
     seen: set[Path | Traversable] = set()
-    
+
     # iterdir() is a directory listing — it returns every immediate child,
     # no filtering, no recursion.
     bundled = sorted(p.name for p in file_dirs.TXT_DIR.iterdir())
-    
+
     if args.demo:
         if args.text:
             # User wants to bundle samples - look inside the installed package
@@ -638,18 +639,18 @@ def _resolve_text_paths(args: SpellerArgs) -> list[Path | Traversable]:
             if not text_path.is_file():
                 raise SystemExit(
                     f"Bundled sample '{args.text}' not found. "
-                    f"Available: {", ".join(bundled)}"
+                    f"Available: {', '.join(bundled)}"
                 )
             if text_path not in seen:
                 paths.append(text_path)
                 seen.add(text_path)
-        
+
         if args.directory:
             for txt_file in args.directory.iterdir():
                 if txt_file not in seen:
                     paths.append(txt_file)
                     seen.add(txt_file)
-    
+
     else:
         # Single file from positional arg (existing behavior, unchanged)
         if args.text:  # SpellerArgs gives Pyright full static coverage here
@@ -660,55 +661,59 @@ def _resolve_text_paths(args: SpellerArgs) -> list[Path | Traversable]:
             elif p.name in bundled:
                 logger.warning(
                     "Did you mean to use a bundled sample? Try: "
-                        f"speller --demo {p.name}"
+                    f"speller --demo {p.name}"
                 )
-                console.print(f"[bold yellow]Bundle samples available: [/bold yellow]"
-                              f"[yellow]{", ".join(bundled)}[yellow]")
-                
+                console.print(
+                    f"[bold yellow]Bundle samples available: [/bold yellow]"
+                    f"[yellow]{', '.join(bundled)}[yellow]"
+                )
+
         # Directory glob - same pattern as black/ruff/mypy
         if args.directory and isinstance(args.directory, Path):
             dir_path = args.directory  # <- args.directory is already Path | None
             if not dir_path.is_dir():
                 logger.error("--dir path is not a directory: %s", dir_path)
                 return []
-            
+
             # glob(pattern) is a search — it returns only entries matching a shell-style
             # wildcard pattern, and with ** can recurse arbitrarily deep.
-            for txt_file in sorted(dir_path.glob("*.txt")):  # sorted = deterministic order
+            for txt_file in sorted(
+                dir_path.glob("*.txt")
+            ):  # sorted = deterministic order
                 if txt_file not in seen:
                     paths.append(txt_file)
                     seen.add(txt_file)
-                
-    return paths       
+
+    return paths
 
 
 def _validate_ops(ops_names: list[str]) -> list[str]:
     """Validate and normalise requested backend operation names.
- 
+
     Strips whitespace and punctuation from each name, lower-cases it,
     and checks it against the live :data:`~speller.register.dicts`
     registry.  Expands the special value ``"all"`` into every
     registered key.
- 
+
     Parameters
     ----------
     ops_names : list of str
         Raw operation names from the ``-o`` / ``--operations`` argument.
- 
+
     Returns
     -------
     list of str
         Cleaned, validated operation names ready for iteration.
         Order matches the input (or the registry insertion order for
         ``"all"``).
- 
+
     Raises
     ------
     KeyError
         If any name (after cleaning) is not in :data:`dicts` and is
         not the literal string ``"all"``.  The error message lists all
         available operations.
- 
+
     Examples
     --------
     >>> _validate_ops(["hash"])
@@ -718,22 +723,17 @@ def _validate_ops(ops_names: list[str]) -> list[str]:
     >>> _validate_ops(["unknown"])
     KeyError: "Unknown operation \'unknown\'. Available: hash, list, sorted"
     """
-    clean_names = [
-        name.strip().strip(string.punctuation).lower()
-        for name in ops_names
-    ]
-    
+    clean_names = [name.strip().strip(string.punctuation).lower() for name in ops_names]
+
     if "all" in clean_names:
         return list(dicts.keys())  # <- clear intent, no mutation during iteration
-    
+
     for name in clean_names:
         # This validates against the actual registry,
         # which is the single source of truth.
         if name not in dicts:
-            raise KeyError(
-                f"Unknown operation '{name}'. Available: {ops_list}"
-            )
-    
+            raise KeyError(f"Unknown operation '{name}'. Available: {ops_list}")
+
     return clean_names
 
 
@@ -745,12 +745,12 @@ def _print_reports(
     console: Console,
 ) -> None:
     """Write the misspelled-words file (if requested) and print the report.
- 
+
     If ``reports.misspelled`` is not ``None``, creates the misspelled
     words output directory and writes the word list to a file named
     ``misspelled_<infile_name>``.  Always prints ``reports.main`` to
     ``stdout``.
- 
+
     Parameters
     ----------
     reports : REPORT
@@ -761,7 +761,7 @@ def _print_reports(
     infile_name : str
         Base name of the checked text file (e.g. ``"austen.txt"``).
         Used to construct the output filename.
- 
+
     Notes
     -----
     Directory creation uses ``mkdir(parents=True, exist_ok=True)`` so
@@ -769,13 +769,13 @@ def _print_reports(
     """
     if isinstance(reports, Report):
         console.print(reports.main)
-        
+
         if reports.misspelled is not None:
             file_dirs.MISS_DIR.mkdir(parents=True, exist_ok=True)
             out_file = file_dirs.MISS_DIR / f"misspelled_{infile_name}"
             out_file.write_text(reports.misspelled, encoding="utf-8")
             logger.info("Misspelled words saved to '%s'", out_file)
-    
+
     else:
         if table_report:
             print()  # Print a new line ('\n') by default
@@ -793,11 +793,12 @@ def _print_reports(
         else:
             # Print out regular string with color mark ups
             console.print(reports.format_general_report())
-    
+
 
 # =============================================================================
 # MAIN FUNCTION
 # =============================================================================
+
 
 # The if __name__ block and pyproject.toml script call main() with no arguments,which
 # defaults to None, which triggers sys.argv reading. Your tests pass explicit lists.
@@ -811,7 +812,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         Pass explicitly for testing:
             main(["texts/cat.txt"])
             main(["--verbose", "dictionaries/small", "texts/cat.txt"])
-    
+
     Orchestrates the full program lifecycle:
     1. Parse arguments
     2. Configure logging (respects --verbose and --no-log-file)
@@ -842,7 +843,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
     # _build_parser() returns an ArgumentParser object
     parser = _build_parser()
     raw: argparse.Namespace = parser.parse_args(argv)
-    
+
     # Resolve --dir sentinel into a real Path (or None for "no batch mode"),
     # before constructing SpellerArgs. That keeps the dataclass clean.
     if raw.dir is _USE_BUNDLED_DIR:
@@ -852,20 +853,20 @@ def main(argv: list[str] | None = None) -> ExitCode:
             # exits with code 2.
             parser.error(
                 "--dir without a path is only valid with --demo. "
-                        "Either pass `--demo --dir`or `--dir <path>`."
+                "Either pass `--demo --dir`or `--dir <path>`."
             )
         resolved_dir: Path | Traversable | None = file_dirs.TXT_DIR
     elif raw.dir is None:
         resolved_dir = None
     else:
         resolved_dir = Path(raw.dir)
-    
+
     # Convert from Namespace to SpellerArgs attributes
     # That gives you full Pyright coverage for the rest of main()
     args = SpellerArgs(
         text=raw.text,
         dictionary=raw.dictionary,
-        operations=raw.ops, 
+        operations=raw.ops,
         directory=resolved_dir,
         demo=raw.demo,
         verbose=raw.verbose,
@@ -876,7 +877,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         structured_logging=raw.structured_logging,
         table_report=raw.table_report,
     )
-    
+
     # -- Step 2: Configure logging FIRST --
     # Must happen before any logger.info/debug calls.
     # --verbose flag controls console log level.
@@ -898,14 +899,14 @@ def main(argv: list[str] | None = None) -> ExitCode:
             from speller.template_logger import configure_template_logging
         except ImportError as e:
             sys.exit(f"Error: Template lib available in Python 3.14+. Details: {e}")
-        
+
         configure_template_logging(
             console_verbose=args.verbose,
             log_to_file=not args.no_log_file,
             custom_console=not args.no_custom_console,
         )
         logger.info("Template (t-string) logging mode enabled")
-    
+
     elif args.structured_logging:
         # Lazy import: structlog is only required when this flag is set.
         # Keeps the package importable even if the dependency is missing.
@@ -913,14 +914,14 @@ def main(argv: list[str] | None = None) -> ExitCode:
             from speller.structured_logger import configure_structured_logging
         except ImportError as e:
             sys.exit(f"Error: structlog not installed. Details: {e}")
-        
+
         configure_structured_logging(
             console_verbose=args.verbose,
             log_to_file=not args.no_log_file,
             custom_console=not args.no_custom_console,
         )
-        logger.info("Structured logging mode enabled") 
-            
+        logger.info("Structured logging mode enabled")
+
     else:
         configure_logging(
             console_verbose=args.verbose,
@@ -928,43 +929,43 @@ def main(argv: list[str] | None = None) -> ExitCode:
             custom_console=not args.no_custom_console,
         )
         logger.info("Regular logging mode enabled")
-        
+
     if args.verbose:
         logger.debug("Verbose mode enabled (console debug output)")
-    
+
     logger.debug("Arguments parsed: %s", args)
-    
+
     # -- Step 3: Convert and validate paths --
     dict_path = Path(args.dictionary)
     path_validation = _validate_paths(dict_path, path_name="dictionary")
     if path_validation is not None:
         return path_validation
-    
+
     text_paths: list[Path | Traversable] = _resolve_text_paths(args)
     # If no files in directory provided
     if not text_paths:
         logger.error("No text files found. Provide a file or --dir path.")
         return ExitCode.FILE_NOT_FOUND
-    
+
     # Variables to  build General Report
     files_in_dir = 0
     files_not_found = 0
     # defaultdict() to initialize values as empty lists
     # list[str] is a type annotation, not a factory function. 'defaultdict[list[str]]' works
-    # by accident because list[str]() produces an empty list, but it's semantically wrong. 
+    # by accident because list[str]() produces an empty list, but it's semantically wrong.
     # Use defaultdict(list) (untyped factory) and annotate the variable.
     files_with_error: defaultdict[str, list[str]] = defaultdict(list)
-   
+
     success = False
     try:
         # _validate_ops() returns a list of valid ops
         validated_ops: list[str] = _validate_ops(args.operations)
         first_op = validated_ops[0]
-        
+
         for operation in validated_ops:
             data = dicts[operation]
-            
-            # -- Step 4: Create concrete dictionary -- 
+
+            # -- Step 4: Create concrete dictionary --
             # THIS IS THE COMPOSITION ROOT — the one place that picks
             # the concrete implementation. Everything downstream depends
             # on DictionaryProtocol (the abstraction), not this class.
@@ -972,28 +973,34 @@ def main(argv: list[str] | None = None) -> ExitCode:
             # To swap implementations:
             #   dictionary = DatabaseDictionary(conn_string)  # Stage 2
             #   dictionary = MockDictionary()                 # testing
-            
+
             # Load dictionary ONCE for this backend
-            loaded_dict, load_result = load_dictionary(dictionary=data.dict_class(), dict_path=dict_path)
-            
+            loaded_dict, load_result = load_dictionary(
+                dictionary=data.dict_class(), dict_path=dict_path
+            )
+
             # rich.panel.Panel wraps any content in a decorated box with a title:
-            console.print(Panel("Dictionary loaded successfully", title="[green]SUCCESS[/green]"))
-            
+            console.print(
+                Panel("Dictionary loaded successfully", title="[green]SUCCESS[/green]")
+            )
+
             # -- Step 5: Run spell checker --
             # run_speller() accepts DictionaryProtocol - it doesn´t know
             # or care that we passed a HashTableDictionary.
             logger.debug("Running Speller with '%s'", data.name)
 
             files_in_dir = len(text_paths)
-            
+
             # Now iterate over all text files - no dictionary reload
             for text_path in text_paths:
-                path_validation: ExitCode | None = _validate_paths(text_path, path_name="text")
+                path_validation: ExitCode | None = _validate_paths(
+                    text_path, path_name="text"
+                )
                 if path_validation is not None:
                     logger.warning("Skipping '%s': not found", text_path)
                     files_not_found += 1
-                    continue    # skip missing files, don't abort the batch
-                
+                    continue  # skip missing files, don't abort the batch
+
                 # ─── Structlog contextvars binding (per-file scope) ───
                 # Every log call downstream in run_speller() and its
                 # callees automatically includes these fields in the
@@ -1001,13 +1008,14 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 # This is the Stage 2+ request-scoped logging pattern.
                 if args.structured_logging:
                     import structlog
+
                     structlog.contextvars.clear_contextvars()  # clears vars before assignment for each run
                     structlog.contextvars.bind_contextvars(
                         file=text_path.name,
                         backend=type(loaded_dict).__name__,
                         operation=operation,
                     )
-                
+
                 # Use t-strings or f-strings (regular string) for logger.info()
                 if args.template_logging:
                     text_name = text_path.name
@@ -1026,36 +1034,36 @@ def main(argv: list[str] | None = None) -> ExitCode:
                         dict_path.name,
                         type(loaded_dict).__name__,
                     )
-                
+
                 benchmarks: dict[str, BenchmarkResult] = {}
                 benchmarks["load"] = load_result
-                
+
                 try:
                     # Initial results[] (ops_name, description empty)
                     # data.results[str]: Type hints = ... fail, because in Python we cannot annotate
-                    # a subscript assignment. PEP 526 only allows annotations on: 
+                    # a subscript assignment. PEP 526 only allows annotations on:
                     #   - Simple names: x: int = 5
                     #   - Attribute access: self.x: int = 5
                     data.results[text_path.name] = run_speller(
-                        dictionary=loaded_dict, 
+                        dictionary=loaded_dict,
                         text_path=text_path,
                         benchmarks=benchmarks,
                     )
                 except UnicodeDecodeError as e:
                     logger.warning("Skipping file: %s", e)
                     files_with_error["error_decode"].append(text_path.name)
-                    continue    # skip bad files, don't abort the batch
+                    continue  # skip bad files, don't abort the batch
                 except ValueError as e:
                     logger.warning("Skipping file: %s", e)
                     files_with_error["error_empty"].append(text_path.name)
-                    continue    # skip bad files, don't abort the batch
+                    continue  # skip bad files, don't abort the batch
                 except Exception as e:
                     logger.warning("Exception: Skipping file: %s", e)
                     files_with_error["error_other"].append(text_path.name)
-                    continue    # skip bad files, don't abort the batch
-                
+                    continue  # skip bad files, don't abort the batch
+
                 result: SpellerResult = data.results[text_path.name]
-                
+
                 # "Update" by creating a NEW frozen instance (original unchanged)
                 # replace() doesn't mutate — it copies all fields into a new frozen instance with the
                 # specified fields overridden. The original object is untouched. This is the idiomatic
@@ -1065,30 +1073,30 @@ def main(argv: list[str] | None = None) -> ExitCode:
                     ops_name=data.name,
                     description=data.description,
                 )
-            
+
                 # Show for the FIRST operation only (avoid duplicate files)
-                show_misspelled = (args.show_misspelled and (operation == first_op))
-        
+                show_misspelled = args.show_misspelled and (operation == first_op)
+
                 # -- Step 6: Display SpellerResult reports --
                 # format_report() returns a string — main() decides to print it.
                 # In a web app (Stage 1 Streamlit), you'd display it differently.
                 # In tests, you'd just check result.words_misspelled.
                 reports: Report = result.format_report(log_misspelled=show_misspelled)
                 _print_reports(reports, text_path.name, console=console)
-        
+
         # -- Step 7: Builds and display GeneralReport report --
         general_report = GeneralReport(
             files_not_found=files_not_found,
             files_in_dir=files_in_dir,
-            files_with_error=FileErrorData(  
+            files_with_error=FileErrorData(
                 error_decode=files_with_error["error_decode"],
                 error_empty=files_with_error["error_empty"],
                 error_other=files_with_error["error_other"],
             ),  # Construct FileErrorData with defaultdict values
         )
-        
+
         _print_reports(general_report, table_report=args.table_report, console=console)
-        
+
         # -- Step 8: Return exit code --
         success = True
         return ExitCode.SUCCESS
@@ -1096,30 +1104,31 @@ def main(argv: list[str] | None = None) -> ExitCode:
     except KeyboardInterrupt:
         logger.warning("Interrupted by user. Exiting.")
         return ExitCode.KEYBOARD_INTERRUPT
-    
+
     except SystemExit as e:
         # run_speller raises SystemExit if dictionary fails to load
         logger.error("Speller failed: %s", e)
         return ExitCode.LOAD_FAILED
-    
+
     except (KeyError, TypeError) as e:
         logger.error("Operation argument failed: %s", e)
         return ExitCode.USAGE_ERROR
-    
+
     except Exception as e:  # Catches every other exception in program
         # Appears as logging.error, provides Python's traceback info
         logger.exception("Unexpected Error: %s", e)
         return ExitCode.FAILURE
-    
+
     # Why %s over f-string in logging? The f-string is evaluated immediately even if the log level
     # is disabled. The %s format is only evaluated if the message actually gets logged. This is a
     # performance pattern that matters in hot loops (Stage 2 ETL, Stage 3 training).
-    
-    finally:   # Always runs (error or no erros)
+
+    finally:  # Always runs (error or no erros)
         if args.structured_logging:
             import structlog
+
             structlog.contextvars.clear_contextvars()  # Clear variables for final log mssgs
-        
+
         # Report out each log file currently saved in log directory selected by platformdirs
         for log_file in file_dirs.log_file:
             if log_file.exists():
@@ -1128,15 +1137,14 @@ def main(argv: list[str] | None = None) -> ExitCode:
                     log_file.name,
                     log_file,
                 )
-            
+
         if success:
             logger.info("Program completed.\n")
             logger.debug("Spell check completed successfully\n")
         else:
             logger.warning("Program terminated with errors.\n")
-            
-    
-   
+
+
 # =============================================================================
 # EXECUTION GUARD
 # =============================================================================
@@ -1152,7 +1160,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
 #   $ python -m speller texts/cat.txt && echo "success" || echo "failed"
 if __name__ == "__main__":
     sys.exit(main())
-    
+
 # Execution: __name__ == "__main__" → runs sys.exit(main())
 #   $ python -m speller texts/cat.txt
 

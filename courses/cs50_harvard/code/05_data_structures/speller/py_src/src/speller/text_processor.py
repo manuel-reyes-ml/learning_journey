@@ -77,6 +77,7 @@ __all__ = ["extract_words"]
 # API." These functions aren't in __all__, so from speller.text_processor
 # import * won't export them.
 
+
 def _consume_alpha(content: str, pos: int, length: int) -> int:
     """Advance pos past remaining alphabetical characters.
 
@@ -105,14 +106,14 @@ def _consume_alpha(content: str, pos: int, length: int) -> int:
     """
     while pos < length and content[pos].isalpha():
         pos += 1
-        
+
     # Skip the terminating non-alpha character (matches C's fread
     # consumption: the inner loop reads the terminator, then the
-    # outer loop's fread reads the NEXT char, so the terminator 
+    # outer loop's fread reads the NEXT char, so the terminator
     # is effectively consumed/lost).
     if pos < length:
         pos += 1
-    
+
     return pos
 
 
@@ -142,16 +143,17 @@ def _consume_alnum(content: str, pos: int, length: int) -> int:
     """
     while pos < length and content[pos].isalnum():
         pos += 1
-    
+
     if pos < length:
         pos += 1
-        
+
     return pos
 
 
 # =============================================================================
 # CORE FUNCTIONS
 # =============================================================================
+
 
 def extract_words(content: str, path_name: str) -> Iterator[str]:
     """Extract words from a text file, matching CS50 speller.c behavior.
@@ -218,58 +220,58 @@ def extract_words(content: str, path_name: str) -> Iterator[str]:
           you'd read in fixed-size chunks instead
     """
     logger.debug("Extracting words from '%s'", path_name)
-    
+
     length = len(content)
     pos = 0
-    
+
     while pos < length:
         char = content[pos]
-        
+
         # =============================================================
         # STATE: SEEKING — looking for the start of a word
         # =============================================================
-        
+
         # --- Digit outside a word: consume remaining alnum, skip ---
         # Matches C: else if (isdigit(c)) { while(fread...isalnum); }
         # Example: "123abc" -> '1' triggers, consumes "23abc", skips all
         if char.isdigit():
             pos = _consume_alnum(content, pos + 1, length)
             continue
-        
+
         # --- Non-alphabetical: skip (spaces, punctuation, etc.) ---
         if not char.isalpha():
             pos += 1
             continue
-        
+
         # =============================================================
         # STATE: BUILDING — char is alphabetical, start building a word
         # =============================================================
-        
+
         word_chars: list[str] = []
         valid = True
-        
+
         while pos < length:
             char = content[pos]
-            
+
             # --- Alphabetical character: append to word buffer ---
             if char.isalpha():
                 word_chars.append(char)
                 pos += 1
-                
+
                 # --- Too long: consume remaining alpha, discard ---
                 # Matches C: if (index > LENGHT) { while(fread...isalpha); }
                 if len(word_chars) > MAX_WORD_LENGTH:
                     pos = _consume_alpha(content, pos, length)
                     valid = False
                     break
-                
+
             # --- Apostrophe mid-word: include in word ---
             # Matches C: (c == '\'' && index > 0)
             # word_chars being non-emty = index > 0
             elif char == "'" and word_chars:
                 word_chars.append(char)
                 pos += 1
-                
+
             # --- Digit mid-word: consume remaining alnum, discard ---
             # Matches C: else if (isdigit(c)) { while(fread...isalnum); }
             # Example: "abc123def!" -> 'a','b','c' built, '1' triggers,
@@ -278,18 +280,18 @@ def extract_words(content: str, path_name: str) -> Iterator[str]:
                 pos = _consume_alnum(content, pos + 1, length)
                 valid = False
                 break
-            
+
             # --- Any other character: word is completed ---
             # Matches C: else if (index > 0) { word[index] = '\0'; }
             else:
                 break
-            
+
         # Yield the word if it passed all validation
         if valid and word_chars:
             yield "".join(word_chars)
-            
+
     logger.debug("Finished extracting words from '%s'", path_name)
-    
+
 
 # This is the first **state machine** in your portfolio.
 # The function has two implicit states:

@@ -1,35 +1,35 @@
 """speller — production-grade Python spell-checker.
- 
+
 A re-implementation of CS50\'s ``speller.c`` in idiomatic Python,
 applying production engineering patterns from day one: type hints,
 frozen dataclasses, structured logging, Protocol-based dependency
 injection, ABC Template Method, and a plugin registry for swappable
 dictionary backends.
- 
+
 Usage
 -----
 CLI::
- 
+
     python -m speller [dictionary] text
     python -m speller --verbose texts/austen.txt
     python -m speller -o hash sorted texts/austen.txt
- 
+
 Programmatic::
- 
+
     from speller.speller import run_speller
     from speller.dictionaries import HashTableDictionary
- 
+
     result = run_speller(
         dictionary=HashTableDictionary(),
         text_path="texts/cat.txt",
         dict_path="dictionaries/large",
     )
     print(result.words_misspelled)
- 
+
 Package layout
 --------------
 ::
- 
+
     speller/
     ├── __init__.py        ← you are here; triggers backend registration
     ├── __main__.py        ← CLI entry point (composition root)
@@ -41,7 +41,7 @@ Package layout
     ├── text_processor.py  ← extract_words() generator
     ├── speller.py         ← run_speller() orchestrator
     └── logger.py          ← configure_logging(), ColoredFormatter
- 
+
 Roadmap relevance
 -----------------
 Stage 1 capstone.  The patterns here — Protocol DI, frozen result
@@ -76,7 +76,7 @@ __version__ = "1.0.0"
 from speller import dictionaries as _dicts_module  # noqa: F401
 
 # The # noqa: F401 comment tells ruff/flake8 "yes, I know I didn't use this
-#import — it's intentional." This is a well-known Python pattern for plugin registration.
+# import — it's intentional." This is a well-known Python pattern for plugin registration.
 
 
 # __init__.py (runs on import)     → "What does this package OFFER to other code?"

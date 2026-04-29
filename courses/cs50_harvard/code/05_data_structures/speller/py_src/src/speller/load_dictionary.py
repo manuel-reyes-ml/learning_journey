@@ -52,8 +52,8 @@ from speller.protocols import DictionaryProtocol
 # This logger is a CHILD of the 'speller' logger configured in logger.py.
 # Log messages flow upward: speller.dictionary -> speller -> handlers.
 # You never configure handlers here - that's logger.py / __main__.py's job.
-logger = logging.getLogger(__name__)            # for narrative
-slog = structlog.stdlib.get_logger(__name__)    # for structured events
+logger = logging.getLogger(__name__)  # for narrative
+slog = structlog.stdlib.get_logger(__name__)  # for structured events
 
 
 # =============================================================================
@@ -66,6 +66,7 @@ __all__ = ["load_dictionary"]
 # =============================================================================
 # CORE FUNCTION
 # =============================================================================
+
 
 # STEP: Load dictionary (timed)
 def load_dictionary(
@@ -141,16 +142,18 @@ def load_dictionary(
         # dictionary.load() works with ANY implementation
         # Dependency injection in action
         loaded = dictionary.load(str(dict_path))
-    
+
     if not loaded:
         logger.error("Could not load dictionary: %s", dict_path)
         raise SystemExit(f"Could not load {dict_path}.")
-    
+
     logger.info(
         "Dictionary loaded: %s words",
-        format(len(dictionary),","),  # format number to use ',' separator and return str
+        format(
+            len(dictionary), ","
+        ),  # format number to use ',' separator and return str
     )
-    
+
     # Structured event - queryable metrics
     slog.info(
         "dictionary_loaded",

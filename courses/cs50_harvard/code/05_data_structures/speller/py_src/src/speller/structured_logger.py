@@ -1,5 +1,4 @@
-"""
-"""
+""" """
 
 # =============================================================================
 # IMPORTS
@@ -69,6 +68,7 @@ _KEY_ORDER: Final[list[str]] = ["timestamp", "level", "logger", "event"]
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
 
+
 def _reorder_keys(preferred_order: list[str]) -> Processor:
     """Processor factory: move specified keys to the front of the event_dict.
 
@@ -86,15 +86,19 @@ def _reorder_keys(preferred_order: list[str]) -> Processor:
     Processor
         A callable compatible with structlog's processor protocol.
     """
-    def processor(logger: WrappedLogger, method_name: str, event_dict: EventDict) -> EventDict:
+
+    def processor(
+        logger: WrappedLogger, method_name: str, event_dict: EventDict
+    ) -> EventDict:
         ordered: dict[str, Any] = {}
         for key in preferred_order:
             if key in event_dict:
                 ordered[key] = event_dict.pop(key)
         ordered.update(event_dict)
         return ordered
+
     return processor
-    
+
 
 def _setup_chandler(
     *,
@@ -102,17 +106,17 @@ def _setup_chandler(
     custom_console: bool = True,
 ) -> logging.StreamHandler:
     """Create and configure a structlog-aware console (stream) handler.
- 
+
     Writes to ``sys.stderr`` so log output and program output
     (``stdout``) remain on separate streams and can be redirected
     independently — matches :mod:`speller.logger`.
- 
+
     Uses :class:`structlog.dev.ConsoleRenderer` as the final renderer
     for pretty, aligned, colored ``key=value`` output optimised for
     developers.  Stack traces are pretty-printed with syntax
     highlighting when :class:`structlog.dev.RichTracebackFormatter`
     is available.
- 
+
     Parameters
     ----------
     level : int
@@ -121,12 +125,12 @@ def _setup_chandler(
     custom_console : bool, optional
         ``True`` (default) enables ANSI colors.  Set ``False`` in
         tests to suppress colors from captured output.
- 
+
     Returns
     -------
     logging.StreamHandler
         Fully configured handler ready to attach to a logger.
- 
+
     Notes
     -----
     Why ``ProcessorFormatter`` instead of a regular ``Formatter``?
@@ -136,7 +140,7 @@ def _setup_chandler(
         ``logging.getLogger(__name__).info(...)`` calls flow through
         the SAME processor chain as native ``structlog.get_logger()``
         calls — consistent output regardless of origin.
- 
+
     Why ``foreign_pre_chain`` equals the shared processors?
         ``foreign_pre_chain`` only runs on non-structlog entries
         (stdlib logs).  Setting it to ``_SHARED_PROCESSORS`` ensures
@@ -156,7 +160,7 @@ def _setup_chandler(
                 structlog.stdlib.ProcessorFormatter.remove_processors_meta,
                 _reorder_keys(_KEY_ORDER),
                 structlog.dev.ConsoleRenderer(colors=custom_console),
-            ]
+            ],
         )
     )
     return console_handler
@@ -167,18 +171,18 @@ def _setup_fhandler(
     fhandler_config: FileHandlerConfig = fhandler_config,
 ) -> RotatingFileHandler:
     """Create and configure a rotating JSON file handler.
- 
+
     Always captures ``DEBUG`` level regardless of console verbosity
     so full diagnostic information is available on disk even when
     the console shows only ``INFO``.  Reuses the singleton
     :class:`~speller.config.FileHandlerConfig` for size/rotation
     settings — same disk budget as the plain-text handler.
- 
+
     Uses :class:`structlog.processors.JSONRenderer` as the final
     renderer for NDJSON output (one JSON object per line).  This is
     the format expected by ``jq``, DuckDB's ``read_json_auto``, and
     every major log aggregation platform.
- 
+
     Parameters
     ----------
     file_dirs : FileDirectories, optional
@@ -187,12 +191,12 @@ def _setup_fhandler(
     fhandler_config : FileHandlerConfig, optional
         Provides size and rotation settings.  Defaults to the
         module-level singleton from :mod:`speller.config`.
- 
+
     Returns
     -------
     RotatingFileHandler
         Fully configured handler ready to attach to a logger.
- 
+
     Notes
     -----
     Why a separate log file (``speller_structured.log``)?
@@ -200,7 +204,7 @@ def _setup_fhandler(
         on the same batch would otherwise overwrite each other's
         files.  Separate paths let you diff the output of the three
         logging backends directly.
- 
+
     Why ``JSONRenderer()`` rather than the stdlib ``JsonTemplateFormatter``?
         :class:`~speller.template_logger.JsonTemplateFormatter` is
         a hand-rolled renderer for t-string interpolations — it
@@ -227,7 +231,7 @@ def _setup_fhandler(
                 structlog.stdlib.ProcessorFormatter.remove_processors_meta,
                 _reorder_keys(_KEY_ORDER),
                 structlog.processors.JSONRenderer(),
-            ],   
+            ],
         )
     )
     return file_handler
@@ -237,8 +241,7 @@ def _setup_fhandler_indent(
     file_dirs: FileDirectories = file_dirs,
     fhandler_config: FileHandlerConfig = fhandler_config,
 ) -> RotatingFileHandler:
-    """
-    """
+    """ """
     file_handler_indent = RotatingFileHandler(
         filename=file_dirs.log_file.slog_indent_path,
         maxBytes=fhandler_config.max_log_bytes,
@@ -254,7 +257,9 @@ def _setup_fhandler_indent(
             processors=[
                 structlog.stdlib.ProcessorFormatter.remove_processors_meta,
                 _reorder_keys(_KEY_ORDER),
-                structlog.processors.JSONRenderer(indent=2),  # indent JSON output to improve readability
+                structlog.processors.JSONRenderer(
+                    indent=2
+                ),  # indent JSON output to improve readability
             ],
         )
     )
@@ -265,6 +270,7 @@ def _setup_fhandler_indent(
 # CORE FUNCTIONS
 # =============================================================================
 
+
 def configure_structured_logging(
     *,
     console_verbose: bool = False,
@@ -272,17 +278,17 @@ def configure_structured_logging(
     custom_console: bool = True,
 ) -> None:
     """Configure structlog + stdlib logging for the speller package.
- 
+
     Must be called once at program startup (inside ``main()`` in
     ``__main__.py``) before any log messages are emitted.  Safe to
     call multiple times — existing handlers are cleared first to
     prevent duplicate output.
- 
+
     Parameter signature mirrors :func:`~speller.logger.configure_logging`
     and :func:`~speller.template_logger.configure_template_logging`
     so the composition root can treat all three backends
     interchangeably via the Strategy pattern.
- 
+
     Parameters
     ----------
     console_verbose : bool, optional
@@ -298,12 +304,12 @@ def configure_structured_logging(
         ``True`` (default) enables ANSI colors in the console
         renderer.  Set ``False`` in tests to suppress colors from
         captured output.
- 
+
     Notes
     -----
     Two-phase configuration
         structlog is configured in TWO places that must agree:
- 
+
         1. :func:`structlog.configure` — defines the processor chain
            used by ``structlog.get_logger()`` calls.  Ends with
            ``ProcessorFormatter.wrap_for_formatter``, which hands
@@ -312,13 +318,13 @@ def configure_structured_logging(
         2. :class:`~structlog.stdlib.ProcessorFormatter` on each
            handler — runs ``foreign_pre_chain`` on stdlib entries
            and the final renderer on all entries.
- 
+
         The ``_SHARED_PROCESSORS`` list is reused in both places so
         the output format is identical regardless of which API
         (structlog or stdlib) emitted the log.
- 
+
     Logger hierarchy::
- 
+
         speller                 ← root package logger (configured here)
         ├── speller.benchmarks
         ├── speller.config
@@ -326,7 +332,7 @@ def configure_structured_logging(
         ├── speller.register
         ├── speller.speller
         └── speller.text_processor
- 
+
         Both ``structlog.get_logger(__name__)`` and
         ``logging.getLogger(__name__)`` resolve to the same underlying
         hierarchy — the structlog logger factory wraps stdlib loggers.
@@ -348,7 +354,6 @@ def configure_structured_logging(
             #   4. TimeStamper(fmt="iso")          → adds "timestamp": "2026-04-21T..."
             #   5. StackInfoRenderer()             → formats stack_info if present
             #   6. format_exc_info                 → serializes exceptions
-            
             # MUST be last, Hands off to stdlib logging instead of rendering.
             # This is not a renderer. It's a bridge. It takes the enriched event_dict and
             # wraps it in a format that a stdlib logging.LogRecord can carry as its msg field.
@@ -356,7 +361,6 @@ def configure_structured_logging(
             # and applies the real renderer (your ConsoleRenderer or JSONRenderer).
             structlog.stdlib.ProcessorFormatter.wrap_for_formatter,  # the 7th processor
         ],
-        
         # stdlib.BoundLogger knows logging's method names (info/debug/...)
         # and delegates to the wrapped logging.Logger.
         # What it is: The class of the object returned by structlog.get_logger(). When your code
@@ -370,7 +374,6 @@ def configure_structured_logging(
         #   - It supports %s-style positional args via PositionalArgumentsFormatter (not strictly
         #     used here but wired up).
         wrapper_class=structlog.stdlib.BoundLogger,
-
         # stdlib.LoggerFactory creates a logging.Logger when structlog
         # needs one. Auto-deduces the caller's module name.
         # What it is: A factory (a callable) that produces the underlying logger object.
@@ -380,10 +383,9 @@ def configure_structured_logging(
         # and returned to you.
         #
         # Why LoggerFactory() not LoggerFactory: It's an instantiated factory, not the class itself.
-        # configure() calls the factory — logger_factory() — and you want the result of 
+        # configure() calls the factory — logger_factory() — and you want the result of
         # LoggerFactory()(...) which returns a logging.Logger.
         logger_factory=structlog.stdlib.LoggerFactory(),
-        
         # Cache the bound logger after the first call. Safe because
         # we reconfigure idempotently via handler clearing below.
         # What it is: A performance optimization. Default is False.
@@ -397,23 +399,23 @@ def configure_structured_logging(
         #     takes effect.
         cache_logger_on_first_use=True,
     )
-    
+
     # ─── 2. Grab the top-level package logger ───────────────────────
     # Same package_logger pattern as speller.logger.configure_logging —
     # child loggers (speller.dictionaries, speller.speller, ...)
     # propagate messages upward to this one.
     package_logger = logging.getLogger(file_dirs.CUR_DIR.name)
     package_logger.setLevel(logging.DEBUG)  # Let handlers decide their own level
-    
+
     # ─── 3. Prevent duplicate handlers on re-configuration ──────────
     if package_logger.hasHandlers():
         package_logger.handlers.clear()
-        
+
     # ─── 4. Console handler — pretty key=value, color optional ──────
     level = logging.DEBUG if console_verbose else fhandler_config.LEVEL_DEFAULT
     console_handler = _setup_chandler(level=level, custom_console=custom_console)
     package_logger.addHandler(console_handler)
-    
+
     # ─── 5. File handlers — NDJSON, always captures DEBUG ────────────
     if log_to_file:
         # parents=True: create any missing parent directories
@@ -421,55 +423,55 @@ def configure_structured_logging(
         file_dirs.LOG_DIR.mkdir(parents=True, exist_ok=True)
         file_handler = _setup_fhandler()
         package_logger.addHandler(file_handler)
-        
+
         # Generate JSON log with indentation = 2 for human readability
         file_handler_indent = _setup_fhandler_indent()
         package_logger.addHandler(file_handler_indent)
-        
+
     # ─── 6. Propagation control ─────────────────────────────────────
     # Same choice as speller.logger.configure_logging — propagate to
     # root so parent loggers (if any) see these messages.  Set False
-    # if you notice double-printing in specific environments. 
+    # if you notice double-printing in specific environments.
     package_logger.propagate = True
-  
+
 
 def get_structured_logger(name: str | None = None) -> structlog.stdlib.BoundLogger:
     """Return a structlog bound logger with correct type hints.
- 
+
     Thin wrapper around :func:`structlog.stdlib.get_logger` that
     makes the return type statically visible to Pyright.
- 
+
     Parameters
     ----------
     name : str or None, optional
         Logger name.  Conventionally ``__name__`` of the caller.
         If ``None``, structlog auto-deduces the caller's module.
- 
+
     Returns
     -------
     structlog.stdlib.BoundLogger
         Bound logger with ``.info()``, ``.debug()``, ``.bind()``,
         etc.  Accepts keyword arguments as first-class fields::
- 
+
             log = get_structured_logger(__name__)
             log.info("dictionary_loaded", word_count=143091, backend="hash")
- 
+
     Examples
     --------
     In a module that wants structured logging::
- 
+
         from speller.structured_logger import get_structured_logger
         log = get_structured_logger(__name__)
- 
+
         log.info("event_name", key1=value1, key2=value2)
         log.bind(request_id="abc").info("sub_event", another_key=42)
- 
+
     In a module that wants to stay stdlib (most of the package)::
- 
+
         import logging
         logger = logging.getLogger(__name__)  # unchanged
         logger.info("Loaded %s words", count)  # unchanged
- 
+
     Both APIs produce identical output when
     :func:`configure_structured_logging` has been called, because
     they share the same handlers and processor pipeline.
@@ -482,7 +484,7 @@ def get_structured_logger(name: str | None = None) -> structlog.stdlib.BoundLogg
 # =============================================================================
 # REFERENCE GUIDES
 # =============================================================================
- 
+
 # How the pieces connect
 # ──────────────────────
 #
@@ -521,7 +523,7 @@ def get_structured_logger(name: str | None = None) -> structlog.stdlib.BoundLogg
 #                                 "backend": "hash",
 #                                 "word_count": 143091}
 #
- 
+
 # =====================================================
 # Processor Contract
 # =====================================================
@@ -542,8 +544,8 @@ def get_structured_logger(name: str | None = None) -> structlog.stdlib.BoundLogg
 #
 # Then add it anywhere in _SHARED_PROCESSORS. Every log event
 # will now include {"app_version": "1.0.0"}.
- 
- 
+
+
 # =====================================================
 # Context Variables — the killer feature
 # =====================================================
@@ -572,7 +574,7 @@ def get_structured_logger(name: str | None = None) -> structlog.stdlib.BoundLogg
 # =============================================================================
 # END-TO-END PROCESSING FLOW — REFERENCE GUIDE
 # =============================================================================
-# 
+#
 # Two API paths converge on ONE set of handlers. This guide traces both paths
 # step-by-step so you can debug, extend, or reason about any log call.
 #

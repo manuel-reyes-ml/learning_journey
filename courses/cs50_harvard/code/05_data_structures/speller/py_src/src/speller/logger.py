@@ -1,21 +1,21 @@
 """Logging configuration for the speller package.
- 
+
 Provides :func:`configure_logging`, the single entry point that
 attaches all handlers to the ``"speller"`` root logger.  Every module
 in the package calls ``logging.getLogger(__name__)`` to get a child
 logger; this module is the only place that attaches handlers and sets
 levels.
- 
+
 Two-handler strategy
 --------------------
 Console handler (``StreamHandler``)
     Colored output via :class:`ColoredFormatter`.  Level controlled
     by ``--verbose`` flag at runtime.
- 
+
 File handler (``RotatingFileHandler``)
     Plain text.  Always captures ``DEBUG`` level.  Rotates at
     ``FILE_MB`` megabytes with ``BACKUP_COUNT`` backups.
- 
+
 Library logging pattern
 -----------------------
 :data:`logging.NullHandler` added in ``__init__.py`` follows the
@@ -24,13 +24,13 @@ logging on import.  Only the *application* entry point
 (``__main__.py``) calls :func:`configure_logging` to activate real
 handlers.  This prevents log pollution when the package is imported
 by other programs.
- 
+
 Roadmap relevance
 -----------------
 Identical structure reused across every future project: one
 :func:`configure_logging`, one root logger per package, child loggers
 per module via ``__name__``.
- 
+
 References
 ----------
 .. [1] Python Docs — Logging HOWTO
@@ -51,15 +51,15 @@ import logging
 import sys
 
 from speller.config import (
-        file_dirs,
-        fhandler_config,
-        FileDirectories,
-        FileHandlerConfig,
+    file_dirs,
+    fhandler_config,
+    FileDirectories,
+    FileHandlerConfig,
 )
 
 # No ImportError sys.exit() on regular module so the
 # error propagates to the caller (__main__.py).
-    
+
 
 # =============================================================================
 # EXPORTS
@@ -71,6 +71,7 @@ __all__ = ["ColoredFormatter", "configure_logging"]
 # =============================================================================
 # CUSTOM FORMATTER CLASS
 # =============================================================================
+
 
 # Inherits from Python's built-in Formatter
 class ColoredFormatter(logging.Formatter):
@@ -97,16 +98,17 @@ class ColoredFormatter(logging.Formatter):
     >>> logger.info("This appears in green")
     >>> logger.error("This appears in red")
     """
-    # Color codes for each level 
+
+    # Color codes for each level
     COLORS: Final[dict[int, str]] = {
-        logging.DEBUG:     "\033[90m",   # Gray
-        logging.INFO:      "\033[92m",   # Green
-        logging.WARNING:   "\033[93m",   # Yellow
-        logging.ERROR:     "\033[91m",   # Red
-        logging.CRITICAL:  "\033[1;91m", # Bold Red
+        logging.DEBUG: "\033[90m",  # Gray
+        logging.INFO: "\033[92m",  # Green
+        logging.WARNING: "\033[93m",  # Yellow
+        logging.ERROR: "\033[91m",  # Red
+        logging.CRITICAL: "\033[1;91m",  # Bold Red
     }
     RESET: Final[str] = "\033[0m"
-    
+
     # Override the parent's format method
     # Apply override decorator to a subclass method that overrides a base class method.
     # Static type checkers will warn if the base class is modified such that the overridden method
@@ -141,19 +143,20 @@ class ColoredFormatter(logging.Formatter):
         """
         # Step 1: Get the color for this log level
         color = self.COLORS.get(record.levelno, self.RESET)
-        
+
         # Step 2: Format the message normally first
         # This produces: "14:30:45 : INFO : Your message here"
         # super() calls PARENT's format() methdod
         message = super().format(record)
-        
+
         # Step 3: Wrap with color codes
         return f"{color}{message}{self.RESET}"
-    
+
 
 # =============================================================================
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
+
 
 def _setup_chandler(
     *,
@@ -161,11 +164,11 @@ def _setup_chandler(
     formatter: type[logging.Formatter],
 ) -> logging.StreamHandler:
     """Create and configure a console (stream) logging handler.
- 
+
     Writes to ``sys.stderr`` so log output and program output
     (``stdout``) remain on separate streams and can be redirected
     independently.
- 
+
     Parameters
     ----------
     level : int
@@ -175,7 +178,7 @@ def _setup_chandler(
         Formatter class to instantiate.  Pass plain
         ``logging.Formatter`` in tests to suppress ANSI color codes
         from captured output.
- 
+
     Returns
     -------
     logging.StreamHandler
@@ -183,10 +186,12 @@ def _setup_chandler(
     """
     console_handler = logging.StreamHandler(sys.stderr)
     console_handler.setLevel(level)
-    console_handler.setFormatter(formatter(
-        fmt='%(asctime)s : %(levelname)s : %(message)s',
-        datefmt='%H:%M:%S',
-    ))
+    console_handler.setFormatter(
+        formatter(
+            fmt="%(asctime)s : %(levelname)s : %(message)s",
+            datefmt="%H:%M:%S",
+        )
+    )
     return console_handler
 
 
@@ -195,13 +200,13 @@ def _setup_fhandler(
     fhandler_config: FileHandlerConfig = fhandler_config,
 ) -> RotatingFileHandler:
     """Create and configure a rotating file logging handler.
- 
+
     Always captures ``DEBUG`` level regardless of console verbosity so
     full diagnostic information is available on disk even when the
     console shows only ``INFO``.  Rotates at
     :attr:`~speller.config.FileHandlerConfig.max_log_bytes` and keeps
     :attr:`~speller.config.FileHandlerConfig.BACKUP_COUNT` backups.
- 
+
     Parameters
     ----------
     file_dirs : FileDirectories, optional
@@ -210,12 +215,12 @@ def _setup_fhandler(
     fhandler_config : FileHandlerConfig, optional
         Provides size and rotation settings.  Defaults to the
         module-level singleton from ``config.py``.
- 
+
     Returns
     -------
     RotatingFileHandler
         Fully configured handler ready to add to a logger.
- 
+
     Notes
     -----
     The log directory is created by :func:`configure_logging` before
@@ -227,20 +232,23 @@ def _setup_fhandler(
         maxBytes=fhandler_config.max_log_bytes,
         backupCount=fhandler_config.BACKUP_COUNT,
         encoding=fhandler_config.ENCODING,
-    ) 
+    )
     file_handler.setLevel(logging.DEBUG)
-    
+
     # %(name)s shows module name (speller.main)
-    file_handler.setFormatter(logging.Formatter(
-        fmt='%(asctime)s : %(name)s : %(levelname)s : %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S',
-    ))
+    file_handler.setFormatter(
+        logging.Formatter(
+            fmt="%(asctime)s : %(name)s : %(levelname)s : %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        )
+    )
     return file_handler
 
 
 # =============================================================================
 # CORE FUNCTIONS
 # =============================================================================
+
 
 def configure_logging(
     *,
@@ -250,12 +258,12 @@ def configure_logging(
     custom_formatter: type[logging.Formatter] = ColoredFormatter,
 ) -> None:
     """Configure all handlers for the package root logger.
- 
+
     Must be called once at program startup (inside ``main()`` in
     ``__main__.py``) before any log messages are emitted.  Safe to
     call multiple times — existing handlers are cleared first to
     prevent duplicate output.
- 
+
     Parameters
     ----------
     console_verbose : bool, optional
@@ -272,11 +280,11 @@ def configure_logging(
     custom_formatter : type[logging.Formatter], optional
         Formatter class to use when ``custom_console=True``.  Defaults
         to :class:`ColoredFormatter`.  Injectable for testing.
- 
+
     Notes
     -----
     Logger hierarchy::
- 
+
         speller                 ← root package logger (configured here)
         ├── speller.benchmarks
         ├── speller.config
@@ -284,7 +292,7 @@ def configure_logging(
         ├── speller.register
         ├── speller.speller
         └── speller.text_processor
- 
+
     Child loggers propagate messages upward to ``speller``, which
     dispatches them to the console and file handlers.
     ``propagate = False`` on the root logger prevents messages reaching
@@ -294,27 +302,27 @@ def configure_logging(
     # CUR_DIR.name gives the current directory in string "speller"
     package_logger = logging.getLogger(file_dirs.CUR_DIR.name)
     package_logger.setLevel(logging.DEBUG)  # Let handlers decide their own level
-    
+
     # 2. Prevent duplicate handlers if this function is called multiple times
     if package_logger.hasHandlers():
         package_logger.handlers.clear()
-        
+
     # 3. Console handler, colored(optional), respected the 'level' parameter
     level = logging.DEBUG if console_verbose else fhandler_config.LEVEL_DEFAULT
     formatter = custom_formatter if custom_console else logging.Formatter
-    
+
     console_handler = _setup_chandler(level=level, formatter=formatter)
     package_logger.addHandler(console_handler)
-    
+
     # 4. File handler - plain text, always captures DEBUG
     if log_to_file:
         # parents=True: create any missing parent directories
         # exist_ok=True: no error if directory already exists
         file_dirs.LOG_DIR.mkdir(parents=True, exist_ok=True)
-        
+
         file_handler = _setup_fhandler()
         package_logger.addHandler(file_handler)
-        
+
     # 5. When 'False' - prevents logs from bubbling up to Python's default root logger
     # (prevents duplicate printing in some environments).
     package_logger.propagate = True

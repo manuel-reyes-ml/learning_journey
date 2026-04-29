@@ -58,7 +58,12 @@ from logging.handlers import RotatingFileHandler
 from typing import Any, Final, override
 from string.templatelib import Template, Interpolation
 
-from speller.config import file_dirs, fhandler_config, FileDirectories, FileHandlerConfig
+from speller.config import (
+    file_dirs,
+    fhandler_config,
+    FileDirectories,
+    FileHandlerConfig,
+)
 
 
 # =============================================================================
@@ -78,17 +83,18 @@ __all__ = [
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
 
+
 def _setup_chandler(
     *,
     level: int,
     formatter: type[logging.Formatter],
 ) -> logging.StreamHandler:
     """Create and configure a console (stream) logging handler.
- 
+
     Writes to ``sys.stderr`` so log output and program output
     (``stdout``) remain on separate streams and can be redirected
     independently.
- 
+
     Parameters
     ----------
     level : int
@@ -98,18 +104,20 @@ def _setup_chandler(
         Formatter class to instantiate.  Pass plain
         ``logging.Formatter`` in tests to suppress ANSI color codes
         from captured output.
- 
+
     Returns
     -------
     logging.StreamHandler
         Fully configured handler ready to add to a logger.
-    """ 
+    """
     console_handler = logging.StreamHandler()
     console_handler.setLevel(level)
-    console_handler.setFormatter(formatter(
-        fmt='%(asctime)s : %(levelname)s : %(message)s',
-        datefmt='%H:%M:%S',
-    ))
+    console_handler.setFormatter(
+        formatter(
+            fmt="%(asctime)s : %(levelname)s : %(message)s",
+            datefmt="%H:%M:%S",
+        )
+    )
     return console_handler
 
 
@@ -118,13 +126,13 @@ def _setup_fhandler(
     fhandler_config: FileHandlerConfig = fhandler_config,
 ) -> RotatingFileHandler:
     """Create and configure a rotating file logging handler.
- 
+
     Always captures ``DEBUG`` level regardless of console verbosity so
     full diagnostic information is available on disk even when the
     console shows only ``INFO``.  Rotates at
     :attr:`~speller.config.FileHandlerConfig.max_log_bytes` and keeps
     :attr:`~speller.config.FileHandlerConfig.BACKUP_COUNT` backups.
- 
+
     Parameters
     ----------
     file_dirs : FileDirectories, optional
@@ -133,12 +141,12 @@ def _setup_fhandler(
     fhandler_config : FileHandlerConfig, optional
         Provides size and rotation settings.  Defaults to the
         module-level singleton from ``config.py``.
- 
+
     Returns
     -------
     RotatingFileHandler
         Fully configured handler ready to add to a logger.
- 
+
     Notes
     -----
     The log directory is created by :func:`configure_logging` before
@@ -152,18 +160,21 @@ def _setup_fhandler(
         encoding=fhandler_config.ENCODING,
     )
     file_handler.setLevel(logging.DEBUG)
-    
+
     # %(name)s shows module name (speller.main)
-    file_handler.setFormatter(JsonTemplateFormatter(
-        fmt='%(asctime)s : %(name)s : %(levelname)s : %(message)s',
-        datefmt='%Y-%m-%d %H:%M:%S',
-    ))
+    file_handler.setFormatter(
+        JsonTemplateFormatter(
+            fmt="%(asctime)s : %(name)s : %(levelname)s : %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S",
+        )
+    )
     return file_handler
 
 
 # =============================================================================
 # CORE FUNCTIONS — Template Processing
 # =============================================================================
+
 
 def render_message(template: Template) -> str:
     """Render a Template as a human-readable string (f-string equivalent).
@@ -196,7 +207,7 @@ def render_message(template: Template) -> str:
     'Time: 0.14s'
     """
     parts: list[str] = []
-    
+
     for item in template:
         # ─── Structural pattern matching (Python 3.10+) ───
         # match/case is the idiomatic way to process Template parts.
@@ -215,8 +226,9 @@ def render_message(template: Template) -> str:
                     parts.append(format(interp.value, interp.format_spec))
                 else:
                     parts.append(str(interp.value))
-    
+
     return "".join(parts)
+
 
 # Here's the problem: when someone writes t"Time: {elapsed:.2f}s", the Template stores:
 #   interp.value → the raw float, e.g. 0.1423
@@ -261,19 +273,20 @@ def extract_values(template: Template) -> dict[str, Any]:
     {'count': 143091}
     """
     values: dict[str, Any] = {}
-    
+
     for item in template:
         match item:
             case Interpolation() as interp:
-                #interp.expression is the source text: "count", "path.name", etc.
+                # interp.expression is the source text: "count", "path.name", etc.
                 values[interp.expression] = interp.value
-                
+
     return values
 
 
 # =============================================================================
 # CUSTOM FORMATTER CLASSES
 # =============================================================================
+
 
 class TemplateMessageFormatter(logging.Formatter):
     """Formatter that renders Template objects as colored human text.
@@ -293,16 +306,16 @@ class TemplateMessageFormatter(logging.Formatter):
     RESET : str
         ANSI reset code.
     """
-    
+
     COLORS: Final[dict[int, str]] = {
-        logging.DEBUG:    "\033[90m",    # Gray
-        logging.INFO:     "\033[92m",    # Green
-        logging.WARNING:  "\033[93m",    # Yellow
-        logging.ERROR:    "\033[91m",    # Red
+        logging.DEBUG: "\033[90m",  # Gray
+        logging.INFO: "\033[92m",  # Green
+        logging.WARNING: "\033[93m",  # Yellow
+        logging.ERROR: "\033[91m",  # Red
         logging.CRITICAL: "\033[1;91m",  # Bold Red
     }
     RESET: Final[str] = "\033[0m"
-    
+
     # Override the parent's format method
     # Apply override decorator to a subclass method that overrides a base class method.
     # Static type checkers will warn if the base class is modified such that the overridden method
@@ -334,7 +347,7 @@ class TemplateMessageFormatter(logging.Formatter):
         # handlers — they all receive the SAME LogRecord instance.
         if isinstance(record.msg, Template):
             rendered = render_message(record.msg)
-            
+
             # Build a shallow copy of the record with the rendered message,
             # leaving the original intact for other handlers
             #
@@ -346,13 +359,13 @@ class TemplateMessageFormatter(logging.Formatter):
             # Think of it the same way you already think about dataclasses.replace() in your __main__.py
             record = logging.makeLogRecord(record.__dict__)
             record.msg = rendered
-            record.args = None # Clear args - already rendered
-            
+            record.args = None  # Clear args - already rendered
+
         color = self.COLORS.get(record.levelno, self.RESET)
         message = super().format(record)
         return f"{color}{message}{self.RESET}"
-    
-    
+
+
 class JsonTemplateFormatter(logging.Formatter):
     """Formatter that renders Template objects as structured JSON.
 
@@ -390,7 +403,7 @@ class JsonTemplateFormatter(logging.Formatter):
          "message": "Dictionary loaded: 143091 words",
          "values": {"count": 143091}}
     """
-    
+
     # Override the parent's format method
     # Apply override decorator to a subclass method that overrides a base class method.
     # Static type checkers will warn if the base class is modified such that the overridden method
@@ -408,7 +421,7 @@ class JsonTemplateFormatter(logging.Formatter):
         -------
         str
             Single-line JSON string.
-        """ 
+        """
         log_entry: dict[str, Any] = {
             "timestamp": self.formatTime(record, datefmt="%Y-%m-%d %H:%M:%S"),
             "level": record.levelname,
@@ -418,15 +431,14 @@ class JsonTemplateFormatter(logging.Formatter):
             "author": record.author if hasattr(record, "author") else None,  # type: ignore[misc]
         }
         # author attr created in __main__ logger.info() using 'extra' dict
-        
+
         # record.exc_info is the gateway to exception logging — when someone calls
         # logger.exception("..."), the traceback tuple lands here.
         # This turns your JSON logger into a proper observability tool — full tracebacks
         # become searchable fields in Datadog or ELK.
         if record.exc_info:
             log_entry["exception"] = self.formatException(record.exc_info)
-        
-        
+
         if isinstance(record.msg, Template):
             log_entry["message"] = render_message(record.msg)
             log_entry["values"] = extract_values(record.msg)
@@ -435,13 +447,14 @@ class JsonTemplateFormatter(logging.Formatter):
         else:
             # Fallback for plain string log calls - backward compatible
             log_entry["message"] = record.getMessage()
-            
+
         return json.dumps(log_entry, indent=2)
 
 
 # =============================================================================
 # CONFIGURATION FUNCTION
 # =============================================================================
+
 
 def configure_template_logging(
     *,
@@ -470,32 +483,32 @@ def configure_template_logging(
     # CUR_DIR.name gives the current directory in string "speller"
     package_logger = logging.getLogger(file_dirs.CUR_DIR.name)
     package_logger.setLevel(logging.DEBUG)  # Let handlers decide their own level
-    
+
     # 2. Prevent duplicate handlers if this function is called multiple times
     if package_logger.hasHandlers():
         package_logger.handlers.clear()
-        
+
     # 3. Console handler: colored human-readable output, respected the 'level' parameter
     level = logging.DEBUG if console_verbose else fhandler_config.LEVEL_DEFAULT
     formatter = TemplateMessageFormatter if custom_console else logging.Formatter
-    
+
     console_handler = _setup_chandler(level=level, formatter=formatter)
     package_logger.addHandler(console_handler)
-    
+
     # 4. File handler - structured JSON output -  always captures DEBUG
     if log_to_file:
         # parents=True: create any missing parent directories
         # exist_ok=True: no error if directory already exists
         file_dirs.LOG_DIR.mkdir(parents=True, exist_ok=True)
-        
+
         file_handler = _setup_fhandler()
         package_logger.addHandler(file_handler)
-        
+
     # 5. When 'False' - prevents logs from bubbling up to Python's default root logger
-    # (prevents duplicate printing in some environments).    
+    # (prevents duplicate printing in some environments).
     package_logger.propagate = True
-    
-    
+
+
 # =============================================================================
 # REFERENCE GUIDES
 # =============================================================================
@@ -521,7 +534,7 @@ def configure_template_logging(
 #    large"                   "message": "Loaded 143091 words...",
 #    (colored for terminal)   "values": {"count": 143091,
 #                                        "path": "dictionaries/large"}}
-                                       
+
 
 # =====================================================
 # Python format() Spec Mini-Language
