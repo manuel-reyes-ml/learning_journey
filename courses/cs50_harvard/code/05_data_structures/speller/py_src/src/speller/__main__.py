@@ -89,8 +89,6 @@ except ImportError as e:
 # the verbosity level. This ensures --verbose flag controls log output
 logger = logging.getLogger(__name__)
 
-console: Console = get_console()
-
 
 # =============================================================================
 # MODULE CONFIGURATION
@@ -105,6 +103,7 @@ ops_list: Final[str] = ", ".join(dicts.keys())
 # object — comparison with `is` is unambiguous (PEP 661 pattern).
 # Cannot be confused with any user-supplied Path or with None.
 _USE_BUNDLED_DIR: Final = object()
+console: Console = get_console()
 
 
 # =====================================================
