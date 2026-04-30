@@ -59,8 +59,10 @@ import bisect  # Binary Search
 import logging
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Generic, TypeVar, override
+from typing import override
 
+# PEP 484, using Generic and TypeVar for parameter
+# from typing import Generic, TypeVar
 from speller.config import MAX_WORD_LENGTH
 from speller.register import register_class
 
@@ -101,7 +103,7 @@ __all__ = [
 # Constrained TypeVar: exactly set[str], list[str], or dict[str, None] — nothing else.
 # Adding dict[str, None] enables DictDictionary: O(1) key lookup using None as a
 # zero-cost sentinel value (None is a singleton — no new objects allocated per entry).
-WordContainer = TypeVar("WordContainer", set[str], list[str], dict[str, None])
+#   WordContainer = TypeVar("WordContainer", set[str], list[str], dict[str, None])
 
 # A plain TypeVar says "any type at all." The bound= argument adds a constraint:
 # "any type, as long as it's a subclass of this."
@@ -114,11 +116,21 @@ WordContainer = TypeVar("WordContainer", set[str], list[str], dict[str, None])
 # ABSTRACT BASE CLASS — Shared Implementation
 # =============================================================================
 
-
+# PEP 484
 # Generic[WordContainer] means: "_BaseDictionary is parameterised over WordContainer.
 # Each sublcass declares what WordContainer resolves to. Pyright tracks WordContainer
 # through the entire class - no invariance violation"
-class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation
+#
+# PEP 695
+# Stop using Generic[] and TypeVar. The Type parameter WordContainer is now scoped to
+# the class itself — declared in the brackets after the class name.
+#
+# class _BaseDictionary[WordContainer: set[str] | list[str] | dict[str, None]](ABC):
+# The wrong version above looks similar but means something different — it would mean
+# WordContainer must be a subtype of the union, which type-checkers handle differently
+# than constraints. Constraints force the type to be exactly one of the listed options;
+# bounds allow subclasses.
+class _BaseDictionary[WordContainer: (set[str], list[str], dict[str, None])](ABC):  # shared implementation
     """Shared spell-check dictionary logic.
 
     Underscore prefix because this class is INTERNAL — external code
