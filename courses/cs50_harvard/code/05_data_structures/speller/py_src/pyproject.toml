@@ -287,3 +287,15 @@ convention = "numpy"
 # Group 2: third-party (import pydantic, import pytest)
 # Group 3: local (from speller.config import ...)
 known-first-party = ["speller"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/speller/__main__.py" = ["E501"]
+"src/speller/speller.py" = ["E501"]
+"src/speller/structured_logger.py" = ["E501"]
+"src/speller/template_logger.py" = ["E501"]
+"src/speller/dictionaries.py" = ["E501"]
+"src/speller/benchmarks.py" = ["E501"]
+"src/speller/config.py" = ["E501", "RUF022"] # RUF022 for unsorted '__all__'
+"src/speller/__init__.py" = ["E501"]
+"src/speller/logger.py" = ["E501"]
+"src/speller/__compat_py314.py" = ["E501"]
