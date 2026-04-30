@@ -100,6 +100,7 @@ __all__ = [
 # Constants
 # =====================================================
 
+# PEP 484
 # Constrained TypeVar: exactly set[str], list[str], or dict[str, None] — nothing else.
 # Adding dict[str, None] enables DictDictionary: O(1) key lookup using None as a
 # zero-cost sentinel value (None is a singleton — no new objects allocated per entry).
@@ -110,6 +111,10 @@ __all__ = [
 # T = TypeVar("T")              # accepts literally anything
 # T = TypeVar("T", bound=int)   # accepts int, bool, or any subclass of int
 # rejects str, list, dict, etc.
+
+# PEP 695
+# Bounded (single type): [T: Number]  -> T must be Number or a subclass
+# Constrained (multiple types): [T: (set[str], list[str])]   -> T must be exactly one of these types
 
 
 # =============================================================================
