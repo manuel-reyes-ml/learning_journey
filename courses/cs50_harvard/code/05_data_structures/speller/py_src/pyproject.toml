@@ -300,4 +300,4 @@ known-first-party = ["speller"]
 "src/speller/config.py" = ["E501", "RUF022"] # RUF022 for unsorted '__all__'
 "src/speller/__init__.py" = ["E501", "E402"] # E402 Module level import not at top
 "src/speller/logger.py" = ["E501"]
-"src/speller/__compat_py314.py" = ["E501"]
+"src/speller/_compat_py314.py" = ["E501", "W292", "W293"] # New file in development
