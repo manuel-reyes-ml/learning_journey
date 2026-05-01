@@ -13,6 +13,7 @@
 SHELL := /bin/bash
 PY ?= python
 SRC := src/speller
+PYTEST := tests
 
 # This declares "these targets are tasks, not files." Without .PHONY, if a file named
 # test existed in your project root, make test would see the file, decide it's already
@@ -65,6 +66,8 @@ format:  ## Auto-format code with ruff
 	ruff format $(SRC)
 	ruff check --fix $(SRC)
 
+typecheck:  ## Run mypy static type checker (strict mode via pyproject.toml)
+	mypy $(SRC) $(PYTEST)
 
 # ─── TESTS ──────────────────────────────────────────────────────
 test:  ## Run the test suite
