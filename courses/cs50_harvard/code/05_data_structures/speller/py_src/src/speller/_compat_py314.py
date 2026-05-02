@@ -14,12 +14,20 @@ from string.templatelib import Interpolation, Template
 # =============================================================================
 
 def format_log_event(event: str, **kwargs: object) -> Template:
-    """Build a Template from an event name and arbitrary kwargs.
+    """Build a Template from an event name and kwargs.
 
-    Renders as: "{event} | key1=value1 key2=value2 ..."
-    Each kwarg becomes an Interpolation whose expression is the kwarg name,
-    so extract_values() produces {"key1": value1, "key2": value2, ...}
-    in the JSON output.
+    Renders as: ``"{event} | k1={v1} k2={v2} ..."``
+
+    Each kwarg name becomes the ``expression`` field on its Interpolation,
+    so JsonTemplateFormatter.extract_values() produces a structured
+    ``values`` dict keyed by the kwarg names.
+
+    Examples
+    --------
+    >>> tmpl = format_log_event("spell_check", file="cat.txt", count=42)
+    >>> # On the file handler:
+    >>> # {"message": "spell_check | file=cat.txt count=42",
+    >>> #  "values": {"file": "cat.txt", "count": 42}}
     """
     parts: list[str | Interpolation] = [f"{event} | "]
     
@@ -54,7 +62,6 @@ def format_log_event(event: str, **kwargs: object) -> Template:
     # consecutive interpolations.
     return Template(*parts)
 
-
 # Usage
 # tmpl = format_log_event(
 #     "spell_check_done",
@@ -62,3 +69,32 @@ def format_log_event(event: str, **kwargs: object) -> Template:
 #    elapsed=(0.1423, ".2f"),  # → "elapsed=0.14"
 #    misspelled=42,
 #   )
+
+
+def template_to_msg_extras(template: Template) -> tuple[str, dict[str, object]]:
+    """Render a Template and extract its raw interpolation values.
+
+    Returns the fully-rendered message (format specs applied) AND a dict of
+    raw, unformatted values keyed by source expression. This dual-output is
+    what powers the dual-handler logging architecture: the rendered string
+    goes to the human console; the raw dict goes to JSON for observability.
+    """
+    parts: list[str] = []
+    extras: dict[str, object] = {}
+    
+    for piece in template:
+        match piece:
+            case str() as text:
+                parts.append(text)
+            case Interpolation() as interp:
+                extras[interp.expression] = interp.value  # raw value preserved
+                if interp.format_spec:
+                    parts.append(format(interp.value, interp.format_spec))
+                else:
+                    parts.append(str(interp.value))
+            
+            # Defensive - Template iteration only yields these two types
+            case _:  # Default case (wildcard)
+                raise TypeError(f"Unexpected Template piece: {type(piece)!r}")
+            
+    return "".join(parts), extras
