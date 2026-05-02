@@ -27,8 +27,23 @@ def format_log_event(event: str, **kwargs: object) -> Template:
         if i > 0:
             parts.append(" ")
         parts.append(f"{name}=")
+        # 1. The kwarg name becomes the expression argument. Interpolation(value, name) is
+        # the line that makes everything work. name is the keyword's identifier as a string
+        # ("count"), and that's exactly what your extract_values() reads via interp.expression
+        # to populate the JSON values dict. Skip the second arg and every key in your structured
+        # logs becomes "".
         parts.append(Interpolation(value, name))
     
-    parts.append("")  # trailing statis segment to satisfy len(strings) == len(interpolation) + 1
+    # The len(strings) == len(interpolations) + 1 invariant. The Template format requires N+1
+    # string slots for N interpolations. That's why the trailing parts.append("") is there —
+    # without it, your last item is an Interpolation, the constructor inserts an empty string
+    # after it for you, and you'll see a slightly weird repr but still correct behavior.
+    # Adding it explicitly is just defensive and self-documenting.
+    parts.append("")
     
+    # Consecutive strings get concatenated by the constructor. 
+    # parts = ["dictionary_loaded | ", "count="] followed by an Interpolation is fine — the
+    # constructor merges the two strings into "dictionary_loaded | count=" automatically. 
+    # So you don't have to obsessively interleave; you just need some string between
+    # consecutive interpolations.
     return Template(*parts)
