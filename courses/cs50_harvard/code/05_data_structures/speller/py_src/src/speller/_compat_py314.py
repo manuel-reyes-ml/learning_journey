@@ -1,4 +1,23 @@
-"""PEP 750 t-string log formatter. Requires Python 3.14+."""
+"""PEP 750 t-string adapter for Python 3.14+.
+
+This module is loaded ONLY on Python 3.14+ (via the sys.version_info
+gate in _compat.py). It contains all code that touches string.templatelib.
+Crucially, this module uses ZERO ``t"..."`` literals — every Template is
+built via the ``Template(...)`` constructor, so the file parses cleanly
+on any Python version even though it only runs on 3.14+.
+
+Public API
+----------
+format_log_event(event, **kwargs) -> Template
+    Build a Template from an event name and arbitrary keyword arguments.
+    Each kwarg becomes an Interpolation whose ``expression`` is the kwarg
+    name, so downstream JSON formatters produce searchable structured fields.
+
+template_to_msg_extras(template) -> (str, dict)
+    Convert a Template to a (rendered_message, raw_values_dict) tuple.
+    Used by the TemplateAwareLogger adapter when a Template needs to be
+    routed through a non-Template-aware handler (e.g. structlog mode).
+"""
 
 # =============================================================================
 # IMPORTS
