@@ -27,6 +27,12 @@ from __future__ import annotations
 
 from string.templatelib import Interpolation, Template
 
+# =============================================================================
+# EXPORTS
+# =============================================================================
+
+__all__ = ["format_log_event", "template_to_msg_extras"]
+
 
 # =============================================================================
 # CORE FUNCTION
