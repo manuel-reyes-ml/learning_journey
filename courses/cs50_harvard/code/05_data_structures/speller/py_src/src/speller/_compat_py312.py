@@ -1,4 +1,17 @@
-"""
+"""Fallback adapter for Python <3.14.
+
+This module is loaded ONLY on Python <3.14 (via the sys.version_info gate
+in _compat.py). It contains NO references to string.templatelib and NO
+``t"..."`` literals — it parses and runs on any Python version 3.10+.
+
+Public API
+----------
+format_log_event(event, **kwargs) -> tuple[str, dict]
+    Same signature shape as the 3.14+ version, but returns a
+    (msg, extras) tuple directly instead of a Template object.
+    Callers route this through stdlib logger as:
+        msg, extras = format_log_event(...)
+        logger.info(msg, extra=extras)
 """
 
 # =============================================================================
