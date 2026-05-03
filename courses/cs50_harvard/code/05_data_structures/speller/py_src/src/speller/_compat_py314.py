@@ -83,10 +83,19 @@ def template_to_msg_extras(template: Template) -> tuple[str, dict[str, object]]:
     extras: dict[str, object] = {}
     
     for piece in template:
+        # ─── Structural pattern matching (Python 3.10+) ───
+        # match/case is the idiomatic way to process Template parts.
+        # Each element is either a str (static text) or an
+        # Interpolation (a variable with metadata).
         match piece:
             case str() as text:
+                # Static text - pass through unchanged
                 parts.append(text)
             case Interpolation() as interp:
+                # Dynamic value - apply format spec if present
+                # interp.value = the actual Python object (int, str, etc.)
+                # interp.format_spec = the format string after ':' (e.g. ".2f")
+                # interp.expression = the source code text (e.g. "count")
                 extras[interp.expression] = interp.value  # raw value preserved
                 if interp.format_spec:
                     parts.append(format(interp.value, interp.format_spec))
