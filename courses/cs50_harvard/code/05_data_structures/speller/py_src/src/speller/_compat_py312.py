@@ -47,6 +47,8 @@ def format_log_event(event: str, **kwargs: object) -> tuple[str, dict[str, objec
         if isinstance(raw, tuple) and len(raw) == 2 and isinstance(raw[1], str):
             value, fmt = raw
             parts.append(format(value, fmt))
+        else:
+            parts.append(str(raw))
         
     return "".join(parts), dict(kwargs)
     
