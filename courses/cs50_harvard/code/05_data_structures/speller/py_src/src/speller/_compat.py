@@ -20,6 +20,10 @@ from typing import TYPE_CHECKING
 # that's the line that keeps them quiet without # type: ignore everywhere.
 HAS_TSTRINGS: bool = sys.version_info >= (3, 14)
 
+# Mypy walks through the TYPE_CHECKING block (which it pretends is True) and stops there —
+# it sees Template got imported, it's happy. The other branches it skips. At runtime, Python
+# skips the TYPE_CHECKING block (which is genuinely False) and falls into one of the other
+# two branches. Each audience sees what they need.
 if TYPE_CHECKING:
     # Type checkers always see the real stdlib types - no narrowing needed.
     from string.templatelib import Interpolation, Template
