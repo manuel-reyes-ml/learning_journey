@@ -55,7 +55,6 @@ from __future__ import annotations
 import json
 import logging
 from logging.handlers import RotatingFileHandler
-from string.templatelib import Interpolation, Template
 from typing import Any, Final, override
 
 from speller.config import (
@@ -64,6 +63,8 @@ from speller.config import (
     fhandler_config,
     file_dirs,
 )
+
+from speller._compat import HAS_TSTRINGS, Interpolation, Template
 
 # =============================================================================
 # EXPORTS
@@ -454,7 +455,6 @@ class JsonTemplateFormatter(logging.Formatter):
 # CONFIGURATION FUNCTION
 # =============================================================================
 
-
 def configure_template_logging(
     *,
     console_verbose: bool = False,
@@ -478,6 +478,12 @@ def configure_template_logging(
     log_to_file : bool, optional
         ``True`` (default) writes structured JSON to disk.
     """
+    if not HAS_TSTRINGS:
+        raise RuntimeError(
+            "Template logging requires Python 3.14+. "
+            "Use --structured-logging or default stdlib mode instead."
+        )
+    
     # 1. Grab the top-level logger for the package
     # CUR_DIR.name gives the current directory in string "speller"
     package_logger = logging.getLogger(file_dirs.CUR_DIR.name)
