@@ -1,12 +1,10 @@
 """Cross-version compatibility dispatcher.
 
-Examines ``sys.version_info`` at import time and re-exports the appropriate
-implementation from either _compat_py314 or _compat_py312. Downstream code
-imports from here and remains version-agnostic.
-
-This is the ONLY module that knows about Python version differences. The
-rest of the package treats t-string availability as a feature flag:
-    from speller._compat import HAS_TSTRINGS, format_log_event
+Routes Template/Interpolation imports based on Python version. Type
+checkers see the real types unconditionally via TYPE_CHECKING; runtime
+gets either the real classes (3.14+) or sentinel classes (<3.14) whose
+isinstance() checks always return False, allowing isinstance-guarded
+code paths to fall through harmlessly.
 """
 
 # =============================================================================
