@@ -136,9 +136,9 @@ __all__ = [
 # WordContainer must be a subtype of the union, which type-checkers handle differently
 # than constraints. Constraints force the type to be exactly one of the listed options;
 # bounds allow subclasses.
-class _BaseDictionary[WordContainer: (set[str], list[str], dict[str, None])](
-    ABC
-):  # shared implementation
+#
+# Shared implementation
+class _BaseDictionary[WordContainer: (set[str], list[str], dict[str, None])](ABC):
     """Shared spell-check dictionary logic.
 
     Underscore prefix because this class is INTERNAL — external code
