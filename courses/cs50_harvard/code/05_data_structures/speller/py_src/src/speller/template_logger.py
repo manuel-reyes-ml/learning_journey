@@ -478,6 +478,7 @@ def configure_template_logging(
     log_to_file : bool, optional
         ``True`` (default) writes structured JSON to disk.
     """
+    # Avoid to configure template if Python version is below 3.14
     if not HAS_TSTRINGS:
         raise RuntimeError(
             "Template logging requires Python 3.14+. "
