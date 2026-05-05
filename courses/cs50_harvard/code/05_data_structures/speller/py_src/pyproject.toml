@@ -301,3 +301,5 @@ known-first-party = ["speller"]
 "src/speller/__init__.py" = ["E501", "E402"] # E402 Module level import not at top
 "src/speller/logger.py" = ["E501"]
 "src/speller/_compat_py314.py" = ["E501"] # New file in development
+"src/speller/_compat_py312.py" = ["E501"]
+"src/speller/_compat.py" = ["E501"]
