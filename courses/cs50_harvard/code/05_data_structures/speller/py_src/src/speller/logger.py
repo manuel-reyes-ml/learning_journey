@@ -48,7 +48,7 @@ from __future__ import annotations
 import logging
 import sys
 from logging.handlers import RotatingFileHandler
-from typing import Final, override
+from typing import Final, TextIO, override
 
 from speller.config import (
     FileDirectories,
@@ -162,7 +162,7 @@ def _setup_chandler(
     *,
     level: int,
     formatter: type[logging.Formatter],
-) -> logging.StreamHandler:
+) -> logging.StreamHandler[TextIO]:
     """Create and configure a console (stream) logging handler.
 
     Writes to ``sys.stderr`` so log output and program output

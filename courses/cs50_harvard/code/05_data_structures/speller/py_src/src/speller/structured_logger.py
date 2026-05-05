@@ -9,7 +9,7 @@ from __future__ import annotations
 import logging
 import sys
 from logging.handlers import RotatingFileHandler
-from typing import Any, Final
+from typing import Any, Final, TextIO
 
 import structlog
 from structlog.types import EventDict, Processor, WrappedLogger
@@ -104,7 +104,7 @@ def _setup_chandler(
     *,
     level: int,
     custom_console: bool = True,
-) -> logging.StreamHandler:
+) -> logging.StreamHandler[TextIO]:
     """Create and configure a structlog-aware console (stream) handler.
 
     Writes to ``sys.stderr`` so log output and program output

@@ -55,7 +55,7 @@ from __future__ import annotations
 import json
 import logging
 from logging.handlers import RotatingFileHandler
-from typing import Any, Final, override
+from typing import Any, Final, TextIO, override
 
 from speller._compat import HAS_TSTRINGS, Interpolation, Template
 from speller.config import (
@@ -87,7 +87,7 @@ def _setup_chandler(
     *,
     level: int,
     formatter: type[logging.Formatter],
-) -> logging.StreamHandler:
+) -> logging.StreamHandler[TextIO]:
     """Create and configure a console (stream) logging handler.
 
     Writes to ``sys.stderr`` so log output and program output
@@ -427,7 +427,7 @@ class JsonTemplateFormatter(logging.Formatter):
             "module": record.name,
             "function": record.funcName,
             "line_no": record.lineno,  # line in script where logger.info, .debug, etc is created
-            "author": record.author if hasattr(record, "author") else None,  # type: ignore[misc]
+            "author": record.author if hasattr(record, "author") else None,  # type: ignore[attr-defined]
         }
         # author attr created in __main__ logger.info() using 'extra' dict
 
