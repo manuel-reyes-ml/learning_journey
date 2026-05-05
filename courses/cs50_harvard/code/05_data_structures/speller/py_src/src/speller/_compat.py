@@ -27,9 +27,9 @@ HAS_TSTRINGS: bool = sys.version_info >= (3, 14)
 if TYPE_CHECKING:
     # Type checkers always see the real stdlib types - no narrowing needed.
     from string.templatelib import Interpolation, Template
-    
+
     from speller._compat_py314 import format_log_event, template_to_msg_extras
-    
+
 elif HAS_TSTRINGS:
     # Runtime on 3.14+: actually imports the real Template
     from speller._compat_py314 import (
@@ -45,7 +45,7 @@ else:
     #   ✅ Can be used as the second argument to isinstance(x, Template) without crashing
     #   ❌ Has no methods, no attributes, no behavior
     #   ❌ Is never instantiated by any code in the program
-    class Template:  # noqa: D101
+    class Template:
         # Why __slots__ = ()?
         # Pure hygiene, two reasons:
         #   1. Memory — declares the class has no instance attributes, saves a few bytes per
@@ -53,10 +53,10 @@ else:
         #   2. Signaling intent — it tells the next developer reading the code "this class has no
         #   data; don't try to add any." The empty tuple says "yes, I really meant zero attributes."
         __slots__ = ()
-        
-    class Interpolation:  # noqa: D101
+
+    class Interpolation:
         __slots__ = ()
-        
+
     from speller._compat_py312 import format_log_event, template_to_msg_extras
 
 # =============================================================================

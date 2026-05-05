@@ -31,6 +31,7 @@ __all__ = ["format_log_event", "template_to_msg_extras"]
 # CORE FUNCTION
 # =============================================================================
 
+
 def format_log_event(event: str, **kwargs: object) -> tuple[str, dict[str, object]]:
     """Build (rendered_msg, extras_dict) directly — no Template intermediary.
 
@@ -42,17 +43,17 @@ def format_log_event(event: str, **kwargs: object) -> tuple[str, dict[str, objec
         if i > 0:
             parts.append(" ")
         parts.append(f"{name}=")
-        
+
         # Allow callers to pass (value, format_spec) for things like (0.143, ".2f")
         if isinstance(raw, tuple) and len(raw) == 2 and isinstance(raw[1], str):
             value, fmt = raw
             parts.append(format(value, fmt))
         else:
             parts.append(str(raw))
-        
+
     return "".join(parts), dict(kwargs)
-    
-    
+
+
 def template_to_msg_extras(template: object) -> tuple[str, dict[str, object]]:
     """Stub. Unreachable on Python <3.14 because no Template can exist."""
     raise RuntimeError(

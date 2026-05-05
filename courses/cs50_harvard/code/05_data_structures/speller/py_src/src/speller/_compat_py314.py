@@ -43,6 +43,7 @@ __all__ = [
 # CORE FUNCTION
 # =============================================================================
 
+
 def format_log_event(event: str, **kwargs: object) -> Template:
     """Build a Template from an event name and kwargs.
 
@@ -60,12 +61,12 @@ def format_log_event(event: str, **kwargs: object) -> Template:
     >>> #  "values": {"file": "cat.txt", "count": 42}}
     """
     parts: list[str | Interpolation] = [f"{event} | "]
-    
+
     for i, (name, raw) in enumerate(kwargs.items()):
         if i > 0:
             parts.append(" ")
         parts.append(f"{name}=")
-        
+
         # Allow callers to pass (value, format_spec) for things like (0.143, ".2f")
         if isinstance(raw, tuple) and len(raw) == 2 and isinstance(raw[1], str):
             value, fmt = raw
@@ -77,20 +78,21 @@ def format_log_event(event: str, **kwargs: object) -> Template:
             parts.append(Interpolation(value, name, None, fmt))
         else:
             parts.append(Interpolation(raw, name))
-            
+
     # The len(strings) == len(interpolations) + 1 invariant. The Template format requires N+1
     # string slots for N interpolations. That's why the trailing parts.append("") is there —
     # without it, your last item is an Interpolation, the constructor inserts an empty string
     # after it for you, and you'll see a slightly weird repr but still correct behavior.
     # Adding it explicitly is just defensive and self-documenting.
     parts.append("")
-    
-    # Consecutive strings get concatenated by the constructor. 
+
+    # Consecutive strings get concatenated by the constructor.
     # parts = ["dictionary_loaded | ", "count="] followed by an Interpolation is fine — the
-    # constructor merges the two strings into "dictionary_loaded | count=" automatically. 
+    # constructor merges the two strings into "dictionary_loaded | count=" automatically.
     # So you don't have to obsessively interleave; you just need some string between
     # consecutive interpolations.
     return Template(*parts)
+
 
 # Usage
 # tmpl = format_log_event(
@@ -111,7 +113,7 @@ def template_to_msg_extras(template: Template) -> tuple[str, dict[str, object]]:
     """
     parts: list[str] = []
     extras: dict[str, object] = {}
-    
+
     for piece in template:
         # ─── Structural pattern matching (Python 3.10+) ───
         # match/case is the idiomatic way to process Template parts.
@@ -131,9 +133,9 @@ def template_to_msg_extras(template: Template) -> tuple[str, dict[str, object]]:
                     parts.append(format(interp.value, interp.format_spec))
                 else:
                     parts.append(str(interp.value))
-            
+
             # Defensive - Template iteration only yields these two types
             case _:  # Default case (wildcard)
                 raise TypeError(f"Unexpected Template piece: {type(piece)!r}")
-            
+
     return "".join(parts), extras

@@ -121,6 +121,7 @@ __all__ = [
 # ABSTRACT BASE CLASS — Shared Implementation
 # =============================================================================
 
+
 # PEP 484
 # Generic[WordContainer] means: "_BaseDictionary is parameterised over WordContainer.
 # Each sublcass declares what WordContainer resolves to. Pyright tracks WordContainer
@@ -135,7 +136,9 @@ __all__ = [
 # WordContainer must be a subtype of the union, which type-checkers handle differently
 # than constraints. Constraints force the type to be exactly one of the listed options;
 # bounds allow subclasses.
-class _BaseDictionary[WordContainer: (set[str], list[str], dict[str, None])](ABC):  # shared implementation
+class _BaseDictionary[WordContainer: (set[str], list[str], dict[str, None])](
+    ABC
+):  # shared implementation
     """Shared spell-check dictionary logic.
 
     Underscore prefix because this class is INTERNAL — external code
