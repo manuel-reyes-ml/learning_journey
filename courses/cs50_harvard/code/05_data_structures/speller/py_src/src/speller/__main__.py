@@ -68,7 +68,7 @@ try:
     from rich.console import Console
     from rich.panel import Panel
     from rich.table import Table
-
+    from speller._compat import format_log_event
     from speller.benchmarks import BenchmarkResult
     from speller.config import ExitCode, default_fnames, file_dirs
     from speller.load_dictionary import load_dictionary
@@ -1017,13 +1017,22 @@ def main(argv: list[str] | None = None) -> ExitCode:
 
                 # Use t-strings or f-strings (regular string) for logger.info()
                 if args.template_logging:
-                    text_name = text_path.name
-                    dict_name = dict_path.name
-                    backend = type(loaded_dict).__name__  # getting class name
+                    # text_name = text_path.name
+                    # dict_name = dict_path.name
+                    #backend = type(loaded_dict).__name__  # getting class name
                     # The extra dict is the pre-t-string way to attach structured data.
                     # Access as 'record.author'
+                    # logger.info(
+                    #     t"Spell checking '{text_name}' with dictionary '{dict_name}', in {backend}",
+                    #     extra={"author": "manuel_reyes"},
+                    # )
                     logger.info(
-                        t"Spell checking '{text_name}' with dictionary '{dict_name}', in {backend}",
+                        format_log_event(
+                            "spell_check_start",
+                            text_name=text_path.name,
+                            dict_name=dict_path.name,
+                            backend=type(loaded_dict).__name__,
+                        ),
                         extra={"author": "manuel_reyes"},
                     )
                 else:
