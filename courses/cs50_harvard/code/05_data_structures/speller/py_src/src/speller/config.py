@@ -46,6 +46,7 @@ import sys
 from dataclasses import dataclass
 from enum import IntEnum, StrEnum, unique
 from importlib.resources import files
+from importlib.resources.abc import Traversable
 from pathlib import Path
 from typing import Final, NamedTuple, NotRequired, Required, TypedDict
 
@@ -307,9 +308,9 @@ class FileDirectories:
     #
     # Notice that I did not annotate DICT_DIR and TXT_DIR as Path. That's deliberate — they're Traversables.
     # The runtime type for disk installs is PosixPath (I verified this), but the static type is Traversable.
-    DICT_DIR: Final = files("speller.data") / DefaultDirs.DICT
-    TXT_DIR: Final = files("speller.data") / DefaultDirs.TXT
-    KEYS_DIR: Final = files("speller.data") / DefaultDirs.KEYS
+    DICT_DIR: Final[Traversable] = files("speller.data") / DefaultDirs.DICT
+    TXT_DIR: Final[Traversable] = files("speller.data") / DefaultDirs.TXT
+    KEYS_DIR: Final[Traversable] = files("speller.data") / DefaultDirs.KEYS
 
     # --- Writable, per-user paths (resolved by platformdirs) --------
     LOG_DIR: Final[Path] = _PLATFORM_DIRS.user_log_path
