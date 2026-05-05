@@ -68,6 +68,7 @@ try:
     from rich.console import Console
     from rich.panel import Panel
     from rich.table import Table
+
     from speller._compat import format_log_event
     from speller.benchmarks import BenchmarkResult
     from speller.config import ExitCode, default_fnames, file_dirs
