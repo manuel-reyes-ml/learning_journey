@@ -39,10 +39,19 @@ elif HAS_TSTRINGS:
         template_to_msg_extras,
     )
 else:
-    # Runtime on <3.14: sentinel classes. isinstance(x, Template) is always
-    # False because nothing can ever be an instance - string.templatelib
-    # doesn´t exist, so no real Template can enter the program.
+    # This defines a class that:
+    #   ✅ Exists, so Template is a valid name in the namespace
+    #   ✅ Can be referenced in def f(t: Template) annotations without crashing
+    #   ✅ Can be used as the second argument to isinstance(x, Template) without crashing
+    #   ❌ Has no methods, no attributes, no behavior
+    #   ❌ Is never instantiated by any code in the program
     class Template:  # noqa: D101
+        # Why __slots__ = ()?
+        # Pure hygiene, two reasons:
+        #   1. Memory — declares the class has no instance attributes, saves a few bytes per
+        #   (never-created) instance. Insignificant here, but a free correctness statement.
+        #   2. Signaling intent — it tells the next developer reading the code "this class has no
+        #   data; don't try to add any." The empty tuple says "yes, I really meant zero attributes."
         __slots__ = ()
         
     class Interpolation:  # noqa: D101
@@ -73,3 +82,35 @@ __all__ = [
 #
 # The cleanest way to avoid the quotes is from __future__ import annotations at the top of the file —
 # it makes every annotation lazy by default.
+
+# Walk through what happens when a downstream file does from speller._compat import Template:
+# ┌────────────────────────────────────────────────────────────────┐
+# │  Type checker's view (TYPE_CHECKING is True)                   │
+# │  ─────────────────────────────────────────                     │
+# │  Template = string.templatelib.Template  (the real one)        │
+# │  → all annotations type-check correctly                        │
+# │  → all isinstance() calls type-check correctly                 │
+# │  → zero "possibly unbound" warnings                            │
+# └────────────────────────────────────────────────────────────────┘
+
+# ┌────────────────────────────────────────────────────────────────┐
+# │  Python 3.14 runtime view                                      │
+# │  ─────────────────────────────                                 │
+# │  TYPE_CHECKING is False → skip first branch                    │
+# │  sys.version_info >= (3,14) is True → import real Template     │
+# │  Template = string.templatelib.Template  (the real one)        │
+# │  → isinstance works as expected                                │
+# │  → format_log_event returns a real Template                    │
+# └────────────────────────────────────────────────────────────────┘
+
+# ┌────────────────────────────────────────────────────────────────┐
+# │  Python 3.12 runtime view                                      │
+# │  ─────────────────────────────                                 │
+# │  TYPE_CHECKING is False → skip first branch                    │
+# │  sys.version_info >= (3,14) is False → skip second branch      │
+# │  fall into else: define empty sentinel class                   │
+# │  Template = <speller._compat.Template, empty class>            │
+# │  → isinstance(anything_real, Template) is always False         │
+# │  → no crashes, no defensive code anywhere downstream           │
+# └────────────────────────────────────────────────────────────────┘
+# Three audiences, three views, one source file. That's the production-grade idea.
