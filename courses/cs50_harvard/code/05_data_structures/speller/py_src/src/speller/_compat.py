@@ -31,6 +31,7 @@ if TYPE_CHECKING:
     from speller._compat_py314 import format_log_event, template_to_msg_extras
     
 elif HAS_TSTRINGS:
+    # Runtime on 3.14+: actually imports the real Template
     from speller._compat_py314 import (
         Interpolation,
         Template,
@@ -60,3 +61,15 @@ __all__ = [
     "format_log_event",
     "template_to_msg_extras",
 ]
+
+
+# Avoiding heavy imports just for types. If you only need pandas.DataFrame for a type annotation,
+# importing pandas at runtime adds 200ms to your CLI startup:
+#   from typing import TYPE_CHECKING
+#   if TYPE_CHECKING:
+#       import pandas as pd          # mypy needs it; runtime doesn't
+#
+#   def summarize(df: "pd.DataFrame") -> dict: ...   # runtime never imports pandas
+#
+# The cleanest way to avoid the quotes is from __future__ import annotations at the top of the file —
+# it makes every annotation lazy by default.
