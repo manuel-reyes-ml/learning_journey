@@ -291,6 +291,7 @@ known-first-party = ["speller"]
 [tool.ruff.lint.per-file-ignores]
 # Force ruff not to flag the issues specified in here, for intentional
 # and specicif reasons. This is production grade.
+# E501 reports lines too long (above 88 chars)
 "src/speller/__main__.py" = ["E501"]
 "src/speller/speller.py" = ["E501"]
 "src/speller/structured_logger.py" = ["E501"]
