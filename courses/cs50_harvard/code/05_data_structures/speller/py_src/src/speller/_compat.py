@@ -25,10 +25,14 @@ HAS_TSTRINGS: bool = sys.version_info >= (3, 14)
 # skips the TYPE_CHECKING block (which is genuinely False) and falls into one of the other
 # two branches. Each audience sees what they need.
 if TYPE_CHECKING:
-    # Type checkers always see the real stdlib types - no narrowing needed.
-    from string.templatelib import Interpolation, Template
-
-    from speller._compat_py314 import format_log_event, template_to_msg_extras
+    # Pull the types from _compat_py314 — which has its own TYPE_CHECKING stubs.
+    # Mypy follows the chain and ends up at the inline class definitions.
+    from speller._compat_py314 import (
+        Interpolation,
+        Template,
+        format_log_event,
+        template_to_msg_extras,
+    )
 
 elif HAS_TSTRINGS:
     # Runtime on 3.14+: actually imports the real Template

@@ -25,7 +25,43 @@ template_to_msg_extras(template) -> (str, dict)
 
 from __future__ import annotations
 
-from string.templatelib import Interpolation, Template
+from typing import TYPE_CHECKING, Iterator
+
+if TYPE_CHECKING:
+    # Mypy enters this branch (it treats TYPE_CHECKING as True).
+    # These class definitions ARE what mypy uses for Template and Interpolation
+    # throughout this file. Keep them aligned with the real PEP 750 API.
+    
+    class Interpolation:
+        """Inline type stub for string.templatelib.Interpolation."""
+        
+        value: object
+        expression: str
+        conversion: str | None
+        format_spec: str
+        
+        def __new__(
+            cls,
+            value: object,
+            expression: str = "",
+            conversion: str | None = None,
+            format_spec: str = "",
+        ) -> Interpolation: ...
+
+    class Template:
+        """Inline type stub for string.templatelib.Template."""
+        
+        strings: tuple[str, ...]
+        interpolations: tuple[Interpolation, ...]
+        
+        def __new__(cls, *args: str | Interpolation) -> Template: ...
+        def __iter__(self) -> Iterator[str | Interpolation]: ...
+        
+else:
+    # Runtime enters this branch on Python 3.14+ (TYPE_CHECKING is False).
+    # Mypy NEVER reads this line, so the import is invisible to its
+    # python_version=3.12 stub resolution.
+    from string.templatelib import Interpolation, Template
 
 # =============================================================================
 # EXPORTS
