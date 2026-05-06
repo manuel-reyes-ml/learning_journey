@@ -937,7 +937,9 @@ def main(argv: list[str] | None = None) -> ExitCode:
 
     # -- Step 3: Convert and validate paths --
     dict_path = Path(args.dictionary)
-    path_validation: ExitCode | None = _validate_paths(dict_path, path_name="dictionary")
+    path_validation: ExitCode | None = _validate_paths(
+        dict_path, path_name="dictionary"
+    )
     if path_validation is not None:
         return path_validation
 
@@ -993,9 +995,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
 
             # Now iterate over all text files - no dictionary reload
             for text_path in text_paths:
-                path_validation = _validate_paths(
-                    text_path, path_name="text"
-                )
+                path_validation = _validate_paths(text_path, path_name="text")
                 if path_validation is not None:
                     logger.warning("Skipping '%s': not found", text_path)
                     files_not_found += 1
@@ -1020,7 +1020,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 if args.template_logging:
                     # text_name = text_path.name
                     # dict_name = dict_path.name
-                    #backend = type(loaded_dict).__name__  # getting class name
+                    # backend = type(loaded_dict).__name__  # getting class name
                     # The extra dict is the pre-t-string way to attach structured data.
                     # Access as 'record.author'
                     # logger.info(
