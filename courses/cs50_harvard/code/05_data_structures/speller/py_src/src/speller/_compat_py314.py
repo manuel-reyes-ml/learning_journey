@@ -41,6 +41,8 @@ if TYPE_CHECKING:
         conversion: str | None
         format_spec: str
 
+        # __new__  makes the empty object
+        # __init__ fills the object with data
         def __new__(
             cls,
             value: object,
@@ -48,6 +50,16 @@ if TYPE_CHECKING:
             conversion: str | None = None,
             format_spec: str = "",
         ) -> Interpolation: ...
+
+# When you write dog = Dog("Rex"), Python actually does two things behind the scenes:
+# Step 1:  Dog.__new__(Dog, "Rex")
+#          "Hey class, please make me a new empty Dog."
+#          Returns:  a fresh, blank Dog object with no attributes yet.
+
+# Step 2:  __init__(that_new_dog, "Rex")
+#          "Now fill that Dog up with data."
+#          Sets:     dog.name = "Rex"
+#          Returns:  None  (it just modifies the dog in place)
 
     class Template:
         """Inline type stub for string.templatelib.Template."""
@@ -63,6 +75,23 @@ else:
     # Mypy NEVER reads this line, so the import is invisible to its
     # python_version=3.12 stub resolution.
     from string.templatelib import Interpolation, Template
+    
+# Why you've never written __new__ before
+# Because Python's default __new__ (inherited from object) does exactly what
+# you want 99% of the time: it makes an empty instance of the right class and
+# hands it to you. You take it from there with __init__.
+#
+# So writing this:
+# class Dog:
+#     def __init__(self, name):
+#         self.name = name
+# …is really just a shortcut for this:
+# class Dog:
+#     def __new__(cls, name):
+#         return super().__new__(cls)        # default behavior — just make blank
+#     def __init__(self, name):
+#         self.name = name
+#You skip writing __new__ because there's nothing to customize about the making step.
 
 # =============================================================================
 # EXPORTS
