@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>GenAI-FIRST CAREER ROADMAP - GenAI Data Analyst → AI Engineer → ML → Senior LLM Engineer (v8.2 - Evaluation & Docker Update 2026)</title>
+    <title>GenAI-FIRST CAREER ROADMAP - GenAI Data Analyst → AI Engineer → ML → Senior LLM Engineer (v8.3 - 2026 Market Alignment Update)</title>
     <style>
         a { color: #3498db; text-decoration: none; }
         a:hover { color: #2980b9; text-decoration: underline; }
@@ -30,9 +30,24 @@
 </head>
 <body>
 
-<h1>🚀 GenAI-FIRST CAREER ROADMAP v8.2 (Evaluation & Docker Update)</h1>
+<h1>🚀 GenAI-FIRST CAREER ROADMAP v8.3 (2026 Market Alignment Update)</h1>
 <h1>GenAI Data Analyst & AI Engineer → GenAI Data Engineer → ML + LLM Specialist → Senior LLM Engineer</h1>
 <h1>Remote Global Track | 25 hrs/week | 37 Months | AI-Accelerated Path</h1>
+
+<div class="info-box" style="background-color: #fff3cd; border-left: 5px solid #f39c12;">
+    <h3>🆕 v8.3 COACH UPDATES (May 2026) — 2026 Market Alignment</h3>
+    <p><strong>Source:</strong> Cross-checked against 365 Data Science 2026 AI Engineer postings analysis, StackOne 120+ Agentic Tools 2026 report, MCP 2026 ecosystem (97M+ monthly SDK downloads), and DeepLearning.AI evaluation guidance. <strong>All v8.2 standards remain intact</strong> — these are additive enhancements.</p>
+    <ul>
+        <li>🛠️ <strong>Tech Debt:</strong> 1099 Reconciliation Pipeline flagged for v8.2 standards retro-migration (pyproject.toml + py.typed + Docker) — Stage 1 maintenance task</li>
+        <li>🔌 <strong>MCP in Stage 1:</strong> PolicyPulse exposes its retrieval as a FastMCP server (Cursor/Claude Desktop integration) — early MCP literacy without architectural rework</li>
+        <li>🤖 <strong>Anthropic SDK as primary provider</strong> for PolicyPulse + AFC (provider-agnostic architecture preserved; Gemini stays primary elsewhere) — increases hiring keyword density</li>
+        <li>🧩 <strong>Agent Pattern Vocabulary:</strong> AFC Stage 4 explicitly named with Anthropic's "Building Effective Agents" patterns (orchestrator-workers + sequential)</li>
+        <li>📜 <strong>TypeScript Sprint:</strong> 2-week TS + MCP server sprint added to late Stage 2 (Month 14) — unlocks MCP server keyword without committing to TS as primary language</li>
+        <li>🔗 <strong>A2A Protocol Detail:</strong> Stage 4 multi-agent sections expanded with A2A awareness (Linux Foundation Agentic AI Foundation, Dec 2025)</li>
+        <li>🧪 <strong>Advanced Hallucination Eval:</strong> SelfCheckGPT + FActScore added to Stage 4 LLM Evaluation Framework (financial-grade rigor for AFC)</li>
+    </ul>
+    <p><strong>Role Brand Decision (confirmed May 2026):</strong> Dual positioning preserved — "GenAI-Powered Data Analyst OR Junior AI Engineer." Skill development leans engineering-first within the dual frame.</p>
+</div>
 
 <div class="info-box" style="background-color: #e3f2fd; border-left: 5px solid #2196F3;">
     <h3>🤖 WHY GenAI-FIRST? (2026 Market Domination)</h3>
@@ -593,10 +608,10 @@
     </tr>
     <tr style="background-color: #d4edda;">
         <td><strong>1</strong></td>
-        <td><strong><a href="https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline" target="_blank">1099 Reconciliation ETL Pipeline</a></strong><br><span class="badge badge-free">✅ LIVE PRODUCTION</span></td>
+        <td><strong><a href="https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline" target="_blank">1099 Reconciliation ETL Pipeline</a></strong><br><span class="badge badge-free">✅ LIVE PRODUCTION</span><br><span class="badge badge-paid">🛠️ v8.2 RETRO-MIGRATION</span></td>
         <td>Deployed</td>
         <td>Python, pandas, openpyxl, Matplotlib, data cleaning, ETL pipeline design, synthetic data generation</td>
-        <td><strong>ETL pipelines, pytest, CI/CD (GitHub Actions), production deployment</strong></td>
+        <td><strong>ETL pipelines, pytest, CI/CD (GitHub Actions), production deployment</strong><br><br><strong>🆕 v8.3 Migration Task:</strong> Retrofit to v8.2 standards — replace <code>requirements.txt</code> with <code>pyproject.toml</code> (<code>[project.optional-dependencies] dev</code>), add <code>py.typed</code> PEP 561 marker, add Dockerfile, update README install instructions. ~4-6 hour task. Recruiters often click the deployed-production repo first; consistency with v8.2 across all repos is the signal.</td>
         <td>• GitHub w/ README<br>• LinkedIn featured<br>• $15K/yr savings</td>
     </tr>
     <tr>
@@ -609,11 +624,11 @@
     </tr>
     <tr style="background-color: #e3f2fd;">
         <td><strong>3</strong></td>
-        <td><strong><a href="https://github.com/manuel-reyes-ml/policypulse" target="_blank">PolicyPulse</a></strong><br><em>🧠 RAG Foundation</em><br><span class="badge badge-paid">🔄 EVOLVES 5 STAGES</span></td>
+        <td><strong><a href="https://github.com/manuel-reyes-ml/policypulse" target="_blank">PolicyPulse</a></strong><br><em>🧠 RAG Foundation</em><br><span class="badge badge-paid">🔄 EVOLVES 5 STAGES</span><br><span class="badge badge-paid">🔌 MCP SERVER</span></td>
         <td>4 weeks</td>
-        <td>RAG chatbot answering HR policy questions with cited sources, confidence scoring, and auto-escalation to HR</td>
-        <td><strong>+ Embeddings, ChromaDB vector store, RAG pipeline, semantic search, ticket escalation system</strong></td>
-        <td>• GitHub w/ GIF demo<br>• Streamlit Cloud<br>• Blog post</td>
+        <td>RAG chatbot answering HR policy questions with cited sources, confidence scoring, and auto-escalation to HR. <strong>Exposes retrieval as a FastMCP server</strong> — Cursor and Claude Desktop can query the HR knowledge base directly via MCP.</td>
+        <td><strong>+ Embeddings, ChromaDB vector store, RAG pipeline, semantic search, ticket escalation system, <span style="background-color:#fff3cd; padding:2px 4px;">Anthropic SDK as primary provider (Claude excels at RAG synthesis with prompt caching)</span>, <span style="background-color:#fff3cd; padding:2px 4px;">FastMCP server (~50 LOC) exposing retrieval tools</span></strong></td>
+        <td>• GitHub w/ GIF demo<br>• Streamlit Cloud<br>• Blog post<br>• MCP server demo</td>
     </tr>
     <tr style="background-color: #e3f2fd;">
         <td><strong>4</strong></td>
@@ -641,10 +656,10 @@
     </tr>
     <tr style="background-color: #fff3cd;">
         <td><strong>7</strong></td>
-        <td><strong><a href="https://github.com/manuel-reyes-ml/attention-flow-catalyst" target="_blank">Attention-Flow Catalyst</a></strong><br><em>🚀 FLAGSHIP — Research System</em><br><span class="badge badge-paid">🔄 EVOLVES 5 STAGES</span></td>
+        <td><strong><a href="https://github.com/manuel-reyes-ml/attention-flow-catalyst" target="_blank">Attention-Flow Catalyst</a></strong><br><em>🚀 FLAGSHIP — Research System</em><br><span class="badge badge-paid">🔄 EVOLVES 5 STAGES</span><br><span class="badge badge-paid">🤖 ANTHROPIC PRIMARY</span></td>
         <td>10 weeks<br>(Phase 1A + 1B)</td>
-        <td>Defensible research system: walk-forward backtesting, survivorship bias controls, SEC Form 4 + Wikipedia + news triggers, Parquet lakehouse, AI-powered dashboard</td>
-        <td><strong>+ DuckDB lakehouse, Parquet, httpx async, edgartools (SEC), multi-source alternative data, statistical methodology, bootstrap CI</strong></td>
+        <td>Defensible research system: walk-forward backtesting, survivorship bias controls, SEC Form 4 + Wikipedia + news triggers, Parquet lakehouse, AI-powered dashboard. <strong>Anthropic SDK as primary provider</strong> — Claude's reasoning quality matters most for financial analysis (elevated faithfulness threshold of 0.9).</td>
+        <td><strong>+ DuckDB lakehouse, Parquet, httpx async, edgartools (SEC), multi-source alternative data, statistical methodology, bootstrap CI, <span style="background-color:#ffe7c2; padding:2px 4px;">Anthropic SDK (Claude) as primary; Gemini fallback</span></strong></td>
         <td>• GitHub w/ GIF demo<br>• Streamlit Cloud<br>• Blog series<br>• Demo video</td>
     </tr>
 </table>
@@ -1449,6 +1464,19 @@
         <td>• <strong>GOAL: DE OFFER!</strong><br>• Continue applications (20+/week)<br>• Interview extensively<br>• Negotiate salary (+30%)<br>• <strong>TRANSITION TO DE ROLE!</strong></td>
     </tr>
 </table>
+
+<div class="info-box" style="background-color: #fff3cd; border-left: 5px solid #f39c12;">
+    <h3>🆕 v8.3: TypeScript + MCP Server Sprint (Month 14, 2 weeks, ~30 hours)</h3>
+    <p><strong>Why:</strong> Many MCP servers ship TypeScript-first (FastMCP-TS, Vercel AI SDK is TS-only). MCP server experience is becoming a 2026 hiring keyword — per the official MCP 2026 ecosystem report, 97M+ monthly SDK downloads and 200+ server implementations across GitHub, Slack, Postgres, Notion, Jira, Salesforce. Manuel's stack stays Python-primary; this sprint is targeted skill acquisition.</p>
+    <p><strong>The Sprint (1.5 hours/day x 2 weeks):</strong></p>
+    <ul>
+        <li>📘 <strong>Week 1 (Days 1-5):</strong> TypeScript fundamentals — types, interfaces, async/await, npm/pnpm. <a href="https://www.typescriptlang.org/docs/handbook/intro.html" target="_blank">TS Handbook</a> → just chapters 1-4. ~10 hours.</li>
+        <li>📘 <strong>Week 1 (Days 6-7):</strong> MCP TypeScript SDK quickstart — <a href="https://modelcontextprotocol.io/quickstart/server" target="_blank">official docs</a>. Build a hello-world MCP server. ~5 hours.</li>
+        <li>🔨 <strong>Week 2 (Days 8-14):</strong> Build ONE practical MCP server in TypeScript that exposes a tool from one of your Python projects (e.g., a wrapper around the AFC backtest API). Deploy locally for Cursor/Claude Desktop. Add to PolicyPulse repo as a sibling <code>mcp-server-ts/</code> package. ~15 hours.</li>
+    </ul>
+    <p><strong>Output:</strong> One TS MCP server in your portfolio, "TypeScript (basics)" + "MCP server development" on LinkedIn skills, demonstrable cross-language ability without committing to TS as a primary language.</p>
+    <p><strong>Why Month 14, not 15:</strong> Month 15 is goal-deadline month for DE offer. Month 14 already has Docker basics — TS/MCP fits the "production tooling" theme. Adjust to Month 13 if AWS cert prep is going faster than expected.</p>
+</div>
 
 <h3>📈 Algorithmic Trading Project - Stage 2: Data Infrastructure</h3>
 <div class="info-box">
@@ -2442,22 +2470,25 @@
     <ul>
         <li>🔥 <strong>LangGraph (PRIORITY!):</strong> Graph-based workflow orchestration, state management, cyclic reasoning</li>
         <li>🔥 <strong>CrewAI:</strong> Role-based multi-agent collaboration (CEO agent + Analyst agent + Writer agent)</li>
-        <li>🔥 <strong>MCP (Model Context Protocol):</strong> Standard for connecting LLMs to external tools/data</li>
-        <li>🔥 <strong>A2A (Agent-to-Agent Protocol):</strong> Google's standard for multi-agent discovery & coordination—the next frontier!</li>
-        <li>🔥 <strong>LangSmith:</strong> Production monitoring, debugging, tracing for LLM apps</li>
+        <li>🔥 <strong>MCP (Model Context Protocol):</strong> The "USB-C of AI" — standardizes agent ↔ tool integration. <strong>97M+ monthly SDK downloads as of early 2026</strong>, supported by Anthropic, OpenAI, Google, Microsoft, AWS. Donated to Linux Foundation Agentic AI Foundation (Dec 2025) alongside A2A. <em>You already have Stage 1 MCP server experience via PolicyPulse.</em></li>
+        <li>🔥 <strong>A2A (Agent-to-Agent Protocol):</strong> Originally Google (Apr 2025), now Linux Foundation. <strong>Complementary to MCP, not competing</strong> — MCP defines how agents access tools; A2A defines how agents collaborate with each other. In production agentic systems, both layers are used together.</li>
+        <li>🔥 <strong>Anthropic "Building Effective Agents" Patterns:</strong> The canonical 2026 vocabulary — <em>routing, parallelization, orchestrator-workers, sequential agents, evaluator-optimizer, multi-agent</em>. Recruiters scan for these pattern names in your project READMEs.</li>
+        <li>🔥 <strong>LangSmith / Langfuse / Arize Phoenix:</strong> Production observability, tracing, evaluation pipelines (Langfuse acquired by ClickHouse Jan 2026 — observability is now non-negotiable for production)</li>
         <li>🔥 <strong>Tool Calling & Function Calling:</strong> Allow LLMs to execute code, browse web, query databases</li>
         <li>🔥 <strong>Advanced RAG:</strong> Hybrid search (vector + keyword), re-ranking, query decomposition</li>
     </ul>
-    <p><strong>Your Stage 4 Capstone: "Agentic Trading Assistant"</strong></p>
+    <p><strong>Your Stage 4 Capstone: "Agentic Trading Assistant" (AFC)</strong></p>
     <ul>
-        <li>✅ <strong>Multi-Agent Architecture:</strong> Researcher → Analyst → Risk Manager → Executor</li>
+        <li>✅ <strong>Multi-Agent Architecture (Orchestrator-Workers + Sequential pattern):</strong> Researcher (orchestrator) → Analyst workers → Risk Manager (sequential gate) → Executor</li>
+        <li>✅ <strong>MCP for tool access:</strong> Each worker agent calls SEC, Yahoo Finance, news APIs via MCP servers</li>
+        <li>✅ <strong>A2A awareness:</strong> Internal agent collaboration uses LangGraph; document A2A as the production-scale alternative when AFC moves to multi-tenant SaaS in Stage 5</li>
         <li>✅ <strong>Web Browsing:</strong> Agent can visit Yahoo Finance, SEC.gov, news sites to verify claims</li>
         <li>✅ <strong>Tool Integration:</strong> Call Python functions for technical indicators, backtesting</li>
-        <li>✅ <strong>Self-Correction:</strong> If analysis seems off, agent can re-research and revise</li>
+        <li>✅ <strong>Self-Correction (Evaluator-Optimizer pattern):</strong> If analysis seems off, agent can re-research and revise</li>
         <li>✅ <strong>Human Checkpoints:</strong> Before executing trades, gets human approval</li>
         <li>✅ <strong>Memory:</strong> Remembers past analyses, learns from feedback</li>
     </ul>
-    <p><strong>Why This Differentiates You:</strong> Most candidates can build "Chat with PDF" (simple RAG). You can build systems that REASON, VERIFY, and ADAPT—the skills needed for production AI agents in 2026. This is what finance companies desperately need: AI that can audit its own work!</p>
+    <p><strong>Why This Differentiates You:</strong> Most candidates can build "Chat with PDF" (simple RAG). You can build systems that REASON, VERIFY, and ADAPT — the skills needed for production AI agents in 2026. <strong>Naming the patterns explicitly</strong> (orchestrator-workers, sequential, evaluator-optimizer) signals senior-track pattern literacy. This is what finance companies desperately need: AI that can audit its own work!</p>
 </div>
 
 <h3>📚 Core Courses</h3>
@@ -2807,14 +2838,14 @@
     <tr style="background-color: #fff3cd;">
         <td><strong>Month 33</strong></td>
         <td><strong>🚀 AFC (Flagship) — Stage 4</strong><br><em>Agentic Trading Assistant</em></td>
-        <td><strong>Multi-agent architecture:</strong> Researcher → Analyst → Risk Manager → Executor. Web browsing, tool integration, self-correction, human checkpoints, memory</td>
+        <td><strong>Multi-agent architecture (named patterns):</strong> Researcher → Analyst → Risk Manager → Executor — implements <strong>orchestrator-workers + sequential</strong> patterns from Anthropic's "Building Effective Agents." Each worker calls tools via MCP servers (SEC, Yahoo, news APIs). <strong>Evaluator-optimizer loop</strong> for self-correction. Web browsing, human checkpoints, memory.</td>
         <td>• GitHub (same repo)<br>• Live demo<br>• Blog series<br>• Conference talk</td>
     </tr>
     <tr>
         <td><strong>Month 34</strong></td>
-        <td><strong>LLM Evaluation Framework</strong><br><em>🆕 New LLM Project</em></td>
-        <td>Custom benchmarks, LLM-as-judge, hallucination detection, performance metrics, safety testing — applies to ALL portfolio projects</td>
-        <td>• GitHub<br>• Open source contribution<br>• Blog series</td>
+        <td><strong>LLM Evaluation Framework</strong><br><em>🆕 New LLM Project</em><br><span class="badge badge-paid">🧪 ADVANCED HALLUCINATION DETECTION</span></td>
+        <td>Custom benchmarks, LLM-as-judge, performance metrics, safety testing — applies to ALL portfolio projects. <strong>Advanced hallucination detection: <a href="https://github.com/potsawee/selfcheckgpt" target="_blank">SelfCheckGPT</a></strong> (consistency-based — sample N responses, score divergence as hallucination signal — works without external knowledge bases) <strong>+ <a href="https://github.com/shmsw25/FActScore" target="_blank">FActScore</a></strong> (atomic-fact decomposition + retrieval verification — gold standard for fact-grounded financial analysis). Critical for AFC's elevated 0.9 faithfulness threshold.</td>
+        <td>• GitHub<br>• Open source contribution<br>• Blog series<br>• Apply to AFC + PolicyPulse</td>
     </tr>
 </table>
 
@@ -4230,22 +4261,29 @@
 
 <div style="text-align: center; margin: 40px 0; padding: 20px; background-color: #f8f9fa; border-radius: 10px;">
     <p style="font-size: 1em; color: #6c757d;">
-        <strong>Document Version:</strong> ROADMAP v8.2 (Evaluation & Docker Update) - GenAI/LLM-Enhanced Path + Production Portfolio<br>
-        <strong>Created:</strong> November 17, 2025 | <strong>Updated:</strong> March 29, 2026<br>
+        <strong>Document Version:</strong> ROADMAP v8.3 (2026 Market Alignment Update) - GenAI/LLM-Enhanced Path + Production Portfolio<br>
+        <strong>Created:</strong> November 17, 2025 | <strong>Updated:</strong> May 7, 2026<br>
         <strong>Structure:</strong> 5 Stages | 37 Months | <strong>Beginner → Data Analyst → DE → ML → LLM</strong><br>
         <strong>Investment:</strong> $530 | <strong>ROI:</strong> 20,000%+<br>
         <strong>Key Optimizations:</strong><br>
-        • <strong>NEW v8.2: 🧪 DEEPEVAL EVALUATION FRAMEWORK added to all 7 project scopes (evaluation-driven development)</strong> ✅<br>
-        • <strong>NEW v8.2: 🐳 DOCKER SUPPORT added to all 7 project scopes (Dockerfile + containerization)</strong> ✅<br>
-        • <strong>NEW v8.2: 📦 Docker for Beginners course added to Stage 1 (Month 5)</strong> ✅<br>
-        • <strong>NEW v8.2: 🔍 Building & Evaluating Advanced RAG course added to Stage 1 (FREE)</strong> ✅<br>
-        • <strong>NEW v8.2: ☸️ Docker & Kubernetes Masterclass added to Stage 2 (Months 12-13)</strong> ✅<br>
-        • <strong>NEW v8.2: 📊 BigQuery Basics + Coursera RAG course added to Stage 2</strong> ✅<br>
-        • <strong>NEW v8.2: ❌ TensorFlow Developer Certificate REMOVED (discontinued May 2024) → replaced with NVIDIA DLI</strong> ✅<br>
-        • <strong>NEW v8.2: 🔄 IBM GenAI cert clarified as Stage 1 primary, Stage 2 reinforcement</strong> ✅<br>
-        • <strong>NEW: 🏆 7 PRODUCTION-GRADE PORTFOLIO PROJECTS with scoped architecture documents</strong> ✅<br>
-        • <strong>NEW: 🔄 4 MULTI-STAGE PROJECT EVOLUTIONS (PolicyPulse, FormSense, StreamSmart, AFC) spanning all 5 stages</strong> ✅<br>
-        • <strong>NEW: 🚀 ATTENTION-FLOW CATALYST integrated as primary algorithmic trading implementation across all stages</strong> ✅<br>
+        • <strong>NEW v8.3: 🛠️ 1099 PIPELINE flagged for v8.2 retro-migration (pyproject.toml + py.typed + Docker)</strong> ✅<br>
+        • <strong>NEW v8.3: 🔌 MCP SERVER added to PolicyPulse Stage 1 (FastMCP exposing retrieval tools)</strong> ✅<br>
+        • <strong>NEW v8.3: 🤖 ANTHROPIC SDK as primary provider for PolicyPulse + AFC (provider-agnostic preserved)</strong> ✅<br>
+        • <strong>NEW v8.3: 🧩 AFC Stage 4 named with "Building Effective Agents" patterns (orchestrator-workers + sequential + evaluator-optimizer)</strong> ✅<br>
+        • <strong>NEW v8.3: 📜 TYPESCRIPT + MCP SERVER SPRINT added to Stage 2 Month 14 (2 weeks, ~30 hours)</strong> ✅<br>
+        • <strong>NEW v8.3: 🔗 A2A PROTOCOL detail expanded in Stage 4 (Linux Foundation Agentic AI Foundation, Dec 2025)</strong> ✅<br>
+        • <strong>NEW v8.3: 🧪 SELFCHECKGPT + FACTSCORE added to Stage 4 LLM Evaluation Framework (financial-grade rigor)</strong> ✅<br>
+        • <strong>v8.2: 🧪 DEEPEVAL EVALUATION FRAMEWORK added to all 7 project scopes (evaluation-driven development)</strong> ✅<br>
+        • <strong>v8.2: 🐳 DOCKER SUPPORT added to all 7 project scopes (Dockerfile + containerization)</strong> ✅<br>
+        • <strong>v8.2: 📦 Docker for Beginners course added to Stage 1 (Month 5)</strong> ✅<br>
+        • <strong>v8.2: 🔍 Building & Evaluating Advanced RAG course added to Stage 1 (FREE)</strong> ✅<br>
+        • <strong>v8.2: ☸️ Docker & Kubernetes Masterclass added to Stage 2 (Months 12-13)</strong> ✅<br>
+        • <strong>v8.2: 📊 BigQuery Basics + Coursera RAG course added to Stage 2</strong> ✅<br>
+        • <strong>v8.2: ❌ TensorFlow Developer Certificate REMOVED (discontinued May 2024) → replaced with NVIDIA DLI</strong> ✅<br>
+        • <strong>v8.2: 🔄 IBM GenAI cert clarified as Stage 1 primary, Stage 2 reinforcement</strong> ✅<br>
+        • <strong>🏆 7 PRODUCTION-GRADE PORTFOLIO PROJECTS with scoped architecture documents</strong> ✅<br>
+        • <strong>🔄 4 MULTI-STAGE PROJECT EVOLUTIONS (PolicyPulse, FormSense, StreamSmart, AFC) spanning all 5 stages</strong> ✅<br>
+        • <strong>🚀 ATTENTION-FLOW CATALYST integrated as primary algorithmic trading implementation across all stages</strong> ✅<br>
         • Start with Data Analyst (4-5 months) instead of Data Engineer (9 months) ✅<br>
         • <strong>CS50 Computer Science fundamentals in Stage 1</strong> ✅<br>
         • <strong>Statistics with Python Specialization (University of Michigan)</strong> ✅<br>
