@@ -75,7 +75,7 @@ else:
     # Mypy NEVER reads this line, so the import is invisible to its
     # python_version=3.12 stub resolution.
     from string.templatelib import Interpolation, Template
-    
+
 # Why you've never written __new__ before
 # Because Python's default __new__ (inherited from object) does exactly what
 # you want 99% of the time: it makes an empty instance of the right class and
