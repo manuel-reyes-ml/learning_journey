@@ -10,17 +10,17 @@
 
 Each project introduces new capabilities that build on the previous — demonstrating systematic skill growth, not scattered tutorials.
 
-> 🏗️ **Production Standard (v8.2):** Every project ships with architecture diagram (Mermaid), Dockerfile, evaluation metrics table (DeepEval + pytest), demo GIF, and "What I Learned" section.
+> 🏗️ **Production Standard (v8.3):** Every project ships with architecture diagram (Mermaid), Dockerfile, evaluation metrics table (DeepEval + pytest), demo GIF, and "What I Learned" section. Flagship projects (PolicyPulse, AFC) add FastMCP server + advanced hallucination detection (SelfCheckGPT/FActScore).
 
 | # | Project | What It Does | New Skills Added | Status |
 |---|---------|-------------|-----------------|--------|
 | 1 | 🧾 **[1099 Reconciliation Pipeline](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline)** | ETL reconciling retirement plan data between financial systems | ETL, pandas, pytest, CI/CD | ✅ **Production** |
 | 2 | 🔐 **[DataVault Analyst](https://github.com/manuel-reyes-ml/datavault-analyst)** | PII-safe "Chat With Your Data" for retirement plan operations | + LLM SDK, PandasAI, Pydantic, PII governance | 📅 Next |
-| 3 | 📋 **[PolicyPulse](https://github.com/manuel-reyes-ml/policypulse)** | RAG chatbot answering HR policy questions with cited sources | + Embeddings, ChromaDB, RAG, semantic search, RAG Triad evaluation | 📅 Planned |
+| 3 | 📋 **[PolicyPulse](https://github.com/manuel-reyes-ml/policypulse)** | RAG chatbot answering HR policy questions with cited sources + **exposes FastMCP server** | + Embeddings, ChromaDB, RAG, semantic search, RAG Triad evaluation, **FastMCP server, Anthropic SDK primary** | 📅 Planned |
 | 4 | 📄 **[FormSense](https://github.com/manuel-reyes-ml/formsense)** | Vision AI reads handwritten distribution forms and routes them | + Multimodal AI (Gemini Vision), business rule validation | 📅 Planned |
 | 5 | 📊 **[Operations-Demand-Intelligence](https://github.com/manuel-reyes-ml/operations-demand-intelligence)** | AI-powered workflow demand analysis for staffing decisions | + Enterprise real data, advanced analytics, Plotly | 🚧 In Dev |
 | 6 | 📺 **[StreamSmart Optimizer](https://github.com/manuel-reyes-ml/streamsmart-optimizer)** | AI streaming subscription rotation advisor with live APIs | + External APIs, consumer UX, async HTTP, optimization | 📅 Planned |
-| 7 | 📈 **[Attention-Flow Catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst)** 🚀 | Predictive trigger analysis for small-cap stocks (5-stage flagship) | + Statistical methodology, DuckDB, async, multi-source data | 🚧 Phase 1A |
+| 7 | 📈 **[Attention-Flow Catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst)** 🚀 | Predictive trigger analysis for small-cap stocks (5-stage flagship) | + Statistical methodology, DuckDB, async, multi-source data, **financial-grade eval (SelfCheckGPT + FActScore, 0.9 faithfulness)** | 🚧 Phase 1A |
 
 ---
 
@@ -44,8 +44,8 @@ Each project introduces new capabilities that build on the previous — demonstr
 | **1** (Active) | Statistical backtesting + signal leaderboard | LLM SDK chat, PandasAI, AI insights |
 | **2** | AWS pipelines, 500+ tickers, vector storage | RAG infrastructure, embedding pipelines |
 | **3** | ML predictions, ensemble models | Local LLMs (Ollama), fine-tuned financial models |
-| **4** | Agentic AI trading system | MCP + LangGraph + multi-agent orchestration |
-| **5** | Production deployment + evaluation | LLMOps testing, CI/CD for AI, monitoring |
+| **4** | Agentic AI trading system | Multi-agent orchestration with named patterns (orchestrator-workers, sequential, evaluator-optimizer per Anthropic's "Building Effective Agents") + MCP servers per worker + LangGraph |
+| **5** | Production deployment + monetization | A2A protocol for multi-tenant SaaS (Researcher-Agent ↔ Risk-Agent ↔ Compliance-Agent), LLMOps testing, CI/CD for AI, monitoring |
 
 **What makes it defensible:** Walk-forward validation • survivorship bias controls • real SEC data • 6 years trading domain expertise codified into algorithms
 
@@ -71,7 +71,7 @@ Each project lives in its own repo for clean version control, focused documentat
 
 **AI Integration:** Production guardrails (read-only, cost controls, disclaimers) • transparent AI assistance • Pydantic-validated outputs
 
-**AI Evaluation:** DeepEval + pytest across all projects • RAGAS RAG Triad metrics (PolicyPulse) • LangSmith observability (StreamSmart)
+**AI Evaluation:** DeepEval + pytest across all projects • RAGAS RAG Triad metrics (PolicyPulse) • SelfCheckGPT (PolicyPulse + AFC) • FActScore (AFC, financial-grade rigor) • LangSmith observability (StreamSmart)
 
 **Containerization:** Dockerfile in every project • Docker for Beginners (KodeKloud) foundation
 
@@ -84,7 +84,7 @@ Each project lives in its own repo for clean version control, focused documentat
 | Resource | Link |
 |----------|------|
 | 📊 **Portfolio Hub** | [data-portfolio](https://github.com/manuel-reyes-ml/data-portfolio) |
-| 📋 **Interactive Roadmap** | [37-Month Roadmap (v8.2)](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html) |
+| 📋 **Interactive Roadmap** | [37-Month Roadmap (v8.3)](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html) |
 | 👤 **GitHub Profile** | [@manuel-reyes-ml](https://github.com/manuel-reyes-ml) |
 | 🔗 **LinkedIn** | [Manuel Reyes](https://linkedin.com/in/mr410) |
 
