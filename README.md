@@ -12,7 +12,9 @@
 [![Timeline](https://img.shields.io/badge/Timeline-37%20Months%20(5%20Stages)-blue)]()
 [![GenAI-First](https://img.shields.io/badge/🤖_GenAI--First-2026_Market_Advantage-blueviolet)]()
 
-📋 **[View Complete 37-Month Interactive Roadmap (v8.2) →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
+📋 **[View Complete 37-Month Interactive Roadmap (v8.3) →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
+
+> **🆕 v8.3 (May 2026):** 2026 market alignment update — Anthropic SDK as primary provider for PolicyPulse + AFC, FastMCP server in PolicyPulse, agent patterns named (orchestrator-workers, sequential, evaluator-optimizer), TypeScript + MCP sprint added (Stage 2 Month 14), A2A protocol awareness, SelfCheckGPT + FActScore evaluation. All v8.2 standards preserved.
 
 ---
 
@@ -39,7 +41,7 @@
 **This repository demonstrates:**
 - ✅ **Production system deployed** - Live ETL pipeline saving $15K/year with public code
 - ✅ **7 production-grade projects** - From ETL foundations to RAG, Multimodal AI, and statistical research systems
-- ✅ **GenAI integration from Day 1** - LLM SDKs (Gemini, OpenAI, Claude), RAG, Multimodal AI, Pydantic structured outputs, PandasAI, Cursor AI
+- ✅ **GenAI integration from Day 1** - LLM SDKs (**Anthropic primary** for RAG/financial reasoning, Gemini/OpenAI fallback), RAG, Multimodal AI, **FastMCP server** (Cursor/Claude Desktop integration), Pydantic structured outputs, PandasAI, Cursor AI
 - ✅ **Evaluation-driven development** - DeepEval + pytest integrated into every project; RAGAS RAG Triad metrics; Docker containerization across all repos
 - ✅ **Skills progression by design** - Each project introduces new capabilities that build on the previous
 - ✅ **Domain expertise** - 15+ years data experience, 8 years finance, 6 years trading
@@ -61,8 +63,8 @@ Each stage combines traditional data skills with GenAI augmentation:
 **Stage 1: GenAI-First Data Analyst & AI Engineer** 🟢 ACTIVE
 ```
 Foundation: Python, SQL, Statistics, Visualization
-+ GenAI Layer: IBM GenAI Engineering cert, LLM SDKs (Gemini, OpenAI, Claude), RAG, Multimodal AI, Pydantic, Streamlit, PandasAI, Cursor AI
-+ Evaluation Layer: DeepEval + pytest integration, RAGAS (RAG Triad metrics), LangSmith observability
++ GenAI Layer: IBM GenAI Engineering cert, LLM SDKs (Anthropic primary, Gemini/OpenAI fallback), RAG, Multimodal AI, FastMCP server, Pydantic, Streamlit, PandasAI, Cursor AI
++ Evaluation Layer: DeepEval + pytest integration, RAGAS (RAG Triad metrics), SelfCheckGPT (consistency-based hallucination detection), LangSmith observability
 + Containerization: Docker fundamentals, Dockerfile for every project
 = Result: AI-powered dashboards with natural language interfaces + production GenAI applications with evaluation-driven development
 ```
@@ -85,7 +87,8 @@ Foundation: scikit-learn, TensorFlow/Keras, PyTorch, MLOps, NVIDIA DLI certifica
 **Stage 4: Agentic AI Engineer & LLM Specialist** 📅 PLANNED
 ```
 Foundation: Advanced LLM architecture, system design
-+ Agentic Layer: MCP (Anthropic), LangGraph, CrewAI, Andrew Ng's Agentic AI, multi-agent orchestration
++ Agentic Layer: MCP (Anthropic) + A2A protocol (Linux Foundation Agentic AI Foundation), LangGraph, CrewAI, Andrew Ng's Agentic AI, multi-agent orchestration with named patterns (orchestrator-workers, sequential, evaluator-optimizer per Anthropic's "Building Effective Agents")
++ Advanced Evaluation: SelfCheckGPT + FActScore (atomic-fact decomposition with SEC retrieval verification — financial-grade rigor for AFC's 0.9 faithfulness threshold)
 = Result: Autonomous AI trading systems with multi-agent collaboration
 ```
 
@@ -113,7 +116,7 @@ Foundation: Production architecture, thought leadership
 
 > **7 projects ordered by skills progression** — each builds on the previous, from ETL foundations to flagship research system.
 
-> **🏗️ Production GitHub Standard (v8.2):** Every project ships with: architecture diagram (Mermaid), Dockerfile, evaluation metrics table (DeepEval + pytest), demo GIF, and "What I Learned" section. All projects include DeepEval evaluation framework and Docker containerization support.
+> **🏗️ Production GitHub Standard (v8.3):** Every project ships with: architecture diagram (Mermaid), Dockerfile, evaluation metrics table (DeepEval + pytest), demo GIF, and "What I Learned" section. All projects include DeepEval evaluation framework and Docker containerization support. Flagship projects (PolicyPulse, AFC) add FastMCP server + advanced hallucination detection (SelfCheckGPT/FActScore).
 
 ### 1. **[1099 Reconciliation ETL Pipeline](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline)** ✅ Live Production
 
@@ -154,7 +157,7 @@ Natural language analytics for retirement plan operations with PII protection, A
 
 ### 3. **[PolicyPulse](https://github.com/manuel-reyes-ml/policypulse)** 🧠 RAG Foundation
 
-**AI-Powered HR Policy Chatbot** | "Ask Your Policies"
+**AI-Powered HR Policy Chatbot** | "Ask Your Policies" | 🔌 **Exposes FastMCP server**
 
 RAG chatbot that answers employee policy questions with cited sources and auto-escalates to HR when the AI is uncertain.
 
@@ -168,10 +171,11 @@ RAG chatbot that answers employee policy questions with cited sources and auto-e
 | **Cited Answers** | Every response cites specific policy section & document |
 | **Smart Escalation** | Confidence < 0.7 → auto-generate HR ticket with context |
 | **RAG Pipeline** | Document → Chunk → Embed → Retrieve → Generate |
+| **MCP Server** | FastMCP exposes retrieval as MCP tools — Cursor/Claude Desktop can query the HR knowledge base directly (2026 hiring keyword) |
 
-**Tech:** Python • ChromaDB • Gemini Embeddings • Streamlit • Pydantic • DeepEval • RAGAS • Docker • GitHub Actions CI
+**Tech:** Python • **Anthropic SDK (primary, Gemini fallback)** • ChromaDB • Gemini Embeddings • Streamlit • Pydantic • DeepEval • RAGAS • **SelfCheckGPT** • **FastMCP** • Docker • GitHub Actions CI
 
-**New skills introduced:** + Embeddings, ChromaDB, RAG pipeline, semantic search, ticket escalation, RAG Triad evaluation
+**New skills introduced:** + Embeddings, ChromaDB, RAG pipeline, semantic search, ticket escalation, RAG Triad evaluation, **FastMCP server, MCP integration**
 
 ---
 
@@ -253,11 +257,11 @@ Consumer-facing dashboard that helps households optimize streaming subscriptions
 
 | Stage | Focus | AI Integration |
 |-------|-------|----------------|
-| **1 (Active)** | Statistical backtesting, signal leaderboard | LLM SDK chat + PandasAI, AI insights |
+| **1 (Active)** | Statistical backtesting, signal leaderboard | LLM SDK chat (**Anthropic primary** for financial reasoning) + PandasAI, AI insights |
 | **2** | AWS pipelines, 500+ tickers, vector storage | RAG infrastructure, embedding pipelines |
 | **3** | ML predictions, ensemble models | Local LLMs (Ollama), fine-tuned financial models |
-| **4** | Agentic AI trading system | **MCP + LangGraph + Multi-agent orchestration** |
-| **5** | Production deployment + evaluation | **LLMOps testing, CI/CD for AI, monitoring** |
+| **4** | Agentic AI trading system | **Multi-agent system implementing orchestrator-workers + sequential + evaluator-optimizer patterns** (Anthropic "Building Effective Agents"); each worker calls SEC/Yahoo/news APIs via MCP servers |
+| **5** | Production deployment + monetization | **A2A protocol** for multi-tenant SaaS (Researcher-Agent ↔ Risk-Agent ↔ Compliance-Agent collaboration); LLMOps testing, CI/CD for AI, monitoring |
 
 **Phase 1A (Active):** Dynamic stock screener • Alternative data collection (SEC, Wikipedia, News) • Statistical backtesting with bootstrap confidence • Trigger leaderboard
 
@@ -265,9 +269,9 @@ Consumer-facing dashboard that helps households optimize streaming subscriptions
 
 **What makes it defensible:** Walk-forward validation • Survivorship bias controls • Modern stack (DuckDB, Parquet) • Progressive architecture through all career stages
 
-**Tech:** Python • DuckDB • Parquet • httpx async • edgartools • yfinance • Wikipedia API • Gemini SDK • PandasAI • Streamlit • DeepEval • Docker • GitHub Actions CI
+**Tech:** Python • DuckDB • Parquet • httpx async • edgartools • yfinance • Wikipedia API • **Anthropic SDK (primary, Gemini/OpenAI fallback)** • PandasAI • Streamlit • DeepEval • **SelfCheckGPT + FActScore** • Docker • GitHub Actions CI
 
-**New skills introduced:** + Statistical methodology, DuckDB lakehouse, async data collection, multi-source alternative data
+**New skills introduced:** + Statistical methodology, DuckDB lakehouse, async data collection, multi-source alternative data, **financial-grade evaluation (faithfulness threshold 0.9)**
 
 ---
 
@@ -330,7 +334,7 @@ learning_journey/
 │
 ├── 📂 docs/                              # Documentation & guides
 │   ├── index.html                        # GitHub Pages landing page
-│   ├── roadmap.html                      # Interactive 37-month GenAI-first roadmap (v8.2)
+│   ├── roadmap.html                      # Interactive 37-month GenAI-first roadmap (v8.3)
 │   └── activation-plans/                 # Structured learning guides
 │       ├── README.md                     # Guide overview
 │       ├── WEEK_01_MASTER_ACTIVATION_PLAN.md
@@ -379,11 +383,11 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 **Key Deliverables (7 projects, easy → flagship):**
 1. **1099 ETL Pipeline** ✅ — Production system, $15K savings (Foundation: ETL + Testing + CI/CD)
 2. **DataVault Analyst** — First AI project (+ LLM SDK, Pydantic, PII handling)
-3. **PolicyPulse** — RAG foundation (+ Embeddings, ChromaDB, semantic search)
+3. **PolicyPulse** — RAG foundation (+ Embeddings, ChromaDB, semantic search, **FastMCP server, Anthropic SDK primary**)
 4. **FormSense** — Document intelligence (+ Multimodal AI, Vision LLM)
 5. **Operations-Demand-Intelligence** 🚧 — Enterprise analytics (+ real data, advanced analytics)
 6. **StreamSmart Optimizer** — Consumer AI app (+ external APIs, optimization engine)
-7. **Attention-Flow Catalyst** 🚀 — Flagship (+ statistical methodology, DuckDB, async)
+7. **Attention-Flow Catalyst** 🚀 — Flagship (+ statistical methodology, DuckDB, async, **Anthropic SDK primary, SelfCheckGPT + FActScore**)
 
 **Outcome:** GenAI-First Data Analyst & AI Engineer position
 
@@ -394,6 +398,7 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 **Core Skills:** AWS • Airflow • PySpark • PostgreSQL • BigQuery • Data warehousing  
 **AI Systems Skills:** Vector DBs (Pinecone/Weaviate/Qdrant) • RAG infrastructure • Embedding pipelines • Unstructured data ETL  
 **Containerization:** Docker & Kubernetes Masterclass (Months 12-13)
+**🆕 v8.3 Sprint (Month 14, 2 weeks):** TypeScript fundamentals + MCP server in TypeScript — unlocks 2026 hiring keyword without committing to TS as primary language
 
 **Key Deliverable:** All 7 projects evolve — Cloud deployment, production databases, scheduled pipelines
 
@@ -411,7 +416,8 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 ### **Stage 4: Agentic AI Engineer & LLM Specialist** (Months 30-34) 📅 Planned
 
 **Core Skills:** Advanced LLM architecture • System design • Production deployment  
-**Agentic Skills:** MCP (Anthropic) • LangGraph • CrewAI • Andrew Ng's Agentic AI • Multi-agent orchestration
+**Agentic Skills:** **MCP + A2A protocols** • LangGraph • CrewAI • Andrew Ng's Agentic AI • Multi-agent orchestration with **Anthropic's "Building Effective Agents" patterns** (orchestrator-workers, sequential, evaluator-optimizer)
+**Advanced Eval:** SelfCheckGPT + FActScore (atomic-fact decomposition for SEC-grounded analysis)
 
 **Key Deliverable:** AI Trading Assistant with multi-agent collaboration (research + analysis + execution agents)
 
@@ -446,10 +452,14 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 - **LangChain** - Framework for building GenAI applications
 - **Streamlit** - AI-powered web app interfaces
 - **PandasAI** - Natural language data querying for dashboard integration
+- **FastMCP** - Python framework for building MCP servers (PolicyPulse exposes retrieval as MCP tools to Cursor/Claude Desktop)
+- **Anthropic SDK** - Primary provider for PolicyPulse + AFC (Claude excels at RAG synthesis + financial reasoning; prompt caching reduces costs ~90%)
 
-**AI Evaluation (v8.2 Cross-Project Standard):**
+**AI Evaluation (v8.3 Cross-Project Standard):**
 - **DeepEval + pytest** - Evaluation-driven development integrated into CI/CD for all projects
 - **RAGAS** - RAG Triad metrics (Context Relevance, Groundedness, Answer Relevance) for PolicyPulse
+- **SelfCheckGPT** - Consistency-based hallucination detection (PolicyPulse + AFC) — sample N=5 responses, score divergence
+- **FActScore** - Atomic-fact decomposition with retrieval verification (AFC only — financial-grade rigor for SEC-grounded claims)
 - **LangSmith** - LLM observability, tracing, and debugging for StreamSmart and beyond
 
 **Containerization:**
@@ -479,7 +489,7 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 |-------|----------------------|
 | **2** | Vector DBs (Pinecone/Weaviate) + RAG infrastructure + Embedding pipelines + Docker & Kubernetes Masterclass + BigQuery |
 | **3** | Ollama (local LLMs) + Fine-tuning (LoRA/QLoRA/PEFT) + Generative AI with LLMs (AWS) + NVIDIA DLI |
-| **4** | MCP (Anthropic) + LangGraph + CrewAI + Andrew Ng's Agentic AI + Multi-agent systems |
+| **4** | MCP + A2A + LangGraph + CrewAI + Andrew Ng's Agentic AI + Multi-agent systems with named patterns (orchestrator-workers, sequential, evaluator-optimizer) |
 | **5** | Automated Testing for LLMOps + CI/CD for AI + Production evaluation + Monitoring |
 
 ---
