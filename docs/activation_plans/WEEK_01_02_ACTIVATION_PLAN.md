@@ -94,6 +94,16 @@ Every step includes the **exact commands to type**, **what you should see on scr
   - For the free short courses (ChatGPT Prompt Engineering, etc.)
   - Free account
 
+- [ ] **Anthropic Console account** → Go to [console.anthropic.com](https://console.anthropic.com) → Sign up ⭐ v8.3
+  - Anthropic SDK is the **primary provider** for PolicyPulse + AFC per Roadmap v8.3
+  - Sign up is free; you'll add billing in the API Keys section below
+  - Used for: RAG synthesis (PolicyPulse), financial reasoning (AFC), agent patterns (Stage 4)
+
+- [ ] **Google AI Studio account** → Go to [aistudio.google.com](https://aistudio.google.com) → Sign in with Google ⭐ v8.3
+  - For Gemini API access (embeddings + Gemini Vision multimodal)
+  - Used for: Embeddings in PolicyPulse (semantic search), Gemini Vision in FormSense (form reading)
+  - Free tier is generous and covers all of Stage 1 — no billing needed
+
 - [ ] **HackerRank account** → Go to [hackerrank.com](https://hackerrank.com) → Sign up
   - For SQL and Python practice challenges
   - Free account
@@ -132,7 +142,27 @@ Every step includes the **exact commands to type**, **what you should see on scr
 5. Install the **Python extension:** Click the Extensions icon (4 squares) on the left sidebar → Search "Python" → Install the one by Microsoft (it has millions of downloads)
 6. Install the **Jupyter extension:** Same process, search "Jupyter" → Install the one by Microsoft
 
-#### Step 3: Install Cursor AI IDE ($20/month — your PRIMARY editor)
+#### Step 3: Install Docker Desktop (Free) ⭐ v8.2/v8.3 STANDARD
+
+Every project in your portfolio ships with a Dockerfile — Docker Desktop is required to build and test containers locally.
+
+**Windows:**
+1. Go to [docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop/)
+2. Download Docker Desktop for Windows
+3. Run the installer (it may prompt to enable WSL 2 — accept and let it install)
+4. After install, restart your computer
+5. Open Docker Desktop → accept the terms → it should start automatically
+6. Verify: Open Command Prompt, type: `docker --version` → you should see something like `Docker version 24.x.x`
+
+**Mac:**
+1. Same URL → download for Mac (choose Apple Silicon or Intel based on your Mac)
+2. Drag Docker.app to Applications
+3. Open Docker → grant permissions when asked
+4. Verify: Open Terminal, type: `docker --version`
+
+**Don't worry about learning Docker now** — Month 5 has the Docker for Beginners course. You're just installing it so it's ready when you need it.
+
+#### Step 4: Install Cursor AI IDE ($20/month — your PRIMARY editor)
 
 1. Go to [cursor.com](https://cursor.com)
 2. Download for your operating system
@@ -147,7 +177,19 @@ Every step includes the **exact commands to type**, **what you should see on scr
 - Auto-complete code as you type (learning by seeing patterns)
 - Answer questions about Python/SQL right inside your editor
 
-#### Step 4: Install Git (Version Control)
+#### Step 5: Install Claude Desktop (Free) ⭐ v8.3
+
+Claude Desktop is Anthropic's free desktop app. You'll use it later (Week 11-12) to test PolicyPulse's FastMCP server integration — recruiter-visible "MCP server in production" demonstration.
+
+**Windows / Mac:**
+1. Go to [claude.ai/download](https://claude.ai/download)
+2. Download for your OS
+3. Install + sign in with the Anthropic account you created above
+4. Free tier is fine — you're using it as an MCP client, not for chat usage
+
+**You won't use this on Day 1** — it's part of the v8.3 setup foundation that pays off in Week 11-12 when PolicyPulse exposes its FastMCP server.
+
+#### Step 6: Install Git (Version Control)
 
 **Windows:**
 1. Go to [git-scm.com/download/win](https://git-scm.com/download/win)
@@ -162,7 +204,7 @@ Every step includes the **exact commands to type**, **what you should see on scr
 3. If not installed, it will prompt you to install Xcode Command Line Tools → Click "Install"
 4. Wait for installation → Verify with `git --version` again
 
-#### Step 5: Configure Git with Your Identity
+#### Step 7: Configure Git with Your Identity
 
 Open your terminal (Command Prompt on Windows, Terminal on Mac) and type these two commands (replace with YOUR info):
 
@@ -173,7 +215,24 @@ git config --global user.email "your-email@gmail.com"
 
 This tells Git who you are for every code commit you make.
 
-#### Step 6: Create Your Project Folder Structure
+#### Step 8: Install GitHub CLI (Free) ⭐ Important
+
+GitHub CLI (`gh`) accelerates your "no vibe coding" workflow — manual PR creation, branch management, issue tracking from terminal.
+
+**Windows:**
+1. Go to [cli.github.com](https://cli.github.com/) → Download for Windows
+2. Run installer with defaults
+3. Verify: `gh --version`
+4. Authenticate: `gh auth login` → choose GitHub.com → HTTPS → Yes (auth git) → Login with web browser
+
+**Mac:**
+1. Install Homebrew first if you don't have it: [brew.sh](https://brew.sh)
+2. Run: `brew install gh`
+3. Authenticate: `gh auth login` (same flow as Windows)
+
+**Why this matters:** Your Cursor 8-step development cycle uses `gh issue create`, `gh pr create`, etc. Without `gh`, you'd click through GitHub's web UI for every action.
+
+#### Step 9: Create Your Project Folder Structure
 
 Open your terminal and type these commands one by one:
 
@@ -197,6 +256,57 @@ coding/
 └── projects/            ← Portfolio projects (separate repos later)
 ```
 
+**Then create the GitHub remote:**
+1. Go to [github.com/new](https://github.com/new)
+2. Repository name: `learning_journey`
+3. Description: "37-month GenAI-First career transformation — public learning record"
+4. **Public** (recruiter-visible)
+5. Initialize with README — UNCHECK (you'll create your own)
+6. Click **Create repository**
+
+You'll connect your local folder to this remote on Day 1 (Day 1 instructions handle the `git remote add origin` step).
+
+### API Key Setup (Do BEFORE Day 1) ⭐ v8.3
+
+**Why before Day 1:** You won't use these on Day 1, but having them ready means zero blockers in Week 7-8 (DataVault) and Week 11-12 (PolicyPulse). Get them now while you're in setup mode.
+
+#### Step 1: Get Your Anthropic API Key (PRIMARY PROVIDER per v8.3)
+
+1. Log in to [console.anthropic.com](https://console.anthropic.com) (account created above)
+2. Click your initials (top-right) → **API Keys** → **Create Key**
+3. Name it: `stage1-portfolio-development`
+4. **COPY IT IMMEDIATELY** — you can't view it again after closing
+5. Save in a password manager (or temporarily in `~/.api-keys-backup.txt` outside any git repo)
+6. **Add billing**: Go to **Plans & Billing** → add ~$10 in credits to start
+7. **Set spending limits**: Set monthly cap to $20 to avoid surprises
+
+**Cost expectations at Stage 1 volume:** ~$5-15/month thanks to Anthropic's prompt caching (90% discount on cached tokens). This is your highest-value AI investment.
+
+#### Step 2: Get Your Gemini API Key (Embeddings + Vision)
+
+1. Log in to [aistudio.google.com](https://aistudio.google.com)
+2. Click **Get API Key** (top-left) → **Create API Key**
+3. Choose: **Create API key in new project**
+4. **COPY IT IMMEDIATELY**
+5. Save alongside your Anthropic key
+
+**No billing needed** — Gemini's free tier (15 requests/min, 1500/day) covers all of Stage 1.
+
+#### Step 3: Securely Store Your Keys
+
+Create `~/.env-keys` (or equivalent on Windows: `C:\Users\<you>\.env-keys`) with:
+
+```
+ANTHROPIC_API_KEY=sk-ant-xxxxx
+GEMINI_API_KEY=AIzaXXXX
+```
+
+**CRITICAL:** This file should NEVER be committed to git. Each project will have its own `.env.example` (which IS committed) and `.env` (which is in `.gitignore`).
+
+**Don't worry about how to use these on Day 1** — you'll set up your first project's `.env` in Week 7 when DataVault starts integrating LLMs.
+
+> **📌 Note for catch-up scenarios:** If you're picking up this plan after some self-directed learning (e.g., CS50 in C and Python — common detour for the "no vibe coding" mindset), some software/accounts above may already exist. Confirm each line in the checklist; skip what's done. The v8.3 AI Provider Setup (Anthropic + Gemini API keys, Claude Desktop) is the most likely gap for catch-up learners.
+
 ### Subscriptions to Activate on Day 1 (November 20)
 
 Have your payment method ready. You will activate these on the MORNING of Day 1:
@@ -204,7 +314,9 @@ Have your payment method ready. You will activate these on the MORNING of Day 1:
 - [ ] **Coursera Plus** — $59/month (gives access to ALL courses in your roadmap)
 - [ ] **DataCamp** — $25/month (interactive Python/SQL practice)
 - [ ] **Cursor Pro** — $20/month (AI-powered code editor)
-- [ ] **Total Day 1 cost:** $104/month
+- [ ] **Anthropic API credits** — ~$10 initial (~$5-15/month at Stage 1 volume per v8.3)
+- [ ] **Total Day 1 cost:** ~$110-120/month (subscriptions $104 + API usage $5-15)
+- [ ] **Free additions per v8.3:** Gemini API key, Claude Desktop, Docker Desktop, GitHub CLI ($0 added)
 
 ---
 
@@ -373,6 +485,7 @@ git push
 #### Day 1 Checklist
 
 - [ ] Subscriptions activated (Coursera Plus, DataCamp, Cursor Pro)
+- [ ] **v8.3 AI tooling ready:** Anthropic API key + Gemini API key stored securely; Claude Desktop installed; Docker Desktop running; `gh` CLI authenticated
 - [ ] Python for Everybody Ch.1 watched
 - [ ] CS50 Week 0 lecture started (first 45 min)
 - [ ] GitHub repo created and cloned
