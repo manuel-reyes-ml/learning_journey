@@ -1,4 +1,15 @@
-"""
+"""Configuration module for API key smoke test.
+ 
+Loads provider credentials and model identifiers from environment variables
+into Pydantic-validated settings. Reading from process environment lets the
+script run cleanly inside Docker containers, GitHub Actions, or local shells
+without importing dotenv at module scope.
+ 
+Notes
+-----
+This module never logs or prints API keys. The ``SecretStr`` type from
+Pydantic redacts the value in repr/str output, which is the recommended
+production-grade pattern for credential handling.
 """
 
 # =============================================================================
