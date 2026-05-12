@@ -104,7 +104,9 @@ class AnthropicProvider:
         
         self._settings = settings
         self._client = Anthropic(api_key=settings.api_key.get_secret_value())
-        
+    
+    # Instance method (the default) - gets 'self'  
+    # Needs instance first -> a = AntropicProvider("") -> a.smoke_test()    
     def smoke_test(self, prompt: str) -> SmokeTestResult:
         """Send a single short prompt to Claude and return a preview.
  
@@ -164,9 +166,11 @@ class GeminiProvider:
     def __init__(self, settings: ProviderSettings) -> None:
         from google import genai  # lazy import
         
+        # Instance-level attributes
         self._settings = settings
         self._client = genai.Client(api_key=settings.api_key.get_secret_value())
-        
+    
+    # Instance method (the default) - gets 'self'    
     def smoke_test(self, prompt: str) -> SmokeTestResult:
         """Send a single short prompt to Gemini and return a preview.
  
@@ -195,3 +199,24 @@ class GeminiProvider:
             model=self._settings.model,
             response_preview=text[:60],
         )
+        
+
+# class Provider:
+#     default_model = "claude-opus-4-7"      # class-level attribute (shared by all instances)
+    
+#     def __init__(self, api_key):
+#         self.api_key = api_key              # instance-level attribute
+    
+    # 1. Instance method (the default) — gets `self`
+#     def show_key(self):
+#         return f"Key: {self.api_key}"
+    
+    # 2. Class method — gets `cls`
+#     @classmethod
+#     def show_default_model(cls):
+#         return f"Default model: {cls.default_model}"
+    
+    # 3. Static method — gets neither
+#     @staticmethod
+#     def is_valid_key_format(key):
+#         return key.startswith("sk-")
