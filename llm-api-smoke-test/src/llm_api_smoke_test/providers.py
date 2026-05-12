@@ -1,4 +1,15 @@
-"""
+"""Provider adapters for the API key smoke test.
+ 
+Each provider is wrapped in an adapter that conforms to the ``LLMProvider``
+Protocol. This is the same provider-agnostic abstraction pattern used in
+DataVault and PolicyPulse — adding a third provider (e.g., OpenAI) later
+requires only a new adapter, no changes to the runner.
+ 
+Notes
+-----
+Adapters import their SDK lazily inside ``__init__`` rather than at module
+scope. This keeps ``import llm_api_smoke_test.providers`` cheap during test
+collection even when an SDK is not installed in the current environment.
 """
 
 # =============================================================================
