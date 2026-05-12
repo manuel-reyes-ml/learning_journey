@@ -1,0 +1,89 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llm-api-smoke-test"
+version = "0.1.0"
+description = "Verify Anthropic + Gemini API keys with a single round trip — production-grade smoke test."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+    { name = "Manuel Reyes", email = "manuelreyesv410@gmail.com" }
+]
+keywords = ["llm", "anthropic", "gemini", "smoke-test", "genai"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Typing :: Typed",
+]
+dependencies = [
+    "pydantic>=2.5,<3.0",
+    "anthropic>=0.40,<1.0",
+    "google-genai>=1.0,<3.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0,<9.0",
+    "pytest-cov>=5.0,<7.0",
+    "ruff>=0.5,<1.0",
+    "pyright>=1.1,<2.0",
+]
+
+[project.scripts]
+# After `pip install -e ".[dev]"`, run `llm-api-smoke-test` from the shell.
+llm-api-smoke-test = "llm_api_smoke_test.cli:cli_entry"
+
+[project.urls]
+Homepage = "https://github.com/manuel-reyes-ml/learning_journey"
+Repository = "https://github.com/manuel-reyes-ml/learning_journey"
+
+# ---------- Tooling configuration ----------
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+# PEP 561 — ship the type-info marker so downstream type checkers see it.
+llm_api_smoke_test = ["py.typed"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = [
+    "-ra",
+    "--strict-markers",
+    "--strict-config",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "W",    # pycodestyle warnings
+    "I",    # isort
+    "B",    # bugbear
+    "UP",   # pyupgrade
+    "SIM",  # simplify
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["E501"]  # long parametrize lines are fine in tests
+
+[tool.pyright]
+include = ["src", "tests"]
+pythonVersion = "3.11"
+typeCheckingMode = "strict"
+reportMissingImports = "warning"
+reportMissingTypeStubs = false
