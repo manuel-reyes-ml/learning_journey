@@ -22,6 +22,7 @@ import os
 from collections.abc import Mapping
 
 from pydantic import BaseModel, ConfigDict, SecretStr, field_validator
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # =============================================================================
 # CONSTANTS CONFIGURATION
@@ -123,6 +124,48 @@ class SmokeTestConfig(BaseModel):
     gemini: ProviderSettings
     
 
+# Base class for settings, allowing values to be overridden by environment variables.
+# This is useful in production for secrets you do not wish to save in code, it plays
+# nicely with docker(-compose), Heroku and any 12 factor app design.
+class SmokeTestSettings(BaseSettings):
+    """Loads from env automatically. Drop-in replacement for load_config()."""
+    
+    model_config = SettingsConfigDict(
+        # Also looks at the .env file in the working directory. Real env vars win if both exists.
+        env_file=".env",
+        # Specifies the text encoding when reading .env. Without it, Python falls back to the OS default
+        # Explicit "utf-8" makes the behavior identical everywhere. 
+        env_file_encoding="utf-8",
+        # Decides how to handle env vars (or .env entries) that don't correspond to a field on your model.
+        # 'forbid' (default in pydantic-settings): Raise ValidationError if any extra appears
+        # 'ignore': Silently drop unknown variables
+        # 'allow': Accept and store them as model attributes
+        extra="ignore",
+        # Same flag as on ConfigDict — locks the instance against mutation after it's built.
+        frozen=True
+    )
+    # Each field auto-binds to the matching env var (case-insensitive)
+    anthropic_api_key: SecretStr
+    anthropic_model: str = "claude-opus-4-7"
+    gemini_api_key: SecretStr
+    gemini_model: str = "gemini-2.5-flash"
+    
+    def to_smoke_test_config(self) -> SmokeTestConfig:
+        """Adapter back to your existing nested shape if other code depends on it."""
+        return SmokeTestConfig(
+            anthropic=ProviderSettings(
+                name="Anthropic",
+                api_key=self.anthropic_api_key,
+                model=self.anthropic_model,
+            ),
+            gemini=ProviderSettings(
+                name="Gemini",
+                api_key=self.gemini_api_key,
+                model=self.gemini_model,
+            ),
+        )
+    
+    
 # Mapping[K, V] - the read-only dict contract
 # Mapping describes a dict-like object (with "getitem") that we won't mutate, and MutableMapping one
 # (with "setitem") that we might. By annotating env: Mapping[str, str] | None instead of
