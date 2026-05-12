@@ -27,7 +27,11 @@ from llm_api_smoke_test.config import ProviderSettings
 # EXPORTS
 # =============================================================================
 
-__all__ = []
+__all__ = [
+    "LLMProvider",
+    "AnthropicProvider",
+    "GeminiProvider",
+]
 
 
 # =============================================================================
