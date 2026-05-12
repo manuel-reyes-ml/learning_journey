@@ -77,6 +77,18 @@ class ProviderSettings(BaseModel):
     # Instead of a 401 Unauthorized from Anthropic 30 seconds into your script,
     # you get a clear ValidationError pointing at the exact field on the line
     # load_config() runs. Fail fast, fail at the boundary.
+    #
+    # Class method - gets 'cls' -> works WITHOUT an instance (ProviderSettings._reject_placeholder())
+    # cls is the class object itself, not an instance of it. Inside a classmethod, cls and
+    # ProviderSettings refer to the same thing.
+    #
+    # When field_validator runs, the model instance doesn't exist yet.
+    # Pydantic validates each field during construction, before __init__ finishes. So at that moment,
+    # there's no self to give the validator. What Pydantic has on hand is the class itself —
+    # so it passes cls.
+    #
+    # That's why @classmethod is required. It tells Python: "this method takes the class as its first
+    # argument, not an instance" — which matches exactly how Pydantic calls it.
     @field_validator("api_key")  # <- which field
     @classmethod  # <- MUST be classmethod
     def _reject_placeholder(cls, value: SecretStr) -> SecretStr:
@@ -130,6 +142,12 @@ class SmokeTestConfig(BaseModel):
 class SmokeTestSettings(BaseSettings):
     """Loads from env automatically. Drop-in replacement for load_config()."""
     
+    # Two more flags worth knowing:
+    # - env_prefix="MYAPP_": When you want MYAPP_ANTHROPIC_API_KEY in env to map to
+    # anthropic_api_key field. Useful when several apps share the same host machine or .env file.
+    # - env_nested_delimiter="__": When you have nested config: LLM__PROVIDER=gemini →
+    # settings.llm.provider. Lets you keep your nested ProviderSettings shape from the original
+    # config.py but load it from flat env vars.
     model_config = SettingsConfigDict(
         # Also looks at the .env file in the working directory. Real env vars win if both exists.
         env_file=".env",
@@ -238,3 +256,31 @@ def load_config(env: Mapping[str, str] | None = None) -> SmokeTestConfig:
             model=source.get("GEMINI_MODEL", "gemini-2.5-flash"),
         ),
     )
+    
+
+# from pydantic import BaseModel, SecretStr, field_validator
+
+# class Provider(BaseModel):
+#     api_key: SecretStr
+    
+#     @field_validator("api_key")
+#     @classmethod
+#     def _check(cls, value: SecretStr) -> SecretStr:
+#         print(f"Inside validator — cls is: {cls.__name__}")
+#         print(f"  Does the instance exist yet? No — we're building it.")
+#         if value.get_secret_value() == "":
+#             raise ValueError("empty")
+#         return value
+
+# p = Provider(api_key=SecretStr("sk-xxx"))
+
+# OUTPUT:
+# → Inside validator — cls is: Provider
+# →   Does the instance exist yet? No — we're building it.
+
+# Construction order:
+# 1. You call Provider(api_key="sk-xxx")
+# 2. Pydantic intercepts each field — runs validators
+# 3. _check(cls=Provider, value=SecretStr("sk-xxx"))   ← classmethod call
+# 4. If all validators pass, Pydantic assigns fields onto a new instance
+# 5. Now the instance exists, and `p` points to it
