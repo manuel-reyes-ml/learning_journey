@@ -76,8 +76,8 @@ class ProviderSettings(BaseModel):
     # Instead of a 401 Unauthorized from Anthropic 30 seconds into your script,
     # you get a clear ValidationError pointing at the exact field on the line
     # load_config() runs. Fail fast, fail at the boundary.
-    @field_validator("api_key")
-    @classmethod
+    @field_validator("api_key")  # <- which field
+    @classmethod  # <- MUST be classmethod
     def _reject_placeholder(cls, value: SecretStr) -> SecretStr:
         """Reject obvious placeholder values that indicate misconfiguration.
  
@@ -100,7 +100,9 @@ class ProviderSettings(BaseModel):
         raw = value.get_secret_value().strip()
         placeholders = {"", "your-key-here", "sk-xxxxx", "changeme"}
         if raw in placeholders or raw.lower() in placeholders:
+            # MUST raise ValueError (not custom exception)
             raise ValueError("API key is empty or a placeholder value.")
+        # Return the value on good input. Don't mutate self.
         return value
     
     
@@ -120,7 +122,15 @@ class SmokeTestConfig(BaseModel):
     anthropic: ProviderSettings
     gemini: ProviderSettings
     
-    
+
+# Mapping[K, V] - the read-only dict contract
+# Mapping describes a dict-like object (with "getitem") that we won't mutate, and MutableMapping one
+# (with "setitem") that we might. By annotating env: Mapping[str, str] | None instead of
+# env: dict[str, str] | None, you're making two statements:
+#   1. To the caller: "Pass me anything dict-like — os.environ, a real dict, a ChainMap,
+#   a custom config object."
+#   2. To future-you: "I promise not to mutate this." The type checker will flag any
+#   attempt to do source["X"] = ... inside load_config.
 def load_config(env: Mapping[str, str] | None = None) -> SmokeTestConfig:
     """Build a ``SmokeTestConfig`` from a mapping of environment variables.
  
@@ -152,6 +162,20 @@ def load_config(env: Mapping[str, str] | None = None) -> SmokeTestConfig:
     >>> cfg.anthropic.name
     'Anthropic'
     """
+    # os.environ is a dict-like object (actually os._Environ, which implements MutableMapping)
+    # representing the current process's environment variables. 
+    # When you run ANTHROPIC_API_KEY=sk-... python script.py, that key shows up in
+    # os.environ["ANTHROPIC_API_KEY"] for the lifetime of that Python process.
+    #
+    # 1. It's per-process, not global. A subprocess inherits a copy; changes don't propagate back.
+    # Changes you make in Python (os.environ["X"] = "y") only affect the current process and
+    # its future children.
+    # 2. Values are always strings. No types, no validation — which is exactly why your load_config()
+    # exists: to translate the untyped string world into the typed SmokeTestConfig world.
+    # 3. Reading it directly couples your code to the OS. Your decision to accept
+    # env: Mapping[str, str] | None = None and default to os.environ is the right one —
+    # it's the dependency-injection pattern applied to the environment. Tests pass a dict;
+    # production uses the real os.environ. Zero monkey-patching needed.
     source = env if env is not None else os.environ
     
     required = ("ANTHROPIC_API_KEY", "GEMINI_API_KEY")
