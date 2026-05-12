@@ -214,6 +214,7 @@ class _BaseDictionary[WordContainer: (set[str], list[str], dict[str, None])](ABC
         giving pyright full visibility of the concrete container type
         without an invariance violation.
         """
+        # Instance-level attributes
         self._words: WordContainer = self._create_container()
         self._loaded: bool = False
 
