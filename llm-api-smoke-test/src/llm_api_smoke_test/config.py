@@ -30,6 +30,8 @@ from pydantic import BaseModel, ConfigDict, SecretStr, field_validator
 # Pydantic Class Configuration
 # =====================================================
 
+# It turns type hints into runtime checks. A plain class trusts whatever
+# you pass it; a BaseModel rejects bad input at construction.
 class ProviderSettings(BaseModel):
     """Validated settings for a single LLM provider.
  
@@ -49,12 +51,31 @@ class ProviderSettings(BaseModel):
     running scripts.
     """
     
+    # ConfigDict is a TypedDict you assign to model_config to configure the
+    # entire model (not individual fields).
+    #   - Models can be configured to be immutable via model_config['frozen'] = True.
+    #     When this is set, attempting to change the values of instance attributes will
+    #     raise errors. Also auto-generates __hash__() so instances become hashable. Same
+    #     intent as frozen=True on dataclasses.
+    #   - If extra was set to 'forbid', Pydantic Rejects unknown fields instead of silently
+    #     dropping them. 'api_kye' would not be permitted in construction.
+    #
+    # Other production flags worth knowing for later: strict=True (no type coercion — int won't accept "5")
+    # and validate_assignment=True (re-validates on attribute set, only meaningful if not frozen).
     model_config = ConfigDict(frozen=True, extra="forbid")
     
+    # SecretStr wraps a string so it appears as ********** in repr,
+    # str, print, JSON dump, and tracebacks. Only .get_secret_value()
+    # returns the real value.
     name: str
     api_key: SecretStr
     model: str
     
+    # Decorate a classmethod that runs after Pydantic's type check.
+    # Raise ValueError to reject; return the value to accept.
+    # Instead of a 401 Unauthorized from Anthropic 30 seconds into your script,
+    # you get a clear ValidationError pointing at the exact field on the line
+    # load_config() runs. Fail fast, fail at the boundary.
     @field_validator("api_key")
     @classmethod
     def _reject_placeholder(cls, value: SecretStr) -> SecretStr:
