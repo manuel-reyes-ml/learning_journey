@@ -235,6 +235,48 @@ class AnthropicProvider:
         )
         # Log them via your structlog set up
         
+    def generate_structured(self, prompt: str, schema: type[T]) -> T:
+        """Generate a response conforming to ``schema`` using the tool-use pattern."""
+        from anthropic.types import ToolUseBlock
+        
+        # Pydantic generates the JSON Schema for us — no double-maintenance of
+        # schema definitions. This is the same schema Pydantic uses internally
+        # for validation, so client and server see identical contracts.
+        tool_name = "report"
+        tools = [{
+            "name": tool_name,
+            "description": f"Report the result as a structured {schema.__name__}.",
+            "input_schema": schema.model_json_schema(),
+        }]
+        
+        message = self._client.messages.create(
+            model=self._settings.model,
+            max_tokens=1024,
+            system=self._SYSTEM_PROMPT,
+            tools=tools,
+            # Force the model to call our tool — without this, it might respond
+            # in free text. `tool_choice` with a specific name = "you MUST call this".
+            tool_choice={"type": "tool", "name": tool_name},
+            messages=[{"role": "user", "content": prompt}],
+        )
+        
+        # Narrow the union to find the ToolUseBlock — same pattern as Block 4
+        # but looking for a different block type.
+        for block in message.content:
+            if isinstance(block, ToolUseBlock):
+                # block.input is a dict matching the schema. model_validate
+                # is the canonical Pydantic V2 method for validating dicts;
+                # it raises ValidationError on mismatch — defense in depth
+                # in case the SDK's tool enforcement ever lets something slip.
+                return schema.model_validate(block.input)
+            
+        # If we get here, the model returned text instead of calling the tool —
+        # shouldn't happen with tool_choice forced, but explicit is better.
+        raise RuntimeError(
+            f"Anthropic did not call the {tool_name!r} tool - got blocks: "
+            f"{[type(b).__name__ for b in message.content]}"
+        )
+        
         
 class GeminiProvider:
     """Adapter for the Google Gen AI SDK (``google-genai`` package).
