@@ -33,6 +33,7 @@ __all__ = [
     "LLMProvider",
     "AnthropicProvider",
     "GeminiProvider",
+    "SmokeTestResult",
 ]
 
 
