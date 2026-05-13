@@ -19,9 +19,11 @@ collection even when an SDK is not installed in the current environment.
 from __future__ import annotations
 
 import httpx
+import time
 
 from dataclasses import dataclass
-from typing import Protocol
+from pydantic import BaseModel
+from typing import Protocol, TypeVar
 
 from llm_api_smoke_test.config import ProviderSettings
 
@@ -42,6 +44,19 @@ __all__ = [
 # =============================================================================
 
 @dataclass(frozen=True, slots=True)
+class TokenUsage:
+    """Token counts for a single LLM call — the basis of cost & rate-limit tracking."""
+    
+    input_tokens: int
+    output_tokens: int
+    
+    @property  # call a class method like an attribute
+    def total(self) -> int:
+        """Convenience — most cost calcs need the sum."""
+        return self.input_tokens + self.output_tokens
+    
+
+@dataclass(frozen=True, slots=True)
 class SmokeTestResult:
     """Outcome of a single provider smoke test.
  
@@ -58,6 +73,9 @@ class SmokeTestResult:
     provider_name: str
     model: str
     response_preview: str
+    request_id: str | None = None       # for log correlation / Anthropic support
+    usage: TokenUsage | None = None     # input/output token counts
+    latency_ms: float = 0.0             # wall-clock time of the call
 
 
 class LLMProvider(Protocol):
