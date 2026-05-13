@@ -89,8 +89,8 @@ class ProviderSettings(BaseModel):
     #
     # That's why @classmethod is required. It tells Python: "this method takes the class as its first
     # argument, not an instance" — which matches exactly how Pydantic calls it.
-    @field_validator("api_key")  # <- which field
-    @classmethod  # <- MUST be classmethod
+    @field_validator("api_key")  # <- which field - outer decorator (applied last)
+    @classmethod  # <- MUST be classmethod - inner decorator (applied first)
     def _reject_placeholder(cls, value: SecretStr) -> SecretStr:
         """Reject obvious placeholder values that indicate misconfiguration.
  
@@ -284,3 +284,43 @@ def load_config(env: Mapping[str, str] | None = None) -> SmokeTestConfig:
 # 3. _check(cls=Provider, value=SecretStr("sk-xxx"))   ← classmethod call
 # 4. If all validators pass, Pydantic assigns fields onto a new instance
 # 5. Now the instance exists, and `p` points to it
+
+# What you can do inside a classmethod-validator
+# Because you have cls available, you can access:
+#
+# Class-level attributes (e.g., constants defined on the class)
+# Other class methods
+# The class itself for type checks
+
+# class Provider(BaseModel):
+#     PLACEHOLDERS = {"", "your-key-here", "sk-xxxxx", "changeme"}   # class constant
+    
+#     api_key: SecretStr
+    
+#     @field_validator("api_key")
+#     @classmethod
+#     def _check(cls, value: SecretStr) -> SecretStr:
+#         raw = value.get_secret_value().strip()
+#         if raw in cls.PLACEHOLDERS:                # ← use cls to reach class constant
+#             raise ValueError(f"API key for {cls.__name__} is a placeholder")
+#         return value
+#
+# What you cannot do is access self.other_field — the instance isn't built yet. For
+# cross-field validation, you use @model_validator(mode="after"), which runs after the
+# instance exists, so it gets self:
+#
+# from pydantic import model_validator
+
+# class Provider(BaseModel):
+#     provider: str
+#     model: str
+    
+#     @model_validator(mode="after")
+#     def _check_provider_model_match(self) -> "Provider":
+          # Now self EXISTS — model is fully built
+#         if self.provider == "anthropic" and not self.model.startswith("claude"):
+#             raise ValueError(f"Anthropic model must start with 'claude', got {self.model}")
+#         return self
+#
+# That contrast — cls for per-field (pre-construction), self for cross-field (post-construction) —
+# is the cleanest way to remember the two validator types.
