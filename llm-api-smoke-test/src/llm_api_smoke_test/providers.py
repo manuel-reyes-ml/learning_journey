@@ -40,6 +40,18 @@ __all__ = [
 
 
 # =============================================================================
+# MODULE CONFIGURATION
+# =============================================================================
+# =====================================================
+# Constants
+# =====================================================
+
+# T is "any Pydantic model" — bound=BaseModel restricts T to BaseModel subclasses,
+# which is what lets us call .model_json_schema() and .model_validate() on it.
+T = TypeVar("T", bound=BaseModel)
+
+
+# =============================================================================
 # LLMProvider PROTOCOL
 # =============================================================================
 
@@ -97,6 +109,34 @@ class LLMProvider(Protocol):
         -------
         SmokeTestResult
             Provider name, model used, and a short response preview.
+        """
+        ...
+    
+    # The type[T] annotation (not T) is what lets you write
+    # provider.generate_structured(prompt, SmokeTestReply) —
+    # you're passing the class, not an instance, and the return
+    # is typed as SmokeTestReply (instance).
+    def generate_structured(self, prompt: str, schema: type[T]) -> T:
+        """Generate output conforming to ``schema``, validated as that exact type.
+        
+        Parameters
+        ----------
+        prompt : str
+            The user message.
+        schema : type[T]
+            A Pydantic ``BaseModel`` subclass. The returned object will be
+            an instance of this class.
+        
+        Returns
+        -------
+        T
+            A validated instance of ``schema``.
+        
+        Notes
+        -----
+        Design schemas with reasoning fields BEFORE answer fields — LLMs
+        generate tokens left-to-right, so order in the schema shapes the
+        model's thinking. See DataVault's QueryResponse for the pattern.
         """
         ...
         
