@@ -18,6 +18,8 @@ collection even when an SDK is not installed in the current environment.
 
 from __future__ import annotations
 
+import httpx
+
 from dataclasses import dataclass
 from typing import Protocol
 
@@ -103,7 +105,11 @@ class AnthropicProvider:
         from anthropic import Anthropic  # lazy import - see module docstring
         
         self._settings = settings
-        self._client = Anthropic(api_key=settings.api_key.get_secret_value())
+        self._client = Anthropic(
+            api_key=settings.api_key.get_secret_value(),
+            max_retries=3,  # default is 2 - bump for flakier CI environments
+            timeout=httpx.Timeout(60.0, read=30.0, write=10.0, connect=5.0),
+        )
     
     # Instance method (the default) - gets 'self'  
     # Needs instance first -> a = AntropicProvider("") -> a.smoke_test()    
@@ -130,8 +136,16 @@ class AnthropicProvider:
         message = self._client.messages.create(
             model=self._settings.model,
             max_tokens=64,
+            system="You are a terse assistant. Reply in one sentence.",
             messages=[{"role": "user", "content": prompt}],
         )
+        
+        # Production observability - capture these on every call:
+        request_id = message._request_id    # for support tickets / log correlation
+        input_tokens = message.usage.input_tokens
+        output_tokens = message.usage.output_tokens
+        # Log them via your structlog set up
+        
         # ``content`` is a union of many block types (TextBlock, ToolUseBlock,
         # CodeExecutionToolResultBlock, ...). For a plain prompt with no tools,
         # we expect TextBlock — narrow explicitly so pyright is happy and the
