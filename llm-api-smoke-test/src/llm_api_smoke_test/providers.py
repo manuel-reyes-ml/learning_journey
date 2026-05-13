@@ -160,8 +160,12 @@ class AnthropicProvider:
     swap to ``AsyncAnthropic`` to enable concurrent calls.
     """
     
+    # Class-level constant — same pattern across all calls from this adapter.
+    # In DataVault you'd inject this via ProviderSettings instead of hardcoding.
+    _SYSTEM_PROMPT = "You are terse assistant. Reply in one short sentence."
+    
     def __init__(self, settings: ProviderSettings) -> None:
-        from anthropic import Anthropic  # lazy import - see module docstring
+        from anthropic import Anthropic  # lazy import - keeps module import cheap
         
         self._settings = settings
         self._client = Anthropic(
@@ -192,18 +196,18 @@ class AnthropicProvider:
         """
         from anthropic.types import TextBlock
         
+        # perf_counter is the right clock for measuring elapsed time —
+        # monotonic, high-resolution, immune to system clock changes.
+        start = time.perf_counter()
+        
         message = self._client.messages.create(
             model=self._settings.model,
             max_tokens=64,
-            system="You are a terse assistant. Reply in one sentence.",
+            system=self._SYSTEM_PROMPT,
             messages=[{"role": "user", "content": prompt}],
         )
         
-        # Production observability - capture these on every call:
-        request_id = message._request_id    # for support tickets / log correlation
-        input_tokens = message.usage.input_tokens
-        output_tokens = message.usage.output_tokens
-        # Log them via your structlog set up
+        latency_ms = (time.perf_counter() - start) * 1000.0
         
         # ``content`` is a union of many block types (TextBlock, ToolUseBlock,
         # CodeExecutionToolResultBlock, ...). For a plain prompt with no tools,
@@ -214,11 +218,22 @@ class AnthropicProvider:
             if isinstance(block, TextBlock):
                 text = block.text
                 break
+            
         return SmokeTestResult(
             provider_name=self._settings.name,
             model=self._settings.model,
             response_preview=text[:60],
+            # Production observability - capture these on every call:
+            # _request_id looks private but is documented as public. Use it to
+            # correlate logs with Anthropic-side traces if you ever need support.
+            request_id=message._request_id,
+            usage=TokenUsage(
+                input_tokens=message.usage.input_tokens,
+                output_tokens=message.usage.output_tokens,
+            ),
+            latency_ms=latency_ms,
         )
+        # Log them via your structlog set up
         
         
 class GeminiProvider:
