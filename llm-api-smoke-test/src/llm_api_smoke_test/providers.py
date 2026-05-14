@@ -245,6 +245,9 @@ class AnthropicProvider:
         # for validation, so client and server see identical contracts.
         tool_name = "report"
         
+        # Annotate request-param variables with the SDK's exported TypedDict
+        # before passing them into the call.
+        
         # Annotating the variable as list[ToolParam] makes pyright validate
         # the dict literal AS the TypedDict (checks keys, types of values)
         # instead of inferring a loose dict[str, Unknown].
@@ -383,6 +386,9 @@ class GeminiProvider:
         response = self._client.models.generate_content(
             model=self._settings.model,
             contents=prompt,
+            # No TypedDict-style annotation needed — GenerateContentConfig is a
+            # Pydantic model, so pyright validates every kwarg at the constructor.
+            # Mistyped field names or wrong value types fail at edit time.
             config=GenerateContentConfig(
                 system_instruction=self._SYSTEM_PROMPT,
                 # The two-line magic: tell Gemini to emit JSON, and give it the schema.
@@ -390,7 +396,7 @@ class GeminiProvider:
                 # .model_json_schema() under the hood, same as we did manually
                 # in the Anthropic version.
                 response_mime_type="application/json",
-                response_schema=schema,
+                response_schema=schema,  # SDK calls model_json_schema() internally
             ),
         )
         
@@ -420,3 +426,10 @@ class GeminiProvider:
 #     @staticmethod
 #     def is_valid_key_format(key):
 #         return key.startswith("sk-")
+
+# The bigger principle for your toolkit
+# This is worth internalizing because the same divide shows up in every SDK ecosystem:
+# TypedDict-based request params:
+#   Anthropic, OpenAI, AWS Bedrock -- Annotate the variable: tools: list[ToolParam] = [{...}]
+# Pydantic-based request params: 
+#   Google google-genai, LangChain, Pydantic AI -- Just call the constructor — validation is automatic
