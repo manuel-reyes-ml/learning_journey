@@ -364,7 +364,30 @@ class GeminiProvider:
             usage=usage,
             latency_ms=latency_ms,
         )
+    
+    def generate_structured(self, prompt: str, schema: type[T]) -> T:
+        """Generate a response conforming to ``schema`` via Gemini's native JSON mode."""
+        from google.genai.types import GenerateContentConfig
         
+        response = self._client.models.generate_content(
+            model=self._settings.model,
+            contents=prompt,
+            config=GenerateContentConfig(
+                system_instruction=self._SYSTEM_PROMPT,
+                # The two-line magic: tell Gemini to emit JSON, and give it the schema.
+                # The SDK accepts a Pydantic class directly here — it calls
+                # .model_json_schema() under the hood, same as we did manually
+                # in the Anthropic version.
+                response_mime_type="application/json",
+                response_schema=schema,
+            ),
+        )
+        
+        # response.text contains JSON conforming to the schema.
+        # model_validate_json parses + validates in one step.
+        # (Gemini's SDK also exposes response.parsed, but going through
+        # model_validate_json keeps both providers using identical Pydantic
+        # validation paths — easier to reason about, easier to test.)
 
 # class Provider:
 #     default_model = "claude-opus-4-7"      # class-level attribute (shared by all instances)
