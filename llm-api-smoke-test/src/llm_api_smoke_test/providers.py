@@ -91,8 +91,11 @@ class SmokeTestResult:
 
 
 # =============================================================================
-# LLMProvider PROTOCOL
+# LLMProvider PROTOCOLS
 # =============================================================================
+# =====================================================
+# SYNC LLMProvider
+# =====================================================
 
 class LLMProvider(Protocol):
     """Provider Protocol — every adapter must implement ``smoke_test()``.
@@ -144,6 +147,34 @@ class LLMProvider(Protocol):
         """
         ...
         
+
+# =====================================================
+# ASYNC LLMProvider
+# =====================================================
+
+class AsyncLLMProvider(Protocol):
+    """Async variant of LLMProvider — for concurrent workloads.
+    
+    Methods have identical signatures to the sync versions but are coroutines.
+    Used by DataVault's batch QueryEngine where many calls run concurrently
+    via asyncio.gather().
+    
+    Notes
+    -----
+    The sync and async Protocols are deliberately separate. Mixing them on
+    one Protocol breaks type checking because the return types differ
+    (T vs. Awaitable[T]).
+    """
+    
+    # `async def` here means the return type is implicitly Awaitable[SmokeTestResult] —
+    # callers MUST await this. The Protocol checker verifies that implementations
+    # use `async def` (not `def returning a coroutine manually`).
+    async def smoke_test(self, prompt: str) -> SmokeTestResult:
+        ...
+        
+    async def generate_structured(self, prompt: str, schema: type[T]) -> T:
+        ...
+
 
 # =============================================================================
 # LLM PROVIDER IMPLEMENTATION
