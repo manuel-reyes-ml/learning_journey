@@ -293,12 +293,22 @@ class GeminiProvider:
     deprecated as of Gemini 2.0 per Google's migration guide.
     """
     
+    _SYSTEM_PROMPT = "You are terse assistant. Reply in one short sentence."
+    
     def __init__(self, settings: ProviderSettings) -> None:
         from google import genai  # lazy import
+        from google.genai.types import HttpOptions
         
         # Instance-level attributes
         self._settings = settings
-        self._client = genai.Client(api_key=settings.api_key.get_secret_value())
+        self._client = genai.Client(
+            api_key=settings.api_key.get_secret_value(),
+            # Gemini's SDK takes HTTP-level options through HttpOptions.
+            # timeout is in MILLISECONDS here (different from Anthropic's seconds).
+            # The SDK has its own retry handling — less configurable than
+            # Anthropic's max_retries, but adequate for the same error classes.
+            http_options=HttpOptions(timeout=30_000),
+        )
     
     # Instance method (the default) - gets 'self'    
     def smoke_test(self, prompt: str) -> SmokeTestResult:
@@ -319,15 +329,40 @@ class GeminiProvider:
         google.genai.errors.APIError
             For any API-level failure.
         """
+        from google.genai.types import GenerateContentConfig
+        
+        start = time.perf_counter()
+        
         response = self._client.models.generate_content(
             model=self._settings.model,
             contents=prompt,
+            config=GenerateContentConfig(
+                system_instruction=self._SYSTEM_PROMPT,  # parallel to Anthropic's system=
+                max_output_tokens=64,  # parallel to Anthropic's max_tokens
+            ),
         )
+        
+        latency_ms = (time.perf_counter() - start) * 1000.0
+        
         text = response.text or ""
+        
+        # Gemini exposes usage on usage_metadata. Field names differ from
+        # Anthropic — `prompt_token_count` vs `input_tokens`. The TokenUsage
+        # dataclass normalizes them so downstream code is provider-agnostic.
+        usage = None
+        if response.usage_metadata is not None:
+            usage = TokenUsage(
+                input_tokens=response.usage_metadata.prompt_token_count or 0,
+                output_tokens=response.usage_metadata.candidates_token_count or 0,
+            )
+            
         return SmokeTestResult(
             provider_name=self._settings.name,
             model=self._settings.model,
             response_preview=text[:60],
+            request_id=None,            # Gemini doesn't expose this the same way — honest None.
+            usage=usage,
+            latency_ms=latency_ms,
         )
         
 
