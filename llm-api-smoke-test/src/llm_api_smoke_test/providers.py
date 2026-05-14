@@ -52,7 +52,7 @@ T = TypeVar("T", bound=BaseModel)
 
 
 # =============================================================================
-# LLMProvider PROTOCOL
+# FROZEN DATACLASSES
 # =============================================================================
 
 @dataclass(frozen=True, slots=True)
@@ -89,6 +89,10 @@ class SmokeTestResult:
     usage: TokenUsage | None = None     # input/output token counts
     latency_ms: float = 0.0             # wall-clock time of the call
 
+
+# =============================================================================
+# LLMProvider PROTOCOL
+# =============================================================================
 
 class LLMProvider(Protocol):
     """Provider Protocol — every adapter must implement ``smoke_test()``.
@@ -162,7 +166,7 @@ class AnthropicProvider:
     
     # Class-level constant — same pattern across all calls from this adapter.
     # In DataVault you'd inject this via ProviderSettings instead of hardcoding.
-    _SYSTEM_PROMPT = "You are terse assistant. Reply in one short sentence."
+    _SYSTEM_PROMPT = "You are a terse assistant. Reply in one short sentence."
     
     def __init__(self, settings: ProviderSettings) -> None:
         from anthropic import Anthropic  # lazy import - keeps module import cheap
@@ -307,7 +311,7 @@ class GeminiProvider:
     deprecated as of Gemini 2.0 per Google's migration guide.
     """
     
-    _SYSTEM_PROMPT = "You are terse assistant. Reply in one short sentence."
+    _SYSTEM_PROMPT = "You are a terse assistant. Reply in one short sentence."
     
     def __init__(self, settings: ProviderSettings) -> None:
         from google import genai  # lazy import
