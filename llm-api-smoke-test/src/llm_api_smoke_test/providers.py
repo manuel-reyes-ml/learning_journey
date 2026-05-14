@@ -237,7 +237,8 @@ class AnthropicProvider:
         
     def generate_structured(self, prompt: str, schema: type[T]) -> T:
         """Generate a response conforming to ``schema`` using the tool-use pattern."""
-        from anthropic.types import ToolParam, ToolUseBlock
+        from anthropic.types import MessageParam, ToolParam, ToolUseBlock
+        from anthropic.types.message_create_params import ToolChoiceToolChoiceTool
         
         # Pydantic generates the JSON Schema for us — no double-maintenance of
         # schema definitions. This is the same schema Pydantic uses internally
@@ -253,6 +254,12 @@ class AnthropicProvider:
             "input_schema": schema.model_json_schema(),
         }]
         
+        # Forced-tool choice — its own TypedDict
+        tool_choice: ToolChoiceToolChoiceTool = {"type": "tool", "name": tool_name}
+        
+        # Messages — Iterable[MessageParam]
+        messages: list[MessageParam] = [{"role": "user", "content": prompt}]
+        
         message = self._client.messages.create(
             model=self._settings.model,
             max_tokens=1024,
@@ -260,8 +267,8 @@ class AnthropicProvider:
             tools=tools,
             # Force the model to call our tool — without this, it might respond
             # in free text. `tool_choice` with a specific name = "you MUST call this".
-            tool_choice={"type": "tool", "name": tool_name},
-            messages=[{"role": "user", "content": prompt}],
+            tool_choice=tool_choice,
+            messages=messages,
         )
         
         # Narrow the union to find the ToolUseBlock — same pattern as Block 4
