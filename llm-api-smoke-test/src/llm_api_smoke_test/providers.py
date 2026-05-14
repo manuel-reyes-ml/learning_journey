@@ -237,13 +237,17 @@ class AnthropicProvider:
         
     def generate_structured(self, prompt: str, schema: type[T]) -> T:
         """Generate a response conforming to ``schema`` using the tool-use pattern."""
-        from anthropic.types import ToolUseBlock
+        from anthropic.types import ToolParam, ToolUseBlock
         
         # Pydantic generates the JSON Schema for us — no double-maintenance of
         # schema definitions. This is the same schema Pydantic uses internally
         # for validation, so client and server see identical contracts.
         tool_name = "report"
-        tools = [{
+        
+        # Annotating the variable as list[ToolParam] makes pyright validate
+        # the dict literal AS the TypedDict (checks keys, types of values)
+        # instead of inferring a loose dict[str, Unknown].
+        tools: list[ToolParam] = [{
             "name": tool_name,
             "description": f"Report the result as a structured {schema.__name__}.",
             "input_schema": schema.model_json_schema(),
@@ -388,6 +392,7 @@ class GeminiProvider:
         # (Gemini's SDK also exposes response.parsed, but going through
         # model_validate_json keeps both providers using identical Pydantic
         # validation paths — easier to reason about, easier to test.)
+        return schema.model_validate_json(response.text or "{}")
 
 # class Provider:
 #     default_model = "claude-opus-4-7"      # class-level attribute (shared by all instances)
