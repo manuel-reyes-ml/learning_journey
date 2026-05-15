@@ -174,7 +174,7 @@ class AsyncLLMProvider(Protocol):
         
     async def generate_structured(self, prompt: str, schema: type[T]) -> T:
         ...
-
+0
 
 # =============================================================================
 # LLM PROVIDER IMPLEMENTATION
@@ -442,6 +442,95 @@ class GeminiProvider:
         # validation paths — easier to reason about, easier to test.)
         return schema.model_validate_json(response.text or "{}")
 
+
+class AsyncAnthropicProvider:
+    """Async adapter for the Anthropic SDK — uses AsyncAnthropic client."""
+    
+    _SYSTEM_PROMPT = "You are a terse assistant. Reply in one short sentence."
+    
+    def __init__(self, settings: ProviderSettings) -> None:
+        # AsyncAnthropic is a separate class — same kwargs as Anthropic,
+        # but every method on it is a coroutine. Internally it uses
+        # httpx.AsyncClient instead of httpx.Client.
+        from anthropic import AsyncAnthropic
+        
+        self._settings = settings
+        self._client = AsyncAnthropic(
+            api_key=settings.api_key.get_secret_value(),
+            max_retries=3,
+            timeout=httpx.Timeout(60.0, read=30.0, write=10.0, connect=5.0)
+        )
+        
+    async def smoke_test(self, prompt: str) -> SmokeTestResult:
+        """Async smoke test — same return shape as the sync version."""
+        from anthropic.types import TextBlock
+        
+        start = time.perf_counter()
+        
+        # The ONLY behavioral change vs the sync version: `await`.
+        # The HTTP request still happens — but Python yields control to
+        # the event loop while waiting for bytes, letting other coroutines
+        # run on the same thread.
+        message = await self._client.messages.create(
+            model=self._settings.model,
+            max_tokens=64,
+            system=self._SYSTEM_PROMPT,
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        latency_ms = (time.perf_counter() - start) * 1000.0
+        
+        text = ""
+        for block in message.content:
+            if isinstance(block, TextBlock):
+                text = block.text
+                break
+        
+        return SmokeTestResult(
+            provider_name=self._settings.name,
+            model=self._settings.model,
+            response_preview=text[:60],
+            request_id=message._request_id,
+            usage=TokenUsage(
+                input_tokens=message.usage.input_tokens,
+                output_tokens=message.usage.output_tokens,
+            ),
+            latency_ms=latency_ms,
+        )
+
+    async def generate_structured(self, prompt: str, schema: type[T]) -> T:
+        """Async generate structured — same return shape as the sync version."""
+        from anthropic.types import MessageParam, ToolParam, ToolUseBlock
+        from anthropic.types.message_create_params import ToolChoiceToolChoiceTool
+        
+        tool_name = "report"
+        tools: list[ToolParam] = [{
+            "name": tool_name,
+            "description": f"Report the result as a structured {schema.__name__}.",
+            "input_schema": schema.model_json_schema(),
+        }]
+        tool_choice: ToolChoiceToolChoiceTool = {"type": "tool", "name": tool_name}
+        messages: list[MessageParam] = [{"role": "user", "content": prompt}]
+        
+        message = await self._client.messages.create(
+            model=self._settings.model,
+            max_tokens=1024,
+            system=self._SYSTEM_PROMPT,
+            tools=tools,
+            tool_choice=tool_choice,
+            messages=messages,
+        )
+        
+        for block in message.content:
+            if isinstance(block, ToolUseBlock):
+                return schema.model_validate(block.input)
+            
+        raise RuntimeError(
+            f"Anthropic did not call the {tool_name!r} tool - got blcks: "
+            f"{[type(b).__name__ for b in message.content]}"
+        )
+    
+    
 # class Provider:
 #     default_model = "claude-opus-4-7"      # class-level attribute (shared by all instances)
     
