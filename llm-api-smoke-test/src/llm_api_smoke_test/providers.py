@@ -18,6 +18,7 @@ collection even when an SDK is not installed in the current environment.
 
 from __future__ import annotations
 
+from google.genai.interactions import content
 import httpx
 import time
 
@@ -547,6 +548,56 @@ class AsyncGeminiProvider:
             api_key=settings.api_key.get_secret_value(),
             http_options=HttpOptions(timeout=30_000),
         )
+    
+    async def smoke_test(self, prompt: str) -> SmokeTestResult:
+        from google.genai.types import GenerateContentConfig
+        
+        start = time.perf_counter()
+        
+        # The .aio namespace exposes async versions of every operation.
+        # Same kwargs, same return shape — just awaitable.
+        response = await self._client.aio.models.generate_content(
+            model=self._settings.model,
+            contents=prompt,
+            config=GenerateContentConfig(
+                system_instruction=self._SYSTEM_PROMPT,
+                max_output_tokens=64,
+            ),
+        )
+        
+        latency_ms = (time.perf_counter() - start) * 1000.0
+        text = response.text or ""
+        
+        usage = None
+        if response.usage_metadata is not None:
+            usage = TokenUsage(
+                input_tokens=response.usage_metadata.prompt_token_count or 0,
+                output_tokens=response.usage_metadata.candidates_token_count or 0,
+            )
+            
+        return SmokeTestResult(
+            provider_name=self._settings.name,
+            model=self._settings.model,
+            response_preview=text[:60],
+            request_id=None,
+            usage=usage,
+            latency_ms=latency_ms,
+        )
+        
+    async def generate_structured(self, prompt: str, schema: type[T]) -> T:
+        from google.genai.types import GenerateContentConfig
+        
+        response = await self._client.aio.models.generate_content(
+            model=self._settings.model,
+            contents=prompt,
+            config=GenerateContentConfig(
+                system_instruction=self._SYSTEM_PROMPT,
+                response_mime_type="application/json",
+                response_schema=schema,
+            ),
+        )
+    
+        return schema.model_validate_json(response.text or "{}")
     
     
 # class Provider:
