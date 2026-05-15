@@ -174,7 +174,7 @@ class AsyncLLMProvider(Protocol):
         
     async def generate_structured(self, prompt: str, schema: type[T]) -> T:
         ...
-0
+
 
 # =============================================================================
 # LLM PROVIDER IMPLEMENTATION
@@ -528,6 +528,24 @@ class AsyncAnthropicProvider:
         raise RuntimeError(
             f"Anthropic did not call the {tool_name!r} tool - got blcks: "
             f"{[type(b).__name__ for b in message.content]}"
+        )
+    
+    
+class AsyncGeminiProvider:
+    """Async adapter for Gemini — uses the .aio submodule of genai.Client."""
+    
+    _SYSTEM_PROMPT = "You are a terse assistant. Reply in one short sentence."
+    
+    def __init__(self, settings: ProviderSettings) -> None:
+        from google import genai
+        from google.genai.types import HttpOptions
+        
+        self._settings = settings
+        # Same Client class as the sync version — no AsyncClient.
+        # The async methods live on the .aio accessor.
+        self._client = genai.Client(
+            api_key=settings.api_key.get_secret_value(),
+            http_options=HttpOptions(timeout=30_000),
         )
     
     
