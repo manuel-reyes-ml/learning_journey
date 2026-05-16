@@ -26,3 +26,9 @@ async def main() -> None:
     print(f"{t()} main: gather returned {results}")
 
 asyncio.run(main())
+
+# Phase 1: gather schedules all three coroutines as Tasks on the event loop.
+# The loop picks the first one (A), runs it. A runs synchronously until it hits
+# await asyncio.sleep(0.3). At that moment A parks itself — registers a 300ms
+# timer with the event loop, then yields control. The loop picks B, same dance.
+# Then C. By 0.5ms, all three coroutines are parked, each registered for a different timer.
