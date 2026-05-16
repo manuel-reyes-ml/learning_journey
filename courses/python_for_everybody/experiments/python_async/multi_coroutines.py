@@ -33,7 +33,7 @@ asyncio.run(main())
 # timer with the event loop, then yields control. The loop picks B, same dance.
 # Then C. By 0.5ms, all three coroutines are parked, each registered for a different timer.
 
-# Phase 2: he wait. The event loop has nothing ready to run. It calls into the OS
+# Phase 2: the wait. The event loop has nothing ready to run. It calls into the OS
 # (epoll on Linux, kqueue on Mac) and effectively says "wake me when any of these
 # three timers fires." The OS handles the actual waiting at the kernel level.
 # Your Python process is using ~0% CPU.
@@ -42,3 +42,6 @@ asyncio.run(main())
 # the shortest sleep. The loop wakes, sees B is ready, resumes B from exactly where
 # it parked — the line after await. B runs to completion. Same for C at 200ms,
 # then A at 300ms.
+
+# Phase 4: gather collects results. Once all three Tasks finish, gather returns.
+# Crucially, in input order, not completion order:
