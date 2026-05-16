@@ -32,3 +32,9 @@ asyncio.run(main())
 # await asyncio.sleep(0.3). At that moment A parks itself — registers a 300ms
 # timer with the event loop, then yields control. The loop picks B, same dance.
 # Then C. By 0.5ms, all three coroutines are parked, each registered for a different timer.
+
+# Phase 2: he wait. The event loop has nothing ready to run. It calls into the OS
+# (epoll on Linux, kqueue on Mac) and effectively says "wake me when any of these
+# three timers fires." The OS handles the actual waiting at the kernel level.
+# Your Python process is using ~0% CPU.
+
