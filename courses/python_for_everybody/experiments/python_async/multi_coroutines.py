@@ -62,3 +62,8 @@ asyncio.run(main())
 # Between two awaits, code runs straight through with no interruption — there's no preemption.
 # This is why async is called cooperative concurrency: each coroutine voluntarily marks
 # its yield points.
+
+# If you call requests.get inside an async function, the event loop has no chance to run anything
+# else for the duration of that call. The whole point of async is lost. This is why every LLM SDK
+# ships an explicit async client (AsyncAnthropic, client.aio.models) — the sync versions would
+# silently destroy concurrency if you used them inside async def.
