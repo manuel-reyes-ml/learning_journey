@@ -44,4 +44,21 @@ asyncio.run(main())
 # then A at 300ms.
 
 # Phase 4: gather collects results. Once all three Tasks finish, gather returns.
-# Crucially, in input order, not completion order:
+# Crucially, in input order, not completion order.
+
+# Three coroutines wait in parallel, on one thread. The total wall time is ~300ms
+# (the longest single wait) instead of 100+200+300 = 600ms sequential.
+
+# What await actually does — the one-sentence rule
+#
+# await X says: "if X isn't ready, park this coroutine and tell the event loop to run
+# something else; resume me here when X is done."
+#
+# That's the entire model. The "where does it stop, process, resume" answer is:
+#   Stops: at every await line, only if the awaited operation isn't immediately ready.
+#   Processes (other coroutines): while parked, the event loop runs any other coroutine that's ready.
+#   Resumes: when the OS notifies the loop that the awaited I/O is complete.
+#
+# Between two awaits, code runs straight through with no interruption — there's no preemption.
+# This is why async is called cooperative concurrency: each coroutine voluntarily marks
+# its yield points.
