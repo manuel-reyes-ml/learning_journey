@@ -38,3 +38,7 @@ asyncio.run(main())
 # three timers fires." The OS handles the actual waiting at the kernel level.
 # Your Python process is using ~0% CPU.
 
+# Phase 3:  the resumes, in completion order. B's timer fires first because it had
+# the shortest sleep. The loop wakes, sees B is ready, resumes B from exactly where
+# it parked — the line after await. B runs to completion. Same for C at 200ms,
+# then A at 300ms.
