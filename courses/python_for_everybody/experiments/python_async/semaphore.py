@@ -14,11 +14,17 @@ def t() -> str:
 
 async def work(name: str, sem: asyncio.Semaphore, limiter: AsyncLimiter) -> str:
     print(f"{t()}  {name}  📩 arrived, attempting to acquire sem")
-    # The 'async with sem' form is the recommended way — it guarantees release even
-    # if do_work raises, just like a sync with block guarantees close() is called.
-    #   - It does sem.acquire() and sem.release() automatically
-    #
-    async with limiter:
+    
+    # Semaphore caps concurrency, not rate. If your calls each take 100ms and your
+    # sem is 10, you can fire 100 calls/second — which can still exceed a per-minute
+    # rate limit (e.g., Anthropic's 50 RPM on the free tier). For true rate limiting
+    # (X requests per Y seconds) use a library like aiolimiter. 
+    async with limiter:     # composes cleanly with Semaphore
+        
+        # The 'async with sem' form is the recommended way — it guarantees release even
+        # if do_work raises, just like a sync with block guarantees close() is called.
+        #   - It does sem.acquire() on enter and sem.release() on exit automatically
+        #
         # Without async with, a thrown exception would permanently consume one slot,
         # slowly starving the semaphore until everything deadlocks.
         # The context manager makes this impossible.
