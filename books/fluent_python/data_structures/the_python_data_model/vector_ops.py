@@ -29,8 +29,9 @@ class Vector:
 v1 = Vector(1, 1)
 v2 = Vector(2, 2)
 
-print(v1 + v2)
-print(bool(v2))
-print(v2 * 2)
-
-    
+print(f"V1: {v1}")
+print(f"V2: {v2}")
+print(f"V1 +  V2: {v1 + v2}")
+print(f"Bool V2: {bool(v2)}")
+print(f"Multiply V2 * 2: {v2 * 2}")
+print(f"Representation of V1 (repr): {repr(v1)}")
