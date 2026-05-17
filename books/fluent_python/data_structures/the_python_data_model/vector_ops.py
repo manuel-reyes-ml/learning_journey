@@ -1,3 +1,5 @@
+# Practice special methods in Python classes (dunder = double underscore function)
+
 from __future__ import annotations
 
 import math
@@ -6,6 +8,7 @@ import math
 class Vector:
     
     def __init__(self, x: int = 0, y: int = 0) -> None:
+        # Instance-level attributes
         self.x = x
         self.y = y
         
@@ -18,6 +21,8 @@ class Vector:
     def __bool__(self) -> bool:
         return bool(abs(self))
     
+    # Method creates and returns a new instance of Vector and
+    # does not modify self.
     def __add__(self, other: Vector) -> Vector:
         x = self.x + other.x
         y = self.y + other.y
