@@ -587,6 +587,8 @@ class AsyncGeminiProvider:
     async def generate_structured(self, prompt: str, schema: type[T]) -> T:
         from google.genai.types import GenerateContentConfig
         
+        # Each call to generate_structured() will stop here and await until reponse 
+        # from Anthropic is received, and give control to event loop (asyncio.gather()).
         response = await self._client.aio.models.generate_content(
             model=self._settings.model,
             contents=prompt,
@@ -626,3 +628,39 @@ class AsyncGeminiProvider:
 #   Anthropic, OpenAI, AWS Bedrock -- Annotate the variable: tools: list[ToolParam] = [{...}]
 # Pydantic-based request params: 
 #   Google google-genai, LangChain, Pydantic AI -- Just call the constructor — validation is automatic
+
+# When DataVault eventually calls:
+# pythonresults = await asyncio.gather(*[
+#     provider.generate_structured(q, QueryResponse) for q in questions
+# ])
+# …here's what actually happens, in your code:
+# 1. List comprehension builds 50 coroutine objects. Nothing runs yet.
+# 2. gather schedules all 50 as Tasks. The event loop picks them up one by one.
+# 3. Each Task runs from the top of generate_structured — builds the tools list,
+# builds messages, hits await self._client.messages.create(...). Parks.
+# 4. By the time the 50th Task has parked, all 50 HTTP requests are in flight to Anthropic.
+# Your CPU usage: ~0%.
+# 5. Responses come back from Anthropic's servers in some order — likely close to their issue
+# order, with some jitter.
+# 6. As each response arrives, the OS notifies the event loop, which resumes that specific Task.
+# The Task runs the for block in message.content loop, returns the validated model.
+# 7. When all 50 are done, gather returns the list of QueryResponse instances in input order.
+
+# Wall time: ~the slowest single Anthropic response (~2s). Sequential time would've been ~100s.
+# That's the 50× speedup async gives you for free on this workload.
+#
+# Summary
+# Where does code stop?
+#   At every await whose operation isn't ready yet.
+# What happens during the pause?
+#   The event loop runs other ready coroutines. If none, it waits on OS-level I/O readiness.
+# Where does code resume?
+#   The exact line after await, with local variables and call stack restored.
+# What controls the switching?
+#   Cooperative — only await yields. No preemption.
+# How many threads?
+#   One. Concurrency, not parallelism.
+# What's the speedup mechanism?
+#   Overlapping wait time, not overlapping computation.
+# gather result order?
+#   Input order, regardless of completion order.
