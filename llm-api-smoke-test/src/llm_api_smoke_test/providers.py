@@ -18,7 +18,6 @@ collection even when an SDK is not installed in the current environment.
 
 from __future__ import annotations
 
-from google.genai.interactions import content
 import httpx
 import time
 
@@ -36,6 +35,9 @@ __all__ = [
     "LLMProvider",
     "AnthropicProvider",
     "GeminiProvider",
+    "AsyncLLMProvider",
+    "AsyncAnthropicProvider",
+    "AsyncGeminiProvider",
     "SmokeTestResult",
 ]
 
