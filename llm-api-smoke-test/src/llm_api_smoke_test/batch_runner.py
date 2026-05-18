@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import asyncio
 
+from aiolimiter import AsyncLimiter
 from typing import Final
 
 from llm_api_smoke_test.providers import (
@@ -39,6 +40,7 @@ MAX_CONCURRENT: Final[int] = 5
 # =============================================================================
 
 async def batch_smoke_test(
+    *,  # after this all parameters are keyword only
     provider: AsyncLLMProvider,
     prompts: list[str],
     max_concurrent: int = MAX_CONCURRENT,
@@ -71,14 +73,16 @@ async def batch_smoke_test(
     # event loop is running). Creating it at module scope used to attach it
     # to the wrong loop in older Python versions — still safest to do it here.
     sem = asyncio.Semaphore(max_concurrent)
+    limiter = AsyncLimiter(50, 60)  # 50 calls per 60 seconds
     
     async def _bounded_call(prompt: str) -> SmokeTestResult:
-        # The semaphore protocol in 3 lines:
-        # - `async with sem:` acquires a slot (parks if 0 free)
-        # - The body runs only when this coroutine holds a slot
-        # - Exit releases the slot, wakes the next waiter
-        async with sem:
-            return await provider.smoke_test(prompt)
+        async with limiter:   # composes cleanly with Semaphore
+            # The semaphore protocol in 3 lines:
+            # - `async with sem:` acquires a slot (parks if 0 free)
+            # - The body runs only when this coroutine holds a slot
+            # - Exit releases the slot, wakes the next waiter
+            async with sem:
+                return await provider.smoke_test(prompt)
         
     # Schedule all N tasks. `gather` returns them in input order even though
     # they complete in some other order, which is what we want for matching
