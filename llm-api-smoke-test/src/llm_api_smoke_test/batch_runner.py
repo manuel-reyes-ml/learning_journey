@@ -8,6 +8,7 @@
 from __future__ import annotations
 
 import asyncio
+import logging
 import structlog
 
 from aiolimiter import AsyncLimiter
@@ -33,6 +34,7 @@ __all__ = ["batch_smoke_test"]
 # Use structlog on Python's stdlib since some external packages
 # use stdlib still.
 slogger = structlog.stdlib.get_logger(__name__)
+logger = logging.getLogger(__name__)
 
 
 # =============================================================================
@@ -101,7 +103,7 @@ async def batch_smoke_test(
             async with sem:
                 for provider in providers:
                     provider_class = type(provider).__name__
-                    slogger.info("Running_smoke_test", provider=provider_class)
+                    logger.debug("Running smoke test with %s", provider_class)
                     
                     try:
                         result = await provider.smoke_test(prompt)
