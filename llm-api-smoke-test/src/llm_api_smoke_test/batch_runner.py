@@ -126,6 +126,6 @@ async def batch_smoke_test(
     # Schedule all N tasks. `gather` returns them in input order even though
     # they complete in some other order, which is what we want for matching
     # results back to prompts.
-    await asyncio.gather(*[_bounded_call(p) for p in prompts])
+    asyncio.gather(*[_bounded_call(p) for p in prompts])
     
     return successes, failures
