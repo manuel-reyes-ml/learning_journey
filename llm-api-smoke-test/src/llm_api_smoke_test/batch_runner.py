@@ -45,7 +45,8 @@ slogger = structlog.stdlib.get_logger(__name__)
 # Cannot re assign global variable due to Final
 MAX_CONCURRENT: Final[int] = 5
 
-type BatchResult = tuple[list[SmokeTestResult], list[tuple[str, Exception]]]
+type CallFailure = tuple[str, Exception]
+type BatchResult = tuple[list[SmokeTestResult], list[CallFailure]]
 
 
 # =============================================================================
@@ -83,7 +84,7 @@ async def batch_smoke_test(
         Results in input order — `results[i]` corresponds to `prompts[i]`.
     """
     successes: list[SmokeTestResult] = []
-    failures: list[tuple[str, Exception]] = []
+    failures: list[CallFailure] = []
     
     # Create the semaphore INSIDE the async function (or anywhere after the
     # event loop is running). Creating it at module scope used to attach it
