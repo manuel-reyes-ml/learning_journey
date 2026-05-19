@@ -8,8 +8,10 @@
 from __future__ import annotations
 
 import asyncio
+import structlog
 
 from aiolimiter import AsyncLimiter
+from collections.abc import Iterator
 from typing import Final
 
 from llm_api_smoke_test.providers import (
@@ -25,6 +27,15 @@ __all__ = ["batch_smoke_test"]
 
 
 # =============================================================================
+# LOGGER SETUP
+# =============================================================================
+
+# Use structlog on Python's stdlib since some external packages
+# use stdlib still.
+slogger = structlog.stdlib.get_logger(__name__)
+
+
+# =============================================================================
 # MODULE CONFIGURATION
 # =============================================================================
 # =====================================================
@@ -34,6 +45,8 @@ __all__ = ["batch_smoke_test"]
 # Cannot re assign global variable due to Final
 MAX_CONCURRENT: Final[int] = 5
 
+type BatchResult = tuple[list[SmokeTestResult], list[tuple[str, Exception]]]
+
 
 # =============================================================================
 # CORE FUNCTION
@@ -41,10 +54,10 @@ MAX_CONCURRENT: Final[int] = 5
 
 async def batch_smoke_test(
     *,  # after this all parameters are keyword only
-    provider: AsyncLLMProvider,
+    providers: Iterator[AsyncLLMProvider],
     prompts: list[str],
     max_concurrent: int = MAX_CONCURRENT,
-) -> list[SmokeTestResult]:
+) -> BatchResult:
     """Run many smoke-test calls against one provider, capped at max_concurrent.
     
     This is the DataVault batch pattern in miniature:
@@ -69,22 +82,47 @@ async def batch_smoke_test(
     list[SmokeTestResult]
         Results in input order — `results[i]` corresponds to `prompts[i]`.
     """
+    successes: list[SmokeTestResult] = []
+    failures: list[tuple[str, Exception]] = []
+    
     # Create the semaphore INSIDE the async function (or anywhere after the
     # event loop is running). Creating it at module scope used to attach it
     # to the wrong loop in older Python versions — still safest to do it here.
     sem = asyncio.Semaphore(max_concurrent)
     limiter = AsyncLimiter(50, 60)  # 50 calls per 60 seconds
     
-    async def _bounded_call(prompt: str) -> SmokeTestResult:
+    async def _bounded_call(prompt: str) -> None:
         async with limiter:   # composes cleanly with Semaphore
             # The semaphore protocol in 3 lines:
             # - `async with sem:` acquires a slot (parks if 0 free)
             # - The body runs only when this coroutine holds a slot
             # - Exit releases the slot, wakes the next waiter
             async with sem:
-                return await provider.smoke_test(prompt)
+                for provider in providers:
+                    provider_class = type(provider).__name__
+                    slogger.info("Running_smoke_test", provider=provider_class)
+                    
+                    try:
+                        result = await provider.smoke_test(prompt)
+                        slogger.info(
+                            "call_successful", 
+                            provider_name=result.provider_name,
+                            model=result.model,
+                            response=result.response_preview,
+                        )
+                        successes.append(result)
+                    except Exception as exc:
+                        slogger.error(
+                            "call_failed",
+                            provider_class=provider_class,
+                            type_exception=type(exc).__name__,
+                            exception=exc,
+                        )
+                        failures.append((provider_class, exc))
         
     # Schedule all N tasks. `gather` returns them in input order even though
     # they complete in some other order, which is what we want for matching
     # results back to prompts.
-    return await asyncio.gather(*[_bounded_call(p) for p in prompts])
+    await asyncio.gather(*[_bounded_call(p) for p in prompts])
+    
+    return successes, failures
