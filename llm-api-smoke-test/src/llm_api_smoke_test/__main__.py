@@ -18,9 +18,9 @@ try:
     import logging
     import structlog
 
-    from dataclasses import dataclass
+    from dataclasses import dataclass, KW_ONLY
     from enum import IntEnum, unique
-    from typing import NoReturn
+    from typing import Final, NoReturn
 
     from llm_api_smoke_test.config import SmokeTestSettings
     from llm_api_smoke_test.providers import (
@@ -52,6 +52,13 @@ logger = logging.getLogger(__name__)
 # =============================================================================
 # CONSTANTS CONFIGURATION
 # =============================================================================
+# =====================================================
+# Constants
+# =====================================================
+
+provider_list: Final[str] = ", ".join(["anthropic", "gemini"])
+
+
 # =====================================================
 # Class Constants Configuration
 # =====================================================
@@ -100,8 +107,9 @@ class LLMApiArgs:
     """
     """
     
-    prompts: list[str] | None
-    provider: str | None
+    _: KW_ONLY  # Everything after is keyword-only
+    prompts: list[str]
+    provider: str
     verbose: bool
     
 
@@ -109,3 +117,56 @@ class LLMApiArgs:
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
 
+def _build_parser() -> argparse.ArgumentParser:
+    """
+    """
+    parser = argparse.ArgumentParser(
+        prog="llm-api-smoke-test",
+        description="Verify Anthropic + Gemini API keys with a single round trip each.",
+        epilog=(
+            "Examples:\n"
+            "   %(prog)s --prompt What's the largest country in the world?\n"
+            "   %(prog)s Anthropic\n"
+            "   %(prog)s -v"
+        ),
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+    )
+    
+    # -- Positional arguments --
+    parser.add_argument(
+        "provider",
+        nargs="+",  # one or more arguments
+        type=list[str],
+        default=["gemini", "anthropic"],
+        help=f"LLM providers to use. Default runs all: {provider_list}.",
+    )
+    
+    # -- Keyword arguments --
+    parser.add_argument(
+        "--prp",
+        nargs="+",  # one or more
+        type=list[str],
+        default=[DEFAULT_PROMPT],
+        metavar="PROMPTS",
+        help=(
+            "Enter one or more prompts to be sent to LLM provider(s). "
+            "Use ',' to separate prompts."
+        ),
+    )
+    
+    # -- Optional flags --
+    parser.add_argument(
+        "--v", "--verbose",
+        action="store_true",
+        default=False,
+        help="Enable verbose output (DEBUG-level logging).",
+    )
+    
+    parser.add_argument(
+        "--no-log-file",
+        action="store_true",
+        default=False,
+        help="Disable file logging (console only).",
+    )
+    
+    return parser
