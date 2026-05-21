@@ -13,6 +13,12 @@ import sys
 # Import Guard
 # =====================================================
 
+# __main__.py is the FRONT DOOR — if imports fail, give a friendly
+# error message and exit. This is the ONE place where sys.exit()
+# on ImportError is correct, because the user explicitly ran the
+# program and expects it to either work or explain why it can't.
+#
+# Every other module lets ImportError propagate upward to here.
 try:
     import argparse
     import logging
