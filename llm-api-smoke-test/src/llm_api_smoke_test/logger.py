@@ -27,7 +27,7 @@ __all__ = []
 
 
 # =============================================================================
-# CONSTANTS CONFIGURATION
+# MODULE CONFIGURATION
 # =============================================================================
 # =====================================================
 # Constants
@@ -48,6 +48,31 @@ _PLATFORM_DIRS: Final[PlatformDirs] = PlatformDirs(
     appauthor="manuelreyes",  # Used on windows only; harmless on Unix
     ensure_exists=True,  # Create dirs on first access
 )
+
+# Shared processors run on every log entry regardless of origin:
+#   - structlog.get_logger().info(...)     → native structlog path
+#   - logging.getLogger(__name__).info(...) → stdlib path via ProcessorFormatter
+#
+# Order matters. Each processor receives the event_dict and returns
+# a (possibly modified) event_dict passed to the next processor.
+#
+# 1. merge_contextvars  → pull in any bind_contextvars() values
+# 2. add_logger_name    → add "logger" field (e.g. "speller.dictionaries")
+# 3. add_log_level      → add "level" field ("info", "error", ...)
+# 4. TimeStamper("iso") → add "timestamp" field in ISO-8601
+# 5. StackInfoRenderer  → format stack_info if present
+# 6. format_exc_info    → serialize exc_info tuples into "exception" field
+_SHARED_PROCESSORs: Final[list[Processor]] = [
+    structlog.contextvars.merge_contextvars,
+    structlog.stdlib.add_logger_name,
+    structlog.stdlib.add_logger_name,
+    structlog.stdlib.add_log_level,
+    structlog.processors.TimeStamper(fmt="iso"),
+    structlog.processors.StackInfoRenderer(),
+    structlog.processors.format_exc_info,
+]
+
+_KEY_ORDER: Final[list[str]] = ["timestamp", "level", "logger", "event"]
 
 
 # =====================================================
@@ -185,5 +210,9 @@ try:
     fhandler_config = FileHandlerConfig()
 except ValueError as e:
     sys.exit(f"Error: Invalid FileHandlerConfig setting: {e}")
-    
+
+
+# =============================================================================
+# INTERNAL HELPER FUNCTIONS
+# =============================================================================
 
