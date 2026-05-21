@@ -16,6 +16,7 @@ import sys
 try:
     import argparse
     import logging
+    import string
     import structlog
 
     from dataclasses import dataclass, KW_ONLY
@@ -33,6 +34,7 @@ try:
     )
 
     from llm_api_smoke_test.batch_runner import batch_smoke_test
+    from llm_api_smoke_test.register import dicts
     from llm_api_smoke_test.runner import DEFAULT_PROMPT, run_smoke_tests
     
 except ImportError as e:
@@ -117,9 +119,14 @@ class LLMApiArgs:
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
 
+# Extracting parser construction into its own function means tests can parse
+# arguments without running the full program.
 def _build_parser() -> argparse.ArgumentParser:
     """
     """
+    # Without RawDescriptionHelpFormatter, argparse reformats your epilog text
+    # — collapsing newlines and wrapping. It preserves your formatting so the
+    # examples display cleanly.
     parser = argparse.ArgumentParser(
         prog="llm-api-smoke-test",
         description="Verify Anthropic + Gemini API keys with a single round trip each.",
@@ -170,3 +177,17 @@ def _build_parser() -> argparse.ArgumentParser:
     )
     
     return parser
+
+
+def _validate_providers(providers: list[str]) -> list[str]:
+    """
+    """
+    clean_names = [name.strip().strip(string.punctuation).lower() for name in providers]
+    
+    for name in clean_names:
+        # This validates against the actual registry,
+        # which is the single source of truth.
+        if name not in dicts:
+            raise KeyError(f"Unknown provider '{name}. Available: {provider_list}")
+        
+    return clean_names
