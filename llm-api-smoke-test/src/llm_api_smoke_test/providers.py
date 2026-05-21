@@ -26,6 +26,7 @@ from pydantic import BaseModel
 from typing import Protocol, TypeVar
 
 from llm_api_smoke_test.config import ProviderSettings
+from llm_api_smoke_test.register import register_class
 
 # =============================================================================
 # EXPORTS
@@ -183,6 +184,10 @@ class AsyncLLMProvider(Protocol):
 # LLM PROVIDER IMPLEMENTATION
 # =============================================================================
 
+@register_class(
+    "anthropic",
+    "Anthropic's sync LLM provider class",
+)
 class AnthropicProvider:
     """Adapter for the Anthropic Claude SDK (``anthropic`` package).
  
@@ -329,7 +334,11 @@ class AnthropicProvider:
             f"{[type(b).__name__ for b in message.content]}"
         )
         
-        
+
+@register_class(
+    "gemini",
+    "Gemini's sync LLM provider class",
+)
 class GeminiProvider:
     """Adapter for the Google Gen AI SDK (``google-genai`` package).
  
@@ -446,6 +455,10 @@ class GeminiProvider:
         return schema.model_validate_json(response.text or "{}")
 
 
+@register_class(
+    "anthropic",
+    "Anthropic's Async LLM provider class",
+)
 class AsyncAnthropicProvider:
     """Async adapter for the Anthropic SDK — uses AsyncAnthropic client."""
     
@@ -533,7 +546,11 @@ class AsyncAnthropicProvider:
             f"{[type(b).__name__ for b in message.content]}"
         )
     
-    
+
+@register_class(
+    "Gemini",
+    "Gemini's Async LLM provider class",
+)
 class AsyncGeminiProvider:
     """Async adapter for Gemini — uses the .aio submodule of genai.Client."""
     
