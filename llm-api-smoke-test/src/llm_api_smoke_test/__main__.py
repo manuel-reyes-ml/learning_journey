@@ -64,7 +64,7 @@ logger = logging.getLogger(__name__)
 # Constants
 # =====================================================
 
-provider_list: Final[str] = ", ".join(["anthropic", "gemini"])
+provider_list: Final[str] = ", ".join(dicts.keys())
 
 
 # =====================================================
@@ -150,7 +150,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "provider",
         nargs="+",  # one or more arguments
         type=list[str],
-        default=["gemini", "anthropic"],
+        default=list(dicts.keys()),
         help=f"LLM providers to use. Default runs all: {provider_list}.",
     )
     
