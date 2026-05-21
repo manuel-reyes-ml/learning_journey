@@ -22,7 +22,11 @@ from llm_api_smoke_test.providers import (
 # EXPORTS
 # =============================================================================
 
-__all__ = ["run_smoke_tests"]
+__all__ = [
+    "run_smoke_tests",
+    "CallFailure",
+    "BatchResult",
+]
 
 
 # =============================================================================
