@@ -8,11 +8,11 @@
 from __future__ import annotations
 
 import logging
-import structlog
 
 from collections.abc import Iterator
 from typing import Final
 
+from llm_api_smoke_test.logger import get_structured_logger
 from llm_api_smoke_test.providers import (
     LLMProvider,
     SmokeTestResult,
@@ -35,7 +35,7 @@ __all__ = [
 
 # Use structlog on Python's stdlib since some external packages
 # use stdlib still.
-slogger = structlog.stdlib.get_logger(__name__)
+slogger = get_structured_logger(__name__)
 logger = logging.getLogger(__name__)
 
 

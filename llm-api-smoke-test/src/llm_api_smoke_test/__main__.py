@@ -23,13 +23,14 @@ try:
     import argparse
     import logging
     import string
-    import structlog
 
     from dataclasses import dataclass, KW_ONLY
     from enum import IntEnum, unique
     from typing import Final, NoReturn
 
     from llm_api_smoke_test.config import SmokeTestSettings
+    from llm_api_smoke_test.logger import get_structured_logger
+    
     from llm_api_smoke_test.providers import (
         AnthropicProvider,
         GeminiProvider,
@@ -53,7 +54,7 @@ except ImportError as e:
 
 # Use structlog on Python's stdlib since some external packages
 # use stdlib still.
-slogger = structlog.stdlib.get_logger(__name__)
+slogger = get_structured_logger(__name__)
 logger = logging.getLogger(__name__)
 
 
