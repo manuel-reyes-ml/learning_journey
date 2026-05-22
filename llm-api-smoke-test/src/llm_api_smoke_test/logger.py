@@ -23,7 +23,7 @@ from typing import Any, Final, TextIO
 # EXPORTS
 # =============================================================================
 
-__all__ = []
+__all__ = ["configure_structured_logging", "get_structured_logger"]
 
 
 # =============================================================================
