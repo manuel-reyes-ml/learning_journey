@@ -384,7 +384,7 @@ def _setup_fhandler(
         every log line without the emitting code knowing about them.
     """
     file_handler = RotatingFileHandler(
-        filename=file_dirs.log_file_name,
+        filename=file_dirs.log_file.struct_path,
         maxBytes=fhandler_config.max_log_bytes,
         backupCount=fhandler_config.BACKUP_COUNT,
         encoding=fhandler_config.ENCODING,
@@ -403,6 +403,34 @@ def _setup_fhandler(
         )
     )
     return file_handler
+
+
+def _setup_fhandler_indent(
+    file_dirs: FileDirectories,
+    fhandler_config: FileHandlerConfig,
+) -> RotatingFileHandler:
+    """
+    """
+    file_handler_indent = RotatingFileHandler(
+        filename=file_dirs.log_file.struct_indent_path,
+        maxBytes=fhandler_config.max_log_bytes,
+        backupCount=fhandler_config.BACKUP_COUNT,
+        encoding=fhandler_config.ENCODING,
+    )
+    file_handler_indent.setLevel(logging.DEBUG)
+    file_handler_indent.setFormatter(
+        structlog.stdlib.ProcessorFormatter(
+            # Runs ONLY on non-structlog (stdlib) log records
+            foreign_pre_chain=_SHARED_PROCESSORS,
+            # Runs on ALL records before rendering
+            processors=[
+                structlog.stdlib.ProcessorFormatter.remove_processors_meta,
+                _reorder_keys(_KEY_ORDER),
+                structlog.processors.JSONRenderer(indent=2),  # indent JSON output to improve readability
+            ],
+        )
+    )
+    return file_handler_indent
 
 
 # =============================================================================
