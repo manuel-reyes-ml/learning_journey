@@ -17,7 +17,7 @@ from pathlib import Path
 
 from platformdirs import PlatformDirs
 from structlog.types import EventDict, Processor, WrappedLogger
-from typing import Any, Final, TextIO
+from typing import Any, Final, NamedTuple, TextIO
 
 # =============================================================================
 # EXPORTS
@@ -79,6 +79,14 @@ _KEY_ORDER: Final[list[str]] = ["timestamp", "level", "logger", "event"]
 # Dataclass Frozen Constants
 # =====================================================
 
+class LogFilesPath(NamedTuple):
+    """
+    """
+    
+    struct_path: Path
+    struct_indent_path: Path
+
+
 @dataclass(frozen=True, slots=True)
 class FileDirectories:
     """
@@ -93,11 +101,23 @@ class FileDirectories:
     # naming helper, not a path anchor.
     CUR_DIR: Final[Path] = Path(__file__).resolve().parent  # llm_api_smoke_test/
     
+    def create_log_fname(self) -> tuple[str, str]:
+        """
+        """
+        s_log = f"{self.CUR_DIR.name}.log"
+        s_indent_log = f"{self.CUR_DIR.name}_indent.log"
+        return s_log, s_indent_log
+    
     @property  # Access function's return as an attribute
-    def log_file_name(self) -> Path:
+    def log_file(self) -> LogFilesPath:
         """
         """
-        return self.LOG_DIR / f"{self.CUR_DIR}.log"
+        s_log, s_indent_log = self.create_log_fname()
+        
+        s_log_path = self.LOG_DIR / s_log
+        s_indent_log_path = self.LOG_DIR / s_indent_log
+        
+        return LogFilesPath(s_log_path, s_indent_log_path)
 
 
 @dataclass(frozen=True, slots=True)
