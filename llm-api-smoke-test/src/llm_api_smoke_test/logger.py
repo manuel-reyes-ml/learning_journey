@@ -539,6 +539,8 @@ def configure_structured_logging(
         package_logger.addHandler(file_handler)
         
         # Generate JSON log with indentation = 2 for human readability
+        file_handler_indent = _setup_fhandler_indent(file_dirs, fhandler_config)
+        package_logger.addHandler(file_handler_indent)
        
     # ─── 6. Propagation control ─────────────────────────────────────
     # Same choice as speller.logger.configure_logging — propagate to
