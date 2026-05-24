@@ -315,7 +315,37 @@ class SpellerResult:
 
 
 def get_console() -> Console:
-    """ """
+    """Return a configured ``rich.Console`` for report rendering.
+    Centralises Console construction so every caller in the CLI uses
+    the same instance settings.  Returned to ``__main__.py`` as the
+    module-level ``console`` singleton and threaded through
+    :func:`_print_reports`.
+
+    Returns
+    -------
+    rich.console.Console
+        Console writing to ``stdout`` (``stderr=False``).  This is
+        deliberate: spell-check report output is the program's
+        *result*, not a diagnostic, so it belongs on ``stdout`` and
+        can be piped into other tools.  Diagnostic messages go to
+        ``stderr`` via the logging handlers in
+        :mod:`speller.logger`.
+
+    Notes
+    -----
+    Why a factory function instead of a module-level constant?
+        A function defers construction until first call, which means
+        test fixtures can patch ``rich.console.Console`` before any
+        Console instance is built.  A module-level singleton would
+        lock in the real Console at import time, making
+        capture-based tests harder.
+
+    Roadmap relevance
+    -----------------
+    Same factory pattern carries to every Stage 2+ project that
+    renders structured terminal output: ``get_chromadb_client()``,
+    ``get_genai_client()``, ``get_db_session()``.
+    """
     # Output goes to stderr to match your logging pattern (keeps stdout clean
     # for programmatic piping)
     return Console(stderr=False)
