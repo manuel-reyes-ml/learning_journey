@@ -253,33 +253,59 @@ class LogFilesPath(NamedTuple):
 class FileDirectories:
     """Resolved filesystem paths for all speller project directories.
 
-    All paths are computed from ``__file__`` at instantiation so the
-    package works correctly regardless of where it is installed or run
-    from.  ``frozen=True`` prevents accidental reassignment;
-    ``slots=True`` reduces memory footprint.
+    Splits paths into two categories:
+
+    **Bundled, read-only resources** (``Traversable`` via
+    :func:`importlib.resources.files`)
+        ``DICT_DIR``, ``TXT_DIR``, ``KEYS_DIR`` — package data shipped
+        with the wheel.  Works in disk installs *and* zipped/frozen
+        installs.
+
+    **Writable, per-user paths** (``Path`` via
+    :class:`platformdirs.PlatformDirs`)
+        ``LOG_DIR``, ``MISS_DIR`` — OS-appropriate user locations
+        (e.g. ``~/Library/Logs/speller`` on macOS,
+        ``%APPDATA%\\speller\\Logs`` on Windows,
+        ``~/.local/state/speller/log`` on Linux).
+
+    ``frozen=True`` prevents accidental reassignment; ``slots=True``
+    reduces memory footprint.
 
     Attributes
     ----------
-    CUR_DIR : Path
-        Absolute path to the ``speller/`` package directory.
-    ROOT_DIR : Path
-        Two levels above ``CUR_DIR`` — the ``py_src/`` project root.
-    DICT_DIR : Path
-        ``ROOT_DIR / "dictionaries"`` — dictionary source files.
-    KEYS_DIR : Path
-        ``ROOT_DIR / "keys"`` — reserved for API keys (Stage 2+).
-    TXT_DIR : Path
-        ``ROOT_DIR / "texts"`` — sample text files.
+    DICT_DIR : Traversable
+        Bundled dictionary source files (``speller.data/dictionaries``).
+    TXT_DIR : Traversable
+        Bundled sample text files (``speller.data/texts``).
+    KEYS_DIR : Traversable
+        Bundled directory reserved for API keys (Stage 2+).
     LOG_DIR : Path
-        ``ROOT_DIR / "logs"`` — rotating log files.
+        Per-user log directory resolved by ``platformdirs``.
+        Writable on every supported OS.
     MISS_DIR : Path
-        ``ROOT_DIR / "misspelled"`` — saved misspelled-word reports.
+        Per-user output directory for misspelled-word reports
+        (``platformdirs.user_data_path / "misspelled"``).
+    CUR_DIR : Path
+        Absolute path to the ``speller/`` source directory — used by
+        :meth:`create_log_fname` to derive log filenames from the
+        package name.
 
     Examples
     --------
     >>> dirs = FileDirectories()
-    >>> dirs.log_file.name
-    \'speller.log\'
+    >>> dirs.log_file.flog_path.name
+    'speller.log'
+    >>> "dictionaries" in str(dirs.DICT_DIR)
+    True
+
+    Notes
+    -----
+    Why ``Traversable`` instead of ``Path`` for bundled resources?
+        A wheel install on a container may keep package data inside
+        a ZIP archive — ``Path`` would fail, but ``Traversable.read_text()``
+        works transparently in both cases.  This is the modern (PEP 660
+        + ``importlib.resources``) replacement for the old
+        ``pkg_resources.resource_filename`` pattern.
     """
 
     # Every path in FileDirectories is computed relative to where config.py physically
@@ -327,15 +353,20 @@ class FileDirectories:
     CUR_DIR: Final[Path] = Path(__file__).resolve().parent  # speller/
 
     def create_log_fname(self) -> tuple[str, ...]:
-        """Build the three log filenames from the package directory name.
+        """Build the four log filenames from the package directory name.
 
         Uses ``CUR_DIR.name`` (``"speller"``) so filenames stay in sync
         with any future package rename without manual updates.
 
         Returns
         -------
-        tuple of (str, str, str)
-            ``(plain_log, json_log, structured_log)`` filenames.
+        tuple of (str, str, str, str)
+            Four filenames in order:
+
+            - ``speller.log``                     — plain-text backend.
+            - ``speller_json.log``                — t-string backend.
+            - ``speller_structured.log``          — structlog compact NDJSON.
+            - ``speller_structured_indent.log``   — structlog indented JSON.
         """
         f_string = f"{self.CUR_DIR.name}.log"
         t_string = f"{self.CUR_DIR.name}_json.log"
