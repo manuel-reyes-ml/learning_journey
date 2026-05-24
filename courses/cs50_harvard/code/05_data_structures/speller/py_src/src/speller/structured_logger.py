@@ -1,4 +1,51 @@
-""" """
+"""Structlog + stdlib bridge for the speller package.
+
+Adds a third logging backend alongside :mod:`speller.logger` (plain
+text + ANSI) and :mod:`speller.template_logger` (t-string aware).
+This module wires structlog to run *under* stdlib logging so every
+log entry — whether emitted via ``structlog.get_logger()`` or via
+``logging.getLogger()`` — flows through the same processor chain and
+the same handlers.
+
+Two-mode architecture
+---------------------
+The configuration deliberately uses **structlog-on-stdlib**, not
+structlog standalone.  Every third-party library in the roadmap
+(``google.generativeai``, ``chromadb``, ``langchain``, ``httpx``,
+``boto3``, ``sklearn``, ``langgraph``, ``fastapi``...) emits logs
+via the stdlib ``logging`` module.  Running structlog standalone
+would leave those vendor logs unformatted or lost; running under
+stdlib captures them into the same NDJSON file as your own code.
+
+Three handlers per call to :func:`configure_structured_logging`
+---------------------------------------------------------------
+1. Console handler — pretty ``key=value`` via
+   :class:`structlog.dev.ConsoleRenderer`.
+2. File handler — single-line NDJSON via
+   :class:`structlog.processors.JSONRenderer`.  This is the format
+   queryable by ``jq``, DuckDB's ``read_json_auto``, Datadog, ELK,
+   and CloudWatch Logs Insights.
+3. Indented JSON file handler — same payload as #2 with
+   ``indent=2`` for human debugging.
+
+Roadmap relevance
+-----------------
+This is the request-scoped logging pattern that carries forward
+into every Stage 2+ project:
+
+- DataVault:   ``bind_contextvars(query_id=..., model=...)`` per call.
+- PolicyPulse: ``bind_contextvars(request_id=..., user_id=...)`` per
+  RAG turn.
+- AFC:         ``bind_contextvars(symbol=..., strategy=...)`` per
+  backtest run.
+
+References
+----------
+.. [1] structlog — Getting Started
+   https://www.structlog.org/en/stable/getting-started.html
+.. [2] structlog — Standard Library Integration
+   https://www.structlog.org/en/stable/standard-library.html
+"""
 
 # =============================================================================
 # IMPORTS
@@ -241,7 +288,35 @@ def _setup_fhandler_indent(
     file_dirs: FileDirectories = file_dirs,
     fhandler_config: FileHandlerConfig = fhandler_config,
 ) -> RotatingFileHandler:
-    """ """
+    """Create a rotating file handler that emits indented NDJSON.
+    Twin of :func:`_setup_fhandler`, but configures
+    :class:`~structlog.processors.JSONRenderer` with ``indent=2`` so
+    the on-disk output is human-readable.  Writes to a separate file
+    (``speller_structured_indent.log``) to avoid clobbering the
+    compact NDJSON used by log aggregators.
+
+    Parameters
+    ----------
+    file_dirs : FileDirectories, optional
+        Provides the log file path.  Defaults to the module-level
+        singleton from :mod:`speller.config`.
+    fhandler_config : FileHandlerConfig, optional
+        Provides size and rotation settings.  Defaults to the
+        module-level singleton from :mod:`speller.config`.
+
+    Returns
+    -------
+    RotatingFileHandler
+        Fully configured handler ready to attach to a logger.
+
+    Notes
+    -----
+    Why two JSON files (compact and indented)?
+        Compact NDJSON is what ``jq``, DuckDB, and log aggregators
+        expect — one JSON object per line, no whitespace.  Indented
+        JSON is what humans want when grepping raw log files during
+        development.  Keeping both removes the trade-off.
+    """
     file_handler_indent = RotatingFileHandler(
         filename=file_dirs.log_file.slog_indent_path,
         maxBytes=fhandler_config.max_log_bytes,
