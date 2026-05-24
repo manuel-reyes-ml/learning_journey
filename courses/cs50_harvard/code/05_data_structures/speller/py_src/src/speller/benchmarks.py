@@ -201,7 +201,44 @@ class BenchmarkResult:
         return f"{self.operation}: {self.elapsed_seconds:.2f}s"
 
     def __format__(self, spec: str) -> str:
-        """ """
+        """Custom format spec dispatcher for ``f"{result:spec}"``.
+        Implements the third leg of the format trio
+        (``f-string`` → :func:`format` → ``__format__``).  Recognises
+        ``"json"`` as a custom spec; everything else falls through to
+        :meth:`__str__` so the default ``f"{result}"`` keeps working.
+
+        Parameters
+        ----------
+        spec : str
+            Format spec passed by ``format()`` or an f-string.  Currently
+            supported:
+
+            - ``"json"`` — single-line JSON object.
+            - ``""``     — delegates to :meth:`__str__`
+            (``"<op>: <s>s"``).
+
+        Returns
+        -------
+        str
+            Formatted representation per the requested spec.
+
+        Examples
+        --------
+        >>> result = BenchmarkResult(operation="load", elapsed_seconds=0.1423)
+        >>> f"{result}"
+        'load: 0.14s'
+        >>> f"{result:json}"
+        '{"op": "load", "s": 0.1423}'
+
+        Notes
+        -----
+        This is the same mechanism :mod:`datetime` uses to enable
+        ``f"{now:%Y-%m-%d}"`` — the format spec is a tiny mini-language
+        parsed by ``__format__``.  Useful Stage 2+ pattern for
+        ``LLMResponse``, ``RetrievalResult``, and ``TradeSignal``
+        dataclasses where you want a structured-string view alongside
+        the default human view.
+        """
         match spec:
             case "json":
                 return f'{{"op": "{self.operation}", "s": {self.elapsed_seconds}}}'
