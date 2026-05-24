@@ -215,8 +215,8 @@ default_fnames: DefaultFileNames = {
 class LogFilesPath(NamedTuple):
     """Resolved paths for each logging backend's output file.
 
-    Three backends produce three separate files so they can run
-    side-by-side and be diffed for comparison.
+    Three logging backends produce four separate files so they can
+    run side-by-side and be diffed for comparison.
 
     Attributes
     ----------
@@ -226,8 +226,12 @@ class LogFilesPath(NamedTuple):
         Custom JSON (PEP 750 t-strings) from
         :mod:`speller.template_logger` → ``speller_json.log``.
     slog_path : Path
-        NDJSON output from :mod:`speller.structured_logger`
+        Compact NDJSON output from :mod:`speller.structured_logger`
         → ``speller_structured.log``.
+    slog_indent_path : Path
+        Indented JSON (``indent=2``) variant of the structlog output
+        → ``speller_structured_indent.log``.  Same content as
+        ``slog_path`` but human-readable for development.
     """
 
     flog_path: Path
