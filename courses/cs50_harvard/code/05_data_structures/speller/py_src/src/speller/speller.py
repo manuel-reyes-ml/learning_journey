@@ -123,23 +123,27 @@ class Report(NamedTuple):
 @dataclass(frozen=True, slots=True)
 class SpellerResult:
     """Immutable container for the complete spell-check result.
-
+    
     Holds all data needed to produce the CS50-format output report.
-    Using a dataclass instead of returning a tuple or dict because:
-    - Named fields are self-documenting (result.misspelled vs result[0])
-    - Type hints catch errors at compile time
-    - frozen=True prevents accidental mutation after creation
-    - The caller decides HOW to display results (print, log, write to file)
+    Using a dataclass instead of a tuple or dict because:
 
-    This is the same pattern you'll use in future projects:
-    - DataVault:    AnalysisResult (query, response, tokens, latency)
-    - PolicyPulse:  RetrievalResult (query, chunks, confidence, source)
-    - FormSense:    ExtractionResult (fields, confidence, routing)
-    - AFC:          BacktestResult (trades, returns, sharpe, drawdown)
+    - Named fields are self-documenting
+    (``result.misspelled`` vs ``result[0]``).
+    - Type hints catch errors at compile time.
+    - ``frozen=True`` prevents accidental mutation after creation.
+    - The caller decides HOW to display results (print, log, write
+    to file).
+
+    This is the same pattern reused in future projects:
+
+    - DataVault:   ``AnalysisResult`` (query, response, tokens, latency)
+    - PolicyPulse: ``RetrievalResult`` (query, chunks, confidence, source)
+    - FormSense:   ``ExtractionResult`` (fields, confidence, routing)
+    - AFC:         ``BacktestResult`` (trades, returns, sharpe, drawdown)
 
     Parameters
     ----------
-    misspelled_words : list[str]
+    misspelled_words : list of str
         Words not found in the dictionary, in original case.
     words_misspelled : int
         Count of misspelled words.
@@ -147,8 +151,17 @@ class SpellerResult:
         Total words loaded in dictionary.
     words_in_text : int
         Total words processed from text file.
-    benchmarks : dict[str, BenchmarkResult]
-        Timing results keyed by operation name.
+    ops_name : str, optional
+        Human-readable backend label (e.g. ``"HashTableDictionary"``).
+        Stamped in via ``dataclasses.replace`` in ``main()`` after the
+        backend has been selected.  Default ``""``.
+    description : str, optional
+        One-line backend description from
+        :class:`~speller.register.DictInfo`.  Stamped in the same way
+        as ``ops_name``.  Default ``""``.
+    benchmarks : dict of {str : BenchmarkResult}, optional
+        Timing results keyed by operation name (``"load"``,
+        ``"check"``, ``"size"``).  Default ``{}``.
     """
 
     # Required fields (no default) must come first
