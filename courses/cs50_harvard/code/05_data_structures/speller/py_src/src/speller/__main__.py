@@ -151,12 +151,11 @@ class FileErrorData(TypedDict, total=False):
 @dataclass(frozen=True)
 class SpellerArgs:
     """Typed container for parsed CLI arguments.
-
     Converts ``argparse.Namespace`` — whose attributes are typed as
     ``Any`` — into a fully typed, immutable dataclass.  This gives
     Pyright complete static coverage for all ``args.*`` accesses in
-    ``main()`` and helper functions, catching typos and type mismatches
-    at analysis time rather than runtime.
+    ``main()`` and helper functions, catching typos and type
+    mismatches at analysis time rather than runtime.
 
     ``frozen=True`` prevents accidental mutation after construction.
     Constructed once in ``main()`` immediately after ``parse_args()``;
@@ -165,30 +164,52 @@ class SpellerArgs:
     Attributes
     ----------
     text : str or None
-        Path to a single text file.  ``None`` when only ``--dir``
-        is provided.
+        Path to a single text file.  ``None`` when only ``--dir`` is
+        provided.
     dictionary : str
         Path to the dictionary file.  Defaults to
         ``dictionaries/large`` when omitted from the CLI.
     operations : list of str
-        Validated backend operation names (e.g. ``["hash", "sorted"]``).
-        Defaults to ``["hash"]``.
-    directory : Path or None
-        Directory to glob for ``.txt`` files.  ``None`` when
+        Validated backend operation names (e.g.
+        ``["hash", "sorted"]``).  Defaults to ``["hash"]``.
+    directory : Path or Traversable or None
+        Directory to glob for ``.txt`` files.  ``Traversable`` when
+        ``--demo --dir`` is used (resolved to bundled samples);
+        ``Path`` for a user-supplied directory; ``None`` when
         ``--dir`` is not provided.
+    demo : bool
+        ``True`` when ``--demo`` is set.  Routes ``text`` and
+        ``directory`` lookups through ``importlib.resources`` instead
+        of the filesystem.
     verbose : bool
         ``True`` enables ``DEBUG``-level console logging.
     no_log_file : bool
         ``True`` disables the rotating file handler.
     show_misspelled : bool
-        ``True`` writes misspelled words to ``misspelled/`` directory.
+        ``True`` writes misspelled words to the ``misspelled/``
+        directory.
+    no_custom_console : bool
+        ``True`` swaps the ``ColoredFormatter`` for stdlib
+        ``logging.Formatter`` — used in tests and CI to suppress
+        ANSI codes from captured output.
+    template_logging : bool
+        ``True`` selects :func:`~speller.template_logger.configure_template_logging`
+        (PEP 750 t-string mode, requires Python 3.14+).  Mutually
+        exclusive with ``structured_logging``.
+    structured_logging : bool
+        ``True`` selects
+        :func:`~speller.structured_logger.configure_structured_logging`
+        (structlog + NDJSON mode).  Mutually exclusive with
+        ``template_logging``.
+    table_report : bool
+        ``True`` renders :class:`GeneralReport` as a styled
+        ``rich.Table`` instead of a plain-text markup block.
 
     Notes
     -----
-    This is the typed-dataclass CLI args pattern described in the
-    ``argparse.Namespace`` reference at the bottom of this module.
-    The same pattern applies to every future project's CLI layer:
-    ``DataVaultArgs``, ``PolicyPulseArgs``, ``FormSenseArgs``.
+    The same typed-dataclass CLI args pattern applies to every
+    future project's CLI layer: ``DataVaultArgs``,
+    ``PolicyPulseArgs``, ``FormSenseArgs``.
     """
 
     text: str | None
@@ -306,7 +327,41 @@ class GeneralReport:
     # follows the Console Protocol (tables, panels, trees, markdown, syntax-highlighted code)
     # can be passed to console.print().
     def format_table(self) -> Table:
-        """ """
+        """Render the batch summary as a styled :class:`rich.table.Table`.
+        Twin of :meth:`format_general_report`, but returns a
+        ``rich.Table`` instead of a markup string.  Called automatically
+        by :meth:`__rich__` so ``console.print(report)`` produces table
+        output when ``--table-report`` is passed.
+
+        Returns
+        -------
+        rich.table.Table
+            Borderless two-column table.  Left column lists the metric
+            label in blue; right column shows the value in bold.  Error
+            categories with non-empty file lists render in red.
+
+        Notes
+        -----
+        Why ``box=None`` and not a bordered table?
+            Borders compete with the surrounding ``Panel`` (drawn by
+            :func:`_print_reports`).  A borderless table inside a panel
+            reads as one composed element instead of two stacked boxes.
+
+        Why return ``Table`` instead of printing directly?
+            Command-query separation, same rule as
+            :meth:`SpellerResult.format_report`: this method queries the
+            data and returns a renderable; the caller decides where to
+            send it (``stdout``, log file, or a test assertion that
+            inspects ``table.rows``).
+
+        Roadmap relevance
+        -----------------
+        ``Table`` + ``Console Protocol`` (``__rich__``) is the production
+        pattern for any dataclass that needs both a plain-text and a
+        styled console view.  Reuses cleanly in DataVault's
+        ``AnalysisReport``, PolicyPulse's ``RAGBatchReport``, and AFC's
+        ``BacktestReport``.
+        """
         table = Table(
             show_header=True,
             box=None,  # no borders for a clean look
