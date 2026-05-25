@@ -254,7 +254,31 @@ class BenchmarkResult:
 # This lets you introduce optional fields without breaking call sites, which is
 # useful during staged migrations.
 class FileData(NamedTuple):
-    """Metadata for a timed file operation."""
+    """Filename + path pair stored in ``BenchmarkResult.metadata``.
+
+    Lightweight NamedTuple used as the value of
+    ``metadata["input_file"]`` when :func:`timer` is called with
+    ``input_file=...``.  Carrying both name and path lets the report
+    formatter show ``CHECKED FILE`` and ``FILE PATH`` separately
+    without re-parsing the string.
+
+    Attributes
+    ----------
+    fname : str
+        Basename of the file (``"austen.txt"``).
+    fpath : Path or Traversable
+        Full path object — ``Path`` for user files,
+        ``Traversable`` for bundled samples loaded via
+        ``importlib.resources``.
+
+    Examples
+    --------
+    >>> meta = result.metadata["input_file"]
+    >>> meta.fname
+    'austen.txt'
+    >>> meta.fpath.parent
+    PosixPath('texts')
+    """
 
     fname: str
     fpath: Path | Traversable
