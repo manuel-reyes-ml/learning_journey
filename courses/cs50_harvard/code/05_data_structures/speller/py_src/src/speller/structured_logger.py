@@ -289,6 +289,7 @@ def _setup_fhandler_indent(
     fhandler_config: FileHandlerConfig = fhandler_config,
 ) -> RotatingFileHandler:
     """Create a rotating file handler that emits indented NDJSON.
+    
     Twin of :func:`_setup_fhandler`, but configures
     :class:`~structlog.processors.JSONRenderer` with ``indent=2`` so
     the on-disk output is human-readable.  Writes to a separate file
