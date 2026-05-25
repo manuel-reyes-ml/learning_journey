@@ -346,6 +346,7 @@ class SpellerResult:
 
 def get_console() -> Console:
     """Return a configured ``rich.Console`` for report rendering.
+    
     Centralises Console construction so every caller in the CLI uses
     the same instance settings.  Returned to ``__main__.py`` as the
     module-level ``console`` singleton and threaded through
