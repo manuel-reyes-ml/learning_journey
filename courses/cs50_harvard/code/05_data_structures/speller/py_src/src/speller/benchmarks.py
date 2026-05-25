@@ -202,6 +202,7 @@ class BenchmarkResult:
 
     def __format__(self, spec: str) -> str:
         """Custom format spec dispatcher for ``f"{result:spec}"``.
+        
         Implements the third leg of the format trio
         (``f-string`` → :func:`format` → ``__format__``).  Recognises
         ``"json"`` as a custom spec; everything else falls through to
