@@ -151,6 +151,7 @@ class FileErrorData(TypedDict, total=False):
 @dataclass(frozen=True)
 class SpellerArgs:
     """Typed container for parsed CLI arguments.
+    
     Converts ``argparse.Namespace`` — whose attributes are typed as
     ``Any`` — into a fully typed, immutable dataclass.  This gives
     Pyright complete static coverage for all ``args.*`` accesses in
@@ -328,6 +329,7 @@ class GeneralReport:
     # can be passed to console.print().
     def format_table(self) -> Table:
         """Render the batch summary as a styled :class:`rich.table.Table`.
+        
         Twin of :meth:`format_general_report`, but returns a
         ``rich.Table`` instead of a markup string.  Called automatically
         by :meth:`__rich__` so ``console.print(report)`` produces table
