@@ -110,7 +110,24 @@ COL: Final[int] = 22
 # passes None for this field in several places but the functional namedtuple can't
 # express that without a workaround.
 class Report(NamedTuple):
-    """Formatted spell-check report."""
+    """Two-part return value of :meth:`SpellerResult.format_report`.
+
+    NamedTuple rather than a frozen dataclass because callers
+    unpack it positionally in tests
+    (``main, misspelled = result.format_report()``) and because
+    ``misspelled`` needs a default of ``None`` — easier to express
+    on a NamedTuple than on a tuple.
+
+    Attributes
+    ----------
+    main : str
+        Rich-markup CS50-format summary string.  Always populated.
+        Sent to ``console.print()`` by ``_print_reports``.
+    misspelled : str or None, optional
+        Newline-joined list of misspelled words for writing to
+        ``misspelled/misspelled_<filename>``.  ``None`` when
+        ``--show-misspelled`` was not requested.  Default ``None``.
+    """
 
     main: str
     misspelled: str | None = None
