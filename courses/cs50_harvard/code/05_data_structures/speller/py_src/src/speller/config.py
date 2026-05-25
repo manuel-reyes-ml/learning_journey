@@ -179,7 +179,21 @@ class DefaultDirs(StrEnum):
 # This lets you introduce optional fields without breaking call sites, which is
 # useful during staged migrations.
 class DictFileNames(NamedTuple):
-    """Default dictionary filenames."""
+    """Default dictionary filenames for the bundled word lists.
+
+    NamedTuple rather than a plain tuple so call sites use
+    ``default_fnames["dictionaries"].large`` instead of the more
+    opaque ``default_fnames["dictionaries"][0]``.
+
+    Attributes
+    ----------
+    large : str
+        Filename of the production-sized CS50 word list
+        (``"large"`` — 143 091 words).
+    small : str
+        Filename of the smoke-test word list (``"small"`` —
+        ~3 000 words).  Faster for CI runs and pytest fixtures.
+    """
 
     large: str
     small: str
