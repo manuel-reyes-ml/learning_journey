@@ -157,7 +157,7 @@ def _build_parser() -> argparse.ArgumentParser:
     
     # -- Keyword arguments --
     parser.add_argument(
-        "--prp",
+        "-prp",
         nargs="+",  # one or more
         type=str,  # argparse calls type(value) per token
         default=[DEFAULT_PROMPT],
@@ -170,7 +170,7 @@ def _build_parser() -> argparse.ArgumentParser:
     
     # -- Optional flags --
     parser.add_argument(
-        "--v", "--verbose",
+        "-v", "--verbose",
         action="store_true",
         default=False,
         help="Enable verbose output (DEBUG-level logging).",
