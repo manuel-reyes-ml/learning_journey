@@ -457,7 +457,7 @@ class GeminiProvider:
 
 @register_class(
     "anthropic",
-    "Anthropic's Async LLM provider class",
+    "Anthropic's async LLM provider class",
 )
 class AsyncAnthropicProvider:
     """Async adapter for the Anthropic SDK — uses AsyncAnthropic client."""
@@ -549,7 +549,7 @@ class AsyncAnthropicProvider:
 
 @register_class(
     "gemini",
-    "Gemini's Async LLM provider class",
+    "Gemini's async LLM provider class",
 )
 class AsyncGeminiProvider:
     """Async adapter for Gemini — uses the .aio submodule of genai.Client."""
