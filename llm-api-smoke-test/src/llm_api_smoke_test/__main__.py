@@ -117,7 +117,7 @@ class LLMApiArgs:
     """
     
     _: KW_ONLY  # Everything after is keyword-only
-    prompts: list[str]
+    prp: list[str]
     provider: str
     verbose: bool
     
