@@ -66,6 +66,12 @@ The answer: every pattern here — Protocol interfaces, ABC Template Method, plu
 | `pyproject.toml` packaging | All 7 projects |
 | Dependency injection | FormSense (swappable extraction backends) |
 | `pytest` fixtures | All 7 projects (CI/CD via GitHub Actions) |
+| Strategy pattern for swappable backends | DataVault (LLM provider selection), PolicyPulse (embedding/store selection) |
+| `structlog` + `bind_contextvars` | All Stage 2+ (request-scoped logging: query_id, user_id, trace_id) |
+| `rich` `__rich__` protocol | DataVault dashboards, AFC backtest reports |
+| `platformdirs` for OS-aware user paths | All CLI tools across the roadmap |
+| `importlib.resources` for shipped data | DataVault (prompt templates), PolicyPulse (sample policies) |
+| `TYPE_CHECKING` + `sys.version_info` gating | Any project supporting multiple Python versions in CI |
 
 ---
 
@@ -75,15 +81,20 @@ The answer: every pattern here — Protocol interfaces, ABC Template Method, plu
 speller/
 ├── __init__.py           NullHandler logging + version + side-effect backend registration
 ├── __main__.py           CLI entry point (composition root) + SpellerArgs typed dataclass
-├── config.py             Constants, enums, path resolution
+├── config.py             Constants, enums, path resolution (platformdirs + importlib.resources)
 ├── protocols.py          DictionaryProtocol (structural typing)
 ├── benchmarks.py         timer() context manager + timed() decorator
 ├── register.py           Plugin registry: DictInfo, dicts{}, register_class()
-├── logger.py             ColoredFormatter + configure_logging()
+├── logger.py             ColoredFormatter + configure_logging() (plain-text backend)
+├── template_logger.py    JsonTemplateFormatter + configure_template_logging() (PEP 750 t-strings, 3.14+)
+├── structured_logger.py  configure_structured_logging() (structlog + NDJSON)
+├── _compat.py            Cross-version dispatcher (TYPE_CHECKING + sys.version_info gate)
+├── _compat_py312.py      Fallback adapter for Python <3.14 (no Template)
+├── _compat_py314.py      PEP 750 t-string adapter for Python 3.14+
 ├── dictionaries.py       _BaseDictionary[WordContainer] ABC + four concrete backends
 ├── text_processor.py     Character-level state machine (generator)
 ├── load_dictionary.py    load_dictionary() — loads once for the full batch pipeline
-└── speller.py            Orchestrator + SpellerResult (check + size, no loading)
+└── speller.py            Orchestrator + SpellerResult + Report + get_console() (rich)
 ```
 
 ### Dependency Chain
@@ -91,22 +102,29 @@ speller/
 ```
 config.py ──────────┐
                     ├── No internal imports (bottom of chain)
-protocols.py ───────┘
+protocols.py ───────┤
+_compat_py312.py ───┤      (loaded only on Python <3.14, no internal imports)
+_compat_py314.py ───┘      (loaded only on Python 3.14+, no internal imports)
                          ↓
+               _compat.py ←── version dispatcher (TYPE_CHECKING + version gate)
+                    ↓
                register.py ←── imports protocols + speller
                     ↓
          dictionaries.py ←──── imports config + register
                     ↓
           (backends registered via @register_class at import time)
 
-benchmarks.py ──────────── standalone (stdlib only)
-logger.py ──────────────── imports config
-text_processor.py ──────── imports config
+benchmarks.py ──────────────── standalone (stdlib only)
+logger.py ──────────────────── imports config
+text_processor.py ──────────── imports config
+template_logger.py ─────────── imports config + _compat (PEP 750 backend)
+structured_logger.py ───────── imports config (structlog backend)
 
-load_dictionary.py ─────── imports protocols, benchmarks
-speller.py ─────────────── imports protocols, benchmarks, text_processor
-__main__.py ────────────── imports EVERYTHING (composition root)
-                           reads dicts{} from register
+load_dictionary.py ─────────── imports protocols, benchmarks
+speller.py ─────────────────── imports protocols, benchmarks, text_processor, rich
+__main__.py ────────────────── imports EVERYTHING (composition root)
+                               reads dicts{} from register
+                               selects logging backend by CLI flag
 ```
 
 `__init__.py` imports `dictionaries` as a side effect (`# noqa: F401`) so all `@register_class` decorators execute and `dicts{}` is fully populated before `__main__.py` reads it.
@@ -176,16 +194,40 @@ except ValueError as e:
 ```python
 raw: argparse.Namespace = _build_parser().parse_args(argv)
 
-args = SpellerArgs(          # fully typed from this point forward
+args = SpellerArgs(          # 12 fully typed fields from this point forward
     text=raw.text,
     dictionary=raw.dictionary,
     operations=raw.ops,
-    directory=raw.dir,
+    directory=resolved_dir,
+    demo=raw.demo,
     verbose=raw.verbose,
     no_log_file=raw.no_log_file,
     show_misspelled=raw.show_misspelled,
+    no_custom_console=raw.no_custom_console,
+    template_logging=raw.template_logging,
+    structured_logging=raw.structured_logging,
+    table_report=raw.table_report,
 )
 ```
+
+**Three pluggable logging backends** — `configure_logging` (plain text + ANSI), `configure_template_logging` (PEP 750 t-strings, gated to Python 3.14+ via `_compat.py`), and `configure_structured_logging` (structlog + NDJSON with contextvars). All three share the same parameter signature, so the composition root picks one with `--template-logging` / `--structured-logging` / default — the Strategy pattern applied to logging. structlog runs *under* stdlib logging so every third-party library (`langchain`, `chromadb`, `boto3`, ...) emits into the same NDJSON pipeline as your own code.
+
+```python
+if args.template_logging:
+    configure_template_logging(...)        # PEP 750 t-strings → JSON + console
+elif args.structured_logging:
+    configure_structured_logging(...)      # structlog → NDJSON + ConsoleRenderer
+else:
+    configure_logging(...)                 # ColoredFormatter + plain text
+```
+
+**Cross-version feature gating** — `_compat.py` dispatches Template/Interpolation imports based on `sys.version_info >= (3, 14)`. The 3.14+ module uses the real `string.templatelib` types; the 3.12 module exposes empty sentinel classes whose `isinstance()` checks always return False, so isinstance-guarded code paths fall through harmlessly. Type checkers see the real types unconditionally through `TYPE_CHECKING`. Three audiences (mypy, Python 3.14 runtime, Python 3.12 runtime), three views, one source file.
+
+**`platformdirs` for writable paths** — `LOG_DIR` and `MISS_DIR` resolve to OS-appropriate user locations (`~/Library/Logs/speller` on macOS, `%APPDATA%\speller\Logs` on Windows, `~/.local/state/speller/log` on Linux). The old "compute paths from `__file__`" approach breaks the moment someone installs from a wheel into `site-packages` — that path becomes read-only. `platformdirs` makes the package work identically in editable, wheel, and frozen installs.
+
+**`importlib.resources` for bundled data** — `DICT_DIR`, `TXT_DIR`, and `KEYS_DIR` are `Traversable` objects from `files("speller.data")`, not `Path`. This works transparently whether the package is installed from disk, from a wheel, or from a zipped/frozen distribution. `Traversable.read_text()` does the right thing in all three cases — no more "where is my data file?" debugging across deploy targets.
+
+**`rich` integration via `__rich__` protocol** — `GeneralReport.__rich__()` returns a styled `rich.Table`. Calling `console.print(report)` automatically dispatches to `__rich__` — same protocol pattern as `__str__` for `print()` or `__len__` for `len()`. The data layer stays untouched (still a frozen dataclass); only the presentation layer gains rich-aware rendering. Toggleable via `--table-report`.
 
 **Dataclass over Pydantic** — `BenchmarkResult` and `SpellerResult` are frozen dataclasses (6.5x faster creation, 2.5x less memory than Pydantic). Pydantic is reserved for service boundaries in future projects.
 
@@ -285,6 +327,25 @@ speller --show-misspelled texts/austen.txt
 
 # Console only (no log file)
 speller --no-log-file texts/cat.txt
+
+# Use the bundled sample dictionaries and texts (importlib.resources)
+speller --demo cat.txt
+
+# Run all bundled samples
+speller --demo --dir
+
+# Render the General Report as a styled rich.Table
+speller --dir texts/ --table-report
+
+# Plain logging.Formatter (suppress ANSI colors — useful in CI)
+speller --no-custom-console texts/austen.txt
+
+# Structured logging mode (structlog → NDJSON + contextvars)
+speller -s texts/austen.txt
+speller --structured-logging --dir texts/
+
+# PEP 750 t-string logging mode (Python 3.14+ only)
+speller -t texts/austen.txt
 ```
 
 ## Testing
@@ -390,10 +451,22 @@ speller/
 │       ├── benchmarks.py
 │       ├── register.py
 │       ├── logger.py
+│       ├── template_logger.py      # PEP 750 t-string backend (3.14+)
+│       ├── structured_logger.py    # structlog + NDJSON backend
+│       ├── _compat.py              # cross-version Template dispatcher
+│       ├── _compat_py312.py        # fallback adapter (<3.14)
+│       ├── _compat_py314.py        # PEP 750 adapter (3.14+)
 │       ├── dictionaries.py
 │       ├── text_processor.py
 │       ├── load_dictionary.py
-│       └── speller.py
+│       ├── speller.py
+│       ├── py.typed                # PEP 561 — marks package as typed
+│       └── data/                   # bundled via importlib.resources
+│           ├── dictionaries/
+│           │   ├── large           # 143,091 words
+│           │   └── small           # 2 words (cat, caterpillar)
+│           ├── texts/              # Sample text files
+│           └── keys/               # CS50 answer keys for validation
 ├── tests/
 │   ├── __init__.py
 │   ├── conftest.py
@@ -403,17 +476,12 @@ speller/
 │   ├── test_text_processor.py
 │   ├── test_speller.py
 │   └── test_main.py
-├── dictionaries/
-│   ├── large                  # 143,091 words
-│   └── small                  # 2 words (cat, caterpillar)
-├── texts/                     # Text files to spell-check
-├── keys/                      # CS50 answer keys for validation
-├── logs/                      # Rotating log files (auto-created)
-├── misspelled/                # Misspelled word output (auto-created)
 ├── pyproject.toml
 ├── README.md
 └── LICENSE
 ```
+
+> **Writable directories** (`logs/`, `misspelled/`) are resolved at runtime by `platformdirs` to OS-appropriate user paths — they are NOT created inside the project tree. Example on macOS: `~/Library/Logs/speller/speller.log` and `~/Library/Application Support/speller/misspelled/`.
 
 ---
 
@@ -424,12 +492,18 @@ speller/
 - `pyproject.toml` — Unified config for build, dependencies, pytest, mypy, ruff
 - `src/` **layout** — Prevents accidental imports during testing
 - **Type hints** — Full type annotations, `mypy --strict` compliant
+- `py.typed` **marker** (PEP 561) — Signals to downstream consumers that the package ships type information
 - `from __future__ import annotations` — Deferred evaluation in every module
 - `TypeVar` **with constraints** — `WordContainer = TypeVar("WordContainer", set[str], list[str], dict[str, None])` solves mypy invariance in Generic class hierarchies
 - `ParamSpec` **+** `TypeVar` — Type-safe decorators preserving function signatures
 - **Typed dataclass CLI args** — `argparse.Namespace` converted to `SpellerArgs` frozen dataclass immediately after parsing; Pyright has full static coverage for all subsequent attribute access
 - **Layer-boundary exception handling** — domain functions raise `ValueError`; the CLI layer catches and translates to `ExitCode`; `from e` preserves diagnostic context, `from None` suppresses internal signals
-- **NumPy-style docstrings** — Consistent documentation across all public APIs
+- **Three pluggable logging backends** — plain-text + ANSI (`logger.py`), PEP 750 t-string + JSON (`template_logger.py`, 3.14+), structlog + NDJSON with contextvars (`structured_logger.py`); selected at the composition root
+- **Cross-version feature gating** — `_compat.py` dispatches imports by `sys.version_info`; `TYPE_CHECKING` blocks give type checkers the modern API view while runtime falls back to sentinel classes on older Python
+- **`platformdirs` for writable paths** — OS-appropriate user log/data directories; package works identically in editable, wheel, and frozen installs
+- **`importlib.resources` for bundled data** — `Traversable` objects for dictionaries, sample texts, and answer keys; works in zipped/frozen distributions where `Path` would fail
+- **`rich` integration via `__rich__` protocol** — `GeneralReport.__rich__()` returns a styled `Table`; data layer stays untouched, presentation layer gains rich rendering
+- **NumPy-style docstrings** — Consistent documentation across all public APIs (ruff `D` rules with `convention = "numpy"`)
 - `__all__` **exports** — Explicit public API per module
 - `logging` **over** `print` — `NullHandler` library pattern + `RotatingFileHandler`
 
@@ -448,17 +522,25 @@ The text processor replicates `speller.c`'s character-by-character state machine
 
 | Tool | Purpose |
 | --- | --- |
-| Python 3.12+ | Language (`type X = ...` syntax, PEP 695) |
+| Python 3.12+ (3.14+ for t-strings) | Language (PEP 695 type aliases, PEP 750 t-strings on 3.14) |
 | `set` / `list` / `dict` / `bisect` (built-in) | Four dictionary backends |
 | `itertools.chain` | Peek-ahead generator pattern in batch check loop |
 | `argparse` | CLI argument parsing |
-| `logging` + `RotatingFileHandler` | Structured logging |
-| `dataclasses` | Immutable result containers + typed CLI args |
+| `logging` + `RotatingFileHandler` | Plain-text logging backend |
+| `structlog` | Structured logging backend (NDJSON + contextvars) |
+| `string.templatelib` (PEP 750, 3.14+) | T-string logging backend |
+| `rich` | Console rendering — Panel, Table, `__rich__` protocol |
+| `platformdirs` | OS-appropriate user log/data paths |
+| `importlib.resources` | Bundled dictionaries, texts, and answer keys |
+| `dataclasses` (incl. `replace`, `KW_ONLY`) | Immutable result containers + typed CLI args |
 | `typing.Protocol` | Structural typing interfaces |
-| `typing.Generic` + `TypeVar` | Parameterised class hierarchies |
+| `typing.Generic` + `TypeVar` (constrained) | Parameterised class hierarchies |
+| `typing.ParamSpec` | Type-preserving decorator wrappers |
+| `typing.TypedDict` + `Required`/`NotRequired` | Typed mapping for batch error tracking |
 | `contextlib.contextmanager` | Benchmark timing |
-| `pathlib.Path` | File system operations |
+| `pathlib.Path` + `Traversable` | File-system + bundled-resource paths |
 | `pyproject.toml` + `setuptools` | Package management |
+| `py.typed` (PEP 561) | Signals typed package to downstream consumers |
 | `pytest` | Testing framework |
 | `mypy` | Static type checking |
 | `ruff` | Linting + formatting |
@@ -480,6 +562,9 @@ Building this project taught me production Python patterns that directly apply t
 9. **Dependency injection via Protocol** makes every component independently testable — `MockDictionary` is five lines and no files required.
 10. **Load once, iterate N** — separating the expensive initialisation step from the per-item processing loop is the core pattern for batch ETL, bulk document ingestion, and any pipeline where startup cost dominates. `load_dictionary.py` makes this explicit and reusable.
 11. **Layer-boundary exception handling** — domain functions raise typed exceptions (`ValueError`); the CLI layer catches and maps to exit codes. `from e` preserves diagnostic context for real errors; `from None` hides internal Python signals (`StopIteration`) that are implementation details, not user-facing errors.
+12. **Strategy pattern for logging backends** — three modules with identical signatures (`configure_logging`, `configure_template_logging`, `configure_structured_logging`) let the composition root pick one by CLI flag. `__main__.py` doesn't know or care which renderer ends up handling the records. The same plug-in shape carries to LLM providers, vector stores, and embedding backends in later stages.
+13. **Cross-version feature gating with `TYPE_CHECKING` + `sys.version_info`** — Python 3.14's PEP 750 t-strings are grammar-level syntax that can't be guarded at runtime. Isolating them into a `_compat_py314.py` module that's only imported on 3.14+, while exposing sentinel classes on older Pythons, lets the same codebase pass mypy on every supported version AND run cleanly without `try`/`except ImportError` scattered everywhere.
+14. **OS-aware paths via `platformdirs` + bundled data via `importlib.resources`** — paths computed from `__file__` break the moment someone installs the wheel into `site-packages` (read-only system directory). `platformdirs` writes to the right user directory on every OS; `importlib.resources.files(...)` works whether the package is editable, wheel-installed, or zipped/frozen. This is the pair every production Python CLI needs.
 
 ---
 
