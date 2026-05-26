@@ -79,11 +79,23 @@ class DictInfo:
 # returns an instance of DictionaryProtocol.
 
 
+@dataclass
+class ProviderList:
+    """
+    """
+    
+    _: KW_ONLY  # After this is keyword only
+    
+    # Default makes them optional
+    async_provider: DictInfo | None = None
+    sync_provider: DictInfo | None = None
+
+
 # =====================================================
 # Constants
 # =====================================================
 
-dicts: dict[str, DictInfo] = {}
+dicts: dict[str, ProviderList] = {}
 
 
 # =============================================================================
@@ -101,11 +113,24 @@ def register_class(name: str, description: str = "") -> RegDecorator:
     ) -> type[LLMProvider | AsyncLLMProvider]:
         """
         """
-        dicts[name] = DictInfo(
-            provider_class=provider_class,
-            class_name=provider_class.__name__,
-            description=description or provider_class.__doc__ or "",
-        )
+        if "sync" in description:
+            dicts[name].sync_provider = DictInfo(
+                provider_class=provider_class,
+                class_name=provider_class.__name__,
+                description=description or provider_class.__doc__ or "",
+            )
+        elif "async" in description:
+            dicts[name].async_provider = DictInfo(
+                provider_class=provider_class,
+                class_name=provider_class.__name__,
+                description=description or provider_class.__doc__ or "",
+            )
+        else:
+            raise ValueError(
+                    "No Syn and Async LLM provider has been found. "
+                    "Review providers module."
+            )
+            
         return provider_class  # Return unchanged class
         # class goes in, class comes out. The class' __name__, __doc__, __qualname__
         # are all intact because you never created a replacement. Nothing to fix,
