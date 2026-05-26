@@ -548,7 +548,7 @@ class AsyncAnthropicProvider:
     
 
 @register_class(
-    "Gemini",
+    "gemini",
     "Gemini's Async LLM provider class",
 )
 class AsyncGeminiProvider:
