@@ -150,7 +150,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "provider",
         nargs="+",  # one or more arguments
-        type=list[str],
+        type=str,  # argparse calls type(value) per token
         default=list(dicts.keys()),
         help=f"LLM providers to use. Default runs all: {provider_list}.",
     )
@@ -159,7 +159,7 @@ def _build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--prp",
         nargs="+",  # one or more
-        type=list[str],
+        type=str,  # argparse calls type(value) per token
         default=[DEFAULT_PROMPT],
         metavar="PROMPTS",
         help=(
