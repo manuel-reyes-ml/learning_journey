@@ -80,7 +80,7 @@ class DictInfo:
 # returns an instance of DictionaryProtocol.
 
 
-@dataclass
+@dataclass(frozen=True, slots=True)
 class ProviderList:
     """
     """
