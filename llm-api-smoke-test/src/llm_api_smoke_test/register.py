@@ -8,7 +8,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
-from dataclasses import dataclass, field, KW_ONLY
+from dataclasses import dataclass, field, KW_ONLY, replace
 from typing import Literal, TypedDict
 
 from llm_api_smoke_test.providers import (
@@ -123,14 +123,21 @@ def register_class(
         )
         
         # Get-or-create the ProviderList for this name
-        bucket = dicts.setdefault(name, ProviderList())
+        # bucket = dicts.setdefault(name, ProviderList())
         
-        match kind:
-            case "sync":
-                bucket.sync_provider = info
-            case _:  # "async" - mypy/pyright narrows it because of Literal
-                bucket.async_provider = info
-            
+        # match kind:
+        #     case "sync":
+        #         bucket.sync_provider = info
+        #     case _:  # "async" - mypy/pyright narrows it because of Literal
+        #         bucket.async_provider = info
+        
+        bucket = dicts.get(name, ProviderList())
+        field_name = f"{kind}_provider"  # "sync_provider" or "async_provider"
+        
+        # Return a new object replacing specified fields with new values.
+        # This is especially useful for frozen classes
+        dicts[name] = replace(bucket, **{field_name: info})  
+        
         return provider_class  # Return unchanged class
         # class goes in, class comes out. The class' __name__, __doc__, __qualname__
         # are all intact because you never created a replacement. Nothing to fix,
