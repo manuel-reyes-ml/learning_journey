@@ -186,6 +186,7 @@ class AsyncLLMProvider(Protocol):
 
 @register_class(
     "anthropic",
+    "sync",
     "Anthropic's sync LLM provider class",
 )
 class AnthropicProvider:
@@ -337,6 +338,7 @@ class AnthropicProvider:
 
 @register_class(
     "gemini",
+    "sync",
     "Gemini's sync LLM provider class",
 )
 class GeminiProvider:
@@ -457,6 +459,7 @@ class GeminiProvider:
 
 @register_class(
     "anthropic",
+    "async",
     "Anthropic's async LLM provider class",
 )
 class AsyncAnthropicProvider:
@@ -549,6 +552,7 @@ class AsyncAnthropicProvider:
 
 @register_class(
     "gemini",
+    "async",
     "Gemini's async LLM provider class",
 )
 class AsyncGeminiProvider:
