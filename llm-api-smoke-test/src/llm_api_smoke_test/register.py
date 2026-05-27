@@ -36,6 +36,7 @@ __all__ = ["register_class"]
 # Type Aliases
 # =====================================================
 
+# Literal -> ProviderKind is only 'sync' or 'async' only
 type ProviderKind = Literal["sync", "async"]
 
 type SyncAsyncProvider = type[LLMProvider | AsyncLLMProvider]
