@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass, field, KW_ONLY
-from typing import TypedDict
+from typing import Literal, TypedDict
 
 from llm_api_smoke_test.providers import (
     AsyncLLMProvider,
@@ -36,10 +36,13 @@ __all__ = ["register_class"]
 # Type Aliases
 # =====================================================
 
+type ProviderKind = Literal["sync", "async"]
+
 type RegDecorator = Callable[
     [type[LLMProvider | AsyncLLMProvider]],
     type[LLMProvider | AsyncLLMProvider],
 ]
+
 
 
 # =====================================================
@@ -104,7 +107,11 @@ dicts: dict[str, ProviderList] = {}
 
 # A decorator factory is just a function that takes custom parameters
 # and generates a decorator.
-def register_class(name: str, description: str = "") -> RegDecorator:
+def register_class(
+    name: str, 
+    kind: ProviderKind,  # explicit only -> kind="sync" / kind="async"
+    description: str = "",
+) -> RegDecorator:
     """
     """
     
@@ -113,23 +120,20 @@ def register_class(name: str, description: str = "") -> RegDecorator:
     ) -> type[LLMProvider | AsyncLLMProvider]:
         """
         """
-        if "sync" in description:
-            dicts[name].sync_provider = DictInfo(
-                provider_class=provider_class,
-                class_name=provider_class.__name__,
-                description=description or provider_class.__doc__ or "",
-            )
-        elif "async" in description:
-            dicts[name].async_provider = DictInfo(
-                provider_class=provider_class,
-                class_name=provider_class.__name__,
-                description=description or provider_class.__doc__ or "",
-            )
-        else:
-            raise ValueError(
-                    "No Syn and Async LLM provider has been found. "
-                    "Review providers module."
-            )
+        info = DictInfo(
+            provider_class=provider_class,
+            class_name=provider_class.__name__,
+            description=description or provider_class.__doc__ or "",
+        )
+        
+        # Get-or-create the ProviderList for this name
+        bucket = dicts.setdefault(name, ProviderList())
+        
+        match kind:
+            case "sync":
+                bucket.sync_provider = info
+            case _:  # "async" - mypy/pyright narrows it because of Literal
+                bucket.async_provider = info
             
         return provider_class  # Return unchanged class
         # class goes in, class comes out. The class' __name__, __doc__, __qualname__
