@@ -38,11 +38,8 @@ __all__ = ["register_class"]
 
 type ProviderKind = Literal["sync", "async"]
 
-type RegDecorator = Callable[
-    [type[LLMProvider | AsyncLLMProvider]],
-    type[LLMProvider | AsyncLLMProvider],
-]
-
+type SyncAsyncProvider = type[LLMProvider | AsyncLLMProvider]
+type RegDecorator = Callable[[SyncAsyncProvider], SyncAsyncProvider]
 
 
 # =====================================================
@@ -64,7 +61,7 @@ class DictInfo:
     
     # Required fields (no default) must come first
     _:  KW_ONLY  # Everything after this is keyword-only
-    provider_class: type[LLMProvider | AsyncLLMProvider]
+    provider_class: SyncAsyncProvider
     class_name: str
     description: str
     
@@ -115,9 +112,7 @@ def register_class(
     """
     """
     
-    def decorator(
-        provider_class: type[LLMProvider | AsyncLLMProvider]
-    ) -> type[LLMProvider | AsyncLLMProvider]:
+    def decorator(provider_class: SyncAsyncProvider) -> SyncAsyncProvider:
         """
         """
         info = DictInfo(
