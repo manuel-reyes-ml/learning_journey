@@ -144,3 +144,31 @@ def register_class(
 
 # Instantiate by key - calling a class creates an instance
 # dictionary = dicts["hash"].dict_class() -> HashTableDictionary()
+
+# d = {"a": 1}
+
+# --- get() ---
+# val = d.get("b", 999)
+# print(val)   # 999
+# print(d)     # {"a": 1}             ← dict UNCHANGED
+
+# --- setdefault() ---
+# val = d.setdefault("b", 999)
+# print(val)   # 999
+# print(d)     # {"a": 1, "b": 999}   ← dict NOW HAS "b": 999
+#
+# After setdefault, the next call returns the existing value and does nothing:
+# val = d.setdefault("b", 12345)
+# print(val)   # 999  ← existing value, NOT 12345
+# print(d)     # {"a": 1, "b": 999}
+# That's the whole story. setdefault = "give me the value at key; if there isn't one,
+# store this default first and give me that."
+#
+# Summary:
+#   1. Both return the value or a default if missing — identical return value.
+#   2. Only setdefault mutates the dict, inserting the default at key. get is pure-read.
+#   3. In your registry, setdefault is the right call because two decorators must
+#   operate on the same ProviderList instance — setdefault guarantees it.
+#   4. Watch out for two traps: the default is always evaluated (even when unused),
+#   and a shared mutable default is shared across all calls. Use defaultdict if
+#   construction is expensive.
