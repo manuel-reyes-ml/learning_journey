@@ -136,6 +136,19 @@ def register_class(
         
         # Return a new object replacing specified fields with new values.
         # This is especially useful for frozen classes
+        #
+        # The ** operator unpacks the dict — it turns each key-value pair
+        # into a key=value keyword argument at the call site.
+        # What we want — replace the field named "sync_provider"
+        #   replace(bucket, sync_provider=info)          # ✅ works
+        # But field_name is a string variable — we can't write replace(bucket, field_name=info)
+        # because Python would treat field_name literally as a keyword called "field_name",
+        # not as a variable to interpolate.
+        #
+        # The **{field_name: info} pattern is the workaround: build the kwargs dict programmatically,
+        # then unpack:
+        #   Step 1: Build the dict       → {"sync_provider": info}
+        #   Step 2: Unpack with **       → replace(bucket, sync_provider=info) 
         dicts[name] = replace(bucket, **{field_name: info})  
         
         return provider_class  # Return unchanged class
