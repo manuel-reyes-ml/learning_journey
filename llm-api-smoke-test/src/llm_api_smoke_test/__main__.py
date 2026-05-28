@@ -117,7 +117,7 @@ class LLMApiArgs:
     """
     
     _: KW_ONLY  # Everything after is keyword-only
-    prp: list[str]
+    prompts: list[str]
     provider: str
     verbose: bool
     
@@ -157,11 +157,10 @@ def _build_parser() -> argparse.ArgumentParser:
     
     # -- Keyword arguments --
     parser.add_argument(
-        "-prp",
+        "--prompts",
         nargs="+",  # one or more
         type=str,  # argparse calls type(value) per token
         default=[DEFAULT_PROMPT],
-        metavar="PROMPTS",
         help=(
             "Enter one or more prompts to be sent to LLM provider(s). "
             "Use ',' to separate prompts."
