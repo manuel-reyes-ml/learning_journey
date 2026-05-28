@@ -148,9 +148,29 @@ def register_class(
         # The **{field_name: info} pattern is the workaround: build the kwargs dict programmatically,
         # then unpack:
         #   Step 1: Build the dict       → {"sync_provider": info}
-        #   Step 2: Unpack with **       → replace(bucket, sync_provider=info) 
-        dicts[name] = replace(bucket, **{field_name: info})  
+        #   Step 2: Unpack with **       → replace(bucket, sync_provider=info)
+        #
+        # General rule: * spreads sequences into positional args; ** spreads dicts into keyword args.
+        # Same syntax on both sides of the function call (sender unpacks; receiver collects).
+        dicts[name] = replace(bucket, **{field_name: info}) 
         
+        # RECEIVER — function definition collects loose args INTO a container
+        #   def func(*args, **kwargs):
+                # args   = tuple of positional args
+                # kwargs = dict of keyword args
+        #       print(args, kwargs)
+        #
+        # SENDER — call site spreads a container OUT INTO loose args
+        #   my_list = [1, 2, 3]
+        #   my_dict = {"a": 10, "b": 20}
+        #   func(*my_list, **my_dict)
+        #   Equivalent to: func(1, 2, 3, a=10, b=20)
+        #
+        # The dict gets unpacked at the call site, then the receiver collects them back into a dict.
+        # Looks redundant, but it isn't — the value at the call site is a real dict variable, while
+        # the receiver gets loose keyword arguments that happen to be collected into a dict.
+        # The transformation is meaningful when you're forwarding kwargs through layers.
+    
         return provider_class  # Return unchanged class
         # class goes in, class comes out. The class' __name__, __doc__, __qualname__
         # are all intact because you never created a replacement. Nothing to fix,
