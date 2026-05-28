@@ -45,7 +45,7 @@ try:
     from llm_api_smoke_test.runner import DEFAULT_PROMPT, run_smoke_tests
     
 except ImportError as e:
-    sys.exit(f"Error missing speller module.\nDetails: {e}")
+    sys.exit(f"Error missing llm_api_smoke_test module.\nDetails: {e}")
     
 
 # =============================================================================
