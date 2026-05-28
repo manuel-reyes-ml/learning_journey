@@ -118,7 +118,7 @@ class LLMApiArgs:
     
     _: KW_ONLY  # Everything after is keyword-only
     prompts: list[str]
-    provider: str
+    provider: list[str]
     verbose: bool
     
 
