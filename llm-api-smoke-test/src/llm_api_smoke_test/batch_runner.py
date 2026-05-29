@@ -1,4 +1,26 @@
-"""
+"""Async batch driver for the smoke-test runner.
+
+Schedules many concurrent provider calls behind two protective layers:
+
+- :class:`asyncio.Semaphore` — caps the number of *in-flight* requests.
+- :class:`aiolimiter.AsyncLimiter` — caps the number of requests *per
+  time window* (leaky-bucket rate limiter).
+
+Both context managers compose cleanly: every call acquires the limiter
+first (rate-limit) and the semaphore second (concurrency-cap), so a
+burst is throttled to the provider's free-tier ceiling while a slow
+provider still progresses without piling up backlog.
+
+This is the same shape used by DataVault's batch query engine and AFC's
+multi-symbol backtest fan-out.  Reusing it here in miniature gives the
+smoke-test runner a structure that scales without rewrite.
+
+References
+----------
+.. [1] aiolimiter — Leaky-bucket asyncio rate limiter
+   https://aiolimiter.readthedocs.io/
+.. [2] asyncio — Synchronization Primitives (Semaphore)
+   https://docs.python.org/3/library/asyncio-sync.html
 """
 
 # =============================================================================
@@ -95,6 +117,27 @@ async def batch_smoke_test(
     limiter = AsyncLimiter(50, 60)  # 50 calls per 60 seconds
     
     async def _bounded_call(prompt: str) -> None:
+        """Run one prompt across every provider under the shared limits.
+
+        Acquires the leaky-bucket limiter (rate cap) and the semaphore
+        (concurrency cap) before iterating the providers.  Successes go
+        into the outer ``successes`` list; exceptions are caught,
+        logged structurally, and recorded in ``failures`` — one
+        provider's outage does not abort the batch.
+
+        Parameters
+        ----------
+        prompt : str
+            Single prompt to send to every provider.
+
+        Notes
+        -----
+        The function returns ``None`` — results are accumulated into the
+        closures' ``successes`` and ``failures`` lists.  This keeps the
+        ``asyncio.gather(...)`` call site simple at the cost of relying
+        on shared mutable state (acceptable because all writes happen
+        sequentially within a single coroutine).
+        """
         async with limiter:   # composes cleanly with Semaphore
             # The semaphore protocol in 3 lines:
             # - `async with sem:` acquires a slot (parks if 0 free)
