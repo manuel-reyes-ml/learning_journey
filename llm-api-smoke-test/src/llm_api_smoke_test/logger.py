@@ -348,6 +348,12 @@ def _reorder_keys(preferred_order: list[str]) -> Processor:
     def processor(
         logger: WrappedLogger, method_name: str, event_dict: EventDict
     ) -> EventDict:
+        """Pull the configured keys to the front of ``event_dict``.
+
+        See :func:`_reorder_keys` for the full description.  This is the
+        closure that captures ``preferred_order`` and applies the
+        reordering on each invocation.
+        """
         ordered: dict[str, Any] = {}
         for key in preferred_order:
             if key in event_dict:
@@ -500,7 +506,33 @@ def _setup_fhandler_indent(
     file_dirs: FileDirectories,
     fhandler_config: FileHandlerConfig,
 ) -> RotatingFileHandler:
-    """
+    """Create a rotating file handler that emits indented JSON.
+
+    Twin of :func:`_setup_fhandler`, but configures
+    :class:`~structlog.processors.JSONRenderer` with ``indent=2`` so
+    the on-disk output is human-readable.  Writes to a separate file
+    (``llm_api_smoke_test_indent.log``) to avoid clobbering the
+    compact NDJSON used by log aggregators.
+
+    Parameters
+    ----------
+    file_dirs : FileDirectories
+        Provides the log file path.
+    fhandler_config : FileHandlerConfig
+        Provides size and rotation settings.
+
+    Returns
+    -------
+    RotatingFileHandler
+        Fully configured handler ready to attach to a logger.
+
+    Notes
+    -----
+    Why two JSON files (compact and indented)?
+        Compact NDJSON is what ``jq``, DuckDB, and log aggregators
+        expect — one JSON object per line, no whitespace.  Indented
+        JSON is what humans want when grepping raw log files during
+        development.  Keeping both removes the trade-off.
     """
     file_handler_indent = RotatingFileHandler(
         filename=file_dirs.log_file.struct_indent_path,
