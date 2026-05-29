@@ -1,4 +1,56 @@
-"""
+"""Provider registry for the llm_api_smoke_test package.
+
+Provides the infrastructure for a **plugin-style registry**: new
+provider adapters are added to the system by decorating a class with
+:func:`register_class` — no changes to ``__main__.py``, ``runner.py``,
+``batch_runner.py``, or ``providers.py``'s Protocol definitions are
+required.
+
+Two-axis indexing — name × kind
+-------------------------------
+Each provider name (``"anthropic"``, ``"gemini"``) maps to a single
+:class:`ProviderList` that bundles BOTH the sync and async variants.
+The decorator distinguishes between them via the ``kind`` parameter
+(``"sync"`` or ``"async"``).  This lets the composition root in
+``__main__.py`` choose between sync and async execution paths from
+the same CLI name without a separate registry for each.
+
+Immutability
+------------
+:class:`DictInfo` and :class:`ProviderList` are both frozen
+dataclasses.  Updates use :func:`dataclasses.replace` to produce a
+new :class:`ProviderList` with one field changed, then reassign
+back to ``dicts[name]``.  This keeps the registry safe from
+accidental mutation while still allowing the two decorator calls
+(sync, then async, in some order at import time) to converge on a
+fully-populated bucket.
+
+Components
+----------
+:class:`DictInfo`
+    Metadata container pairing a registry key with a concrete
+    provider class, its display name, description, and accumulated
+    run results.
+:class:`ProviderList`
+    Per-name bundle of sync + async :class:`DictInfo` instances.
+    Either slot may be ``None`` if only one variant was registered.
+:data:`dicts`
+    Module-level ``dict[str, ProviderList]`` — the registry itself.
+    Populated at import time when ``providers.py`` executes its
+    ``@register_class`` decorators.
+:func:`register_class`
+    Decorator factory.  ``@register_class("key", "sync"/"async", "...")``
+    upserts the decorated class into :data:`dicts` without modifying
+    the class itself.
+
+Roadmap relevance
+-----------------
+First implemented for the speller package's dictionary backends; now
+extended here to support the sync/async dual-registration shape.
+Stage 2+ will reuse the same shape for ``VectorStore`` (PolicyPulse),
+``ExtractionBackend`` (FormSense), and ``DataSource`` (AFC) registries
+whenever a single conceptual backend has multiple variant
+implementations.
 """
 
 # =============================================================================
@@ -48,7 +100,22 @@ type RegDecorator = Callable[[SyncAsyncProvider], SyncAsyncProvider]
 # =====================================================
 
 class RunResults(TypedDict):
-    """
+    """Typed mapping for one provider's accumulated smoke-test outcomes.
+
+    Stored on :attr:`DictInfo.results` keyed by an arbitrary label
+    (typically the prompt string or a per-run identifier).  Using a
+    ``TypedDict`` rather than a frozen dataclass because the dict
+    container is convenient for JSON serialisation in benchmark
+    reports.
+
+    Keys
+    ----
+    successes : list of SmokeTestResult
+        Provider calls that completed and returned a parsed result.
+    failures : list of (str, Exception)
+        Tuples of ``(provider_class_name, exception)`` for calls
+        that raised.  Captured rather than re-raised so a batch run
+        can continue past a single provider's outage.
     """
     
     successes: list[SmokeTestResult]
@@ -57,7 +124,42 @@ class RunResults(TypedDict):
 
 @dataclass(frozen=True)
 class DictInfo:
-    """
+    """Metadata container for one registered LLM provider variant.
+
+    Pairs a provider class (sync OR async, not both) with its display
+    name, description, and a mutable results dict that accumulates
+    :class:`RunResults` across smoke-test runs within a single
+    program execution.
+
+    Two ``DictInfo`` instances exist per provider name — one for the
+    sync variant and one for the async variant — bundled together
+    inside a :class:`ProviderList`.
+
+    The dataclass itself is ``frozen``, but ``results`` is an
+    intentionally mutable inner ``dict`` — updated in place during
+    each ``main()`` iteration.  This is the same "frozen container,
+    mutable history" pattern used by ``speller.register.DictInfo``.
+
+    Parameters
+    ----------
+    provider_class : type[LLMProvider | AsyncLLMProvider]
+        The class itself, not an instance.  Callers instantiate it
+        via ``info.provider_class(settings)`` in the composition
+        root.  ``type[X]`` means "the class object for X" — pyright
+        knows the call produces an ``LLMProvider`` (or async)
+        instance.
+    class_name : str
+        Display name derived from ``provider_class.__name__``
+        (e.g. ``"AsyncAnthropicProvider"``).  Distinct from the
+        registry key (``"anthropic"``): the key is for CLI lookup;
+        the name is for human-readable output.
+    description : str
+        One-line description used in CLI help and benchmark reports.
+        Falls back to ``provider_class.__doc__`` if not supplied
+        explicitly.
+    results : dict of {str : RunResults}, optional
+        Accumulated outcomes keyed by run label.  Empty by default;
+        populated during ``main()`` execution.
     """
     
     # Required fields (no default) must come first
@@ -82,7 +184,43 @@ class DictInfo:
 
 @dataclass(frozen=True, slots=True)
 class ProviderList:
-    """
+    """Sync + async pair of :class:`DictInfo` for one provider name.
+
+    One ``ProviderList`` lives in :data:`dicts` per provider name
+    (``"anthropic"``, ``"gemini"``).  Either slot may be ``None`` if
+    only one variant has been registered — typical during partial
+    registration at import time before both decorator calls have run.
+
+    ``frozen=True`` makes this safe to share across modules without
+    fear of accidental mutation; ``slots=True`` reduces memory
+    footprint.  Updates go through :func:`dataclasses.replace` in
+    :func:`register_class.decorator`.
+
+    Attributes
+    ----------
+    async_provider : DictInfo or None, optional
+        Metadata for the async variant (e.g. ``AsyncAnthropicProvider``).
+        ``None`` if no async variant has been registered.
+    sync_provider : DictInfo or None, optional
+        Metadata for the sync variant (e.g. ``AnthropicProvider``).
+        ``None`` if no sync variant has been registered.
+
+    Examples
+    --------
+    >>> dicts["anthropic"].sync_provider.provider_class
+    <class 'llm_api_smoke_test.providers.AnthropicProvider'>
+    >>> dicts["anthropic"].async_provider.provider_class
+    <class 'llm_api_smoke_test.providers.AsyncAnthropicProvider'>
+
+    Notes
+    -----
+    Why both as ``DictInfo | None`` instead of requiring both?
+        Decorators fire in source order at import time.  When the
+        first ``@register_class("anthropic", "sync", ...)`` runs,
+        the async slot doesn't have a value yet — so the initial
+        :class:`ProviderList` must be constructable with ``None``.
+        The second decorator call replaces ``async_provider`` and
+        leaves ``sync_provider`` intact.
     """
     
     _: KW_ONLY  # After this is keyword only
