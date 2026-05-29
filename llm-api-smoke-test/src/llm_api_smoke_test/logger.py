@@ -1,4 +1,40 @@
-"""
+"""Structured logging configuration for the llm_api_smoke_test package.
+
+Wires structlog *under* stdlib ``logging`` so every log entry — whether
+emitted via ``structlog.get_logger()`` or via ``logging.getLogger()`` —
+flows through the same processor chain and the same handlers.  Same
+architecture as :mod:`speller.structured_logger`; reusing it here means
+both packages emit identically shaped NDJSON, queryable with the same
+``jq`` / DuckDB queries.
+
+Why structlog-on-stdlib (not standalone)?
+-----------------------------------------
+Every LLM SDK in the roadmap (``anthropic``, ``google-genai``,
+``langchain``, ``langgraph``, ``httpx``, ``openai``) emits logs via the
+stdlib ``logging`` module.  Running structlog standalone would leave
+those vendor logs unformatted or lost.  Running under stdlib captures
+them into the same NDJSON file as your own code.
+
+Three handlers per call to :func:`configure_structured_logging`
+---------------------------------------------------------------
+1. Console handler — pretty ``key=value`` via
+   :class:`structlog.dev.ConsoleRenderer`.
+2. File handler — compact NDJSON via
+   :class:`structlog.processors.JSONRenderer`.  Queryable by ``jq``,
+   DuckDB's ``read_json_auto``, Datadog, ELK, CloudWatch Logs Insights.
+3. Indented JSON file handler — same payload as #2 with ``indent=2``
+   for grep-and-read debugging.
+
+Roadmap relevance
+-----------------
+- DataVault:   ``bind_contextvars(query_id=..., model=...)`` per LLM call.
+- PolicyPulse: ``bind_contextvars(request_id=..., user_id=...)`` per RAG turn.
+- AFC:         ``bind_contextvars(symbol=..., strategy=...)`` per backtest.
+
+References
+----------
+.. [1] structlog — Standard Library Integration
+   https://www.structlog.org/en/stable/standard-library.html
 """
 
 # =============================================================================
@@ -79,7 +115,21 @@ _KEY_ORDER: Final[list[str]] = ["timestamp", "level", "logger", "event"]
 # =====================================================
 
 class LogFilesPath(NamedTuple):
-    """
+    """Resolved paths for the structured-logging output files.
+
+    Two on-disk files are produced so the compact (machine-parseable)
+    and indented (human-readable) views can coexist without one
+    overwriting the other.
+
+    Attributes
+    ----------
+    struct_path : Path
+        Compact NDJSON output — one JSON object per line, no
+        whitespace.  Consumed by ``jq``, DuckDB, Datadog, ELK,
+        CloudWatch.
+    struct_indent_path : Path
+        Indented JSON (``indent=2``) variant.  Same payload as
+        ``struct_path`` but formatted for grep-and-read debugging.
     """
     
     struct_path: Path
@@ -88,7 +138,28 @@ class LogFilesPath(NamedTuple):
 
 @dataclass(frozen=True, slots=True)
 class FileDirectories:
-    """
+    """Resolved filesystem paths for the package's writable directories.
+
+    Uses :class:`platformdirs.PlatformDirs` to put logs in
+    OS-appropriate user locations (``~/Library/Logs/llm-api-smoke-test``
+    on macOS, ``%APPDATA%\\llm-api-smoke-test\\Logs`` on Windows,
+    ``~/.local/state/llm-api-smoke-test/log`` on Linux) rather than
+    inside the project tree.  The package therefore works identically
+    when installed editable, from a wheel, or from a frozen
+    distribution — no read-only ``site-packages`` failures.
+
+    ``frozen=True`` prevents accidental reassignment; ``slots=True``
+    reduces memory footprint.
+
+    Attributes
+    ----------
+    LOG_DIR : Path
+        Per-user log directory resolved by ``platformdirs``.
+        Writable on every supported OS.
+    CUR_DIR : Path
+        Absolute path to the ``llm_api_smoke_test/`` source directory.
+        Used purely as a naming anchor by :meth:`create_log_fname` —
+        not for resolving any other path.
     """
     
     # --- Writable, per-user paths (resolved by platformdirs) --------
@@ -101,7 +172,19 @@ class FileDirectories:
     CUR_DIR: Final[Path] = Path(__file__).resolve().parent  # llm_api_smoke_test/
     
     def create_log_fname(self) -> tuple[str, str]:
-        """
+        """Build the two log filenames from the package directory name.
+
+        Uses ``CUR_DIR.name`` (``"llm_api_smoke_test"``) so the filenames
+        stay in sync with any future package rename without manual
+        updates.
+
+        Returns
+        -------
+        tuple of (str, str)
+            Two filenames in order:
+
+            - ``llm_api_smoke_test.log``        — compact NDJSON.
+            - ``llm_api_smoke_test_indent.log`` — indented JSON.
         """
         s_log = f"{self.CUR_DIR.name}.log"
         s_indent_log = f"{self.CUR_DIR.name}_indent.log"
@@ -109,7 +192,16 @@ class FileDirectories:
     
     @property  # Access function's return as an attribute
     def log_file(self) -> LogFilesPath:
-        """
+        """Full resolved paths to the two rotating log files.
+
+        Combines :attr:`LOG_DIR` with the result of
+        :meth:`create_log_fname` for each file.
+
+        Returns
+        -------
+        LogFilesPath
+            NamedTuple of absolute paths — one for the compact NDJSON
+            log, one for the indented variant.
         """
         s_log, s_indent_log = self.create_log_fname()
         
