@@ -174,9 +174,21 @@ class AsyncLLMProvider(Protocol):
     # callers MUST await this. The Protocol checker verifies that implementations
     # use `async def` (not `def returning a coroutine manually`).
     async def smoke_test(self, prompt: str) -> SmokeTestResult:
+        """Async variant of :meth:`LLMProvider.smoke_test`.
+
+        Concrete implementations must use ``async def`` so the return
+        type is implicitly ``Awaitable[SmokeTestResult]``.  Protocol
+        body intentionally empty — the contract is the signature, not
+        the body.
+        """
         ...
         
     async def generate_structured(self, prompt: str, schema: type[T]) -> T:
+        """Async variant of :meth:`LLMProvider.generate_structured`.
+
+        Concrete implementations must use ``async def``.  Returns an
+        instance of ``schema`` validated by Pydantic.
+        """
         ...
 
 
@@ -463,7 +475,30 @@ class GeminiProvider:
     "Anthropic's async LLM provider class",
 )
 class AsyncAnthropicProvider:
-    """Async adapter for the Anthropic SDK — uses AsyncAnthropic client."""
+    """Send a single short prompt to Claude asynchronously.
+
+    Awaitable variant of :meth:`AnthropicProvider.smoke_test` — same
+    request shape, same response shape, just non-blocking.  The HTTP
+    request itself still runs over the wire; Python yields control
+    to the event loop while waiting for bytes, letting other
+    coroutines progress on the same thread.
+
+    Parameters
+    ----------
+    prompt : str
+        The user message.
+
+    Returns
+    -------
+    SmokeTestResult
+        Result containing a 60-character preview of the reply text,
+        token usage, latency, and Anthropic request ID.
+
+    Raises
+    ------
+    anthropic.AnthropicError
+        For any API-level failure (auth, rate-limit, billing).
+    """
     
     _SYSTEM_PROMPT = "You are a terse assistant. Reply in one short sentence."
     
@@ -556,7 +591,30 @@ class AsyncAnthropicProvider:
     "Gemini's async LLM provider class",
 )
 class AsyncGeminiProvider:
-    """Async adapter for Gemini — uses the .aio submodule of genai.Client."""
+    """Send a single short prompt to Gemini asynchronously.
+
+    Uses the ``.aio`` namespace of ``google.genai.Client`` — the same
+    client class as the sync version exposes both sync methods on
+    ``.models`` and async methods on ``.aio.models``.
+
+    Parameters
+    ----------
+    prompt : str
+        The user message.
+
+    Returns
+    -------
+    SmokeTestResult
+        Result containing a 60-character preview of the reply text,
+        token usage, and latency.  ``request_id`` is ``None`` — the
+        Gemini SDK does not expose a per-call request ID the same
+        way Anthropic does.
+
+    Raises
+    ------
+    google.genai.errors.APIError
+        For any API-level failure.
+    """
     
     _SYSTEM_PROMPT = "You are a terse assistant. Reply in one short sentence."
     
