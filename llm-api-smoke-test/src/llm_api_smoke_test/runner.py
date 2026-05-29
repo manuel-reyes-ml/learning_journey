@@ -1,4 +1,27 @@
-"""
+"""Synchronous smoke-test driver.
+
+Calls :meth:`~llm_api_smoke_test.providers.LLMProvider.smoke_test` once
+per provider with a shared default prompt and returns a
+``(successes, failures)`` tuple.  Failures are captured rather than
+raised so one provider's outage does not block the second.
+
+This is the simplest possible shape for the smoke-test:
+
+- No concurrency — sequential round-trips, easiest to trace in logs.
+- No rate-limit logic — one call per provider stays well under every
+  free-tier ceiling.
+- No retry — a failed smoke test should surface immediately; the user
+  needs to know the key is bad, not wait for backoff to give up.
+
+For higher-throughput workloads use
+:func:`~llm_api_smoke_test.batch_runner.batch_smoke_test`, which adds
+:class:`asyncio.Semaphore` + :class:`aiolimiter.AsyncLimiter` protection.
+
+Roadmap relevance
+-----------------
+The "iterate providers under a Protocol contract, capture failures"
+pattern reappears in DataVault's provider-comparison harness and
+AFC's data-source fan-out — both will reuse this exact return shape.
 """
 
 # =============================================================================
