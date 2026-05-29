@@ -248,11 +248,108 @@ def register_class(
     kind: ProviderKind,  # explicit only -> kind="sync" / kind="async"
     description: str = "",
 ) -> RegDecorator:
-    """
+    """Decorator factory that upserts a provider class into :data:`dicts`.
+
+    Returns a decorator that inserts the decorated class into the
+    ``kind``-typed slot of ``dicts[name]`` (creating the
+    :class:`ProviderList` if absent), then returns the class
+    **unchanged**.  Because the class is returned as-is,
+    ``@functools.wraps`` is unnecessary — there is no wrapper
+    function whose metadata needs copying.
+
+    Parameters
+    ----------
+    name : str
+        Registry key for CLI lookup (e.g. ``"anthropic"``, ``"gemini"``).
+        Multiple ``@register_class`` calls may share a name — each one
+        populates a different ``kind`` slot of the same
+        :class:`ProviderList`.
+    kind : Literal["sync", "async"]
+        Which slot of :class:`ProviderList` to populate.
+        ``Literal`` typing means Pyright catches misspellings
+        (``kind="syn"``) at edit time.
+    description : str, optional
+        One-line description for CLI help and benchmark output.
+        Falls back to ``provider_class.__doc__`` if empty.
+
+    Returns
+    -------
+    RegDecorator
+        A callable that accepts a ``type[LLMProvider | AsyncLLMProvider]``
+        and returns it unchanged after registering it.
+
+    Examples
+    --------
+    ::
+
+        @register_class("anthropic", "sync", "Anthropic sync LLM provider.")
+        class AnthropicProvider:
+            ...
+
+        @register_class("anthropic", "async", "Anthropic async LLM provider.")
+        class AsyncAnthropicProvider:
+            ...
+
+        bundle = dicts["anthropic"]
+        sync_cls  = bundle.sync_provider.provider_class    # AnthropicProvider
+        async_cls = bundle.async_provider.provider_class   # AsyncAnthropicProvider
+
+    Notes
+    -----
+    Adding a new provider requires exactly three things:
+
+    1. Create classes satisfying
+       :class:`~llm_api_smoke_test.providers.LLMProvider`
+       and/or :class:`~llm_api_smoke_test.providers.AsyncLLMProvider`.
+    2. Decorate each with ``@register_class("key", "sync"/"async", "...")``.
+    3. Ensure ``providers.py`` is imported before :data:`dicts` is
+       read — handled automatically because ``__main__.py`` imports
+       ``providers`` inside its import guard.
+
+    Why ``Literal["sync", "async"]`` instead of a free-text description match?
+        An earlier draft inferred kind from the description string via
+        ``"sync" in description``.  That broke because ``"sync"`` is a
+        substring of ``"async"`` — every async provider was registered
+        as sync.  Explicit ``Literal`` typing eliminates the ambiguity
+        AND lets Pyright catch typos at edit time.
     """
     
     def decorator(provider_class: SyncAsyncProvider) -> SyncAsyncProvider:
-        """
+        """Insert ``provider_class`` into :data:`dicts` and return it unchanged.
+
+        Builds a :class:`DictInfo` for the class, looks up the existing
+        :class:`ProviderList` for ``name`` (or creates an empty one),
+        then uses :func:`dataclasses.replace` to produce a new
+        :class:`ProviderList` with the ``kind``-typed slot populated.
+        The new instance is assigned back to ``dicts[name]``.
+
+        Parameters
+        ----------
+        provider_class : type[LLMProvider | AsyncLLMProvider]
+            The concrete provider class being registered.
+
+        Returns
+        -------
+        type[LLMProvider | AsyncLLMProvider]
+            The same class passed in, unmodified.  ``@functools.wraps``
+            unnecessary — no wrapper function substituted.
+
+        Notes
+        -----
+        Why ``dicts.get()`` instead of ``dicts.setdefault()``?
+            Both work for the frozen-replace flow because the assignment
+            on the next line overwrites the dict slot regardless.
+            ``get()`` is fractionally cleaner: ``setdefault()`` would
+            insert a fresh empty :class:`ProviderList` as a side effect
+            that is then immediately replaced — wasted work.
+
+        Why ``**{field_name: info}``?
+            ``replace()`` accepts field updates as keyword arguments,
+            but ``field_name`` is a string variable — Python can't
+            interpolate it into a keyword name directly.  Building a
+            dict and unpacking with ``**`` is the standard idiom for
+            passing keyword arguments whose names are computed at
+            runtime.
         """
         info = DictInfo(
             provider_class=provider_class,
