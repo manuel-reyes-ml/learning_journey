@@ -45,6 +45,7 @@
         <li>📜 <strong>TypeScript Sprint:</strong> 2-week TS + MCP server sprint added to late Stage 2 (Month 14) — unlocks MCP server keyword without committing to TS as primary language</li>
         <li>🔗 <strong>A2A Protocol Detail:</strong> Stage 4 multi-agent sections expanded with A2A awareness (Linux Foundation Agentic AI Foundation, Dec 2025)</li>
         <li>🧪 <strong>Advanced Hallucination Eval:</strong> SelfCheckGPT + FActScore added to Stage 4 LLM Evaluation Framework (financial-grade rigor for AFC)</li>
+        <li>🔥 <strong>NEW — Crucible (second flagship, May 2026):</strong> Strategy-agnostic autonomous intraday trading research platform added as project #8 and the chosen <em>first build</em>. Phase 1 (own backtest harness + AI research loop + sealed OOS vault, IT-1 ORB + VWAP Reclaim plugins) begins in Stage 1; autonomous paper/live agentic phases mature across Stages 3–4. Local-first AI (Qwen3 via Ollama; Gemini → Anthropic → OpenAI fallback), NautilusTrader engine in Phase 2–3, Alpaca + Schwab/TOS execution. Distinct from AFC (liquid intraday execution vs. illiquid small-cap swing research; ~70% shared spine).</li>
     </ul>
     <p><strong>Role Brand Decision (confirmed May 2026):</strong> Dual positioning preserved — "GenAI-Powered Data Analyst OR Junior AI Engineer." Skill development leans engineering-first within the dual frame.</p>
 </div>
@@ -593,9 +594,9 @@
     <p><strong>💰 Stage 1 Platform Investment:</strong> DataCamp $125 (5 months) + ZTM $78 (2 months) = <strong>$203 total</strong></p>
 </div>
 
-<h3>🏆 Portfolio Projects — 7 Production-Grade GitHub Repos (Ordered by Skills Progression)</h3>
+<h3>🏆 Portfolio Projects — 8 Production-Grade GitHub Repos (Ordered by Skills Progression)</h3>
 <div class="info-box">
-    <p><strong>💡 Strategy:</strong> Each project introduces new capabilities that build on the previous — creating a <strong>clear skills progression narrative</strong> that recruiters can follow. 4 projects (PolicyPulse, FormSense, StreamSmart, AFC) evolve through all 5 career stages!</p>
+    <p><strong>💡 Strategy:</strong> Each project introduces new capabilities that build on the previous — creating a <strong>clear skills progression narrative</strong> that recruiters can follow. 5 projects (PolicyPulse, FormSense, StreamSmart, AFC, Crucible) evolve through the career stages! The portfolio carries <strong>two flagships</strong>: AFC (read-only small-cap swing research) and Crucible (autonomous intraday execution, the chosen first build).</p>
 </div>
 <table>
     <tr>
@@ -662,11 +663,23 @@
         <td><strong>+ DuckDB lakehouse, Parquet, httpx async, edgartools (SEC), multi-source alternative data, statistical methodology, bootstrap CI, <span style="background-color:#ffe7c2; padding:2px 4px;">Anthropic SDK (Claude) as primary; Gemini fallback</span></strong></td>
         <td>• GitHub w/ GIF demo<br>• Streamlit Cloud<br>• Blog series<br>• Demo video</td>
     </tr>
+    <tr style="background-color: #fff3cd;">
+        <td><strong>8</strong></td>
+        <td><strong><a href="https://github.com/manuel-reyes-ml/crucible" target="_blank">Crucible</a></strong><br><em>🔥 FLAGSHIP — Autonomous Intraday Trading Research Platform</em><br><span class="badge badge-paid">🔄 EVOLVES via PHASES</span><br><span class="badge badge-paid">🦙 LOCAL-FIRST (Qwen3/Ollama)</span><br><span class="badge badge-paid">▶️ STARTED FIRST</span></td>
+        <td>Phase 1<br>(~10-14 weeks)</td>
+        <td><strong>Strategy-agnostic</strong> intraday research-to-execution platform: an AI-assisted research loop where an LLM proposes strategy improvements that are <em>proved</em> by deterministic backtests behind a sealed out-of-sample vault. Strategies are plugins (IT-1 ORB + VWAP Reclaim ship first to prove the abstraction). <strong>Phase 1 (backtest engine) begins now in Stage 1</strong>; the autonomous paper-trading and live agentic phases mature across Stages 3–4. Distinct from AFC: AFC = illiquid sub-$5 <em>swing research</em> (read-only); Crucible = liquid <em>intraday execution</em> (autonomous). Local-first AI (Qwen3 via Ollama; Gemini → Anthropic → OpenAI fallback).</td>
+        <td><strong>+ Own event-driven backtest harness, deterministic strategy plugins (Protocol+ABC+registry), walk-forward CV + sealed OOS vault + overfitting budget ledger, Optuna optimization, <span style="background-color:#ffe7c2; padding:2px 4px;">local LLM (Qwen3/Ollama)</span>, NautilusTrader (Phase 2–3), Alpaca + Schwab/TOS execution adapters, LangGraph multi-agent oversight</strong></td>
+        <td>• GitHub w/ GIF demo<br>• Architecture docs<br>• Engine-parity report<br>• Blog series</td>
+    </tr>
 </table>
 
-<h3>🔄 Multi-Stage Project Evolution — 4 Projects Growing Through All 5 Stages</h3>
 <div class="info-box">
-    <p><strong>💡 Why This Matters:</strong> These 4 projects aren't "done and forgotten" — they evolve with your skills through all 5 career stages. This demonstrates <strong>architectural thinking</strong>, <strong>long-term system design</strong>, and the ability to progressively enhance production systems. Recruiters see a candidate who can grow systems, not just build throw-away demos.</p>
+    <p><strong>🔥 Two Flagships, Two Different Hard Problems:</strong> The portfolio now carries <strong>two flagship-tier systems</strong>, deliberately distinct so they demonstrate range rather than redundancy. <strong>Attention-Flow Catalyst (AFC)</strong> is a <em>read-only research system</em> hunting predictive triggers in illiquid small-caps on a swing (multi-day) timeframe. <strong>Crucible</strong> is an <em>autonomous execution platform</em> that takes liquid intraday strategies from backtest → paper → live through validation gates. Shared ~70% engineering spine (point-in-time data, lakehouse, walk-forward backtest, bias controls, evaluation, Docker/CI, agents) — different universes, different timeframes, different purposes. Crucible is the chosen <strong>first build</strong> because its Phase 1 backtest engine is squarely Stage 1–2 skill and produces the highest-rigor portfolio artifact.</p>
+</div>
+
+<h3>🔄 Multi-Stage Project Evolution — 5 Projects Growing Through the Stages</h3>
+<div class="info-box">
+    <p><strong>💡 Why This Matters:</strong> These projects aren't "done and forgotten" — they evolve with your skills through the career stages. This demonstrates <strong>architectural thinking</strong>, <strong>long-term system design</strong>, and the ability to progressively enhance production systems. Recruiters see a candidate who can grow systems, not just build throw-away demos. <strong>Note:</strong> Crucible evolves through its own <em>build phases</em> (backtest → paper → live) which map onto the career stages — Phase 1 in Stage 1, the agentic paper/live phases maturing across Stages 3–4.</p>
 </div>
 <table>
     <tr>
@@ -709,15 +722,24 @@
         <td>RAG + multi-agent trading system, voice interface</td>
         <td>Production deployment, monetization ($2-50K/mo potential)</td>
     </tr>
+    <tr style="background-color: #fff3cd;">
+        <td><strong>🔥 Crucible (Flagship)</strong><br><em>autonomous intraday</em></td>
+        <td style="background-color: #d4edda;">Phase 1: own backtest harness + AI research loop + sealed OOS vault (IT-1 ORB + VWAP Reclaim plugins)</td>
+        <td>Migrate to NautilusTrader; engine-parity gate; more strategy plugins; data lakehouse at scale</td>
+        <td>Phase 2: autonomous paper-trading agent crew (LangGraph); local LLM (Qwen3/Ollama) analyst; paper-vs-backtest parity</td>
+        <td>Phase 3 begins: live micro-sizing on Alpaca + Schwab/TOS; multi-agent oversight (regime → risk → journalist → fund-manager)</td>
+        <td>Hardened autonomous live execution, full observability, reconciliation, monetization potential</td>
+    </tr>
 </table>
 
 <div class="warning-box">
     <p><strong>⚡ Stage 1 Projects at a Glance:</strong></p>
     <ul>
         <li><strong>1 deployed in production</strong> — 1099 ETL Pipeline ($15K/yr savings at Daybright Financial)</li>
-        <li><strong>6 portfolio projects</strong> — Scoped with production architecture docs, ordered by skills progression</li>
-        <li><strong>4 multi-stage evolutions</strong> — PolicyPulse, FormSense, StreamSmart, AFC grow through all 5 stages</li>
-        <li><strong>Total build time:</strong> ~35 weeks across all Stage 1 scopes</li>
+        <li><strong>7 portfolio projects</strong> — Scoped with production architecture docs, ordered by skills progression (incl. two flagships: AFC + Crucible)</li>
+        <li><strong>2 flagships</strong> — AFC (read-only swing research) and Crucible (autonomous intraday execution); Crucible is the chosen first build</li>
+        <li><strong>5 multi-stage evolutions</strong> — PolicyPulse, FormSense, StreamSmart, AFC, and Crucible grow through the stages</li>
+        <li><strong>Total build time:</strong> ~35 weeks across all Stage 1 scopes (plus Crucible Phase 1: ~10-14 weeks)</li>
         <li><strong>Shared patterns:</strong> All projects use the same SDK-first AI architecture, Pydantic, guardrails, and CI/CD</li>
     </ul>
 </div>
@@ -960,7 +982,8 @@
     <tr><td>🏆 Project #5 — Operations-Demand-Intelligence (Enterprise)</td><td>6 weeks</td><td></td><td></td></tr>
     <tr><td>🏆 Project #6 — StreamSmart Optimizer (Consumer AI)</td><td>6 weeks</td><td></td><td></td></tr>
     <tr><td>🏆 Project #7 — Attention-Flow Catalyst Phase 1A + 1B (Flagship)</td><td>10 weeks</td><td></td><td></td></tr>
-    <tr><td>GitHub Profile (7+ production-grade repos with READMEs + GIF demos)</td><td>Month 5</td><td></td><td></td></tr>
+    <tr style="background-color: #fff3cd;"><td>🔥 Project #8 — Crucible Phase 1 (Flagship, started first): backtest harness + AI research loop, IT-1 ORB + VWAP Reclaim</td><td>10-14 weeks</td><td></td><td></td></tr>
+    <tr><td>GitHub Profile (8+ production-grade repos with READMEs + GIF demos)</td><td>Month 5</td><td></td><td></td></tr>
     <tr><td>Upwork Profile Launched</td><td>Month 2</td><td></td><td></td></tr>
     <tr><td>First Upwork Project</td><td>Month 3</td><td></td><td></td></tr>
     <tr><td>3+ Upwork Testimonials</td><td>Month 5</td><td></td><td></td></tr>
@@ -975,6 +998,8 @@
         <td><strong>📈 TRADING: Attention-Flow Catalyst Phase 1A Complete (Backtest Engine)</strong></td><td><strong>Month 4</strong></td><td></td><td></td></tr>
     <tr style="background-color: #e3f2fd;">
         <td><strong>📈 TRADING: AFC Phase 1B Complete (AI Dashboard)</strong></td><td><strong>Month 5</strong></td><td></td><td></td></tr>
+    <tr style="background-color: #fff3cd;">
+        <td><strong>🔥 TRADING: Crucible Phase 1 — backtest harness + AI research loop + sealed OOS vault (IT-1 ORB + VWAP Reclaim plugins, local Qwen3/Ollama)</strong></td><td><strong>Stage 1 (started first)</strong></td><td></td><td></td></tr>
     <tr style="background-color: #e3f2fd;">
         <td><strong>📈 TRADING: Read Chapters 1-3 (Book)</strong></td><td><strong>Month 5</strong></td><td></td><td></td></tr>
 </table>
@@ -2108,6 +2133,7 @@
 <h3>📈 Algorithmic Trading Project - Stage 3: ML Trading Models</h3>
 <div class="info-box">
     <p><strong>🔗 Implementation:</strong> The <strong>Attention-Flow Catalyst (AFC)</strong> project serves as the primary implementation for your algorithmic trading system. See AFC Stage 3 in the Portfolio Projects section above (XGBoost, LSTM, MLflow).</p>
+    <p><strong>🔥 Crucible (second flagship) here:</strong> Phase 2 matures in Stage 3 — migrate from the Phase 1 own-harness to <strong>NautilusTrader</strong> (with an engine-parity gate proving both agree on a fixed window), then build the <strong>autonomous paper-trading agent crew</strong> (LangGraph) with a local <strong>Qwen3/Ollama</strong> research analyst. This stage's local-LLM skills (Ollama, quantization) are exactly what Crucible Phase 2 needs — the project and the curriculum reinforce each other. Gate: paper-vs-backtest parity before any live consideration.</p>
     <p><strong>🎯 Goal:</strong> Apply Machine Learning to trading! Build predictive models for price movements and develop intelligent trading strategies.</p>
     <p><strong>Why Now:</strong> You have the MATH foundation + ML skills to understand WHY models work, not just HOW to use them!</p>
 </div>
@@ -2892,6 +2918,7 @@
 <h3>📈 Algorithmic Trading Project - Stage 4: AI Trading Assistant</h3>
 <div class="info-box">
     <p><strong>🔗 Implementation:</strong> The <strong>Attention-Flow Catalyst (AFC)</strong> project serves as the primary implementation. See AFC Stage 4 in the Portfolio Projects section above (multi-agent Researcher → Analyst → Risk Manager → Executor).</p>
+    <p><strong>🔥 Crucible (second flagship) here:</strong> Phase 3 begins in Stage 4 — <strong>autonomous live execution at micro-sizing</strong> on Alpaca and/or your Schwab/TOS account, with a deterministic execution core wrapped by multi-agent oversight (regime-selector → risk-manager → trade-journalist → fund-manager review). The same LangGraph/agent-pattern skills built for AFC apply directly. Hard, code-enforced guardrails (daily max loss, two-loss rule, kill switch) and live-vs-modeled reconciliation. <em>Note: real capital; treated as research validation, not income — no positive-expectancy claim.</em></p>
     <p><strong>🎯 Goal:</strong> BUILD YOUR AI TRADING ASSISTANT! Use LLMs to create an intelligent system that analyzes markets, generates insights, and executes trades based on your signals!</p>
     <p><strong>Why This is PERFECT Timing:</strong> You now have ML models (Stage 3) + LLM skills (Stage 4) = AI assistant that UNDERSTANDS trading!</p>
 </div>
@@ -4298,9 +4325,9 @@
         • PostgreSQL, PySpark, Airflow added for complete DE skillset ✅<br>
         • Mathematics for ML in Stage 3 (Months 16-17) for solid foundation ✅<br>
         • Total timeline: 37 months<br>
-        <strong>Result:</strong> 7 production-grade repos (1 deployed), 4 multi-stage project evolutions, IBM + Google + AWS certifications, comprehensive LLM training, PLUS a complete AI trading system AND strategic community presence!<br>
+        <strong>Result:</strong> 8 production-grade repos (1 deployed), 5 multi-stage project evolutions, IBM + Google + AWS certifications, comprehensive LLM training, PLUS two complete AI trading systems (AFC + Crucible) AND strategic community presence!<br>
         <strong>🏆 Portfolio Architecture:</strong><br>
-        • Stage 1: 7 production-grade repos (ETL → AI analytics → RAG → Multimodal → Enterprise → Consumer → Flagship)<br>
+        • Stage 1: 8 production-grade repos (ETL → AI analytics → RAG → Multimodal → Enterprise → Consumer → AFC Flagship → Crucible Flagship)<br>
         • Stage 2: 4 evolved DE repos + 1 new Airflow project<br>
         • Stage 3: 4 evolved ML repos + 2 new ML projects (tabular + NLP)<br>
         • Stage 4: 4 evolved agentic repos + 1 LLM Evaluation Framework<br>
@@ -4311,6 +4338,11 @@
         • Stage 3: XGBoost, LSTM, MLflow model tracking<br>
         • Stage 4: Multi-agent trading system (Researcher → Analyst → Risk Manager → Executor)<br>
         • Stage 5: Production deployment & monetization ($2-50K/mo potential!)<br>
+        <strong>🔥 Autonomous Intraday Journey (via Crucible — second flagship, started first):</strong><br>
+        • Stage 1 (Phase 1): Own event-driven backtest harness + AI research loop + sealed OOS vault; IT-1 ORB + VWAP Reclaim strategy plugins; local-first LLM (Qwen3/Ollama)<br>
+        • Stages 2–3 (Phase 2): Migrate to NautilusTrader (engine-parity gate); autonomous paper-trading agent crew (LangGraph); paper-vs-backtest parity validation<br>
+        • Stages 3–4 (Phase 3): Live micro-sizing on Alpaca + Schwab/TOS; deterministic execution core with multi-agent oversight (regime → risk → journalist → fund-manager)<br>
+        • Distinct from AFC: liquid intraday execution vs. illiquid small-cap swing research; ~70% shared engineering spine<br>
         <strong>🌍 Community Strategy:</strong><br>
         • Stage 1: LinkedIn + GitHub + Kaggle (job focus)<br>
         • Stage 2: Add AWS community + DE meetups<br>
