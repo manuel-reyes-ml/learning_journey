@@ -21,7 +21,7 @@
 ## 🗺️ Quick Navigation
 
 **👔 For Recruiters / Hiring Managers:**
-1. **[💼 Production Projects →](https://github.com/manuel-reyes-ml/data-portfolio)** - Live ETL system + 7 production-grade projects ⭐ **START HERE**
+1. **[💼 Production Projects →](https://github.com/manuel-reyes-ml/data-portfolio)** - Live ETL system + 8 production-grade projects ⭐ **START HERE**
 2. **[🤖 GenAI-First Differentiation →](#-genai-first-differentiation-2026-market-advantage)** - What sets this apart
 3. **[📊 Complete Roadmap →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)** - 37-month visualization
 4. **[🔗 LinkedIn →](https://www.linkedin.com/in/mr410/)** - Professional background
@@ -40,7 +40,7 @@
 
 **This repository demonstrates:**
 - ✅ **Production system deployed** - Live ETL pipeline saving $15K/year with public code
-- ✅ **7 production-grade projects** - From ETL foundations to RAG, Multimodal AI, and statistical research systems
+- ✅ **8 production-grade projects** - From ETL foundations to RAG, Multimodal AI, and **two flagship trading systems** (AFC for research rigor, Crucible for autonomous execution)
 - ✅ **GenAI integration from Day 1** - LLM SDKs (**Anthropic primary** for RAG/financial reasoning, Gemini/OpenAI fallback), RAG, Multimodal AI, **FastMCP server** (Cursor/Claude Desktop integration), Pydantic structured outputs, PandasAI, Cursor AI
 - ✅ **Evaluation-driven development** - DeepEval + pytest integrated into every project; RAGAS RAG Triad metrics; Docker containerization across all repos
 - ✅ **Skills progression by design** - Each project introduces new capabilities that build on the previous
@@ -114,7 +114,7 @@ Foundation: Production architecture, thought leadership
 
 ## 🏆 Production & Portfolio Highlights
 
-> **7 projects ordered by skills progression** — each builds on the previous, from ETL foundations to flagship research system.
+> **8 projects ordered by skills progression** — 6 progression projects (easy → advanced) plus **two flagships**: Attention-Flow Catalyst (read-only small-cap swing research) and Crucible (autonomous intraday execution). Crucible is the chosen **first build**.
 
 > **🏗️ Production GitHub Standard (v8.3):** Every project ships with: architecture diagram (Mermaid), Dockerfile, evaluation metrics table (DeepEval + pytest), demo GIF, and "What I Learned" section. All projects include DeepEval evaluation framework and Docker containerization support. Flagship projects (PolicyPulse, AFC) add FastMCP server + advanced hallucination detection (SelfCheckGPT/FActScore).
 
@@ -275,6 +275,32 @@ Consumer-facing dashboard that helps households optimize streaming subscriptions
 
 ---
 
+### 8. **[Crucible](https://github.com/manuel-reyes-ml/crucible)** 🔥 Flagship #2 — Autonomous Intraday Trading Research Platform
+
+> **The chosen first build.** Strategy-agnostic platform that takes *any* intraday strategy from backtest → paper → live through validation gates: *"Does this strategy have a real edge that survives out-of-sample validation — and can an autonomous agent trade it without me babysitting it?"*
+
+**How it differs from AFC (why two flagships, not redundancy):** AFC is a *read-only research* system for illiquid sub-$5 small-caps on a multi-day *swing* timeframe. Crucible is an *autonomous execution* platform for liquid names on an *intraday* timeframe. They share ~70% of an engineering spine (point-in-time data, lakehouse, walk-forward backtest, bias controls, evaluation, Docker/CI, agents) but solve two genuinely different hard problems — demonstrating range.
+
+**The core idea — AI behind a wall:** an LLM research analyst proposes strategy improvements, but its ideas are *proved* by deterministic backtests it never optimizes against. The out-of-sample data is a sealed vault opened once per finalized hypothesis, with every "peek" logged in an overfitting-budget ledger. This is what makes it defensible rather than an overfit black box.
+
+**Three build phases (Phase 1 now in Stage 1; agentic phases mature across Stages 3–4):**
+
+| Phase | What it produces | Stage | Real money? |
+|-------|------------------|-------|-------------|
+| **1 — Backtest Engine** | Own event-driven harness + AI research loop + sealed OOS vault; IT-1 ORB + VWAP Reclaim plugins (proves the abstraction) | Stage 1 | No |
+| **2 — Paper Agent** | Migrate to NautilusTrader (engine-parity gate); autonomous paper-trading agent crew (LangGraph); local Qwen3/Ollama analyst | Stages 2–3 | No |
+| **3 — Live Agent** | Autonomous live micro-sizing on Alpaca + Schwab/TOS; deterministic core + multi-agent oversight | Stages 3–4 | Yes (small) |
+
+**Strategies are plugins** (Protocol + ABC + registry — same pattern as the CS50 Speller reimplementation). IT-1 ORB + VWAP Reclaim ship together in Phase 1 specifically to prove that adding a strategy needs zero engine changes.
+
+**Tech:** Python • own backtest harness → **NautilusTrader** (LGPL, free) • Optuna • DuckDB • Parquet • **Ollama/Qwen3 (local-first)** → Gemini → Anthropic → OpenAI • Pydantic • LangGraph • **Alpaca** (paper + live) + **Schwab Trader API/TOS** (live) • DeepEval • Docker • GitHub Actions CI
+
+**New skills introduced:** + Own event-driven backtest engine, deterministic strategy plugins, walk-forward CV + sealed OOS vault + overfitting budget, local LLM deployment (Ollama/quantization), event-driven trading engine (Nautilus), multi-agent execution oversight, broker API integration, real-time reliability
+
+> ⚖️ *Educational/research project. Not investment advice; makes no claim of positive expectancy — validation is the entire point.*
+
+---
+
 ## 📂 Repository Structure
 
 ```
@@ -290,7 +316,8 @@ learning_journey/
 │       ├── FormSense (multimodal AI, document intelligence)
 │       ├── Operations-Demand-Intelligence (enterprise analytics, AI chat)
 │       ├── StreamSmart Optimizer (consumer AI, API integration)
-│       └── Attention-Flow Catalyst (flagship, 5-stage evolution)
+│       └── Attention-Flow Catalyst (flagship #1, 5-stage evolution)
+│       └── Crucible (flagship #2, autonomous intraday: backtest → paper → live)
 │
 ├── 📂 getting-started/                   # For new visitors
 │   ├── README.md                         # Navigation & overview
@@ -380,14 +407,15 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 - 🧪 **Building & Evaluating Advanced RAG** (DeepLearning.AI) — RAG Triad metrics, evaluation-driven development
 - 🐳 **Docker for Beginners with Hands-on Labs** (KodeKloud/Coursera) — Containerization fundamentals
 
-**Key Deliverables (7 projects, easy → flagship):**
+**Key Deliverables (8 projects, easy → two flagships):**
 1. **1099 ETL Pipeline** ✅ — Production system, $15K savings (Foundation: ETL + Testing + CI/CD)
 2. **DataVault Analyst** — First AI project (+ LLM SDK, Pydantic, PII handling)
 3. **PolicyPulse** — RAG foundation (+ Embeddings, ChromaDB, semantic search, **FastMCP server, Anthropic SDK primary**)
 4. **FormSense** — Document intelligence (+ Multimodal AI, Vision LLM)
 5. **Operations-Demand-Intelligence** 🚧 — Enterprise analytics (+ real data, advanced analytics)
 6. **StreamSmart Optimizer** — Consumer AI app (+ external APIs, optimization engine)
-7. **Attention-Flow Catalyst** 🚀 — Flagship (+ statistical methodology, DuckDB, async, **Anthropic SDK primary, SelfCheckGPT + FActScore**)
+7. **Attention-Flow Catalyst** 🚀 — Flagship #1 (+ statistical methodology, DuckDB, async, **Anthropic SDK primary, SelfCheckGPT + FActScore**)
+8. **Crucible** 🔥 — Flagship #2, *started first* (+ own backtest harness, sealed OOS vault, local Qwen3/Ollama, NautilusTrader, multi-agent execution) — Phase 1 in Stage 1; agentic phases in Stages 3–4
 
 **Outcome:** GenAI-First Data Analyst & AI Engineer position
 
@@ -400,7 +428,7 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 **Containerization:** Docker & Kubernetes Masterclass (Months 12-13)
 **🆕 v8.3 Sprint (Month 14, 2 weeks):** TypeScript fundamentals + MCP server in TypeScript — unlocks 2026 hiring keyword without committing to TS as primary language
 
-**Key Deliverable:** All 7 projects evolve — Cloud deployment, production databases, scheduled pipelines
+**Key Deliverable:** All 8 projects evolve — Cloud deployment, production databases, scheduled pipelines
 
 ---
 
@@ -411,6 +439,8 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 
 **Key Deliverable:** Fine-tuned financial LLM solving finance's data privacy problem
 
+**🔥 Crucible here:** Phase 2 matures — migrate to NautilusTrader (engine-parity gate) and build the autonomous paper-trading agent crew with a local Qwen3/Ollama analyst. This stage's local-LLM skills are exactly what Crucible Phase 2 needs.
+
 ---
 
 ### **Stage 4: Agentic AI Engineer & LLM Specialist** (Months 30-34) 📅 Planned
@@ -420,6 +450,8 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 **Advanced Eval:** SelfCheckGPT + FActScore (atomic-fact decomposition for SEC-grounded analysis)
 
 **Key Deliverable:** AI Trading Assistant with multi-agent collaboration (research + analysis + execution agents)
+
+**🔥 Crucible here:** Phase 3 begins — autonomous live execution at micro-sizing on Alpaca + Schwab/TOS, deterministic core wrapped by multi-agent oversight (regime → risk → journalist → fund-manager). Same LangGraph/agent-pattern skills as AFC, applied to live intraday execution with code-enforced guardrails.
 
 ---
 
@@ -607,8 +639,8 @@ Sustainable pace designed for 37-month journey while working full-time.
 ## 📊 Current Progress
 
 **Active Stage:** 1 of 5 (GenAI-First Data Analyst & AI Engineer)  
-**Projects:** 1 deployed (production), 1 in development (ODI), 5 scoped and queued  
-**Total Pipeline:** 7 production-grade projects (easy → flagship)  
+**Projects:** 1 deployed (production), 1 in development (ODI), 6 scoped and queued (incl. two flagships, AFC + Crucible)  
+**Total Pipeline:** 8 production-grade projects (easy → two flagships)  
 **Certifications:** 8 in progress (including 3 GenAI-focused)  
 **Study Hours:** 25/week consistent
 
@@ -618,7 +650,8 @@ Sustainable pace designed for 37-month journey while working full-time.
 - Launch FormSense (Multimodal AI)
 - Complete Operations-Demand-Intelligence (enterprise analytics)
 - Build StreamSmart Optimizer (consumer AI app)
-- Complete Attention-Flow Catalyst Phase 1A & 1B (flagship)
+- Complete Attention-Flow Catalyst Phase 1A & 1B (flagship #1)
+- Build Crucible Phase 1 — backtest engine + AI research loop (flagship #2, started first)
 - Finish 5 core certifications + IBM GenAI Engineering cert
 - Secure GenAI-First Data Analyst & AI Engineer role
 
@@ -639,7 +672,8 @@ Sustainable pace designed for 37-month journey while working full-time.
 - [FormSense](https://github.com/manuel-reyes-ml/formsense) — Document Intelligence
 - [Operations-Demand-Intelligence](https://github.com/manuel-reyes-ml/operations-demand-intelligence) 🚧
 - [StreamSmart Optimizer](https://github.com/manuel-reyes-ml/streamsmart-optimizer) — Consumer AI
-- [Attention-Flow Catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst) 🚀 Flagship
+- [Attention-Flow Catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst) 🚀 Flagship #1
+- [Crucible](https://github.com/manuel-reyes-ml/crucible) 🔥 Flagship #2 — Autonomous Intraday Trading Platform (started first)
 
 **Open To:**
 - 💼 GenAI-First Data Analyst & AI Engineer opportunities (remote preferred)
@@ -673,7 +707,7 @@ This repository documents a complete career transformation: from business ops pr
 
 **What this represents:**
 - 37-month systematic journey (5,000+ hours)
-- 7 production-grade projects demonstrating progressive skill mastery
+- 8 production-grade projects demonstrating progressive skill mastery (incl. two flagship trading systems)
 - Production systems with measurable business impact
 - GenAI-first approach positioning ahead of traditional candidates
 - Foundation for six-figure remote tech career
@@ -694,7 +728,7 @@ Real-time documentation of a GenAI-first career transformation from Day 1 to Sen
 
 ---
 
-### 💡 *"37 months. 7 projects. GenAI-first from Day 1. Production code. Clear trajectory."*
+### 💡 *"37 months. 8 projects. Two flagships. GenAI-first from Day 1. Production code. Clear trajectory."*
 
 **Current Stage:** GenAI-First Data Analyst & AI Engineer (1 of 5) | Building GenAI-Enhanced Foundations  
 **Status:** 🟢 Active • Learning in Public • Deploying Production Systems
