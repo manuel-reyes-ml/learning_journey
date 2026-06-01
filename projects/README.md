@@ -1,6 +1,6 @@
 # 🚀 Project Portfolio Directory
 
-**7 Production-Grade Projects** | Skills Progression | GenAI-First from Day 1
+**8 Production-Grade Projects** | Skills Progression | GenAI-First from Day 1 | Two Flagships
 
 > **Portfolio Hub:** **[data-portfolio →](https://github.com/manuel-reyes-ml/data-portfolio)** for full project summaries, tech stacks, and skills badges.
 
@@ -10,7 +10,7 @@
 
 Each project introduces new capabilities that build on the previous — demonstrating systematic skill growth, not scattered tutorials.
 
-> 🏗️ **Production Standard (v8.3):** Every project ships with architecture diagram (Mermaid), Dockerfile, evaluation metrics table (DeepEval + pytest), demo GIF, and "What I Learned" section. Flagship projects (PolicyPulse, AFC) add FastMCP server + advanced hallucination detection (SelfCheckGPT/FActScore).
+> 🏗️ **Production Standard (v8.3):** Every project ships with architecture diagram (Mermaid), Dockerfile, evaluation metrics table (DeepEval + pytest), demo GIF, and "What I Learned" section. Flagship projects (PolicyPulse, AFC, Crucible) add advanced rigor — FastMCP server + hallucination detection (SelfCheckGPT/FActScore) for the research systems; sealed out-of-sample vault + overfitting-budget ledger + engine-parity gate for Crucible.
 
 | # | Project | What It Does | New Skills Added | Status |
 |---|---------|-------------|-----------------|--------|
@@ -21,6 +21,7 @@ Each project introduces new capabilities that build on the previous — demonstr
 | 5 | 📊 **[Operations-Demand-Intelligence](https://github.com/manuel-reyes-ml/operations-demand-intelligence)** | AI-powered workflow demand analysis for staffing decisions | + Enterprise real data, advanced analytics, Plotly | 🚧 In Dev |
 | 6 | 📺 **[StreamSmart Optimizer](https://github.com/manuel-reyes-ml/streamsmart-optimizer)** | AI streaming subscription rotation advisor with live APIs | + External APIs, consumer UX, async HTTP, optimization | 📅 Planned |
 | 7 | 📈 **[Attention-Flow Catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst)** 🚀 | Predictive trigger analysis for small-cap stocks (5-stage flagship) | + Statistical methodology, DuckDB, async, multi-source data, **financial-grade eval (SelfCheckGPT + FActScore, 0.9 faithfulness)** | 🚧 Phase 1A |
+| 8 | 🔥 **[Crucible](https://github.com/manuel-reyes-ml/crucible)** 🚀 | Autonomous intraday trading research platform: backtest → paper → live, AI behind a sealed out-of-sample vault (flagship #2, started first) | + Own backtest harness → NautilusTrader, deterministic strategy plugins, sealed OOS vault + overfitting budget, **local-first LLM (Qwen3/Ollama)**, LangGraph multi-agent execution, Alpaca + Schwab/TOS | 🚧 Phase 1 |
 
 ---
 
@@ -51,13 +52,35 @@ Each project introduces new capabilities that build on the previous — demonstr
 
 ---
 
+## 🔥 Flagship Highlight #2
+
+### 🔥 [Crucible](https://github.com/manuel-reyes-ml/crucible) — Autonomous Intraday Trading Research Platform (started first)
+
+> **The question it answers, for any strategy:** *Does this have a real edge that survives out-of-sample validation — and can an autonomous agent trade it without me babysitting it?*
+
+**Distinct from AFC (why two flagships, not redundancy):** AFC is *read-only research* on illiquid sub-$5 small-caps over a multi-day *swing* horizon. Crucible is *autonomous execution* on liquid names over an *intraday* horizon. ~70% shared engineering spine, two genuinely different hard problems.
+
+**The core idea — AI behind a wall:** an LLM research analyst proposes strategy improvements, but its ideas are *proved* by deterministic backtests it never optimizes against. The out-of-sample set is a sealed vault opened once per finalized hypothesis, every peek logged in an overfitting-budget ledger. Strategies are plugins (Protocol + ABC + registry) — IT-1 ORB + VWAP Reclaim ship together in Phase 1 to prove adding one needs zero engine changes.
+
+| Phase | Evolution | Stage | Real money? |
+|-------|-----------|-------|-------------|
+| **1 — Backtest Engine** | Own event-driven harness + AI research loop + sealed OOS vault (IT-1 ORB + VWAP Reclaim) | Stage 1 | No |
+| **2 — Paper Agent** | Migrate to NautilusTrader (engine-parity gate); autonomous paper-trading crew (LangGraph); local Qwen3/Ollama analyst | Stages 2–3 | No |
+| **3 — Live Agent** | Autonomous micro-sizing on Alpaca + Schwab/TOS; deterministic core + multi-agent oversight | Stages 3–4 | Yes (small) |
+
+**What makes it defensible:** Sealed out-of-sample vault • logged overfitting budget • walk-forward CV • engine-parity gate (own harness vs. Nautilus) • deterministic execution core (LLM never in the trade loop) • local-first AI (no API fee, data stays local)
+
+> ⚖️ *Educational/research project. Not investment advice; makes no claim of positive expectancy — validation is the entire point.*
+
+---
+
 ## 🗂️ Repository Strategy
 
 Each project lives in its own repo for clean version control, focused documentation, and recruiter-friendly links.
 
 | Repo Type | What's There | Where |
 |-----------|-------------|-------|
-| **Project repos** (×7) | Source code, tests, architecture, deployment | Individual repos linked above |
+| **Project repos** (×8) | Source code, tests, architecture, deployment | Individual repos linked above |
 | **[data-portfolio](https://github.com/manuel-reyes-ml/data-portfolio)** | Portfolio hub with summaries + full skills badges | Separate repo |
 | **[learning_journey](https://github.com/manuel-reyes-ml/learning_journey)** | Courses, certifications, roadmap, this directory | This repo |
 
@@ -90,6 +113,6 @@ Each project lives in its own repo for clean version control, focused documentat
 
 ---
 
-### 💡 *"7 projects. Skills progression. Production code from Day 1."*
+### 💡 *"8 projects. Two flagships. Skills progression. Production code from Day 1."*
 
 **[→ Full Portfolio Hub](https://github.com/manuel-reyes-ml/data-portfolio)** | **[→ Interactive Roadmap](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
