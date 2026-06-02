@@ -1,7 +1,7 @@
 # 🚀 WEEKS 9-10 MASTER ACTIVATION PLAN
 ## GenAI-First Career Transformation | January 15–28, 2026
 
-**Document Version:** 2.1 (v8.3 alignment — provider-agnostic + DeepEval foundation)  
+**Document Version:** 2.2 (v8.3 alignment — provider-agnostic + DeepEval foundation; Crucible-aware — DataVault Phase 2 weeks unaffected by the flagship addition)  
 **Covers:** January 15, 2026 – January 28, 2026  
 **Continues From:** Weeks 7-8 Activation Plan (Jan 1 – Jan 14)  
 **Aligned To:** Career Roadmap v8.3 — Stage 1: GenAI-First Data Analyst & AI Engineer  
