@@ -1,7 +1,7 @@
 # 🚀 WEEKS 1-2 MASTER ACTIVATION PLAN
 ## GenAI-First Career Transformation | Starting Thursday, November 20, 2025
 
-**Document Version:** 1.0  
+**Document Version:** 1.1 (Crucible-aware — flagship #2 framing + Alpaca prep added)  
 **Covers:** November 20, 2025 – December 3, 2025  
 **Aligned To:** Career Roadmap v8.3 — Stage 1: GenAI-First Data Analyst & AI Engineer  
 **Weekly Hours:** 25 hours/week  
@@ -42,6 +42,14 @@ You're starting from zero in tech, but you bring **massive advantages** most CS 
 - **Domain expertise** in retirement plans and financial services (companies pay premium for this)
 
 These 2 weeks are NOT about "catching up" — they're about **laying foundations that leverage your unique strengths**.
+
+### 🔥 About Crucible — Your Stage 1 Flagship (Building Toward, Not Building Yet)
+
+You've chosen **Crucible** (your autonomous intraday trading research platform) as the flagship you're "starting first." Important reality check so this plan stays honest: *"first"* means it's the destination you're pointing at from Day 1 — **not** that you build its engine in Week 1. You can't write a backtest engine before you have Python fundamentals (Weeks 1–4), OOP and testing depth (Weeks 5–6+), and your first two AI projects under your belt. So Crucible's actual **Phase 1 build lands later in Stage 1** (around the AFC slot, Months 4–5), once these foundations are in place. Per the roadmap, that's exactly where it sits.
+
+What you *do* now, in service of Crucible: (1) create a free **Alpaca account** this week (it's Crucible's market-data + paper-trading backbone — seeding it early costs nothing), and (2) know that every Python script, every test you write, every "no vibe coding" habit you build over the next weeks is direct preparation for Crucible. The local LLM piece (Ollama/Qwen3) is a Stage 2–3 skill — **deliberately deferred** (see the setup note below) so it doesn't clutter your beginner setup with a tool you won't touch for months.
+
+> **Bottom line:** Crucible is the lighthouse, not the Week 1 task. Build the foundations; the flagship gets built when you're ready for it.
 
 ### What "Complete Beginner" Actually Means for Your Plan
 
@@ -107,6 +115,12 @@ Every step includes the **exact commands to type**, **what you should see on scr
 - [ ] **HackerRank account** → Go to [hackerrank.com](https://hackerrank.com) → Sign up
   - For SQL and Python practice challenges
   - Free account
+
+- [ ] **Alpaca account** → Go to [alpaca.markets](https://alpaca.markets) → Sign up 🔥 Crucible prep
+  - Free account; this is **Crucible's** market-data + **paper-trading** backbone (used later in Stage 1, not now)
+  - Create the account and locate the **paper trading** API keys page — you don't need to use them yet, just confirm access
+  - Paper trading is free; no funding or billing required at this stage
+  - Why now: zero-cost to seed, and it makes "Crucible started first" true in spirit — the account is ready when the Phase 1 build begins
 
 - [ ] **LinkedIn account** → Make sure your existing profile is accessible
   - You'll update it in Week 2 (don't change anything yet)
@@ -188,6 +202,10 @@ Claude Desktop is Anthropic's free desktop app. You'll use it later (Week 11-12)
 4. Free tier is fine — you're using it as an MCP client, not for chat usage
 
 **You won't use this on Day 1** — it's part of the v8.3 setup foundation that pays off in Week 11-12 when PolicyPulse exposes its FastMCP server.
+
+#### 🔥 Crucible Local LLM (Ollama/Qwen3) — DEFERRED ON PURPOSE
+
+Crucible's research-loop analyst can run on a **local, open-weight model (Qwen3 via Ollama)** so you pay no API fee and your data stays on your machine. **Do not install this now.** It's a Stage 2–3 skill (local LLMs, quantization) with no use until Crucible's AI layer comes online later in Stage 1 — installing it as a complete beginner adds a tool you won't touch for months, and the model landscape moves monthly so today's pick would be stale by then. When you reach the Crucible build, the plan for that week will walk you through `ollama pull qwen3` and the local-vs-cloud config flag. For now: just know it's coming, and that your Anthropic/Gemini keys (above) cover everything in Weeks 1–12.
 
 #### Step 6: Install Git (Version Control)
 
