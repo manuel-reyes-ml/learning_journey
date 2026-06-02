@@ -1,7 +1,7 @@
 # 🚀 WEEKS 3-4 MASTER ACTIVATION PLAN
 ## GenAI-First Career Transformation | December 4–17, 2025
 
-**Document Version:** 1.0  
+**Document Version:** 1.1 (Crucible-aware — no content change; fundamentals weeks are unaffected by the flagship addition)  
 **Covers:** December 4, 2025 – December 17, 2025  
 **Continues From:** Weeks 1-2 Activation Plan (Nov 20 – Dec 3)  
 **Aligned To:** Career Roadmap v8.3 — Stage 1: GenAI-First Data Analyst & AI Engineer  
