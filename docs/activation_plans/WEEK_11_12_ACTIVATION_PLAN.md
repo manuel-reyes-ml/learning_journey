@@ -1,7 +1,7 @@
 # 🚀 WEEKS 11-12 MASTER ACTIVATION PLAN
 ## GenAI-First Career Transformation | January 29 – February 11, 2026
 
-**Document Version:** 2.1 (v8.3 alignment — Anthropic SDK primary + FastMCP server preview + SelfCheckGPT eval)  
+**Document Version:** 2.2 (v8.3 alignment — Anthropic SDK primary + FastMCP server preview + SelfCheckGPT eval; Crucible-aware project ordering)  
 **Covers:** January 29, 2026 – February 11, 2026  
 **Continues From:** Weeks 9-10 Activation Plan (Jan 15 – Jan 28)  
 **Aligned To:** Career Roadmap v8.3 — Stage 1: GenAI-First Data Analyst & AI Engineer  
@@ -77,7 +77,10 @@ Your portfolio progression is deliberate — each project builds on the previous
 5. ODI 📊 → + Enterprise real data, advanced analytics
 6. StreamSmart 📺 → + External APIs, async HTTP
 7. AFC 🚀 → + Statistical methodology, DuckDB
+8. Crucible 🔥 → + own backtest engine, sealed OOS vault, local LLM, multi-agent execution (FLAGSHIP #2, built later in Stage 1)
 ```
+
+> 🔥 **Crucible note:** Your "started first" flagship is the **capstone** of this progression, not a detour from it. Its Phase 1 build comes later in Stage 1 (with/after AFC, Months 4–5) precisely because it needs the RAG/eval/SDK skills you're learning right now in PolicyPulse, plus the OOP and testing depth from earlier weeks. Every skill in this list feeds it. Keep building in order; the Alpaca account from Week 1–2 is its early seed.
 
 **PolicyPulse introduces THREE critical new skills** that everything after depends on:
 - **Embeddings** — converting text to vectors (the foundation of semantic AI)
