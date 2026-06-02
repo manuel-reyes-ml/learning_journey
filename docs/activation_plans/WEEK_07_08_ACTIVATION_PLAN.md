@@ -1,7 +1,7 @@
 # 🚀 WEEKS 7-8 MASTER ACTIVATION PLAN
 ## GenAI-First Career Transformation | January 1–14, 2026
 
-**Document Version:** 2.1 (v8.3 alignment — provider-agnostic SDK terminology)  
+**Document Version:** 2.2 (v8.3 alignment + Crucible-aware project ordering)  
 **Covers:** January 1, 2026 – January 14, 2026  
 **Continues From:** Weeks 5-6 Activation Plan (Dec 18 – Dec 31)  
 **Aligned To:** Career Roadmap v8.3 — Stage 1: GenAI-First Data Analyst & AI Engineer  
@@ -77,7 +77,10 @@ Your README defines a deliberate project progression where each project introduc
 5. ODI 📊 → + Enterprise real data, advanced analytics
 6. StreamSmart 📺 → + External APIs, async HTTP, consumer UX
 7. AFC 🚀 → + Statistical methodology, DuckDB, async data collection
+8. Crucible 🔥 → + own backtest engine, sealed OOS vault, local LLM, multi-agent execution (FLAGSHIP #2)
 ```
+
+> 🔥 **Where Crucible fits (your "started first" flagship):** Crucible is the destination you're building toward from Day 1, but its **Phase 1 build comes later in Stage 1** — alongside/after AFC (Months 4–5) — because it requires every skill above it: production Python, OOP, testing, and the SDK/eval patterns you establish in DataVault and PolicyPulse. Building it earlier would mean attempting your hardest project before its foundations exist. So you still build DataVault first (fast GenAI proof for recruiters); Crucible is the capstone that ties the whole stack together. The Alpaca account you created in Week 1–2 is its early seed.
 
 **DataVault Analyst is your FIRST AI PROJECT to publish.** It establishes the SDK-first AI architecture (Gemini/OpenAI/Anthropic provider-agnostic pattern) that every subsequent project reuses. DataVault uses Gemini as primary (cost-effective for analytics queries); PolicyPulse + AFC will swap to **Anthropic Claude as primary** later (better RAG synthesis + financial reasoning per v8.3). Speed to publish is critical — recruiters need to see GenAI skills in the first 30 seconds of scanning your GitHub.
 
