@@ -1,7 +1,7 @@
 # 🚀 WEEKS 5-6 MASTER ACTIVATION PLAN
 ## GenAI-First Career Transformation | December 18–31, 2025
 
-**Document Version:** 1.0  
+**Document Version:** 1.1 (Crucible-aware — practice-project naming clarified)  
 **Covers:** December 18, 2025 – December 31, 2025  
 **Continues From:** Weeks 3-4 Activation Plan (Dec 4 – Dec 17)  
 **Aligned To:** Career Roadmap v8.3 — Stage 1: GenAI-First Data Analyst & AI Engineer  
@@ -600,7 +600,9 @@ git push
 
 This is one of the most important exercises in your entire journey. Before you BUILD anything, you PLAN it.
 
-- [ ] Create `PROJECT_01_PLAN.md` in your learning_journey repo:
+> ⚠️ **Naming clarification (Crucible-aware):** This "Portfolio Project #1: Financial Data Analysis Dashboard" is a **learning project** — a practice vehicle to apply Python + Pandas + SQL + viz on financial data. It is **not** the same as your roadmap's numbered portfolio projects (where Project #1 = the deployed 1099 pipeline, Project #2 = DataVault, etc.). Think of it as "Practice Dashboard," not a roadmap deliverable. Crucially, the *architecture-planning skill* you practice here is exactly what you'll need for your flagship, **Crucible** — its Phase 1 backtest engine is a far more rigorous version of this same plan-before-build discipline. Treat this as a warm-up rep for that.
+
+- [ ] Create `PRACTICE_DASHBOARD_PLAN.md` in your learning_journey repo (renamed from `PROJECT_01_PLAN.md` to avoid confusion with roadmap project numbering):
 
 ```markdown
 # 📊 Portfolio Project #1: Financial Data Analysis Dashboard
