@@ -246,14 +246,18 @@ def _build_parser() -> argparse.ArgumentParser:
         description="Verify Anthropic + Gemini API keys with a single round trip each.",
         epilog=(
             "Examples:\n"
-            "   %(prog)s --prompt What's the largest country in the world?\n"
-            "   %(prog)s Anthropic\n"
-            "   %(prog)s -v"
+            "   %(prog)s anthropic gemini\n"
+            "   %(prog)s --prompts 'what is 2+2' 'hello world'\n"
+            "   %(prog)s --prompt 'first' --prompt 'second'\n"
+            "   %(prog)s --prompts-file prompts.txt\n"
+            "   %(prog)s --async --verbose"
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     
     # -- Positional arguments --
+    # nargs="+" means "one or more values". argparse calls type(value) on EACH
+    # token, so type=str (per-element) is right; type=list[str] would crash.
     parser.add_argument(
         "provider",
         nargs="+",  # one or more arguments
