@@ -193,9 +193,12 @@ class LLMApiArgs:
     """
     
     _: KW_ONLY  # Everything after is keyword-only
-    prompts: list[str] | None
+    prompts: list[str]
     provider: list[str]
+    run_async: bool
     verbose: bool
+    no_log_file: bool
+    
     
 
 # =============================================================================
@@ -581,4 +584,43 @@ def main(argv: list[str] | None = None) -> ExitCode:
     except (ValueError, FileNotFoundError) as exc:
         # `print` to stderr because logging isn't configured yet
         # — argparse and prompt resolution happen BEFORE configure_logging.
-        print
+        print(f"Configuration Error: {exc}", file=sys.stderr)
+        return ExitCode.CONFIG_ERROR
+    
+    # ─── 3. Validate provider names against the registry ─────────────
+    try:
+        provider_names = _validate_providers(raw.provider)
+    except KeyError as exc:
+        print(f"Configuration error: {exc}", file=sys.stderr)
+        return ExitCode.CONFIG_ERROR
+    
+    # ─── 4. Build the typed args dataclass ────────────────────────────
+    # Everything that touches args from here on gets full Pyright
+    # coverage. raw.* has type Any; args.* has concrete types.
+    args = LLMApiArgs(
+        prompts=prompts,
+        provider=provider_names,
+        run_async=raw.run_async,
+        verbose=raw.verbose,
+        no_log_file=raw.no_log_file,
+    )
+    
+    # ─── 5. Configure logging ─────────────────────────────────────────
+    # NOW the structured logger is live — every subsequent log call
+    # routes through structlog + the file handler.
+    from llm_api_smoke_test.logger import configure_structured_logging
+    configure_structured_logging(
+        console_verbose=args.verbose,
+        log_to_file=not args.no_log_file,
+    )
+    
+    logger.debug(f"Parsed arguments: {raw}")
+    slogger.info(
+       "smoke_test_started",
+       providers=args.provider,
+       prompt_count=len(args.prompts),
+       run_async=args.run_async, 
+    )
+    
+    # ─── 6. Load settings (Pydantic validates env vars) ──────────────
+    
