@@ -31,16 +31,18 @@ from __future__ import annotations
 
 import asyncio
 import logging
-import structlog
 
 from aiolimiter import AsyncLimiter
 from collections.abc import Iterator
-from typing import Final
+from typing import Final, TYPE_CHECKING
 
-from llm_api_smoke_test.providers import (
-    AsyncLLMProvider,
-    SmokeTestResult,
-)
+from llm_api_smoke_test.logger import get_structured_logger
+
+if TYPE_CHECKING:
+    from llm_api_smoke_test.providers import (
+        AsyncLLMProvider,
+        SmokeTestResult,
+    )
 
 # =============================================================================
 # EXPORTS
@@ -55,7 +57,7 @@ __all__ = ["batch_smoke_test"]
 
 # Use structlog on Python's stdlib since some external packages
 # use stdlib still.
-slogger = structlog.stdlib.get_logger(__name__)
+slogger = get_structured_logger(__name__)
 logger = logging.getLogger(__name__)
 
 
