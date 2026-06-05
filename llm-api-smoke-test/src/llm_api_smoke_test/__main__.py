@@ -57,7 +57,7 @@ try:
 
     from dataclasses import dataclass, KW_ONLY
     from enum import IntEnum, unique
-    from typing import Final, TextIO, TYPE_CHECKING, NoReturn
+    from typing import Final, Literal, overload, TextIO, TYPE_CHECKING, NoReturn
 
     from llm_api_smoke_test.config import SmokeTestSettings
     from llm_api_smoke_test.logger import get_structured_logger
@@ -482,6 +482,25 @@ def _resolve_prompts(args: argparse.Namespace) -> list[str]:
     return [DEFAULT_PROMPT]
 
 
+# ─── Overload 1: run_async=True → async providers ─────────────────────
+@overload
+def _build_providers(
+    provider_names: list[str],
+    settings: SmokeTestSettings,
+    *,
+    run_async: Literal[True],       # ← the discriminator
+) -> list[AsyncLLMProvider]: ...
+
+# ─── Overload 2: run_async=False → sync providers ─────────────────────
+@overload
+def _build_providers(
+    provider_names: list[str],
+    settings: SmokeTestSettings,
+    *,
+    run_async: Literal[False],      # ← the discriminator
+) -> list[LLMProvider]: ...
+
+# ─── Implementation: NO @overload decorator, accepts plain bool ──────
 def _build_providers(
     provider_names: list[str],
     settings: SmokeTestSettings,
@@ -637,23 +656,19 @@ def main(argv: list[str] | None = None) -> ExitCode:
         slogger.error("settings_load_failed", error=str(exc))
         return ExitCode.CONFIG_ERROR
     
-    # ─── 7. Build provider instances ──────────────────────────────────
-    try:
-        providers = _build_providers(
-            provider_names=args.provider,
-            settings=settings,
-            run_async=args.run_async,
-        )
-    except ValueError as exc:
-        slogger.error("provider_build_failed", error=str(exc))
-        return ExitCode.CONFIG_ERROR
     
-    # ─── 8. Dispatch to the right runner ──────────────────────────────
+    # ─── 7. Dispatch to the right runner ──────────────────────────────
     # The branches return DIFFERENT tuple shapes but BOTH conform to
     # tuple[list[SmokeTestResult], list[CallFailure]] — so the
     # downstream success/failure check below is identical.
     try:
         if args.run_async:
+            providers = _build_providers(
+                provider_names=args.provider,
+                settings=settings,
+                run_async=True,
+            )
+            
             # asyncio.run creates a new event loop, runs the coroutine,
             # and tears the loop down. The only place we touch the
             # event-loop lifecycle in this whole package.
@@ -665,6 +680,12 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 )
             )
         else:
+            providers = _build_providers(
+                provider_names=args.provider,
+                settings=settings,
+                run_async=False,
+            )
+            
             # Sync path — run one prompt against all providers.
             # For multiple prompts in sync mode, iterate the prompts
             # list and accumulate. Simplest possible shape.
@@ -682,7 +703,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         logger.warning("interrupted_by_user")
         return ExitCode.KEYBOARD_INTERRUPT
     
-    # ─── 9. Summarise + decide exit code ──────────────────────────────
+    # ─── 8. Summarise + decide exit code ──────────────────────────────
     slogger.info(
         "smoke_test_completed",
         success_count=len(successes),
