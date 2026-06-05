@@ -194,12 +194,8 @@ class LLMApiArgs:
     
     _: KW_ONLY  # Everything after is keyword-only
     prompts: list[str] | None
-    prompt: list[str] | None
-    prompts_file: TextIO | None
     provider: list[str]
-    run_async: bool
     verbose: bool
-    no_log_file: bool
     
 
 # =============================================================================
@@ -414,7 +410,7 @@ def _validate_providers(providers: list[str]) -> list[str]:
     return clean_names
 
 
-def _resolve_prompts(args: LLMApiArgs) -> list[str]:
+def _resolve_prompts(args: argparse.Namespace) -> list[str]:
     """Pick the right prompt source from the mutually-exclusive group.
 
     Returns the user-supplied prompts, falling back to ``[DEFAULT_PROMPT]``
@@ -566,3 +562,23 @@ def _build_providers(
         )
         
     return instances
+
+
+def main(argv: list[str] | None = None) -> ExitCode:
+    """
+    """
+    # ─── 1. Parse arguments ─────────────────────────────────────────
+    # argparse owns argv=None → sys.argv[1:] resolution.
+    # Tests pass argv=["anthropic", "--verbose"] to skip sys.argv.
+    parser = _build_parser()
+    raw = parser.parse_args(argv)
+    
+    # ─── 2. Resolve prompts from whichever flag was used ─────────────
+    # Wrapped in try/except so file-not-found and empty-file errors
+    # become CONFIG_ERROR (1) — they're user input problems.
+    try:
+        prompts = _resolve_prompts(raw)
+    except (ValueError, FileNotFoundError) as exc:
+        # `print` to stderr because logging isn't configured yet
+        # — argparse and prompt resolution happen BEFORE configure_logging.
+        print
