@@ -255,7 +255,7 @@ def _build_parser() -> argparse.ArgumentParser:
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     
-    # -- Positional arguments --
+    # -- Positional: which providers --
     # nargs="+" means "one or more values". argparse calls type(value) on EACH
     # token, so type=str (per-element) is right; type=list[str] would crash.
     parser.add_argument(
@@ -266,19 +266,68 @@ def _build_parser() -> argparse.ArgumentParser:
         help=f"LLM providers to use. Default runs all: {provider_list}.",
     )
     
-    # -- Keyword arguments --
-    parser.add_argument(
+    # -- Mutually exclusive group for prompt input --
+    # An MX group means "at most one of these may be set" — argparse refuses to
+    # parse if the user passes more than one. This prevents the ambiguity of
+    # "which prompts do I run if both --prompts AND --prompts-file are given?"
+    prompt_group = parser.add_mutually_exclusive_group()
+    
+    # OPTION A — space-separated list (current pattern, kept)
+    # Best for: 1-3 short prompts, scripted use.
+    prompt_group.add_argument(
         "--prompts",
         nargs="+",  # one or more
         type=str,  # argparse calls type(value) per token
-        default=[DEFAULT_PROMPT],
+        default=None,  # None = "user didn't pass --prompts" (vs an empty list)
         help=(
-            "Enter one or more prompts to be sent to LLM provider(s). "
-            "Use ',' to separate prompts."
+            "One or more prompts (space-separated). "
+            "Quote each prompt that contains spaces."
         ),
     )
     
-    # -- Optional flags --
+    # OPTION B — repeated flag (production pattern from git/docker/curl)
+    # Best for: prompts with weird characters, interactive use.
+    # action="append" means each --prompt invocation appends to a list.
+    prompt_group.add_argument(
+        "--prompt",
+        action="append",
+        type=str,
+        default=None,
+        help=(
+            "A single prompt. Repeat the flag for multiple prompts: "
+            "--prompt 'first' --prompt 'second'."
+        ),
+    )
+
+    # OPTION C — file-based (for batch / programmatic use)
+    # Best for: >5 prompts, prompts version-controlled with code.
+    # type=argparse.FileType("r") opens the file and gives you a file object.
+    # ⚠️ This leaks file handles in long-running programs; for a smoke test
+    # that runs once and exits, it's fine.
+    prompt_group.add_argument(
+        "--prompts-file",
+        type=argparse.FileType("r", encoding="utf-8"),
+        default=None,
+        help=(
+            "Read prompts from a file, one per line. "
+            "Lines starting with '#' are treated as comments and ignored."
+        ),
+        
+    )
+    
+    # -- Mode flag: sync vs async --
+    # Even with one prompt, async exercises the AsyncLLMProvider path —
+    # important for smoke-testing the async adapters before the real
+    # batch workload (DataVault) hits them.
+    parser.add_argument(
+        "--async",
+        action="store_true",
+        dest="run_async",  # 'async' is a reserved word - rename via dest
+        default=False,
+        help="Run the async batch runner with concurrency + rate-limit caps.",
+    )
+    
+    # -- Standard flags --
     parser.add_argument(
         "-v", "--verbose",
         action="store_true",
