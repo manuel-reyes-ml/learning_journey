@@ -534,6 +534,11 @@ def _build_providers(
     instances = []
     for name in provider_names:
         bundle = dicts[name]      # ProviderList
+        # Looks up an attribute by string name. 
+        # Equivalent to writing bundle.sync_provider or
+        # bundle.async_provider based on the runtime kind.
+        #
+        # it's how you write code that handles dynamic attribute names cleanly.
         info = getattr(bundle, slot_attr)       # DictInfo | None
         
         # Fail loudly if the requested kind isn't registered.
