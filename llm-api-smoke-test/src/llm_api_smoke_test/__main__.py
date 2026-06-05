@@ -58,7 +58,7 @@ try:
 
     from dataclasses import dataclass, KW_ONLY
     from enum import IntEnum, unique
-    from typing import Final, NoReturn
+    from typing import Final, TYPE_CHECKING, NoReturn
 
     from llm_api_smoke_test.config import SmokeTestSettings
     from llm_api_smoke_test.logger import get_structured_logger
@@ -66,11 +66,13 @@ try:
     from llm_api_smoke_test.providers import (
         AnthropicProvider,
         GeminiProvider,
-        LLMProvider,
         AsyncAnthropicProvider,
         AsyncGeminiProvider,
-        AsyncLLMProvider,
     )
+    
+    # Runtime skips, type checkers includes. 
+    if TYPE_CHECKING:
+        from llm_api_smoke_test.providers import LLMProvider, AsyncLLMProvider
 
     from llm_api_smoke_test.batch_runner import batch_smoke_test
     from llm_api_smoke_test.register import dicts
