@@ -72,7 +72,10 @@ try:
     
     # Runtime skips, type checkers includes. 
     if TYPE_CHECKING:
-        from llm_api_smoke_test.providers import LLMProvider, AsyncLLMProvider
+        from llm_api_smoke_test.providers import (
+            LLMProvider,
+            AsyncLLMProvider,
+        )
 
     from llm_api_smoke_test.batch_runner import batch_smoke_test
     from llm_api_smoke_test.register import dicts
