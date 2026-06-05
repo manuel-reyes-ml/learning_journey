@@ -623,4 +623,88 @@ def main(argv: list[str] | None = None) -> ExitCode:
     )
     
     # ─── 6. Load settings (Pydantic validates env vars) ──────────────
+    try:
+        # SmokeTestSettings reads ANTHROPIC_API_KEY, GEMINI_API_KEY,
+        # ANTHROPIC_MODEL, GEMINI_MODEL from env / .env file.
+        # Placeholder check runs inside ProviderSettings._reject_placeholder.
+        settings = SmokeTestSettings()  # type: ignore[call-arg]
+        # ↑ Pydantic populates from env, but mypy doesn't see that — the
+        # type: ignore is the standard documented workaround.
+    except Exception as exc:
+        # ValidationError is a Pydantic class — catching Exception is
+        # broad on purpose because we don't want to import the specific
+        # Pydantic exception type at the top of __main__.
+        slogger.error("settings_load_failed", error=str(exc))
+        return ExitCode.CONFIG_ERROR
     
+    # ─── 7. Build provider instances ──────────────────────────────────
+    try:
+        providers = _build_providers(
+            provider_names=args.provider,
+            settings=settings,
+            run_async=args.run_async,
+        )
+    except ValueError as exc:
+        slogger.error("provider_build_failed", error=str(exc))
+        return ExitCode.CONFIG_ERROR
+    
+    # ─── 8. Dispatch to the right runner ──────────────────────────────
+    # The branches return DIFFERENT tuple shapes but BOTH conform to
+    # tuple[list[SmokeTestResult], list[CallFailure]] — so the
+    # downstream success/failure check below is identical.
+    try:
+        if args.run_async:
+            # asyncio.run creates a new event loop, runs the coroutine,
+            # and tears the loop down. The only place we touch the
+            # event-loop lifecycle in this whole package.
+            import asyncio
+            successes, failures = asyncio.run(
+                batch_smoke_test(
+                    providers=iter(providers),  # Iterator, not list
+                    prompts=args.prompts,
+                )
+            )
+        else:
+            # Sync path — run one prompt against all providers.
+            # For multiple prompts in sync mode, iterate the prompts
+            # list and accumulate. Simplest possible shape.
+            successes = []
+            failures = []
+            for prompt in args.prompts:
+                s, f = run_smoke_tests(
+                    providers=iter(providers),
+                    prompt=prompt,
+                )
+                successes.extend(s)
+                failures.extend(f)
+    except KeyboardInterrupt:
+        # User pressed Ctrl-C — graceful exit with the POSIX 130 code.
+        logger.warning("interrupted_by_user")
+        return ExitCode.KEYBOARD_INTERRUPT
+    
+    # ─── 9. Summarise + decide exit code ──────────────────────────────
+    slogger.info(
+        "smoke_test_completed",
+        success_count=len(successes),
+        failure_count=len(failures),
+        success_providers=[r.provider_name for r in successes],
+        failure_provider=[name for name, _ in failures],
+    )
+    
+    # Any failure → exit non-zero so CI catches it.
+    # This is the "fail on any provider error" rule documented on ExitCode.
+    if failures:
+        return ExitCode.PROVIDER_ERROR
+    
+    return ExitCode.SUCCESS
+
+
+# ─── Module-level entry point ────────────────────────────────────────
+# This block runs ONLY when the file is executed directly
+# (python -m llm_api_smoke_test or via the pyproject.toml script).
+# It does NOT run when the module is imported.
+if __name__ == "__main__":
+    # sys.exit translates the int return code into the process exit code
+    # the shell sees. Returning from main() is preferred over calling
+    # sys.exit() inside main() because it makes main() unit-testable.
+    sys.exit(main())
