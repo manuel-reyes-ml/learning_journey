@@ -39,6 +39,7 @@ and concurrent code paths.
 from __future__ import annotations
 
 import sys
+from typing import TextIO
 
 # =====================================================
 # Import Guard
@@ -188,9 +189,13 @@ class LLMApiArgs:
     """
     
     _: KW_ONLY  # Everything after is keyword-only
-    prompts: list[str]
+    prompts: list[str] | None
+    prompt: list[str] | None
+    prompts_file: TextIO | None
     provider: list[str]
+    run_async: bool
     verbose: bool
+    no_log_file: bool
     
 
 # =============================================================================
@@ -400,3 +405,42 @@ def _validate_providers(providers: list[str]) -> list[str]:
             raise KeyError(f"Unknown provider '{name}. Available: {provider_list}")
         
     return clean_names
+
+
+def _resolve_prompts(args: LLMApiArgs) -> list[str]:
+    """Pick the right prompt source from the mutually-exclusive group.
+
+    Returns the user-supplied prompts, falling back to ``[DEFAULT_PROMPT]``
+    if none of the three input flags were used.
+
+    Parameters
+    ----------
+    args : argparse.Namespace
+        Parsed CLI arguments — must have ``prompts``, ``prompt``, and
+        ``prompts_file`` attributes (all may be ``None``).
+
+    Returns
+    -------
+    list of str
+        Non-empty list of prompts to run.  Whitespace-only lines from
+        ``--prompts-file`` are filtered out; comments (lines starting
+        with ``#``) are skipped.
+
+    Raises
+    ------
+    ValueError
+        If the prompts file is empty after filtering.
+    """
+    # Priority order matches argparse's mutual exclusion — at most ONE of
+    # these three is non-None thanks to add_mutually_exclusive_group.
+    
+    # --- Case 1: --prompts "a" "b" "c" ---
+    if args.prompts is not None:
+        return args.prompts
+    
+    # --- Case 2: --prompt "a" --prompt "b" ---
+    if args.prompt is not None:
+        return args.prompt
+    
+    # --- Case 3: --prompts-file FILE ---
+    
