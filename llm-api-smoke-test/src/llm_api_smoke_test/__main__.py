@@ -39,7 +39,6 @@ and concurrent code paths.
 from __future__ import annotations
 
 import sys
-from typing import TextIO
 
 # =====================================================
 # Import Guard
@@ -58,7 +57,7 @@ try:
 
     from dataclasses import dataclass, KW_ONLY
     from enum import IntEnum, unique
-    from typing import Final, TYPE_CHECKING, NoReturn
+    from typing import Final, TextIO, TYPE_CHECKING, NoReturn
 
     from llm_api_smoke_test.config import SmokeTestSettings
     from llm_api_smoke_test.logger import get_structured_logger
@@ -481,4 +480,84 @@ def _resolve_prompts(args: LLMApiArgs) -> list[str]:
     # --- Default: no prompt flag at all ---
     # Single-prompt list keeps the downstream loop uniform — runners
     # always iterate, never special-case "one vs many".
-    return [DEFAULT_PROMPT]  
+    return [DEFAULT_PROMPT]
+
+
+def _build_providers(
+    provider_names: list[str],
+    settings: SmokeTestSettings,
+    *,
+    run_async: bool,
+) -> list[LLMProvider] | list[AsyncLLMProvider]:
+    """Instantiate provider adapters from registry keys + settings.
+
+    Parameters
+    ----------
+    provider_names : list of str
+        Validated registry keys (output of :func:`_validate_providers`).
+    settings : SmokeTestSettings
+        Loaded API keys and model names from environment.
+    run_async : bool
+        ``True`` picks ``async_provider`` slots; ``False`` picks
+        ``sync_provider`` slots from each
+        :class:`~llm_api_smoke_test.register.ProviderList`.
+
+    Returns
+    -------
+    list of LLMProvider or list of AsyncLLMProvider
+        Instances ready to be passed to the runner.  The return type
+        depends on ``run_async``.
+
+    Raises
+    ------
+    ValueError
+        If the requested ``kind`` slot is ``None`` for any provider —
+        means the user asked for ``--async`` but no async adapter
+        was registered for that provider name.
+    """
+    # Adapter to the per-provider settings shape (each provider needs
+    # its own ProviderSettings with name + api_key + model).
+    config = settings.to_smoke_test_config()
+    
+    # Map registry key → its ProviderSettings. Centralised here so
+    # __main__ doesn't need to know how SmokeTestConfig is structured.
+    settings_map = {
+        "anthropic": config.anthropic,
+        "gemini": config.gemini,
+    }
+    
+    # Choose which slot to read from each ProviderList.
+    # f-string ensures kind matches the field name exactly.
+    kind = "async" if run_async else "sync"
+    slot_attr = f"{kind}_provider"
+    
+    instances = []
+    for name in provider_names:
+        bundle = dicts[name]      # ProviderList
+        info = getattr(bundle, slot_attr)       # DictInfo | None
+        
+        # Fail loudly if the requested kind isn't registered.
+        # This catches "user asked for --async but only sync exists".
+        if info is None:
+            raise ValueError(
+                f"No {kind} provider register registered for '{name}'. "
+                f"Either register one with @register_class('{name}', '{kind}', ...) "
+                f"or omit --{kind} from the command line."
+            )
+          
+        # info.provider_class is the CLASS (e.g. AnthropicProvider).
+        # Calling it with (settings) constructs an instance.
+        # The type checker knows this returns LLMProvider | AsyncLLMProvider.
+        instance = info.provider_class(settings_map[name])
+        instances.append(instance)
+        
+        # Structured event — one per provider built, useful for diagnosing
+        # "did the provider even initialize?" before the API call runs.
+        slogger.info(
+            "provider_built",
+            registry_key=name,
+            class_name=info.class_name,
+            kind=kind,
+        )
+        
+    return instances
