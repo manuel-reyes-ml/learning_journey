@@ -396,7 +396,10 @@ def _validate_providers(providers: list[str]) -> list[str]:
     ``.sync_provider`` or ``.async_provider`` based on whether
     ``run_smoke_tests`` or ``batch_smoke_test`` is being dispatched.
     """
-    clean_names = [name.strip().strip(string.punctuation).lower() for name in providers]
+    clean_names = [
+        name.strip().strip(string.punctuation).lower()
+        for name in providers
+    ]
     
     for name in clean_names:
         # This validates against the actual registry,
@@ -443,4 +446,34 @@ def _resolve_prompts(args: LLMApiArgs) -> list[str]:
         return args.prompt
     
     # --- Case 3: --prompts-file FILE ---
+    if args.prompts_file is not None:
+        # argparse already opened the file via FileType("r"). 'with' here
+        # for the close — argparse doesn't close it automatically.
+        with args.prompts_file as f:
+            lines = [
+                stripped
+                for raw_line in f
+                # Strip whitespace and skip empty lines + comments
+                # ':=' is a walrus operator that assigns the value to the variable and returns it.
+                # It is equivalent to:
+                # stripped = raw_line.strip()
+                # if stripped and not stripped.startswith("#"):
+                #     return stripped
+                if (stripped := raw_line.strip()) and not stripped.startswith("#")
+            ] 
+            
+        # Fail fast if the file existed but had no real prompts.
+        # ValueError is the right boundary signal — main() catches it and
+        # exits with CONFIG_ERROR.
+        if not lines:
+            raise ValueError(
+                "Prompts file is empty or contains only comments: "
+                f"{args.prompts_file.name}"
+            )
+            
+        return lines
     
+    # --- Default: no prompt flag at all ---
+    # Single-prompt list keeps the downstream loop uniform — runners
+    # always iterate, never special-case "one vs many".
+    return [DEFAULT_PROMPT]  
