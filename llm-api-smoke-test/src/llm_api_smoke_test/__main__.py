@@ -572,7 +572,8 @@ def _build_providers(
             )
           
         # info.provider_class is the CLASS (e.g. AnthropicProvider).
-        # Calling it with (settings) constructs an instance.
+        # Calling it with (ProviderSettings) constructs an instance,
+        # to access the Api key for that provider.
         # The type checker knows this returns LLMProvider | AsyncLLMProvider.
         instance = info.provider_class(settings_map[name])
         instances.append(instance)
