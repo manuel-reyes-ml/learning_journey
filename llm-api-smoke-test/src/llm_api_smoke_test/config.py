@@ -164,7 +164,7 @@ class SmokeTestSettings(BaseSettings):
     )
     # Each field auto-binds to the matching env var (case-insensitive)
     anthropic_api_key: SecretStr
-    anthropic_model: str = "claude-opus-4-7"
+    anthropic_model: str = "claude-sonnet-4-6"
     gemini_api_key: SecretStr
     gemini_model: str = "gemini-2.5-flash"
     
