@@ -7,7 +7,7 @@ name = "llm-api-smoke-test"
 version = "0.1.0"
 description = "Verify Anthropic + Gemini API keys with a single round trip — production-grade smoke test."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.12"
 license = "MIT"
 license-files = ["LICENSE"]
 authors = [
@@ -38,7 +38,7 @@ dev = [
 
 [project.scripts]
 # After `pip install -e ".[dev]"`, run `llm-api-smoke-test` from the shell.
-llm-api-smoke-test = "llm_api_smoke_test.cli:cli_entry"
+llm-api-smoke-test = "llm_api_smoke_test.__main__:cli_entry"
 
 [project.urls]
 Homepage = "https://github.com/manuel-reyes-ml/learning_journey"
