@@ -698,10 +698,15 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 )
                 successes.extend(s)
                 failures.extend(f)
+
     except KeyboardInterrupt:
         # User pressed Ctrl-C — graceful exit with the POSIX 130 code.
         logger.warning("interrupted_by_user")
         return ExitCode.KEYBOARD_INTERRUPT
+    
+    except ValueError as exc:
+        slogger.error("provider_build_failed", error=str(exc))
+        return ExitCode.CONFIG_ERROR
     
     # ─── 8. Summarise + decide exit code ──────────────────────────────
     slogger.info(
