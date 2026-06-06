@@ -357,8 +357,18 @@ def _reorder_keys(preferred_order: list[str]) -> Processor:
         ordered: dict[str, Any] = {}
         for key in preferred_order:
             if key in event_dict:
+                # pop() does two things: returns the value AND
+                # removes the key from event_dict. 
                 ordered[key] = event_dict.pop(key)
         
+        # update() merges one dict into another in place. For each
+        # key-value pair in the argument, it writes that pair into
+        # the receiving dict:
+            # - If the key doesn't exist in the receiver → it's added
+            #   at the end (preserving the receiver's insertion order,
+            #   then the argument's order).
+            # - If the key already exists in the receiver → its value
+            #   is overwritten.
         ordered.update(event_dict)
         return ordered
     
