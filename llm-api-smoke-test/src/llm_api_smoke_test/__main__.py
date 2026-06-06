@@ -57,24 +57,10 @@ try:
 
     from dataclasses import dataclass, KW_ONLY
     from enum import IntEnum, unique
-    from typing import Final, Literal, overload, TextIO, TYPE_CHECKING, NoReturn
+    from typing import Final, Literal, overload, TYPE_CHECKING, NoReturn
 
     from llm_api_smoke_test.config import SmokeTestSettings
     from llm_api_smoke_test.logger import get_structured_logger
-    
-    from llm_api_smoke_test.providers import (
-        AnthropicProvider,
-        GeminiProvider,
-        AsyncAnthropicProvider,
-        AsyncGeminiProvider,
-    )
-    
-    # Runtime skips, type checkers includes. 
-    if TYPE_CHECKING:
-        from llm_api_smoke_test.providers import (
-            LLMProvider,
-            AsyncLLMProvider,
-        )
 
     from llm_api_smoke_test.batch_runner import batch_smoke_test
     from llm_api_smoke_test.register import dicts
@@ -83,6 +69,13 @@ try:
 except ImportError as e:
     sys.exit(f"Error missing llm_api_smoke_test module.\nDetails: {e}")
     
+# Runtime skips, type checkers includes. 
+if TYPE_CHECKING:
+    from llm_api_smoke_test.providers import (
+        LLMProvider,
+        AsyncLLMProvider,
+    )
+
 
 # =============================================================================
 # LOGGER SETUP
@@ -590,6 +583,10 @@ def _build_providers(
     return instances
 
 
+# =============================================================================
+# MAIN FUNCTION
+# =============================================================================
+
 def main(argv: list[str] | None = None) -> ExitCode:
     """
     """
@@ -732,12 +729,28 @@ def main(argv: list[str] | None = None) -> ExitCode:
     return ExitCode.SUCCESS
 
 
-# ─── Module-level entry point ────────────────────────────────────────
-# This block runs ONLY when the file is executed directly
-# (python -m llm_api_smoke_test or via the pyproject.toml script).
-# It does NOT run when the module is imported.
-if __name__ == "__main__":
+# =============================================================================
+# CONSOLE ENTRY
+# =============================================================================
+
+def cli_entry() -> NoReturn:
+    """Console-script entry point. Calls main() and exits with its code.
+    
+    Notes
+    -----
+    Declared as ``NoReturn`` because ``sys.exit`` always raises
+    ``SystemExit``. Referenced by ``[project.scripts]`` in
+    ``pyproject.toml``.
+    """
     # sys.exit translates the int return code into the process exit code
     # the shell sees. Returning from main() is preferred over calling
     # sys.exit() inside main() because it makes main() unit-testable.
     sys.exit(main())
+    
+    
+# ─── Module-level entry point ────────────────────────────────────────
+# This block runs ONLY when the file is executed directly
+# (python -m llm_api_smoke_test).
+# It does NOT run when the module is imported (Guard).
+if __name__ == "__main__":
+    cli_entry()
