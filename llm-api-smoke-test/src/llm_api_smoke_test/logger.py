@@ -369,7 +369,7 @@ def _reorder_keys(preferred_order: list[str]) -> Processor:
             #   then the argument's order).
             # - If the key already exists in the receiver → its value
             #   is overwritten.
-        ordered.update(event_dict)
+        ordered.update(event_dict)  # .update() returns None
         return ordered
     
     return processor
