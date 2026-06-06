@@ -482,6 +482,9 @@ def _resolve_prompts(args: argparse.Namespace) -> list[str]:
     return [DEFAULT_PROMPT]
 
 
+# @overload decorator -- Tells the type checker "this signature is one of
+# multiple possible shapes" — only the type checker sees overload variants;
+# they're invisible at runtime.
 # ─── Overload 1: run_async=True → async providers ─────────────────────
 @overload
 def _build_providers(
@@ -662,11 +665,14 @@ def main(argv: list[str] | None = None) -> ExitCode:
     # tuple[list[SmokeTestResult], list[CallFailure]] — so the
     # downstream success/failure check below is identical.
     try:
+        # You must branch on the bool BEFORE the call and pass True / False
+        # literals — not a variable holding a bool — for the type checker
+        # to pick the right overload.
         if args.run_async:
             providers = _build_providers(
                 provider_names=args.provider,
                 settings=settings,
-                run_async=True,
+                run_async=True,     # explicit Literal
             )
             
             # asyncio.run creates a new event loop, runs the coroutine,
@@ -683,7 +689,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
             providers = _build_providers(
                 provider_names=args.provider,
                 settings=settings,
-                run_async=False,
+                run_async=False,     # explicit Literal
             )
             
             # Sync path — run one prompt against all providers.
