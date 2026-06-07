@@ -733,6 +733,11 @@ def main(argv: list[str] | None = None) -> ExitCode:
 # CONSOLE ENTRY
 # =============================================================================
 
+# NoReturn annotation honesty:
+#   sys.exit() raises SystemExit — it never returns control. The NoReturn type tells
+#   the type checker (and human readers) "no code after this line will execute."
+#   Mypy and Pyright use this to suppress unreachable-code warnings and to
+#   type-check exhaustively.
 def cli_entry() -> NoReturn:
     """Console-script entry point. Calls main() and exits with its code.
     
@@ -746,11 +751,11 @@ def cli_entry() -> NoReturn:
     # the shell sees. Returning from main() is preferred over calling
     # sys.exit() inside main() because it makes main() unit-testable.
     sys.exit(main())
-    
+    # any code here would be flagged as unreachable by the type checker
     
 # ─── Module-level entry point ────────────────────────────────────────
 # This block runs ONLY when the file is executed directly
-# (python -m llm_api_smoke_test).
+# (python -m llm_api_smoke_test or python -m __main__.py).
 # It does NOT run when the module is imported (Guard).
 if __name__ == "__main__":
     cli_entry()
