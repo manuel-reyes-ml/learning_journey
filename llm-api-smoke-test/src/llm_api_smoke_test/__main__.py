@@ -679,7 +679,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
             import asyncio
             successes, failures = asyncio.run(
                 batch_smoke_test(
-                    providers=iter(providers),  # Iterator, not list
+                    providers=providers,  # Sequence(list), not Iterator
                     prompts=args.prompts,
                 )
             )
@@ -697,7 +697,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
             failures = []
             for prompt in args.prompts:
                 s, f = run_smoke_tests(
-                    providers=iter(providers),
+                    providers=providers,  # Sequence(list), not Iterator
                     prompt=prompt,
                 )
                 successes.extend(s)
