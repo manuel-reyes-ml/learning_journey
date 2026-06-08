@@ -679,10 +679,16 @@ def main(argv: list[str] | None = None) -> ExitCode:
             import asyncio
             successes, failures = asyncio.run(
                 batch_smoke_test(
-                    providers=providers,  # Sequence(list), not Iterator
+                    providers=providers,  # Iterable(list), not Iterator
                     prompts=args.prompts,
                 )
             )
+            # Pass an iterator — recipient gets a one-shot cursor over the container
+            # iter(container) returns a fresh iterator object — a stateful
+            # cursor that yields elements one at a time and remembers its position.
+            # A list is the container itself; iterating it creates a new iterator
+            # each time under the hood.
+            
         else:
             providers = _build_providers(
                 provider_names=args.provider,
@@ -697,7 +703,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
             failures = []
             for prompt in args.prompts:
                 s, f = run_smoke_tests(
-                    providers=providers,  # Sequence(list), not Iterator
+                    providers=providers,  # Iterable(list), not Iterator
                     prompt=prompt,
                 )
                 successes.extend(s)
