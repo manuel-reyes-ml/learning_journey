@@ -122,13 +122,34 @@ visual — inside a code-cell comment or a markdown cell. I want more of these:
 
 Label each step and keep the art aligned so it reads cleanly in monospace.
 
-## Description density (explain generously — I study this later)
+## Description density — maximize the learning content (explain generously)
 
-- Rich conceptual prose in markdown cells: what, why, when, trade-offs.
+This is the whole point of the folder: I study these to learn **how the feature works and
+why it behaves that way**, so generate as much genuine teaching content as is useful. When
+in doubt, explain more — never trim a helpful explanation to keep the notebook short.
+
+- Rich conceptual prose in markdown cells: what it is, **how it works under the hood, and
+  why** — plus when to use it and the trade-offs.
 - **Heavy inline comments inside code cells** — annotate the lines that teach something:
   what each call does, what to notice in the output, why it's written this way. Go beyond
   function-level docstrings; comment within the code itself.
 - Show or note the expected output next to the code where it aids understanding.
+
+## Narration → markdown, not `print()`
+
+The source module narrates with `print()` because it runs as a script. When you build the
+notebook, **don't copy that narration into code cells** — lift it into markdown:
+
+- **Static explanatory text → markdown.** Headers, step-by-step lists, conceptual notes,
+  pseudo-code, "what Python does behind the scenes," lists of real-world examples — write
+  these as formatted markdown prose (use a fenced code block for pseudo-code). It reads far
+  better than console output and becomes part of the document.
+- **Keep `print()` only for real runtime output** — a computed value, or output that
+  demonstrates actual execution order/behavior (e.g. the ①–⑩ trace fired from inside the
+  generator).
+- **Quick test:** *does this line need the code to run to be true?* No → it's narration →
+  move it to markdown. Yes (it interpolates a real value or proves execution order) → keep
+  the `print()`.
 
 ## Python code standards (apply to all code you write)
 
@@ -139,7 +160,8 @@ Label each step and keep the art aligned so it reads cleanly in monospace.
   Examples) — in addition to, not instead of, inline comments.
 - **Naming:** `snake_case` functions/vars, `PascalCase` classes, `SCREAMING_SNAKE_CASE`
   constants.
-- **`print()` is expected here** to show output — this is a teaching notebook, not `src/`.
+- **`print()` only for real output** — computed values or demonstrating execution order.
+  Never use it to narrate; narration goes in markdown (see "Narration → markdown").
 
 ## How to generate the notebook (clean, notebook-native)
 
@@ -168,6 +190,8 @@ as a script. This build file is the notebook's **own** scratch artifact
 - [ ] Code is top-level and runnable — NO `def section_…()`, `main()`, or `__main__`
 - [ ] At least one ASCII diagram for any flow/lifecycle/structure concept
 - [ ] Dense inline comments throughout the code cells
+- [ ] Narration moved to markdown — `print()` used only for real runtime output, not static text
+- [ ] As much how-it-works/why teaching content as is useful — nothing trimmed for brevity
 - [ ] Real-world usage + a realistic domain example + common pitfalls covered
 - [ ] Version requirements noted; functions/classes have NumPy docstrings + type hints
 - [ ] Final markdown Quick Reference cheat-sheet cell
