@@ -81,6 +81,22 @@ type BatchResult = tuple[list[SmokeTestResult], list[CallFailure]]
 # CORE FUNCTION
 # =============================================================================
 
+# Iterator[T] -> "I will consume a one-shot cursor".
+# Caller can pass Only iterators. Caller must remember to refresh.
+# iter() doesn't reset. Once consumed, an iterator is dead.
+#
+# Iterable[T] -> "I will loop over your collection"
+# Caller pass Anything iterable — lists, tuples, sets, generators.
+# Caller can pass the list directly.
+# 
+# Sequence[T] -> "I need indexed access too".
+# Caller can pass Lists and tuples; not sets or generators.
+#
+# list[T]"Specifically a list".
+# Caller can pass Only lists. Most restrictive.
+#
+# Lists can be re-iterated freely; iterators cannot.
+
 def run_smoke_tests(
     *,
     providers: Iterable[LLMProvider],
@@ -135,3 +151,26 @@ def run_smoke_tests(
             failures.append((provider_class, exc))
             
     return successes, failures
+
+
+# What for x in providers actually does
+# To make the iterator-vs-list distinction concrete,
+# here's what Python does when you write for x in providers:
+# What you write:
+#   for provider in providers:
+#       print(provider)
+
+# What Python does under the hood:
+#   _internal_iterator = iter(providers)   # ← creates fresh iterator each time
+#   while True:
+#       try:
+#           provider = next(_internal_iterator)
+#       except StopIteration:
+#           break
+#       print(provider)
+# The for loop always calls iter() on the thing you're looping over. If providers is
+# already a list, it makes a fresh iterator. If providers is already an iterator, iter(iterator)
+# returns the same iterator (this is the iterator protocol's __iter__ returning self).
+#
+# That's the mechanical reason iterators are one-shot: passing an exhausted iterator to a fresh for
+# loop just gets you back the same exhausted iterator.
