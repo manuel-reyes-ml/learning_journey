@@ -32,7 +32,7 @@ from __future__ import annotations
 
 import logging
 
-from collections.abc import Iterator
+from collections.abc import Iterable
 from typing import Final
 
 from llm_api_smoke_test.logger import get_structured_logger
@@ -83,7 +83,7 @@ type BatchResult = tuple[list[SmokeTestResult], list[CallFailure]]
 
 def run_smoke_tests(
     *,
-    providers: Iterator[LLMProvider],
+    providers: Iterable[LLMProvider],
     prompt: str = DEFAULT_PROMPT,
 ) -> BatchResult:
     """Run the smoke test against every provided adapter.

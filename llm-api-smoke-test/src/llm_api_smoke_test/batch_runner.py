@@ -33,7 +33,7 @@ import asyncio
 import logging
 
 from aiolimiter import AsyncLimiter
-from collections.abc import Iterator
+from collections.abc import Iterable
 from typing import Final, TYPE_CHECKING
 
 from llm_api_smoke_test.logger import get_structured_logger
@@ -81,7 +81,7 @@ type BatchResult = tuple[list[SmokeTestResult], list[CallFailure]]
 
 async def batch_smoke_test(
     *,  # after this all parameters are keyword only
-    providers: Iterator[AsyncLLMProvider],
+    providers: Iterable[AsyncLLMProvider],
     prompts: list[str],
     max_concurrent: int = MAX_CONCURRENT,
 ) -> BatchResult:
