@@ -31,6 +31,13 @@ block ("no vibe coding"). **This folder is the opposite of that rule.** Here:
 - Aim for a **comprehensive, study-ready reference**, not a minimal demo. Depth and clarity
   beat brevity — I use this to actually learn the feature and how it works.
 - **Teach as you go.** Every section pairs plain-language explanation with runnable code.
+- **Never modify my source learning module.** Each topic is built from an existing Python
+  module — the `.py` you read the material *from*. That file is strictly **read-only**: read
+  it to understand what to teach and mine it for content, but never edit, rename, move, or
+  delete it. Your only deliverable is the `.ipynb` notebook (plus its own build file, below).
+- **Improve explanations whenever it helps me learn.** If a clearer wording, an extra
+  example, an analogy, or more description would make a concept land better, add it — err
+  toward more teaching, never strip detail just to be concise.
 
 ## Research & depth (what makes a good guide)
 
@@ -50,21 +57,50 @@ The one rule everything else follows from: **markdown cells carry the prose; cod
 top-level, directly runnable demonstrations.**
 
 1. **First cell — markdown title:** `# 🔷 <Topic> — Complete Reference Guide`, a one-line
-   summary, then a **Table of Contents**: a numbered markdown list linking to each section,
-   e.g. `1. [Why Type Hints?](#1-why-type-hints)`.
-2. **Before each topic — markdown section header:** `## N. <Section Name>`, followed by a
-   conceptual note (what it is, why it exists, when to use it). Real markdown headings only.
+   summary, a `---` rule, then a **`## Table of Contents`** heading (a real heading, not bold
+   text) with a numbered list linking each section, e.g. `1. [Why Type Hints?](#1-why-type-hints)`.
+2. **Before each topic — markdown section header:** start the cell with a `---` horizontal
+   rule, then `## N. <Section Name>`, then a conceptual note (what it is, why it exists, when
+   to use it). The `---` divider between sections is part of the look — include it every time.
 3. **Code cells — top-level demonstrations**, each opened with an ASCII banner comment:
    ```python
    # =============================================================================
-   # SECTION NAME
+   # SHORT TOPIC LABEL
    # =============================================================================
    ```
-   Show each idea at module level so running the cell immediately shows the result.
-4. **Last cell — markdown "Quick Reference":** a fenced `# ====` cheat-sheet of the topic's
+   The banner is a concise topic label (`PRIMITIVE TYPES`, `NESTED COLLECTIONS`) — not
+   `SECTION N — ...`. Show each idea at module level so running the cell shows the result.
+4. **Imports go inline**, in the code cell that first needs them (as notebook 18 does). Do
+   **not** add a standalone "0. Imports" section. `from __future__ import annotations` goes
+   at the top of the first code cell.
+5. **Last cell — markdown "Quick Reference":** a fenced `# ====` cheat-sheet of the topic's
    syntax for fast lookup.
 
 **File naming:** `NN_topic_name_reference.ipynb` — two-digit zero-padded, snake_case.
+
+### Cell granularity (the #1 thing to get right)
+
+Notebook 18 has **many small code cells** — roughly 3–5 per section, each demonstrating
+**one idea** under its own ASCII banner. **Do the same. Never put a whole section in one
+giant code cell.** If a section's code cell is more than ~30–40 lines, split it: one concept
+per cell, each independently runnable, with a short markdown note between cells when a
+sub-idea needs framing. The goal is that I can run and study one idea at a time, top to
+bottom — not scroll through a 150-line block.
+
+### Heading levels (match 18's rhythm — this is what looks like "font size")
+
+Markdown has no font sizes; rendered size comes only from heading level. Match 18 exactly:
+
+- **H1 (`#`)** — the notebook title only. Once per notebook. Keep the title plain text
+  (avoid inline-code backticks in it, or that word renders in a different monospace size).
+- **H2 (`##`)** — section headers (`## N. …`), plus `## Table of Contents` and
+  `## Quick Reference`. Nothing else.
+- **H3 (`###`)** — rare. Only for a genuine named sub-topic, the way 18 uses it about twice.
+- **Minor lead-ins use bold, not headings.** "Mental model", "Structure", "How it works",
+  "Key insight", etc. should be `**bold text**` on their own line — NOT `### headings`.
+  Over-using `###` is exactly what makes a notebook's heading sizes look inconsistent
+  next to 18.
+- Never use a bare `#` line for emphasis outside a fenced code block — it becomes a heading.
 
 ### Do NOT (these are the exact mistakes from `27_…`)
 
@@ -108,7 +144,8 @@ Label each step and keep the art aligned so it reads cleanly in monospace.
 ## How to generate the notebook (clean, notebook-native)
 
 Author as a `.py` in **jupytext percent format**, then convert — but write it as cells, not
-as a script:
+as a script. This build file is the notebook's **own** scratch artifact
+(`NN_topic_name_reference.py`); it is never my source learning module, which stays read-only.
 
 1. Use explicit markers: `# %% [markdown]` for every prose cell (title, TOC, section
    headers, Quick Reference) and `# %%` for each code cell.
@@ -117,12 +154,17 @@ as a script:
 3. In `# %%` code cells, write top-level runnable code with dense inline comments — no
    `def section_…()` wrappers, no `main()`.
 4. Convert: `jupytext --to notebook NN_topic_name_reference.py`.
-5. Keep the `.py` as source of truth; regenerate the `.ipynb` on edits.
+5. The deliverable is the `.ipynb`. If you revise the notebook, edit its build file and
+   regenerate — but **never** edit, overwrite, or rename my source learning module.
 
 ## Definition of done
 
 - [ ] Markdown title cell with emoji + clickable Table of Contents
 - [ ] Each section: `## N.` markdown header + conceptual note + ASCII-banner code cell
+- [ ] Sections split into several small code cells (~3–5), one idea each — no giant cells
+- [ ] `---` divider above the TOC and above every section header; TOC is a `##` heading
+- [ ] Imports inline where first used — no standalone "0. Imports" section
+- [ ] Heading levels match 18: H1 = title only, H2 = sections/TOC/Quick Reference, H3 rare; minor lead-ins are **bold**, not `###`
 - [ ] Code is top-level and runnable — NO `def section_…()`, `main()`, or `__main__`
 - [ ] At least one ASCII diagram for any flow/lifecycle/structure concept
 - [ ] Dense inline comments throughout the code cells
@@ -131,3 +173,4 @@ as a script:
 - [ ] Final markdown Quick Reference cheat-sheet cell
 - [ ] Runs top to bottom without errors; named `NN_topic_name_reference.ipynb`
 - [ ] Compared side by side against `18_python_type_system_reference.ipynb`; structure matches
+- [ ] My source learning module is unchanged — only the `.ipynb` (and its build file) were created
