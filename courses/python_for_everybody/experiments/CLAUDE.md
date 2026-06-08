@@ -10,17 +10,25 @@ Python feature, class, function, or library (e.g. `18_python_type_system_referen
 I read them later to learn the topic in depth. **You author these completely** — they are
 teaching material you produce, not code I hand-write.
 
-## Canonical reference — `18_python_type_system_reference.ipynb`
+## Canonical references — `18_…` and `27_…`
 
-`18_python_type_system_reference.ipynb` (in this folder) is the **gold standard**. Treat it
-as the template for every new notebook:
+Two notebooks in this folder are the **gold standard**. Treat them as the templates for
+every new notebook:
 
-- **Open and read it first** before building a new guide, so you match its cell layout,
-  heading style, tone, and depth.
-- **Compare the finished notebook against it side by side** before you call the work done —
+- `18_python_type_system_reference.ipynb` — the baseline for layout, heading rhythm, tone,
+  and depth.
+- `27_contextmanager_decorators_reference.ipynb` — the same structure, and the clearest
+  example of two conventions: **narration written as markdown** (not stranded in `print()`)
+  and **ASCII diagrams** for execution flow.
+
+How to use them:
+
+- **Open and read both first** before building a new guide, so you match their cell layout,
+  heading style, narration-vs-output split, and depth.
+- **Compare the finished notebook against them side by side** before you call the work done —
   cell types, title + TOC, `## N.` section headers, ASCII-banner code cells, and the final
-  Quick Reference cheat sheet should all line up. If anything diverges from 18's structure,
-  fix it to match before handing it over.
+  Quick Reference cheat sheet should all line up. If anything diverges, fix it to match
+  before handing it over.
 
 ## Your job here (important — this folder is the exception)
 
@@ -102,7 +110,7 @@ Markdown has no font sizes; rendered size comes only from heading level. Match 1
   next to 18.
 - Never use a bare `#` line for emphasis outside a fenced code block — it becomes a heading.
 
-### Do NOT (these are the exact mistakes from `27_…`)
+### Do NOT (the script-to-notebook mistakes to avoid)
 
 - ❌ Don't wrap demonstrations in `def section_1_…()`, `def main()`, or
   `if __name__ == "__main__"`. That is a script, not a notebook. Code cells run top-level.
@@ -196,5 +204,5 @@ as a script. This build file is the notebook's **own** scratch artifact
 - [ ] Version requirements noted; functions/classes have NumPy docstrings + type hints
 - [ ] Final markdown Quick Reference cheat-sheet cell
 - [ ] Runs top to bottom without errors; named `NN_topic_name_reference.ipynb`
-- [ ] Compared side by side against `18_python_type_system_reference.ipynb`; structure matches
+- [ ] Compared side by side against `18_…` and `27_…`; structure and conventions match
 - [ ] My source learning module is unchanged — only the `.ipynb` (and its build file) were created
