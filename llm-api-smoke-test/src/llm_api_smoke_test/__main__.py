@@ -401,7 +401,7 @@ def _validate_providers(providers: list[str]) -> list[str]:
         # This validates against the actual registry,
         # which is the single source of truth.
         if name not in dicts:
-            raise KeyError(f"Unknown provider '{name}. Available: {provider_list}")
+            raise KeyError(f"Unknown provider '{name}'. Available: {provider_list}")
         
     return clean_names
 
@@ -559,7 +559,7 @@ def _build_providers(
         # This catches "user asked for --async but only sync exists".
         if info is None:
             raise ValueError(
-                f"No {kind} provider register registered for '{name}'. "
+                f"No {kind} provider registered for '{name}'. "
                 f"Either register one with @register_class('{name}', '{kind}', ...) "
                 f"or omit --{kind} from the command line."
             )
@@ -724,7 +724,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         success_count=len(successes),
         failure_count=len(failures),
         success_providers=[r.provider_name for r in successes],
-        failure_provider=[name for name, _ in failures],
+        failure_providers=[name for name, _ in failures],
     )
     
     # Any failure → exit non-zero so CI catches it.
