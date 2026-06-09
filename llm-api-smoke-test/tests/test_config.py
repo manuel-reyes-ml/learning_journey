@@ -203,4 +203,51 @@ class TestSmokeTestSettings:
 # =============================================================================
 
 
+class TestLoadConfig:
+    """Tests for the explicit-mapping load_config() function.
+    
+    Note: This function is superseded by SmokeTestSettings, but it's still
+    exported.  Worth keeping these tests until you decide to remove it.
+    """
+    
+    def test_loads_from_explicit_mapping(self) -> None:
+        """Pass a dict — get a SmokeTestConfig back.
         
+        This is the dependency-injection pattern: the function accepts
+        a Mapping rather than reading os.environ directly, so tests
+        can pass any dict-like object.
+        """
+        env = {
+            "ANTHROPIC_API_KEY": "sk-ant-explicit",
+            "GEMINI_API_KEY": "AIza-explicit",
+        }
+        
+        config = load_config(env)
+        
+        assert config.anthropic.api_key.get_secret_value() == "sk-ant-explicit"
+        assert config.gemini.api_key.get_secret_value() == "AIza-explicit"
+        
+    def test_missing_key_raises_keyerror(self) -> None:
+        """Missing env var → KeyError with a helpful message."""
+        # Pass ONLY one of the two required keys.
+        env = {"ANTHROPIC_API_KEY": "sk-ant"}
+        
+        # KeyError, not ValidationError — load_config raises before
+        # construction.  Worth pinning the distinction in a test.
+        with pytest.raises(KeyError, match="GEMINI_API_KEY"):
+            load_config(env)
+            
+    def test_uses_default_model_when_omitted(self) -> None:
+        """ANTHROPIC_MODEL omitted → falls back to load_config's default."""
+        env = {
+            "ANTHROPIC_API_KEY": "sk-ant",
+            "GEMINI_API_KEY": "AIza",
+        }
+        config = load_config(env)
+        
+        # Note: This default lives in load_config() and is DIFFERENT
+        # from SmokeTestSettings' default.  If you delete load_config,
+        # this test goes away with it.
+        # ⚠️ Bug flagged in review: load_config default is stale 
+        # ("claude-opus-4-6") — fix it to match SmokeTestSettings.
+        assert config.anthropic.model == "claude-sonnet-4-6"
