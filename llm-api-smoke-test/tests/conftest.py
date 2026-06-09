@@ -1,4 +1,26 @@
-"""
+"""Shared pytest fixtures for the llm_api_smoke_test test suite.
+ 
+Why a top-level conftest.py?
+----------------------------
+Pytest auto-discovers ``conftest.py`` at every directory level on its
+way down to a test file.  Fixtures defined here are visible to EVERY
+test module in this folder without explicit imports — that's the
+convention recruiters expect to see.
+ 
+What goes here vs. in individual test modules?
+----------------------------------------------
+- Here: fixtures shared across ≥2 test files (env vars, fake providers,
+  the validated settings object).
+- In test modules: fixtures used by ONE test file (e.g., a registry
+  snapshot used only by ``test_register.py``).
+ 
+Roadmap relevance
+-----------------
+The fake-provider pattern below (a class that satisfies the Protocol
+without making real API calls) carries forward to every Stage 2+
+project that has external dependencies.  You'll reuse this exact
+shape for DataVault's ``FakeLLMProvider``, PolicyPulse's
+``FakeVectorStore``, and AFC's ``FakeSecAPI``.
 """
 
 # =============================================================================
