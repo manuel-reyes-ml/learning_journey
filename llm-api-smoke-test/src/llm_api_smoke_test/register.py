@@ -63,13 +63,14 @@ from collections.abc import Callable
 from dataclasses import dataclass, field, KW_ONLY, replace
 from typing import Literal, TypedDict, TYPE_CHECKING
 
-from llm_api_smoke_test.providers import (
-    AsyncLLMProvider,
-    LLMProvider,
-    SmokeTestResult,
-)
-
+# To import just for type checker, run time skips
+# 
 if TYPE_CHECKING:
+    from llm_api_smoke_test.providers import (
+        AsyncLLMProvider,
+        LLMProvider,
+        SmokeTestResult,
+    )
     from llm_api_smoke_test.runner import CallFailure
 
 # No ImportError sys.exit() on regular module so the
