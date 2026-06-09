@@ -124,5 +124,83 @@ class TestProviderSettings:
 # SmokeTestSettings — env-driven loading
 # =============================================================================
 
-
+class TestSmokeTestSettings:
+    """Tests for the env-loading pydantic-settings class."""
     
+    def test_loads_from_env(self, valid_env: dict[str, str]) -> None:
+       """Settings populates from env vars automatically.
+ 
+        valid_env fixture set the env BEFORE this test runs — pytest
+        resolves the dependency for us.
+        """
+        # The construct-from-env call.  type: ignore matches what your
+        # __main__.py does — pydantic-settings reads env, mypy can't see it.
+        settings = SmokeTestSettings()  # type: ignore[call-arg]
+        
+        # Verify each field was populated from its env counterpart.
+        assert settings.anthropic_api_key.get_secret_value() == valid_env["ANTHROPIC_API_KEY"]
+        assert settings.anthropic_model == valid_env["ANTHROPIC_MODEL"]
+        assert settings.gemini_api_key.get_secret_value() == valid_env["GEMINI_API_KEY"]
+        assert settings.gemini_model == valid_env["GEMINI_MODEL"]
+        
+    def test_uses_defaults_when_models_omitted(
+        self,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """Optional model env vars fall back to declared defaults.
+ 
+        Only the *_API_KEY vars are required; *_MODEL has a class default.
+        """
+        # Set only what's required.  delenv with raising=False is the
+        # "remove if present, silent if absent" pattern.  
+        monkeypatch.setenv("ANTHROPIC_API_KEY", "sk-ant-fake")
+        monkeypatch.setenv("GEMINI_API_KEY", "AIza-fake")
+        monkeypatch.delenv("ANTHROPIC_MODEL", raising=False)
+        monkeypatch.delenv("GEMINI_MODEL", raising=False)
+        
+        settings = SmokeTestSettings()  # type: ignore[call-arg]
+        
+        # The defaults declared on the class fields.
+        assert settings.anthropic_model == "claude-sonnet-4-6"
+        assert settings.gemini_model == "gemini-2.5-flash"
+        
+    def test_missing_required_key_raises(
+        self,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """Missing API key → ValidationError from pydantic-settings."""
+        # Remove BOTH keys so we know which error trips.  Otherwise the
+        # first missing field would mask the second.
+        monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+        monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+        
+        with pytest.raises(ValidationError):
+            SmokeTestSettings()  # type: ignore[call-arg]
+            
+    def test_to_smoke_test_config_adapter(
+        self,
+        settings: SmokeTestSettings,  # from 'settings' pytest.fixture
+    ) -> None:
+        """The adapter method should produce a valid SmokeTestConfig.
+ 
+        Tests the bridge between the flat env-var shape and the nested
+        SmokeTestConfig shape that other code may consume.
+        """
+        config = settings.to_smoke_test_config()
+        
+        # Verify isinstance — the adapter must return the right type.
+        assert isinstance(config, SmokeTestConfig)
+        assert isinstance(config.anthropic, ProviderSettings)
+        assert isinstance(config.gemini, ProviderSettings)
+        
+        # Verify the data flows through correctly.
+        assert config.anthropic.name == "Anthropic"
+        assert config.gemini.name == "Gemini"
+        
+        
+# =============================================================================
+# load_config — legacy explicit-Mapping function
+# =============================================================================
+
+
+        
