@@ -1,4 +1,16 @@
-"""
+"""Tests for llm_api_smoke_test.config.
+ 
+Coverage targets
+----------------
+- :class:`ProviderSettings` — frozen, redacts secrets, rejects placeholders.
+- :class:`SmokeTestSettings` — loads from env, validates, adapts to nested shape.
+- :func:`load_config` — legacy env-loading function with explicit Mapping[K, V].
+ 
+Why test config first?
+----------------------
+Config is the FIRST thing the program touches at startup.  If config
+is broken, nothing else matters.  Testing it first builds confidence
+in the foundation before any other test can pass.
 """
 
 # =============================================================================
