@@ -257,7 +257,7 @@ def load_config(env: Mapping[str, str] | None = None) -> SmokeTestConfig:
         anthropic=ProviderSettings(
             name="Anthropic",
             api_key=SecretStr(source["ANTHROPIC_API_KEY"]),
-            model=source.get("ANTHROPIC_MODEL", "claude-opus-4-6"),
+            model=source.get("ANTHROPIC_MODEL", "claude-sonnet-4-6"),
         ),
         gemini=ProviderSettings(
             name="Gemini",
