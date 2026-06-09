@@ -22,7 +22,7 @@ from __future__ import annotations
 import pytest
 from pydantic import SecretStr, ValidationError
 
-from src.llm_api_smoke_test.config import (
+from llm_api_smoke_test.config import (
     ProviderSettings,
     SmokeTestConfig,
     SmokeTestSettings,
@@ -65,7 +65,7 @@ class TestProviderSettings:
         assert settings.name == "Anthropic"
         assert settings.model == "claude-sonnet-4-6"
         # get_secret_value() is the canonical way to read a SecretStr.
-        assert settings.api_key.get_secret_value() == "sk_ant_real_looking-key"
+        assert settings.api_key.get_secret_value() == "sk-ant-real-looking-key"
         
     def test_redacts_api_key_in_repr(self, provider_settings: ProviderSettings) -> None:
         """SecretStr must redact in repr — this is the contract that
@@ -140,7 +140,7 @@ class TestSmokeTestSettings:
     """Tests for the env-loading pydantic-settings class."""
     
     def test_loads_from_env(self, valid_env: dict[str, str]) -> None:
-       """Settings populates from env vars automatically.
+        """Settings populates from env vars automatically.
  
         valid_env fixture set the env BEFORE this test runs — pytest
         resolves the dependency for us.
@@ -213,7 +213,6 @@ class TestSmokeTestSettings:
 # =============================================================================
 # load_config — legacy explicit-Mapping function
 # =============================================================================
-
 
 class TestLoadConfig:
     """Tests for the explicit-mapping load_config() function.

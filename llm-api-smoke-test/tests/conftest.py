@@ -32,8 +32,8 @@ from __future__ import annotations
 import pytest
 from pydantic import SecretStr
 
-from src.llm_api_smoke_test.config import ProviderSettings, SmokeTestSettings
-from src.llm_api_smoke_test.providers import SmokeTestResult, TokenUsage
+from llm_api_smoke_test.config import ProviderSettings, SmokeTestSettings
+from llm_api_smoke_test.providers import SmokeTestResult, TokenUsage
 
 # =============================================================================
 # ENVIRONMENT FIXTURES
