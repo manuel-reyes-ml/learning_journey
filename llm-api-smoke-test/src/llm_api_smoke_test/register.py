@@ -61,7 +61,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 from dataclasses import dataclass, field, KW_ONLY, replace
-from typing import Literal, TypedDict
+from typing import Literal, TypedDict, TYPE_CHECKING
 
 from llm_api_smoke_test.providers import (
     AsyncLLMProvider,
@@ -69,7 +69,8 @@ from llm_api_smoke_test.providers import (
     SmokeTestResult,
 )
 
-from llm_api_smoke_test.runner import CallFailure
+if TYPE_CHECKING:
+    from llm_api_smoke_test.runner import CallFailure
 
 # No ImportError sys.exit() on regular module so the
 # error propagates to the caller (__main__.py).
