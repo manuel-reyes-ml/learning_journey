@@ -7,8 +7,6 @@
 
 from __future__ import annotations
 
-import os
-
 import pytest
 from pydantic import SecretStr
 
@@ -211,6 +209,32 @@ class FakeAsyncProvider:
             "FakeAsyncProvider doesn't implement structured output"
         )
         
-        
 
+@pytest.fixture
+def fake_sync_provider(provider_settings: ProviderSettings) -> FakeSyncProvider:
+    """Construct a fresh FakeSyncProvider with the provider_settings fixture."""
+    return FakeSyncProvider(provider_settings)
+
+
+@pytest.fixture
+def fake_async_provider(provider_settings: ProviderSettings) -> FakeAsyncProvider:
+    """Construct a fresh FakeAsyncProvider with the provider_settings fixture."""
+    return FakeAsyncProvider(provider_settings)
+
+
+@pytest.fixture
+def failing_sync_provider(provider_settings: ProviderSettings) -> FakeSyncProvider:
+    """A FakeSyncProvider that always raises RuntimeError."""
+    return FakeSyncProvider(
+        provider_settings,
+        should_raise=RuntimeError("simulated API outage"),
+    )
     
+    
+@pytest.fixture
+def failing_async_provider(provider_settings: ProviderSettings) -> FakeAsyncProvider:
+    """A FakeAsyncProvider that always raises RuntimeError."""
+    return FakeAsyncProvider(
+        provider_settings,
+        should_raise=RuntimeError("simulated async API outage"),
+    )
