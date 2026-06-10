@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import pytest
 
+from llm_api_smoke_test.config import ProviderSettings
 from llm_api_smoke_test.providers import SmokeTestResult
 from llm_api_smoke_test.runner import DEFAULT_PROMPT, run_smoke_tests
 
@@ -115,3 +116,64 @@ class TestRunSmokeTestHappyPath:
 # Failure paths
 # =============================================================================
 
+class TestRunSmokeTestsFailures:
+    """Exception handling — the key behavioral contract.
+    
+    The runner CATCHES exceptions and records them as failures rather
+    than re-raising.  This lets one provider's outage not block other
+    providers' tests.  Pin that behaviour.
+    """
+    
+    def test_single_failure_recorded_not_raised(
+        self, failing_sync_provider: FakeSyncProvider,
+    ) -> None:
+        """Provider raises → recorded in failures, no exception propagates."""
+        # No try/except around the call — if the runner re-raised,
+        # this test would fail with the exception, not the assertion.
+        successess, failures = run_smoke_tests(
+            providers=[failing_sync_provider],  # type: ignore[type-arg]
+        )
+        
+        assert successess == []
+        assert len(failures) == 1
+        
+        # The failure tuple shape: (class_name, exception).
+        class_name, exc = failures[0]
+        assert class_name == "FakeSyncProvider"
+        assert isinstance(exc, RuntimeError)
+        assert "simulated" in str(exc)
+        
+    def test_mixed_success_failure(
+        self, provider_settings: ProviderSettings,
+    ) -> None:
+        """One success + one failure in the same call → both captured."""
+        good = FakeSyncProvider(provider_settings, response="ok")
+        bad = FakeSyncProvider(provider_settings, should_raise=ValueError("nope"))
+        
+        successes, failures = run_smoke_tests(providers=[good, bad])  # type: ignore[type-arg]
+        
+        # Each list has exactly one element.
+        assert len(successes) == 1
+        assert len(failures) == 1
+        
+        # Verify each is the right kind
+        assert successes[0].response_preview == "ok"
+        assert isinstance(failures[0][1], ValueError)
+        
+    def test_failure_doesnt_block_subsequent_providers(
+        self, provider_settings: ProviderSettings,
+    ) -> None:
+        """A failure in position 0 must NOT prevent provider 1 from running.
+        
+        This is the core "fail individually, run independently" contract.
+        """
+        bad = FakeSyncProvider(provider_settings, should_raise=OSError("boom"))
+        good = FakeSyncProvider(provider_settings, response="still ran")
+        
+        successes, failures = run_smoke_tests(providers=[bad, good])  # type: ignore[type-arg]
+        
+        # The good provider ran - its call is recorded
+        assert good.calls == [DEFAULT_PROMPT]
+        # And produced a success.
+        assert len(successes) == 1
+        assert successes[0].response_preview == "still ran"
