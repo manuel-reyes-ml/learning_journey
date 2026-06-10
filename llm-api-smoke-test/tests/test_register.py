@@ -102,3 +102,46 @@ class TestDictInfo:
 # ProviderList — sync + async bundle
 # =============================================================================
 
+class TestProviderList:
+    """ProviderList bundles sync/async DictInfo — verify the slots."""
+    
+    def test_default_construction_has_both_none(self) -> None:
+        """Both slots default to None — letting decorators populate
+        them one at a time at import time.
+        """ 
+        bundle = ProviderList()
+        
+        assert bundle.sync_provider is None
+        assert bundle.async_provider is None
+        
+    def test_construction_with_sync_only(self) -> None:
+        """Partial construction works — async slot stays None."""
+        sync_info = DictInfo(
+            provider_class=FakeRegistryProvider,  # type: ignore[arg-type]
+            class_name="FakeSync",
+            description="sync",
+        )
+        
+        bundle = ProviderList(sync_provider=sync_info)
+        
+        assert bundle.sync_provider is sync_info
+        assert bundle.async_provider is None
+        
+    def test_is_frozen_with_slots(self) -> None:
+        """ProviderList is frozen + slotted — both attributes
+        of the contract are tested here.
+        """
+        bundle = ProviderList()
+        
+        # frozen rejection
+        with pytest.raises(FrozenInstanceError):
+            bundle.sync_provider = "anything"  # type: ignore[misc]
+            
+        # slots - cannot add arbitrary attributes either
+        with pytest.raises((AttributeError, FrozenInstanceError)):
+            bundle.bogus_attr = "fail"  # type: ignore[misc, attr-defined]
+            
+            
+# =============================================================================
+# register_class decorator — the main attraction
+# =============================================================================
