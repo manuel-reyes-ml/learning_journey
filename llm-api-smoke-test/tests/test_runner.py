@@ -1,4 +1,14 @@
-"""
+"""Tests for llm_api_smoke_test.runner.
+ 
+Covers run_smoke_tests() — the synchronous driver.  Uses FakeSyncProvider
+(defined in conftest.py) to avoid real API calls.
+ 
+Why test runners?
+-----------------
+The runner is the only place "iterate providers, call smoke_test, capture
+exceptions" lives.  A regression here silently breaks every CLI invocation.
+The Iterable vs Iterator distinction we discussed earlier is also pinned
+here as a contract test.
 """
 
 # =============================================================================
