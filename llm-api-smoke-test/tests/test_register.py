@@ -1,4 +1,17 @@
-"""
+"""Tests for llm_api_smoke_test.register.
+ 
+Covers the plugin-registry mechanics:
+- :class:`DictInfo` — frozen container
+- :class:`ProviderList` — sync/async pair
+- :func:`register_class` — decorator factory, sync/async kind dispatch
+- :data:`dicts` — module-level registry state
+ 
+Why test the registry?
+----------------------
+The registry is the package's central wiring point.  A subtle bug
+(wrong key, missing slot, frozen-vs-mutable confusion) silently
+breaks the entire CLI.  Tests pin the contract so refactors don't
+regress.
 """
 
 # =============================================================================
