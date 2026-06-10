@@ -264,3 +264,34 @@ class TestRegisterClass:
 # Module-level dicts — the REAL registry, after providers.py imports
 # =============================================================================
 
+class TestLiveRegistry:
+    """Inspect the actual dicts populated at package import time.
+    
+    These tests DON'T mutate the registry — they only read it.  Safe
+    to run in any order, no monkeypatch needed.
+    """
+    
+    def test_anthropic_is_registered(self) -> None:
+        """Both sync and async Anthropic providers must be present
+        after importing providers.py.
+        """
+        # The mere act of importing register triggers providers.py
+        # imports indirectly — which runs the @register_class
+        # decorators at module load. 
+        from llm_api_smoke_test import providers  # noqa: F401
+        
+        assert "anthropic" in dicts
+        bundle = dicts["anthropic"]
+        
+        assert bundle.sync_provider is not None
+        assert bundle.async_provider is not None
+        
+    def test_gemini_is_registered(self) -> None:
+        """Same coverage as above for Gemini."""
+        from llm_api_smoke_test import providers  # noqa: F401
+        
+        assert "gemini" in dicts
+        bundle = dicts["gemini"]
+        
+        assert bundle.sync_provider is not None
+        assert bundle.async_provider is not None
