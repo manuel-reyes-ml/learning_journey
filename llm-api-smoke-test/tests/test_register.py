@@ -145,3 +145,122 @@ class TestProviderList:
 # =============================================================================
 # register_class decorator — the main attraction
 # =============================================================================
+
+class TestRegisterClass:
+    """Tests for the register_class decorator factory.
+    
+    These tests use a LOCAL registry-like dict — they don't pollute
+    the global ``dicts`` module-level registry, because mutating
+    module state from tests creates ordering dependencies.
+    """
+ 
+    # The 'monkeypatch' fixture is pytest's built-in tool for safely
+    # replacing module-level state during a test.  After the test ends,
+    # everything is restored — even on failure.
+    @pytest.fixture
+    def clean_registry(self, monkeypatch: pytest.MonkeyPatch) -> None:
+        """Replace dicts with an empty dict for the duration of one test.
+        
+        Why?  The real ``dicts`` is populated at import time when
+        providers.py loads.  If tests mutated it directly, test order
+        would matter (test A leaves garbage that fails test B).
+        monkeypatch.setattr swaps the reference and restores after.
+        """
+        # Replace 'dicts' on the register module with an empty dict.
+        # The decorator looks up 'dicts' via module global — swapping
+        # the module attribute is what affects the decorator's behaviour.
+        monkeypatch.setattr("llmp_api_smoke_test.register.dicts", {})
+        
+    def test_registers_sync_provider(self, clean_registry: None) -> None:
+        """@register_class('key', 'sync', ...) populates sync_provider."""
+        # Import dicts FRESH after monkeypatch — module attribute is
+        # now an empty dict.
+        from llm_api_smoke_test.register import dicts as test_dicts
+        
+        # Apply the decorator manually — same effect as @register_class
+        # on a class definition.
+        decorator = register_class("testkey", "sync", "test sync provider")
+        decorator(FakeRegistryProvider)  # type: ignore[arg-type]
+        
+        # The registry now has an entry
+        assert "testkey" in test_dicts
+        bundle = test_dicts["testkey"]
+        
+        # Sync slot populated, async still None.
+        assert bundle.sync_provider is not None
+        assert bundle.sync_provider.provider_class is FakeRegistryProvider
+        assert bundle.sync_provider.class_name == "FakeRegistryProvider"
+        assert bundle.async_provider is None
+        
+    def test_registers_async_provider(self, clean_registry: None) -> None:
+        """@register_class('key', 'async', ...) populates async_provider."""
+        from llm_api_smoke_test.register import dicts as test_dicts
+        
+        register_class("testkey", "async", "test async")(
+            FakeAsyncRegistryProvider   # type: ignore[arg-type]
+        )
+        
+        bundle = test_dicts["testkey"]
+        assert bundle.async_provider is not None
+        assert bundle.sync_provider is None
+        
+    def test_both_kinds_under_one_key(self, clean_registry: None) -> None:
+        """Two decorators on the same key populate both slots.
+        
+        This is the core behaviour of the sync/async dual-registration.
+        Test it explicitly because it relies on the dataclasses.replace
+        round-trip, which is non-obvious.
+        """
+        from llm_api_smoke_test.register import dicts as test_dicts
+        
+        # First decorator - sync.
+        register_class("testkey", "sync", "sync v")(
+            FakeRegistryProvider    # type: ignore[arg-type]
+        )
+        
+        # Second decorator - async, SAME key.
+        register_class("testkey", "async", "async v")(
+            FakeAsyncRegistryProvider   # type: ignore[arg-type]
+        )
+        
+        bundle = test_dicts["testkey"]
+        
+        # BOTH slots populated.
+        assert bundle.sync_provider is not None
+        assert bundle.async_provider is not None
+        
+        # Verify they hold the right classes.
+        assert bundle.sync_provider.provider_class is FakeRegistryProvider
+        assert bundle.async_provider.provider_class is FakeAsyncRegistryProvider
+        
+    def test_decorator_return_class_unchanged(self, clean_registry: None) -> None:
+        """The decorated class must come out IDENTICAL — no wrapping."""
+        # IS check — same object identity, not just equal.
+        result = register_class("k", "async")(FakeRegistryProvider)  # type: ignore[arg-type]
+        assert result is FakeRegistryProvider
+        
+    def test_description_falls_back_to_docstring(
+        self, clean_registry: None
+    ) -> None:
+        """Empty description → uses provider_class.__doc__ instead."""
+        from llm_api_smoke_test.register import dicts as test_dicts
+        
+        class DocumentedProvider:
+            """Docstring used as fallback description."""
+            def __init__(self, setting) -> None: pass
+            
+        # Empty description argument.
+        register_class("doct_test", "sync", "")(
+            DocumentedProvider   # type: ignore[arg-type]
+        )
+        
+        info = test_dicts["doc_test"].sync_provider
+        assert info is not None
+        # Falls back to __doc__ - Pydantic-style fallback.
+        assert "Docstring used" in info.description
+        
+        
+# =============================================================================
+# Module-level dicts — the REAL registry, after providers.py imports
+# =============================================================================
+
