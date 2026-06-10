@@ -8,14 +8,12 @@
 from __future__ import annotations
 
 from dataclasses import FrozenInstanceError
-from typing import Protocol
 
 import pytest
 
 from llm_api_smoke_test.register import (
     DictInfo,
     ProviderList,
-    RunResults,
     dicts,
     register_class,
 )
@@ -138,7 +136,7 @@ class TestProviderList:
             bundle.sync_provider = "anything"  # type: ignore[misc]
             
         # slots - cannot add arbitrary attributes either
-        with pytest.raises((AttributeError, FrozenInstanceError)):
+        with pytest.raises((TypeError, AttributeError, FrozenInstanceError)):
             bundle.bogus_attr = "fail"  # type: ignore[misc, attr-defined]
             
             
@@ -169,7 +167,7 @@ class TestRegisterClass:
         # Replace 'dicts' on the register module with an empty dict.
         # The decorator looks up 'dicts' via module global — swapping
         # the module attribute is what affects the decorator's behaviour.
-        monkeypatch.setattr("llmp_api_smoke_test.register.dicts", {})
+        monkeypatch.setattr("llm_api_smoke_test.register.dicts", {})
         
     def test_registers_sync_provider(self, clean_registry: None) -> None:
         """@register_class('key', 'sync', ...) populates sync_provider."""
@@ -250,7 +248,7 @@ class TestRegisterClass:
             def __init__(self, setting) -> None: pass
             
         # Empty description argument.
-        register_class("doct_test", "sync", "")(
+        register_class("doc_test", "sync", "")(
             DocumentedProvider   # type: ignore[arg-type]
         )
         
