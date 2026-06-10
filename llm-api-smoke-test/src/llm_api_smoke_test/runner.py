@@ -146,7 +146,7 @@ def run_smoke_tests(
                 "call_failed",
                 provider_class=provider_class,
                 type_exception=type(exc).__name__,
-                exception=exc,
+                exc_info=True,  # <- structlog's blessed way to log exceptions
             )
             failures.append((provider_class, exc))
             
