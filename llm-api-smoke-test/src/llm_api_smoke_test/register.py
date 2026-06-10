@@ -64,7 +64,8 @@ from dataclasses import dataclass, field, KW_ONLY, replace
 from typing import Literal, TypedDict, TYPE_CHECKING
 
 # To import just for type checker, run time skips
-# 
+# Also to avoid circular import error, when the imports
+# are just for type checker, it can be invisible for run time.
 if TYPE_CHECKING:
     from llm_api_smoke_test.providers import (
         AsyncLLMProvider,
