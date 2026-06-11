@@ -17,8 +17,6 @@ here as a contract test.
 
 from __future__ import annotations
 
-import pytest
-
 from llm_api_smoke_test.config import ProviderSettings
 from llm_api_smoke_test.providers import SmokeTestResult
 from llm_api_smoke_test.runner import DEFAULT_PROMPT, run_smoke_tests
