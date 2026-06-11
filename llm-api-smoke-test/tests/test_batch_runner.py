@@ -10,7 +10,9 @@ from __future__ import annotations
 import asyncio
 import pytest
 
+from llm_api_smoke_test.config import ProviderSettings
 from llm_api_smoke_test.batch_runner import batch_smoke_test
+from llm_api_smoke_test.providers import SmokeTestResult
 
 # Note: FakeAsyncProvider is in conftest.py
 from tests.conftest import FakeAsyncProvider
@@ -110,3 +112,84 @@ class TestBatchSmokeTestFailures:
 # Concurrency contract
 # =============================================================================
 
+class TestConcurrencyLimits:
+    """The semaphore + rate-limiter ARE the production patterns
+    that make batch_runner.py worth reviewing.  Pin their behaviour.
+    """
+    
+    async def test_respects_max_concurrency_cap(
+        self, provider_settings: ProviderSettings,
+    ) -> None:
+        """At any moment, no more than max_concurrent coroutines hold the
+        semaphore slot inside the provider call.
+ 
+        The technique: instrument the fake to track ENTRY and EXIT, then
+        verify the running count never exceeded the cap.
+        """
+        # Track concurrent calls.  We need to mutate from inside the
+        # async method, so use lists/atomics.
+        current = [0]  # current in_flight calls
+        peak = [0]     # max ever seen
+        
+        class InstrumentedAsyncProvider:
+            def __init__(self, settings: ProviderSettings) -> None:
+                self._settings = settings
+                self.calls: list[str] = []
+                
+            async def smoke_test(self, prompt: str) -> SmokeTestResult:
+                # Entry: increment, update peak.
+                current[0] += 1
+                peak[0] = max(peak[0], current[0])
+                
+                # Hold the slot for a moment so concurrency can be
+                # observed.  Tiny sleep = real async yield.
+                await asyncio.sleep(0.01)
+                self.calls.append(prompt)
+                
+                # Exit: decrement.
+                current[0] -= 1
+                
+                return SmokeTestResult(
+                    provider_name="fake",
+                    model="fake",
+                    response_preview="ok",
+                )
+                
+            async def generate_structured(self, prompt: str, schema) -> Exception:
+                raise NotImplementedError
+            
+        provider = InstrumentedAsyncProvider(provider_settings)                
+        max_cap = 3
+        
+        # Launch 10 prompts against a single provider with cap=3.
+        await batch_smoke_test(
+            providers=[provider],   # type: ignore[type-arg]
+            prompts=[f"p{i}" for i in range(10)],
+            max_concurrent=max_cap,
+        )
+        
+        # Peak concurrency never exceeded the cap.
+        assert peak[0] <= max_cap, (
+            f"Peak concurrency {peak[0]} exceeded cap {max_cap} - "
+            "semaphore is not actually constraining concurrency."
+        )
+        # But did approach it — otherwise the test is trivially true.
+        # With 10 tasks + cap=3 + 10ms hold, we expect to hit at least 2.
+        assert peak[0] >= 2, (
+            "Peak concurrency too low ' tasks are running serially, "
+            "which suggests gather() isn't being awaited."
+        )
+        
+    async def test_all_prompts_processed_even_with_low_concurrency(
+        self, fake_async_provider: FakeAsyncProvider,
+    ) -> None:
+        """max_concurrent=1 → all prompts still run, just serially."""
+        # Cap of 1 means strictly serial execution.
+        await batch_smoke_test(
+            providers=[fake_async_provider],  # type: ignore[type-arg]
+            prompts=["a", "b", "c"],
+            max_concurrent=1,
+        )
+        
+        # ALL three prompts arrived.
+        assert sorted(fake_async_provider.calls) == ["a", "b", "c"]
