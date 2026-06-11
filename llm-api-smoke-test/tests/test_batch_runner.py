@@ -85,3 +85,28 @@ class TestBatchSmokeTestHappyPath:
 # Failure paths
 # =============================================================================
 
+class TestBatchSmokeTestFailures:
+    "Async exception handling — same contract as the sync runner."""
+    
+    async def test_failure_captured_not_raised(
+        self, failing_async_provider: FakeAsyncProvider,
+    ) -> None:
+        """Async provider raises → recorded in failures, not propagated."""
+        # No try/except — the runner must catch internally.
+        successes, failures = await batch_smoke_test(
+            providers=[failing_async_provider],  # type: ignore[type-arg]
+            prompts=["test"],
+        )
+        
+        assert successes == []
+        assert len(failures) == 1
+        
+        class_name, exc = failures[0]
+        assert class_name == "FakeAsyncProvider"
+        assert isinstance(exc, RuntimeError)
+        
+
+# =============================================================================
+# Concurrency contract
+# =============================================================================
+
