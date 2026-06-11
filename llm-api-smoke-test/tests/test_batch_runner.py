@@ -186,6 +186,9 @@ class TestConcurrencyLimits:
             max_concurrent=max_cap,
         )
         
+        # if assert <condition> is true, nothing happens.
+        # if its False, it will execute the portion after ','.
+        #
         # Peak concurrency never exceeded the cap.
         assert peak[0] <= max_cap, (
             f"Peak concurrency {peak[0]} exceeded cap {max_cap} - "
