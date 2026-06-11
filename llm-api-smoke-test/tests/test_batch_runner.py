@@ -1,4 +1,22 @@
-"""
+"""Tests for llm_api_smoke_test.batch_runner.
+ 
+Covers batch_smoke_test() — the async driver with semaphore + rate limiter.
+ 
+Why pytest-asyncio?
+-------------------
+Async tests need an event loop.  Manual ``asyncio.run()`` in every test
+is repetitive and error-prone.  The ``pytest-asyncio`` plugin gives us
+``@pytest.mark.asyncio`` which provides an event loop automatically.
+ 
+Install with:
+    pip install pytest-asyncio
+ 
+Then in pyproject.toml:
+    [tool.pytest.ini_options]
+    asyncio_mode = "auto"   # any async def test_* runs in an event loop
+ 
+With auto mode, you don't even need @pytest.mark.asyncio on each test —
+just write ``async def test_x()`` and it works.
 """
 
 # =============================================================================
