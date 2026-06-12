@@ -21,6 +21,8 @@ from llm_api_smoke_test.__main__ import (
     _validate_providers,
 )
 
+from llm_api_smoke_test.config import SmokeTestSettings
+
 # =============================================================================
 # ExitCode — the IntEnum contract
 # =============================================================================
@@ -294,7 +296,7 @@ class TestBuildProviders:
     they just configure the client.
     """
     
-    def test_sync_path_returns_sync_instances(self, settings) -> None:
+    def test_sync_path_returns_sync_instances(self, settings: SmokeTestSettings) -> None:
         """run_async=False → list of LLMProvider (sync) instances."""
         from llm_api_smoke_test.providers import AnthropicProvider
         
@@ -308,7 +310,7 @@ class TestBuildProviders:
         # Specific class - the SYNC adapter.
         assert isinstance(instances[0], AnthropicProvider)
         
-    def test_async_path_returns_async_instances(self, settings) -> None:
+    def test_async_path_returns_async_instances(self, settings: SmokeTestSettings) -> None:
         """run_async=True → list of AsyncLLMProvider instances."""
         from llm_api_smoke_test.providers import AsyncAnthropicProvider
         
@@ -320,7 +322,7 @@ class TestBuildProviders:
         
         assert isinstance(instances[0], AsyncAnthropicProvider)
         
-    def test_unknown_provider_raises_keyerror(self, settings) -> None:
+    def test_unknown_provider_raises_keyerror(self, settings: SmokeTestSettings) -> None:
         """Provider name not in dicts → KeyError from the registry lookup.
         
         NB: this assumes _validate_providers wasn't called first.
