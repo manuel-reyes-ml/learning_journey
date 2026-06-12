@@ -6,6 +6,7 @@
 # =============================================================================
 
 from __future__ import annotations
+from ast import arg
 
 import pytest
 
@@ -197,4 +198,91 @@ class TestValidateProviders:
 # _resolve_prompts
 # =============================================================================
 
-   
+class TestResolvePrompts:
+    """Test the mutual-exclusivity resolver and file-reading fallback."""
+    
+    def test_returns_prompts_list_when_set(self) -> None:
+        """--prompts 'a' 'b' → returns the list as-is."""
+        # Build a Namespace by hand — _resolve_prompts only reads
+        # attributes, doesn't care about the parser context.
+        import argparse
+        ns = argparse.Namespace(
+            prompts=["a", "b"],
+            prompt=None,
+            prompts_file=None,
+        )
+        
+        assert _resolve_prompts(ns) == ["a", "b"]
+        
+    def test_returns_prompt_list_when_set(self) -> None:
+        """--prompt 'a' --prompt 'b' → returns the appended list."""
+        import argparse
+        ns = argparse.Namespace(
+            prompts=None,
+            prompt=["a", "b"],
+            prompts_file=None,
+        )
+        
+        assert _resolve_prompts(ns) == ["a", "b"]
+        
+    def test_reads_from_file(self, tmp_path: Path) -> None:
+        """--prompts-file FILE → reads, strips blanks + comments.
+        
+        tmp_path is pytest's built-in fixture for a temporary directory
+        unique to this test.  Cleaned up automatically.
+        """
+        # Build a fake prompts file with mixed content.
+        prompts_file = tmp_path / "prompts.txt"
+        prompts_file.write_text(
+            "first prompt\n"
+            "# this is a comment, should be skipped\n"
+            "\n"                # blank line, should be skipped
+            "second prompt\n"
+        )
+        
+        # Open the file the way argparse.FileType would.
+        import argparse
+        ns = argparse.Namespace(
+            prompts=None,
+            prompt=None,
+            prompts_file=prompts_file.open("r", encoding="utf-8"),
+        )
+        
+        result = _resolve_prompts(ns)
+        # Only the real prompts came back — no comments, no blanks.
+        assert result == ["first prompt", "second prompt"]
+        
+    def test_empty_file_raises_valueerror(self, tmp_path: Path) -> None:
+        """File with only comments → ValueError, not silent empty result."""
+        empty_file = tmp_path / "empty.text"
+        empty_file.write_text("# onlt comments\n#nothing else\n")
+        
+        import argparse
+        ns = argparse.Namespace(
+            prompts=None,
+            prompt=None,
+            prompts_file=empty_file.open("r", encoding="utf-8"),
+        )
+        
+        with pytest.raises(ValueError, match="empty"):
+            _resolve_prompts(ns)
+            
+    def tet_no_flag_returns_default(self) -> None:
+        """No prompt flag at all → falls back to [DEFAULT_PROMPT]."""
+        from llm_api_smoke_test.runner import DEFAULT_PROMPT
+        import argparse
+        
+        ns = argparse.Namespace(
+            prompts=None,
+            prompt=None,
+            prompt_file=None,
+        )
+        
+        result = _resolve_prompts(ns)
+        assert result == [DEFAULT_PROMPT]
+        
+        
+# =============================================================================
+# _build_providers
+# =============================================================================
+
