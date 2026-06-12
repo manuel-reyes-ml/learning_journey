@@ -1,4 +1,15 @@
-"""
+"""Tests for llm_api_smoke_test.__main__.
+ 
+Covers the composition root: CLI parsing, prompt resolution, provider
+validation, build dispatch.  The actual main() function is harder to
+test (it's the integration point) so we focus on the testable helpers.
+ 
+Strategy
+--------
+- Test _build_parser() by parsing crafted argv lists and inspecting
+  the resulting Namespace.
+- Test _validate_providers and _resolve_prompts as pure functions.
+- Skip main() integration here — covered in test_integration.py.
 """
 
 # =============================================================================
@@ -6,7 +17,6 @@
 # =============================================================================
 
 from __future__ import annotations
-from ast import arg
 
 import pytest
 
