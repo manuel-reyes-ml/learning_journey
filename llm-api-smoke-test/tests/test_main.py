@@ -286,3 +286,51 @@ class TestResolvePrompts:
 # _build_providers
 # =============================================================================
 
+class TestBuildProviders:
+    """Verify the registry → instance dispatch.
+    
+    Uses real SmokeTestSettings (from conftest's settings fixture) but
+    the providers themselves never make HTTP calls in their __init__ —
+    they just configure the client.
+    """
+    
+    def test_sync_path_returns_sync_instances(self, settings) -> None:
+        """run_async=False → list of LLMProvider (sync) instances."""
+        from llm_api_smoke_test.providers import AnthropicProvider
+        
+        instances = _build_providers(
+            provider_names=["anthropic"],
+            settings=settings,
+            run_async=False,
+        )
+        
+        assert len(instances) == 1
+        # Specific class - the SYNC adapter.
+        assert isinstance(instances[0], AnthropicProvider)
+        
+    def test_async_path_returns_async_instances(self, settings) -> None:
+        """run_async=True → list of AsyncLLMProvider instances."""
+        from llm_api_smoke_test.providers import AsyncAnthropicProvider
+        
+        instances = _build_providers(
+            provider_names=["anthropic"],
+            settings=settings,
+            run_async=True,
+        )
+        
+        assert isinstance(instances[0], AsyncAnthropicProvider)
+        
+    def test_unknown_provider_raises_keyerror(self, settings) -> None:
+        """Provider name not in dicts → KeyError from the registry lookup.
+        
+        NB: this assumes _validate_providers wasn't called first.
+        In main(), _validate_providers catches this earlier — but
+        _build_providers is defensive in case it's called directly.
+        """
+        # The dict lookup itself raises KeyError on missing key.
+        with pytest.raises(KeyError):
+            _build_providers(
+                provider_names=["nonexistent_provider"],
+                settings=settings,
+                run_async=False,
+            )
