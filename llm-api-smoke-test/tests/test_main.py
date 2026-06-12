@@ -158,4 +158,43 @@ class TestBuildParser:
 # _validate_providers
 # =============================================================================
 
+class TestValidateProviders:
+    """Test the cleaning + registry check."""
+    
+    def test_clean_lowercase_passes(self) -> None:
+        """Lowercase known keys pass through unchanged."""
+        result = _validate_providers(["anthropic"])
+        assert result == ["anthropic"]
+        
+    def test_uppercase_normalized(self) -> None:
+        """Case normalisation strips, lowercases."""
+        result = _validate_providers(["ANTHROPIC"])
+        assert result == ["anthropic"]
+        
+    def test_punctuation_stripped(self) -> None:
+        """Trailing punctuation (e.g., shell comma) is stripped."""
+        # User typed "anthropic," — shell quoted it as one token.
+        result = _validate_providers(["anthropic,"])
+        assert result == ["anthropic"]
+        
+    def test_unknown_provider_raises_keyerror(self) -> None:
+        """Unregistered name → KeyError with the available list."""
+        # NB: KeyError repr wraps the message in quotes; use the
+        # 'match' regex to test substring presence.
+        with pytest.raises(KeyError, match="bogus"):
+            _validate_providers(["bogus"])
+        
+    def test_order_preserved(self) -> None:
+        """Validation must not reorder input — composition root relies
+        on positional correspondence later.
+        """
+        # Reverse-alphabetical input should come out reverse-alphabetical.
+        result = _validate_providers(["gemini", "anthropic"])
+        assert result == ["gemini", "anthropic"]
+        
+
+# =============================================================================
+# _resolve_prompts
+# =============================================================================
+
    
