@@ -98,7 +98,7 @@ class TestBuildParser:
         # No prompt flag → defaults to None (resolved later in _resolve_prompts).
         assert args.prompts is None
         assert args.prompt is None
-        assert args.prompt_file is None
+        assert args.prompts_file is None
         # Defaults for booleans.
         assert args.run_async is False
         assert args.verbose is False
