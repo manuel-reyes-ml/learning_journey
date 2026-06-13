@@ -1,30 +1,31 @@
-# MASTER SWING TRADING PLAN — v2
+# MASTER SWING TRADING PLAN — v3
 
-*Two-Playbook System (SW-A Bottoming + SW-B Trend Continuation)*
+*Two-Playbook System — both continuation-from-strength:*
+*SW-A v3 (Trend Pullback / Base Breakout) + SW-B (Trend Continuation / VCP)*
 
-*Revised with U&R structural requirement, VCP refinement, RS percentile filter, and dilution disqualifier.*
+*v3 retires the SW-A v2 Bottoming / Undercut & Reclaim playbook and replaces it with a continuation-from-strength book; backports the quantitative sector gate to SW-B; and makes the institutional-footprint rationale explicit, with a coverage audit and proposed accumulation/distribution metrics.*
 
 ---
 
-## Changelog — v1 to v2
+## Changelog — v2 → v3
 
-Refinements address two structural concerns: (1) SW-A as written buys names with poor statistical base rates; the U&R requirement and dilution disqualifier raise the evidentiary bar. (2) SW-B as written lacks the volume-and-volatility-contraction filter that separates institutional accumulation from random pullbacks. The VCP and RS percentile additions tighten setup quality.
-
-| Area | v1 | v2 Refinement |
+| # | Change | Detail |
 | --- | --- | --- |
-| SW-A trigger | Proximity to 52-week low + RSI + accumulation | REQUIRES confirmed Undercut & Reclaim (U&R). Proximity alone disqualified. |
-| SW-A risk tier | A+ up to 1.0% | A+ capped at 0.75% until 50+ SW-A trades show positive expectancy |
-| SW-A disqualifier | Loose mention of dilution | Hard disqualify: SEC form 424B5 (ATM offering) or S-3 in last 60 days |
-| SW-B setup filter | Pullback to 20/50 EMA + lower volume | Adds VCP requirement: 2+ contractions, each shallower, each on lower volume |
-| SW-B RS filter | Qualitative | RS percentile ≥ 80 vs SPY required at entry |
-| Paper-to-live projection | Not specified | Apply 25% performance haircut to paper expectancy |
-| Journal fields | Basic | Adds RS percentile, MAE/MFE, sector context, rule-adherence score |
+| 1 | **SW-A replaced** | v2 Bottoming / U&R near 52-wk lows → v3 Trend Pullback / Base Breakout (continuation-from-strength). The system no longer bottom-fishes. |
+| 2 | **SW-A v3 trend gate** | Hard gate: price > rising 50 SMA; 50 > 200 preferred (Weinstein Stage 2). |
+| 3 | **Quantitative sector gate** | SW-A v3 *and* (backported) **SW-B**: stock's SPDR sector ETF must be top-third by RS vs SPY, RS line rising; bottom-third = NO TRADE. Replaces qualitative sector language. |
+| 4 | **RS floors formalized** | SW-A v3 ≥ 70; SW-B ≥ 80 (the deliberate differentiator — see Anti-Drift). |
+| 5 | **Retirement → Collapse rule** | Old "retire SW-A if contrarian book underperforms" is obsolete; replaced by "merge SW-A v3 and SW-B if statistically indistinguishable after 50 trades each." |
+| 6 | **Conceptual Foundation added** | The institutional-footprint rationale is made explicit and mapped to the gates that implement it. |
+| 7 | **Footprint coverage audit + A/D metrics** | New section: audits footprint coverage, identifies the distribution-detection gap, and proposes research-grounded metrics (distribution-day count, U/D volume ratio, VDU) to instrument and test. |
+
+> The v1→v2 history is preserved in the archived v2 plan. **This document is the current source of truth.** Canonical standalone specs: `SWA_v3_Trend_Pullback_Base_Breakout.md` (SW-A v3) and `SWB_Quick_Reference_v3.md` (SW-B). Archive `SWA_Quick_Reference_v2.md` (`_RETIRED`) to prevent a second, conflicting "SW-A" definition.
 
 ---
 
 ## 1. Mission, Objectives, and Guardrails
 
-Mission: Extract repeatable swing gains from (A) early reversals near lows with confirmed Undercut & Reclaim structure, and (B) continuation in strong trends with confirmed VCP and RS leadership, using rules-based execution and risk containment.
+Mission: Extract repeatable swing gains from two continuation-from-strength setups — (A) controlled pullbacks to rising moving-average support and base breakouts in confirmed uptrends (**SW-A v3**), and (B) Volatility-Contraction-Pattern breakouts in leading stocks (**SW-B**) — using rules-based execution and risk containment. The system buys strength; it does not bottom-fish.
 
 ### Primary Objectives
 
@@ -34,9 +35,33 @@ Mission: Extract repeatable swing gains from (A) early reversals near lows with 
 ### Non-Negotiables
 
 - Every trade has: Setup ID, entry trigger, invalidation level, stop, target(s), position size, and management rules.
-- Your system must respect risk math (position sizing = account risk ÷ trade risk).
+- Position sizing = account risk ÷ trade risk. Always.
+- Trend first, structure second, momentum indicators last (confirmation only). RSI/MACD are never triggers.
 
 Educational use only; not financial advice.
+
+---
+
+## Conceptual Foundation — Following the Institutional Footprint
+
+The system's premise (full rationale in `Tracking_Institutional_Footprints_Reference.md`): **you cannot get the rumor, but you can read its footprint.** Institutions position weeks ahead of catalysts using information retail will never access — and they cannot accumulate size without leaving residue on price and volume. The edge is not beating them to information; it is recognizing the accumulation footprint and trading the confirmed continuation they started, while avoiding the distribution they exit into.
+
+**Both playbooks are this philosophy made mechanical.** Every gate traces to a footprint principle:
+
+| Footprint principle (the *why*) | Implemented by (the *how*) | Coverage |
+| --- | --- | --- |
+| Accumulation = quiet drift up on sustained volume in an uptrend | Stage-2 trend gate (price > rising 50 SMA; 50 > 200) | ✅ Covered |
+| Leadership: outperforms the index while the tape is flat/down | RS percentile gate — ≥ 70 (SW-A v3) / ≥ 80 (SW-B); RS line not making new lows | ✅ Covered |
+| Strong stock inside a strong group | Quantitative sector gate (top-third SPDR by RS vs SPY) — now both books | ✅ Covered |
+| Pullbacks on *contracting* volume; supply absorbed | SW-A v3 pullback volume contraction; SW-B mandatory VCP | ✅ Covered |
+| Tight, orderly bases (contraction signature) | SW-B VCP (2+ shallower contractions); SW-A v3 Archetype B base | ✅ Covered |
+| Breakout/reclaim on real participation | Reclaim/breakout bar ≥ 1.5×–2× 20-day average volume | ✅ Covered |
+| Avoid being exit liquidity (news-day spike / climax) | No-chase rule; reject 3–5× climax bars; never buy the down day | ✅ Covered |
+| News as a defensive filter, not a trigger | Earnings/binary-event check (no entry within 3–5 sessions) | ✅ Covered |
+| Distinguish accumulation from **distribution** (institutional selling) | *Indirect only — no dedicated metric* | ⚠️ **GAP** — see Footprint Coverage Audit |
+| Supply dry-up before the move | *Qualitative in VCP; no numeric VDU* | 🟡 Partial |
+
+The buy-side footprint is well covered. The two open items — distribution detection and a numeric volume-dry-up — are addressed in the Footprint Coverage Audit section below.
 
 ---
 
@@ -51,7 +76,7 @@ Instrument: U.S. listed stocks first. Options optional later (mainly for hedging
 
 ### Sector and Market Context
 
-Align with industry/sector trend as a buy trigger. Avoid trading stocks fighting their sector.
+Sector strength is now a **quantitative hard gate in both playbooks**: the stock's SPDR sector ETF must be top-third by RS vs SPY (RS line rising); bottom-third = NO TRADE. Do not trade stocks fighting their sector.
 
 ---
 
@@ -69,7 +94,7 @@ Key structure rule: trade at or near levels, not in the middle of noise.
 
 ### 4.1 Risk per Trade (R)
 
-Define R = the dollars you lose if the stop is hit.
+R = the dollars lost if the stop is hit.
 
 - Primary Swing Universe: 0.5%–1.0% account risk per trade.
 - Special Situations / Small Caps: 0.25%–0.6% risk per trade.
@@ -85,13 +110,14 @@ Define R = the dollars you lose if the stop is hit.
 
 `Position size = Account Risk ($) ÷ Trade Risk ($/share)`
 
-Example: Account $50,000; risk/trade 0.75% = $375. Entry $25.00, Stop $23.50 = $1.50/share. Shares = 375/1.50 = 250.
+Example: Account $50,000; 0.75% = $375. Entry $40.00, Stop $38.00 = $2.00/share. Shares = 375 / 2.00 = 187 (round down to 185).
 
 ### 4.4 Stop Placement
 
 - Stops belong beyond structure, not at obvious crowded levels.
-- Below the most recent swing low (trend continuation).
-- Below base support or below consolidation (breakout/basing play).
+- SW-A v3 Pullback: below the pullback swing low or reference MA by a small ATR buffer.
+- SW-A v3 Base Breakout / SW-B: below the final base contraction / consolidation low (or pivot with buffer).
+- Never widen a stop. If structure forces a wider stop, reduce share count to hold R constant.
 
 ---
 
@@ -99,175 +125,158 @@ Example: Account $50,000; risk/trade 0.75% = $375. Entry $25.00, Stop $23.50 = $
 
 ### 5.1 Minimum Reward:Risk
 
-- Minimum planned RR: 1.5R (absolute minimum), prefer 2R+ when structure supports it.
-- Avoid momentum buys without an exit (explicit rule).
+- Floor 1.5R; v3 entries require **≥ 2R** to first realistic resistance.
+- Avoid momentum buys without an exit.
 
 ### 5.2 Scaling Out
 
-- 0% partials until +1.5R (let the trade work).
+- No partials until +1.5R unless price runs straight into resistance.
 - Optional 25%–50% partial at +2R if major resistance or earnings window.
 - Trail remainder by structure (higher lows) or 20 EMA.
 
 ### 5.3 Time Stops
 
-- Basing/Bottoming: if no upside follow-through within ~5–10 trading days, reduce/exit.
-- Trend Continuation: if it loses trend structure (breaks swing low / closes below key MA), exit.
+- SW-A v3 / SW-B: no favorable progress within ~5–10 trading days → reduce/exit.
+- Loss of trend structure (breaks swing low / decisive close below key MA on volume) → exit.
 
 ---
 
-## Playbook A — Bottoming / Pre-Breakout (v2)
+## Playbook A — SW-A v3: Trend Pullback & Base Breakout (CURRENT)
 
-Buy stabilization + accumulation + structural reclaim near 52-week lows. THIS IS A CONTRARIAN PLAYBOOK with a worse statistical base rate than SW-B. v2 raises the evidentiary bar to compensate.
+> **Canonical spec:** `SWA_v3_Trend_Pullback_Base_Breakout.md`. This is the Master-Plan summary; the full document governs in any conflict.
 
-> **v2 UPDATE:** Hard structural requirement: Undercut & Reclaim (U&R) confirmation. A stock near its 52-week low is NOT a setup. The setup is when the stock makes a marginal new low AND reclaims a prior support level on the same or following session. Proximity-only setups are now disqualified.
+Buy continuation-from-strength: a controlled pullback to rising MA support that reclaims, **or** a tight base that breaks out on expanding volume — only inside a confirmed Stage-2 uptrend, only in a strong sector. Grounded in Weinstein Stage Analysis, Minervini SEPA/VCP, the 52-week-high momentum literature (George & Hwang, 2004), and industry-momentum research (Moskowitz & Grinblatt, 1999).
 
-> **v2 UPDATE:** Hard disqualifier: any active dilution catalyst. Check SEC filings for form 424B5 (ATM offering prospectus), S-3 shelf, or S-1 filed in the last 60 days. If found, SW-A is OFF for that ticker regardless of chart quality.
+> **v3 thesis:** Proximity to highs is a tailwind; proximity to lows is a headwind.
 
 ### A1) Setup Filter (must-have)
 
-**Structural (mandatory U&R)**
+**Trend (HARD GATE)** — price > rising 50 SMA; 50 > 200 preferred (Stage 2). Below a falling 50 SMA = NOT a v3 setup, no exceptions. Weekly HH/HL intact; not extended >25–30% above the 50 SMA at a pullback buy.
 
-- Price made a marginal new 52-week low (or is within 5–10% of one).
-- Price subsequently RECLAIMED a prior swing low or key support level.
-- Reclaim is confirmed by a daily close above the reclaimed level, not just an intraday wick.
+**Relative Strength (mandatory)** — RS percentile vs SPY ≥ 70; RS line not making new lows. Bonus tell: RS line printing a new high *ahead* of price (leadership leading price).
 
-**Technical Exhaustion + Early Turn**
+**Sector / Group Strength (mandatory, quantitative)** — map to SPDR sector ETF; rank 11 sectors by RS vs SPY (3+6-month blend), re-rank weekly. Top-third + rising → A+ eligible; middle → A/B reduced size; **bottom-third or falling sector RS → NO TRADE.** Measure independently of stock RS.
 
-- RSI(14) ~30–40 and rising (confirmation only, not trigger).
-- MACD histogram turning positive (confirmation only, not trigger).
+**Structure — pick ONE archetype**
+- **A (Pullback):** 3–10 session orderly pullback into a rising 20/50/200 SMA; contracting range AND volume; prefer 1st/2nd touch of the 50 SMA. Heavy-volume gap-down = warning, not setup.
+- **B (Base Breakout):** tight base (VCP nice-to-have); volume dries up, then expands on green days into a pivot within ~5–10% of breakout.
 
-**Accumulation Evidence**
+**Momentum (CONFIRMATION ONLY)** — RSI(14) resetting/turning up (~40–50 floor, not a buy signal); MACD histogram improving; ADX > 20 optional. A single MACD cross is not an entry.
 
-- Volume today > 1.5× 10-day average on up days.
-- OBV / accumulation line trending up.
-- Pullbacks during the base on lighter volume than rallies.
+### A2) Fundamental / Event Gate
+- No active dilution: no 424B5 / S-3 / S-1 in last 60 days (hard disqualifier).
+- No unplanned earnings/binary event inside 3–5 sessions.
 
-**Breakout Potential**
+### A3) Entry Triggers
+- **A:** green daily candle reclaims/closes above the reference MA (or prior day high) on expanding volume. Never buy the down day.
+- **B:** daily close above pivot on volume ≥1.5×–2× 20-day average. Higher-quality variant: enter the retest of the breakout holding as support.
+- **No chase:** >2–3% beyond trigger without you → wait for retest or skip.
 
-- Price beginning to cross above 20/50 EMA after reclaim.
+### A4) Confirmation Stack (4 of 6 minimum)
+(1) Trend/Level · (2) Structure · (3) Volume · (4) Stock RS ≥ 70 · (5) Sector top-third · (6) Momentum turning up. 4/6 = tradeable; 5–6/6 = A+; ≤3/6 = pass. **Items 1 and 5 are non-negotiable — fail either = NO TRADE.**
 
-### A2) Fundamental/Context Filter
+### A5) Risk Tier
+- A+ **0.75%** (capped until 50+ SW-A v3 trades show positive expectancy; A+ also requires a top-third sector) · A **0.50%** · B **0.25%** (or skip). Do not restore a 1.0% tier on theory. Earn it with data.
 
-- Revenue growth or improving margins trend (quarterly).
-- Balance sheet runway (cash vs burn) for small caps.
-- No active dilution (424B5/S-3 in last 60 days) — hard disqualifier.
-- No going-concern auditor language or delisting risk.
-
-### A3) Entry Triggers (choose one)
-
-- **Trigger A (Preferred — Retest/Reclaim):** enter on confirmed U&R, ideally on retest of the reclaimed level holding as support.
-- **Trigger B (Conservative — Breakout + acceptance):** enter on break above base resistance with volume confirmation.
-- **Trigger C (Aggressive — Reclaim of MA):** reclaim of 20/50 EMA plus bullish candle confirmation. Reduced size.
-
-### A4) Stop Placement
-
-- Default: below the U&R spring low (the marginal new low that was reclaimed).
-- For volatile small caps: widen stop only if you reduce share size to keep R constant.
-
-### A5) Risk Tier (v2)
-
-- A+ setup: up to 0.75% risk (capped — REDUCED from 1.0% in v1).
-- A setup: 0.50% risk.
-- B setup: 0.25% risk (or skip).
-- Cap remains in place until 50+ SW-A trades show positive expectancy.
-
-### A6) Profit Taking
-
-- T1: next major daily resistance / prior breakdown area.
-- T2: 2R–3R if trend emerges.
-- Trail with higher lows or 20 EMA once trend transitions.
+### A6) Stops, Targets, Management
+- Stop: structure-first (pullback swing low / MA buffer for A; final base contraction / pivot for B).
+- T1: first resistance / prior swing high / measured move. T2: 2R–4R. Trail by higher lows or 20 EMA. Add-ons only after +1R and a new tight continuation.
 
 ### A7) Hard Do-Not-Trade Conditions
-
-- Extremely wide spreads / thin order book.
-- Spike top / squeeze behavior.
-- Earnings within 3–5 trading days.
-- Active dilution filings (424B5/S-3 in last 60 days).
-- No confirmed U&R structure — proximity to lows alone is not a setup.
+Price below a falling 50 SMA · index downtrend + weak breadth · bottom-third/falling sector RS · RS < 70 or new RS lows · heavy-volume gap-down + weak bounce · active dilution · earnings in 3–5 sessions · climax volume (3–5×+) on entry bar · chasing >2–3% past trigger.
 
 ---
 
-## Playbook B — Trend Continuation (v2)
+## Playbook B — SW-B v3: Trend Continuation / VCP (CURRENT)
 
-Buy strong stocks in strong sectors during pauses, then sell into continuation. v2 adds the VCP refinement and quantitative RS filter.
+> **Canonical spec:** `SWB_Quick_Reference_v3.md`.
 
-> **v2 UPDATE:** New filter: Volatility Contraction Pattern (VCP) — pullback must show 2 or more contractions, each one shallower than the previous, each on lower volume than the previous. A single pullback to the 20 EMA without contraction structure does NOT qualify as a VCP. The contraction structure is the institutional accumulation signature.
-
-> **v2 UPDATE:** New filter: RS percentile ≥ 80 vs SPY at entry. The stock must be in the top 20% of relative strength performers. This single filter eliminates a large fraction of failed continuation trades.
+Buy strong stocks in strong sectors during pauses, then sell into continuation. SW-B is the **breakout** book (elite, narrowest tier); SW-A v3 is the **pullback** book (broader). VCP is mandatory and RS ≥ 80.
 
 ### B1) Setup Filter (must-have)
+- **Trend:** price above rising 50 SMA (preferably above 200 SMA); weekly structure intact.
+- **Sector (v3 — quantitative gate, backported):** stock's SPDR sector ETF top-third by RS vs SPY, RS line rising. **Bottom-third / falling sector RS = NO TRADE.** Measured identically to SW-A v3.
+- **VCP (mandatory):** 2+ contractions, each shallower, each on lower volume; final contraction within 5–10% of pivot. A single pullback does NOT qualify.
+- **RS (mandatory):** RS percentile ≥ 80 vs SPY at entry; RS line flat-to-rising (bonus: RS new high ahead of price).
+- **Confirmation:** RSI 40–60 during pullback; MACD stabilizing/turning up; ADX > 20; breakout shows volume expansion vs pullback.
 
-**Trend Confirmation**
+### B2) Entry / Stops / Targets / Risk
+- Entry: pullback to 20/50 EMA or pivot with confirmation (preferred); pivot-break with volume; or retest of breakout as support.
+- Stop: below pullback low / final VCP contraction / consolidation low.
+- Risk tiers: A+ **1.0%** (A+ also requires a top-third sector) · A **0.75%** · B **0.50%** (or skip).
+- T1: next resistance / measured-move. T2: 2R–4R. Trail by higher lows or 20 EMA.
 
-- Price above 50 EMA AND 200 EMA (uptrend).
-- 50 EMA rising; 200 EMA rising or flattening up.
-- Sector/industry strong or improving.
+---
 
-**VCP Structure (mandatory in v2)**
+## Playbook A vs B — Anti-Drift Bright Line (mandatory)
 
-- 2 or more contractions on the daily chart during the pullback/base.
-- Each contraction shallower than the previous (e.g., −15%, −10%, −5%).
-- Each contraction on lower volume than the previous.
-- Final contraction within 5–10% of the pivot.
+Both books are continuation-from-strength. Left undefined, you will grade them inconsistently and your journal will be useless.
 
-**Relative Strength (mandatory in v2)**
+| Dimension | **SW-A v3 (Pullback / Base Breakout)** | **SW-B (Trend Continuation — VCP)** |
+| --- | --- | --- |
+| Primary entry mechanic | **Buy the dip** — pullback to rising MA, reclaim on green bar | **Buy the breakout** — pivot break out of a textbook VCP |
+| Base structure required | Orderly pullback **or** clean base (VCP optional) | **Mandatory VCP** (2+ shallower contractions, falling volume) |
+| RS percentile floor | **≥ 70** | **≥ 80** |
+| Sector gate | Top-third SPDR by RS vs SPY | Top-third SPDR by RS vs SPY (identical) |
+| Conviction tier | Broader "good" continuation | Narrowest "elite" continuation |
+| A+ risk cap | 0.75% (capped until proven) | 1.0% |
 
-- RS percentile ≥ 80 vs SPY at the time of entry.
-- RS line flat-to-rising during the pullback (not making new RS lows).
+**Rule:** one ticker = ONE playbook per trade. Mandatory-VCP + RS ≥ 80 pivot breakout → **SW-B** (1.0% tier). Pullback-to-MA reclaim or non-VCP base breakout with RS 70–79 → **SW-A v3** (0.75% cap). Never double-count or let SW-A v3 borrow SW-B's tier. SW-B wins classification only if *all* its mandatory filters are met.
 
-**Momentum Alignment**
+> **Collapse rule:** Run them as complements under one shared heat budget. If after 50 trades each their expectancies are statistically indistinguishable, **merge into one continuation playbook** rather than maintaining two out of attachment.
 
-- RSI(14) 40–60 during pullback (not extended).
-- MACD line close to signal (about to cross).
-- ADX > 20 to confirm trend strength.
+---
 
-### B2) Entry Triggers
+## Institutional Footprint — Coverage Audit & Proposed A/D Metrics
 
-- **Trigger A (Breakout):** buy break above consolidation high with volume expansion.
-- **Trigger B (Pullback Entry — preferred):** buy pullback to 20/50 EMA or pivot with confirmation candle + rising volume, after VCP completes.
-- **Trigger C (Retest):** buy retest of breakout level as support.
+> **Status: RESEARCH-GROUNDED, NOT YET DATA-VALIDATED.** Identical discipline to the sector gate: instrument first, test for *added expectancy* (not just trade-count reduction), promote to a hard gate only on evidence. Sources: O'Neil / IBD (CAN SLIM), Minervini (SEPA/VCP/VDU), Morales & Kacher (pocket pivot), Granville (OBV), Chaikin (ADL).
 
-### B3) Stop Placement
+### The gap: the system is accumulation-rich and distribution-blind
 
-- Below the pullback swing low (daily) or below the final VCP contraction.
-- Avoid obvious crowd stops.
+The buy-side accumulation footprint is well covered (see Conceptual Foundation). But "following the footprint" is two-sided — read accumulation to enter, **read distribution to avoid or exit.** Today the system detects institutional *selling* only when a hard stop is hit. That is the real hole, and it is **orthogonal** to the existing gates (which are all variants of "is volume confirming the up-move"). Most pure accumulation indicators (OBV, ADL, A/D line) are *correlated* with what you already gate on — adding them as new buy-gates would mostly cut trade count without adding information. The distribution side is where new, non-redundant signal lives.
 
-### B4) Risk Tier
+### Proposed metrics (priority order)
 
-- A+ setup: up to 1.0% risk.
-- A setup: 0.75% risk.
-- B setup: 0.50% risk (or skip).
+| Metric | What it measures | Definition (a-priori) | Wire into |
+| --- | --- | --- | --- |
+| **Index distribution-day count** ⭐ | Broad institutional selling / topping risk | Index closes down ≥0.2% on higher volume than prior day; **4–6 in 4–5 weeks = risk-off** (IBD heuristic) | **Stage-0 regime gate** — cut tiers / stand down |
+| **Stock distribution-day cluster** ⭐ | Institutions exiting *your* name in an uptrend | Same rule on the stock; cluster (≈4–5 in ~25 sessions) while you hold = caution | **Exit/management warning** + journal |
+| **U/D volume ratio (~50d)** | Net accumulation health | Σ up-day volume ÷ Σ down-day volume; ≥1 healthy, ≥1.5–2 strong, **<1 = distribution** | **Confirmation health check** + journal |
+| **Volume Dry-Up (VDU)** | Supply exhaustion before the move | A base day with volume ≈ ≤50% of 50-day avg (ideally narrowest range) before reclaim/breakout | **Confirmation refinement** (base quality) + journal |
+| **OBV trend / divergence** | Accumulation confirm; distribution warning | OBV rising with price = confirm; OBV failing to confirm new price high = warning | Optional confirm (⚠️ correlated with U/D — pick one primary) |
+| **RS line new high ahead of price** | Leadership leading price | RS line vs SPY prints a new high while price still based | Bonus confirmation (already noted in both books) |
 
-### B5) Profit Taking
+⭐ = recommended first live additions (orthogonal, regime/exit-level, low risk to trade count).
 
-- Initial target at next major resistance (daily/weekly).
-- Secondary: trail using 20 EMA or structure-based trailing stop.
-- Runner: hold through structure until breakdown.
+### Flagged for later (not adopted — scope/validation)
+
+- **Pocket pivot (Morales & Kacher):** an up day whose volume exceeds the highest down-day volume of the prior 10 days, occurring inside a base / along the 10- or 50-day MA — an *earlier* accumulation entry than the standard breakout. Candidate future **Archetype C** for SW-A v3; do not trade until specified and paper-validated as its own tagged sub-strategy.
+
+### Discipline guardrails (non-negotiable)
+
+- None of these are validated on your data. They enter as **instrumentation and regime/exit signals**, not new hard buy-gates.
+- **Do not stack correlated filters.** U/D ratio, OBV, ADL, accumulation-day counts all measure the same thing; choose **one** net-accumulation metric (recommended: U/D ratio) and the orthogonal **distribution-day count**.
+- Log every proposed metric on every trade; in the weekly/monthly review, split realized expectancy by metric bucket. Promote to a hard gate **only** if it out-expectancies the alternative after costs — same parallel-tag test as the sector gate. If it only cuts count, drop it.
+- The **index distribution-day count is the recommended first wire-in** (Stage-0 regime), because it is orthogonal, market-level, and changes position *size/posture* rather than adding another single-name entry hurdle.
 
 ---
 
 ## 6. Shared Business Rules
 
 ### A) Portfolio Heat and Exposure
-
-- Max total open risk: 3.0% of equity.
-- Max sector risk: 1.5% of equity.
-- Reduce risk tiers in choppy markets or after drawdown triggers.
+- Max total open risk 3.0%; max sector risk 1.5%. Reduce tiers in choppy markets, after drawdown triggers, or on a rising index distribution-day count.
 
 ### B) Circuit Breakers
-
-- 3 consecutive losses → pause new entries for 3 trading days.
-- Rule violation → pause new entries for the rest of the week and review.
-- Hit −3R in a week → stop opening new positions until next week.
-- Two consecutive max-loss weeks → reduce risk/trade by 25–50% for the next month.
+- 3 consecutive losses → pause new entries 3 trading days.
+- Rule violation → pause new entries rest of week and review.
+- −3R in a week → stop opening new positions until next week.
+- Two consecutive max-loss weeks → reduce risk/trade 25–50% for the next month.
 
 ### C) Earnings / Binary Events
-
 - Default: no new entries within 3–5 trading days of earnings.
-- Holding through earnings only with prewritten plan + reduced size.
+- Hold through earnings only with prewritten plan + reduced size.
 
 ### D) Behavioral Rules
-
 - No trades without a completed trade ticket.
 - Avoid trading the open for new entries.
 - No third-party tips trades.
@@ -279,177 +288,147 @@ Buy strong stocks in strong sectors during pauses, then sell into continuation. 
 ### Daily (Weekdays)
 
 **Evening (30–60 min)**
+- Run both scanners. SW-A v3: top-down funnel (Stage 0 regime → Stage 1 sector rank → Stage 2 strong stocks in strong sectors → Stage 3 archetype). SW-B: VCP + RS ≥ 80 within top-third sectors.
+- Update index distribution-day count (regime posture).
+- Chart review weekly → daily → key levels.
+- Validate gates: SW-A v3 (trend, RS ≥ 70, sector top-third, archetype, ≥2R); SW-B (VCP, RS ≥ 80, sector top-third).
+- Shortlist (5–15); write a ticket per A+ setup; set alerts; pre-stage OCO.
 
-- Run both scanners (Bottoming/Pre-Breakout + Trend Continuation).
-- Chart review: weekly → daily → key levels.
-- Validate v2 filters: SW-A U&R structure confirmed? SW-B VCP and RS percentile?
-- Build shortlist (5–15 tickers) and write a trade ticket for each A+ setup.
-- Set alerts at trigger levels; pre-stage limit/stop orders if broker supports OCO.
+**Lunch Hour (15–30 min)** — check alerts/levels; place/adjust orders (limit, no chasing); update stops if rules require.
 
-**Lunch Hour (15–30 min)**
-
-- Check alerts triggered / price near levels.
-- Place/adjust orders (prefer limit entries; avoid chasing).
-- Update stops if rules require.
-
-**After Close (15–25 min)**
-
-- Journal and grade execution; capture screenshots.
+**After Close (15–25 min)** — journal and grade execution; capture screenshots; log footprint metrics.
 
 ### Weekly (Sunday evening, 60–90 min)
-
-- Review prior week trades, sizing, and goals.
-- Update weekly trend/levels and rebalance sizing.
+- **Re-rank the 11 SPDR sectors by RS vs SPY** (top rank is perishable). Review prior week trades, sizing, goals. Update weekly trend/levels.
 
 ### Monthly (60–120 min)
-
-- Full process and analytics review; adjust only after enough sample size.
+- Full process and analytics review; split realized expectancy by sector tier and by footprint-metric bucket (test the gates). Adjust only after enough sample size.
 
 ---
 
-## 8. Trade Ticket Template (v2)
+## 8. Trade Ticket Template (v3)
 
 | Field | Entry |
 | --- | --- |
 | Trade ID | YYYY-MM-DD-TICKER-A or -B |
-| Playbook | SW-A (Bottoming) or SW-B (Trend Continuation) |
-| Market Regime | Index trend (weekly/daily) + sector trend |
-| Catalyst/Context | Earnings date, sector rotation, offering resolved, etc. |
+| Playbook | SW-A v3 or SW-B |
+| Market Regime | Index trend (weekly/daily) + breadth + **index distribution-day count** |
 | Levels | Weekly S/R, Daily S/R, MA levels (20/50/200) |
-| v2 — U&R Confirmed (SW-A) | Yes/No + level reclaimed + reclaim date |
-| v2 — Dilution Check (SW-A) | No 424B5/S-3/S-1 in last 60 days — Confirmed Yes/No |
-| v2 — VCP Structure (SW-B) | Number of contractions, depth sequence, volume trend |
-| v2 — RS Percentile (SW-B) | RS percentile vs SPY (must be ≥80) |
-| Entry Trigger | Breakout + volume / pullback confirmation / MA reclaim |
-| Entry Price | |
+| Trend Gate (SW-A v3) | Price > rising 50 SMA? 50 > 200? (Yes/No) |
+| Entry Archetype (SW-A v3) | A (Pullback-to-MA) / B (Base Breakout) |
+| Reference MA & Touch Count (SW-A v3) | 20/50/200 reclaimed; 1st/2nd/later touch |
+| RS Percentile | SW-A v3 ≥ 70 / SW-B ≥ 80 |
+| Sector ETF & Rank | e.g., XLK — rank _ of 11 (top-third for A+); RS line rising? |
+| VCP Structure (SW-B) | Contraction count, depth sequence, volume trend |
+| Footprint metrics | U/D volume ratio (~50d); VDU present (Y/N); stock distribution-day count (~25d) |
+| Dilution Check | No 424B5/S-3/S-1 in 60 days — Confirmed (Yes/No) |
+| Volume Signature | Pullback/base contracting? Reclaim/breakout bar ×avg? |
+| Entry Trigger / Price | Reclaim / pivot-break / retest |
 | Stop Price (invalidation) | |
 | Trade Risk $/share | Entry − Stop |
-| Account Risk ($) | Per setup grade and v2 risk tier |
-| Position Size (shares) | Account risk ÷ trade risk |
-| Targets | T1 (structure), T2 (R-multiple), Trail rule |
-| Management Rules | Move stop? Partials? Time stop? |
-| Exit Triggers | Violation of structure, thesis broken, event risk window |
+| Account Risk ($) / Size | Per grade/tier; size = risk$ ÷ trade risk |
+| Targets | T1 (structure), T2 (R-multiple), Trail rule; ≥2R confirmed (Yes/No) |
+| Confirmations Passed | x / 6 (SW-A v3) |
+| Exit Triggers | Structure violation, distribution cluster, thesis broken, event window |
 | Post-Trade Grade | A/B/C (process), notes, screenshots |
 
 ---
 
-## 9. Journal Fields (v2 — Expanded)
+## 9. Journal Fields (v3 — Expanded)
 
-| Field | Notes |
-| --- | --- |
-| Setup type (A/B) | SW-A or SW-B |
-| Setup Grade | A+/A/B + rationale |
-| Regime alignment | Market + sector + stock |
-| Entry type | Breakout / retest / pullback / reclaim |
-| v2 — RS percentile at entry | Required for SW-B (must be ≥80) |
-| v2 — U&R confirmation | Required for SW-A |
-| v2 — VCP description | Required for SW-B (contractions, volume) |
-| Planned R | Initial RR |
-| Realized R | Final outcome |
-| v2 — MAE/MFE | Max Adverse and Max Favorable Excursion in R units |
-| Rule adherence score | 0/1 per rule; execution grade |
-| Sector context | Sector trend at entry |
-| Mistake / Insight | One line lesson |
+Setup type (SW-A v3 / SW-B) · Entry Archetype (A/B — tag separately) · Setup grade (A+/A/B) · Regime (index trend + breadth + **index distribution-day count**) · Trend gate (50/200 state) · Entry type (reclaim/pivot/retest) · RS percentile · **Sector ETF + sector RS rank (1–11)** · Touch count (SW-A v3) · VCP description (SW-B) · Volume signature · **U/D volume ratio (~50d)** · **VDU present (Y/N)** · **Stock distribution-day count (~25d)** · Planned R / Realized R · **MAE / MFE (R units)** · Rule-adherence score (0/1 per rule) · Mistake/Insight.
+
+> **Instrument the new filters so they can be tested.** Split realized expectancy by sector tier AND by footprint-metric bucket. A filter that does not out-expectancy its alternative after costs is cutting trade count, not adding edge — drop it.
 
 ---
 
-## 10. Paper Testing Protocol (v2 addition)
+## 10. Paper Testing Protocol (v3)
 
-Apply 25% performance haircut to paper expectancy when projecting to live trading. Live results consistently underperform paper results due to slippage, partial fills, and psychological pressure.
+Apply a 25% performance haircut to paper expectancy when projecting to live.
 
 ### Phase 0: Manual Chart Study
-
-- Mark 20 historical examples per playbook: entry, stop, target, outcome.
-- Complete before paper trading begins.
+- Mark 20 historical examples per playbook (and per SW-A v3 archetype): entry, stop, target, outcome. Complete before paper trading.
 
 ### Phase 1: Paper Test Sequence
-
-- SW-B first (6 weeks alone). Higher base rate playbook.
-- Add SW-A only after SW-B is producing a reviewable journal.
-- Minimum sample before judgment: 30 SW-B trades + 20 SW-A trades. Floor only; 50+ each preferred.
+- SW-B first (6 weeks alone), then add SW-A v3.
+- **Tag SW-A v3 Archetype A and B separately.** Apply $0.02–0.05 slippage.
+- Minimum 50 trades per playbook (30 floor; 50+ preferred).
 
 ### Phase 2: Decision Gate
-
-- Compute per playbook: win rate, average winner R, average loser R, expectancy, profit factor, max consecutive losses.
-- Live gate: expectancy ≥ +0.20R after 25% haircut, with at least 50 trades in that playbook.
-- Max consecutive loss streak must be tolerable at live size.
+- Per playbook/archetype: win rate, avg winner R, avg loser R, expectancy, profit factor, max consecutive losses.
+- Live gate: expectancy ≥ +0.20R after 25% haircut, ≥ 50 trades, tolerable max-loss streak at live size.
 
 ### Phase 3: Live Micro-Sizing
-
-- Go live at 25% of normal risk (e.g., 0.18% instead of 0.75% A+ for SW-A).
-- 30–50 live trades; compare live to paper expectancy.
-- Scale to full sizing only if live expectancy remains positive post-haircut.
+- Go live at 25% of normal risk (≈ 0.18% for SW-A v3 A+). 30–50 live trades; compare to paper. Scale only if live holds post-haircut.
 
 ### Hard Rule
+Each playbook — and each SW-A v3 archetype — earns live status independently.
 
-Each playbook earns live status independently. SW-B clearing paper does NOT permit SW-A live trading.
-
-### SW-A Retirement Condition (v2)
-
-If SW-A expectancy after 50 paper trades is materially worse than SW-B (e.g., SW-A < +0.10R and SW-B > +0.30R after haircut), retire SW-A. Do not force a contrarian playbook to work because it is in the plan.
+### Collapse Condition (replaces v2 SW-A retirement condition)
+If, after 50 trades each, SW-A v3 and SW-B expectancies are statistically indistinguishable, **collapse into a single continuation playbook.** (The old v2 rule — "retire SW-A if the contrarian book underperforms SW-B" — is obsolete: SW-A is no longer contrarian.)
 
 ---
 
 ## 11. AI Agent Use
 
 ### High-Value Automations
-
-- Daily scanning + shortlist generation (apply v2 filters: U&R for SW-A, VCP + RS percentile for SW-B).
-- Chart briefing pack (1-page brief per ticker).
-- Trade ticket auto-fill with position sizing and RR; check portfolio heat.
-- Journaling + grading assistant (R-multiples, MFE/MAE, win rate, profit factor).
-- Process compliance monitor (rule break detection).
+- Daily scanning + shortlist. SW-A v3: staged top-down funnel. SW-B: VCP + RS ≥ 80 in top-third sectors.
+- **Backtest attribution (parallel-tag mode):** run stock+setup logic on the full universe with sector tier AND each footprint metric tagged — the only way to prove a gate adds expectancy rather than cutting count. Enforce point-in-time GICS/ETF membership and as-of ranks (no look-ahead).
+- Index + stock distribution-day counters as a daily regime/health report.
+- Chart briefing pack; trade-ticket auto-fill with sizing, RR, portfolio-heat check.
+- Journaling + grading assistant (R-multiples, MFE/MAE, expectancy-by-tier and by-footprint-metric).
+- Process compliance monitor (rule-break detection).
 
 ### Do Not Delegate
-
 - AI deciding trades without your confirmation.
 - Using AI sentiment outputs as primary signals.
 
 ### Implementation Path
-
-- Phase 1 (manual + assisted): AI produces watchlist + trade tickets; you approve execution.
-- Phase 2 (semi-automated): AI generates orders (OCO brackets) but you click approve.
-- Phase 3 (research only): automated backtests + walk-forward testing.
+- Phase 1 (manual + assisted): AI produces watchlist + tickets; you approve execution.
+- Phase 2 (semi-automated): AI generates OCO brackets; you click approve.
+- Phase 3 (research only): automated backtests + walk-forward / out-of-sample testing.
 
 ---
 
 ## 12. Glossary of Acronyms and Abbreviations
 
-All shorthand used in this document, in alphabetical order. Includes both system-specific terms and general swing-trading terminology.
-
 | Acronym | Meaning | Notes / Use in this system |
 | --- | --- | --- |
-| ADL | Accumulation/Distribution Line | Volume-based indicator showing whether a stock is being accumulated or distributed. |
-| ADX | Average Directional Index | Trend-strength indicator. ADX > 20 used to confirm trend in SW-B. |
-| ATM offering | At-The-Market Offering | Continuous share offering filed via SEC form 424B5; signals dilution risk. Hard disqualifier for SW-A in v2. |
-| ATR | Average True Range | Volatility measure; used to size stops on volatile names. |
-| EMA | Exponential Moving Average | Faster-reacting moving average; 20 EMA used for trend trail, 50 EMA for trend confirmation. |
-| EOD | End of Day | Routine and scan timing — typically after 4:00 PM ET close. |
-| HTF | Higher Time Frame | Weekly/monthly structure referenced above daily charts. |
-| MA | Moving Average | Generic term covering SMA and EMA. |
-| MACD | Moving Average Convergence Divergence | Momentum indicator; histogram cross used as confirmation only, not trigger. |
-| MAE | Maximum Adverse Excursion | Worst unrealized loss reached during a trade; journal field. |
-| MFE | Maximum Favorable Excursion | Best unrealized gain reached during a trade; journal field. |
-| OBV | On-Balance Volume | Running total of volume on up days vs down days. Trend = accumulation signal. |
-| OCO | One-Cancels-Other Order | Bracket order pairing stop and target; one fills, the other cancels automatically. |
-| R / 1R | Risk Unit | Dollar amount lost if stop is hit. All outcomes expressed in R multiples (e.g., +2R, −1R). |
-| RR | Reward-to-Risk Ratio | Planned profit divided by planned loss. Minimum 1.5:1; prefer 2:1+. |
-| RS | Relative Strength | Ticker performance vs benchmark. SW-B v2 requires RS percentile ≥ 80 vs SPY. Distinct from RSI. |
-| RSI | Relative Strength Index | Momentum oscillator (0–100), typically RSI(14). Confirmation only, not trigger. |
-| S/R | Support / Resistance | Price levels where buying/selling pressure historically clustered. |
-| S-1 | SEC Form S-1 (Registration) | New share registration filing; signals primary offering. Dilution disqualifier for SW-A. |
-| S-3 | SEC Form S-3 (Shelf Registration) | Shelf registration allowing future share issuance; dilution risk signal. Hard disqualifier for SW-A in v2. |
-| 424B5 | SEC Form 424B5 (Prospectus Supplement) | ATM offering prospectus supplement; active dilution catalyst. Hard disqualifier for SW-A in v2. |
-| SEPA | Specific Entry Point Analysis | Mark Minervini's swing methodology; VCP refinement in SW-B v2 is derived from SEPA principles. |
-| SMA | Simple Moving Average | Unweighted average of last N closes (e.g., SMA50, SMA200). |
-| SPY | SPDR S&P 500 ETF Trust | Broad market benchmark; SW-B RS percentile measured vs SPY. |
-| SW-A | Swing Playbook A — Bottoming / Pre-Breakout | Contrarian playbook; v2 requires confirmed U&R structure. |
-| SW-B | Swing Playbook B — Trend Continuation | Continuation playbook; v2 requires VCP structure and RS percentile ≥ 80. |
-| T1 / T2 | Target 1 / Target 2 | First and second profit objectives, set before entry. |
-| U&R | Undercut & Reclaim | Structural pattern: marginal new low followed by daily close reclaiming a prior swing low/support. Mandatory for SW-A in v2. |
-| VCP | Volatility Contraction Pattern | Base/pullback with 2+ contractions, each shallower and on lower volume. Mandatory for SW-B in v2. |
-| VWAP | Volume-Weighted Average Price | Session fair-value benchmark. Used in swing system for intraday entry timing. |
+| ADL | Accumulation/Distribution Line | Close-location × volume accumulation read (Chaikin). Correlated with U/D ratio — use one. |
+| ADX | Average Directional Index | Trend-strength read; >20 supports trend quality. |
+| Accumulation day | Up day on higher volume than prior day | Institutional buying footprint. |
+| Archetype A / B | SW-A v3 entry types | A = pullback-to-MA reclaim; B = base breakout. Tagged separately. |
+| ATM offering | At-The-Market Offering | SEC 424B5; dilution signal. Hard disqualifier. |
+| ATR | Average True Range | Sizes stop buffers on volatile names. |
+| Distribution day | Down day (≥0.2%) on higher volume than prior day | Institutional selling footprint. Index: 4–6 in 4–5 weeks = risk-off. Stock: cluster = exit caution. |
+| EMA | Exponential Moving Average | 20 EMA trailing; faster-reacting MA. |
+| GICS | Global Industry Classification Standard | Backtests must use point-in-time membership (2018 reshuffle moved GOOGL/META/NFLX). |
+| MA / MACD | Moving Average / Moving Average Convergence Divergence | MACD = CONFIRMATION ONLY; first cross often a trap. |
+| MAE / MFE | Max Adverse / Favorable Excursion | R units; journal fields. |
+| OBV | On-Balance Volume | Up/down-volume running total (Granville). Divergence = distribution warning. |
+| OCO | One-Cancels-Other Order | Bracket pairing stop and target. |
+| Pivot | Final base-contraction high | Breakout reference for Archetype B / SW-B. |
+| Pocket pivot | Morales & Kacher accumulation entry | Up day vol > highest down-day vol of prior 10 days, at the MA/in-base. Flagged future Archetype C. |
+| R / 1R / RR | Risk Unit / Reward-to-Risk | Outcomes in R multiples; v3 entries require ≥2R. |
+| RS / RSI | Relative Strength / RS Index | RS (vs SPY): SW-A v3 ≥70, SW-B ≥80. RSI = confirmation only. Distinct. |
+| Sector RS | Sector ETF RS vs SPY | 11 SPDRs ranked weekly; top-third required, bottom-third = NO TRADE (both books). |
+| SPDR sectors | XLK/XLF/XLE/XLV/XLY/XLP/XLI/XLB/XLU/XLRE/XLC | Ranked for the sector gate. |
+| S-1 / S-3 / 424B5 | SEC dilution filings | Hard disqualifier if filed in last 60 days. |
+| Stage 2 | Weinstein advancing stage | Price above a rising long-term MA; the only stage v3 buys. |
+| SW-A / SW-B | Playbook A v3 (Pullback/Base Breakout) / B (Trend Continuation, VCP) | Both continuation-from-strength. |
+| U/D volume ratio | Up-volume ÷ down-volume (~50d) | ≥1 healthy; ≥1.5–2 strong accumulation; <1 distribution. |
+| U&R | Undercut & Reclaim | **Retired with SW-A v2.** Kept only to flag the change. |
+| VCP | Volatility Contraction Pattern | 2+ shallower contractions on falling volume. Mandatory SW-B; optional SW-A v3. |
+| VDU | Volume Dry-Up | Base day with volume ≈ ≤50% of 50-day avg before breakout — supply exhaustion (Minervini). |
+
+### Key References
+- George & Hwang (2004), *The 52-Week High and Momentum Investing*, Journal of Finance.
+- Moskowitz & Grinblatt (1999), *Do Industries Explain Momentum?*, Journal of Finance.
+- Weinstein (1988), *Secrets for Profiting in Bull and Bear Markets* (Stage Analysis).
+- Minervini, *Trade Like a Stock Market Wizard* / *Think and Trade Like a Champion* (SEPA / VCP / VDU).
+- O'Neil, *How to Make Money in Stocks* / IBD (CAN SLIM; distribution days; Accumulation/Distribution Rating).
+- Morales & Kacher, *Trade Like an O'Neil Disciple* (pocket pivots).
 
 ---
 
-*Educational use only. Not financial advice.*
+*Educational use only. Not financial advice. v3 source of truth — standalone SW-A v3 and SW-B documents govern in any conflict. Footprint A/D metrics are research-grounded and unvalidated; instrument and test before promoting to hard gates.*
