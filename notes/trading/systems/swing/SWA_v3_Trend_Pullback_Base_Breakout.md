@@ -28,6 +28,7 @@ The v2 bottoming playbook bought stabilization near 52-week lows with a mandator
 | RSI / MACD role | Confirmation only | Confirmation only (unchanged) — **never a trigger.** Your raw "RSI>40 + MACD cross" is graded and tightened in §3 and §4. |
 | Volume | >1.5× avg on up days | Pullback volume must **contract**; breakout/reclaim bar **≥1.5× (min) to 2× 20-day avg**; avoid 3–5× climax bars |
 | Risk tier A+ | 0.75% (capped) | 0.75% (capped until 50+ v3 trades show positive expectancy — see §5) |
+| Footprint metrics | — (not in v2) | **NEW (this revision):** institutional-footprint A/D metrics added as instrumented, **observe-mode** features — distribution-day counts, U/D volume ratio, VDU, RS-line-leads-price — defined in **§9A**. Computed and logged; **not** entry gates until validated. |
 
 ---
 
@@ -47,7 +48,7 @@ The common thread across all four: **trend first, structure second, momentum ind
 
 ## 2. GO / NO-GO (60s)
 
-- **Regime (market):** SPY/QQQ above rising 200-day; broad participation not collapsing. In a clear index downtrend, **size down or stand down** (continuation setups fail far more often when the index is below its long-term average).
+- **Regime (market):** SPY/QQQ above rising 200-day; broad participation not collapsing. In a clear index downtrend, **size down or stand down** (continuation setups fail far more often when the index is below its long-term average). A rising **index distribution-day count** (§9A) is an additional risk-off input.
 - **Trend (stock) — HARD GATE:** price above a **rising 50 SMA**; 50 SMA above 200 SMA preferred. Higher highs / higher lows intact on the daily. *If price is below a falling 50 SMA, this is not a v3 setup — skip.*
 - **Relative strength:** RS percentile vs SPY **≥ 70** and RS line flat-to-rising (not making new RS lows).
 - **Sector strength (NEW gate):** the stock's sector ETF is in the **top-third by RS vs SPY** (≈ top 4 of the 11 SPDR sectors) and its RS line vs SPY is rising. Bottom-third sector, or sector RS making new lows, = stand down — do not fight a weak group.
@@ -178,6 +179,7 @@ The common thread across all four: **trend first, structure second, momentum ind
 - **Hard exit:** stop hit, or trend structure breaks (lower low / decisive close below the reference MA on expanding volume).
 - **Pullback-entry failure:** price closes back below the reclaimed MA the next session and does not recover within 1–2 bars.
 - **Breakout-entry failure:** breakout closes back inside the base with distribution; repeated failed pivots.
+- **Distribution warning (footprint, observe-mode):** a cluster of stock-level distribution days (down on higher volume) while you hold, or the U/D volume ratio rolling below 1.0, is a caution flag even if price still holds — tighten or reduce. Instrumented, not a hard exit until validated (see §9A).
 - **Circuit breakers (unchanged):** 3 losses in a row → pause new entries 3 sessions; rule violation → stop new entries for the week; −3R in a week → stop opening positions until next week.
 
 ---
@@ -193,6 +195,89 @@ The common thread across all four: **trend first, structure second, momentum ind
 - Earnings/binary event inside 3–5 sessions.
 - Climactic volume (3–5×+ average) on the entry bar — that is exhaustion behavior, not continuation.
 - You are chasing: price already extended >2–3% beyond trigger.
+
+---
+
+## 9A. Institutional Footprint — Accumulation/Distribution Metrics (Instrumented)
+
+> **Status: research-grounded, NOT yet validated on your data — identical posture to the sector gate.** These metrics are **computed and logged (observe-mode) by default; they do NOT gate or force trades** until a parallel-tag test (§14) proves each one adds expectancy after costs. Premise (full rationale: `Tracking_Institutional_Footprints_Reference.md`): you cannot get the rumor, but institutions cannot accumulate *or* distribute size without leaving residue on price and volume. v3's existing gates already read the **accumulation (buy) side**; these add the orthogonal **distribution (sell) side** the system was blind to. Sources: O'Neil/IBD (distribution days; Accumulation/Distribution rating), Minervini (VDU), Granville (OBV), Chaikin (ADL).
+
+> **Why observe-mode, not gates.** Most accumulation indicators (OBV, ADL, A/D line) are *correlated* with the trend + volume gates you already run — adding them as buy-filters mostly cuts trade count without new information. The non-redundant signal is the **distribution side.** So the engine computes everything, but the default action is to **record**, not block. Promote a metric to a gate only via the §13/§14 validation step.
+
+### 9A.1 Feature definitions (deterministic)
+
+All features use only data ≤ the decision date (no leakage). "Volume" = session volume; "avg" = simple moving average unless noted.
+
+- **Distribution day (index or stock).** A session closing **down ≥ `dist_down_pct`** vs the prior close **on volume greater than the prior session's volume.** Count occurrences in a rolling `dist_window`. (IBD heuristic: a cluster on the *index* is the classic institutional-selling / topping tell.)
+- **Accumulation day (mirror).** Up ≥ `dist_down_pct` on higher volume than the prior session. Logged for the up/down balance; not gated.
+- **U/D volume ratio.** Over `ud_lookback` sessions: Σ(volume on up days) ÷ Σ(volume on down days), "up day" = `close > prior close`. ≥1.0 healthy, ≥`ud_strong` strong accumulation, **<1.0 = net distribution** (a leader quietly under distribution even while price holds).
+- **Volume Dry-Up (VDU).** During the pullback/base, ≥1 session with **volume ≤ `vdu_pct` × `vdu_avg_window`-day average** (ideally the narrowest-range day) immediately preceding the reclaim/breakout. Hardens the qualitative "volume contracts into the base" into a number (Minervini).
+- **RS-line-leads-price (bonus tell).** The stock's RS line vs SPY prints a **new `rs_newhigh_lookback`-day high while price is still based** — RS leadership leading price; a strong accumulation footprint.
+- **OBV trend (optional, correlated).** Running Σ(+vol up days, −vol down days). Rising OBV confirms; OBV failing to confirm a new price high warns of distribution. *Correlated with U/D ratio — pick one as primary (recommend U/D ratio); do not stack both as gates.*
+
+### 9A.2 Parameter catalogue (lock-and-test defaults; observe-mode)
+
+| Parameter | Default | Type | Mode | Notes |
+| --- | --- | --- | --- | --- |
+| `dist_down_pct` | 0.20% | float | regime input / observe (stock) | Index uses IBD's 0.2%; stock same default, test 0.2–0.5% |
+| `dist_window` | 25 sessions (~5 wks) | int | — | Rolling window for the count |
+| `index_dist_cluster_riskoff` | 5 | int | observe → regime posture | Test 4–6; triggers size-down |
+| `stock_dist_cluster_warn` | 4 | int | observe (exit flag) | Cluster while holding = caution |
+| `ud_lookback` | 50 sessions | int | — | — |
+| `ud_strong` | 1.75 | float | observe | "strong accumulation" threshold (range 1.5–2.0) |
+| `vdu_pct` | 0.50 | float | observe (confirm) | ≤ 50% of average volume |
+| `vdu_avg_window` | 50 sessions | int | — | — |
+| `rs_newhigh_lookback` | 63 sessions (~3 mo) | int | observe (bonus confirm) | — |
+
+Regime-posture map (observe by default — log the multiplier it *would* apply, then validate before activating): index distribution days **0–3 → 1.0×** tiers · **4–5 → 0.5×** · **6+ → stand down.**
+
+### 9A.3 Wiring — where each metric plugs in
+
+| Metric | Module | Default action |
+| --- | --- | --- |
+| Index distribution-day count | Stage 0 regime (§2 / §14) | Observe → recommended **first promotion** (size posture); orthogonal & market-level |
+| Stock distribution-day cluster | Exits / management (§8) | Observe → caution flag while holding |
+| U/D volume ratio | Confirmation health (§6) + journal | Observe (do **not** add as a 7th stack item until validated) |
+| VDU present | Base-quality confirmation (§3) + journal | Observe (bonus quality mark) |
+| RS-line-leads-price | RS confirmation (§3 / §6) + journal | Observe (bonus tell) |
+
+### 9A.4 Validation path (before any promotion to a gate)
+
+Run each metric through **parallel-tag attribution** (§14): compute it on every candidate, tag trades by metric bucket, compare realized expectancy across buckets after costs and the 25% haircut. Promote a metric from observe-mode to an active gate/posture **only** if its favorable bucket out-expectancies the rest by a margin that survives walk-forward. If it only cuts trade count, it stays observe-mode or is dropped. **Recommended first promotion: the index distribution-day count** (Stage-0 size posture) — it changes position *size*, not trade *selection*, so it carries the least overfit risk.
+
+### 9A.5 Deterministic computation (pseudocode)
+
+```python
+# All features use data <= decision date (no leakage). df: daily OHLCV, ascending.
+def distribution_days(df, down_pct=0.002, window=25):
+    chg = df["close"].pct_change()
+    higher_vol = df["volume"] > df["volume"].shift(1)
+    dist = (chg <= -down_pct) & higher_vol
+    return int(dist.tail(window).sum())
+
+def ud_volume_ratio(df, lookback=50):
+    w = df.tail(lookback)
+    up = w["close"] > w["close"].shift(1)
+    up_vol, dn_vol = w.loc[up, "volume"].sum(), w.loc[~up, "volume"].sum()
+    return float("inf") if dn_vol == 0 else up_vol / dn_vol
+
+def vdu_present(df_base, pct=0.50, avg_window=50):
+    avg = df_base["volume"].rolling(avg_window).mean()
+    return bool((df_base["volume"] <= pct * avg).tail(len(df_base)).any())
+
+def rs_line_leads_price(stock_close, spy_close, lookback=63):
+    rs = stock_close / spy_close
+    rs_new_high    = rs.iloc[-1]          >= rs.tail(lookback).max()
+    price_new_high = stock_close.iloc[-1] >= stock_close.tail(lookback).max()
+    return bool(rs_new_high and not price_new_high)      # RS leads price
+
+# Regime posture (observe-mode: log multiplier; do NOT apply until validated)
+def regime_size_multiplier(index_df, **kw):
+    d = distribution_days(index_df, **kw)
+    return 1.0 if d <= 3 else (0.5 if d <= 5 else 0.0)
+```
+
+> These functions return **features**, not trade decisions. They attach to every candidate/trade record; the `mode` flags in §9A.2 decide whether a feature is logged-only or allowed to affect posture/selection. Default: logged-only.
 
 ---
 
@@ -212,7 +297,7 @@ SW-A v3 and SW-B are both continuation-from-strength. Left undefined, you will g
 
 > **Analyst recommendation:** Run them as complements — SW-B is your **breakout** book, SW-A v3 is your **pullback** book — under one shared portfolio-heat budget (3.0% total, 1.5% sector). If after 50 trades each their expectancies are statistically indistinguishable, **collapse them into one continuation playbook** rather than maintaining two. Do not keep two books alive out of attachment to the structure.
 
-> **Consistency note:** SW-B currently treats sector strength *qualitatively* ("sector strong or improving"). The quantitative sector gate added here (top-third by RS vs SPY) is equally applicable to SW-B and arguably belongs there too. I left SW-B untouched for now since you scoped this to SW-A v3 — say the word and I'll backport the same gate to the SW-B docs so both continuation books measure sector strength identically.
+> **Consistency note (resolved):** The quantitative sector gate (top-third by RS vs SPY) has been **backported to SW-B (v3)** — both continuation books now measure sector strength identically (top-third required; bottom-third = NO TRADE). The §9A institutional-footprint A/D metrics are likewise instrumented in both books' quick references and the Master Plan, so SW-A v3 and SW-B journal identically.
 
 ---
 
@@ -245,15 +330,16 @@ Consistent with the rest of the system:
 | Entry / Stop / Trade risk $/sh | |
 | Account risk $ / Size | Per tier; size = risk$ ÷ trade risk |
 | T1 / T2 / Trail rule | ≥2R to first resistance confirmed (Yes/No) |
+| Footprint metrics (§9A) | U/D vol ratio (~50d); VDU present (Y/N); stock distribution-day count (~25d); index distribution-day count |
 | Confirmations passed | x / 6 |
 
 ---
 
 ## 13. Journal Fields (v3)
 
-Date · Ticker · Archetype (A/B) · Setup grade (A+/A/B) · Regime (index trend + breadth) · Trend gate (50/200 state) · RS percentile · **Sector ETF + sector RS rank (1–11) at entry** · Touch count · Volume signature · Entry type (reclaim / pivot / retest) · Planned R · Realized R · **MAE / MFE (R units)** · Rule-adherence score (0/1 per rule) · Sector context · Mistake/Insight (one line).
+Date · Ticker · Archetype (A/B) · Setup grade (A+/A/B) · Regime (index trend + breadth + **index distribution-day count**) · Trend gate (50/200 state) · RS percentile · **Sector ETF + sector RS rank (1–11) at entry** · Touch count · Volume signature · Entry type (reclaim / pivot / retest) · **Footprint (§9A): U/D vol ratio (~50d) · VDU present (Y/N) · stock distribution-day count (~25d)** · Planned R · Realized R · **MAE / MFE (R units)** · Rule-adherence score (0/1 per rule) · Sector context · Mistake/Insight (one line).
 
-> **Instrument the sector filter so you can test it.** Log the sector rank on *every* trade and, in the weekly review, split realized expectancy by sector tier (top / middle / bottom-third). If top-third does not out-expectancy the rest after a meaningful sample, the gate is only cutting trade count, not adding edge — and you drop it. That is the data-validation step this filter has not yet passed.
+> **Instrument the sector filter so you can test it.** Log the sector rank on *every* trade and, in the weekly review, split realized expectancy by sector tier (top / middle / bottom-third). If top-third does not out-expectancy the rest after a meaningful sample, the gate is only cutting trade count, not adding edge — and you drop it. That is the data-validation step this filter has not yet passed. **Apply the identical test to every §9A footprint metric** — log it on every trade, bucket realized expectancy by it, and promote it from observe-mode to a gate only if it adds expectancy after costs.
 
 ---
 
@@ -261,7 +347,7 @@ Date · Ticker · Archetype (A/B) · Setup grade (A+/A/B) · Regime (index trend
 
 This is the **order the scan runs in** — the same gates as §2–§6, applied top-down so you only ever evaluate setups *inside* strong groups. The §2 GO/NO-GO is the per-*candidate* 60-second check; this funnel is the *process* that surfaces those candidates. It is also the backtest/forward-test architecture (run modes below).
 
-**Stage 0 — Market regime (weekly + daily).** SPY/QQQ above a rising 200-day; breadth not deteriorating. Risk-off → cut tiers or stand down. This gates the whole funnel; in a confirmed downtrend the lower stages do not run at full size.
+**Stage 0 — Market regime (weekly + daily).** SPY/QQQ above a rising 200-day; breadth not deteriorating; **index distribution-day count** within tolerance (§9A). Risk-off (downtrend or rising distribution-day count) → cut tiers or stand down. This gates the whole funnel; in a confirmed downtrend the lower stages do not run at full size.
 
 **Stage 1 — Rank sectors (weekly).** Rank the 11 SPDR sector ETFs by RS vs **SPY** (blend 3- and 6-month). Keep the **top-third (≈ top 4) with a rising RS line**. Re-rank every weekend — top rank decays in ~21–47 days. This is the universe-narrowing step and the core of the top-down edge.
 
