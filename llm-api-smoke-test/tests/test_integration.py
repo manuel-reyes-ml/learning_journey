@@ -191,7 +191,7 @@ class TestMainProviderFailures:
     
     def test_provider_raises_returns_provider_error(
         self,
-        monkepatch: pytest.MonkeyPatch,
+        monkeypatch: pytest.MonkeyPatch,
         valid_env: dict[str, str],
     ) -> None:
         """A failing provider → PROVIDER_ERROR (failures captured).
@@ -212,7 +212,7 @@ class TestMainProviderFailures:
                 raise NotImplementedError
             
         # Replace just the 'anthropic' sync slot with the failing class.
-        monkepatch.setitem(
+        monkeypatch.setitem(
             dicts,
             "anthropic",
             ProviderList(
