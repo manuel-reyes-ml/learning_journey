@@ -186,3 +186,45 @@ class TestMainExitCodes:
 # Provider failure handling — PROVIDER_ERROR exit code
 # =============================================================================
 
+class TestMainProviderFailures:
+    """Test the PROVIDER_ERROR path: a provider raises during smoke_test."""
+    
+    def test_provider_raises_returns_provider_error(
+        self,
+        monkepatch: pytest.MonkeyPatch,
+        valid_env: dict[str, str],
+    ) -> None:
+        """A failing provider → PROVIDER_ERROR (failures captured).
+        
+        Patches the registry to a provider whose smoke_test always
+        raises, then asserts main() returns the right exit code.
+        """
+        from llm_api_smoke_test.register import DictInfo, ProviderList, dicts
+        
+        class AlwaysFailingProvider:
+            def __init__(self, settings) -> None:
+                self._settings = settings
+                
+            def smoke_test(self, prompt: str) -> Exception:
+                raise RuntimeError("simulated provider outage")
+            
+            def generate_structured(self, prompt: str, schema) -> Exception:
+                raise NotImplementedError
+            
+        # Replace just the 'anthropic' sync slot with the failing class.
+        monkepatch.setitem(
+            dicts,
+            "anthropic",
+            ProviderList(
+                sync_provider=DictInfo(
+                    provider_class=AlwaysFailingProvider,   # type: ignore[arg-type]
+                    class_name="AlwaysFailingProvider",
+                    description="test failing provider",
+                ),
+            ),
+        )
+        
+        result = main(["anthropic"])
+        
+        # Failure captured → PROVIDER_ERROR, not SUCCESS.
+        assert result == ExitCode.PROVIDER_ERROR
