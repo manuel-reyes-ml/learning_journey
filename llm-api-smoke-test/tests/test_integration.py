@@ -1,4 +1,19 @@
-"""
+"""End-to-end integration tests for main().
+ 
+These tests exercise the FULL composition root — argv → exit code —
+without making real API calls.  We monkeypatch the provider classes
+in the registry to use FakeSyncProvider/FakeAsyncProvider so the
+network never gets touched.
+ 
+Why integration tests?
+----------------------
+Unit tests pin individual function behaviour.  Integration tests
+verify those units WIRE UP correctly.  Recruiter-readable signals:
+ 
+1. Real argv → real exit code (the user-facing contract).
+2. The sync vs async branch in main() actually does the right thing.
+3. Logger configuration doesn't crash the program.
+4. Exit code mapping handles every documented failure path.
 """
 
 # =============================================================================
