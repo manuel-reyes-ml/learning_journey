@@ -88,3 +88,50 @@ def fake_registry(
 # Happy-path integration
 # =============================================================================
 
+class TestMainHappyPath:
+    """Successful end-to-end invocations."""
+    
+    def test_sync_path_returns_success(self, fake_registry: None) -> None:
+        """Default sync invocation → ExitCode.SUCCESS."""
+        result = main(["anthropic"])
+        
+        assert result == ExitCode.SUCCESS
+        
+    def test_async_path_returns_success(self, fake_registry: None) -> None:
+        """--async invocation → ExitCode.SUCCESS, exercises asyncio.run."""
+        result = main(["anthropic", "--async"])
+        
+        assert result == ExitCode.SUCCESS
+        
+    def test_multiple_providers_sync(self, fake_registry: None) -> None:
+        """Two providers, sync path → SUCCESS."""
+        result = main(["anthropic", "gemini"])
+        
+        assert result == ExitCode.SUCCESS
+        
+    def test_multiple_prompts_sync(self, fake_registry: None) -> None:
+        """Multiple prompts via --prompts → all run, SUCCESS."""
+        result = main([
+            "anthropic",
+            "--prompts", "first prompt", "second prompt",
+        ])
+        
+        assert result == ExitCode.SUCCESS
+        
+    def test_verbose_flag_doesnt_break(self, fake_registry: None) -> None:
+        """--verbose → logging configured for DEBUG, still returns SUCCESS."""
+        result = main(["anthropic", "-v"])
+        
+        assert result == ExitCode.SUCCESS
+        
+    def test_no_log_file_flag(self, fake_registry: None) -> None:
+        """--no-log-file → console only, still returns SUCCESS."""
+        result = main(["anthropic", "--no-log-file"])
+        
+        assert result == ExitCode.SUCCESS
+        
+        
+# s=============================================================================
+# Failure-path integration
+# =============================================================================
+
