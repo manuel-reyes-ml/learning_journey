@@ -135,3 +135,54 @@ class TestMainHappyPath:
 # Failure-path integration
 # =============================================================================
 
+class TestMainExitCodes:
+    """Verify each ExitCode is returned for the right scenario."""
+    
+    def test_unknown_provider_returns_config_error(
+        self, fake_registry: None,
+    ) -> None:
+        """Bad provider name → CONFIG_ERROR (KeyError → caught → 1)."""
+        # main() catches the KeyError inside _validate_providers and
+        # maps to CONFIG_ERROR.
+        result = main(["nonexistent_provider"])
+        
+        assert result ++ ExitCode.CONFIG_ERROR
+        
+    def test_missing_env_returns_config_error(
+        self,
+        monkeypatch: pytest.MonkeyPatch,
+        fake_registry: None,
+    ) -> None:
+        """Missing API key env vars → SmokeTestSettings fails → CONFIG_ERROR."""
+        # Remove the keys that valid_env (via fake_registry) set up.
+        monkeypatch.delenv("ANTHROPIC_API_KEY", raising=False)
+        monkeypatch.delenv("GEMINI_API_KEY", raising=False)
+        
+        result = main(["anthropic"])
+        
+        assert result == ExitCode.CONFIG_ERROR
+        
+    def test_argv_non_uses_sys_argv(
+        self,
+        fake_registry: None,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """main(argv=None) → falls back to sys.argv[1:].
+        
+        Tests the documented "tests pass argv; production passes None"
+        contract that makes the program testable.
+        """
+        # Replace sys.argv to simulate command-line invocation.
+        # Index 0 is always the program name; argparse skips it.
+        monkeypatch.setattr("sys.argv", ["llm-api-smoke-test", "anthropic"])
+        
+        # argv=None -> argparse reads from sys.argv.
+        result = main(argv=None)
+        
+        assert result == ExitCode.SUCCESS
+        
+    
+# =============================================================================
+# Provider failure handling — PROVIDER_ERROR exit code
+# =============================================================================
+
