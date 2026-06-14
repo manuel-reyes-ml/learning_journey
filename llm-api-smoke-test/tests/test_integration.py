@@ -214,10 +214,11 @@ class TestMainProviderFailures:
         Patches the registry to a provider whose smoke_test always
         raises, then asserts main() returns the right exit code.
         """
+        from llm_api_smoke_test.config import ProviderSettings
         from llm_api_smoke_test.register import DictInfo, ProviderList, dicts
         
         class AlwaysFailingProvider:
-            def __init__(self, settings) -> None:
+            def __init__(self, settings: ProviderSettings) -> None:
                 self._settings = settings
                 
             def smoke_test(self, prompt: str) -> Exception:
