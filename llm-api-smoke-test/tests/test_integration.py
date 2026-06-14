@@ -55,7 +55,7 @@ def fake_registry(
         def __init__(self, settings: ProviderSettings) -> None:
             self._settings = settings
             
-        def smoke_test(self, prompt: str) -> SmokeTestResult:
+        async def smoke_test(self, prompt: str) -> SmokeTestResult:
             return SmokeTestResult(
                 provider_name=self._settings.name,
                 model=self._settings.model,
@@ -64,7 +64,7 @@ def fake_registry(
                 latency_ms=1.0,
             )
             
-        def generate_structured(self, prompt: str, schema) -> Exception:
+        async def generate_structured(self, prompt: str, schema) -> Exception:
             raise NotImplementedError
         
     # For each registered provider name, swap both slots.
