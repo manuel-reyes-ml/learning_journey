@@ -180,7 +180,12 @@ async def batch_smoke_test(
                             "call_failed",
                             provider_class=provider_class,
                             type_exception=type(exc).__name__,
-                            exc_info=True,  # # <- structlog's blessed way to log exceptions
+                            exc_info=True,  # <- structlog's blessed way to log exceptions
+                            # replace exception=exc with exc_info=True.
+                            # exc_info=True tells structlog "grab the current exception from
+                            # sys.exc_info() and render it properly through format_exc_info.
+                            # " This is what that processor is built to consume — no more
+                            # concatenation error, and you get a proper traceback in your logs.
                         )
                         failures.append((provider_class, exc))
         
