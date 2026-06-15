@@ -35,6 +35,19 @@ from pydantic import SecretStr
 from llm_api_smoke_test.config import ProviderSettings, SmokeTestSettings
 from llm_api_smoke_test.providers import SmokeTestResult, TokenUsage
 
+# When you write from llm_api_smoke_test.config import ..., Python (and Pylance)
+# ask the same question: "Is there a package called llm_api_smoke_test on sys.path?"
+# 
+# Without an install, sys.path looks roughly like:
+#   /usr/lib/python3.12          # stdlib
+#   /usr/lib/python3.12/site-packages   # installed packages
+#   /path/to/your/cwd            # whatever directory you're in
+#   Your package directory (src/llm_api_smoke_test/) is on none of these.
+# That's why imports fail — Python literally doesn't know the package exists.
+#
+# After package is installed you may need to restart Pylance (or your editor's Python
+# language server) to pick up the new package. Cmmd+Shift+P → "Python: Restart Language Server".
+
 # =============================================================================
 # ENVIRONMENT FIXTURES
 # =============================================================================
@@ -260,3 +273,14 @@ def failing_async_provider(provider_settings: ProviderSettings) -> FakeAsyncProv
         provider_settings,
         should_raise=RuntimeError("simulated async API outage"),
     )
+    
+    
+# Why src/ layout makes this matter more
+# You're using src/llm_api_smoke_test/ (the modern PEP 660 layout), not llm_api_smoke_test/
+# at the project root. The src/ layout has one specific benefit: it forces you to install
+# the package before importing it. There's no accidental import from the project root that
+# papers over a missing install.
+#
+# This is the same reason the speller package layout works — the src/ directory is invisible
+# to Python until pip install -e . makes it visible. The discipline guarantees that what runs
+# in tests is what runs in production: the installed package, not the source tree.
