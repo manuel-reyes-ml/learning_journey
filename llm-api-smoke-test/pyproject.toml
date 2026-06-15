@@ -109,10 +109,17 @@ select = [
     "B",    # bugbear
     "UP",   # pyupgrade
     "SIM",  # simplify
+    "D",    # pydocstyle — catches the empty docstrings you keep hitting
+    "RUF",  # ruff-specific rules
 ]
 
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"   # matches your NumPy-style docstrings
+
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["E501"]  # long parametrize lines are fine in tests
+# E501 -> long parametrize lines are fine in tests
+# D -> tests don't need full docstrings
+"tests/*" = ["E501", "D"]
 
 [tool.pyright]
 include = ["src", "tests"]
