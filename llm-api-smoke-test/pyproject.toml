@@ -45,6 +45,21 @@ dev = [
     "pyright>=1.1,<2.0",
 ]
 
+# coverage config -> Without it, --cov reports include the test files themselves
+# and TYPE_CHECKING blocks, inflating/deflating the number.
+[tool.coverage.run]
+source = ["llm_api_smoke_test"]
+omit = ["*/tests/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "if TYPE_CHECKING:",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "\\.\\.\\.",          # Protocol method bodies (just ...)
+]
+
 [project.scripts]
 # After `pip install -e ".[dev]"`, run `llm-api-smoke-test` from the shell.
 llm-api-smoke-test = "llm_api_smoke_test.__main__:cli_entry"
