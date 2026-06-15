@@ -65,7 +65,14 @@ llm_api_smoke_test = ["py.typed"]
 [tool.pytest.ini_options]
 minversion = "8.0"
 testpaths = ["tests"]
+
+# The pythonpath = ["src"] is a workaround for running tests without installing the package.
+# Once you do pip install -e . (which you should — it's the answer to the import-resolution
+# issue you just hit), the package is on sys.path properly and pythonpath becomes unnecessary.
+# It's harmless to keep as a belt-and-suspenders measure, but know that the editable install
+# is the real fix, not this line.
 pythonpath = ["src"]
+
 addopts = [
     "-ra",
     "--strict-markers",
