@@ -79,7 +79,7 @@ llm_api_smoke_test = ["py.typed"]
 
 [tool.pytest.ini_options]
 minversion = "8.0"
-testpaths = ["tests"]
+testpaths = ["tests"]   # Where pytest searches for tests.
 
 # The pythonpath = ["src"] is a workaround for running tests without installing the package.
 # Once you do pip install -e . (which you should — it's the answer to the import-resolution
@@ -92,8 +92,17 @@ addopts = [
     "-ra",
     "--strict-markers",
     "--strict-config",
+    "--durations=10 -v",    # Show slow tests so you can spot regression.
 ]
+
+# Auto-mode runs every `async def test_*` in an event loop automatically.
+# No @pytest.mark.asyncio needed on individual tests.
 asyncio_mode = "auto"
+
+# Naming conventions — match Python's PEP 8.
+python_files = "test_*.py"
+python_classes = "Test*"
+python_functions = "test_*"
 
 [tool.ruff]
 line-length = 100
