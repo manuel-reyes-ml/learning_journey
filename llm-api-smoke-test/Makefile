@@ -101,10 +101,15 @@ test-v:  ## Run tests with verbose
 # One command chains the whole thing.
 clean:  ## Remove build artifacts and caches
 	rm -rf build/ dist/ *.egg-info src/*.egg-info
-	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
-	find . -type d -name .pytest_cache -exec rm -rf {} + 2>/dev/null || true
-	find . -type d -name .mypy_cache -exec rm -rf {} + 2>/dev/null || true
-	find . -type d -name .ruff_cache -exec rm -rf {} + 2>/dev/null || true
+
+	@# One find with grouped -name clauses is cleaner than four separate calls.
+	find . -type d \( \
+		-name __pycache__ -o \
+		-name .pytest_cache -o \
+		-name .mypy_cache -o \
+		-name .ruff_cache -o \
+		-name .pyright_cache \
+	\) -exec rm -rf {} + 2>/dev/null || true
 
 build: clean  ## Build a wheel in dist/
 	$(PY) -m build --wheel
