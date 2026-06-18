@@ -221,6 +221,20 @@ class AnthropicProvider:
     _SYSTEM_PROMPT = "You are a terse assistant. Reply in one short sentence."
     
     def __init__(self, settings: ProviderSettings) -> None:
+        """Construct the adapter and its synchronous Anthropic client.
+
+        Parameters
+        ----------
+        settings : ProviderSettings
+            Validated config — API key (unwrapped here via
+            ``get_secret_value()``) and model identifier.
+
+        Notes
+        -----
+        The ``anthropic`` SDK is imported lazily inside this method,
+        not at module scope, so ``import providers`` stays cheap during
+        test collection even when the SDK isn't installed.
+        """
         from anthropic import Anthropic  # lazy import - keeps module import cheap
         
         self._settings = settings
@@ -371,6 +385,19 @@ class GeminiProvider:
     _SYSTEM_PROMPT = "You are a terse assistant. Reply in one short sentence."
     
     def __init__(self, settings: ProviderSettings) -> None:
+        """Construct the adapter and its synchronous Gemini client.
+
+        Parameters
+        ----------
+        settings : ProviderSettings
+            Validated config — API key and model identifier.
+
+        Notes
+        -----
+        Uses the unified ``google-genai`` SDK, imported lazily.  Note
+        the timeout is in milliseconds (``30_000``), unlike Anthropic's
+        seconds-based ``httpx.Timeout``.
+        """
         from google import genai  # lazy import
         from google.genai.types import HttpOptions
         
@@ -475,34 +502,42 @@ class GeminiProvider:
     "Anthropic's async LLM provider class",
 )
 class AsyncAnthropicProvider:
-    """Send a single short prompt to Claude asynchronously.
+    """Asynchronous Anthropic (Claude) adapter — the ``AsyncLLMProvider`` variant.
 
-    Awaitable variant of :meth:`AnthropicProvider.smoke_test` — same
-    request shape, same response shape, just non-blocking.  The HTTP
-    request itself still runs over the wire; Python yields control
-    to the event loop while waiting for bytes, letting other
-    coroutines progress on the same thread.
+    Awaitable twin of :class:`AnthropicProvider`.  Wraps
+    ``anthropic.AsyncAnthropic`` so calls can be scheduled concurrently
+    by :func:`~llm_api_smoke_test.batch_runner.batch_smoke_test` behind
+    a semaphore + rate limiter.
 
     Parameters
     ----------
-    prompt : str
-        The user message.
+    settings : ProviderSettings
+        Validated configuration including the API key and model name.
 
-    Returns
-    -------
-    SmokeTestResult
-        Result containing a 60-character preview of the reply text,
-        token usage, latency, and Anthropic request ID.
-
-    Raises
-    ------
-    anthropic.AnthropicError
-        For any API-level failure (auth, rate-limit, billing).
+    Notes
+    -----
+    Same request and response shape as the sync adapter — the only
+    behavioural difference is that ``smoke_test`` and
+    ``generate_structured`` are coroutines that ``await`` the HTTP call,
+    yielding control to the event loop while waiting on bytes.
     """
     
     _SYSTEM_PROMPT = "You are a terse assistant. Reply in one short sentence."
     
     def __init__(self, settings: ProviderSettings) -> None:
+        """Construct the adapter and its asynchronous Anthropic client.
+
+        Parameters
+        ----------
+        settings : ProviderSettings
+            Validated config — API key and model identifier.
+
+        Notes
+        -----
+        ``AsyncAnthropic`` is a distinct class from ``Anthropic`` —
+        same constructor kwargs, but every method is a coroutine, and
+        it uses ``httpx.AsyncClient`` internally.
+        """
         # AsyncAnthropic is a separate class — same kwargs as Anthropic,
         # but every method on it is a coroutine. Internally it uses
         # httpx.AsyncClient instead of httpx.Client.
@@ -591,34 +626,42 @@ class AsyncAnthropicProvider:
     "Gemini's async LLM provider class",
 )
 class AsyncGeminiProvider:
-    """Send a single short prompt to Gemini asynchronously.
+    """Asynchronous Google Gemini adapter — the ``AsyncLLMProvider`` variant.
 
-    Uses the ``.aio`` namespace of ``google.genai.Client`` — the same
-    client class as the sync version exposes both sync methods on
-    ``.models`` and async methods on ``.aio.models``.
+    Awaitable twin of :class:`GeminiProvider`.  Reuses the same
+    ``genai.Client`` class and reaches the async operations through its
+    ``.aio`` accessor, so calls can be scheduled concurrently by
+    :func:`~llm_api_smoke_test.batch_runner.batch_smoke_test`.
 
     Parameters
     ----------
-    prompt : str
-        The user message.
+    settings : ProviderSettings
+        Validated configuration including the API key and model name.
 
-    Returns
-    -------
-    SmokeTestResult
-        Result containing a 60-character preview of the reply text,
-        token usage, and latency.  ``request_id`` is ``None`` — the
-        Gemini SDK does not expose a per-call request ID the same
-        way Anthropic does.
-
-    Raises
-    ------
-    google.genai.errors.APIError
-        For any API-level failure.
+    Notes
+    -----
+    Unlike Anthropic, Gemini has no separate async client class — the
+    same ``genai.Client`` exposes sync methods on ``.models`` and async
+    methods on ``.aio.models``.  ``request_id`` on the result is always
+    ``None`` because the Gemini SDK does not surface a per-call ID.
     """
     
     _SYSTEM_PROMPT = "You are a terse assistant. Reply in one short sentence."
     
     def __init__(self, settings: ProviderSettings) -> None:
+        """Construct the adapter and its Gemini client (async via ``.aio``).
+
+        Parameters
+        ----------
+        settings : ProviderSettings
+            Validated config — API key and model identifier.
+
+        Notes
+        -----
+        Gemini uses the *same* ``genai.Client`` class for sync and
+        async — the async methods live on the ``.aio`` accessor, so
+        there is no separate ``AsyncClient`` to construct here.
+        """
         from google import genai
         from google.genai.types import HttpOptions
         
@@ -631,6 +674,28 @@ class AsyncGeminiProvider:
         )
     
     async def smoke_test(self, prompt: str) -> SmokeTestResult:
+        """Send a single short prompt to Gemini asynchronously.
+
+        Awaits ``client.aio.models.generate_content`` — same kwargs and
+        return shape as :meth:`GeminiProvider.smoke_test`, just
+        non-blocking.
+
+        Parameters
+        ----------
+        prompt : str
+            The user message.
+
+        Returns
+        -------
+        SmokeTestResult
+            Preview, token usage, and latency.  ``request_id`` is
+            ``None`` — the Gemini SDK exposes no per-call request ID.
+
+        Raises
+        ------
+        google.genai.errors.APIError
+            For any API-level failure.
+        """
         from google.genai.types import GenerateContentConfig
         
         start = time.perf_counter()
@@ -666,6 +731,27 @@ class AsyncGeminiProvider:
         )
         
     async def generate_structured(self, prompt: str, schema: type[T]) -> T:
+        """Asynchronously generate a response conforming to ``schema``.
+
+        Uses Gemini's native JSON-output mode
+        (``response_mime_type="application/json"`` +
+        ``response_schema=schema``) and validates the returned JSON
+        through Pydantic, so both providers share an identical
+        validation path.
+
+        Parameters
+        ----------
+        prompt : str
+            The user message.
+        schema : type[T]
+            A Pydantic ``BaseModel`` subclass.  The returned object is
+            an instance of this class.
+
+        Returns
+        -------
+        T
+            A validated instance of ``schema``.
+        """
         from google.genai.types import GenerateContentConfig
         
         # Each call to generate_structured() will stop here and await until reponse 
