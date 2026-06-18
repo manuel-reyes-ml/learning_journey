@@ -485,7 +485,9 @@ def _build_providers(
     settings: SmokeTestSettings,
     *,
     run_async: Literal[True],       # ← the discriminator
-) -> list[AsyncLLMProvider]: ...
+) -> list[AsyncLLMProvider]:
+    """Async overload — ``run_async=True`` returns async adapters."""
+    ...
 
 # ─── Overload 2: run_async=False → sync providers ─────────────────────
 @overload
@@ -494,7 +496,9 @@ def _build_providers(
     settings: SmokeTestSettings,
     *,
     run_async: Literal[False],      # ← the discriminator
-) -> list[LLMProvider]: ...
+) -> list[LLMProvider]:
+    """Sync overload — ``run_async=False`` returns sync adapters."""
+    ...
 
 # ─── Implementation: NO @overload decorator, accepts plain bool ──────
 def _build_providers(
@@ -588,7 +592,41 @@ def _build_providers(
 # =============================================================================
 
 def main(argv: list[str] | None = None) -> ExitCode:
-    """
+    """Composition root for the llm-api-smoke-test CLI.
+
+    Parses arguments, configures logging, loads and validates settings,
+    instantiates the requested provider adapters, dispatches to the sync
+    or async runner, and maps the outcome to an :class:`ExitCode`.
+
+    Parameters
+    ----------
+    argv : list of str or None, optional
+        Argument vector for testing.  When ``None`` (default),
+        ``argparse`` reads from ``sys.argv[1:]``.  Tests pass an
+        explicit list to drive ``main()`` without touching
+        ``sys.argv`` — the contract that makes the entry point
+        unit-testable.
+
+    Returns
+    -------
+    ExitCode
+        Process exit code.  ``SUCCESS`` (0) when every provider
+        returned a response; ``CONFIG_ERROR`` (1) on a settings,
+        prompt-file, or unknown-provider failure; ``PROVIDER_ERROR``
+        (2) when at least one provider call raised;
+        ``KEYBOARD_INTERRUPT`` (130) on Ctrl-C.
+
+    Notes
+    -----
+    Every exception is caught at this outermost layer and translated
+    into an exit code — domain functions raise, the CLI layer
+    translates.  ``main()`` itself never calls ``sys.exit``; that is
+    :func:`cli_entry`'s job, which keeps ``main()`` testable.
+
+    The sync/async branch passes an explicit ``Literal`` (``True`` /
+    ``False``) to :func:`_build_providers` so the ``@overload`` picks
+    the correct return type — passing a ``bool`` variable would
+    collapse both overloads to the union and defeat the type check.
     """
     # ─── 1. Parse arguments ─────────────────────────────────────────
     # argparse owns argv=None → sys.argv[1:] resolution.
