@@ -101,29 +101,40 @@ async def batch_smoke_test(
     prompts: list[str],
     max_concurrent: int = MAX_CONCURRENT,
 ) -> BatchResult:
-    """Run many smoke-test calls against one provider, capped at max_concurrent.
-    
-    This is the DataVault batch pattern in miniature:
-      - `gather` schedules all N requests
-      - The semaphore caps how many fly at once (rate-limit safety)
-      - Results return in INPUT order (gather's guarantee)
-    
+    """Run every prompt against every provider, concurrently and capped.
+
+    Schedules one coroutine per prompt via :func:`asyncio.gather`, each
+    bounded by a shared :class:`asyncio.Semaphore` (concurrency cap) and
+    :class:`aiolimiter.AsyncLimiter` (rate cap).  Failures are captured,
+    not raised, so one provider's outage doesn't abort the batch.
+
     Parameters
     ----------
-    provider : AsyncLLMProvider
-        Any async provider — AsyncAnthropicProvider, AsyncGeminiProvider, etc.
-        The Protocol contract means the runner doesn't care which.
-    prompts : list[str]
-        Prompts to send. Each one becomes one LLM call.
-    max_concurrent : int
-        Cap on in-flight calls. Below the provider's rate limit but high
-        enough to overlap I/O. 5–10 is a sensible starting point for
-        Anthropic/Gemini free tiers; bump for paid tiers.
-    
+    providers : Iterable[AsyncLLMProvider]
+        Async adapters to exercise.  Any iterable of objects satisfying
+        the Protocol — the runner doesn't care which concrete class.
+    prompts : list of str
+        Prompts to send.  Each prompt is sent to every provider.
+    max_concurrent : int, optional
+        Cap on simultaneously in-flight calls.  Defaults to
+        :data:`MAX_CONCURRENT` (5).  Below the providers' rate limits
+        but high enough to overlap I/O; raise it for paid tiers.
+
     Returns
     -------
-    list[SmokeTestResult]
-        Results in input order — `results[i]` corresponds to `prompts[i]`.
+    BatchResult
+        A ``(successes, failures)`` tuple.  ``successes`` holds the
+        :class:`~llm_api_smoke_test.providers.SmokeTestResult` for each
+        completed call; ``failures`` holds ``(provider_class_name,
+        exception)`` tuples.  Order is **not** guaranteed — calls run
+        concurrently and outcomes are appended as they complete.
+
+    Notes
+    -----
+    The limiter is entered before the semaphore so a burst is throttled
+    to the rate ceiling first, then bounded by the concurrency cap.
+    Both are created inside the coroutine (not at module scope) so they
+    bind to the running event loop.
     """
     successes: list[SmokeTestResult] = []
     failures: list[CallFailure] = []
