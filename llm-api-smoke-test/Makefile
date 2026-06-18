@@ -127,4 +127,11 @@ wheel-test: wheel-install  ## Build, install, and smoke-test the wheel
 
 
 # ─── CONVENIENCE ────────────────────────────────────────────────
-all: format lint typecheck test  ## Run format, lint, typecheck, and tests
+all: format check test  ## Format, then lint + typecheck + test (local dev loop)
+
+# `ci` mirrors what the CI pipeline runs: NO auto-format (CI must not mutate
+# files), strict checks, and tests with coverage. Run this before pushing to
+# catch what CI would catch.
+ci: check test-cov	## Run the exact checks CI runs (no auto-format)
+	@echo ""
+	@echo "✓ CI checks passed locally"
