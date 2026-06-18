@@ -12,15 +12,16 @@
 # The ?= python lets someone override it: make PY=python3.13 test
 SHELL := /bin/bash
 PY ?= python
-SRC := src/llm_api_smoke_test
-PYTEST := tests
+PKG := llm_api_smoke_test
+SRC := src/$(PKG)
+TESTS := tests
 
 # This declares "these targets are tasks, not files." Without .PHONY, if a file named
 # test existed in your project root, make test would see the file, decide it's already
 # up-to-date, and refuse to run. .PHONY says "never check for a file — always run
 # the commands."
 .PHONY: help install install-dev clean lint format typecheck test test-cov test-v \
-		build wheel-install wheel-test all
+		build wheel-install wheel-test all pre-commit ci
 
 # When someone types just make with no argument, this is what runs. Pointing it at help is
 # the friendliest possible default — newcomers see the menu instead of getting an error or
@@ -54,30 +55,43 @@ help:  ## Show this help menu
 install:  ## Install the package editable mode
 	$(PY) -m pip install -e .
 
-install-dev:  ## Install with dev + test dependencies
-	$(PY) -m pip install -e ".[dev,test]"
+install-dev:  ## Install with dev + test dependencies (and pre-commit hooks)
+	$(PY) -m pip install -e ".[dev]"
+	@# The dev group already pulls in the test group via its [test] self-reference,
+	@# so ".[dev]" is enough — no need for ".[dev,test]".
+	pre-commit install
 
 
 # ─── CODE QUALITY ───────────────────────────────────────────────
+# Lint and typecheck cover BOTH src and tests — test code is real code and
+# deserves the same scrutiny. (Per-file ignores in pyproject relax the docstring
+# rules for tests, so this won't drown you in noise.)
 lint:  ## Run ruff linter (catches style and bugs)
-	ruff check $(SRC)
+	ruff check $(SRC) $(TESTS)
 
 format:  ## Auto-format code with ruff
-	ruff format $(SRC)
-	ruff check --fix $(SRC)
+	ruff format $(SRC) $(TESTS)
+	ruff check --fix $(SRC) $(TESTS)
 
 typecheck:  ## Run mypy static type checker (strict mode via pyproject.toml)
-	mypy $(SRC) $(PYTEST)
+	pyright $(SRC) $(TESTS)
+
+check: lint typecheck  ## Run lint + typecheck without modifying files
+	@echo ""
+	@echo "✓ All checks passed"
+ 
+pre-commit:  ## Run all pre-commit hooks against every file
+	pre-commit run --all-files
 
 # ─── TESTS ──────────────────────────────────────────────────────
 test:  ## Run the test suite
 	pytest
 
 test-cov:  ## Run tests with coverage report
-	pytest --llm-api-smoke-test --cov-report=term-missing
+	pytest --cov=$(PKG) --cov-report=term-missing
 
 test-v:  ## Run tests with verbose
-	pytest -v tests/
+	pytest -v $(TESTS)
 
 
 # ─── BUILD & PACKAGING ──────────────────────────────────────────
