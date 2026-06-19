@@ -143,6 +143,7 @@ class SmokeTestConfig(BaseModel):
     
     anthropic: ProviderSettings
     gemini: ProviderSettings
+    openrouter: ProviderSettings
     
 
 # Base class for settings, allowing values to be overridden by environment variables.
@@ -176,6 +177,12 @@ class SmokeTestSettings(BaseSettings):
     anthropic_model: str = "claude-sonnet-4-6"
     gemini_api_key: SecretStr
     gemini_model: str = "gemini-2.5-flash"
+
+    # OpenRouter model slugs are "provider/model-name" format.
+    # This default is a sensible, cheap, fast choice for a smoke test;
+    # override it via OPENROUTER_MODEL env or the --model CLI flag.
+    openrouter_api_key: SecretStr
+    openrouter_model: str = "deepseek/deepseek-v4-pro"
     
     def to_smoke_test_config(self) -> SmokeTestConfig:
         """Adapter back to your existing nested shape if other code depends on it."""
@@ -189,6 +196,11 @@ class SmokeTestSettings(BaseSettings):
                 name="Gemini",
                 api_key=self.gemini_api_key,
                 model=self.gemini_model,
+            ),
+            openrouter=ProviderSettings(
+                name="OpenRouter",
+                api_key=self.openrouter_api_key,
+                model=self.openrouter_model,
             ),
         )
     
