@@ -927,6 +927,98 @@ class OpenRouterProvider:
         return schema.model_validate_json(text)
 
 
+@register_class(
+    "openrouter",
+    "async",
+    "OpenRouter (OpenAI-compatible) async LLM provider class",
+)
+class AsyncOpenRouterProvider:
+    """Asynchronous OpenRouter adapter — the ``AsyncLLMProvider`` variant.
+
+    Awaitable twin of :class:`OpenRouterProvider`, built on
+    ``openai.AsyncOpenAI`` pointed at OpenRouter's base URL so calls can
+    be scheduled concurrently by
+    :func:`~llm_api_smoke_test.batch_runner.batch_smoke_test`.
+
+    Parameters
+    ----------
+    settings : ProviderSettings
+        Validated configuration including the API key and model slug.
+
+    Notes
+    -----
+    Same request and response shape as the sync adapter — the only
+    behavioural difference is that the methods ``await`` the HTTP call.
+    """
+
+    _SYSTEM_PROMPT = "You are a terse assistant. Reply in one short sentence."
+    _BASE_URL = "https://openrouter.ai/api/v1"
+
+    def __init__(self, settings: ProviderSettings) -> None:
+        """Construct the adapter and its async OpenAI client (→ OpenRouter)."""
+        from openai import AsyncOpenAI
+
+        self._settings = settings
+        self._client = AsyncOpenAI(
+            api_key=settings.api_key.get_secret_value(),
+            base_url=self._BASE_URL,
+            max_retries=3,
+            timeout=httpx.Timeout(60.0, read=30.0, write=10.0, connect=5.0),
+        )
+
+    async def smoke_test(self, prompt: str) -> SmokeTestResult:
+        """Async — same return shape as the sync version."""
+        start = time.perf_counter()
+
+        completion = await self._client.chat.completions.create(
+            model=self._settings.model,
+            max_tokens=64,
+            messages=[
+                {"role": "system", "content": self._SYSTEM_PROMPT},
+                {"role": "user", "content": prompt},
+            ],
+        )
+
+        latency_ms = (time.perf_counter() - start) * 1000.0
+        text = completion.choices[0].message.content or ""
+
+        usage = None
+        if completion.usage is not None:
+            usage = TokenUsage(
+                input_tokens=completion.usage.prompt_tokens,
+                output_tokens=completion.usage.completion_tokens,
+            )
+
+        return SmokeTestResult(
+            provider_name=self._settings.name,
+            model=self._settings.model,
+            response_preview=text[:60],
+            request_id=completion.id,
+            usage=usage,
+            latency_ms=latency_ms,
+        )
+
+    async def generate_structured(self, prompt: str, schema: type[T]) -> T:
+        """Async — same return shape as the sync version."""
+        completion = await self._client.chat.completions.create(
+            model=self._settings.model,
+            max_tokens=1024,
+            messages=[
+                {"role": "system", "content": self._SYSTEM_PROMPT},
+                {"role": "user", "content": prompt},
+            ],
+            response_format={
+                "type": "json_schema",
+                "json_schema": {
+                    "name": schema.__name__,
+                    "schema": schema.model_json_schema(),
+                },
+            },
+        )
+        text = completion.choices[0].message.content or "{}"
+        return schema.model_validate_json(text)
+
+
 # class Provider:
 #     default_model = "claude-opus-4-7"      # class-level attribute (shared by all instances)
     
