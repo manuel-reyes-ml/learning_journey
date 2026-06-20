@@ -767,8 +767,166 @@ class AsyncGeminiProvider:
         )
     
         return schema.model_validate_json(response.text or "{}")
-    
-    
+
+
+@register_class(
+    "openrouter",
+    "sync",
+    "OpenRouter (OpenAI-compatible) sync LLM provider class",
+)
+class OpenRouterProvider:
+    """Synchronous OpenRouter adapter — the ``LLMProvider`` variant.
+
+    OpenRouter exposes an OpenAI-compatible endpoint, so this adapter
+    uses the ``openai`` SDK pointed at OpenRouter's base URL.  A single
+    OpenRouter key reaches hundreds of models, selected via the
+    ``provider/model-name`` slug in ``settings.model``.
+
+    Parameters
+    ----------
+    settings : ProviderSettings
+        Validated configuration — API key and model slug
+        (e.g. ``"anthropic/claude-sonnet-4.5"``).
+
+    Notes
+    -----
+    The ``base_url`` override is the only thing that distinguishes this
+    from a plain OpenAI client.  Everything else — retries, typed
+    responses, error classes — comes from the OpenAI SDK unchanged.
+    """
+
+    _SYSTEM_PROMPT: str = "You are a terse assistant. Reply in one short sentence."
+
+    # OpenRouter's API base. The OpenAI SDK appends /chat/completions etc.
+    _BASE_URL: str = "https://openrouter.ai/api/v1"
+
+    def __init__(self, settings: ProviderSettings) -> None:
+        """Construct the adapter and its OpenAI client pointed at OpenRouter.
+
+        Parameters
+        ----------
+        settings : ProviderSettings
+            Validated config — API key and model slug.
+
+        Notes
+        -----
+        The ``openai`` SDK is imported lazily, keeping module import
+        cheap during test collection.  ``base_url`` is the single line
+        that turns an OpenAI client into an OpenRouter client.
+        """
+        from openai import OpenAI   # lazy import — keeps module import cheap
+
+        self._settings = settings
+        self._client = OpenAI(
+            api_key=settings.api_key.get_secret_value(),
+            base_url=self._BASE_URL,    # ← the OpenRouter redirect
+            max_retries=3,              # same as our Anthropic adapter
+            timeout=httpx.Timeout(60.0, read=30.0, write=10.0, connect=5.0),
+        )
+
+    def smoke_test(self, prompt: str) -> SmokeTestResult:
+        """Send a single short prompt through OpenRouter and return a preview.
+
+        Parameters
+        ----------
+        prompt : str
+            The user message.
+
+        Returns
+        -------
+        SmokeTestResult
+            Preview, token usage, latency, and the OpenRouter request ID.
+
+        Raises
+        ------
+        openai.OpenAIError
+            For any API-level failure (auth, rate-limit, billing).
+        """
+        start = time.perf_counter()
+
+        # OpenAI-compatible chat.completions call. The `model` is the
+        # OpenRouter slug — "anthropic/claude-...", "openai/gpt-...", etc.
+        completion = self._client.chat.completions.create(
+            model=self._settings.model,
+            max_tokens=64,
+            messages=[
+                {"role": "system", "content": self._SYSTEM_PROMPT},
+                {"role": "user", "content": prompt},
+            ],
+            # OpenRouter-specific optional headers for leaderboard analytics.
+            # Harmless to include; remove if you don't want to appear there.
+            extra_headers={
+                "HTTP-Referer": "https://github.com/manuel-reyes-ml/learning_journey",
+                "X-Title": "llm-api-smoke-test",
+            },
+        )
+
+        latency_ms = (time.perf_counter() - start) * 1000.0
+
+        # OpenRouter normalizes to the OpenAI schema: choices is ALWAYS
+        # an array, even for a single completion. message.content may be
+        # None for some finish reasons, so coalesce to "".
+        text = completion.choices[0].message.content or ""
+
+        # usage may be None on some providers; guard before reading.
+        usage = None
+        if completion.usage is not None:
+            usage = TokenUsage(
+                input_tokens=completion.usage.prompt_tokens,
+                output_tokens=completion.usage.completion_tokens,
+            )
+
+        return SmokeTestResult(
+            provider_name=self._settings.name,
+            model=self._settings.model,
+            response_preview=text[:60],
+            request_id=completion.id,   # OpenRouter returns an id per call
+            usage=usage,
+            latency_ms=latency_ms,
+        )
+
+    def generate_structured(self, prompt: str, schema: type[T]) -> T:
+        """Generate a response conforming to ``schema`` via JSON mode.
+
+        Parameters
+        ----------
+        prompt : str
+            The user message.
+        schema : type[T]
+            A Pydantic ``BaseModel`` subclass.
+
+        Returns
+        -------
+        T
+            A validated instance of ``schema``.
+
+        Notes
+        -----
+        Uses OpenRouter's ``response_format`` with a JSON schema.  Not
+        every underlying model supports structured output — check the
+        model's capabilities on openrouter.ai/models before relying on
+        this in production.
+        """
+        completion = self._client.chat.completions.create(
+            model=self._settings.model,
+            max_tokens=1024,
+            messages=[
+                {"role": "system", "content": self._SYSTEM_PROMPT},
+                {"role": "user", "content": prompt},
+            ],
+            response_format={
+                "type": "json_schema",
+                "json_schema": {
+                    "name": schema.__name__,
+                    "schema": schema.model_json_schema(),
+                },
+            },
+        )
+
+        text = completion.choices[0].message.content or "{}"
+        return schema.model_validate_json(text)
+
+
 # class Provider:
 #     default_model = "claude-opus-4-7"      # class-level attribute (shared by all instances)
     
