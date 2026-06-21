@@ -573,7 +573,8 @@ def _build_providers(
     # --- Model override precedence: --model flag > env/default ---
     # config.openrouter.model already reflects OPENROUTER_MODEL-or-default
     # (resolved by pydantic-settings). The CLI flag, if present, wins.
-    if model_override is not None:
+    # Only applies when an openrouter provider actually exists.
+    if model_override is not None and config.openrouter is not None:
         # ProviderSettings is frozen, so rebuild via model_copy(update=...).
         settings_map["openrouter"] = config.openrouter.model_copy(
             update={"model": model_override}
