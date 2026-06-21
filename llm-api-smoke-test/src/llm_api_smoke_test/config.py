@@ -129,14 +129,17 @@ class ProviderSettings(BaseModel):
     
     
 class SmokeTestConfig(BaseModel):
-    """Top-level config aggregating both providers under test.
- 
+    """Top-level config aggregating the providers under test.
+
     Parameters
     ----------
     anthropic : ProviderSettings
         Configured Anthropic Claude provider.
     gemini : ProviderSettings
         Configured Google Gemini provider.
+    openrouter : ProviderSettings or None
+        Configured OpenRouter provider, or ``None`` when no
+        ``OPENROUTER_API_KEY`` is set (OpenRouter is optional).
     """
     
     model_config = ConfigDict(frozen=True, extra="forbid")
@@ -182,7 +185,7 @@ class SmokeTestSettings(BaseSettings):
     # This default is a sensible, cheap, fast choice for a smoke test;
     # override it via OPENROUTER_MODEL env or the --model CLI flag.
     openrouter_api_key: SecretStr | None = None
-    openrouter_model: str = "deepseek/deepseek-v4-pro"
+    openrouter_model: str = "deepseek/deepseek-v4-flash"
     
     def to_smoke_test_config(self) -> SmokeTestConfig:
         """Adapter back to your existing nested shape if other code depends on it."""
@@ -279,7 +282,7 @@ def load_config(env: Mapping[str, str] | None = None) -> SmokeTestConfig:
         openrouter=ProviderSettings(
             name="OpenRouter",
             api_key=SecretStr(source["OPENROUTER_API_KEY"]),
-            model=source.get("OPENROUTER_MODEL", "deepseek/deepseek-v4-pro"),
+            model=source.get("OPENROUTER_MODEL", "deepseek/deepseek-v4-flash"),
         ),
     )
     
