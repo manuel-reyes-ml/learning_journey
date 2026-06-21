@@ -267,6 +267,18 @@ def _build_parser() -> argparse.ArgumentParser:
         help=f"LLM providers to use. Default runs all: {provider_list}.",
     )
     
+    parser.add_argument(
+        "--model",
+        type=str,
+        default=None,   # None = "not provided" — env/default wins
+        metavar="SLUG", # sets the display name for the argument in help message.
+        help=(
+            "Override the OpenRouter model slug for this run "
+            "(e.g. 'anthropic/claude-sonnet-4.5'). "
+            "Falls back to OPENROUTER_MODEL env, then the built-in default."
+        ),
+    )
+
     # -- Mutually exclusive group for prompt input --
     # An MX group means "at most one of these may be set" — argparse refuses to
     # parse if the user passes more than one. This prevents the ambiguity of
