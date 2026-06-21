@@ -57,6 +57,7 @@ try:
 
     from dataclasses import dataclass, KW_ONLY
     from enum import IntEnum, unique
+    from pydantic import ValidationError
     from typing import Final, Literal, overload, TYPE_CHECKING, NoReturn
 
     from llm_api_smoke_test.config import SmokeTestSettings
@@ -717,6 +718,10 @@ def main(argv: list[str] | None = None) -> ExitCode:
         settings = SmokeTestSettings()  # type: ignore[call-arg]
         # ↑ Pydantic populates from env, but mypy doesn't see that — the
         # type: ignore is the standard documented workaround.
+    except ValidationError as exc:
+        slogger.error("model_validation_error", error=str(exc))
+        return ExitCode.CONFIG_ERROR
+    
     except Exception as exc:
         # ValidationError is a Pydantic class — catching Exception is
         # broad on purpose because we don't want to import the specific
