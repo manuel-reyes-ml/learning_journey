@@ -564,6 +564,12 @@ def _build_providers(
         "openrouter": config.openrouter,
     }
 
+    if "openrouter" in provider_names and settings_map["openrouter"] is None:
+        raise ValueError(
+            "No API Key was found in .env file or from env variables. "
+            "Use 'openrouter' provider if you have a valid API key."
+        )
+
     # --- Model override precedence: --model flag > env/default ---
     # config.openrouter.model already reflects OPENROUTER_MODEL-or-default
     # (resolved by pydantic-settings). The CLI flag, if present, wins.
