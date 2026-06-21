@@ -276,6 +276,11 @@ def load_config(env: Mapping[str, str] | None = None) -> SmokeTestConfig:
             api_key=SecretStr(source["GEMINI_API_KEY"]),
             model=source.get("GEMINI_MODEL", "gemini-2.5-flash"),
         ),
+        openrouter=ProviderSettings(
+            name="OpenRouter",
+            api_key=SecretStr(source["OPENROUTER_API_KEY"]),
+            model=source.get("OPENROUTER_MODEL", "deepseek/deepseek-v4-pro"),
+        ),
     )
     
 
