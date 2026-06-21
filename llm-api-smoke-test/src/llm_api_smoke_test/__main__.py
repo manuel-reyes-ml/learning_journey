@@ -518,6 +518,7 @@ def _build_providers(
     settings: SmokeTestSettings,
     *,
     run_async: bool,
+    model_override: str | None = None,
 ) -> list[LLMProvider] | list[AsyncLLMProvider]:
     """Instantiate provider adapters from registry keys + settings.
 
@@ -554,7 +555,17 @@ def _build_providers(
     settings_map = {
         "anthropic": config.anthropic,
         "gemini": config.gemini,
+        "openrouter": config.openrouter,
     }
+
+    # --- Model override precedence: --model flag > env/default ---
+    # config.openrouter.model already reflects OPENROUTER_MODEL-or-default
+    # (resolved by pydantic-settings). The CLI flag, if present, wins.
+    if model_override is not None:
+        # ProviderSettings is frozen, so rebuild via model_copy(update=...).
+        settings_map["openrouter"] = config.openrouter.model_copy(
+            update={"model": model_override}
+        )
     
     # Choose which slot to read from each ProviderList.
     # f-string ensures kind matches the field name exactly.
