@@ -149,7 +149,7 @@ class ExitCode(IntEnum):
 # CLI Args Frozen Dataclass
 # =====================================================
 
-@dataclass(frozen=True)
+@dataclass(frozen=True, slots=True)
 class LLMApiArgs:
     """Typed container for parsed CLI arguments.
 
@@ -188,10 +188,10 @@ class LLMApiArgs:
     _: KW_ONLY  # Everything after is keyword-only
     prompts: list[str]
     provider: list[str]
+    model_override: str | None
     run_async: bool
     verbose: bool
     no_log_file: bool
-    
     
 
 # =============================================================================
@@ -497,6 +497,7 @@ def _build_providers(
     settings: SmokeTestSettings,
     *,
     run_async: Literal[True],       # ← the discriminator
+    model_override: str | None = None,
 ) -> list[AsyncLLMProvider]:
     """Async overload — ``run_async=True`` returns async adapters."""
     ...
@@ -508,6 +509,7 @@ def _build_providers(
     settings: SmokeTestSettings,
     *,
     run_async: Literal[False],      # ← the discriminator
+    model_override: str | None = None,
 ) -> list[LLMProvider]:
     """Sync overload — ``run_async=False`` returns sync adapters."""
     ...
@@ -684,6 +686,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         run_async=raw.run_async,
         verbose=raw.verbose,
         no_log_file=raw.no_log_file,
+        model_override=raw.model,
     )
     
     # ─── 5. Configure logging ─────────────────────────────────────────
@@ -732,6 +735,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 provider_names=args.provider,
                 settings=settings,
                 run_async=True,     # explicit Literal
+                model_override=args.model_override,
             )
             
             # asyncio.run creates a new event loop, runs the coroutine,
@@ -755,6 +759,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
                 provider_names=args.provider,
                 settings=settings,
                 run_async=False,     # explicit Literal
+                model_override=args.model_override,
             )
             
             # Sync path — run one prompt against all providers.
