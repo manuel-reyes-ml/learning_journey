@@ -259,6 +259,9 @@ def _build_parser() -> argparse.ArgumentParser:
     # -- Positional: which providers --
     # nargs="+" means "one or more values". argparse calls type(value) on EACH
     # token, so type=str (per-element) is right; type=list[str] would crash.
+    #
+    # Positional arguments are required by default. They only become optional if
+    # you supply a default value (or use nargs='?', nargs='*').
     parser.add_argument(
         "provider",
         nargs="+",  # one or more arguments
