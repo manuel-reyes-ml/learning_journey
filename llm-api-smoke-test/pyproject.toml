@@ -58,6 +58,7 @@ dev = [
     "llm-api-smoke-test[test]",   # includes the test group
     "ruff>=0.5,<1.0",
     "pyright>=1.1,<2.0",
+    "respx>=0.23, <1.0",
 ]
 
 [project.scripts]
