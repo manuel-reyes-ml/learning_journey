@@ -36,9 +36,11 @@ __all__ = [
     "LLMProvider",
     "AnthropicProvider",
     "GeminiProvider",
+    "OpenRouterProvider",
     "AsyncLLMProvider",
     "AsyncAnthropicProvider",
     "AsyncGeminiProvider",
+    "AsyncOpenRouterProvider",
     "SmokeTestResult",
 ]
 
