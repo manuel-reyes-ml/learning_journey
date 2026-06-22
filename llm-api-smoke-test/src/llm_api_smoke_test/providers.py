@@ -17,13 +17,14 @@ collection even when an SDK is not installed in the current environment.
 # =============================================================================
 
 from __future__ import annotations
+from typing_extensions import runtime
 
 import httpx
 import time
 
 from dataclasses import dataclass
 from pydantic import BaseModel
-from typing import Protocol, TypeVar
+from typing import Protocol, runtime_checkable, TypeVar
 
 from llm_api_smoke_test.config import ProviderSettings
 from llm_api_smoke_test.register import register_class
@@ -103,6 +104,7 @@ class SmokeTestResult:
 # SYNC LLMProvider
 # =====================================================
 
+@runtime_checkable
 class LLMProvider(Protocol):
     """Provider Protocol — every adapter must implement ``smoke_test()``.
  
@@ -158,6 +160,7 @@ class LLMProvider(Protocol):
 # ASYNC LLMProvider
 # =====================================================
 
+@runtime_checkable
 class AsyncLLMProvider(Protocol):
     """Async variant of LLMProvider — for concurrent workloads.
     
