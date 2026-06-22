@@ -223,6 +223,9 @@ class TestOpenRouterConfig:
         monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
         # ...and _env_file=None disables .env reading for THIS instance — the
         # documented pydantic-settings escape hatch for hermetic tests.
+        #
+        # That _env_file=None  it's the canonical way to make pydantic-settings
+        # tests independent of whatever .env happens to sit in the working directory.
         settings = SmokeTestSettings(_env_file=None)    # type: ignore[call-arg]
 
         assert settings.openrouter_api_key is None
