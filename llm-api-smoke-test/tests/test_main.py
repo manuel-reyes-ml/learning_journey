@@ -17,6 +17,7 @@ Strategy
 # =============================================================================
 
 from __future__ import annotations
+from ast import arg
 
 import pytest
 
@@ -137,6 +138,17 @@ class TestBuildParser:
         ])
         
         assert args.prompt == ["first", "second"]
+
+    def test_model_flag_sets_override(self) -> None:
+        """--model SLUG → args.model holds the slug (dest defaults to 'model')."""
+        parser = _build_parser()
+        args = parser.parse_args(["openrouter", "--model", "anthropic/claude-sonnet-4.5"])
+        assert args.model == "anthropic/claude-sonnet-4.5"
+
+    def test_model_flag_defaults_none(self) -> None:
+        """No --model → args.model is None (env/default wins downstream)."""
+        parser = _build_parser()
+        assert parser.parse_args(["openrouter"]).model is None
         
     def test_mutually_exclusive_prompts_rejected(self) -> None:
         """--prompts AND --prompt at the same time → argparse error."""
@@ -205,6 +217,10 @@ class TestValidateProviders:
         # Reverse-alphabetical input should come out reverse-alphabetical.
         result = _validate_providers(["gemini", "anthropic"])
         assert result == ["gemini", "anthropic"]
+
+    def test_openrouter_passes(self) -> None:
+        """openrouter is a registered key → passes validation unchanged."""
+        assert _validate_providers(["openrouter"]) == ["openrouter"]
         
 
 # =============================================================================
