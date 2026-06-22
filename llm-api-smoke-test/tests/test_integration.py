@@ -161,7 +161,7 @@ class TestMainExitCodes:
         # maps to CONFIG_ERROR.
         result = main(["nonexistent_provider"])
         
-        assert result ++ ExitCode.CONFIG_ERROR
+        assert result == ExitCode.CONFIG_ERROR
         
     def test_missing_env_returns_config_error(
         self,
@@ -244,3 +244,20 @@ class TestMainProviderFailures:
         
         # Failure captured → PROVIDER_ERROR, not SUCCESS.
         assert result == ExitCode.PROVIDER_ERROR
+
+
+class TestMainOpenRouter:
+    """OpenRouter through the full composition root."""
+
+    def test_without_key_returns_config_error(self, fake_registry: None) -> None:
+        """fake_registry uses valid_env (no OR key) → _build_providers raises
+        ValueError → main() catches it → CONFIG_ERROR."""
+        assert main(["openrouter"]) == ExitCode.CONFIG_ERROR
+
+    def test_with_key_returns_success(
+        self, fake_registry: None, monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """Add the key so settings.openrouter isn't None → fake provider runs → SUCCESS.
+        Real env vars win over .env, so this is deterministic."""
+        monkeypatch.setenv("OPENROUTER_API_KEY", "sk-or-test-fake-key")
+        assert main(["openrouter"]) == ExitCode.SUCCESS
