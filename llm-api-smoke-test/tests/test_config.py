@@ -19,6 +19,7 @@ in the foundation before any other test can pass.
 
 from __future__ import annotations
 
+from _pytest import monkeypatch
 import pytest
 from pydantic import SecretStr, ValidationError
 
@@ -209,7 +210,39 @@ class TestSmokeTestSettings:
         assert config.anthropic.name == "Anthropic"
         assert config.gemini.name == "Gemini"
         
-        
+
+class TestOpenRouterConfig:
+    """OpenRouter is OPTIONAL: None when unset, a real ProviderSettings when set."""
+
+    def test_absent_is_none(
+        self, valid_env: dict[str, str], monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        """No OPENROUTER_API_KEY → openrouter collapses to None, doesn't crash."""
+        # Defensive: a stray key in your shell OR a local .env would make
+        # "absent" non-absent. delenv clears the process env...
+        monkeypatch.delenv("OPENROUTER_API_KEY", raising=False)
+        # ...and _env_file=None disables .env reading for THIS instance — the
+        # documented pydantic-settings escape hatch for hermetic tests.
+        settings = SmokeTestSettings(_env_file=None)    # type: ignore[call-arg]
+
+        assert settings.openrouter_api_key is None
+        assert settings.to_smoke_test_config().openrouter is None
+
+    def test_default_model_slug(self, settings: SmokeTestSettings) -> None:
+        """The default slug is a cheap model — never a flagship for a 200-OK check."""
+        assert settings.openrouter_model == "deepseek/deepseek-v4-flash"
+
+    def test_present_build_provider(
+        self, settings_with_openrouter: SmokeTestSettings,
+    ) -> None:
+        """Key present → to_smoke_test_config() yields a named OpenRouter provider."""
+        cfg = settings_with_openrouter.to_smoke_test_config()
+        assert cfg.openrouter is not None
+        assert cfg.openrouter.name == "OpenRouter"
+        assert cfg.openrouter.model == "deepseek/deepseek-v4-flash"
+        assert cfg.openrouter.api_key.get_secret_value() == "sk-or-test-fake-key-not-real"   
+
+
 # =============================================================================
 # load_config — legacy explicit-Mapping function
 # =============================================================================
