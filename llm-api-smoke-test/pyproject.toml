@@ -97,7 +97,8 @@ addopts = [
     "-ra",
     "--strict-markers",
     "--strict-config",
-    "--durations=10 -v",    # Show slow tests so you can spot regression.
+    "--durations=10",   # Show slow tests so you can spot regression.
+    "-v",
 ]
 
 # Auto-mode runs every `async def test_*` in an event loop automatically.
