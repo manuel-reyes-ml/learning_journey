@@ -111,3 +111,28 @@ def _chat_completion_payload(
 # FIXTURES
 # =============================================================================
 
+@pytest.fixture
+def openrouter_settings() -> ProviderSettings:
+    """Frozen OpenRouter ProviderSettings with a fake (non-placeholder) key.
+ 
+    Kept local to this module because it carries the "OpenRouter" identity
+    and a provider/model slug — distinct from conftest's Anthropic-shaped
+    ``provider_settings``.  Promote it to conftest only if a second module
+    needs it.
+ 
+    Returns
+    -------
+    ProviderSettings
+        Validated settings; the key is fake but passes the placeholder
+        validator, and no network call is made at construction time.
+    """
+    return ProviderSettings(
+        name="OpenRouter",
+        api_key=SecretStr("sk-or-test-fake-key-not-real"),
+        model="deepseek/deepseek-v4-flash",
+    )
+
+
+# =============================================================================
+# SYNC ADAPTER — OpenRouterProvider
+# =============================================================================
