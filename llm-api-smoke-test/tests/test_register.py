@@ -306,3 +306,17 @@ class TestLiveRegistry:
         
         assert bundle.sync_provider is not None
         assert bundle.async_provider is not None
+
+    def test_openrouter_is_registered(self) -> None:
+        """OpenRouter must expose BOTH sync and async variants after import."""
+        from llm_api_smoke_test import providers  # noqa: F401 - triggers @register_class
+        
+        assert "openrouter" in dicts
+
+        bundle = dicts["openrouter"]
+        assert bundle.sync_provider is not None
+        assert bundle.async_provider is not None
+
+        # The decorator stores provider_class.__name__ as class_name.
+        assert bundle.sync_provider.class_name == "OpenRouterProvider"
+        assert bundle.async_provider.class_name == "AsyncOpenRouterProvider"
