@@ -17,7 +17,6 @@ Strategy
 # =============================================================================
 
 from __future__ import annotations
-from ast import arg
 
 import pytest
 
@@ -363,3 +362,40 @@ class TestBuildProviders:
                 settings=settings,
                 run_async=False,
             )
+
+    def test_openrouter_missing_key_raises_valueerror(
+        self, settings: SmokeTestSettings,
+    ) -> None:
+        """openrouter requested but no key → ValueError (main() maps it to CONFIG_ERROR)."""
+        # The `settings` fixture has no OPENROUTER_API_KEY → config.openrouter is None.
+        with pytest.raises(ValueError, match="OPENROUTER_API_KEY"):
+            _build_providers(provider_names=["openrouter"], settings=settings, run_async=False)
+
+    def test_openrouter_sync_built(self, settings_with_openrouter: SmokeTestSettings) -> None:
+        from llm_api_smoke_test.providers import OpenRouterProvider
+        # Constructing the adapter builds an OpenAI client but makes NO network
+        # call — the key isn't validated until the first request.
+        instances = _build_providers(
+            provider_names=["openrouter"], settings=settings_with_openrouter, run_async=False
+        )
+        assert isinstance(instances[0], OpenRouterProvider)
+
+    def test_openrouter_async_built(self, settings_with_openrouter: SmokeTestSettings) -> None:
+        from llm_api_smoke_test.providers import AsyncOpenRouterProvider
+        instances = _build_providers(
+            provider_names=["openrouter"], settings=settings_with_openrouter, run_async=True
+        )
+        assert isinstance(instances[0], AsyncOpenRouterProvider)
+
+    def test_model_override_applied_to_openrouter(
+        self, settings_with_openrouter: SmokeTestSettings,
+    ) -> None:
+        """--model SLUG replaces the env/default slug on OpenRouter only."""
+        override = "anthropic/claude-sonnet-4.5"
+        instances = _build_providers(
+            provider_names=["openrouter"], settings=settings_with_openrouter,
+            run_async=False, model_override=override,
+        )
+        # White-box: the adapter stores its config as ._settings (same convention
+        # your FakeSyncProvider exposes .calls). Verifies model_copy(update=...) took.
+        assert instances[0]._settings.model == override     # type: ignore[attr]
