@@ -35,7 +35,7 @@ from llm_api_smoke_test.providers import (
 # OpenRouterProvider sets base_url="https://openrouter.ai/api/v1", so the
 # full URL respx must intercept is this.  Matching the absolute URL (rather
 # than a respx base_url) keeps the assertion self-documenting.
-_COMPLETION_URL: str = "https://openrouter.ai/api/v1/chat/completions"
+_COMPLETIONS_URL: str = "https://openrouter.ai/api/v1/chat/completions"
 
 
 # =============================================================================
@@ -136,3 +136,98 @@ def openrouter_settings() -> ProviderSettings:
 # =============================================================================
 # SYNC ADAPTER — OpenRouterProvider
 # =============================================================================
+
+class TestOpenRouterProviderSmokeTest:
+    """Sync adapter parsing, with the httpx boundary faked by respx.
+ 
+    ``@respx.mock`` (default config) asserts every registered route is
+    actually called AND that no unmocked request escapes to the network —
+    so a single registered route that fires exactly once is the contract.
+    """
+
+    @respx.mock
+    def test_happy_path_parses_response(
+        self, openrouter_settings: ProviderSettings,
+    ) -> None:
+        """A well-formed body → a fully-populated SmokeTestResult."""
+        # Register the fake endpoint; the SDK's POST will match it.
+        route = respx.post(_COMPLETIONS_URL).mock(
+            return_value=httpx.Response(200, json=_chat_completion_payload())
+        )
+
+        # Constructing the client touches no network; the call below does
+        # (and respx intercepts it).
+        provider = OpenRouterProvider(openrouter_settings)  # type: ignore[arg-call]
+        result = provider.smoke_test("say hello")
+
+        # Route firing proves base_url → OpenRouter, not api.openai.com.
+        assert route.called
+        assert isinstance(result, SmokeTestResult)
+
+        # Field-by-field: the adapter reports its OWN settings for name/model
+        # and pulls preview/id/usage off the deserialised SDK object.
+        assert result.provider_name == "OpenRouter"
+        assert result.model == "deepseek/deepseek-v4-flash"
+        assert result.response_preview == "hello world"
+        assert result.request_id == "gen-abc123"
+
+        # Usage guard took the happy branch → a real TokenUsage.
+        assert result.usage is not None
+        assert result.usage.input_tokens == 7
+        assert result.usage.output_tokens == 2
+
+    @respx.mock
+    def test_none_content_coalesces_to_empty_string(
+        self, openrouter_settings: ProviderSettings,
+    ) -> None:
+        """``message.content`` is null → ``content or ""`` yields ``""``.
+ 
+        Without the coalesce, ``None[:60]`` would raise ``TypeError`` —
+        this pins the guard that prevents it.
+        """
+        route = respx.post(_COMPLETIONS_URL).mock(
+            return_value=httpx.Response(
+                200, json=_chat_completion_payload(content=None)
+            )
+        )
+
+        provider = OpenRouterProvider(openrouter_settings)  # type: ignore[arg-call]
+        result = provider.smoke_test("say hello")
+
+        assert route.called
+        assert isinstance(result, SmokeTestResult)
+
+        # The line under test: None becomes "", never reaches the slice as None.
+        assert result.response_preview == ""
+
+    @respx.mock
+    def test_missing_usage_yields_none(
+        self, openrouter_settings: ProviderSettings,
+    ) -> None:
+        """``usage`` is null → the ``is not None`` guard leaves usage as None.
+ 
+        The distinction matters: a missing usage block must surface as
+        ``None`` (unknown), NOT a zero-filled TokenUsage (which would lie
+        about a genuine "0 tokens" call).
+        """
+        route = respx.post(_COMPLETIONS_URL).mock(
+            return_value=httpx.Response(
+                200, json=_chat_completion_payload(include_usage=False)
+            )
+        )
+
+        provider = OpenRouterProvider(openrouter_settings)  # type: ignore[arg-call]
+        result = provider.smoke_test("say hello")
+
+        assert route.called
+        assert isinstance(result, SmokeTestResult)
+
+        assert result.usage is None
+        # The rest of the result is still well-formed — only usage is absent.
+        assert result.response_preview == "hello world"
+
+
+# =============================================================================
+# ASYNC ADAPTER — AsyncOpenRouterProvider
+# =============================================================================
+
