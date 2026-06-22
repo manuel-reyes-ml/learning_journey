@@ -184,6 +184,9 @@ class SmokeTestSettings(BaseSettings):
     # OpenRouter model slugs are "provider/model-name" format.
     # This default is a sensible, cheap, fast choice for a smoke test;
     # override it via OPENROUTER_MODEL env or the --model CLI flag.
+    #
+    # A smoke test should never reach for a flagship reasoning model by
+    # default — you're paying reasoning-token prices to confirm a 200-OK.
     openrouter_api_key: SecretStr | None = None
     openrouter_model: str = "deepseek/deepseek-v4-flash"
     
