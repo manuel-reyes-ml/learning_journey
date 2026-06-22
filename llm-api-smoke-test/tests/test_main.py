@@ -71,6 +71,7 @@ class TestLLMApiArgs:
         args = LLMApiArgs(
             prompts=["hello"],
             provider=["anthropic"],
+            model_override=None,        # None = no --model flag given
             run_async=False,
             verbose=True,
             no_log_file=False,
