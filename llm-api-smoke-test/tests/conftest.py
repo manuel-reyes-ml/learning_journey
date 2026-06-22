@@ -105,6 +105,29 @@ def settings(valid_env: dict[str, str]) -> SmokeTestSettings:
 
 
 @pytest.fixture
+def valid_env_with_openrouter(
+    valid_env: dict[str, str],      # runs first; sets Anthropic + Gemini
+    monkeypatch: pytest.MonkeyPatch,
+) -> dict[str, str]:
+    """valid_env + the two OpenRouter vars, so SmokeTestSettings sees all three."""
+    extra = {
+        "OPENROUTER_API_KEY": "sk-or-test-fake-key-not-real",  # not a placeholder → passes validator
+        "OPENROUTER_MODEL": "deepseek/deepseek-v4-flash",
+    }
+    for key, value in extra.items():
+        monkeypatch.setenv(key, value)
+    return {**valid_env, **extra}   # merged so a test can inspect every var
+
+
+@pytest.fixture
+def settings_with_openrouter(
+    valid_env_with_openrouter: dict[str, str],
+) -> SmokeTestSettings:
+    """Validated settings with OpenRouter configured."""
+    return SmokeTestSettings() # type: ignore[call-arg]
+
+
+@pytest.fixture
 def provider_settings() -> ProviderSettings:
     """A standalone ProviderSettings for unit tests.
  
