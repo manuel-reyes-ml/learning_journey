@@ -104,7 +104,7 @@ class SmokeTestResult:
 # SYNC LLMProvider
 # =====================================================
 
-@runtime_checkable
+@runtime_checkable  # Lets a Protocol class to be used in isinstance()
 class LLMProvider(Protocol):
     """Provider Protocol — every adapter must implement ``smoke_test()``.
  
@@ -160,7 +160,7 @@ class LLMProvider(Protocol):
 # ASYNC LLMProvider
 # =====================================================
 
-@runtime_checkable
+@runtime_checkable  # Lets a Protocol class to be used in isinstance()
 class AsyncLLMProvider(Protocol):
     """Async variant of LLMProvider — for concurrent workloads.
     
