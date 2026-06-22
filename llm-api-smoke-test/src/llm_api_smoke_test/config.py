@@ -271,6 +271,16 @@ def load_config(env: Mapping[str, str] | None = None) -> SmokeTestConfig:
     if missing:
         raise KeyError(f"Missing required environment variables: {missing}")
     
+    openrouter = None
+    # Only build the OpenRouter provider when its key is actually present —
+    # matches SmokeTestConfig.openrouter being `ProviderSettings | None`.
+    if "OPENROUTER_API_KEY" in source:
+        openrouter = ProviderSettings(
+            name="OpenRouter",
+            api_key=SecretStr(source["OPENROUTER_API_KEY"]),
+            model=source.get("OPENROUTER_MODEL", "deepseek/deepseek-v4-flash"),
+        )
+
     return SmokeTestConfig(
         anthropic=ProviderSettings(
             name="Anthropic",
@@ -282,11 +292,7 @@ def load_config(env: Mapping[str, str] | None = None) -> SmokeTestConfig:
             api_key=SecretStr(source["GEMINI_API_KEY"]),
             model=source.get("GEMINI_MODEL", "gemini-2.5-flash"),
         ),
-        openrouter=ProviderSettings(
-            name="OpenRouter",
-            api_key=SecretStr(source["OPENROUTER_API_KEY"]),
-            model=source.get("OPENROUTER_MODEL", "deepseek/deepseek-v4-flash"),
-        ),
+        openrouter=openrouter
     )
     
 
