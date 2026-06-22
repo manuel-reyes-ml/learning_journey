@@ -538,6 +538,10 @@ def _build_providers(
         ``True`` picks ``async_provider`` slots; ``False`` picks
         ``sync_provider`` slots from each
         :class:`~llm_api_smoke_test.register.ProviderList`.
+    model_override : str or None, optional
+        OpenRouter model slug from the ``--model`` CLI flag.  When
+        provided, overrides the env/default model for the OpenRouter
+        provider only (other providers ignore it).  Default ``None``.
 
     Returns
     -------
@@ -566,8 +570,9 @@ def _build_providers(
 
     if "openrouter" in provider_names and settings_map["openrouter"] is None:
         raise ValueError(
-            "No API Key was found in .env file or from env variables. "
-            "Use 'openrouter' provider if you have a valid API key."
+            "OpenRouter was requested but OPENROUTER_API_KEY is not set. "
+            "Add it to your .env file or environment, or omit 'openrouter' "
+            "from the provider list."
         )
 
     # --- Model override precedence: --model flag > env/default ---
