@@ -2,6 +2,9 @@
 
 **Focus:** Running local LLMs on an Apple-Silicon Mac (M-series), with config, model management, and integration into your stack (AnythingLLM, OpenCode, Python).
 **Compiled:** June 2026 · Sized for a **Mac Mini M4 16GB** primary + MacBook Air M2 secondary.
+**Version:** 1.1 (June 22, 2026)
+
+> 📝 **Changelog v1.1:** + §4 Interactive REPL commands (`/set`, `/show`, verbose stats) · + §5 Thinking / reasoning-mode control (shell flags, `/set think`, API, GUI) · + §8 structured outputs (JSON) & tool calling · + extra env vars (§9), Modelfile params & GGUF import (§11), CLI flags (§13), and thinking-related troubleshooting (§15). v1.0 = original.
 
 > ⚠️ Ollama ships frequently and defaults shift between releases. Treat **`docs.ollama.com`** and **`ollama.com/library`** as the source of truth, and run **`ollama --help`** for your installed build. Model tags below are representative — check the library for current ones.
 
@@ -45,15 +48,62 @@ ollama list        # empty on a fresh install = daemon is up and ready
 ## 3. Download & run your first model
 
 ```bash
-ollama run qwen3.5:9b     # pulls on first use, then drops you into a chat REPL
+ollama run qwen3.5:9b              # pulls on first use, then drops you into a chat REPL
+ollama run qwen3.5:9b --verbose    # same, but prints tokens/sec stats after each reply
 ```
 - `ollama pull <model>` downloads without chatting.
-- Inside the REPL: type to chat; **`/bye`** exits; **`"""`** opens a multi-line block; paste an **image** path for multimodal models; **Ctrl+G** opens your `$OLLAMA_EDITOR` for long prompts.
+- Inside the REPL: type to chat; **`/bye`** exits; **`"""`** opens a multi-line block; paste an **image** path for multimodal models; **Ctrl+G** opens your `$OLLAMA_EDITOR` for long prompts. (Full command list in §4.)
 - Models live in `~/.ollama/models` (change with `OLLAMA_MODELS`). Default quantization is **Q4_K_M** unless a tag says otherwise (e.g. `qwen3:14b-q4_K_M`, `:q8_0`).
 
 ---
 
-## 4. Model management commands
+## 4. Interactive REPL commands (inside `ollama run`)
+
+Once you're in a chat session, lines starting with `/` are **REPL commands** (handled by Ollama, not sent to the model). Type `/?` to list them all.
+
+| Command | Does |
+|---|---|
+| `/set verbose` | Print stats after each reply (**tokens/sec**, eval count) — fastest way to diagnose slowness |
+| `/set quiet` | Turn stats back off |
+| `/set think` · `/set nothink` | Enable / disable reasoning (see §5) |
+| `/set parameter num_ctx 8192` | Change a parameter live (also `temperature`, `top_p`, `num_predict`, …) |
+| `/set system "..."` | Set a system prompt for this session |
+| `/set format json` · `/set noformat` | Force / stop JSON-only output |
+| `/set history` · `/set nohistory` | Keep / drop conversation context between turns |
+| `/show info` | Model details (params, context, quant) |
+| `/show modelfile` · `/show parameters` · `/show template` · `/show system` · `/show license` | Inspect the model's config |
+| `/load <model>` · `/save <name>` | Switch model mid-session / save the session as a new model |
+| `/clear` | Clear the conversation context |
+| `/bye` | Exit the session |
+| `/?` (or `/help`) | List all commands |
+
+> **Tip:** `/set verbose` shows your real tok/s. **Under ~5 tok/s usually means CPU spill** (model+context don't fit) — see §10. This is the quickest way to confirm whether "slow" is the model or your memory.
+
+---
+
+## 5. Thinking / reasoning-mode control
+
+Reasoning models — **Qwen3 / Qwen3.5, DeepSeek-R1, Gemma 4, gpt-oss** — generate a hidden chain-of-thought *before* the answer. It genuinely improves multi-step logic and math, but adds latency, and it's **ON by default**. Plain models (Llama 3, Mistral, Phi-4) have no thinking mode — the setting is silently ignored.
+
+**Controls (most → least reliable on Qwen3.5):**
+
+| Method | How |
+|---|---|
+| **Launch flag** | `ollama run qwen3.5:9b --think=false` (off) · `--think` (on) · `--hidethinking` (think but hide the trace) |
+| **In-session (REPL)** | `/set nothink` (off) · `/set think` (on) |
+| **API** | `"think": false` in `/api/chat` or `/api/generate`. *(gpt-oss expects `"low"\|"medium"\|"high"`, not true/false.)* |
+| **In-prompt soft switch** | append `/no_think` or `/think` inside your message — works on much of the Qwen3 family, but **unreliable specifically on Qwen3.5**; prefer the flag or `/set` |
+| **Make off the default** | bake it into a Modelfile (§11) and run that variant — handy for GUI tools |
+
+**Desktop GUI app:** the bundled chat has **no thinking toggle yet** (open feature request). For an on/off switch in a GUI, run the model through **AnythingLLM or LM Studio**, or just pick a **non-thinking model** for quick tests.
+
+**When to use:** ON for math, multi-step logic, hard reasoning; **OFF for quick Q&A, summaries, extraction** — disabling can be **2–5× faster**.
+
+> ⚠️ **Version caveat:** some builds (e.g. 0.20.6) ignored `/set nothink`. If toggles don't take effect, update — or pin a known-good version.
+
+---
+
+## 6. Model management commands
 
 | Command | Does |
 |---|---|
@@ -72,18 +122,18 @@ ollama run qwen3.5:9b     # pulls on first use, then drops you into a chat REPL
 
 ---
 
-## 5. Picking models for a 16GB Mac
+## 7. Picking models for a 16GB Mac
 
 Rough planning: **~0.6 GB per 1B params** at Q4_K_M, plus context headroom. macOS reserves ~4GB, leaving ~12GB usable.
 
 | Model | ~Size | Fit on 16GB | Best for |
 |---|---|---|---|
 | **Qwen3.5 9B** ⭐ | ~7 GB | ✅ clean | General reasoning / research; your primary local model |
-| **Qwen2.5-Coder 7B** | ~5 GB | ✅ | Coding (pair with OpenCode local) |
-| **Gemma 3/4 (4B / E4B)** | ~3–5 GB | ✅ | Efficient small model; second opinion |
-| **Llama 3.2 3B / Phi-4-mini** | ~2–3 GB | ✅ | Fast utility/classification; run alongside a 9B |
+| **Qwen2.5-Coder 7B** | ~5 GB | ✅ | Coding autocomplete/FIM (pair with OpenCode local) |
+| **Gemma 3/4 (4B / E4B)** | ~3–5 GB | ✅ | Efficient small model; native tool-calling; second opinion |
+| **Llama 3.2 3B / Phi-4-mini** | ~2–3 GB | ✅ | Fast utility/classification; run alongside a 9B; no thinking overhead |
 | **DeepSeek-R1 distill 7–8B** | ~5 GB | ✅ | Step-by-step reasoning |
-| **Qwen3 14B (q4_K_M)** | ~9–10 GB | ⚠️ tight | Loads but slow (~10–14 tok/s); use KV-cache tricks (§7) |
+| **Qwen3 14B (q4_K_M)** | ~9–10 GB | ⚠️ tight | Loads but slow (~10–14 tok/s); use KV-cache tricks (§10) |
 | **27B–35B+ / 70B** | 18 GB+ | ❌ | Needs 48GB+ unified memory |
 | **nomic-embed-text** | ~0.3 GB | ✅ | Local embeddings (RAG) |
 
@@ -91,7 +141,7 @@ Rough planning: **~0.6 GB per 1B params** at Q4_K_M, plus context headroom. macO
 
 ---
 
-## 6. The server & API (how apps connect)
+## 8. The server & API (how apps connect)
 
 The server runs at `http://localhost:11434`. Two interfaces:
 
@@ -101,7 +151,7 @@ curl http://localhost:11434/api/generate -d '{"model":"qwen3.5:9b","prompt":"Why
 curl http://localhost:11434/api/tags        # list models
 curl http://localhost:11434/api/ps          # loaded models
 ```
-Endpoints: `/api/generate`, `/api/chat`, `/api/embeddings`, `/api/tags`, `/api/ps`.
+Endpoints: `/api/generate`, `/api/chat`, `/api/embed` (current) or `/api/embeddings` (legacy), `/api/tags`, `/api/ps`.
 
 **OpenAI-compatible** (this is what AnythingLLM, OpenCode, Continue use):
 ```
@@ -110,12 +160,23 @@ Endpoint: /v1/chat/completions      Model: the exact tag, e.g. qwen3.5:9b
 API key:  any non-empty string (ignored locally)
 ```
 
+**Structured outputs (JSON):** pass `"format": "json"` *or* a full **JSON Schema** object in the request — Ollama enforces it during decoding, which eliminates whole classes of parse/retry loops. Big win for **eval pipelines and agents** that need predictable output.
+```bash
+curl http://localhost:11434/api/chat -d '{
+  "model":"qwen3.5:9b",
+  "messages":[{"role":"user","content":"List 3 risks as JSON"}],
+  "format":"json","stream":false
+}'
+```
+
+**Tool / function calling:** OpenAI-compatible `tools` / `tool_choice` are supported by **Qwen3, Llama 3.1+, Mistral, DeepSeek** — so agent frameworks (LangGraph, CrewAI, OpenCode) can call functions through your local models with the same shape they use for cloud models.
+
 **Expose to your LAN** (e.g. serve the Air from the Mini): in the menu-bar app → **Settings → "Expose Ollama to the network"** (v0.94+). Or set `OLLAMA_HOST=0.0.0.0:11434`.
 > ⚠️ Binding to `0.0.0.0` exposes the API on all interfaces with **no auth**. Only do this on a trusted network, ideally behind a firewall rule (`sudo ufw allow from 192.168.1.0/24 to any port 11434`).
 
 ---
 
-## 7. Configuration & environment variables
+## 9. Configuration & environment variables
 
 Set behavior via env vars. **macOS gotcha:** the menu-bar app **ignores your shell profile** — set vars with `launchctl` and restart the app:
 ```bash
@@ -136,24 +197,30 @@ launchctl setenv OLLAMA_FLASH_ATTENTION "1"
 | `OLLAMA_NUM_PARALLEL` | auto (1–4) | Parallel requests per model (RAM scales with it) |
 | `OLLAMA_MAX_LOADED_MODELS` | 3 | Concurrent models that fit in memory |
 | `OLLAMA_MAX_QUEUE` | 512 | Queued requests before rejecting |
+| `OLLAMA_LOAD_TIMEOUT` | `5m` | How long to wait for a slow model load before giving up |
+| `OLLAMA_GPU_OVERHEAD` | 0 | Reserve VRAM headroom (bytes) to avoid OOM when other apps use the GPU |
 | `OLLAMA_ORIGINS` | localhost | Allowed CORS origins for browser apps |
+| `OLLAMA_NOHISTORY` | off | Disable the REPL history file |
+| `OLLAMA_NOPRUNE` | off | Don't prune unused model blobs at startup |
 | `OLLAMA_EDITOR` | — | Editor for the REPL's Ctrl+G prompt editing |
 | `OLLAMA_DEBUG` | off | Verbose logs for troubleshooting |
 
 ---
 
-## 8. Mac performance tuning (16GB)
+## 10. Mac performance tuning (16GB)
 
 - **Keep it on the GPU.** Check `ollama ps` shows ~100% GPU. If it spills to CPU, the model+context is too big — shrink one.
+- **Diagnose with `/set verbose`** (or `--verbose`): if tok/s is in the low single digits, you're CPU-bound, not "thinking too hard."
 - **Avoid reload lag:** `OLLAMA_KEEP_ALIVE=-1` keeps your model resident (trades RAM for instant responses). Good when you bounce between OpenCode and AnythingLLM.
 - **Fit bigger contexts in less RAM:** `OLLAMA_FLASH_ATTENTION=1` + `OLLAMA_KV_CACHE_TYPE=q8_0` together can free 2–6 GB at long context with negligible quality loss. *Caveat:* a few reports note slight slowdowns from q8_0 KV cache on Apple's Metal backend specifically — if generation feels slower, revert to `f16`.
-- **Shrink to fit when needed:** drop quant (`...:14b-q4_K_M`), lower `OLLAMA_CONTEXT_LENGTH` (e.g. 2048), or step down a size (14B→9B frees several GB).
+- **Shrink to fit when needed:** drop quant (`...:14b-q4_K_M`), lower context live with `/set parameter num_ctx 2048` (or `OLLAMA_CONTEXT_LENGTH`), or step down a size (14B→9B frees several GB).
+- **Turn off thinking for quick tasks** (§5) — on a memory-tight Mac a runaway reasoning trace makes a slow model feel frozen.
 - **Memory pressure (Activity Monitor):** yellow is fine (mild swap); **red = active swapping = unusable** — unload something.
 - After major **macOS or Ollama updates**, fully restart the Mac and re-check `ollama ps`; pin a known-good version via Homebrew if a release regresses.
 
 ---
 
-## 9. Custom models (Modelfile)
+## 11. Custom models (Modelfile)
 
 A `Modelfile` defines a reusable model profile — base model + system prompt + parameters.
 ```dockerfile
@@ -171,14 +238,31 @@ PARAMETER num_predict 2048
 ollama create coder-mentor -f Modelfile
 ollama run coder-mentor
 ```
-Directives: `FROM`, `SYSTEM`, `PARAMETER` (temperature, num_ctx, num_predict, top_p, …), `TEMPLATE`, `ADAPTER` (LoRA), `MESSAGE`.
+
+**Directives:** `FROM`, `SYSTEM`, `PARAMETER`, `TEMPLATE`, `ADAPTER` (LoRA), `MESSAGE`.
+**Common `PARAMETER`s:** `temperature`, `top_p`, `top_k`, `repeat_penalty`, `num_ctx` (context), `num_predict` (max output), `num_gpu` (layers on GPU), `num_thread`, `stop`, `seed`.
+
+**Import a GGUF you downloaded** (e.g. an MLX/quant variant from Hugging Face):
+```dockerfile
+FROM ./Qwen3.5-9B-Q4_K_M.gguf
+```
+
+**A "no-think by default" variant** (handy for GUI tools that lack a toggle):
+```dockerfile
+FROM qwen3:8b
+SYSTEM "/no_think"
+```
+```bash
+ollama create qwen3-fast -f Modelfile   # then pick "qwen3-fast" in any GUI
+```
+> Reliable for the Qwen3 family; **finicky on Qwen3.5** — for 3.5 the `--think=false` flag or API `think:false` is more dependable than a Modelfile.
 
 ---
 
-## 10. Integrations (your stack)
+## 12. Integrations (your stack)
 
-- **AnythingLLM:** LLM provider → Ollama → Base URL `http://localhost:11434`, model `qwen3.5:9b`. Keep its built-in local embedder, or point embeddings at Ollama's `nomic-embed-text`. → free, private research/RAG.
-- **OpenCode:** add a local provider at `http://localhost:11434/v1` (model `qwen2.5-coder:7b`) for free, private agentic coding.
+- **AnythingLLM:** LLM provider → Ollama → Base URL `http://localhost:11434`, model `qwen3.5:9b`. Keep its built-in local embedder, or point embeddings at Ollama's `nomic-embed-text`. → free, private research/RAG. *(Also a good place to toggle thinking via its own UI.)*
+- **OpenCode:** add a local provider at `http://localhost:11434/v1` (model `qwen2.5-coder:7b` for FIM, `qwen3.5:9b` for agent/learning) for free, private agentic coding.
 - **Python:**
   ```bash
   pip install ollama          # native client
@@ -186,34 +270,42 @@ Directives: `FROM`, `SYSTEM`, `PARAMETER` (temperature, num_ctx, num_predict, to
   ```python
   import ollama
   print(ollama.chat(model="qwen3.5:9b",
-        messages=[{"role":"user","content":"hi"}])["message"]["content"])
+        messages=[{"role":"user","content":"hi"}],
+        think=False)["message"]["content"])   # think=False skips reasoning
   ```
   Or use the OpenAI SDK / `langchain-ollama` against `http://localhost:11434/v1`.
-- **LAN serving:** expose the Mini (§6) and point the Air's tools at `http://<mini-ip>:11434`.
+- **LAN serving:** expose the Mini (§8) and point the Air's tools at `http://<mini-ip>:11434`.
 
 ---
 
-## 11. CLI quick reference
+## 13. CLI quick reference
 
 ```bash
-ollama run <model>            # chat (pull if needed)
-ollama pull <model>           # download
-ollama list                   # local models
-ollama ps                     # loaded models + GPU%
-ollama show <model>           # model info
-ollama stop <model>           # unload now
-ollama rm <model>             # delete
-ollama cp <src> <dst>         # copy/rename
-ollama create <name> -f Modelfile   # build custom model
-ollama serve                  # start server manually
+ollama run <model>                 # chat (pull if needed)
+ollama run <model> --think=false   # disable reasoning for the session
+ollama run <model> --think         # force reasoning on
+ollama run <model> --hidethinking  # think but hide the trace
+ollama run <model> --verbose       # print tokens/sec + timing stats
+ollama run <model> --format json   # force JSON-only output
+ollama pull <model>                # download
+ollama list                        # local models
+ollama ps                          # loaded models + GPU%
+ollama show <model>                # model info
+ollama show <model> --modelfile    # dump its Modelfile (base to edit/fork)
+ollama stop <model>                # unload now
+ollama rm <model>                  # delete
+ollama cp <src> <dst>              # copy/rename
+ollama create <name> -f Modelfile  # build custom model
+ollama serve                       # start server manually
 ollama --version | --help
 ```
 
 ---
 
-## 12. Tips (tailored)
+## 14. Tips (tailored)
 
 - **Privacy split:** keep finance/proprietary work on local Ollama (Qwen3.5 9B / Qwen2.5-Coder 7B) = $0 + on-device; reserve cloud (GLM-5.2 via OpenRouter) for public/heavy tasks.
+- **Thinking on demand:** default-off for speed during quick work; flip on (`/set think`) for genuine math/logic. Bake a `*-fast` no-think variant for instant testing.
 - **Move the model dir early** (`OLLAMA_MODELS`) if your system drive is tight — models stack up fast (~5GB each).
 - **Two models at once:** a 4B utility + a 9B generalist both fit in 16GB and `ollama ps` lets you watch memory; raise `OLLAMA_MAX_LOADED_MODELS` only if they fit.
 - **Embeddings locally:** `ollama pull nomic-embed-text` gives you a free RAG embedder.
@@ -222,7 +314,7 @@ ollama --version | --help
 
 ---
 
-## 13. Troubleshooting
+## 15. Troubleshooting
 
 | Symptom | Cause / Fix |
 |---|---|
@@ -230,6 +322,11 @@ ollama --version | --help
 | Env vars ignored | The **app** ignores shell vars → use `launchctl setenv VAR "value"` and restart the app |
 | `ollama ps` shows GPU% < 100 | Model+context too big → smaller model, lower quant, or shorter context |
 | Red memory pressure / very slow | Active swapping → unload a model, shrink context, or drop a size |
+| Model "thinks" forever / huge delay before output | Disable reasoning: `/set nothink` or `--think=false` — **and** confirm it's not memory spill (`/set verbose`, §10) |
+| `/no_think` ignored on Qwen3.5 | Use `--think=false` or `/set nothink` instead (the in-prompt switch is unreliable on 3.5) |
+| No thinking toggle in the desktop app | Expected — use AnythingLLM/LM Studio, or a non-thinking model |
+| `/set nothink` does nothing | Possible version bug (e.g. 0.20.6) → update or pin a known-good build |
+| Want to see real tok/s | `/set verbose` (or launch with `--verbose`) |
 | Model reloads after idle (10s lag) | `OLLAMA_KEEP_ALIVE=-1` to keep it resident |
 | Long context blows up RAM | Enable `OLLAMA_FLASH_ATTENTION=1` + `OLLAMA_KV_CACHE_TYPE=q8_0` |
 | Port 11434 in use | A server/app is already running → `ollama ps`, or quit the app before `ollama serve` |
@@ -238,5 +335,5 @@ ollama --version | --help
 
 ---
 
-## 14. Sources
-docs.ollama.com (FAQ, API, Modelfile) · ollama.com/library · github.com/ollama/ollama (`envconfig/config.go`) · InsiderLLM "Ollama on Mac 2026" · SitePoint "Ollama Setup Guide 2026" · ModelPiper "Ollama Environment Variables 2026" · llmhardware.io Ollama cheat sheet · LMSA install guide. Verify command names, defaults, and model tags against `docs.ollama.com` and `ollama.com/library` before relying on them.
+## 16. Sources
+docs.ollama.com (FAQ, API, **Thinking** `/capabilities/thinking`, Modelfile) · ollama.com/blog/thinking · ollama.com/library · github.com/ollama/ollama (`envconfig/config.go`, issues #15962 / #16016 / #15536 on GUI thinking toggle) · serverman.co.uk "Ollama Thinking Mode" · InsiderLLM "Ollama on Mac 2026" · SitePoint "Ollama Setup Guide 2026" · ModelPiper "Ollama Environment Variables 2026" · llmhardware.io Ollama cheat sheet. Verify command names, defaults, and model tags against `docs.ollama.com` and `ollama.com/library` before relying on them.
