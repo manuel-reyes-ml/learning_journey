@@ -11,7 +11,7 @@
   // Primary agents use `model` unless they override it. `small_model` handles
   // session titles/summaries — pinned LOCAL so finance work never leaks to cloud.
   "model": "openrouter/minimax/minimax-m3",
-  "small_model": "ollama/qwen3.5:9b",
+  "small_model": "ollama/qwen3.5-16k",
 
   // === Providers =============================================================
   "provider": {
@@ -22,7 +22,8 @@
       "options": { "baseURL": "http://localhost:11434/v1" },
       "models": {
         // Key MUST match the Ollama tag exactly (run `ollama list`).
-        "qwen3.5:9b": { "name": "Qwen3.5 9B (local)" }
+        "qwen3.5:9b": { "name": "Qwen3.5 9B (local)" },
+        "qwen3.5-16k":    { "name": "Qwen3.5 9B · 16k (local)" }
       }
     },
     // OpenRouter is built-in — add the key once: /connect → OpenRouter → paste key
@@ -46,7 +47,7 @@
       //   1) openrouter/z-ai/glm-5.2            (first fallback — runs clean in Plan)
       //   2) openrouter/deepseek/deepseek-v4-pro (last resort — can be slow / look
       //      frozen in Plan mode: reasoning-MoE + ai-sdk thinking-stream, not a hang)
-      "model": "ollama/qwen3.5:9b",
+      "model": "ollama/qwen3.5-16k",
       "permission": { "edit": "deny", "bash": "deny" }   // true read-only gate
     },
     "build": {
