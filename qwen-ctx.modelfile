@@ -2,7 +2,7 @@
 # To build a new Modelfile based on this, replace FROM with:
 # FROM qwen3.5:9b
 
-FROM /Users/manuelreyes/.ollama/models/blobs/sha256-dec52a44569a2a25341c4e4d3fee25846eed4f6f0b936278e3a3c900bb99d37c
+FROM qwen3.5:9b
 TEMPLATE {{ .Prompt }}
 RENDERER qwen3.5
 PARSER qwen3.5
@@ -10,6 +10,7 @@ PARAMETER presence_penalty 1.5
 PARAMETER temperature 1
 PARAMETER top_k 20
 PARAMETER top_p 0.95
+PARAMETER num_ctx 16384
 LICENSE """                                Apache License
                            Version 2.0, January 2004
                         http://www.apache.org/licenses/
