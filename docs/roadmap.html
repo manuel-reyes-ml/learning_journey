@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>GenAI-FIRST CAREER ROADMAP - GenAI Data Analyst → AI Engineer → ML → Senior LLM Engineer (v8.4 - 2026 Market Alignment Update)</title>
+    <title>GenAI-FIRST CAREER ROADMAP - GenAI Data Analyst → AI Engineer → ML → Senior LLM Engineer (v8.5 - Local-First Toolchain Update)</title>
     <style>
         a { color: #3498db; text-decoration: none; }
         a:hover { color: #2980b9; text-decoration: underline; }
@@ -30,7 +30,7 @@
 </head>
 <body>
 
-<h1>🚀 GenAI-FIRST CAREER ROADMAP v8.4 (2026 Market Alignment Update)</h1>
+<h1>🚀 GenAI-FIRST CAREER ROADMAP v8.5 (Local-First Toolchain Update)</h1>
 <h1>GenAI Data Analyst & AI Engineer → GenAI Data Engineer → ML + LLM Specialist → Senior LLM Engineer</h1>
 <h1>Remote Global Track | 25 hrs/week | 37 Months | AI-Accelerated Path</h1>
 
@@ -558,6 +558,54 @@
     </ul>
     <p><strong>Total AI Tools Cost:</strong> $160 for Stage 1</p>
     <p><strong>ROI:</strong> These tools make you 2x faster AND position you as GenAI-powered analyst = higher starting salary!</p>
+</div>
+
+
+<h3>🦙 Self-Hosted &amp; Local-First AI Toolchain (Privacy-First · Model-Routing) <span class="badge badge-free">🆕 v8.5</span></h3>
+<div class="info-box" style="background-color: #e3f2fd; border-left: 5px solid #2196F3;">
+    <p><strong>💡 Why This Impresses Recruiters:</strong> The paid cloud tools above accelerate <em>learning</em>; this stack proves you can <strong>architect and run AI systems without cloud dependency</strong> — on-device inference, private data handling, and explicit model-routing. For regulated <strong>finance</strong> employers (where participant data cannot leave the building), an engineer who already runs a local, privacy-first LLM stack is a rare, high-signal hire. This is the practical proof behind the roadmap's "deploy AI without cloud dependencies" thesis — not a slogan, a running system.</p>
+</div>
+<table>
+    <tr>
+        <th style="width: 22%;">Tool</th>
+        <th style="width: 18%;">Role in My Stack</th>
+        <th style="width: 12%;">Cost</th>
+        <th style="width: 48%;">Why It's a Differentiator</th>
+    </tr>
+    <tr style="background-color: #e8f5e9;">
+        <td><strong><a href="https://opencode.ai/" target="_blank">OpenCode</a></strong><br><em>⭐ Agentic coding agent (in Cursor + terminal)</em><br><span class="badge badge-free">OPEN SOURCE</span></td>
+        <td>Spec-driven, gated agentic development — runs <strong>inside Cursor IDE</strong></td>
+        <td><span class="badge badge-free">FREE</span><br>(pay only for chosen API)</td>
+        <td><strong>PRODUCTION AGENTIC WORKFLOW.</strong> Custom agents (plan / build / docs-sync / eval-guardian / security-auditor), slash-commands, and a <strong>provider-agnostic model-routing</strong> layer: local <strong>Qwen3.5</strong> (Ollama) for private planning, cloud (MiniMax M3 / GLM-5.2 via OpenRouter) for heavy builds. Permission gates enforce <em>manual-commit discipline</em> and additive-only edits — recruiter-visible proof of disciplined, no-"vibe-coding" engineering.</td>
+    </tr>
+    <tr style="background-color: #e8f5e9;">
+        <td><strong><a href="https://ollama.com/" target="_blank">Ollama</a></strong><br><em>Local inference engine</em><br><span class="badge badge-free">ON-DEVICE</span></td>
+        <td>Private, zero-cost LLM runtime (Qwen3.5 9B, custom 16K-context Modelfile)</td>
+        <td><span class="badge badge-free">FREE</span></td>
+        <td><strong>DATA NEVER LEAVES THE MACHINE.</strong> Apple-Silicon Metal acceleration; powers OpenCode's private planning and any finance/proprietary work. Demonstrates the <strong>privacy-routing principle</strong> the roadmap is built on — sensitive data → local, public research → cloud. Directly underpins the <strong>Crucible &amp; AFC</strong> local-first AI analysts.</td>
+    </tr>
+    <tr style="background-color: #e8f5e9;">
+        <td><strong><a href="https://lmstudio.ai/" target="_blank">LM Studio</a></strong><br><em>GUI runtime + MLX engine</em><br><span class="badge badge-free">ON-DEVICE</span></td>
+        <td>Interactive local chat &amp; model benchmarking (Apple <strong>MLX</strong>)</td>
+        <td><span class="badge badge-free">FREE</span></td>
+        <td><strong>APPLE-SILICON-NATIVE INFERENCE.</strong> Runs MLX-optimized models (e.g. Qwen3.5 9B 4-bit) for faster on-device chat, with an OpenAI-compatible server and per-model tuning. Used as a benchmarking bench to <strong>A/B local engines</strong> (MLX vs GGUF) — evidence of measured, evaluation-first tooling decisions rather than hype-following.</td>
+    </tr>
+    <tr style="background-color: #e8f5e9;">
+        <td><strong><a href="https://anythingllm.com/" target="_blank">AnythingLLM</a></strong><br><em>Self-hosted AI workspace</em><br><span class="badge badge-free">SELF-HOSTED</span></td>
+        <td>Private RAG + project/workspace management; routes to local or pay-as-you-go models</td>
+        <td><span class="badge badge-free">FREE</span><br>(self-hosted)</td>
+        <td><strong>OWN THE INTERFACE AND THE DATA.</strong> A self-hosted workspace that unifies <strong>local (Ollama)</strong> and <strong>pay-as-you-go (OpenRouter)</strong> models under one private app — chat, document RAG, and project management without handing documents to a vendor's cloud UI. Shows end-to-end ownership of a private knowledge stack, not just API consumption.</td>
+    </tr>
+</table>
+<div class="outcomes-box">
+    <h4>🎯 What This Toolchain Signals (Architecture &amp; Hiring Value):</h4>
+    <ul>
+        <li><strong>Privacy-first architecture:</strong> explicit routing — finance/proprietary code &amp; data stay <strong>on-device (Ollama / LM Studio)</strong>; only public research touches cloud APIs. The exact competency regulated finance employers struggle to hire for.</li>
+        <li><strong>Cost discipline:</strong> the local layer is <strong>$0 and offline-capable</strong>; cloud spend is deliberate and pay-as-you-go (OpenRouter), not a flat subscription tax.</li>
+        <li><strong>Provider-agnostic by design:</strong> model-routing across local + multiple cloud providers (no vendor lock-in) mirrors production LLM-Ops practice.</li>
+        <li><strong>Disciplined agentic engineering:</strong> OpenCode's gated workflow (plan → build → review → manual commit) is the same control-gate rigor recruiters expect from senior engineers.</li>
+    </ul>
+    <p><strong>Cloud / paid services remain in the stack</strong> (Claude Pro, OpenRouter credits, Cursor, course-required ChatGPT) — this local-first toolchain <em>complements</em> them, giving a defensible hybrid: <strong>cloud for scale and frontier capability, local for privacy, cost, and control.</strong></p>
 </div>
 
 
@@ -4280,11 +4328,14 @@
 
 <div style="text-align: center; margin: 40px 0; padding: 20px; background-color: #f8f9fa; border-radius: 10px;">
     <p style="font-size: 1em; color: #6c757d;">
-        <strong>Document Version:</strong> ROADMAP v8.4 (2026 Market Alignment Update) - GenAI/LLM-Enhanced Path + Production Portfolio<br>
-        <strong>Created:</strong> November 17, 2025 | <strong>Updated:</strong> May 7, 2026<br>
+        <strong>Document Version:</strong> ROADMAP v8.5 (Local-First Toolchain Update) - GenAI/LLM-Enhanced Path + Production Portfolio<br>
+        <strong>Created:</strong> November 17, 2025 | <strong>Updated:</strong> June 25, 2026<br>
         <strong>Structure:</strong> 5 Stages | 37 Months | <strong>Beginner → Data Analyst → DE → ML → LLM</strong><br>
         <strong>Investment:</strong> $530 | <strong>ROI:</strong> 20,000%+<br>
         <strong>Key Optimizations:</strong><br>
+        • <strong>NEW v8.5: 🦙 SELF-HOSTED &amp; LOCAL-FIRST AI TOOLCHAIN section added to Stage 1 — OpenCode (agentic coding in Cursor), Ollama + LM Studio (on-device LLMs), AnythingLLM (self-hosted RAG workspace)</strong> ✅<br>
+        • <strong>NEW v8.5: 🔀 PROVIDER-AGNOSTIC MODEL-ROUTING documented — local Qwen3.5 (Ollama) for private planning, cloud (MiniMax M3 / GLM-5.2 via OpenRouter) for heavy builds</strong> ✅<br>
+        • <strong>NEW v8.5: 🔒 PRIVACY-FIRST ARCHITECTURE framed as a recruiter differentiator (finance/proprietary → on-device; public research → cloud)</strong> ✅<br>
         • <strong>NEW v8.4: 🤖 Building with the Claude API (Anthropic Academy) added to Stage 1 — provider source-of-truth for the Claude SDK (official cert)</strong> ✅<br>
         • <strong>NEW v8.4: 🧪 Improving Accuracy of LLM Applications added to Stage 1 (build eval framework + simulate hallucinations)</strong> ✅<br>
         • <strong>NEW v8.4: ✍️ AI Prompting for Everyone added to Stage 1 (2026 refresh of dated ChatGPT PE course)</strong> ✅<br>
