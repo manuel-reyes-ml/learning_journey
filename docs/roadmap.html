@@ -25,6 +25,10 @@
         .badge-free { background-color: #28a745; color: white; }
         .badge-paid { background-color: #ffc107; color: #212529; }
         .badge-included { background-color: #17a2b8; color: white; }
+        .stg { display: inline-block; min-width: 22px; text-align: center; padding: 2px 5px; border-radius: 4px; font-size: 11px; font-weight: bold; margin: 1px; background-color: #3498db; color: #fff; }
+        .stg-off { background-color: #e6e9ed; color: #aab2bd; }
+        .toolchain-group { background-color: #eafaf1; border-left: 5px solid #28a745; padding: 10px 15px; margin: 12px 0 6px; border-radius: 4px; }
+        .toolchain-group.cloud { background-color: #eef4fb; border-left-color: #2196F3; }
         @media print { h2 { page-break-before: always; } }
     </style>
 </head>
@@ -182,6 +186,81 @@
         <li><strong>✅ Same endpoint:</strong> Still reach LLM Engineer, just safer route!</li>
     </ul>
 </div>
+
+<!-- ========== CORE TOOLCHAIN (ALL STAGES) ========== -->
+<h2>🧰 CORE TOOLCHAIN — Used Across All 5 Stages</h2>
+<div class="info-box" style="background-color: #e3f2fd; border-left: 5px solid #2196F3;">
+    <p><strong>🎯 The thesis:</strong> a deliberate <strong>hybrid stack</strong> — frontier <em>cloud</em> capability for scale, paired with a private, <em>on-device local-first layer</em> for privacy, cost, and control. The local-first group is the differentiator most candidates don't have; the cloud group keeps me current with frontier models. Together they mirror real production LLM-Ops: <strong>provider-agnostic, privacy-routed, no vendor lock-in.</strong></p>
+    <p style="margin-bottom:0;"><strong>Badge legend:</strong> <span class="stg">S1</span>–<span class="stg">S5</span> = stages where the tool is actively used; <span class="stg stg-off">S?</span> = not emphasized in that stage. Deep-dive rationale lives in each stage's tools section (full breakdown in <strong>Stage 1</strong>).</p>
+</div>
+
+<div class="toolchain-group"><strong>🦙 LOCAL-FIRST / SELF-HOSTED</strong> — Private · $0 · On-Device <span class="badge badge-free">DIFFERENTIATOR</span></div>
+<table>
+    <tr>
+        <th style="width: 20%;">Tool</th>
+        <th style="width: 12%;">Cost</th>
+        <th style="width: 40%;">Role in the Journey</th>
+        <th style="width: 28%;">Active Stages</th>
+    </tr>
+    <tr style="background-color: #e8f5e9;">
+        <td><strong><a href="https://opencode.ai/" target="_blank">OpenCode</a></strong><br><em>Agentic coding agent (in Cursor)</em></td>
+        <td><span class="badge badge-free">FREE</span></td>
+        <td>Spec-driven, gated agentic development with provider-agnostic model-routing</td>
+        <td><span class="stg">S1</span><span class="stg">S2</span><span class="stg">S3</span><span class="stg">S4</span><span class="stg">S5</span></td>
+    </tr>
+    <tr style="background-color: #e8f5e9;">
+        <td><strong><a href="https://ollama.com/" target="_blank">Ollama</a></strong><br><em>Local inference engine</em></td>
+        <td><span class="badge badge-free">FREE</span></td>
+        <td>Private, zero-cost on-device LLM runtime (Qwen3.5); peaks at the Stage 3 Local-LLM-Specialist phase</td>
+        <td><span class="stg">S1</span><span class="stg">S2</span><span class="stg">S3</span><span class="stg">S4</span><span class="stg">S5</span></td>
+    </tr>
+    <tr style="background-color: #e8f5e9;">
+        <td><strong><a href="https://lmstudio.ai/" target="_blank">LM Studio</a></strong><br><em>GUI runtime + MLX engine</em></td>
+        <td><span class="badge badge-free">FREE</span></td>
+        <td>Interactive local chat &amp; model benchmarking (Apple MLX) — heaviest while establishing/tuning local inference</td>
+        <td><span class="stg">S1</span><span class="stg">S2</span><span class="stg">S3</span><span class="stg stg-off">S4</span><span class="stg stg-off">S5</span></td>
+    </tr>
+    <tr style="background-color: #e8f5e9;">
+        <td><strong><a href="https://anythingllm.com/" target="_blank">AnythingLLM</a></strong><br><em>Self-hosted AI workspace</em></td>
+        <td><span class="badge badge-free">FREE</span></td>
+        <td>Private RAG + project/workspace management; routes to local (Ollama) or pay-as-you-go (OpenRouter)</td>
+        <td><span class="stg">S1</span><span class="stg">S2</span><span class="stg">S3</span><span class="stg">S4</span><span class="stg">S5</span></td>
+    </tr>
+</table>
+
+<div class="toolchain-group cloud"><strong>☁️ CLOUD / PAID</strong> — Scale · Frontier capability</div>
+<table>
+    <tr>
+        <th style="width: 20%;">Tool</th>
+        <th style="width: 12%;">Cost</th>
+        <th style="width: 40%;">Role in the Journey</th>
+        <th style="width: 28%;">Active Stages</th>
+    </tr>
+    <tr style="background-color: #e3f2fd;">
+        <td><strong><a href="https://cursor.sh/" target="_blank">Cursor AI IDE</a></strong><br><em>⭐ Primary editor</em></td>
+        <td><span class="badge badge-paid">$20/mo</span></td>
+        <td>Primary editor for all coding; hosts the OpenCode agent</td>
+        <td><span class="stg">S1</span><span class="stg">S2</span><span class="stg">S3</span><span class="stg">S4</span><span class="stg">S5</span></td>
+    </tr>
+    <tr style="background-color: #e3f2fd;">
+        <td><strong><a href="https://claude.ai/" target="_blank">Claude Pro</a></strong><br><em>Daily AI pair</em></td>
+        <td><span class="badge badge-paid">$20/mo</span></td>
+        <td>Primary reasoning/pair-programming partner and agentic coding (Anthropic SDK is the projects' primary provider)</td>
+        <td><span class="stg">S1</span><span class="stg">S2</span><span class="stg">S3</span><span class="stg">S4</span><span class="stg">S5</span></td>
+    </tr>
+    <tr style="background-color: #e3f2fd;">
+        <td><strong><a href="https://openrouter.ai/" target="_blank">OpenRouter</a></strong><br><em>Multi-model gateway</em></td>
+        <td><span class="badge badge-paid">Pay-as-you-go</span></td>
+        <td>One key to many frontier models (MiniMax M3, GLM-5.2, …) for heavy builds and fallbacks — no per-vendor lock-in</td>
+        <td><span class="stg">S1</span><span class="stg">S2</span><span class="stg">S3</span><span class="stg">S4</span><span class="stg">S5</span></td>
+    </tr>
+    <tr style="background-color: #e3f2fd;">
+        <td><strong><a href="https://openai.com/" target="_blank">OpenAI (ChatGPT + Codex)</a></strong><br><em>Secondary cloud chat + coding agent</em></td>
+        <td><span class="badge badge-paid">$20/mo</span></td>
+        <td>General-purpose chat (ChatGPT) and the Codex coding agent — used on select projects; ChatGPT is also required for the Stage 1 Vanderbilt GenAI course</td>
+        <td><span class="stg">S1</span><span class="stg">S2</span><span class="stg stg-off">S3</span><span class="stg stg-off">S4</span><span class="stg stg-off">S5</span></td>
+    </tr>
+</table>
 
 <!-- ========== STAGE 1 ========== -->
 <h2>🎯 STAGE 1: GenAI-FIRST DATA ANALYST & AI ENGINEER (Months 1-5)</h2>
@@ -4333,6 +4412,7 @@
         <strong>Structure:</strong> 5 Stages | 37 Months | <strong>Beginner → Data Analyst → DE → ML → LLM</strong><br>
         <strong>Investment:</strong> $530 | <strong>ROI:</strong> 20,000%+<br>
         <strong>Key Optimizations:</strong><br>
+        • <strong>NEW v8.5: 🧰 CORE TOOLCHAIN overview section added near the top (all-stages hybrid stack with per-stage badges) — prominent recruiter-facing index of local-first + cloud tools</strong> ✅<br>
         • <strong>NEW v8.5: 🦙 SELF-HOSTED &amp; LOCAL-FIRST AI TOOLCHAIN section added to Stage 1 — OpenCode (agentic coding in Cursor), Ollama + LM Studio (on-device LLMs), AnythingLLM (self-hosted RAG workspace)</strong> ✅<br>
         • <strong>NEW v8.5: 🔀 PROVIDER-AGNOSTIC MODEL-ROUTING documented — local Qwen3.5 (Ollama) for private planning, cloud (MiniMax M3 / GLM-5.2 via OpenRouter) for heavy builds</strong> ✅<br>
         • <strong>NEW v8.5: 🔒 PRIVACY-FIRST ARCHITECTURE framed as a recruiter differentiator (finance/proprietary → on-device; public research → cloud)</strong> ✅<br>
