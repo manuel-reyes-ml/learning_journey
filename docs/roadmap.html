@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>GenAI-FIRST CAREER ROADMAP - GenAI Data Analyst → AI Engineer → ML → Senior LLM Engineer (v8.5 - Local-First Toolchain Update)</title>
+    <title>GenAI-FIRST CAREER ROADMAP - GenAI Data Analyst → AI Engineer → ML → Senior LLM Engineer (v8.6 - GraphRAG & Knowledge-Graph Architecture Update)</title>
     <style>
         a { color: #3498db; text-decoration: none; }
         a:hover { color: #2980b9; text-decoration: underline; }
@@ -34,7 +34,7 @@
 </head>
 <body>
 
-<h1>🚀 GenAI-FIRST CAREER ROADMAP v8.5 (Local-First Toolchain Update)</h1>
+<h1>🚀 GenAI-FIRST CAREER ROADMAP v8.6 (GraphRAG & Knowledge-Graph Update)</h1>
 <h1>GenAI Data Analyst & AI Engineer → GenAI Data Engineer → ML + LLM Specialist → Senior LLM Engineer</h1>
 <h1>Remote Global Track | 25 hrs/week | 37 Months | AI-Accelerated Path</h1>
 
@@ -790,7 +790,7 @@
         <td><strong><a href="https://github.com/manuel-reyes-ml/policypulse" target="_blank">PolicyPulse</a></strong><br><em>🧠 RAG Foundation</em><br><span class="badge badge-paid">🔄 EVOLVES 5 STAGES</span><br><span class="badge badge-paid">🔌 MCP SERVER</span></td>
         <td>4 weeks</td>
         <td>RAG chatbot answering HR policy questions with cited sources, confidence scoring, and auto-escalation to HR. <strong>Exposes retrieval as a FastMCP server</strong> — Cursor and Claude Desktop can query the HR knowledge base directly via MCP.</td>
-        <td><strong>+ Embeddings, ChromaDB vector store, RAG pipeline, semantic search, ticket escalation system, <span style="background-color:#fff3cd; padding:2px 4px;">Anthropic SDK as primary provider (Claude excels at RAG synthesis with prompt caching)</span>, <span style="background-color:#fff3cd; padding:2px 4px;">FastMCP server (~50 LOC) exposing retrieval tools</span></strong></td>
+        <td><strong>+ Embeddings, ChromaDB vector store, RAG pipeline, semantic search, ticket escalation system, <span style="background-color:#fff3cd; padding:2px 4px;">Anthropic SDK as primary provider (Claude excels at RAG synthesis with prompt caching)</span>, <span style="background-color:#fff3cd; padding:2px 4px;">FastMCP server (~50 LOC) exposing retrieval tools</span></strong><br><em>🆕 Stage 2/3 upgrade path: evolve to a <strong>GraphRAG hybrid</strong> (Neo4j knowledge graph + ChromaDB vectors) for multi-hop policy questions where vector-only retrieval stitches the wrong chunks together — a documented fix for multi-hop hallucination that strengthens groundedness.</em></td>
         <td>• GitHub w/ GIF demo<br>• Streamlit Cloud<br>• Blog post<br>• MCP server demo</td>
     </tr>
     <tr style="background-color: #e3f2fd;">
@@ -1281,8 +1281,9 @@
         <li>⚡ <strong>Unstructured Data ETL:</strong> Extract text from PDFs, process audio transcripts, scrape financial news</li>
         <li>⚡ <strong>Embedding Pipelines:</strong> Generate vector embeddings at scale, update indices efficiently</li>
         <li>⚡ <strong>Hybrid Search:</strong> Combine traditional SQL queries with semantic vector search</li>
+        <li>⚡ <strong>🆕 GraphRAG / Knowledge Graphs (Neo4j):</strong> Add a knowledge-graph layer for multi-hop, relationship-heavy queries where vector-only retrieval fails — the high-signal 2026 differentiator for <strong>finance/compliance</strong> AI. <em>Honest caveat: a vector pipeline stands up in days; a knowledge graph is weeks of ontology work — add it for relationship reasoning, not because it's trendy. Vector stays the backbone (~80% of queries); graph is the additive layer (~15–20%).</em></li>
     </ul>
-    <p><strong>Your Stage 2 Capstone:</strong> Build "Financial Knowledge Graph + Vector DB" that ingests SEC filings (PDFs), extracts data, stores structured data in PostgreSQL AND embeddings in Pinecone/Qdrant for AI-powered financial analysis chatbot.</p>
+    <p><strong>Your Stage 2 Capstone:</strong> Build "Financial Knowledge Graph + Vector DB" that ingests SEC filings (PDFs), extracts data, and serves an AI-powered financial-analysis chatbot via a <strong>hybrid retriever</strong> — embeddings in a vector DB (Pinecone/Qdrant) for semantic breadth <strong>+ a real knowledge graph in <a href="https://neo4j.com/" target="_blank">Neo4j</a></strong> (entities: companies, filings, officers, holdings, dates → typed relationships) for multi-hop, explainable reasoning. <em>This makes the "knowledge graph" in the title real (not just PostgreSQL tables) and directly targets multi-hop hallucination — reinforcing your eval-first faithfulness standard.</em></p>
 </div>
 
 <h3>📚 Core Courses (IN THIS ORDER!)</h3>
@@ -1439,6 +1440,15 @@
         <td>✅ Yes</td>
         <td>2 weeks</td>
         <td><strong>MULTI-CLOUD DATA WAREHOUSE!</strong> Quick exposure to BigQuery alongside your AWS Redshift skills. Shows multi-cloud awareness on resume. Many DE jobs require Snowflake OR BigQuery — this covers the gap!</td>
+    </tr>
+    <tr style="background-color: #e8f5e9;">
+        <td><strong>1️⃣6️⃣</strong></td>
+        <td><strong><a href="https://www.deeplearning.ai/short-courses/knowledge-graphs-rag/" target="_blank">🆕🤖🕸️ Knowledge Graphs for RAG (intro to GraphRAG)</a></strong></td>
+        <td><strong><a href="https://www.deeplearning.ai/" target="_blank">DeepLearning.AI</a></strong> (w/ Neo4j)</td>
+        <td><span class="badge badge-free">FREE</span></td>
+        <td>✅ Yes</td>
+        <td>1-2 hours</td>
+        <td><strong>🆕 GRAPHRAG ENTRY POINT — PERFECT DOMAIN FIT!</strong> Taught by Neo4j's developer evangelist; builds a knowledge graph from <strong>SEC filings</strong> (your exact AFC domain) and adds a vector index for a <strong>hybrid retriever</strong> using Cypher + LangChain. The direct on-ramp to your upgraded Stage 2 capstone. Vector for breadth, graph for connected reasoning.</td>
     </tr>
 </table>
 
@@ -2102,6 +2112,14 @@
         <td>✅ Yes</td>
         <td>1-2 hours</td>
         <td><strong>LOCAL-FIRST INFERENCE & QUANTIZATION!</strong> Serving, batching, KV-cache, and quantization for efficient local LLM inference. Closest formal course to Crucible's Ollama/Qwen3 local-first analyst — the nearest credential for the Local-LLM Specialist skill (Ollama itself is hands-on, no cert exists).</td>
+    </tr>
+    <tr style="background-color: #e8f5e9;">
+        <td><strong><a href="https://graphacademy.neo4j.com/" target="_blank">🆕🤖🕸️ Neo4j GraphAcademy: Knowledge Graphs &amp; GraphRAG path → Neo4j Certified Professional</a></strong></td>
+        <td><strong><a href="https://graphacademy.neo4j.com/" target="_blank">Neo4j GraphAcademy</a></strong></td>
+        <td><span class="badge badge-free">FREE</span></td>
+        <td>✅ Yes <em>(Neo4j Certified Professional)</em></td>
+        <td>Self-paced (multi-week)</td>
+        <td><strong>🆕 DEEPEN GRAPHRAG + RECOGNIZED GRAPH CREDENTIAL!</strong> Official Neo4j path: build knowledge graphs from unstructured data, fuse vector + graph retrieval, and assemble end-to-end GraphRAG pipelines with Neo4j's GenAI tools — earning the recruiter-recognized <strong>Neo4j Certified Professional</strong> badge. Builds directly on the Stage 2 "Knowledge Graphs for RAG" intro. <em>Complement: DeepLearning.AI "Agentic Knowledge Graph Construction" (multi-agent KG building) for the advanced edge.</em></td>
     </tr>
 </table>
 
@@ -4413,11 +4431,14 @@
 
 <div style="text-align: center; margin: 40px 0; padding: 20px; background-color: #f8f9fa; border-radius: 10px;">
     <p style="font-size: 1em; color: #6c757d;">
-        <strong>Document Version:</strong> ROADMAP v8.5 (Local-First Toolchain Update) - GenAI/LLM-Enhanced Path + Production Portfolio<br>
-        <strong>Created:</strong> November 17, 2025 | <strong>Updated:</strong> June 25, 2026<br>
+        <strong>Document Version:</strong> ROADMAP v8.6 (GraphRAG & Knowledge-Graph Architecture Update) - GenAI/LLM-Enhanced Path + Production Portfolio<br>
+        <strong>Created:</strong> November 17, 2025 | <strong>Updated:</strong> June 26, 2026<br>
         <strong>Structure:</strong> 5 Stages | 37 Months | <strong>Beginner → Data Analyst → DE → ML → LLM</strong><br>
         <strong>Investment:</strong> $530 | <strong>ROI:</strong> 20,000%+<br>
         <strong>Key Optimizations:</strong><br>
+        • <strong>NEW v8.6: 🕸️ GRAPHRAG / KNOWLEDGE-GRAPH ARCHITECTURE added — Stage 2 capstone upgraded to a real Neo4j hybrid (vector + graph) retriever; GraphRAG skill line added with honest cost caveat (vector stays the backbone)</strong> ✅<br>
+        • <strong>NEW v8.6: 🎓 GraphRAG courses added — Stage 2 intro: DeepLearning.AI "Knowledge Graphs for RAG" (SEC-filings demo); Stage 3 deepen: Neo4j GraphAcademy → Neo4j Certified Professional (+ Agentic KG Construction)</strong> ✅<br>
+        • <strong>NEW v8.6: 🔗 PolicyPulse tagged with a Stage 2/3 GraphRAG hybrid upgrade path (multi-hop policy questions / groundedness)</strong> ✅<br>
         • <strong>NEW v8.5: 🧰 CORE TOOLCHAIN overview section added near the top (all-stages hybrid stack with per-stage badges) — prominent recruiter-facing index of local-first + cloud tools</strong> ✅<br>
         • <strong>NEW v8.5: 🦙 SELF-HOSTED &amp; LOCAL-FIRST AI TOOLCHAIN section added to Stage 1 — OpenCode (agentic coding in Cursor), Ollama + LM Studio (on-device LLMs), AnythingLLM (self-hosted RAG workspace)</strong> ✅<br>
         • <strong>NEW v8.5: 🔀 PROVIDER-AGNOSTIC MODEL-ROUTING documented — local Qwen3.5 (Ollama) for private planning, cloud (MiniMax M3 / GLM-5.2 via OpenRouter) for heavy builds</strong> ✅<br>
