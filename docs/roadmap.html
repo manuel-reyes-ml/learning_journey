@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>GenAI-FIRST CAREER ROADMAP - GenAI Data Analyst → AI Engineer → ML → Senior LLM Engineer (v8.7 - GraphRAG + AFC Triggers & signalcore Sync)</title>
+    <title>GenAI-FIRST CAREER ROADMAP - GenAI Data Analyst → AI Engineer → ML → Senior LLM Engineer (v8.8 - Loop Engineering)</title>
     <style>
         a { color: #3498db; text-decoration: none; }
         a:hover { color: #2980b9; text-decoration: underline; }
@@ -34,7 +34,7 @@
 </head>
 <body>
 
-<h1>🚀 GenAI-FIRST CAREER ROADMAP v8.7 (GraphRAG + AFC Triggers & signalcore Sync)</h1>
+<h1>🚀 GenAI-FIRST CAREER ROADMAP v8.8 (Loop Engineering)</h1>
 <h1>GenAI Data Analyst & AI Engineer → GenAI Data Engineer → ML + LLM Specialist → Senior LLM Engineer</h1>
 <h1>Remote Global Track | 25 hrs/week | 37 Months | AI-Accelerated Path</h1>
 
@@ -2674,6 +2674,30 @@
             <td>✅ <strong>Multi-agent systems, web browsing, tool calling</strong></td>
         </tr>
     </table>
+    <div style="border:2px solid #6a1b9a; background:#f6f0fb; border-radius:8px; padding:14px 16px; margin:16px 0;">
+        <h4 style="margin-top:0; color:#6a1b9a;">🔁 NEW v8.8 — Loop Engineering (the autonomy layer on top of your agents)</h4>
+        <p><strong>What it is:</strong> the June-2026 successor to prompt → context → harness engineering. Instead of prompting an agent by hand each step, you design the <em>system that prompts it</em>: <strong>trigger → act → observe → verify → repeat until a stop condition</strong>. Popularized by Addy Osmani and Boris Cherny ("I don't prompt Claude anymore — I have loops that prompt it").</p>
+        <p><strong>Why this is mostly a re-frame for you, not a new skill:</strong> Stage 4 already teaches "Plan → Act → Check → Retry," LangGraph stateful loops, and evaluator-optimizer. The literature is unanimous that <strong>the verifier is the bottleneck</strong> — defining measurable "done" is the hard part — which is exactly your eval-first discipline (DeepEval ≥0.9 gates, "behind the Wall"). You are ahead of most here.</p>
+        <p><strong>The 5 production-loop components to add (the genuine gaps — none are in the roadmap yet):</strong></p>
+        <ul>
+            <li><strong>Triggers / scheduling</strong> — cron, hooks, heartbeat, and goal-loops (run until a success condition holds)</li>
+            <li><strong>Layered exits</strong> — verifier (goal met) + hard max-iteration cap + token/time budget + no-progress detection</li>
+            <li><strong>State / checkpoint persistence</strong> — file / git / JSON so the loop knows what it already did across iterations</li>
+            <li><strong>Per-loop cost caps + observability</strong> — route each step to the right model tier (ties into your OpenRouter / Ollama routing)</li>
+            <li><strong>Human-in-the-loop sign-off gates</strong> — required before any irreversible action</li>
+        </ul>
+        <p><strong>⚠️ Autonomy is a per-project decision, not a blanket default:</strong></p>
+        <ul>
+            <li>✅ <strong>Run unattended (read-only / verifiable):</strong> AFC (read-only research) and FormSense — its intake → reconcile → validate → route → escalate → read-reply → reconcile flow is a textbook <em>goal-loop</em> (verifier = validation rules + confidence threshold; low-confidence → human review).</li>
+            <li>🛑 <strong>Keep a human gate (irreversible):</strong> Crucible live execution. A live trade cannot be undone — the research is explicit that autonomous loops should <em>not</em> run safety-critical domains with irreversible consequences. Keep sign-off + kill-switch on the live path (this <em>is</em> your "behind the Wall" governance).</li>
+        </ul>
+        <p><strong>📚 Best course</strong> (no dedicated "loop engineering" course exists yet — the term is weeks old; these teach the real substance):</p>
+        <ul>
+            <li>⭐ <strong><a href="https://www.coursera.org/specializations/ai-agents-python" target="_blank">AI Agents and Agentic AI in Python — Vanderbilt (Coursera specialization)</a>.</strong> Builds agents from the ground up in Python (matches your "understand every line" rule), explicitly covering <em>agent loops, failure handling, and optimizing for token cost / speed / predictability</em> — i.e. real-world loop engineering. Same school as your Stage 1 GenAI Data Analyst specialization.</li>
+            <li><strong>Already in your plan:</strong> Andrew Ng's <strong>Agentic AI</strong> (four patterns + the evals/error-analysis discipline that <em>is</em> the verifier) and <strong>AI Agents in LangGraph</strong> (persistence + human-in-the-loop, built from scratch).</li>
+            <li><strong>Free primary sources:</strong> Anthropic "Building Effective Agents" (evaluator-optimizer / orchestrator-workers — already cited in this roadmap) + the Claude Agent SDK; Addy Osmani's "Loop Engineering" essay. Balance: <em>most developers don't need agent loops yet</em> — use loops only where you have a hard verifier.</li>
+        </ul>
+    </div>
     <p><strong>Why LangGraph > LangChain (2026 Evolution):</strong></p>
     <ul>
         <li>⚡ <strong>LangChain = Sequential:</strong> A → B → C (like a straight line)</li>
@@ -4439,12 +4463,14 @@
 
 <div style="text-align: center; margin: 40px 0; padding: 20px; background-color: #f8f9fa; border-radius: 10px;">
     <p style="font-size: 1em; color: #6c757d;">
-        <strong>Document Version:</strong> ROADMAP v8.7 (GraphRAG + AFC Triggers & signalcore Sync) - GenAI/LLM-Enhanced Path + Production Portfolio<br>
+        <strong>Document Version:</strong> ROADMAP v8.8 (Loop Engineering) - GenAI/LLM-Enhanced Path + Production Portfolio<br>
         <strong>Created:</strong> November 17, 2025 | <strong>Updated:</strong> June 26, 2026<br>
         <strong>Structure:</strong> 5 Stages | 37 Months | <strong>Beginner → Data Analyst → DE → ML → LLM</strong><br>
         <strong>Investment:</strong> $530 | <strong>ROI:</strong> 20,000%+<br>
         <strong>Key Optimizations:</strong><br>
+        • <strong>NEW v8.8: 🔁 LOOP ENGINEERING added (Stage 4) — named the June-2026 prompt→context→harness→loop progression; added the 5 production-loop components (triggers/scheduling, layered exits, state persistence, cost caps, human-in-the-loop gates), a per-project autonomy map (AFC/FormSense unattended; Crucible keeps a human sign-off on live trades), and a best-course pick (Vanderbilt "AI Agents and Agentic AI in Python")</strong> ✅<br>
         • <strong>NEW v8.7: 🔗 AFC REVERSE-SYNC — T6 Squeeze-Context trigger (short-interest / float / days-to-cover, sourced from signalcore) + the signalcore shared-primitives library (the AFC↔Crucible boundary: parameterized, point-in-time-safe primitives both flagships import; neither imports the other) now reflected in the roadmap, matching the project scopes</strong> ✅<br>
+        • <strong>NEW v8.7: 🛠️ VS Code promoted to a first-class Tools-table entry (S1–S5) with an editor-skill note — the portable, interview-relevant editor baseline Cursor is built on</strong> ✅<br>
         • <strong>NEW v8.6: 🕸️ GRAPHRAG / KNOWLEDGE-GRAPH ARCHITECTURE added — Stage 2 capstone upgraded to a real Neo4j hybrid (vector + graph) retriever; GraphRAG skill line added with honest cost caveat (vector stays the backbone)</strong> ✅<br>
         • <strong>NEW v8.6: 🎓 GraphRAG courses added — Stage 2 intro: DeepLearning.AI "Knowledge Graphs for RAG" (SEC-filings demo); Stage 3 deepen: Neo4j GraphAcademy → Neo4j Certified Professional (+ Agentic KG Construction)</strong> ✅<br>
         • <strong>NEW v8.6: 🔗 PolicyPulse tagged with a Stage 2/3 GraphRAG hybrid upgrade path (multi-hop policy questions / groundedness)</strong> ✅<br>
