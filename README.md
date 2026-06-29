@@ -12,9 +12,9 @@
 [![Timeline](https://img.shields.io/badge/Timeline-37%20Months%20(5%20Stages)-blue)]()
 [![GenAI-First](https://img.shields.io/badge/🤖_GenAI--First-2026_Market_Advantage-blueviolet)]()
 
-📋 **[View Complete 37-Month Interactive Roadmap (v8.3) →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
+📋 **[View Complete 37-Month Interactive Roadmap (v8.9) →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
 
-> **🆕 v8.3 (May 2026):** 2026 market alignment update — Anthropic SDK as primary provider for PolicyPulse + AFC, FastMCP server in PolicyPulse, agent patterns named (orchestrator-workers, sequential, evaluator-optimizer), TypeScript + MCP sprint added (Stage 2 Month 14), A2A protocol awareness, SelfCheckGPT + FActScore evaluation. All v8.2 standards preserved.
+> **🆕 v8.9 (June 2026):** Local-first AI toolchain (Ollama + LM Studio, privacy-first model routing), GraphRAG / Neo4j knowledge-graph retrieval (PolicyPulse hybrid upgrade path + AFC capstone), AFC T6 Squeeze-Context trigger, Loop Engineering for autonomous agents (human-in-the-loop gates), and the MCP primer sequenced into Stage 1. Builds on the v8.3 market alignment (Anthropic SDK primary, FastMCP, named agent patterns, A2A awareness, SelfCheckGPT + FActScore). All v8.2 production standards preserved.
 
 ---
 
@@ -44,7 +44,7 @@
 - ✅ **GenAI integration from Day 1** - LLM SDKs (**Anthropic primary** for RAG/financial reasoning, Gemini/OpenAI fallback), RAG, Multimodal AI, **FastMCP server** (Cursor/Claude Desktop integration), Pydantic structured outputs, PandasAI, Cursor AI
 - ✅ **Evaluation-driven development** - DeepEval + pytest integrated into every project; RAGAS RAG Triad metrics; Docker containerization across all repos
 - ✅ **Skills progression by design** - Each project introduces new capabilities that build on the previous
-- ✅ **Domain expertise** - 15+ years data experience, 8 years finance, 6 years trading
+- ✅ **Domain expertise** - 15+ years data experience, 4 years finance, 6 years trading
 - ✅ **Measurable business impact** - 95% efficiency gains, documented results
 - ✅ **Systematic GenAI-first progression** - Clear 37-month path with GenAI/LLM engineering at every stage
 
@@ -116,7 +116,7 @@ Foundation: Production architecture, thought leadership
 
 > **8 projects ordered by skills progression** — 6 progression projects (easy → advanced) plus **two flagships**: Attention-Flow Catalyst (read-only small-cap swing research) and Crucible (autonomous intraday execution). Crucible is the chosen **first build**.
 
-> **🏗️ Production GitHub Standard (v8.3):** Every project ships with: architecture diagram (Mermaid), Dockerfile, evaluation metrics table (DeepEval + pytest), demo GIF, and "What I Learned" section. All projects include DeepEval evaluation framework and Docker containerization support. Flagship projects (PolicyPulse, AFC) add FastMCP server + advanced hallucination detection (SelfCheckGPT/FActScore).
+> **🏗️ Production GitHub Standard (v8.9):** Every project ships with: architecture diagram (Mermaid), Dockerfile, evaluation metrics table (DeepEval + pytest), demo GIF, and "What I Learned" section. All projects include DeepEval evaluation framework and Docker containerization support. Flagship projects (PolicyPulse, AFC) add FastMCP server + advanced hallucination detection (SelfCheckGPT/FActScore).
 
 ### 1. **[1099 Reconciliation ETL Pipeline](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline)** ✅ Live Production
 
@@ -175,7 +175,7 @@ RAG chatbot that answers employee policy questions with cited sources and auto-e
 
 **Tech:** Python • **Anthropic SDK (primary, Gemini fallback)** • ChromaDB • Gemini Embeddings • Streamlit • Pydantic • DeepEval • RAGAS • **SelfCheckGPT** • **FastMCP** • Docker • GitHub Actions CI
 
-**New skills introduced:** + Embeddings, ChromaDB, RAG pipeline, semantic search, ticket escalation, RAG Triad evaluation, **FastMCP server, MCP integration**
+**New skills introduced:** + Embeddings, ChromaDB, RAG pipeline, semantic search, ticket escalation, RAG Triad evaluation, **FastMCP server, MCP integration** • *Stage 2/3 upgrade path:* **GraphRAG hybrid (Neo4j + ChromaDB)** for multi-hop policy questions
 
 ---
 
@@ -258,7 +258,7 @@ Consumer-facing dashboard that helps households optimize streaming subscriptions
 | Stage | Focus | AI Integration |
 |-------|-------|----------------|
 | **1 (Active)** | Statistical backtesting, signal leaderboard | LLM SDK chat (**Anthropic primary** for financial reasoning) + PandasAI, AI insights |
-| **2** | AWS pipelines, 500+ tickers, vector storage | RAG infrastructure, embedding pipelines |
+| **2** | AWS pipelines, 500+ tickers, vector + graph storage | RAG infrastructure, embedding pipelines, **GraphRAG (Neo4j knowledge graph)** |
 | **3** | ML predictions, ensemble models | Local LLMs (Ollama), fine-tuned financial models |
 | **4** | Agentic AI trading system | **Multi-agent system implementing orchestrator-workers + sequential + evaluator-optimizer patterns** (Anthropic "Building Effective Agents"); each worker calls SEC/Yahoo/news APIs via MCP servers |
 | **5** | Production deployment + monetization | **A2A protocol** for multi-tenant SaaS (Researcher-Agent ↔ Risk-Agent ↔ Compliance-Agent collaboration); LLMOps testing, CI/CD for AI, monitoring |
@@ -269,9 +269,9 @@ Consumer-facing dashboard that helps households optimize streaming subscriptions
 
 **What makes it defensible:** Walk-forward validation • Survivorship bias controls • Modern stack (DuckDB, Parquet) • Progressive architecture through all career stages
 
-**Tech:** Python • DuckDB • Parquet • httpx async • edgartools • yfinance • Wikipedia API • **Anthropic SDK (primary, Gemini/OpenAI fallback)** • PandasAI • Streamlit • DeepEval • **SelfCheckGPT + FActScore** • Docker • GitHub Actions CI
+**Tech:** Python • DuckDB • Parquet • httpx async • edgartools • yfinance • Wikipedia API • **Neo4j (Financial Knowledge Graph capstone)** • **Anthropic SDK (primary, Gemini/OpenAI fallback)** • PandasAI • Streamlit • DeepEval • **SelfCheckGPT + FActScore** • Docker • GitHub Actions CI
 
-**New skills introduced:** + Statistical methodology, DuckDB lakehouse, async data collection, multi-source alternative data, **financial-grade evaluation (faithfulness threshold 0.9)**
+**New skills introduced:** + Statistical methodology, DuckDB lakehouse, async data collection, multi-source alternative data (6 triggers incl. **T6 Squeeze-Context** — short-interest / float / days-to-cover), **Financial Knowledge Graph (Neo4j) capstone**, **financial-grade evaluation (faithfulness threshold 0.9)**
 
 ---
 
@@ -361,7 +361,7 @@ learning_journey/
 │
 ├── 📂 docs/                              # Documentation & guides
 │   ├── index.html                        # GitHub Pages landing page
-│   ├── roadmap.html                      # Interactive 37-month GenAI-first roadmap (v8.3)
+│   ├── roadmap.html                      # Interactive 37-month GenAI-first roadmap (v8.9)
 │   └── activation-plans/                 # Structured learning guides
 │       ├── README.md                     # Guide overview
 │       ├── WEEK_01_MASTER_ACTIVATION_PLAN.md
@@ -377,7 +377,7 @@ learning_journey/
 │
 ├── .gitignore                            # Ignore .venv, cache, etc.
 ├── .vscode/                              # VS Code settings
-└── requirements.txt                      # Python dependencies
+└── pyproject.toml                        # Python dependencies (PEP 621)
 ```
 
 ---
@@ -406,6 +406,8 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 - 🤖 30 Days of Streamlit Challenge — Build AI UIs fast
 - 🧪 **Building & Evaluating Advanced RAG** (DeepLearning.AI) — RAG Triad metrics, evaluation-driven development
 - 🐳 **Docker for Beginners with Hands-on Labs** (KodeKloud/Coursera) — Containerization fundamentals
+- 🤖 **Building with the Claude API** (Anthropic Academy) — official Claude SDK source-of-truth
+- 🕸️ **Knowledge Graphs for RAG** (DeepLearning.AI) — GraphRAG with an SEC-filings demo
 
 **Key Deliverables (8 projects, easy → two flagships):**
 1. **1099 ETL Pipeline** ✅ — Production system, $15K savings (Foundation: ETL + Testing + CI/CD)
@@ -424,9 +426,9 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 ### **Stage 2: GenAI Data Engineer + AI Systems Architect** (Months 6-15) 📅 Planned
 
 **Core Skills:** AWS • Airflow • PySpark • PostgreSQL • BigQuery • Data warehousing  
-**AI Systems Skills:** Vector DBs (Pinecone/Weaviate/Qdrant) • RAG infrastructure • Embedding pipelines • Unstructured data ETL  
+**AI Systems Skills:** Vector DBs (Pinecone/Weaviate/Qdrant) • **GraphRAG (Neo4j hybrid retrieval)** • RAG infrastructure • Embedding pipelines • Unstructured data ETL  
 **Containerization:** Docker & Kubernetes Masterclass (Months 12-13)
-**🆕 v8.3 Sprint (Month 14, 2 weeks):** TypeScript fundamentals + MCP server in TypeScript — unlocks 2026 hiring keyword without committing to TS as primary language
+**🆕 Month 14 Sprint (2 weeks):** TypeScript fundamentals + MCP server in TypeScript — unlocks 2026 hiring keyword without committing to TS as primary language
 
 **Key Deliverable:** All 8 projects evolve — Cloud deployment, production databases, scheduled pipelines
 
@@ -446,7 +448,7 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 ### **Stage 4: Agentic AI Engineer & LLM Specialist** (Months 30-34) 📅 Planned
 
 **Core Skills:** Advanced LLM architecture • System design • Production deployment  
-**Agentic Skills:** **MCP + A2A protocols** • LangGraph • CrewAI • Andrew Ng's Agentic AI • Multi-agent orchestration with **Anthropic's "Building Effective Agents" patterns** (orchestrator-workers, sequential, evaluator-optimizer)
+**Agentic Skills:** **MCP + A2A protocols** • LangGraph • CrewAI • Andrew Ng's Agentic AI • **Loop Engineering** (autonomous agent loops with layered exits, cost caps, human-in-the-loop gates) • Multi-agent orchestration with **Anthropic's "Building Effective Agents" patterns** (orchestrator-workers, sequential, evaluator-optimizer)
 **Advanced Eval:** SelfCheckGPT + FActScore (atomic-fact decomposition for SEC-grounded analysis)
 
 **Key Deliverable:** AI Trading Assistant with multi-agent collaboration (research + analysis + execution agents)
@@ -474,18 +476,20 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 
 **Development:**
 - **Cursor AI IDE** - Primary editor with AI pair programming (Composer mode)
-- **VS Code + Codeium** - Secondary environment with code completion
+- **VS Code (first-class editor)** + **OpenCode** - Agentic coding in Cursor's integrated terminal
 
 **GenAI Engineering:**
 - **LLM SDKs (Gemini, OpenAI, Claude)** - Provider-agnostic API integration for production AI systems
 - **Pydantic** - Structured output validation for all AI responses
 - **ChromaDB** - Vector store for RAG pipelines (PolicyPulse)
+- **Neo4j + GraphRAG** - Knowledge-graph hybrid retrieval (PolicyPulse upgrade path; AFC Financial Knowledge Graph capstone)
 - **Gemini Vision SDK** - Multimodal AI for document understanding (FormSense)
 - **LangChain** - Framework for building GenAI applications
 - **Streamlit** - AI-powered web app interfaces
 - **PandasAI** - Natural language data querying for dashboard integration
 - **FastMCP** - Python framework for building MCP servers (PolicyPulse exposes retrieval as MCP tools to Cursor/Claude Desktop)
 - **Anthropic SDK** - Primary provider for PolicyPulse + AFC (Claude excels at RAG synthesis + financial reasoning; prompt caching reduces costs ~90%)
+- **Ollama + LM Studio (local-first)** - On-device LLMs with privacy-first model routing (finance/proprietary stays on-machine; public work may use cloud)
 
 **AI Evaluation (v8.3 Cross-Project Standard):**
 - **DeepEval + pytest** - Evaluation-driven development integrated into CI/CD for all projects
@@ -519,9 +523,9 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 
 | Stage | AI Tools & Frameworks |
 |-------|----------------------|
-| **2** | Vector DBs (Pinecone/Weaviate) + RAG infrastructure + Embedding pipelines + Docker & Kubernetes Masterclass + BigQuery |
+| **2** | Vector DBs (Pinecone/Weaviate) + GraphRAG (Neo4j) + RAG infrastructure + Embedding pipelines + Docker & Kubernetes Masterclass + BigQuery |
 | **3** | Ollama (local LLMs) + Fine-tuning (LoRA/QLoRA/PEFT) + Generative AI with LLMs (AWS) + NVIDIA DLI |
-| **4** | MCP + A2A + LangGraph + CrewAI + Andrew Ng's Agentic AI + Multi-agent systems with named patterns (orchestrator-workers, sequential, evaluator-optimizer) |
+| **4** | MCP + A2A + LangGraph + CrewAI + Andrew Ng's Agentic AI + Loop Engineering (human-in-the-loop gates) + Multi-agent systems with named patterns (orchestrator-workers, sequential, evaluator-optimizer) |
 | **5** | Automated Testing for LLMOps + CI/CD for AI + Production evaluation + Monitoring |
 
 ---
@@ -530,7 +534,7 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 
 **Languages:** Python 3.11+, SQL  
 **Data:** pandas, NumPy, Matplotlib, Seaborn, Plotly  
-**Databases:** SQLite, DuckDB, ChromaDB, PostgreSQL  
+**Databases:** SQLite, DuckDB, ChromaDB, Neo4j, PostgreSQL  
 **AI/GenAI:** LLM SDKs (Gemini, OpenAI, Claude), Gemini Vision, Pydantic, LangChain, Streamlit, PandasAI, Cursor AI, ChatGPT Plus  
 **Evaluation:** DeepEval + pytest, RAGAS (RAG Triad), LangSmith observability  
 **Containerization:** Docker (Stage 1 fundamentals), Docker & Kubernetes (Stage 2)  
