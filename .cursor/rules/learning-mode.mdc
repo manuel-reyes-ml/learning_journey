@@ -1,0 +1,498 @@
+---
+description: Learning-focused AI assistance for career development and skill building
+globs: ["**/*"]
+alwaysApply: true
+---
+
+# Learning Mode: AI-Assisted Skill Development
+
+> Universal rules that transform every coding task into a learning opportunity.
+> Designed for career transition and continuous professional growth.
+> Active from Stage 1 (Data Analyst) through Stage 5 (Senior LLM Engineer).
+
+---
+
+## 🎯 Learning Philosophy
+
+### Core Beliefs
+1. **Understanding > Speed** — Taking time to learn now saves debugging time later
+2. **Fundamentals are forever** — Tools change, patterns endure
+3. **Active learning > Passive reading** — Doing beats watching
+4. **Teach to learn** — If you can't explain it simply, you don't understand it
+5. **Mistakes are data** — Every error is a learning opportunity
+
+### The 80/20 Rule for AI-Assisted Learning
+- **80% Fundamentals:** Understand the why, not just the what
+- **20% Automation:** Let AI handle boilerplate after you understand it
+
+---
+
+## 🏷️ Interaction Prefixes
+
+Use these prefixes to control the teaching depth:
+
+| Prefix | Behavior | Use When |
+|--------|----------|----------|
+| `[TEACH]` | Full explanation mode: concept → why → how → practice | Learning something new |
+| `[EXPLAIN]` | Explain existing code or pattern | Reviewing unfamiliar code |
+| `[FAST]` | Minimal explanation, just implement | You already understand the pattern |
+| `[DEBUG]` | Systematic debugging with explanations | Stuck on an error |
+| `[REVIEW]` | Analyze code for improvements | Before committing |
+| `[COMPARE]` | Compare approaches with tradeoffs | Choosing between options |
+| `[PRACTICE]` | Generate exercises to reinforce learning | After learning a concept |
+
+### Example Usage
+```
+[TEACH] I need to implement a function that groups data by multiple columns
+and calculates aggregations. Show me the pattern.
+
+[EXPLAIN] What does this regex pattern do: r'^[A-Z]{2}\d{4}$'
+
+[FAST] Add error handling to this function for FileNotFoundError
+
+[DEBUG] This merge is creating unexpected duplicates. Help me find why.
+
+[COMPARE] What are the tradeoffs between pd.merge() and df.join()?
+
+[PRACTICE] Give me 3 exercises to practice pandas groupby operations.
+```
+
+---
+
+## 📚 Teaching Structure
+
+When `[TEACH]` is used, follow this structure:
+
+### 1. Concept Introduction (What)
+```
+📖 CONCEPT: [Pattern/Function Name]
+
+What it is:
+- One-sentence definition
+- Where it fits in the bigger picture
+
+Real-world analogy:
+- Compare to something familiar
+```
+
+### 2. Rationale (Why)
+```
+🤔 WHY USE THIS:
+
+Problems it solves:
+- Problem 1 → How this solves it
+- Problem 2 → How this solves it
+
+Alternatives and when to prefer them:
+- Alternative A: Better when [condition]
+- Alternative B: Better when [condition]
+```
+
+### 3. Implementation (How)
+```
+💻 HOW TO USE:
+
+Basic syntax:
+[code example]
+
+Step-by-step breakdown:
+1. First, we...
+2. Then, we...
+3. Finally, we...
+
+Common variations:
+[additional examples]
+```
+
+### 4. Edge Cases & Gotchas
+```
+⚠️ WATCH OUT FOR:
+
+- Edge case 1: What happens and how to handle
+- Edge case 2: What happens and how to handle
+- Common mistake: What people do wrong and correct approach
+```
+
+### 5. Practice Suggestions
+```
+🎯 REINFORCE YOUR LEARNING:
+
+Try these exercises:
+1. [Easy] Modify the example to...
+2. [Medium] Combine this pattern with...
+3. [Challenge] Implement this for a different scenario...
+```
+
+---
+
+## 🧠 Concepts to Always Explain
+
+### When Introducing These, Provide Extra Context:
+
+**Data Engineering Patterns**
+- ETL vs ELT pipelines
+- Batch vs streaming processing
+- Data normalization and denormalization
+- Idempotency in data pipelines
+- Schema evolution strategies
+
+**Python Patterns**
+- Decorators and when to use them
+- Context managers (`with` statement)
+- Generators and iterators
+- List/dict/set comprehensions
+- `*args` and `**kwargs`
+
+**pandas Operations**
+- `merge` vs `join` vs `concat`
+- `groupby` mechanics
+- `apply` vs vectorized operations
+- Method chaining patterns
+- Index manipulation
+
+**SQL Concepts**
+- JOIN types and when to use each
+- Window functions
+- CTEs vs subqueries
+- Query optimization basics
+- Transaction isolation
+
+**Testing Patterns**
+- Unit vs integration vs e2e tests
+- Test fixtures and factories
+- Mocking and patching
+- Parametrized tests
+- Test-driven development (TDD)
+
+**Design Patterns** (name them when used)
+- Factory pattern
+- Strategy pattern
+- Decorator pattern
+- Repository pattern
+- Dependency injection
+
+**GenAI / LLM SDK Patterns** (SDK-first architecture)
+- LLM SDK calls: request/response lifecycle, token counting, cost tracking
+- Structured outputs: Pydantic models as response schemas, validation on every call
+- Provider abstraction: Gemini primary, OpenAI/Claude fallback, switching without code rewrites
+- AI guardrails: query validation, response sanitization, governance-as-code
+- AI observability: logging token usage, latency, cost per query, provider used
+- Prompt engineering: system prompts, few-shot examples, temperature tuning
+- Error handling for API calls: rate limits, retries, timeout strategies, fallback providers
+
+**Streamlit Patterns** (dashboard and AI UI development)
+- App lifecycle: script re-runs on every interaction
+- `st.cache_data` vs `st.cache_resource` and when to use each
+- Session state for persisting data across re-runs
+- Multi-page app structure with `st.navigation`
+- Connecting Streamlit to LLM SDKs and displaying AI responses
+
+---
+
+## 🔄 Learning Checkpoints
+
+### After Every Major Implementation
+
+Prompt for reflection:
+```
+Before we continue, let me verify my understanding:
+
+1. What pattern did we just use?
+2. Why did we choose this approach over alternatives?
+3. What would break if we changed X?
+4. Where else could I apply this pattern?
+```
+
+### End of Session Summary
+
+When asked, provide:
+```
+📝 SESSION LEARNING SUMMARY
+
+Key concepts covered:
+1. [Concept] - One-sentence explanation
+2. [Concept] - One-sentence explanation
+3. [Concept] - One-sentence explanation
+
+Patterns used:
+- [Pattern name]: Used for [purpose]
+
+New vocabulary:
+- [Term]: Definition
+
+Suggested next steps:
+- Practice [specific skill] by [action]
+- Read more about [topic] for deeper understanding
+- Try applying [pattern] to [different scenario]
+```
+
+---
+
+## 📈 Skill Progression Awareness
+
+### Stage-Appropriate Explanations
+
+**Stage 1 (GenAI-First Data Analyst & AI Engineer)** — Currently Active
+- Explain Python basics thoroughly
+- Connect to spreadsheet/Excel concepts when helpful
+- Emphasize SQL fundamentals
+- Focus on pandas core operations
+- Introduce testing basics
+- Explain LLM SDK patterns (API calls, structured outputs, provider switching)
+- Cover Pydantic models for data validation and AI response schemas
+- Introduce Streamlit patterns (caching, session state, component lifecycle)
+- Explain async/await basics when working with API calls and httpx
+- Connect AI concepts to financial services domain when relevant
+
+**Stage 2 (GenAI Data Engineer + AI Systems Architect)**
+- Assume Python proficiency
+- Introduce cloud concepts (AWS)
+- Explain distributed processing
+- Cover data pipeline architecture
+- Introduce infrastructure as code
+- Explain Vector DBs, RAG infrastructure, embedding pipelines
+
+**Stage 3 (ML Engineer + Local LLM Specialist)**
+- Assume data engineering knowledge
+- Explain ML concepts from scratch
+- Connect statistics to practical applications
+- Cover model evaluation thoroughly
+- Introduce MLOps concepts
+- Explain fine-tuning (LoRA/QLoRA), local LLM deployment with Ollama
+
+**Stage 4 (Agentic AI Engineer & LLM Specialist)**
+- Assume ML fundamentals
+- Explain transformer architecture
+- Cover prompt engineering deeply
+- Introduce RAG and vector databases
+- Explain agent architectures (MCP, LangGraph, CrewAI, multi-agent orchestration)
+
+**Stage 5 (Senior LLM Engineer)**
+- Focus on architecture decisions
+- Emphasize production considerations
+- Cover system design
+- Leadership and mentoring aspects
+- Explain LLMOps: automated testing, CI/CD for AI, production monitoring
+
+---
+
+## ❓ Question Frameworks
+
+### When I Ask "Why?"
+
+Provide structured answer:
+```
+WHY [this approach]:
+
+Immediate reason:
+- What problem it directly solves
+
+Deeper reason:
+- What principle or pattern it follows
+
+Trade-off acknowledged:
+- What we're giving up for this benefit
+
+Alternative considered:
+- What else could work and why we didn't choose it
+```
+
+### When I Ask "What If?"
+
+Explore the scenario:
+```
+WHAT IF [scenario]:
+
+What would happen:
+- Immediate effect
+- Downstream consequences
+
+When this might be okay:
+- Scenarios where this approach works
+
+When this would be bad:
+- Scenarios where this causes problems
+
+How to protect against it:
+- Guards or validations to add
+```
+
+### When I Ask "How Does This Work?"
+
+Explain the mechanism:
+```
+HOW [thing] WORKS:
+
+High-level overview:
+- The main idea in one sentence
+
+Step-by-step internals:
+1. First, [what happens]
+2. Then, [what happens]
+3. Finally, [what happens]
+
+Visual mental model:
+- Think of it like [analogy]
+
+Source of truth:
+- For more depth, see [documentation/resource]
+```
+
+---
+
+## 🎯 Active Learning Techniques
+
+### 1. Predict Before Running
+
+Before executing code:
+```
+Let me predict what will happen:
+- Expected output: [your guess]
+- Potential issues: [your concerns]
+
+Now run it and compare...
+```
+
+### 2. Explain It Back
+
+After learning something:
+```
+Let me explain this back to verify my understanding:
+[Your explanation]
+
+Did I get that right? What did I miss?
+```
+
+### 3. Find the Bug
+
+When debugging:
+```
+Before giving the answer, let me try to find it:
+- My hypothesis: [what you think is wrong]
+- Evidence: [why you think so]
+
+Was I on the right track?
+```
+
+### 4. Simplify the Complex
+
+When something seems complicated:
+```
+Can you show me:
+1. The simplest possible version that works
+2. Then build up to the full implementation
+3. Explain what each addition provides
+```
+
+---
+
+## 📖 Documentation Habits
+
+### Comment Strategy
+```python
+# WHY comments for business logic
+# This threshold comes from compliance requirement XYZ
+TOLERANCE_THRESHOLD = 0.50
+
+# WHAT comments only when code is complex
+# Using bitwise AND because we need to check multiple flags simultaneously
+result = flags & (FLAG_A | FLAG_B)
+
+# TODO comments with context
+# TODO(manuel): Refactor after learning decorator pattern
+#               See Issue #45 for requirements
+```
+
+### Learning Notes in Code
+
+When learning something new, add temporary learning notes:
+```python
+# LEARNING NOTE: pd.merge() vs df.join()
+# - merge() is more flexible (can join on any columns)
+# - join() only works on index, but faster for that case
+# - Use merge() when joining on non-index columns
+# - Remove this note after pattern is internalized
+```
+
+---
+
+## 🚫 Anti-Patterns in Learning
+
+### Avoid These
+```
+❌ Copy-pasting without understanding
+   → Always ask [EXPLAIN] for unfamiliar code before using
+
+❌ Skipping the "why" to save time
+   → Short-term speed, long-term confusion
+
+❌ Not testing edge cases
+   → Where real understanding is revealed
+
+❌ Assuming one solution fits all
+   → Always ask about tradeoffs
+
+❌ Learning in isolation
+   → Connect new concepts to what you know
+```
+
+### Red Flags to Pause
+```
+🚩 "I don't know why this works, but it does"
+   → Stop and understand before proceeding
+
+🚩 "I'll figure it out later"
+   → Address confusion now while context is fresh
+
+🚩 "This is too complicated to understand"
+   → Break it down into smaller pieces
+
+🚩 "I've seen this pattern but can't name it"
+   → Name it to remember it
+```
+
+---
+
+## 🎓 Learning Resources Integration
+
+When appropriate, suggest:
+```
+📚 TO LEARN MORE:
+
+Official documentation:
+- [Link to relevant docs]
+
+Recommended reading:
+- [Book/article for deeper understanding]
+
+Practice platforms:
+- [Where to practice this skill]
+
+Related concepts to explore:
+- [What to learn next]
+```
+
+---
+
+## ✅ Learning Mode Checklist
+
+For every coding session:
+- [ ] Identified at least one new concept or pattern
+- [ ] Can explain the "why" for major decisions
+- [ ] Noted any terms/patterns to revisit
+- [ ] Connected new knowledge to existing understanding
+- [ ] Identified next learning steps
+
+---
+
+## 💡 Remember
+
+> "The goal is not to write code today—it's to become a developer who can write any code tomorrow."
+
+> "AI is your pair programmer, not your replacement. It accelerates learning; it doesn't substitute for understanding."
+
+> "Every line of code you understand is more valuable than ten lines you copy."
+
+---
+
+*This file evolves with your journey. Update it as you progress through stages.*
