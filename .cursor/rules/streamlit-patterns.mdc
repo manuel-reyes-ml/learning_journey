@@ -1,0 +1,109 @@
+---
+description: Streamlit dashboard and AI UI patterns for portfolio projects
+globs: ["app/**/*.py", "pages/**/*.py", "**/streamlit*.py"]
+alwaysApply: false
+---
+
+# Streamlit Patterns (Dashboard & AI UI)
+
+> Scoped rules for Streamlit apps. Auto-attached when editing app/ or pages/ files.
+> Extracted from python-production-standards to reduce always-on token usage.
+
+---
+
+## 🏗️ App Structure
+
+```
+# ✅ Multi-page app structure (recommended for dashboards)
+# project/
+# ├── app.py                  # Entry point with st.navigation
+# ├── pages/
+# │   ├── 01_Overview.py
+# │   ├── 02_Analysis.py
+# │   ├── 03_AI_Chat.py
+# │   └── 04_Settings.py
+# └── src/                    # Business logic (NOT in pages/)
+```
+
+### Key Rules
+- **Business logic NEVER lives in `pages/`** — pages import from `src/`
+- Entry point is `app.py` or `app/main.py` (not `Home.py`)
+- Page files use numbered prefixes for ordering: `01_`, `02_`, etc.
+
+---
+
+## 💾 Caching Strategy
+
+```python
+import streamlit as st
+
+# ✅ Cache data loading (returns NEW copy each call — safe for DataFrames)
+@st.cache_data(ttl=3600)  # Cache for 1 hour
+def load_data(filepath: str) -> pd.DataFrame:
+    """Load and cache data. TTL prevents stale data."""
+    return pd.read_parquet(filepath)
+
+# ✅ Cache resource objects (returns SAME object — use for DB connections, clients)
+@st.cache_resource
+def get_llm_client() -> object:
+    """Create and cache LLM client. Shared across all users/reruns."""
+    return genai.GenerativeModel("gemini-2.0-flash")
+```
+
+### Caching Rules
+- `@st.cache_data` → DataFrames, query results, computed values (copies returned)
+- `@st.cache_resource` → DB connections, API clients, ML models (singleton)
+- ❌ Don't cache functions with side effects (logging, writes, API mutations)
+- ❌ Don't use `@st.cache_data` for unhashable objects (DB connections, clients)
+- ❌ Don't forget TTL on data caches — stale data causes confusion
+
+---
+
+## 🧠 Session State
+
+```python
+# ✅ Initialize state once, use everywhere
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+    st.session_state.total_tokens = 0
+    st.session_state.total_cost = 0.0
+
+# ✅ Append AI responses to session state for conversation memory
+st.session_state.chat_history.append({
+    "role": "assistant",
+    "content": response.text,
+    "tokens": response.usage_metadata.total_token_count,
+})
+```
+
+### Session State Rules
+- ❌ Don't store large DataFrames in session state (use `@st.cache_data` instead)
+- ❌ Don't assume session state persists across browser tabs
+
+---
+
+## 🤖 Streamlit + LLM SDK Pattern
+
+```python
+# ✅ Keep business logic out of Streamlit pages
+# pages/03_AI_Chat.py calls src/ai/provider.py — never has SDK logic inline
+
+# ✅ Show AI observability to users
+st.sidebar.metric("Tokens Used", st.session_state.total_tokens)
+st.sidebar.metric("Est. Cost", f"${st.session_state.total_cost:.4f}")
+
+# ✅ Always show disclaimers for AI-generated content
+st.caption("⚠️ AI-generated insight. Verify before acting.")
+```
+
+---
+
+## ✅ Streamlit Checklist (Before Commit)
+
+- [ ] Business logic lives in `src/`, not in `pages/`
+- [ ] `@st.cache_data` has TTL on data-loading functions
+- [ ] `@st.cache_resource` used for API clients / DB connections
+- [ ] Session state initialized with `if key not in st.session_state`
+- [ ] AI responses show disclaimer caption
+- [ ] Sidebar shows observability metrics (tokens, cost)
+- [ ] App works without API key (graceful degradation)
