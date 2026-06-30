@@ -2,7 +2,9 @@
 
 **Focus:** Running local LLMs on an Apple-Silicon Mac (M-series) via LM Studio, with config, MLX model management, and integration into your stack (OpenCode, AnythingLLM, Python).
 **Compiled:** June 2026 · Sized for a **Mac Mini M4 16GB** primary + MacBook Air M2 secondary.
-**Version:** 1.0 (June 24, 2026)
+**Version:** 2.0 (June 29, 2026)
+
+> 📝 **Changelog v2.0:** + §6.1 deleting models to free disk (**My Models → Delete**, manual folder removal, **`lms unload` ≠ delete**, no official `lms rm` yet) · + §7.1 Qwen 3.5 → 3.6 on 16GB — no 3.6 9B; 3.6-27B/35B MLX need 24–32 GB+, so **keep 3.5 9B local**, 3.6-27B is the **Stage-3** unlock, reach 3.6 now via cloud. v1.0 = original.
 
 > 📝 **Why this exists:** companion to the Ollama reference. LM Studio is the **GUI-first** alternative that makes the **MLX runtime** trivial to use — the main reason to run it alongside Ollama. This guide is built around an **A/B test**: does MLX beat your Ollama (GGUF/Metal) setup on *your* 16GB hardware? (Honest answer up front in §5 and §14.)
 
@@ -121,6 +123,22 @@ This is the whole reason to run LM Studio on your Mac. Two engines, same model w
 
 > `lms load --estimate-only` is your pre-flight check — e.g. it prints estimated GPU/total memory so you don't OOM a 16GB machine.
 
+### 6.1 Deleting models (free disk)
+
+`lms unload` only frees **RAM** — it does **not** remove files. To reclaim disk:
+
+- **GUI (recommended):** **My Models** tab → hover the model → **trash icon** (or **"⋯ Actions → Delete"**) → confirm. This is the supported path.
+- **Manual (Finder/Terminal fallback):** there is **no official `lms rm` command yet** — it's an open feature request, and although a few third-party tutorials cite `lms rm`, don't rely on it (check `lms --help` on your build first). Delete the folder directly:
+  ```bash
+  lms ls                                          # what's downloaded + sizes
+  ls ~/.lmstudio/models/                          # publisher folders (Qwen, mlx-community, …)
+  rm -rf ~/.lmstudio/models/<publisher>/<repo>    # remove one model's folder
+  du -sh ~/.lmstudio/models/                      # confirm space freed
+  ```
+- **Path note:** current builds store models under **`~/.lmstudio/models/`**; older installs used **`~/.cache/lm-studio/models/`** (the path in §3) — check both. A known bug sometimes leaves an **empty folder** behind after GUI deletion; delete it manually if so.
+- **GGUF is portable:** copy a `.gguf` elsewhere *before* deleting if you might reuse it — Ollama reads the same format (MLX safetensors folders are LM-Studio/MLX-specific).
+- Quit LM Studio (and confirm no `lms`/LM Studio process in Activity Monitor) before hand-deleting files, so nothing is mid-read.
+
 ---
 
 ## 7. Picking MLX models for a 16GB Mac
@@ -138,6 +156,16 @@ Rough planning: keep **model weights under ~60% of RAM** (leave room for macOS +
 | **27B–35B-A3B / dense** | 16 GB+ | ❌ | Needs **48GB+** (your Stage-3 upgrade) |
 
 > Sub-3B models lose noticeable quality at 4-bit — prefer **8-bit** for those. For 7–9B, 4-bit is the right default on 16GB.
+
+### 7.1 Qwen 3.5 → 3.6 on 16GB (MLX reality)
+
+Same verdict as the Ollama guide, MLX-flavored. **Qwen 3.6 is a real step up over 3.5** (35B-A3B: 73.4 vs 70.0 SWE-bench, 1M context, big agentic/tool-use gains) — **but there is no Qwen 3.6 9B**, and the open-weight 3.6 models start at **27B dense (24 GB)** and **35B-A3B MoE (32 GB+)**. Neither has an MLX 4-bit build that fits 16 GB without swapping.
+
+- **Keep `Qwen3.5 9B` (MLX 4-bit)** as your local primary and A/B target — still the clean 16 GB pick.
+- **`mlx-community/Qwen3.6-27B-…-4bit` is a Stage-3 (48GB) model** — that's where MLX + 3.6-27B starts to feel cloud-class (your §14 note), not before.
+- **Need 3.6 today?** It belongs on the **cloud lane** (`qwen3.6-plus` via OpenRouter), not LM Studio — keeps the privacy split intact (public/heavy → cloud, finance/proprietary → local 3.5 9B).
+
+> The MLX engine speeds up what *fits*; it can't make a 24–32 GB model fit 16 GB. The 3.6 local upgrade waits for the 48 GB Mini.
 
 ---
 
@@ -312,4 +340,4 @@ lms --help | lms <cmd> --help
 ---
 
 ## 16. Sources
-lmstudio.ai/docs (CLI `lms`, `lms server start`, `lms load`, App/Server, MLX) · github.com/lmstudio-ai/lms · deepwiki.com/lmstudio-ai/docs (CLI overview, server control) · markaicode.com "Run MLX Models in LM Studio 2026" · mineraleyt.com "GGUF vs MLX" · insiderllm.com "Best Local LLMs for Mac 2026" · codersera.com "Apple Silicon LLMs 2026". Verify command names, flags, UI labels, and model availability against **lmstudio.ai/docs** and `lms <cmd> --help` for your installed build before relying on them.
+lmstudio.ai/docs (CLI `lms`, `lms server start`, `lms load`, `lms unload`, App/Server, MLX) · github.com/lmstudio-ai/lms issue #579 (no first-class `lms rm` yet — manual folder delete) · lmstudio.ai/docs "My Models" (GUI delete) · github.com/lmstudio-ai/lmstudio-bug-tracker #199 (residual model folder) · InsiderLLM "Best Qwen Models Ranked" (3.6 lineup: 27B / 35B-A3B, no 9B) · Tessera "Qwen 3.6 vs 3.5" · deepwiki.com/lmstudio-ai/docs · markaicode.com "Run MLX Models in LM Studio 2026" · mineraleyt.com "GGUF vs MLX" · insiderllm.com "Best Local LLMs for Mac 2026" · codersera.com "Apple Silicon LLMs 2026". Verify command names, flags, UI labels, and model availability against **lmstudio.ai/docs** and `lms <cmd> --help` for your installed build before relying on them.
