@@ -2,7 +2,9 @@
 
 **Focus:** Running local LLMs on an Apple-Silicon Mac (M-series), with config, model management, and integration into your stack (AnythingLLM, OpenCode, Python).
 **Compiled:** June 2026 · Sized for a **Mac Mini M4 16GB** primary + MacBook Air M2 secondary.
-**Version:** 1.1 (June 22, 2026)
+**Version:** 2.0 (June 29, 2026)
+
+> 📝 **Changelog v2.0:** + §6.1 model cleanup / deletion workflow (`ollama rm`, multi-delete, delete-all, blob pruning, **unload ≠ delete**) · + §7.1 Qwen 3.5 → 3.6 on 16GB — the 3.6 open-weight lineup **starts at 27B/35B-A3B (no 9B)**, so **stay on 3.5 9B locally**; `qwen3.6:27b` is the **Stage-3 48GB** unlock; reach 3.6 **now via cloud** (`qwen3.6-plus` on OpenRouter). v1.1 below unchanged.
 
 > 📝 **Changelog v1.1:** + §4 Interactive REPL commands (`/set`, `/show`, verbose stats) · + §5 Thinking / reasoning-mode control (shell flags, `/set think`, API, GUI) · + §8 structured outputs (JSON) & tool calling · + extra env vars (§9), Modelfile params & GGUF import (§11), CLI flags (§13), and thinking-related troubleshooting (§15). v1.0 = original.
 
@@ -120,6 +122,22 @@ Reasoning models — **Qwen3 / Qwen3.5, DeepSeek-R1, Gemma 4, gpt-oss** — gene
 
 > `ollama ps` is your health check: **GPU% at 100%** = full Metal acceleration; below 100% = partial CPU offload (much slower), usually meaning the model + context don't fit in memory.
 
+### 6.1 Cleaning up / deleting models (free disk)
+
+Models stack up fast (~5–17 GB each) in `~/.ollama/models`. **Deleting ≠ unloading:** `ollama stop` and `OLLAMA_KEEP_ALIVE` only free **RAM**; only `ollama rm` frees **disk**.
+
+```bash
+ollama list                       # 1. see what you have + sizes — decide what to cut
+ollama rm qwen3:14b               # 2. delete one model (frees its disk right away)
+ollama rm qwen3:14b llama3.2:3b   #    …or several at once
+ollama list                       # 3. confirm it's gone
+du -sh ~/.ollama/models           # 4. check the space you reclaimed
+```
+- `rm` deletes the **named tag**. Ollama's store is content-addressable, so blobs shared with another model are **kept** — removing one variant won't break another.
+- **Wipe everything (start clean):** `ollama rm $(ollama list | tail -n +2 | awk '{print $1}')` — removes every listed model. Eyeball `ollama list` first.
+- **Reclaim orphaned blobs** after heavy churn: restart the Ollama app (or `ollama serve`) — it prunes unused blobs at startup unless `OLLAMA_NOPRUNE` is set (§9).
+- Keep only what you actually route to: your **`qwen3.5:9b`** planner + a **`qwen2.5-coder:7b`** for FIM + maybe **`nomic-embed-text`** is a lean, 16GB-friendly set; delete experiments once benchmarked.
+
 ---
 
 ## 7. Picking models for a 16GB Mac
@@ -138,6 +156,25 @@ Rough planning: **~0.6 GB per 1B params** at Q4_K_M, plus context headroom. macO
 | **nomic-embed-text** | ~0.3 GB | ✅ | Local embeddings (RAG) |
 
 > 48GB-class Macs run 27B-class models; your roadmap's Stage-3 upgrade is what unlocks those. For now, 9B is the right ceiling.
+
+### 7.1 Qwen 3.5 → 3.6 on a 16GB Mac (what to actually download)
+
+**Is 3.6 better than 3.5?** Yes — at the *same* class it's a clean generational win: **Qwen 3.6-35B-A3B** scores **73.4 on SWE-bench Verified vs 70.0** for the 3.5 release, with double-digit gains on agentic / tool-use (Terminal-Bench, MCPMark), a **1M-token** native context, and no reasoning regression.
+
+**But none of the 3.6 *local* models fit 16GB.** The open-weight 3.6 lineup **starts at 27B** — there is **no Qwen 3.6 9B** (the 4B/9B tier 3.5 shipped wasn't carried forward):
+
+| Qwen 3.6 (local) | ~Size (Q4) | Min RAM | Verdict on your Mini |
+|---|---|---|---|
+| **27B dense** (best open coder, 77.2 SWE-bench) | ~16.8 GB | 24 GB | ❌ swaps hard on 16GB |
+| **35B-A3B MoE** (3B active, best general) | ~18 GB+ | 32 GB+ | ❌ |
+| **9B** | — | — | ❌ doesn't exist in 3.6 |
+
+So on the Mac Mini M4 16GB:
+- **Stay on `qwen3.5:9b`** as your local primary — still the right 16GB ceiling (Apache-2.0, ~7 GB, clean Metal fit). Don't pull a 3.6 here; the 27B's weights alone (16.8 GB) exceed your usable RAM.
+- **`qwen3.6:27b` is your Stage-3 (48GB) unlock** — that hardware upgrade is exactly what makes the current best local coder runnable (≈25 tok/s on a 48GB-class Mac).
+- **Want 3.6 *now*?** Use it on the **cloud lane**, not locally: `qwen3.6-plus` via OpenRouter (OpenAI-compatible → drops into OpenCode), same privacy split as MiniMax M3 / GLM-5.2 — public/heavy → cloud, finance/proprietary → local 3.5 9B.
+
+> Bottom line for 16GB: the 3.6 jump is a **hardware** upgrade, not a download. Keep 3.5 9B local; reach 3.6 via cloud until Stage 3.
 
 ---
 
@@ -336,4 +373,4 @@ ollama --version | --help
 ---
 
 ## 16. Sources
-docs.ollama.com (FAQ, API, **Thinking** `/capabilities/thinking`, Modelfile) · ollama.com/blog/thinking · ollama.com/library · github.com/ollama/ollama (`envconfig/config.go`, issues #15962 / #16016 / #15536 on GUI thinking toggle) · serverman.co.uk "Ollama Thinking Mode" · InsiderLLM "Ollama on Mac 2026" · SitePoint "Ollama Setup Guide 2026" · ModelPiper "Ollama Environment Variables 2026" · llmhardware.io Ollama cheat sheet. Verify command names, defaults, and model tags against `docs.ollama.com` and `ollama.com/library` before relying on them.
+docs.ollama.com (FAQ, API, **Thinking** `/capabilities/thinking`, Modelfile) · ollama.com/blog/thinking · ollama.com/library (qwen3.5 / qwen3.6 tags) · github.com/ollama/ollama (`envconfig/config.go`, issues #15962 / #16016 / #15536 on GUI thinking toggle) · InsiderLLM "Best Qwen Models Ranked" (3.6 lineup: 27B / 35B-A3B, no 9B) · Tessera "Qwen 3.6 vs 3.5" (73.4 vs 70.0 SWE-bench) · codersera "Qwen 3.5/3.6/3.7 guide" · serverman.co.uk "Ollama Thinking Mode" · InsiderLLM "Ollama on Mac 2026" · SitePoint "Ollama Setup Guide 2026" · ModelPiper "Ollama Environment Variables 2026" · llmhardware.io Ollama cheat sheet. Verify command names, defaults, and model tags against `docs.ollama.com` and `ollama.com/library` before relying on them.
