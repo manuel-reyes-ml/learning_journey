@@ -1,0 +1,163 @@
+---
+description: LLM SDK integration patterns — provider abstraction, guardrails, observability, structured outputs
+globs: ["src/ai/**/*.py", "**/provider*.py", "**/guardrails*.py", "**/schemas*.py", "**/observability*.py"]
+alwaysApply: false
+---
+
+# AI SDK Patterns (2026 Production)
+
+> Scoped rules for AI integration modules. Auto-attached when editing src/ai/ files.
+> Applies to: DataVault, PolicyPulse, FormSense, ODI, StreamSmart, AFC.
+
+---
+
+## 🏗️ SDK-First Architecture
+
+Every AI-powered project uses the same layered architecture:
+
+```
+src/ai/
+├── __init__.py
+├── provider.py           # Provider-agnostic LLM abstraction
+├── schemas.py            # Pydantic response models (structured outputs)
+├── guardrails.py         # Query validation, response sanitization, PII scan
+├── observability.py      # Token/cost/latency tracking
+└── [project-specific].py # e.g., pandas_chat.py, rag_pipeline.py
+```
+
+### Core Principles
+1. **Provider-agnostic** — Gemini primary; OpenAI/Claude via config switch, zero code changes
+2. **Structured outputs** — Every LLM response validated through Pydantic v2 models
+3. **Guardrails first** — Query validation before sending; response sanitization before displaying
+4. **Observability built-in** — Token usage, cost, latency logged per query from Day 1
+5. **Graceful degradation** — App works without API key; AI features are an enhancement layer
+
+---
+
+## 📦 Pydantic Structured Outputs
+
+```python
+from pydantic import BaseModel, Field
+from typing import Literal
+
+class QueryResponse(BaseModel):
+    """Structured output for every AI query."""
+    answer: str = Field(..., description="Natural language answer to the user's question")
+    generated_code: str = Field(default="", description="Generated code shown to user")
+    chart_type: str | None = Field(default=None, description="bar, line, pie, or None")
+    confidence: Literal["high", "medium", "low"] = Field(
+        ..., description="Model confidence in the answer"
+    )
+    tokens_used: int = Field(..., ge=0, description="Total tokens consumed")
+    latency_ms: float = Field(..., ge=0.0, description="Response latency in ms")
+```
+
+### Rules
+- ✅ Use `Field()` with `description=` — doubles as LLM JSON schema documentation
+- ✅ Use validators (`ge`, `le`, `pattern`, `max_length`) — catch bad data early
+- ✅ Use `Literal` or `Enum` for constrained string fields
+- ✅ Use `model_validate()` for external data (API responses, files)
+- ❌ Don't use plain dicts where Pydantic adds safety
+- ❌ Don't skip Field descriptions — they feed into LLM JSON schemas
+- ❌ Don't catch `ValidationError` silently — log and handle explicitly
+
+---
+
+## 🛡️ Guardrails
+
+```python
+# src/ai/guardrails.py — Governance as code
+
+# ✅ PII leak prevention (scan BEFORE displaying response)
+PII_PATTERNS = {
+    "ssn": r"\b\d{3}-\d{2}-\d{4}\b",
+    "phone": r"\b\d{3}[-.]?\d{3}[-.]?\d{4}\b",
+    "email": r"\b[\w.-]+@[\w.-]+\.\w+\b",
+}
+
+# ✅ Query scope validation (block dangerous operations)
+BLOCKED_OPERATIONS = ["DELETE", "UPDATE", "INSERT", "DROP", "os.", "subprocess"]
+
+# ✅ Response validation pipeline
+# 1. Validate with Pydantic schema
+# 2. Scan for PII patterns (regex)
+# 3. Check for blocked content
+# 4. Inject disclaimer
+# 5. Log to observability
+```
+
+### Rules
+- PII scan runs on EVERY AI response before display — no exceptions
+- Query validation runs BEFORE sending to LLM — reject dangerous queries early
+- Test coverage on guardrail functions must be >90%
+- Log blocked queries and reasons (but never log PII itself)
+
+---
+
+## 📊 Observability
+
+```python
+# src/ai/observability.py
+
+# ✅ Log per-query metrics
+logger.info(
+    "AI query completed",
+    extra={
+        "provider": "gemini",
+        "model": "gemini-2.0-flash",
+        "tokens_used": response.usage_metadata.total_token_count,
+        "latency_ms": elapsed_ms,
+        "estimated_cost": cost,
+        "guardrail_triggered": False,
+    }
+)
+```
+
+### Rules
+- Every AI call logs: provider, model, tokens, latency, cost, guardrail status
+- AI logs go to dedicated `logs/ai.log` (separate from app logs)
+- Cost estimation uses published API pricing (update when rates change)
+- Surface metrics in Streamlit sidebar for transparency
+
+---
+
+## 🔁 Provider Abstraction
+
+```python
+class AIProvider:
+    """Swap providers via config — zero code changes."""
+
+    def __init__(self, provider: str = "gemini"):
+        self.provider = provider
+        self._client = self._init_client()
+
+    def query(self, question: str, context: str) -> QueryResponse:
+        """Send query, get Pydantic-validated response."""
+        # 1. Validate query (guardrails)
+        # 2. Build prompt with context
+        # 3. Call LLM SDK with structured output schema
+        # 4. Validate response (Pydantic)
+        # 5. Scan response (PII guardrails)
+        # 6. Log metrics (observability)
+        # 7. Return validated QueryResponse
+        ...
+```
+
+### Rules
+- Provider selection via config/env var — never hardcoded
+- Retry logic with exponential backoff for rate limits
+- Timeout: 30 seconds default
+- Fallback: if primary provider fails, try secondary
+
+---
+
+## ✅ AI Module Checklist (Before Commit)
+
+- [ ] All LLM responses validated through Pydantic schemas
+- [ ] PII scan runs on every response before display
+- [ ] Query validation blocks dangerous operations
+- [ ] Token/cost/latency logged per query
+- [ ] Provider switchable via config (not hardcoded)
+- [ ] Disclaimer injected on every AI response
+- [ ] Guardrail functions have >90% test coverage
+- [ ] App degrades gracefully without API key
