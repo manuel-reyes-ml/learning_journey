@@ -1,0 +1,160 @@
+---
+description: DeepEval and RAGAS evaluation standards for AI-powered projects
+globs: ["tests/test_eval.py", "**/eval_dataset.json", "**/eval*.py", "**/eval*.json"]
+alwaysApply: false
+---
+
+# Evaluation-Driven Development (DeepEval + RAGAS)
+
+> Scoped rules for AI evaluation tests. Auto-attached when editing eval files.
+> Every AI-powered project ships with measurable quality metrics.
+
+---
+
+## 🎯 Philosophy
+
+Evaluation is NOT optional. Hiring managers in 2026 specifically scan for evaluation-driven
+development. Measurable AI quality metrics signal production maturity beyond typical junior
+portfolios.
+
+---
+
+## 📦 Framework
+
+- **DeepEval** — pytest-compatible, open-source AI evaluation framework
+- **RAGAS** — RAG-specific evaluation (PolicyPulse only)
+- **Install:** `pip install deepeval`
+- **Run:** `deepeval test run tests/test_eval.py`
+
+---
+
+## 📊 Metric Targets by Project
+
+| Project | Answer Relevancy | Faithfulness | Hallucination | Notes |
+|---------|-----------------|--------------|---------------|-------|
+| DataVault | > 0.8 | > 0.85 | < 0.15 | Standard thresholds |
+| PolicyPulse | > 0.8 | > 0.85 | < 0.15 | + RAGAS RAG Triad metrics |
+| FormSense | > 0.8 | > 0.85 | < 0.15 | + extraction accuracy |
+| ODI | > 0.8 | > 0.85 | < 0.15 | Standard thresholds |
+| StreamSmart | > 0.8 | > 0.85 | < 0.15 | + LangSmith tracing |
+| AFC | > 0.8 | **> 0.9** | < 0.10 | Higher bar — financial data sensitivity |
+
+---
+
+## 📁 File Structure
+
+```
+tests/
+├── conftest.py               # Shared fixtures, mock LLM providers
+├── test_eval.py              # DeepEval evaluation tests
+└── eval_dataset.json         # 30+ query-response pairs
+
+logs/
+└── evaluation/               # DeepEval results for README metrics
+```
+
+---
+
+## 📝 Eval Dataset Format
+
+```json
+{
+  "test_cases": [
+    {
+      "input": "How many distributions were processed last week?",
+      "expected_output": "There were 47 distributions processed last week.",
+      "context": ["The operations data shows 47 distribution records with Date Stored in the last 7 days."],
+      "retrieval_context": ["Optional: retrieved chunks for RAG evaluation"]
+    }
+  ]
+}
+```
+
+### Rules
+- Minimum 30 test cases per project
+- Cover: happy path, edge cases, out-of-scope questions, PII-probing questions
+- Include adversarial inputs (attempts to extract PII, inject prompts)
+- Context field must match what the system would actually retrieve
+
+---
+
+## 🧪 Test Structure
+
+```python
+import pytest
+from deepeval import assert_test
+from deepeval.test_case import LLMTestCase
+from deepeval.metrics import (
+    AnswerRelevancyMetric,
+    FaithfulnessMetric,
+    HallucinationMetric,
+)
+
+
+class TestAIEvaluation:
+    """DeepEval quality evaluation for AI responses."""
+
+    @pytest.fixture
+    def relevancy_metric(self) -> AnswerRelevancyMetric:
+        return AnswerRelevancyMetric(threshold=0.8)
+
+    @pytest.fixture
+    def faithfulness_metric(self) -> FaithfulnessMetric:
+        return FaithfulnessMetric(threshold=0.85)
+
+    @pytest.fixture
+    def hallucination_metric(self) -> HallucinationMetric:
+        return HallucinationMetric(threshold=0.15)
+
+    def test_answer_relevancy(self, relevancy_metric, eval_test_case):
+        """AI response addresses the user's question."""
+        assert_test(eval_test_case, [relevancy_metric])
+
+    def test_faithfulness(self, faithfulness_metric, eval_test_case):
+        """AI response is grounded in provided context."""
+        assert_test(eval_test_case, [faithfulness_metric])
+
+    def test_hallucination(self, hallucination_metric, eval_test_case):
+        """AI response does not contain fabricated information."""
+        assert_test(eval_test_case, [hallucination_metric])
+```
+
+---
+
+## 🔄 RAGAS RAG Triad (PolicyPulse Only)
+
+PolicyPulse uses RAGAS metrics in addition to DeepEval:
+
+| Metric | What It Measures | Target |
+|--------|-----------------|--------|
+| Context Precision | Are retrieved chunks relevant? | > 0.8 |
+| Context Recall | Are all needed chunks retrieved? | > 0.75 |
+| Faithfulness | Is the answer grounded in retrieved text? | > 0.85 |
+| Answer Relevancy | Does the answer address the question? | > 0.8 |
+
+---
+
+## 🚀 CI Integration
+
+```yaml
+# In GitHub Actions CI workflow
+- name: Run AI evaluation
+  run: deepeval test run tests/test_eval.py
+  env:
+    GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+```
+
+- CI pipeline includes evaluation gate: fail build if scores drop
+- Results logged to `logs/evaluation/` for README metrics table
+- README includes evaluation metrics table showing latest scores
+
+---
+
+## ✅ Evaluation Checklist (Before Commit)
+
+- [ ] eval_dataset.json has 30+ test cases
+- [ ] Test cases cover happy path, edge cases, adversarial inputs
+- [ ] `deepeval test run tests/test_eval.py` passes
+- [ ] Scores meet project-specific thresholds
+- [ ] Results logged to `logs/evaluation/`
+- [ ] README evaluation metrics table updated
