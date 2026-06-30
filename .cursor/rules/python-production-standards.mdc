@@ -1,0 +1,783 @@
+---
+description: Universal Python and Data Engineering standards for production-grade code
+globs: ["*.py", "**/*.py"]
+alwaysApply: true
+---
+
+# Python & Data Engineering Standards
+
+> Universal rules for production-grade Python code across all projects.
+> Aligned with industry best practices and career progression from Data Analyst → LLM Engineer.
+>
+> **Companion rules (auto-attached by glob):**
+> - `streamlit-patterns.mdc` → `app/**/*.py`
+> - `ai-sdk-patterns.mdc` → `src/ai/**/*.py`
+> - `evaluation.mdc` → `tests/test_eval.py`, `eval_dataset.json`
+
+---
+
+## 🎯 Code Philosophy
+
+### Guiding Principles
+1. **Readability over cleverness** — Code is read 10x more than written
+2. **Explicit over implicit** — No magic; make intentions clear
+3. **Fail fast, fail loud** — Catch errors early with meaningful messages
+4. **Test what matters** — Coverage is a tool, not a goal
+5. **Document for your future self** — You won't remember in 6 months
+
+---
+
+## 📐 Code Style
+
+### Module Header (Required in Every .py File)
+
+```python
+from __future__ import annotations  # PEP 604 unions (X | Y) in all Python 3.x
+```
+
+This is the **first line** (after docstring) in every module. It enables modern
+union syntax (`str | None` instead of `Optional[str]`) and deferred annotation
+evaluation for forward references. Non-negotiable across all projects.
+
+### Naming Conventions
+```python
+# Variables and functions: snake_case
+user_count = 0
+def calculate_total_amount():
+    pass
+
+# Classes: PascalCase
+class DataProcessor:
+    pass
+
+# Constants: SCREAMING_SNAKE_CASE
+MAX_RETRY_ATTEMPTS = 3
+DEFAULT_TIMEOUT_SECONDS = 30
+
+# Private methods/attributes: single leading underscore
+def _internal_helper():
+    pass
+
+# "Dunder" methods: double underscore (Python reserved)
+def __init__(self):
+    pass
+```
+
+### Formatting Standards
+- **Line length:** 88 characters (Black formatter default)
+- **Indentation:** 4 spaces (never tabs)
+- **Imports:** Group in order: stdlib → third-party → local, alphabetized within groups
+- **Blank lines:** 2 between top-level definitions, 1 between methods
+- **Trailing commas:** Always in multi-line structures (enables cleaner diffs)
+
+### Import Organization
+```python
+from __future__ import annotations
+
+# Standard library
+import logging
+import os
+from datetime import datetime
+from pathlib import Path
+
+# Third-party packages
+import pandas as pd
+import numpy as np
+from pydantic import BaseModel
+
+# Local application imports
+from src.config import settings
+from src.utils.validators import validate_input
+```
+
+---
+
+## 🔤 Type Hints (Required)
+
+### Function Signatures
+```python
+# ✅ Good: Full type hints with return type (PEP 604 unions via __future__)
+def process_records(
+    df: pd.DataFrame,
+    column_name: str,
+    threshold: float = 0.5,
+) -> pd.DataFrame:
+    """Process records based on threshold."""
+    pass
+
+# ✅ Modern union syntax (enabled by from __future__ import annotations)
+def find_user(user_id: str) -> dict | None:
+    pass
+
+def parse_value(value: str | int) -> float:
+    pass
+
+# ❌ Bad: No type hints
+def process_records(df, column_name, threshold=0.5):
+    pass
+```
+
+### Common Type Patterns
+```python
+from typing import Any, Callable
+
+# Collections with element types
+def get_names() -> list[str]:
+    pass
+
+def get_config() -> dict[str, Any]:
+    pass
+
+# Callable (function as parameter)
+def apply_transform(data: pd.DataFrame, func: Callable[[pd.Series], pd.Series]) -> pd.DataFrame:
+    pass
+```
+
+---
+
+## 📝 Docstrings (NumPy Style)
+
+### Function Docstring Template
+```python
+def reconcile_amounts(
+    source_df: pd.DataFrame,
+    target_df: pd.DataFrame,
+    tolerance: float = 0.50,
+) -> pd.DataFrame:
+    """Reconcile amounts between source and target DataFrames.
+
+    Compares amounts from two sources and flags discrepancies
+    that exceed the specified tolerance threshold.
+
+    Parameters
+    ----------
+    source_df : pd.DataFrame
+        DataFrame containing source system amounts.
+        Must have columns: ['id', 'amount', 'date'].
+    target_df : pd.DataFrame
+        DataFrame containing target system amounts.
+        Must have columns: ['id', 'amount', 'date'].
+    tolerance : float, optional
+        Maximum allowed difference for matching.
+        Defaults to 0.50.
+
+    Returns
+    -------
+    pd.DataFrame
+        DataFrame with reconciliation results including:
+        - match_status: 'MATCHED' | 'DISCREPANCY' | 'MISSING'
+        - difference: Calculated amount difference
+        - action: Recommended action for review
+
+    Raises
+    ------
+    ValueError
+        If required columns are missing from input DataFrames.
+    TypeError
+        If tolerance is not a numeric value.
+
+    Examples
+    --------
+    >>> source = pd.DataFrame({'id': [1, 2], 'amount': [100.0, 200.0]})
+    >>> target = pd.DataFrame({'id': [1, 2], 'amount': [100.0, 199.0]})
+    >>> result = reconcile_amounts(source, target, tolerance=0.50)
+    >>> result['match_status'].tolist()
+    ['MATCHED', 'DISCREPANCY']
+    """
+    pass
+```
+
+### Class Docstring Template
+```python
+class DataPipeline:
+    """Orchestrates data extraction, transformation, and loading.
+
+    This class manages the end-to-end data pipeline workflow,
+    handling configuration, validation, and error recovery.
+
+    Attributes
+    ----------
+    config : dict
+        Pipeline configuration settings.
+    logger : logging.Logger
+        Configured logging instance.
+    is_initialized : bool
+        Whether pipeline has been set up.
+
+    Examples
+    --------
+    >>> pipeline = DataPipeline(config={'source': 'db'})
+    >>> pipeline.run()
+    >>> print(pipeline.status)
+    'completed'
+    """
+    pass
+```
+
+---
+
+## 🐼 pandas Best Practices
+
+### DataFrame Operations
+```python
+# ✅ Always use .copy() when creating derived DataFrames
+filtered_df = original_df[original_df['status'] == 'active'].copy()
+
+# ✅ Use .loc[] for assignment (avoids SettingWithCopyWarning)
+df.loc[df['amount'] < 0, 'flag'] = 'NEGATIVE'
+
+# ❌ Avoid chained indexing
+df[df['amount'] < 0]['flag'] = 'NEGATIVE'  # May not work!
+
+# ✅ Use nullable dtypes for data with missing values
+df['count'] = df['count'].astype('Int64')      # Nullable integer
+df['amount'] = df['amount'].astype('Float64')  # Nullable float
+
+# ✅ Prefer vectorized operations over .apply()
+df['total'] = df['price'] * df['quantity']
+
+# ✅ Use .query() for complex filtering (more readable)
+result = df.query('amount > 100 and status == "active"')
+```
+
+### Memory and Performance
+```python
+# ✅ Specify dtypes when reading data
+df = pd.read_csv(
+    'data.csv',
+    dtype={
+        'id': 'str',
+        'amount': 'Float64',
+        'category': 'category',
+    },
+    parse_dates=['created_at'],
+)
+
+# ✅ Select only needed columns early
+df = pd.read_csv('large_file.csv', usecols=['id', 'amount', 'date'])
+```
+
+### Merging and Joining
+```python
+# ✅ Always specify merge type explicitly
+result = pd.merge(
+    left_df,
+    right_df,
+    on='key_column',
+    how='left',
+    validate='m:1',
+    indicator=True,
+)
+
+# ✅ Check for unexpected duplicates after merge
+assert result.duplicated(subset=['id']).sum() == 0, "Unexpected duplicates!"
+```
+
+---
+
+## ⚠️ Error Handling
+
+### Pydantic for Structured Outputs & Validation
+
+```python
+from pydantic import BaseModel, Field
+from enum import Enum
+
+class RiskLevel(str, Enum):
+    LOW = "low"
+    MEDIUM = "medium"
+    HIGH = "high"
+
+class DemandInsight(BaseModel):
+    """Structured output schema for AI-generated demand analysis."""
+
+    summary: str = Field(
+        ...,
+        description="One-sentence summary of the demand pattern",
+        max_length=200,
+    )
+    trend_direction: str = Field(
+        ...,
+        description="Direction of demand trend",
+        pattern=r"^(increasing|decreasing|stable)$",
+    )
+    confidence: float = Field(
+        ...,
+        ge=0.0,
+        le=1.0,
+        description="Model confidence in the analysis (0-1)",
+    )
+    risk_level: RiskLevel = Field(
+        ...,
+        description="Risk level for capacity planning",
+    )
+    recommended_action: str | None = Field(
+        default=None,
+        description="Suggested next step for operations team",
+    )
+```
+
+### Pydantic Best Practices
+```python
+# ✅ Use Field() with descriptions — doubles as LLM schema documentation
+# ✅ Use validators (ge, le, pattern, max_length) — catch bad data early
+# ✅ Use Enum types for constrained string fields
+# ✅ Use frozen=True for configs that shouldn't change after creation
+# ✅ Use model_validate() not __init__() for external data
+
+# ❌ Don't use plain dicts where Pydantic models would add safety
+# ❌ Don't skip Field descriptions — they feed into LLM JSON schemas
+# ❌ Don't catch ValidationError silently — log and handle explicitly
+```
+
+### Exception Patterns
+```python
+# ✅ Create custom exceptions for domain-specific errors
+class ValidationError(Exception):
+    """Raised when data validation fails."""
+    pass
+
+class ConfigurationError(Exception):
+    """Raised when configuration is invalid or missing."""
+    pass
+
+# ✅ Raise early with context
+def process_file(filepath: Path) -> pd.DataFrame:
+    if not filepath.exists():
+        raise FileNotFoundError(f"Input file not found: {filepath}")
+
+    if filepath.suffix not in ['.csv', '.xlsx']:
+        raise ValueError(f"Unsupported file type: {filepath.suffix}")
+
+# ✅ Catch specific exceptions, not bare except
+try:
+    result = risky_operation()
+except ValueError as e:
+    logger.warning("Invalid value encountered: %s", e)
+    result = default_value
+except FileNotFoundError as e:
+    logger.error("Required file missing: %s", e)
+    raise
+```
+
+### Guard Clauses (Early Returns)
+```python
+# ✅ Good: Guard clauses reduce nesting
+def calculate_bonus(employee: dict) -> float:
+    if employee is None:
+        return 0.0
+    if employee.get('status') != 'active':
+        return 0.0
+    if employee.get('tenure_years', 0) < 1:
+        return 0.0
+    base_salary = employee['salary']
+    return base_salary * 0.10
+```
+
+---
+
+## ⚡ Async Patterns (API Calls & Data Collection)
+
+### When to Use Async
+```python
+# Use async when:
+# - Making multiple API calls (LLM SDKs, REST APIs, data collectors)
+# - I/O-bound operations that can run concurrently
+# - Building Streamlit apps that call external services
+
+# Do NOT use async when:
+# - CPU-bound operations (use multiprocessing instead)
+# - Simple scripts with a single sequential flow
+# - You don't understand the pattern yet (learn sync first)
+```
+
+### Basic Async Pattern with httpx
+```python
+import httpx
+import asyncio
+
+async def fetch_market_data(
+    symbols: list[str],
+    client: httpx.AsyncClient,
+) -> dict[str, dict]:
+    """Fetch market data for multiple symbols concurrently."""
+    tasks = [client.get(f"/api/quote/{s}") for s in symbols]
+    responses = await asyncio.gather(*tasks, return_exceptions=True)
+
+    results = {}
+    for symbol, response in zip(symbols, responses):
+        if isinstance(response, Exception):
+            logger.error("Failed to fetch %s: %s", symbol, response)
+            continue
+        results[symbol] = response.json()
+    return results
+
+# ✅ Always use async context manager for clients
+async def main():
+    async with httpx.AsyncClient(base_url="https://api.example.com") as client:
+        data = await fetch_market_data(["AAPL", "MSFT", "GOOGL"], client)
+```
+
+---
+
+## 📋 Logging Setup
+```python
+import logging
+
+logger = logging.getLogger(__name__)
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s | %(name)s | %(levelname)s | %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S',
+)
+```
+
+### Logging Levels
+```python
+# ✅ Use %-style formatting (lazy evaluation — string built only if level enabled)
+logger.debug("Processing row %d: %s", idx, row.to_dict())
+logger.info("Loaded %d records from %s", len(df), filepath)
+logger.warning("Missing optional column '%s', using default", col_name)
+logger.error("Failed to process file %s: %s", filepath, e)
+logger.critical("Database connection failed: %s", e)
+
+# ❌ Avoid f-strings in log calls (string always built, even if level is disabled)
+logger.debug(f"Processing row {idx}: {row.to_dict()}")  # Wasteful at INFO level
+```
+
+---
+
+## 🧪 Testing Standards
+
+### Test Structure
+```python
+import pytest
+import pandas as pd
+from src.module import function_to_test
+
+class TestFunctionName:
+    """Tests for function_to_test."""
+
+    def test_happy_path(self):
+        """Should return expected result for valid input."""
+        result = function_to_test(valid_input)
+        assert result == expected_output
+
+    def test_empty_input(self):
+        """Should handle empty input gracefully."""
+        result = function_to_test([])
+        assert result == []
+
+    def test_invalid_input_raises(self):
+        """Should raise ValueError for invalid input."""
+        with pytest.raises(ValueError, match="Invalid"):
+            function_to_test(invalid_input)
+
+    @pytest.mark.parametrize("input,expected", [
+        (1, 2),
+        (2, 4),
+        (0, 0),
+    ])
+    def test_multiple_cases(self, input, expected):
+        """Should handle various inputs correctly."""
+        assert function_to_test(input) == expected
+```
+
+### DataFrame Testing
+```python
+import pandas.testing as tm
+
+def test_dataframe_transformation():
+    """Should transform DataFrame correctly."""
+    input_df = pd.DataFrame({'a': [1, 2], 'b': [3, 4]})
+    expected_df = pd.DataFrame({'a': [1, 2], 'b': [3, 4], 'c': [4, 6]})
+    result = transform_function(input_df)
+    tm.assert_frame_equal(result, expected_df)
+```
+
+### Fixtures for Reusable Test Data
+```python
+@pytest.fixture
+def sample_dataframe():
+    """Create sample DataFrame for testing."""
+    return pd.DataFrame({
+        'id': ['A001', 'A002', 'A003'],
+        'amount': [100.0, 200.0, 300.0],
+        'status': ['active', 'active', 'inactive'],
+    })
+```
+
+---
+
+## 🔒 Security & Privacy
+
+### Never Expose Sensitive Data
+```python
+# ✅ Mask sensitive values in logs and debug output
+def mask_ssn(ssn: str) -> str:
+    """Mask SSN for safe logging: 123-45-6789 → ***-**-6789"""
+    if len(ssn) >= 4:
+        return f"***-**-{ssn[-4:]}"
+    return "***"
+
+# ✅ Use environment variables for secrets
+import os
+api_key = os.environ.get('API_KEY')
+
+# ❌ Never hardcode secrets
+api_key = "sk-abc123..."  # NEVER DO THIS
+```
+
+### Safe File Handling
+```python
+from pathlib import Path
+data_dir = Path(__file__).parent / 'data'
+output_file = data_dir / 'results.csv'
+
+with open(filepath, 'r') as f:
+    content = f.read()
+```
+
+---
+
+## 📁 Project Structure (Recommended)
+```
+project_name/
+├── .cursor/
+│   └── rules/                    # Cursor AI assistant rules (version-controlled)
+│       ├── git-workflow.mdc
+│       ├── learning-mode.mdc
+│       ├── python-production-standards.mdc
+│       ├── streamlit-patterns.mdc    # ← Auto-attached for app/**/*.py
+│       ├── ai-sdk-patterns.mdc       # ← Auto-attached for src/ai/**/*.py
+│       └── evaluation.mdc           # ← Auto-attached for test_eval.py
+├── .cursorignore                 # Excludes data/logs/venv from Cursor indexing
+├── .github/
+│   └── workflows/ci.yml
+├── src/
+│   ├── __init__.py
+│   ├── py.typed                  # PEP 561 — type hint support marker
+│   ├── config/
+│   │   ├── __init__.py
+│   │   └── settings.py
+│   ├── core/
+│   │   ├── __init__.py
+│   │   └── processor.py
+│   ├── ai/                       # LLM SDK integration (provider-agnostic)
+│   │   ├── __init__.py
+│   │   ├── provider.py
+│   │   ├── schemas.py
+│   │   ├── guardrails.py
+│   │   └── observability.py
+│   └── utils/
+│       ├── __init__.py
+│       └── validators.py
+├── tests/
+│   ├── conftest.py
+│   ├── unit/
+│   ├── integration/
+│   ├── test_eval.py              # DeepEval evaluation tests
+│   └── eval_dataset.json         # 30+ query-response pairs
+├── app/                          # Streamlit pages (imports from src/)
+├── scripts/                      # One-off scripts (synthetic data, migrations)
+├── data/
+│   ├── synthetic/                # ✅ In Git — demo data
+│   └── .gitkeep
+├── logs/
+│   ├── evaluation/               # DeepEval results
+│   └── ai/                       # AI observability logs
+├── Dockerfile
+├── .dockerignore
+├── Makefile
+├── pyproject.toml                # PEP 621 — project config (preferred over setup.py)
+└── README.md
+```
+
+### `py.typed` Marker (PEP 561)
+Every `src/` package includes an empty `py.typed` file. This tells tools like
+`mypy` that the package ships inline type hints. Create it:
+```bash
+touch src/py.typed
+```
+
+---
+
+## 🔧 Tooling Configuration
+
+### Ruff (Linting + Formatting)
+```toml
+# pyproject.toml
+[tool.ruff]
+target-version = "py311"
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "I",    # isort (import sorting)
+    "W",    # pycodestyle warnings
+    "UP",   # pyupgrade (modern Python syntax)
+    "B",    # flake8-bugbear
+    "SIM",  # flake8-simplify
+]
+ignore = ["E501"]  # line length handled by formatter
+
+[tool.ruff.lint.isort]
+known-first-party = ["src"]
+```
+
+### Black (Formatting)
+```toml
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+```
+
+### isort (Import Sorting — via Ruff)
+Ruff's `I` rule replaces standalone `isort`. No separate config needed.
+Import order enforced: stdlib → third-party → local, alphabetized within groups.
+
+### mypy (Type Checking)
+```toml
+[tool.mypy]
+python_version = "3.11"
+strict = false
+warn_return_any = true
+warn_unused_configs = true
+```
+
+---
+
+## 🔨 Makefile Standard Targets
+
+Every project includes a Makefile with these targets:
+
+```makefile
+.PHONY: test lint format eval docker-build docker-run clean
+
+test:                ## Run all tests
+	pytest tests/ -v
+
+lint:                ## Run linting (ruff + mypy)
+	ruff check src/ tests/
+	mypy src/
+
+format:              ## Auto-format code (black + ruff)
+	black src/ tests/
+	ruff check --fix src/ tests/
+
+eval:                ## Run AI evaluation tests
+	deepeval test run tests/test_eval.py
+
+docker-build:        ## Build Docker image
+	docker build -t $(PROJECT_NAME) .
+
+docker-run:          ## Run Docker container
+	docker run -p 8501:8501 --env-file .env $(PROJECT_NAME)
+
+clean:               ## Remove build artifacts
+	find . -type d -name __pycache__ -exec rm -rf {} +
+	find . -type f -name "*.pyc" -delete
+	rm -rf .pytest_cache .ruff_cache htmlcov dist build
+```
+
+---
+
+## 🐳 Docker Patterns
+
+### Dockerfile Template (Streamlit Projects)
+```dockerfile
+FROM python:3.11-slim
+WORKDIR /app
+COPY pyproject.toml .
+RUN pip install --no-cache-dir .
+COPY . .
+EXPOSE 8501
+CMD ["streamlit", "run", "app/main.py", "--server.port=8501"]
+```
+
+### .dockerignore Template
+```
+.git
+.github/
+.cursor/
+.env
+.env.example
+*.md
+LICENSE
+Makefile
+tests/
+notebooks/
+logs/
+data/raw/
+data/processed/
+data/outputs/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+```
+
+### Rules
+- Dockerfile lives in project root
+- `.dockerignore` keeps image small and secure (no tests, no real data, no secrets)
+- Multi-stage builds for production (Stage 2+ optimization)
+- `--env-file .env` for API keys at runtime — never bake secrets into images
+
+---
+
+## 🚫 Anti-Patterns to Avoid
+```python
+# ❌ Mutable default arguments
+def append_item(item, items=[]):  # BUG: list persists between calls!
+    items.append(item)
+    return items
+
+# ✅ Use None and create inside function
+def append_item(item, items=None):
+    if items is None:
+        items = []
+    items.append(item)
+    return items
+
+# ❌ Using == for None comparison
+if value == None:
+    pass
+
+# ✅ Use 'is' for None
+if value is None:
+    pass
+
+# ❌ Catching and silencing all errors
+try:
+    risky_thing()
+except:
+    pass  # Silent failure hides bugs
+
+# ❌ String concatenation in loops (inefficient)
+result = ""
+for item in items:
+    result += str(item)
+
+# ✅ Use join
+result = "".join(str(item) for item in items)
+```
+
+---
+
+## ✅ Quality Checklist (Before Every Commit)
+
+- [ ] `from __future__ import annotations` at top of every module
+- [ ] All functions have type hints (PEP 604 union syntax: `X | None`)
+- [ ] All public functions have NumPy-style docstrings
+- [ ] No `print()` statements (use logging)
+- [ ] Logger calls use `%s`/`%d` lazy formatting (not f-strings)
+- [ ] No hardcoded secrets or sensitive data
+- [ ] Pydantic models validate all external data (API responses, configs, file inputs)
+- [ ] Tests pass: `make test`
+- [ ] Code formatted: `make format`
+- [ ] Linting clean: `make lint`
+- [ ] AI responses validated through Pydantic schemas (never trust raw LLM output)
+- [ ] Dockerfile builds successfully: `make docker-build`
