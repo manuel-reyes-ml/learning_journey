@@ -1,0 +1,478 @@
+---
+description: Universal Git workflow and collaboration standards for production-grade development
+globs: ["*.md", ".github/**/*", "*.yml", "*.yaml"]
+alwaysApply: true
+---
+
+# Git Workflow & Collaboration Standards
+
+> Universal rules for professional Git workflows, commit hygiene, and collaboration.
+> Designed for portfolio-quality projects that demonstrate production readiness.
+
+---
+
+## 🎯 Workflow Philosophy
+
+### Core Principles
+1. **Every commit tells a story** — Someone should understand the "why" from history
+2. **Branches are cheap** — Use them liberally, delete when merged
+3. **PRs are documentation** — Future you will thank present you
+4. **Never commit broken code to main** — main should always be deployable
+5. **Review is a feature, not overhead** — Catches bugs AND spreads knowledge
+
+---
+
+## 🌿 Branch Strategy
+
+### Branch Naming Convention
+```
+<type>/<issue-number>-<short-description>
+```
+
+| Type | When to Use | Example |
+|------|-------------|---------|
+| `feature/` | New functionality | `feature/42-add-user-export` |
+| `bugfix/` | Fixing a bug | `bugfix/57-null-pointer-crash` |
+| `hotfix/` | Urgent production fix | `hotfix/99-security-patch` |
+| `refactor/` | Code improvement (no behavior change) | `refactor/33-extract-validators` |
+| `docs/` | Documentation only | `docs/15-api-reference` |
+| `test/` | Adding/updating tests | `test/28-edge-case-coverage` |
+| `chore/` | Maintenance tasks | `chore/12-update-dependencies` |
+
+### Branch Lifecycle
+```bash
+# Create branch from latest main
+git checkout main
+git pull origin main
+git checkout -b feature/42-add-user-export
+
+# Work, commit, push
+git add .
+git commit -m "feat(export): add CSV export endpoint"
+git push -u origin feature/42-add-user-export
+
+# After PR merged, clean up
+git checkout main
+git pull origin main
+git branch -d feature/42-add-user-export  # Delete local
+```
+
+### Protected Branch Rules (Recommended)
+- **main**: Require PR, require passing CI, no direct pushes
+- **develop** (if used): Require PR from feature branches
+
+---
+
+## 📝 Commit Message Convention
+
+### Format
+```
+<type>(<scope>): <subject>
+
+[optional body]
+
+[optional footer]
+```
+
+### Types (Required)
+| Type | Description | Example |
+|------|-------------|---------|
+| `feat` | New feature | `feat(api): add user authentication` |
+| `fix` | Bug fix | `fix(parser): handle empty input gracefully` |
+| `refactor` | Code change (no behavior change) | `refactor(utils): extract validation logic` |
+| `docs` | Documentation only | `docs(readme): add installation steps` |
+| `test` | Adding/updating tests | `test(auth): add login edge cases` |
+| `chore` | Maintenance (deps, configs) | `chore(deps): upgrade pandas to 2.0` |
+| `style` | Formatting (no code change) | `style(lint): apply black formatting` |
+| `perf` | Performance improvement | `perf(query): add index for faster lookup` |
+| `ci` | CI/CD changes | `ci(actions): add Python 3.11 to matrix` |
+
+### Scope (Optional but Recommended)
+The scope is the module/area affected:
+```
+feat(engine-a): add reconciliation matching
+fix(export): correct column alignment
+docs(api): update endpoint documentation
+test(validators): add null input tests
+```
+
+### Subject Rules
+- Use imperative mood: "add feature" not "added feature"
+- No period at the end
+- Maximum 72 characters
+- Start lowercase
+
+### Good vs Bad Commits
+```bash
+# ✅ Good commits
+feat(auth): add JWT token validation
+fix(parser): handle unicode characters in names
+refactor(config): extract database settings to env vars
+docs(readme): add troubleshooting section
+test(api): add integration tests for user endpoints
+
+# ❌ Bad commits
+fixed stuff
+WIP
+updates
+asdfasdf
+final final FINAL version
+```
+
+### Commit Body (When Needed)
+```
+fix(reconciliation): handle missing dates in source data
+
+Previously, records with null dates would cause the entire
+batch to fail. Now we:
+- Skip records with missing dates
+- Log warnings for manual review
+- Continue processing valid records
+
+This affects ~2% of records in production.
+
+Closes #123
+```
+
+### Footer References
+```
+Closes #123          # Automatically closes issue when merged
+Fixes #123           # Same as Closes
+Refs #123            # References without closing
+Co-authored-by: Name <email>  # Credit collaborators
+BREAKING CHANGE: description  # For major version bumps
+```
+
+---
+
+## 🔄 Pull Request Standards
+
+### PR Title Format
+```
+<type>(<scope>): <description that shows business impact>
+```
+
+**Examples:**
+```
+feat(export): Add CSV export reducing manual work by 90%
+fix(validation): Resolve data loss bug affecting 5% of records
+refactor(pipeline): Improve processing speed by 3x
+```
+
+### PR Description Template
+```markdown
+## Summary
+Brief description of what this PR does and why.
+
+## Changes
+- Added X to handle Y
+- Modified Z to improve W
+- Removed deprecated Q
+
+## Testing
+- [ ] Unit tests added/updated
+- [ ] Integration tests pass
+- [ ] Manual testing completed
+
+### How to Test
+1. Run `pytest tests/unit/test_feature.py`
+2. Execute `python -m src.main --validate`
+3. Verify output in `data/output/`
+
+## Screenshots (if applicable)
+[Add screenshots for UI changes]
+
+## Checklist
+- [ ] Code follows project style guidelines
+- [ ] Self-review completed
+- [ ] Documentation updated
+- [ ] No sensitive data committed
+- [ ] CI passes
+
+## Related
+- Closes #123
+- Refs #120
+```
+
+### PR Size Guidelines
+| Size | Lines Changed | Review Time | Recommendation |
+|------|---------------|-------------|----------------|
+| Small | 1-100 | 15 min | ✅ Ideal |
+| Medium | 100-400 | 30-60 min | ✅ Acceptable |
+| Large | 400-1000 | 1-2 hours | ⚠️ Consider splitting |
+| Huge | 1000+ | Half day+ | ❌ Split into smaller PRs |
+
+### When to Split PRs
+- Refactoring + new feature → 2 PRs (refactor first)
+- Multiple unrelated changes → Separate PRs
+- Large feature → Feature flags or incremental PRs
+
+---
+
+## 🔍 Code Review Guidelines
+
+### As a Reviewer
+```markdown
+## Review Checklist
+- [ ] Code solves the stated problem
+- [ ] Logic is correct and handles edge cases
+- [ ] Code is readable and maintainable
+- [ ] Tests are meaningful (not just for coverage)
+- [ ] No security vulnerabilities introduced
+- [ ] Performance is acceptable
+- [ ] Documentation is updated
+```
+
+### Review Comment Prefixes
+| Prefix | Meaning | Action Required |
+|--------|---------|-----------------|
+| `[blocking]` | Must fix before merge | Yes |
+| `[suggestion]` | Nice to have improvement | Optional |
+| `[question]` | Need clarification | Response needed |
+| `[nit]` | Minor style/preference | Optional |
+| `[praise]` | Positive feedback | None |
+
+**Examples:**
+```
+[blocking] This will throw an exception if `user` is None.
+
+[suggestion] Consider using a dictionary comprehension here for readability.
+
+[question] Why did we choose to cache this value? Seems like it could get stale.
+
+[nit] Prefer `is None` over `== None`.
+
+[praise] Great test coverage on the edge cases!
+```
+
+### As an Author
+- Respond to all comments before requesting re-review
+- Mark resolved conversations after fixing
+- Don't take feedback personally — it's about the code
+- Ask for clarification if feedback is unclear
+
+---
+
+## 🏷️ Issue and Label Standards
+
+### Issue Title Format
+```
+[Type] Brief description of the problem or feature
+```
+
+**Examples:**
+```
+[Bug] Application crashes when processing empty CSV
+[Feature] Add ability to export results to PDF
+[Refactor] Extract validation logic into separate module
+[Docs] Add API reference documentation
+```
+
+### Essential Labels
+```bash
+# Types
+type: feature       # New functionality
+type: bug           # Defect or incorrect behavior
+type: docs          # Documentation updates
+type: test          # Tests / coverage
+type: refactor      # Refactor without behavior change
+type: chore         # Maintenance tasks
+
+# Priority
+priority: P0        # Urgent / blocking
+priority: P1        # High priority
+priority: P2        # Normal priority
+priority: P3        # Low priority / nice to have
+
+# Status
+status: in-progress # Currently being worked on
+status: blocked     # Waiting on something
+status: needs-review # Ready for review
+
+# Complexity
+complexity: small   # < 1 day effort
+complexity: medium  # 1-3 days effort
+complexity: large   # > 3 days effort
+```
+
+---
+
+## 🚀 Release & Versioning
+
+### Semantic Versioning (SemVer)
+```
+MAJOR.MINOR.PATCH
+
+1.0.0 → 1.0.1  (PATCH: bug fix, no API change)
+1.0.1 → 1.1.0  (MINOR: new feature, backward compatible)
+1.1.0 → 2.0.0  (MAJOR: breaking change)
+```
+
+### When to Bump
+| Change Type | Version Bump | Example |
+|-------------|--------------|---------|
+| Bug fix | PATCH | `1.0.0` → `1.0.1` |
+| New feature (backward compatible) | MINOR | `1.0.1` → `1.1.0` |
+| Breaking change | MAJOR | `1.1.0` → `2.0.0` |
+
+### Changelog Format (CHANGELOG.md)
+```markdown
+# Changelog
+
+## [1.2.0] - 2025-02-03
+
+### Added
+- New CSV export feature (#42)
+- Support for custom date formats (#45)
+
+### Changed
+- Improved error messages for validation failures
+
+### Fixed
+- Resolved memory leak in large file processing (#50)
+
+### Deprecated
+- `old_function()` - use `new_function()` instead
+
+### Removed
+- Legacy XML export (deprecated in 1.0.0)
+
+### Security
+- Updated dependencies to patch CVE-2025-1234
+```
+
+---
+
+## 🛡️ Safety Rules
+
+### Never Commit
+- [ ] Passwords, API keys, secrets
+- [ ] `.env` files with real credentials
+- [ ] Production data or PII
+- [ ] Large binary files (use Git LFS if needed)
+- [ ] IDE-specific files (`.idea/`, `.vscode/` settings)
+- [ ] OS-specific files (`.DS_Store`, `Thumbs.db`)
+
+### .gitignore Essentials
+```gitignore
+# Secrets
+.env
+.env.local
+*.pem
+secrets/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+dist/
+build/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Data (keep samples, ignore real data)
+data/raw/
+data/processed/
+!data/sample/
+
+# Outputs
+*.log
+reports/*.pdf
+```
+
+---
+
+## 📋 Git Commands Cheat Sheet
+
+### Daily Workflow
+```bash
+# Start work
+git checkout main && git pull
+git checkout -b feature/123-description
+
+# Save progress
+git add -p                    # Interactive staging (review each change)
+git commit -m "feat: description"
+git push -u origin HEAD
+
+# Update branch with main
+git fetch origin
+git rebase origin/main        # Preferred: linear history
+# OR
+git merge origin/main         # Alternative: merge commit
+
+# Before PR
+git log --oneline main..HEAD  # Review your commits
+git diff main...HEAD          # Review all changes
+```
+
+### Fixing Mistakes
+```bash
+# Amend last commit (before push)
+git commit --amend -m "New message"
+
+# Undo last commit (keep changes)
+git reset --soft HEAD~1
+
+# Undo last commit (discard changes)
+git reset --hard HEAD~1
+
+# Revert a pushed commit (creates new commit)
+git revert <commit-hash>
+
+# Interactive rebase (clean up commits before PR)
+git rebase -i HEAD~3
+```
+
+### Useful Aliases (add to ~/.gitconfig)
+```ini
+[alias]
+    st = status -sb
+    co = checkout
+    br = branch
+    ci = commit
+    lg = log --oneline --graph --decorate -20
+    undo = reset --soft HEAD~1
+    amend = commit --amend --no-edit
+```
+
+---
+
+## ✅ Pre-Commit Checklist
+
+Before every commit:
+- [ ] `git status` — Verify only intended files are staged
+- [ ] `git diff --staged` — Review exact changes
+- [ ] Tests pass locally
+- [ ] No debug code (`print()`, `console.log()`, `debugger`)
+- [ ] No commented-out code blocks
+- [ ] Commit message follows convention
+
+Before every PR:
+- [ ] Branch is up to date with main
+- [ ] All commits are meaningful (squash if needed)
+- [ ] CI passes
+- [ ] Self-review completed
+- [ ] Documentation updated
+- [ ] PR description is complete
+
+---
+
+## 🎯 Portfolio Impact
+
+Professional Git hygiene demonstrates:
+- **Collaboration readiness** — Clear PRs show you can work with teams
+- **Communication skills** — Good commit messages show clarity of thought
+- **Quality standards** — Consistent conventions show attention to detail
+- **Production experience** — Proper branching shows real-world knowledge
+
+Recruiters and hiring managers **do look at Git history**. Make every commit count.
