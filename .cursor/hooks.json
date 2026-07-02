@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "hooks": {
+    "file_edited": [
+      {
+        "command": "bash .cursor/hooks/format.sh"
+      }
+    ]
+  }
+}
