@@ -48,6 +48,12 @@ flowchart LR
     C -.->|below threshold| E[<human review / fallback>]
 ```
 
+<!-- DATA QUALITY & RELIABILITY — this is how a DE project shows production rigor without a
+     separate "DE section". Keep it to 2–3 lines. Omit entirely for non-pipeline projects. -->
+**Data quality & reliability.** <Orchestration + cadence (e.g. Airflow DAG, daily run)> ·
+<idempotent reruns / no duplicate keys> · <null-handling + dtype enforcement> ·
+<lineage: source + snapshot version; failure = retry N× then alert>.
+
 ## 🚀 Quick start
 <!-- 3 steps max, copy-paste. pyproject.toml is the single source of deps (NO requirements.txt). -->
 ```bash
@@ -73,6 +79,11 @@ docker build -t <repo> . && docker run --env-file .env <repo>
 | <Task-specific metric> | <custom labeled set> | <gate> | <0.xx> |
 
 <!-- Earned-overlay note: any ML/loop overlay ships only if it beats its baseline on the labeled set. -->
+
+<!-- MODEL CARD — include this line ONLY for projects that train/fine-tune a model
+     (e.g. FormSense Stage-3 fine-tuned extractor, Crucible prediction engine).
+     Delete it for RAG-only / rules-only / ETL projects (AFC, plain pipelines). -->
+📋 **Model card:** intended use, limitations, and failure modes → [`docs/MODEL_CARD.md`](docs/MODEL_CARD.md)
 
 ---
 
