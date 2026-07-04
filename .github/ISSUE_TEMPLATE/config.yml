@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: "📄 Project scope docs"
+    url: "https://github.com/manuel-reyes-ml"
+    about: "For architecture / scope decisions, see the project's scope document before opening a task."
