@@ -25,6 +25,9 @@ stronger production-grade patterns.
 > `webfetch`/`websearch` to `deny` before running. Do not exfiltrate proprietary
 > code into web queries — describe patterns generically.
 
+Measure the codebase against the project's own production-grade bar in
+`@.github/docs/FLAGSHIP_CHECKLIST.md` — flag gaps between that standard and the code.
+
 Focus areas (Stage 1–appropriate, looking toward later stages):
 - LLM SDK + provider-abstraction patterns, structured outputs, guardrails,
   observability (token/cost/latency logging).
