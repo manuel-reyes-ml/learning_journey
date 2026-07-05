@@ -22,6 +22,13 @@ you compare what the docs *claim* against what the code *does*.
 Scope of "docs": `README.md`, module/function NumPy docstrings, `AGENTS.md`,
 Mermaid architecture diagrams, `CHANGELOG.md`, and any `docs/` content.
 
+**Out of scope — never audit these as drift:**
+- `.github/docs/project_labels.md` — **auto-generated** by `.github/scripts/setup-labels.sh`.
+  It reflects live repo labels, not code; if it looks off, the fix is to re-run the script.
+- `.github/docs/templates/` (`cursor_task_brief.md`, `MODEL_CARD.md`, `README_template.md`) and
+  `.github/docs/FLAGSHIP_CHECKLIST.md` — these are **scaffolding/standards**, not docs describing
+  the code, so they have no "code truth" to drift from.
+
 For each review, produce a **drift report**:
 - ❌ **Wrong** — doc states X, code does Y (cite `file:line` for both).
 - ⚠️ **Stale** — doc describes removed/renamed code, dead links, outdated commands.
