@@ -26,7 +26,11 @@ src/ai/
 ```
 
 ### Core Principles
-1. **Provider-agnostic** — Gemini primary; OpenAI/Claude via config switch, zero code changes
+1. **Privacy-first & provider-agnostic** — Finance/proprietary data runs on **local Ollama**
+   (`qwen3.5`) and never leaves the machine. **Anthropic SDK is the primary cloud provider**;
+   OpenRouter (DeepSeek/MiniMax) for bulk agentic work. Free/training-eligible tiers (e.g. the
+   free Gemini tier) are **never** used for sensitive data. Provider is swapped via config —
+   zero code changes.
 2. **Structured outputs** — Every LLM response validated through Pydantic v2 models
 3. **Guardrails first** — Query validation before sending; response sanitization before displaying
 4. **Observability built-in** — Token usage, cost, latency logged per query from Day 1
@@ -92,6 +96,12 @@ BLOCKED_OPERATIONS = ["DELETE", "UPDATE", "INSERT", "DROP", "os.", "subprocess"]
 - Test coverage on guardrail functions must be >90%
 - Log blocked queries and reasons (but never log PII itself)
 
+> **Stage fit:** regex PII + keyword blocklists are the honest **Stage-1 baseline** — cheap,
+> transparent, testable. They are also bypassable, so graduate to dedicated tooling as an
+> *earned overlay* when the project warrants it: Microsoft **Presidio** for PII detection,
+> and a guardrails layer (e.g. NeMo Guardrails / structured output validation) for
+> injection defense. Don't add the heavier layer until a baseline gap justifies it.
+
 ---
 
 ## 📊 Observability
@@ -99,19 +109,26 @@ BLOCKED_OPERATIONS = ["DELETE", "UPDATE", "INSERT", "DROP", "os.", "subprocess"]
 ```python
 # src/ai/observability.py
 
-# ✅ Log per-query metrics
+# ✅ Log per-query metrics (provider/model come from config — never hardcoded)
 logger.info(
     "AI query completed",
     extra={
-        "provider": "gemini",
-        "model": "gemini-2.0-flash",
-        "tokens_used": response.usage_metadata.total_token_count,
+        "provider": provider_name,      # e.g. "ollama", "anthropic", "openrouter"
+        "model": model_name,            # e.g. "qwen3.5", "claude-sonnet-4-6"
+        "tokens_used": usage.total_tokens,
         "latency_ms": elapsed_ms,
-        "estimated_cost": cost,
+        "estimated_cost": cost,         # 0.0 for local Ollama
         "guardrail_triggered": False,
     }
 )
 ```
+
+> **SDK currency (2026):** if a project uses Gemini for *public* data, use the unified
+> `google-genai` client (`from google import genai; client = genai.Client()`), not the
+> deprecated `google.generativeai` package. Current GA model is `gemini-3.5-flash`
+> (`gemini-3.1-flash-lite` for cost); Gemini-3 ignores `temperature`/`top_p`/`top_k`.
+> For heavier/local tracing, graduate observability to OpenTelemetry-based tooling
+> (Langfuse / Arize Phoenix / LangSmith — StreamSmart already uses LangSmith).
 
 ### Rules
 - Every AI call logs: provider, model, tokens, latency, cost, guardrail status
@@ -125,10 +142,16 @@ logger.info(
 
 ```python
 class AIProvider:
-    """Swap providers via config — zero code changes."""
+    """Swap providers via config — zero code changes.
 
-    def __init__(self, provider: str = "gemini"):
-        self.provider = provider
+    Default routing is privacy-first: sensitive/proprietary projects use local
+    Ollama; public projects may use a cloud provider. Selection comes from config,
+    never hardcoded.
+    """
+
+    def __init__(self, provider: str | None = None):
+        # Resolve from config/env; fall back to local Ollama for safety.
+        self.provider = provider or settings.ai_provider  # e.g. "ollama"
         self._client = self._init_client()
 
     def query(self, question: str, context: str) -> QueryResponse:
