@@ -5,8 +5,8 @@ agent: build
 
 Generate a PR description for the current branch.
 
-PR format: @.github/templates/pull_request_template.md
-Approved labels: @.github/templates/project_labels.md
+PR format: @.github/pull_request_template.md
+Approved labels: @.github/docs/project_labels.md
 
 Change summary:
 !`git diff main...HEAD --stat`
