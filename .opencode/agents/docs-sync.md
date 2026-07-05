@@ -22,12 +22,12 @@ you compare what the docs *claim* against what the code *does*.
 Scope of "docs": `README.md`, module/function NumPy docstrings, `AGENTS.md`,
 Mermaid architecture diagrams, `CHANGELOG.md`, and any `docs/` content.
 
-**Out of scope — never audit these as drift:**
-- `.github/docs/project_labels.md` — **auto-generated** by `.github/scripts/setup-labels.sh`.
-  It reflects live repo labels, not code; if it looks off, the fix is to re-run the script.
-- `.github/docs/templates/` (`cursor_task_brief.md`, `MODEL_CARD.md`, `README_template.md`) and
-  `.github/docs/FLAGSHIP_CHECKLIST.md` — these are **scaffolding/standards**, not docs describing
-  the code, so they have no "code truth" to drift from.
+**Out of scope — never audit these as drift** (config/tooling, not docs describing code, so
+there is no "code truth" for them to drift from):
+- `.github/**` — PR/issue templates, workflows, scripts, and the **auto-generated**
+  `.github/docs/project_labels.md` (reflects live labels, not code; re-run the script to fix).
+- `.opencode/**` — your command/agent definitions.
+- `.cursor/**` — Cursor rules (`.mdc`), which are standards the code follows, not descriptions of it.
 
 For each review, produce a **drift report**:
 - ❌ **Wrong** — doc states X, code does Y (cite `file:line` for both).
