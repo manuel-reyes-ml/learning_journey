@@ -8,7 +8,7 @@ Generate a complete Agent Task Brief for Issue #$1.
 Issue details:
 !`gh issue view $1`
 
-Task Brief format: @.github/templates/cursor_task_brief.md
+Task Brief format: @.github/docs/templates/cursor_task_brief.md
 
 Modules in scope:
 !`find src tests -name '*.py' | head -100`
