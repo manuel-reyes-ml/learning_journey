@@ -6,8 +6,8 @@ agent: plan
 Draft a GitHub Issue for this goal: **$ARGUMENTS**
 
 Reference material:
-- Issue format: @.github/templates/issue_template.md
-- Approved labels: @.github/templates/project_labels.md
+- Issue format: @.github/ISSUE_TEMPLATE/task.md
+- Approved labels: @.github/docs/project_labels.md
 
 Repository modules (to identify affected files):
 !`find src -name '*.py' | head -100`
