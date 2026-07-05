@@ -45,9 +45,14 @@ def load_data(filepath: str) -> pd.DataFrame:
 
 # ✅ Cache resource objects (returns SAME object — use for DB connections, clients)
 @st.cache_resource
-def get_llm_client() -> object:
-    """Create and cache LLM client. Shared across all users/reruns."""
-    return genai.GenerativeModel("gemini-2.0-flash")
+def get_llm_client():
+    """Create and cache the LLM client (singleton, shared across reruns).
+
+    Provider comes from config — local Ollama for sensitive data. The example
+    below uses the unified google-genai SDK (public data only).
+    """
+    from google import genai
+    return genai.Client()  # new unified SDK; picks up GEMINI_API_KEY from env
 ```
 
 ### Caching Rules
