@@ -21,10 +21,16 @@ portfolios.
 
 ## 📦 Framework
 
-- **DeepEval** — pytest-compatible, open-source AI evaluation framework
-- **RAGAS** — RAG-specific evaluation (PolicyPulse only)
-- **Install:** `pip install deepeval`
-- **Run:** `deepeval test run tests/test_eval.py`
+- **DeepEval** — pytest-compatible, open-source AI evaluation framework (50+ metrics)
+- **RAGAS** — deeper RAG-specific evaluation (PolicyPulse + AFC GraphRAG)
+- **Metric families used here:**
+  - *RAG:* Answer Relevancy, Faithfulness, Contextual Precision/Recall
+  - *Generation:* Hallucination, **GEval** (custom natural-language criteria — e.g. FormSense
+    schema/field adherence)
+  - *Agentic:* **Task Completion**, **Tool Correctness** (deterministic) — for AFC & Crucible
+- **Judge routing (privacy-first):** DeepEval's LLM-as-judge runs on **local Ollama at $0** —
+  use a local judge for finance/proprietary eval data; a cloud judge only for public data.
+- **Install:** `uv add --dev deepeval` · **Run:** `deepeval test run tests/test_eval.py`
 
 ---
 
@@ -34,10 +40,14 @@ portfolios.
 |---------|-----------------|--------------|---------------|-------|
 | DataVault | > 0.8 | > 0.85 | < 0.15 | Standard thresholds |
 | PolicyPulse | > 0.8 | > 0.85 | < 0.15 | + RAGAS RAG Triad metrics |
-| FormSense | > 0.8 | > 0.85 | < 0.15 | + extraction accuracy |
+| FormSense | > 0.8 | > 0.85 | < 0.15 | + extraction accuracy via **GEval** (schema adherence) |
 | ODI | > 0.8 | > 0.85 | < 0.15 | Standard thresholds |
 | StreamSmart | > 0.8 | > 0.85 | < 0.15 | + LangSmith tracing |
-| AFC | > 0.8 | **> 0.9** | < 0.10 | Higher bar — financial data sensitivity |
+| AFC | > 0.8 | **> 0.9** | < 0.10 | Higher bar — financial data sensitivity; + agentic + RAGAS |
+| Crucible | > 0.8 | **> 0.9** | < 0.10 | Agentic trading — **Tool Correctness + Task Completion** are primary; local judge |
+
+> Keep this table synced to the current roadmap (v9.0) project set. Cadence is a tooling-hub
+> workflow, not a flagship eval target, so it is intentionally excluded.
 
 ---
 
@@ -121,9 +131,9 @@ class TestAIEvaluation:
 
 ---
 
-## 🔄 RAGAS RAG Triad (PolicyPulse Only)
+## 🔄 RAGAS RAG Triad (PolicyPulse + AFC GraphRAG)
 
-PolicyPulse uses RAGAS metrics in addition to DeepEval:
+PolicyPulse and AFC (Financial Knowledge Graph / GraphRAG) use RAGAS metrics in addition to DeepEval:
 
 | Metric | What It Measures | Target |
 |--------|-----------------|--------|
@@ -134,6 +144,51 @@ PolicyPulse uses RAGAS metrics in addition to DeepEval:
 
 ---
 
+## 🧩 GEval — Custom Criteria (FormSense & domain checks)
+
+Use `GEval` (LLM-as-judge with chain-of-thought) for qualities no built-in metric covers —
+schema adherence, field-level extraction correctness, tone, domain rules. Pair it with a
+system-specific metric; use `DAGMetric` when you need a deterministic decision-tree score.
+
+```python
+from deepeval.metrics import GEval
+from deepeval.test_case import LLMTestCaseParams
+
+schema_adherence = GEval(
+    name="SchemaAdherence",
+    criteria="Does the extracted output match the frozen Pydantic schema exactly, "
+             "with every required field present and correctly typed?",
+    evaluation_params=[LLMTestCaseParams.INPUT, LLMTestCaseParams.ACTUAL_OUTPUT],
+    threshold=0.85,
+)
+```
+
+---
+
+## 🤖 Agentic Evaluation (AFC & Crucible)
+
+Agents are scored on the **path, not just the answer** — attach metrics to traces/spans.
+
+| Metric | Type | What It Measures |
+|--------|------|------------------|
+| Tool Correctness | deterministic | Were the expected tools called, correctly and optimally? |
+| Task Completion | LLM-judge | Did the agent complete the multi-step task? |
+| (Faithfulness / GEval) | LLM-judge | Grounding + domain-specific correctness on key spans |
+
+```python
+from deepeval.metrics import ToolCorrectnessMetric, TaskCompletionMetric
+
+tool_correctness = ToolCorrectnessMetric()          # tools_called vs expected_tools
+task_completion  = TaskCompletionMetric(threshold=0.8)
+```
+
+- Start with **Task Completion + Tool Correctness + Answer Relevancy**; add more only if a
+  real failure mode demands it.
+- Crucible's live path is gated by human sign-off + kill-switch regardless of eval scores —
+  evals inform, they do not authorize a live trade.
+
+---
+
 ## 🚀 CI Integration
 
 ```yaml
@@ -141,7 +196,10 @@ PolicyPulse uses RAGAS metrics in addition to DeepEval:
 - name: Run AI evaluation
   run: deepeval test run tests/test_eval.py
   env:
-    GOOGLE_API_KEY: ${{ secrets.GOOGLE_API_KEY }}
+    # Provider-agnostic: set the judge for the project. Use a LOCAL Ollama judge
+    # for finance/proprietary eval data; a cloud key only for public data.
+    DEEPEVAL_MODEL: ${{ vars.DEEPEVAL_JUDGE }}   # e.g. ollama/qwen3.5 or anthropic/claude-sonnet-4-6
+    ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}   # only if judge is cloud
 ```
 
 - CI pipeline includes evaluation gate: fail build if scores drop
