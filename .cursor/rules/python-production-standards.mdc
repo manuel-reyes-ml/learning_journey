@@ -64,7 +64,7 @@ def __init__(self):
 ```
 
 ### Formatting Standards
-- **Line length:** 88 characters (Black formatter default)
+- **Line length:** 88 characters (Ruff formatter default; matches Black)
 - **Indentation:** 4 spaces (never tabs)
 - **Imports:** Group in order: stdlib → third-party → local, alphabetized within groups
 - **Blank lines:** 2 between top-level definitions, 1 between methods
@@ -603,13 +603,34 @@ touch src/py.typed
 
 ---
 
+## 📦 Environment & Dependencies (uv)
+
+`uv` (Astral, Rust) is the environment + dependency manager — it replaces pip, venv, pyenv,
+and pip-tools with one fast binary, and is the 2026 default (now past Poetry in downloads).
+`pyproject.toml` is the single source of truth; **no `requirements.txt`**.
+
+```bash
+uv init                     # scaffold pyproject.toml
+uv add pandas pydantic      # runtime deps (records exact versions in uv.lock)
+uv add --dev pytest ruff mypy deepeval   # dev-only → [dependency-groups]
+uv sync                     # reproduce the exact locked env on any machine
+uv run pytest               # run inside the env (no manual activate)
+```
+
+- Commit `uv.lock` — it pins exact versions/hashes for reproducible installs.
+- Dev tools go in `[dependency-groups]`, keeping runtime deps lean.
+- `uv run <cmd>` auto-activates the env; no `source .venv/bin/activate` needed.
+
 ## 🔧 Tooling Configuration
 
-### Ruff (Linting + Formatting)
+> **2026 stack:** `uv` (env + deps) · `ruff` (lint + format + import sort) · `mypy` (types).
+> This collapses pip/venv, Black, isort, and flake8 into two Rust binaries — one config file.
+
+### Ruff (Linting + Formatting — replaces Black, isort, flake8)
 ```toml
 # pyproject.toml
 [tool.ruff]
-target-version = "py311"
+target-version = "py312"
 line-length = 88
 
 [tool.ruff.lint]
@@ -626,27 +647,26 @@ ignore = ["E501"]  # line length handled by formatter
 
 [tool.ruff.lint.isort]
 known-first-party = ["src"]
+
+[tool.ruff.format]
+quote-style = "double"
 ```
 
-### Black (Formatting)
-```toml
-[tool.black]
-line-length = 88
-target-version = ["py311"]
-```
-
-### isort (Import Sorting — via Ruff)
-Ruff's `I` rule replaces standalone `isort`. No separate config needed.
-Import order enforced: stdlib → third-party → local, alphabetized within groups.
+### Formatting (`ruff format` — Black is retired)
+`ruff format` is a drop-in Black replacement (~99.9% identical output, 10–100× faster) and
+ships the "2026 style" in Ruff ≥ 0.15. **Do not run Black separately** — one tool, one config.
+Import sorting is Ruff's `I` lint rule; no standalone `isort`.
 
 ### mypy (Type Checking)
 ```toml
 [tool.mypy]
-python_version = "3.11"
-strict = false
+python_version = "3.12"
+strict = false          # tighten to true as a project matures
 warn_return_any = true
 warn_unused_configs = true
 ```
+> `ty` (Astral's fast type checker) is emerging and pairs with uv/ruff; mypy remains the
+> reference implementation with the widest library compatibility — stay on mypy for now.
 
 ---
 
@@ -664,8 +684,8 @@ lint:                ## Run linting (ruff + mypy)
 	ruff check src/ tests/
 	mypy src/
 
-format:              ## Auto-format code (black + ruff)
-	black src/ tests/
+format:              ## Auto-format code (ruff format + lint autofix)
+	ruff format src/ tests/
 	ruff check --fix src/ tests/
 
 eval:                ## Run AI evaluation tests
