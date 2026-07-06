@@ -83,10 +83,13 @@ project tag**, and **1–3 topic tags**.
 - **Source:** IBM Technology (YouTube) · [link](https://www.youtube.com/watch?v=F8NKVhkZZWI)
 - **Format:** video · **Time:** ~12 min
 - **Stage:** s4-agentic · **Project:** afc · **Topics:** multi-agent, agent-eval, guardrails
-- **Takeaway:** An "agent" = LLM + tools + a loop that decides which tool to call next
+- **Takeaway:** An "agent" = REACT LLM (Reason) + tools (Act) + a loop that decides which tool to call next
   toward a goal. The failure mode is unbounded looping / bad tool choice, which is why
   eval + guardrails aren't optional add-ons but part of the architecture — directly
-  relevant to why AFC needs a faithfulness gate and Crucible needs a human sign-off.
+  relevant to why AFC needs a faithfulness gate and Crucible needs a human sign-off. Also, to
+  to identify programmatic vs Agentic approach to design and create LLM control logic (systems).
+  Programmatic to think Fast, the LLm is given only specific data to resolve specific queries, and Agentic
+  for the complex tasks that can random (not for a specific topic).
 - **Apply:** Cross-reference with AFC's ≥0.9 faithfulness threshold; note for the
   Crucible human-in-the-loop write-up.
 
