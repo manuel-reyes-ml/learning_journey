@@ -89,13 +89,17 @@ project tag**, and **1–3 topic tags**.
 - **Source:** IBM Technology (YouTube) · [link](https://www.youtube.com/watch?v=F8NKVhkZZWI)
 - **Format:** video · **Time:** ~12 min
 - **Stage:** s4-agentic · **Project:** afc · **Topics:** multi-agent, agent-eval, guardrails
-- **Takeaway:** An "agent" = REACT LLM (Reason) + tools (Act) + a loop that decides which tool to call next
-  toward a goal. The failure mode is unbounded looping / bad tool choice, which is why
-  eval + guardrails aren't optional add-ons but part of the architecture — directly
-  relevant to why AFC needs a faithfulness gate and Crucible needs a human sign-off. Also, to
-  to identify programmatic vs Agentic approach to design and create LLM control logic (systems).
-  Programmatic to think Fast, the LLm is given only specific data to resolve specific queries, and Agentic
-  for the complex tasks that can random (not for a specific topic).
+- **Takeaway:** An "agent" = an LLM running the **ReAct** loop (Reason + Act; Yao et al., 2022) —
+  it interleaves reasoning steps with tool calls, choosing the next action toward a goal instead of
+  answering in one shot. Failure mode is unbounded looping / bad tool choice, which is why eval +
+  guardrails aren't optional add-ons but part of the architecture — directly why AFC needs a
+  faithfulness gate and Crucible needs a human sign-off. The bigger design lever is **workflow vs.
+  agent** (Anthropic, *Building Effective Agents*, 2024): a **workflow** orchestrates the LLM through
+  *predefined code paths* — predictable, cheaper, best when I can script the steps (my "programmatic /
+  think fast" case: specific data for specific queries); an **agent** lets the LLM *dynamically direct
+  its own process and tools* — for open-ended tasks whose path I can't predict. The dividing line is
+  *degree of autonomy*; the rule is start simple and add agency only when the flexibility is worth the
+  latency, cost, and compounding errors.
 - **Apply:** Cross-reference with AFC's ≥0.9 faithfulness threshold; note for the
   Crucible human-in-the-loop write-up.
 
