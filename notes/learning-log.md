@@ -68,6 +68,21 @@ project tag**, and **1–3 topic tags**.
 
 ## Entries
 
+2026-07-06 - LLMs and AI Agents: Transforming Unstructured Data
+Takeaway: Agentic workflows can be linear, the input of an agent can be the input of
+the next agent. THe agents are working  (agent of doc analysis, agent for extraction...etc) 
+and the agentic workflow is trigger by an event,  for example when a file is received in a space
+where the agents scope is also set up.
+
+2026-07-06 - 10 Use Cases for AI Agents: IoT, RAG, & Disaster Response Explained
+Takeaway: Agentic cycle  to meet user goals - Goal -> Planner (Tool: web search) -> 
+Memory (Vector DB, RAG),Read from and Write to -> Executor -> Action
+
+2026-07-06 - Generative vs Agentic AI: Shaping the Future of AI Collaboration
+Takeaway: Generative AI vs Agentic AI Same LLm but first is reactive and second is reactive. 
+Chain of Thought Reasoning that the LLM uses to solve a problem (prompted) step by step and
+deciding which tool to use next or if result or good (Agentic AI).
+
 ### 2026-07-06 — AI Agents and AI Assistants: A Contrast in Function
 - **Source:** IBM Technology (YouTube) · [link](https://www.youtube.com/watch?v=IivxYYkJ2DI&list=PLOspHqNVtKAB6AzNie7BrFhbg4dv4Gfz8&index=2)
 - **Format:** video · **Time:** ~5 min
