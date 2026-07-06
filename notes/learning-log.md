@@ -68,20 +68,43 @@ project tag**, and **1–3 topic tags**.
 
 ## Entries
 
-2026-07-06 - LLMs and AI Agents: Transforming Unstructured Data
-Takeaway: Agentic workflows can be linear, the input of an agent can be the input of
-the next agent. THe agents are working  (agent of doc analysis, agent for extraction...etc) 
-and the agentic workflow is trigger by an event,  for example when a file is received in a space
-where the agents scope is also set up.
+### 2026-07-06 — LLMs and AI Agents: Transforming Unstructured Data
+- **Source:** IBM Technology (YouTube, w/ Terzo) · [link](https://www.youtube.com/watch?v=_pEEJu-2KKM)
+- **Format:** video · **Time:** ~15 min (est.)
+- **Stage:** s4-agentic · **Project:** formsense · **Topics:** multi-agent, architecture, chunking
+- **Takeaway:** Agentic workflows can be **linear** — one agent's output feeds the next
+  (e.g., a doc-analysis agent hands off to an extraction agent). The whole pipeline is
+  **event-triggered**: it fires when something happens — like a file landing in a watched
+  location that sits inside the agents' configured scope. So the "trigger + scoped hand-off
+  chain" is the design, not a single do-everything agent.
+- **Apply:** This is basically FormSense's shape — a file-drop event kicking off a sequential
+  extract pipeline. Note it's the *workflow* end of the workflow-vs-agent spectrum (predefined
+  hand-offs = predictable + cheap), which is the right call for scoped document extraction.
 
-2026-07-06 - 10 Use Cases for AI Agents: IoT, RAG, & Disaster Response Explained
-Takeaway: Agentic cycle  to meet user goals - Goal -> Planner (Tool: web search) -> 
-Memory (Vector DB, RAG),Read from and Write to -> Executor -> Action
+### 2026-07-06 — 10 Use Cases for AI Agents: IoT, RAG, & Disaster Response Explained
+- **Source:** IBM Technology (YouTube, Martin Keen) · [link](https://www.youtube.com/watch?v=Ts42JTye-AI)
+- **Format:** video · **Time:** ~12 min (est.)
+- **Stage:** s4-agentic · **Project:** afc · **Topics:** rag, vector-db, architecture
+- **Takeaway:** The agent loop that drives toward a user goal:
+  **Goal → Planner** (can call tools, e.g. web search) **→ Memory** (a vector DB / RAG store it
+  both **reads from and writes to**) **→ Executor → Action**. Key detail: memory is
+  *bidirectional* — the agent persists new state back, it doesn't just retrieve.
+- **Apply:** This is AFC's research loop exactly; the read/write memory maps to AFC's GraphRAG
+  store (Neo4j + ChromaDB). Worth mirroring the Planner→Executor split in AFC's orchestration
+  design so planning and acting stay separable (easier to gate/eval).
 
-2026-07-06 - Generative vs Agentic AI: Shaping the Future of AI Collaboration
-Takeaway: Generative AI vs Agentic AI Same LLm but first is reactive and second is reactive. 
-Chain of Thought Reasoning that the LLM uses to solve a problem (prompted) step by step and
-deciding which tool to use next or if result or good (Agentic AI).
+### 2026-07-06 — Generative vs Agentic AI: Shaping the Future of AI Collaboration
+- **Source:** IBM Technology (YouTube) · [link](https://www.youtube.com/watch?v=EDb37y_MhRw)
+- **Format:** video · **Time:** ~9 min (est.)
+- **Stage:** s4-agentic · **Project:** — · **Topics:** prompting, architecture
+- **Takeaway:** Generative vs. agentic AI run on the **same underlying LLM** — the difference is
+  behavior: **generative is reactive** (answers a prompt), **agentic is proactive** (pursues a
+  goal). Agentic adds a **chain-of-thought** loop the model uses to work a problem step by step,
+  deciding which tool to call next and judging whether a result is good enough — i.e., it drives
+  its own loop instead of stopping at one response.
+- **Apply:** This is the conceptual root of the workflow-vs-agent decision across my portfolio:
+  the reactive/generative path = assistant/workflow work (PolicyPulse Q&A), the proactive/agentic
+  path = AFC and Crucible. Good framing line for a build-in-public post.
 
 ### 2026-07-06 — AI Agents and AI Assistants: A Contrast in Function
 - **Source:** IBM Technology (YouTube) · [link](https://www.youtube.com/watch?v=IivxYYkJ2DI&list=PLOspHqNVtKAB6AzNie7BrFhbg4dv4Gfz8&index=2)
@@ -119,6 +142,5 @@ deciding which tool to use next or if result or good (Agentic AI).
   Crucible human-in-the-loop write-up.
 
 <!--
-Newest entries go ABOVE this line. Keep the two examples above as format references,
-or delete them once you've added a few real ones.
+Newest entries go ABOVE this line.
 -->
