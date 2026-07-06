@@ -68,16 +68,22 @@ project tag**, and **1–3 topic tags**.
 
 ## Entries
 
-### 2026-07-06 — What is Retrieval-Augmented Generation (RAG)?
-- **Source:** Techsplainers by IBM · [link](https://open.spotify.com/show/1CuiV3XpXm68MxGpllQV4j)
-- **Format:** podcast · **Time:** ~6 min
-- **Stage:** s1-genai · **Project:** policypulse · **Topics:** rag, embeddings, chunking
-- **Takeaway:** RAG has two moving parts I keep conflating — the offline *indexing* path
-  (chunk → embed → store vectors) and the online *retrieval* path (query → similar-chunk
-  lookup → augmented prompt → generate). The knowledge base has to be re-indexed as source
-  docs change; retrieval quality is bounded by chunking + embedding choices, not the LLM.
-- **Apply:** Sanity-check PolicyPulse's chunking strategy — confirm re-index trigger exists
-  when source policy PDFs update.
+### 2026-07-06 — AI Agents and AI Assistants: A Contrast in Function
+- **Source:** IBM Technology (YouTube) · [link](https://www.youtube.com/watch?v=IivxYYkJ2DI&list=PLOspHqNVtKAB6AzNie7BrFhbg4dv4Gfz8&index=2)
+- **Format:** video · **Time:** ~5 min
+- **Stage:** s4-agentic · **Project:** crucible · **Topics:** human-in-the-loop, guardrails, architecture
+- **Takeaway:** Same split as a celebrity's staff: an
+  *assistant* does tasks on request (reactive, no external tools -> reliable), an *agent*
+  pursues a goal proactively and doesn't need a prompt to keep working (plans, calls tools,
+  adapts). The autonomy is the whole tradeoff: it buys capability but adds failure modes
+  assistants don't have — infinite planning/reflection loops, brittleness when external
+  tools change underneath it, and higher cost/latency. IBM's honest caveat: today's
+  foundation models aren't fully reliable as agents yet, so autonomy should be *scoped*,
+  not assumed.
+- **Apply:** Reinforces the programmatic-vs-agentic call from the entry below — default to
+  the reliable assistant/workflow path unless the task truly needs open-ended autonomy. The
+  infinite-loop + tool-drift risks are the direct rationale for Crucible's kill-switch and
+  mandatory human sign-off; AFC (read-only) can tolerate more autonomy.
 
 ### 2026-07-06 — What are AI Agents?
 - **Source:** IBM Technology (YouTube) · [link](https://www.youtube.com/watch?v=F8NKVhkZZWI)
