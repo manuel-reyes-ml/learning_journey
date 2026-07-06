@@ -2,7 +2,7 @@ Generate a complete Cursor Agent Task Brief for the Issue number provided after 
 
 Usage: `/task-brief 12` (where 12 is the GitHub Issue number)
 
-1. Read `.github/templates/cursor_task_brief.md` for the required Task Brief format
+1. Read `.github/docs/templates/cursor_task_brief.md` for the required Task Brief format
 2. Fetch the Issue details: run `gh issue view <number>` to get scope, acceptance criteria, and context
 3. Review all modules in `src/` and `tests/` to identify the exact files that need to change
 4. Fill in every section of the template:
