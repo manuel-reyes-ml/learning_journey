@@ -81,11 +81,18 @@ MCP server has a Dynamic Self-discovery to client (shows its capability and data
 API calls are manual and needs a developer to update calls and get newer capabilities.
 A lot of MCP servers are wrapper of Rest API, using API inside them to do the work.
 
-2026-07-07 - 7 AI Terms You Need to Know: Agents, RAG, ASI & More
-Takeaway: Agentic AI / Agents are builds on top of Large reasoning model to generate reason before
-responding (when we see 'thinking..' is the model generating an internal chain of thought to provide
-an accurate response).
-MCP = Model Context Protocol -> standardize how external app/system adds context to Model
+### 2026-07-07 — 7 AI Terms You Need to Know: Agents, RAG, ASI & More
+- **Source:** IBM Technology (YouTube, Martin Keen) · [link](https://www.youtube.com/watch?v=VSFuqMh4hus)
+- **Format:** video · **Time:** ~11 min
+- **Stage:** s1-genai · **Project:** — · **Topics:** rag, mcp, reasoning-models
+- **Takeaway:** Fast glossary pass; two anchors stuck. (1) **Agentic AI / agents** build on top of
+  large *reasoning* models — the "thinking…" I see is the model generating an internal chain of
+  thought before it answers, which is the raw material an agent reasons with before acting. (2) **MCP**
+  standardizes how external apps/systems add context to a model (same point as the MCP-vs-API video).
+  Also covered: RAG, vector DBs, ASI, MoE, explainable AI.
+- **Apply:** Vocabulary reinforcement, no single project. The reasoning-model → agent link is a clean
+  build-in-public framing line. Cross-references the workflow-vs-agent distinction already logged for
+  FormSense/AFC.
 
 ### 2026-07-07 — RAG vs Agentic AI: How LLMs Connect Data for Smarter AI
 - **Source:** IBM Technology (YouTube) · [link](https://www.youtube.com/watch?v=fB2JQXEH_94)
