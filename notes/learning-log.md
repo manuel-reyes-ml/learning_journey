@@ -68,6 +68,15 @@ project tag**, and **1–3 topic tags**.
 
 ## Entries
 
+2026-07-07 - What is NLP (Natural Language Processing)?
+Takeaway: NLP can help to identify sentiment analysis (products review, stock perception, etc).
+Tools: tokenization -> taking a sentence and divided in chunks - Part of speech tagging -> how the token
+is used in that sentence - Name Entity Recognization -> if a token has any special recognization, etc.
+
+2026-07-07 - How to Add AI to Your Apps Faster with Embedded AI
+Takeaway: Library: Run anywhere (cloud, etc), flexible and extensible, reduce infrastructure costs.
+Application: Low/no code, faster go to market, reduce dev costs. 
+
 ### 2026-07-07 — RAG vs Fine-Tuning vs Prompt Engineering: Optimizing AI Models
 - **Source:** IBM Technology (YouTube, Martin Keen) · [link](https://www.youtube.com/watch?v=zYGDpG-pTho)
 - **Format:** video · **Time:** ~13 min
