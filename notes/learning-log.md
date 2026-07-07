@@ -68,6 +68,30 @@ project tag**, and **1–3 topic tags**.
 
 ## Entries
 
+2026-07-07 - RAG vs Fine-Tuning vs Prompt Engineering: Optimizing AI Models
+Takeaway: Use RAG to add new documents or sources to LLM scope, so it can provide more
+accurate responses. Use Fine-tuning to change model's parameters or add/update new information
+into the model, however requires higher resources and it is risky. 
+Use prompt engineering, so the model know your style and type of information you are looking for, 
+however it would not change the fact that the model has outdated information. 
+
+2926-07-07 - MCP vs API: Simplifying AI Agent Integration with External Data
+Takeaway: MCP = Model Context Protocol -> standardize how external app/system adds context to Model (LLM)
+MCP server has a Dynamic Self-discovery to client (shows its capability and data to a client - LLM)
+API calls are manual and needs a developer to update calls and get newer capabilities.
+A lot of MCP servers are wrapper of Rest API, using API inside them to do the work.
+
+2026-07-07 - 7 AI Terms You Need to Know: Agents, RAG, ASI & More
+Takeaway: Agentic AI / Agents are builds on top of Large reasoning model to generate reason before
+responding (when we see 'thinking..' is the model generating an internal chain of thought to provide
+an accurate response).
+MCP = Model Context Protocol -> standardize how external app/system adds context to Model
+
+2026-07-07 - RAG vs Agentic AI: How LLMs Connect Data for Smarter AI
+Takeaway: Agents needs RAG to avoid hallucination and also for the agent or workflow to
+produce an accurate and desired result by user. RAG stores information for LLM to read from.
+RAG = Retrieval Augmented Generation
+
 ### 2026-07-06 — LLMs and AI Agents: Transforming Unstructured Data
 - **Source:** IBM Technology (YouTube, w/ Terzo) · [link](https://www.youtube.com/watch?v=_pEEJu-2KKM)
 - **Format:** video · **Time:** ~15 min (est.)
