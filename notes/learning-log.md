@@ -75,11 +75,19 @@ into the model, however requires higher resources and it is risky.
 Use prompt engineering, so the model know your style and type of information you are looking for, 
 however it would not change the fact that the model has outdated information. 
 
-2926-07-07 - MCP vs API: Simplifying AI Agent Integration with External Data
-Takeaway: MCP = Model Context Protocol -> standardize how external app/system adds context to Model (LLM)
-MCP server has a Dynamic Self-discovery to client (shows its capability and data to a client - LLM)
-API calls are manual and needs a developer to update calls and get newer capabilities.
-A lot of MCP servers are wrapper of Rest API, using API inside them to do the work.
+### 2026-07-07 — MCP vs API: Simplifying AI Agent Integration with External Data
+- **Source:** IBM Technology (YouTube, Martin Keen) · [link](https://www.youtube.com/watch?v=7j1t3UZA1TY)
+- **Format:** video · **Time:** ~11 min (est.)
+- **Stage:** s1-genai · **Project:** policypulse · **Topics:** mcp, llm-api, architecture
+- **Takeaway:** MCP (Model Context Protocol) standardizes how an external app/system feeds context
+  and tools to an LLM. Its edge is **dynamic self-discovery**: a client asks a server what it offers
+  and the server describes its tools/data at runtime — no client code change when capabilities grow.
+  Plain REST APIs are manual — a developer has to update the calls to reach new endpoints. Most MCP
+  servers are actually wrappers over REST APIs, calling them under the hood.
+- **Apply:** Grounds PolicyPulse's FastMCP layer — exposing retrieval as MCP tools lets an agent
+  discover and call them without me rewiring the client each time. Hold the wrapper insight for the
+  Stage 2 TypeScript + MCP server sprint: I'm mostly standardizing access to existing retrieval
+  logic, not replacing it.
 
 ### 2026-07-07 — 7 AI Terms You Need to Know: Agents, RAG, ASI & More
 - **Source:** IBM Technology (YouTube, Martin Keen) · [link](https://www.youtube.com/watch?v=VSFuqMh4hus)
