@@ -80,6 +80,15 @@ project tag**, and **1–3 topic tags**.
 - **Apply:** This is basically FormSense's shape — a file-drop event kicking off a sequential
   extract pipeline. Note it's the *workflow* end of the workflow-vs-agent spectrum (predefined
   hand-offs = predictable + cheap), which is the right call for scoped document extraction.
+  **Workflow, not an agent**. The test isn't "does it have loops, tools, and self-correction" — it's who
+  owns the control flow.  **Workflows** orchestrate LLM and tool calls through predefined code—you own
+  the control flow. **Agents** let the model choose its next tool call from environment feedback—you
+  own the goal and guardrails, not every branch.
+  **In your design you own the path:** if confidence < 0.8 → review, if incomplete → email, if complete → 
+  ticket are branches you wrote in code. The LLM reasons inside each step (reading the form, judging
+  validation) but never decides what to do next. That is the literal workflow definition. An agent
+  would be the model deciding, turn by turn, "I'll look up this participant's history, then maybe
+  re-read the form, then perhaps email the rep" — dynamic routing from environment feedback.
 
 ### 2026-07-06 — 10 Use Cases for AI Agents: IoT, RAG, & Disaster Response Explained
 - **Source:** IBM Technology (YouTube, Martin Keen) · [link](https://www.youtube.com/watch?v=Ts42JTye-AI)
