@@ -68,12 +68,19 @@ project tag**, and **1–3 topic tags**.
 
 ## Entries
 
-2026-07-07 - RAG vs Fine-Tuning vs Prompt Engineering: Optimizing AI Models
-Takeaway: Use RAG to add new documents or sources to LLM scope, so it can provide more
-accurate responses. Use Fine-tuning to change model's parameters or add/update new information
-into the model, however requires higher resources and it is risky. 
-Use prompt engineering, so the model know your style and type of information you are looking for, 
-however it would not change the fact that the model has outdated information. 
+### 2026-07-07 — RAG vs Fine-Tuning vs Prompt Engineering: Optimizing AI Models
+- **Source:** IBM Technology (YouTube, Martin Keen) · [link](https://www.youtube.com/watch?v=zYGDpG-pTho)
+- **Format:** video · **Time:** ~13 min
+- **Stage:** s1-genai · **Project:** policypulse · **Topics:** rag, prompting, fine-tuning
+- **Takeaway:** Three levers to improve an LLM's answers, each a different cost/risk trade.
+  **RAG** adds external, current documents to the model's scope (cheap, update anytime) — best
+  for fresh or domain data. **Fine-tuning** rewrites the model's parameters to bake knowledge in,
+  but it's resource-heavy and risky — the named failure mode is *catastrophic forgetting* (losing
+  general skills while learning specialized ones). **Prompt engineering** steers style and the kind
+  of answer I want, but can't fix stale knowledge. They're usually combined.
+- **Apply:** Direct rationale for PolicyPulse's RAG-first design — retirement-plan docs change and
+  need citations, so RAG wins on freshness *and* cost. Keep fine-tuning parked for Stage 3
+  (LoRA/QLoRA) and only if a scoped task earns it under the earned-overlay rule.
 
 ### 2026-07-07 — MCP vs API: Simplifying AI Agent Integration with External Data
 - **Source:** IBM Technology (YouTube, Martin Keen) · [link](https://www.youtube.com/watch?v=7j1t3UZA1TY)
