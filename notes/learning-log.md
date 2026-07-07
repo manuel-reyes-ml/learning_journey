@@ -87,10 +87,17 @@ responding (when we see 'thinking..' is the model generating an internal chain o
 an accurate response).
 MCP = Model Context Protocol -> standardize how external app/system adds context to Model
 
-2026-07-07 - RAG vs Agentic AI: How LLMs Connect Data for Smarter AI
-Takeaway: Agents needs RAG to avoid hallucination and also for the agent or workflow to
-produce an accurate and desired result by user. RAG stores information for LLM to read from.
-RAG = Retrieval Augmented Generation
+### 2026-07-07 — RAG vs Agentic AI: How LLMs Connect Data for Smarter AI
+- **Source:** IBM Technology (YouTube) · [link](https://www.youtube.com/watch?v=fB2JQXEH_94)
+- **Format:** video · **Time:** ~10 min (est.)
+- **Stage:** s4-agentic · **Project:** afc · **Topics:** rag, graphrag, agent-eval
+- **Takeaway:** RAG and agentic AI are complementary, not rivals. An agent (or workflow) needs RAG as
+  its grounding layer — a store the LLM reads from — to avoid hallucinating and to produce the accurate
+  result the user actually wants. RAG = Retrieval Augmented Generation: it holds the info the model
+  retrieves at answer time. The agent supplies autonomy/decisions; RAG supplies the facts.
+- **Apply:** AFC's exact shape — an agentic research loop grounded on a GraphRAG store (Neo4j +
+  ChromaDB). Reinforces why AFC's ≥0.9 faithfulness gate matters: "avoid hallucination" is precisely
+  what that threshold enforces on the RAG grounding.
 
 ### 2026-07-06 — LLMs and AI Agents: Transforming Unstructured Data
 - **Source:** IBM Technology (YouTube, w/ Terzo) · [link](https://www.youtube.com/watch?v=_pEEJu-2KKM)
