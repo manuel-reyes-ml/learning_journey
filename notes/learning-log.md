@@ -36,16 +36,16 @@ project tag**, and **1–3 topic tags**.
 
 ### Topic (1–3, grouped by stage for reference)
 - **S1:** `rag` · `graphrag` · `vector-db` · `embeddings` · `prompting` · `mcp` ·
-  `llm-api` · `evals` · `chunking`
+  `llm-api` · `reasoning-models` · `evals` · `chunking`
 - **S2:** `sql` · `postgres` · `pyspark` · `airflow` · `aws` · `bigquery` · `docker` ·
   `k8s` · `typescript`
 - **S3:** `math-ml` · `xgboost` · `deep-learning` · `mlflow` · `fine-tuning` · `lora` ·
   `vllm` · `mlops`
 - **S4:** `langgraph` · `multi-agent` · `a2a` · `agent-eval` · `guardrails` ·
-  `human-in-the-loop`
+  `human-in-the-loop` · `agent-memory`
 - **S5:** `serving` · `llmops` · `latency` · `cost` · `distributed` · `observability`
 - **Cross-cutting:** `python` · `git` · `testing` · `architecture` · `security` ·
-  `career`
+  `nlp` · `career`
 
 ### Format
 `video` · `podcast` · `article` · `docs`
