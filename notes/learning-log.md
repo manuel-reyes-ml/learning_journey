@@ -68,13 +68,25 @@ project tag**, and **1–3 topic tags**.
 
 ## Entries
 
-2026-07-09 - The Four Types of Memory Every AI Agent Needs
-Takeaway: Memory for AI Agents -> 1) RWorking Memory(RAM) is limited and erased when program ends. Context window. 
-2) Semantic Memory: Vector DB (RAG) and .md (MarkDown files) -> loads all at the start of every session.
-3) Procedure Memory: Agent Skills (skill.md), how to do things. It loads when the agent needs a specific skill.
-4) Episodic Memory: content from past conversations. Doesn't save everything, it saves some notes that are important
-or useful for the conversation. (Distillation). Learns across sessions.
-Not every agent needs access to all memory types. It depends on what the agent does. 
+### 2026-07-09 — The Four Types of Memory Every AI Agent Needs
+- **Source:** IBM Technology (YouTube, Martin Keen) · [link](https://www.youtube.com/watch?v=BacJ6sEhqMo)
+- **Format:** video · **Time:** ~12 min (est.)
+- **Stage:** s4-agentic · **Project:** afc · **Topics:** agent-memory, vector-db, architecture
+- **Takeaway:** Agent memory isn't one thing — it's four, lifted from human cognition. (1) **Working
+  memory** = the context window; RAM-like, volatile, erased when the session ends. (2) **Semantic
+  memory** = facts the agent just knows: vector DB (RAG) or `.md` files, loaded at session start.
+  (3) **Procedural memory** = *how* to do things — agent skills (`SKILL.md`), loaded on demand when a
+  task matches, so 50 skills don't cost 50 skills' worth of context every turn. (4) **Episodic memory**
+  = distilled notes from past sessions, not raw transcripts — the agent decides what's worth keeping.
+  That's the one that lets it learn *across* sessions. Key design rule: match the memory to the job —
+  not every agent needs all four. Worth knowing the taxonomy isn't IBM's: it comes from **CoALA**
+  (*Cognitive Architectures for Language Agents*, Princeton, 2023), which is the rigorous version and
+  lands on the same four buckets.
+- **Apply:** Names the layers AFC already half-has — the GraphRAG store (Neo4j + ChromaDB) is *semantic*
+  memory, and the read/write loop logged on 2026-07-06 is really episodic memory doing distillation.
+  Worth separating those explicitly in AFC's orchestration design so each is gate-able. The
+  load-on-demand skill pattern is directly reusable for OpenCode's agents/slash-commands. Cite CoALA,
+  not the video, in interviews.
 
 ### 2026-07-09 — Multi AI Agent Systems: When One AI Brain Isn't Enough
 - **Source:** IBM Technology (YouTube, Bri Kopecki) · [link](https://www.youtube.com/watch?v=kYkZI3oj2W4)
