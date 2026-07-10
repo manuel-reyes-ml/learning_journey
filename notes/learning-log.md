@@ -76,10 +76,21 @@ Takeaway: Memory for AI Agents -> 1) RWorking Memory(RAM) is limited and erased 
 or useful for the conversation. (Distillation). Learns across sessions.
 Not every agent needs access to all memory types. It depends on what the agent does. 
 
-2026-07-09 - Multi AI Agent Systems: When One AI Brain Isn’t Enough
-Takeaway: Single agents hallucinate confidence and facts. Multi agents system can do verification, 
-assesment, for every step and result, failure and final result. 
-AI systems can have: Agent for response, agent for verification, agent for break things and find flaws.
+### 2026-07-09 — Multi AI Agent Systems: When One AI Brain Isn't Enough
+- **Source:** IBM Technology (YouTube, Bri Kopecki) · [link](https://www.youtube.com/watch?v=kYkZI3oj2W4)
+- **Format:** video · **Time:** ~10 min (est.)
+- **Stage:** s4-agentic · **Project:** crucible · **Topics:** multi-agent, agent-eval, guardrails
+- **Takeaway:** A single agent produces *plausible* output and has no internal check on itself — it
+  sounds confident and can still be flat wrong, like a new hire who doesn't know what they don't know.
+  Confidence without verification is a liability, not a feature, and the stakes decide whether that's
+  tolerable. Multi-agent systems fix this by splitting roles: one agent responds, another verifies, a
+  third adversarially probes for flaws — verification at every step, not just the final answer. The
+  Apollo 11 framing lands it: no single brain, a network of specialists and explicit Go/No-Go checks.
+- **Apply:** The direct architectural argument for Crucible's human-in-the-loop gate — but note the
+  cheaper move first: a verifier *agent* is a guardrail I can add before adding a human. Cross-check
+  against my eval-first discipline (DeepEval/RAGAS as blocking gates) — the "critic" agent and the
+  eval gate are the same idea at different points in the loop. High-stakes finance is exactly the
+  scenario she names.
 
 ### 2026-07-07 — What is NLP (Natural Language Processing)?
 - **Source:** IBM Technology (YouTube) · [link](https://www.ibm.com/think/topics/natural-language-processing)
