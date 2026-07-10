@@ -79,16 +79,25 @@ Not every agent needs access to all memory types. It depends on what the agent d
 2026-07-09 - Multi AI Agent Systems: When One AI Brain Isn’t Enough
 Takeaway: Single agents hallucinate confidence and facts. Multi agents system can do verification, 
 assesment, for every step and result, failure and final result. 
-AI systems can have: Agent for response, agent for verification, agent for break thing and find flaws.
+AI systems can have: Agent for response, agent for verification, agent for break things and find flaws.
 
 2026-07-07 - What is NLP (Natural Language Processing)?
 Takeaway: NLP can help to identify sentiment analysis (products review, stock perception, etc).
-Tools: tokenization -> taking a sentence and divided in chunks - Part of speech tagging -> how the token
+Tools: tokenization -> taking a sentence and divide it in chunks - Part of speech tagging -> how the token
 is used in that sentence - Name Entity Recognization -> if a token has any special recognization, etc.
 
-2026-07-07 - How to Add AI to Your Apps Faster with Embedded AI
-Takeaway: Library: Run anywhere (cloud, etc), flexible and extensible, reduce infrastructure costs.
-Application: Low/no code, faster go to market, reduce dev costs. 
+### 2026-07-07 — How to Add AI to Your Apps Faster with Embedded AI
+- **Source:** IBM Technology (YouTube, Martin Keen) · [link](https://www.youtube.com/watch?v=OThahaOga20)
+- **Format:** video · **Time:** ~9 min (est.)
+- **Stage:** s2-data-eng · **Project:** — · **Topics:** docker, architecture, cost
+- **Takeaway:** Two ways to embed AI into an existing app, and the trade is *whose* cost you're cutting.
+  **Containerized libraries**: run anywhere (cloud, on-prem, edge), flexible and extensible, lower
+  infrastructure cost — you keep control and pay in engineering. **Applications**: low/no-code, faster
+  time-to-market, lower dev cost — you buy speed and give up extensibility.
+- **Apply:** Frames the Stage 2 ECS/Fargate handoff for PolicyPulse and FormSense — I'm deliberately on
+  the containerized-library side, which is the flexible/portable path and the one that demonstrates
+  engineering depth. Also the clean way to explain the Copilot-Studio-vs-custom split at Daybright:
+  Copilot Studio is the *application* path, my portfolio is the *library* path.
 
 ### 2026-07-07 — RAG vs Fine-Tuning vs Prompt Engineering: Optimizing AI Models
 - **Source:** IBM Technology (YouTube, Martin Keen) · [link](https://www.youtube.com/watch?v=zYGDpG-pTho)
