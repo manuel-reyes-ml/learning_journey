@@ -81,10 +81,19 @@ Takeaway: Single agents hallucinate confidence and facts. Multi agents system ca
 assesment, for every step and result, failure and final result. 
 AI systems can have: Agent for response, agent for verification, agent for break things and find flaws.
 
-2026-07-07 - What is NLP (Natural Language Processing)?
-Takeaway: NLP can help to identify sentiment analysis (products review, stock perception, etc).
-Tools: tokenization -> taking a sentence and divide it in chunks - Part of speech tagging -> how the token
-is used in that sentence - Name Entity Recognization -> if a token has any special recognization, etc.
+### 2026-07-07 — What is NLP (Natural Language Processing)?
+- **Source:** IBM Technology (YouTube) · [link](https://www.ibm.com/think/topics/natural-language-processing)
+- **Format:** video · **Time:** ~10 min (est.)
+- **Stage:** s0-foundation · **Project:** — · **Topics:** nlp, python, architecture
+- **Takeaway:** NLP is the pre-LLM machinery for making text machine-readable, and the classic pipeline
+  still shows up underneath modern systems. **Tokenization** splits a sentence into units.
+  **Part-of-speech tagging** labels how each token functions in *that* sentence ("make" as verb vs.
+  noun). **Named entity recognition** flags tokens that are people, places, orgs, dates. Sentiment
+  analysis sits on top — product reviews, market perception of a stock.
+- **Apply:** Foundational vocabulary, no project yet. Two hooks: NER is the conceptual ancestor of what
+  FormSense does with structured extraction, and tokenization is the same primitive that governs my
+  context-window budgeting. Sentiment analysis is a plausible AFC signal source — but only under the
+  earned-overlay rule (it ships if it beats the baseline).
 
 ### 2026-07-07 — How to Add AI to Your Apps Faster with Embedded AI
 - **Source:** IBM Technology (YouTube, Martin Keen) · [link](https://www.youtube.com/watch?v=OThahaOga20)
