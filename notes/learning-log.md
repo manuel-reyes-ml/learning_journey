@@ -68,6 +68,19 @@ project tag**, and **1–3 topic tags**.
 
 ## Entries
 
+2026-07-09 - The Four Types of Memory Every AI Agent Needs
+Takeaway: Memory for AI Agents -> 1) RWorking Memory(RAM) is limited and erased when program ends. Context window. 
+2) Semantic Memory: Vector DB (RAG) and .md (MarkDown files) -> loads all at the start of every session.
+3) Procedure Memory: Agent Skills (skill.md), how to do things. It loads when the agent needs a specific skill.
+4) Episodic Memory: content from past conversations. Doesn't save everything, it saves some notes that are important
+or useful for the conversation. (Distillation). Learns across sessions.
+Not every agent needs access to all memory types. It depends on what the agent does. 
+
+2026-07-09 - Multi AI Agent Systems: When One AI Brain Isn’t Enough
+Takeaway: Single agents hallucinate confidence and facts. Multi agents system can do verification, 
+assesment, for every step and result, failure and final result. 
+AI systems can have: Agent for response, agent for verification, agent for break thing and find flaws.
+
 2026-07-07 - What is NLP (Natural Language Processing)?
 Takeaway: NLP can help to identify sentiment analysis (products review, stock perception, etc).
 Tools: tokenization -> taking a sentence and divided in chunks - Part of speech tagging -> how the token
