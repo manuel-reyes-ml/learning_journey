@@ -259,6 +259,8 @@ Systematic progression that compounds the finance/ERISA + trading + eval-first m
 
 ### Stage 2: AI-Focused Data Engineer / Analytics Engineer (Months 9–20) 📅 PLANNED — *dual-target*
 
+> *"AI-focused" ≠ vanilla DE:* the target is data platforms built for AI workloads — AI-managed / AI-ready pipelines, embedding pipelines, vector stores, and unstructured-data ETL feeding RAG — not BI-only engineering.
+
 **Core:** SQL at scale • **dbt** (tested project, CI-gated) • warehouse (Snowflake/BigQuery + Microsoft Fabric) • **Airflow** • **Kafka** basics • **PySpark**
 **Governance:** data contracts • dbt tests / Great Expectations • lineage • access-control awareness
 **Deploy:** Docker → ECS/Fargate • **Terraform** basics • monitoring • incident writeups
@@ -325,12 +327,28 @@ Accredited M.S. Computer Science (~$8–9K total), Computing Systems specializat
 
 ## 💻 Development Environment
 
-**Languages:** Python 3.12, SQL
-**Data:** pandas, NumPy, DuckDB, Parquet, Matplotlib, Seaborn, Plotly
-**Databases:** SQLite, DuckDB, ChromaDB, Neo4j, PostgreSQL (Stage 2)
-**AI/GenAI:** Anthropic SDK (primary), Gemini, OpenAI, Ollama/LM Studio (local), Pydantic, LangChain/LangGraph, FastMCP, Streamlit
-**Evaluation:** DeepEval + pytest, RAGAS, GEval, SelfCheckGPT, FActScore, LangSmith
-**Production standards:** `pyproject.toml` + `src/` + `py.typed`, ruff format, mypy (3.12), Docker, GitHub Actions CI, Conventional Commits
+**Editors & workflow:**
+- **VS Code** (primary) — Python, SQL, Jupyter notebooks
+- **Cursor AI** (AI pair programming) + **OpenCode** (agentic harness, custom agents/commands)
+- **Make** (task automation via `Makefile`) • **Git** + Conventional Commits
+
+**Languages & data:**
+- Python 3.12, SQL
+- pandas, NumPy, DuckDB, Parquet, Matplotlib, Seaborn, Plotly
+- Databases: SQLite, DuckDB, ChromaDB, Neo4j, PostgreSQL (Stage 2)
+
+**AI / GenAI:**
+- Anthropic SDK (primary), Gemini, OpenAI, Ollama/LM Studio (local)
+- Pydantic, LangChain/LangGraph, FastMCP, Streamlit
+
+**Evaluation:**
+- DeepEval + pytest, RAGAS, GEval, SelfCheckGPT, FActScore, LangSmith
+
+**Containerization & CI:**
+- Docker → Kubernetes (Stage 2), GitHub Actions CI
+
+**Production standards:**
+- `pyproject.toml` + `src/` + `py.typed`, ruff format, mypy (3.12), Conventional Commits
 
 ```bash
 git clone https://github.com/manuel-reyes-ml/learning_journey.git
@@ -344,16 +362,18 @@ python getting_started/environment-verification.py
 ## 💡 Learning Philosophy
 
 ### Core Principles
-**Evidence over keywords:** ship production systems with eval gates, not certificate density
-**Eval-first discipline:** DeepEval/RAGAS/GEval as blocking gates, not afterthoughts
-**No vibe coding:** every line intentionally written and understood before merge
-**Production-first:** proper error handling, testing, typed code, documentation
-**Replace, not stack:** every new cert/course must displace something of lesser signal
-**Domain application:** every skill applied to the finance/ERISA domain (the moat)
-**Systematic progression:** clear 3-stage path with measurable milestones
+- **Evidence over keywords:** ship production systems with eval gates, not certificate density
+- **Eval-first discipline:** DeepEval/RAGAS/GEval as blocking gates, not afterthoughts
+- **No vibe coding:** every line intentionally written and understood before merge
+- **Production-first:** proper error handling, testing, typed code, documentation
+- **Replace, not stack:** every new cert/course must displace something of lesser signal
+- **Domain application:** apply every skill to real problems (finance/ERISA depth is one edge, not the only lane)
+- **Systematic progression:** clear 3-stage path with measurable milestones
 
 ### Beyond Basic Completion
-Every exercise is enhanced with real-world application, error handling, tests, and eval gates — with AI assistance documented transparently. Learning is logged in `notes/learning-log.md` under a strict entry template (source, format, stage tag, project tags, takeaway in my own words, and an "Apply" line).
+- Every exercise is enhanced with real-world application, error handling, tests, and eval gates
+- AI assistance is documented transparently in commits
+- Learning is logged in `notes/learning-log.md` under a strict entry template — source, format, stage tag, project tags, a takeaway in my own words, and an "Apply" line tied to a specific project
 
 ---
 
