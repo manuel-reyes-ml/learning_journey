@@ -1,303 +1,195 @@
-# 🚀 Learning Journey: Business Ops Professional → Senior LLM Engineer
+# 🚀 Learning Journey: Business Ops Professional → Applied AI Engineer (FDE Track)
 
-**GenAI-First Career Transformation** | Production Code from Day 1 | Systematic 37-Month Journey
+**Evidence-First Career Transformation** | Production code with measurable impact | Systematic ~32-Month Journey
 
-> **Current Stage:** GenAI-First Data Analyst & AI Engineer (Stage 1 of 5)  
-> **Next Milestone:** Land Data Analyst & AI Engineer role with GenAI integration skills  
-> **Ultimate Goal:** Senior LLM Engineer building production AI Trading Assistant  
+> **Current Stage:** Internal AI Builder (Stage 1 of 3)
+> **Next Milestone:** AI-builder scope at current employer + Flagship #1 (PolicyPulse) shipping with eval gates
+> **Ultimate Goal:** Applied AI Engineer → Forward-Deployed Engineer (FDE) track
 > **Study Commitment:** 25 hours/week systematic learning
 
-[![Current Stage](https://img.shields.io/badge/Stage-1%3A%20GenAI--First%20Data%20Analyst%20%26%20AI%20Engineer-green)]()
+[![Current Stage](https://img.shields.io/badge/Stage-1%3A%20Internal%20AI%20Builder-green)]()
 [![Study Hours](https://img.shields.io/badge/Weekly%20Hours-25-orange)]()
-[![Timeline](https://img.shields.io/badge/Timeline-37%20Months%20(5%20Stages)-blue)]()
-[![GenAI-First](https://img.shields.io/badge/🤖_GenAI--First-2026_Market_Advantage-blueviolet)]()
+[![Timeline](https://img.shields.io/badge/Timeline-~32%20Months%20(3%20Stages)-blue)]()
+[![Evidence-First](https://img.shields.io/badge/🤖_Evidence--First-Proof_over_Keywords-blueviolet)]()
 
-📋 **[View Complete 37-Month Interactive Roadmap (v8.9) →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
+📋 **[View Complete Interactive Roadmap (v10.0) →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
 
-> **🆕 v8.9 (June 2026):** Local-first AI toolchain (Ollama + LM Studio, privacy-first model routing), GraphRAG / Neo4j knowledge-graph retrieval (PolicyPulse hybrid upgrade path + AFC capstone), AFC T6 Squeeze-Context trigger, Loop Engineering for autonomous agents (human-in-the-loop gates), and the MCP primer sequenced into Stage 1. Builds on the v8.3 market alignment (Anthropic SDK primary, FastMCP, named agent patterns, A2A awareness, SelfCheckGPT + FActScore). All v8.2 production standards preserved.
+> **🆕 v10.0 (2026 Market Realignment):** 5 stages → **3 stages** (~32 months). Path retitled **Internal AI Builder → AI-Focused Data Engineer / Analytics Engineer → Applied AI Engineer → FDE track**. Portfolio focused to **3 flagships + 2 supporting**. No external Data Analyst search (the 0–2 yr analyst band is contracting) — Stage 1 is internal AI-builder elevation, with a fallback to a DE/AE search if scope doesn't change by Month 8. Certifications trimmed to a purposeful **8 + 1 conditional**; **OMSCS (Computing Systems)** added as a parallel degree track. Framing is **evidence over keywords**.
 
 ---
 
 ## 🗺️ Quick Navigation
 
 **👔 For Recruiters / Hiring Managers:**
-1. **[💼 Production Projects →](https://github.com/manuel-reyes-ml/data-portfolio)** - Live ETL system + 8 production-grade projects ⭐ **START HERE**
-2. **[🤖 GenAI-First Differentiation →](#-genai-first-differentiation-2026-market-advantage)** - What sets this apart
-3. **[📊 Complete Roadmap →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)** - 37-month visualization
-4. **[🔗 LinkedIn →](https://www.linkedin.com/in/mr410/)** - Professional background
+1. **[💼 Portfolio →](https://github.com/manuel-reyes-ml/data-portfolio)** — Live ETL system + 3 flagships ⭐ **START HERE**
+2. **[🎯 Evidence-First Approach →](#-evidence-first-approach)** — How this is built
+3. **[📊 Complete Roadmap →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)** — 3-stage visualization
+4. **[🔗 LinkedIn →](https://www.linkedin.com/in/mr410/)** — Professional background
 
 **🎓 For Fellow Learners:**
-1. **[🤖 AI Integration Strategy →](#-ai-tools--workflows-integration)** - My AI stack and approach
-2. **[📚 Repository Structure →](#-repository-structure)** - Course materials organization
-3. **[💡 Learning Philosophy →](#-learning-philosophy)** - Core principles and approach
-4. **[🛠️ Setup Guides →](./getting_started/)** - Environment configuration
+1. **[🤖 AI Tools & Workflows →](#-ai-tools--workflows-integration)** — Stack and approach
+2. **[📚 Repository Structure →](#-repository-structure)** — How this is organized
+3. **[💡 Learning Philosophy →](#-learning-philosophy)** — Core principles
+4. **[🛠️ Setup Guides →](./getting_started/)** — Environment configuration
 
 ---
 
 ## 💪 What Makes This Different
 
-**Most learning repositories:** Tutorial completions and course exercises with no real-world application.
+**Most learning repositories:** tutorial completions and course exercises with no real-world application.
 
 **This repository demonstrates:**
-- ✅ **Production system deployed** - Live ETL pipeline saving $15K/year with public code
-- ✅ **8 production-grade projects** - From ETL foundations to RAG, Multimodal AI, and **two flagship trading systems** (AFC for research rigor, Crucible for autonomous execution)
-- ✅ **GenAI integration from Day 1** - LLM SDKs (**Anthropic primary** for RAG/financial reasoning, Gemini/OpenAI fallback), RAG, Multimodal AI, **FastMCP server** (Cursor/Claude Desktop integration), Pydantic structured outputs, PandasAI, Cursor AI
-- ✅ **Evaluation-driven development** - DeepEval + pytest integrated into every project; RAGAS RAG Triad metrics; Docker containerization across all repos
-- ✅ **Skills progression by design** - Each project introduces new capabilities that build on the previous
-- ✅ **Domain expertise** - 15+ years data experience, 4 years finance, 6 years trading
-- ✅ **Measurable business impact** - 95% efficiency gains, documented results
-- ✅ **Systematic GenAI-first progression** - Clear 37-month path with GenAI/LLM engineering at every stage
+- ✅ **Production system deployed** — live ETL pipeline saving $15K/year, with public code and evaluation discipline
+- ✅ **Focused portfolio: 3 flagships + 2 supporting** — real systems (Applied-AI, Data Engineering, autonomous-execution safety), not a repo pile
+- ✅ **Domain depth** — 15+ yrs business operations (manufacturing, digital marketing) + 2 yrs ERISA-regulated financial operations + 5+ yrs independent trading
+- ✅ **Eval-first engineering** — DeepEval / RAGAS / GEval as **blocking gates** (faithfulness ≥ 0.9 for financial data)
+- ✅ **Production standards** — typed Python, `pyproject.toml` + `src/`, ruff/mypy, Docker, GitHub Actions CI, Conventional Commits; **no vibe coding** (every line understood before merge)
+- ✅ **Measurable business impact** — 95% time reduction, 450+ incorrect tax codes caught, documented outcomes
 
-**The key differentiator:** Already delivering production value while building toward LLM engineering, with transparent GenAI integration throughout.
+**The key differentiator:** already delivering production value while building toward Data Engineering and Applied AI — with evaluation evidence that stands up to scrutiny.
 
 ---
 
-## 🤖 GenAI-First Differentiation (2026 Market Advantage)
+## 🤖 Evidence-First Approach
 
-In 2026, GenAI engineering is essential for data professionals. While most candidates learn traditional tools only, this journey integrates GenAI/LLM engineering systematically from the start.
+The 2026 market is **saturated at the keyword layer and starved at the evidence layer.** Resumes are dense in RAG/evals/inference keywords with little substance; referrals and shipped production systems dominate. My position isn't more certificates or broader titles — it's **proof**: production systems with evaluation gates, deployed and measured.
 
-### **The GenAI-First Framework**
+### The 3-Stage Framework
 
-Each stage combines traditional data skills with GenAI augmentation:
+Each stage compounds the same moat (finance/ERISA + trading depth + eval-first discipline) instead of resetting it.
 
-**Stage 1: GenAI-First Data Analyst & AI Engineer** 🟢 ACTIVE
+**Stage 1: Internal AI Builder** (Months 1–8) 🟢 ACTIVE
 ```
-Foundation: Python, SQL, Statistics, Visualization
-+ GenAI Layer: IBM GenAI Engineering cert, LLM SDKs (Anthropic primary, Gemini/OpenAI fallback), RAG, Multimodal AI, FastMCP server, Pydantic, Streamlit, PandasAI, Cursor AI
-+ Evaluation Layer: DeepEval + pytest integration, RAGAS (RAG Triad metrics), SelfCheckGPT (consistency-based hallucination detection), LangSmith observability
-+ Containerization: Docker fundamentals, Dockerfile for every project
-= Result: AI-powered dashboards with natural language interfaces + production GenAI applications with evaluation-driven development
-```
-
-**Stage 2: GenAI Data Engineer + AI Systems Architect** 📅 PLANNED  
-```
-Foundation: AWS, Airflow, PySpark, PostgreSQL, BigQuery
-+ AI Systems Layer: Vector DBs (Pinecone/Weaviate/Qdrant), RAG infrastructure, embedding pipelines
-+ Containerization: Docker & Kubernetes Masterclass, production container orchestration
-= Result: AI-first data pipelines feeding LLM systems with unstructured data ETL
+Foundation:  Production Python (typed, pyproject, ruff/mypy) + SQL + Docker/CI
++ AI Layer:  Anthropic SDK (structured outputs, tool use, prompt caching) + RAG + MCP literacy
++ Eval Layer: RAGAS/DeepEval as blocking gates, golden datasets, hallucination detection
++ Employer:  Azure AI Fundamentals (AI-901) → AI Agent Builder Associate (AB-620), reimbursed
+= Result: AI-builder scope at current employer + PolicyPulse v1 shipping with eval gates (no comp reset)
 ```
 
-**Stage 3: ML Engineer + Local LLM Specialist** 📅 PLANNED
+**Stage 2: AI-Focused Data Engineer / Analytics Engineer** (Months 9–20) 📅 PLANNED — *dual-target*
 ```
-Foundation: scikit-learn, TensorFlow/Keras, PyTorch, MLOps, NVIDIA DLI certification
-+ LLM Layer: Ollama (local LLMs), fine-tuning (LoRA/QLoRA/PEFT), on-premise AI for finance
-= Result: Private AI systems solving finance's data privacy problem
-```
-
-**Stage 4: Agentic AI Engineer & LLM Specialist** 📅 PLANNED
-```
-Foundation: Advanced LLM architecture, system design
-+ Agentic Layer: MCP (Anthropic) + A2A protocol (Linux Foundation Agentic AI Foundation), LangGraph, CrewAI, Andrew Ng's Agentic AI, multi-agent orchestration with named patterns (orchestrator-workers, sequential, evaluator-optimizer per Anthropic's "Building Effective Agents")
-+ Advanced Evaluation: SelfCheckGPT + FActScore (atomic-fact decomposition with SEC retrieval verification — financial-grade rigor for AFC's 0.9 faithfulness threshold)
-= Result: Autonomous AI trading systems with multi-agent collaboration
+Foundation:  SQL at scale + dbt (tested project, CI-gated) + warehouse (Snowflake/BigQuery/Fabric)
++ Pipelines: Airflow orchestration + Kafka streaming basics + PySpark
++ Governance: data contracts, dbt tests / Great Expectations, lineage, access-control awareness
++ Deploy:    Docker → ECS/Fargate + Terraform basics + monitoring + incident writeups
++ AI-adjacent: embedding pipelines + vector stores + unstructured-data ETL feeding RAG
+= Result: DE flagship production-hardened; first external move (~M18–20); DP-700 + AWS DE Associate
 ```
 
-**Stage 5: Senior LLM Engineer** 📅 PLANNED
+**Stage 3: Applied AI Engineer → FDE Track** (Months 21–32) 📅 PLANNED
 ```
-Foundation: Production architecture, thought leadership
-+ Evaluation Layer: Automated Testing for LLMOps, CI/CD for AI, production monitoring
-= Result: Senior-level AI systems with evaluation-driven development ($180-250K+)
+Foundation:  Production agentic systems (Building Effective Agents taxonomy) + MCP servers + HITL gates
++ Eval-as-eng: RAGAS/DeepEval/GEval as CI-blocking gates; SelfCheckGPT/FActScore for finance-grade rigor
++ ML-literacy: embeddings, inference economics, one small fine-tune AS LITERACY (Prompt→RAG→Fine-tune→Distill)
++ Privacy edge: privacy-routed architecture (PII local, proprietary via private endpoints)
+= Result: Applied AI Engineer (~M30); FDE apply list live at M32+; CCA-F + Databricks GenAI + Neo4j
 ```
 
-### **Why This Matters**
+### Why This Approach
 
-| Traditional Path | GenAI-First Path (This Journey) |
-|-----------------|--------------------------------|
-| Learn tools → Get job → Maybe add AI later | Learn tools + GenAI together → Land AI-ready role |
-| Positioned with majority of candidates | Positioned ahead of 95% of candidates |
-| Standard market rates | 15-20% salary premium for GenAI skills |
-| Limited future trajectory | Clear path to Senior LLM Engineer ($180-250K+) |
+| Keyword-Layer Path | Evidence-First Path (This Journey) |
+|--------------------|------------------------------------|
+| Certificate/keyword density | Shipped production systems with eval gates |
+| Broad titles, title inflation | Sharp identity: DE/AE → Applied AI → FDE |
+| Generic tutorial projects | Real production systems on owned data |
+| "Prompts an LLM" | Builds, evaluates, deploys, and monitors LLM systems |
 
-**Market reality:** The agentic AI market is exploding in 2026 with MCP (Anthropic) and A2A (Google) protocols becoming industry standards. Companies need professionals who BUILD production AI systems—not just prompt ChatGPT.
+**Market context (verified, 2026):** evaluation skills are explicitly required by ~40% of AI-first roles yet listed by only ~5.5% of candidates. Applied-AI and FDE demand spans many industries — regulated-finance depth is one edge I bring, not the boundary.
 
 ---
 
 ## 🏆 Production & Portfolio Highlights
 
-> **8 projects ordered by skills progression** — 6 progression projects (easy → advanced) plus **two flagships**: Attention-Flow Catalyst (read-only small-cap swing research) and Crucible (autonomous intraday execution). Crucible is the chosen **first build**.
+> **Focused portfolio: 3 flagships + 2 supporting**, built on a live production system.
+>
+> **🏗️ Production standard (every repo):** architecture diagram (Mermaid), Dockerfile, evaluation-metrics table (DeepEval), 15–30s demo GIF, and "What I Learned." **Non-negotiable standards:** no vibe coding, eval-first blocking gates, **synthetic data only** in public repos, `pyproject.toml` + `src/` + `py.typed` + ruff + mypy, Conventional Commits, earned-overlay policy (ML ships only if it beats the baseline).
 
-> **🏗️ Production GitHub Standard (v8.9):** Every project ships with: architecture diagram (Mermaid), Dockerfile, evaluation metrics table (DeepEval + pytest), demo GIF, and "What I Learned" section. All projects include DeepEval evaluation framework and Docker containerization support. Flagship projects (PolicyPulse, AFC) add FastMCP server + advanced hallucination detection (SelfCheckGPT/FActScore).
+### 🏁 Flagship 1 — [PolicyPulse](https://github.com/manuel-reyes-ml/policypulse) · *Applied-AI* | 🔌 Exposes FastMCP server
 
-### 1. **[1099 Reconciliation ETL Pipeline](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline)** ✅ Live Production
+**RAG → GraphRAG document intelligence** | "Ask Your Policies"
 
-Automated Python ETL pipeline reconciling retirement plan distribution data between Relius and Matrix financial systems at Daybright Financial.
-
-**Business Challenge:** Manual reconciliation took 4-6 hours weekly, was error-prone, and blocked critical 1099-R tax reporting deadlines.
-
-**Impact:** 95% time reduction (4-6 hours → 15 min/week) | $15,000+ annual savings | 10x scalability | Zero errors
-
-**Tech:** Python • pandas • openpyxl • Excel • Matplotlib • pytest • GitHub Actions CI • faker (synthetic data)
-
-**Skills established:** ETL pipelines, testing, CI/CD, production deployment
-
----
-
-### 2. **[DataVault Analyst](https://github.com/manuel-reyes-ml/datavault-analyst)** ⭐ First AI Project
-
-**AI-Powered PII-Safe Data Intelligence** | "Chat With Your Data"
-
-Natural language analytics for retirement plan operations with PII protection, AI guardrails, and code transparency.
-
-**Business Challenge:** Operations teams need to extract insights from Excel data containing sensitive PII (SSN, names, DOB), but manual Excel filtering is slow, error-prone, and creates PII exposure risk.
-
-**AI-Powered Solution:**
+Answers retirement-plan policy questions with cited sources, auto-escalates when uncertain, and enforces **per-document access control at retrieval time** — a differentiator for sensitive-document use cases.
 
 | Feature | Implementation |
 |---------|----------------|
-| **AI Chat** | LLM SDK (provider-agnostic) + PandasAI with generated code visibility |
-| **PII Protection** | Governance-as-code: PII leak prevention in AI responses |
-| **Hybrid Analytics** | Pre-built dashboards + AI chat (works even without API key) |
-| **Structured Outputs** | Pydantic-validated AI responses with type-safe schemas |
+| **Retrieval** | Embeddings + ChromaDB; **GraphRAG hybrid (Neo4j + ChromaDB)** for multi-hop questions |
+| **Grounding** | Every answer cites specific policy section & document |
+| **Escalation** | Confidence gate → auto-generated ticket with context |
+| **MCP Server** | FastMCP exposes retrieval as MCP tools (Cursor / Claude Desktop) |
+| **Evaluation** | **RAGAS + DeepEval as blocking gates**; evaluator-optimizer retrieval loop |
 
-**Tech:** Python • pandas • Streamlit • Gemini SDK • PandasAI • Pydantic • DeepEval • Docker • GitHub Actions CI
+**Tech:** Python • **Anthropic SDK (primary, Gemini fallback)** • ChromaDB • **Neo4j (GraphRAG)** • Gemini Embeddings • Streamlit • Pydantic • DeepEval • RAGAS • **FastMCP** • Docker • GitHub Actions CI
 
-**New skills introduced:** + LLM SDK, PandasAI, Streamlit, Pydantic structured outputs, PII handling
-
----
-
-### 3. **[PolicyPulse](https://github.com/manuel-reyes-ml/policypulse)** 🧠 RAG Foundation
-
-**AI-Powered HR Policy Chatbot** | "Ask Your Policies" | 🔌 **Exposes FastMCP server**
-
-RAG chatbot that answers employee policy questions with cited sources and auto-escalates to HR when the AI is uncertain.
-
-**Business Challenge:** Employees spend hours searching through policy documents for answers to common questions. HR teams are overwhelmed by repetitive inquiries about PTO, benefits, and overtime rules.
-
-**AI-Powered Solution:**
-
-| Feature | Implementation |
-|---------|----------------|
-| **Semantic Search** | Embeddings + ChromaDB vector store + similarity scoring |
-| **Cited Answers** | Every response cites specific policy section & document |
-| **Smart Escalation** | Confidence < 0.7 → auto-generate HR ticket with context |
-| **RAG Pipeline** | Document → Chunk → Embed → Retrieve → Generate |
-| **MCP Server** | FastMCP exposes retrieval as MCP tools — Cursor/Claude Desktop can query the HR knowledge base directly (2026 hiring keyword) |
-
-**Tech:** Python • **Anthropic SDK (primary, Gemini fallback)** • ChromaDB • Gemini Embeddings • Streamlit • Pydantic • DeepEval • RAGAS • **SelfCheckGPT** • **FastMCP** • Docker • GitHub Actions CI
-
-**New skills introduced:** + Embeddings, ChromaDB, RAG pipeline, semantic search, ticket escalation, RAG Triad evaluation, **FastMCP server, MCP integration** • *Stage 2/3 upgrade path:* **GraphRAG hybrid (Neo4j + ChromaDB)** for multi-hop policy questions
+**Stages:** S1 (RAG + eval gates + FastMCP) → S3 (GraphRAG + access-control-aware retrieval + full eval suite)
 
 ---
 
-### 4. **[FormSense](https://github.com/manuel-reyes-ml/formsense)** 📄 Document Intelligence
+### 🏁 Flagship 2 — [1099 Data Platform](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline) · *Data Engineering*
 
-**AI-Powered Distribution Form Validator** | "From Paper to Processing"
+**Production financial data platform** — the live 1099 reconciliation pipeline, hardened end-to-end
 
-Multimodal AI system that reads retirement plan distribution forms (handwritten checkboxes, signatures), validates against business rules, and routes the result: complete forms generate processing tickets, incomplete forms trigger advisor emails.
+An end-to-end production system: ingestion → **dbt-tested models (CI-gated)** → **orchestrated (Airflow)** → **data-quality contracts** → **deployed (Docker/ECS)** → **monitored**, with written incident/postmortems. Adds a **semantic / metrics layer** for the Analytics-Engineer story.
 
-**Business Challenge:** Distribution form intake requires manual reading of handwritten forms with checkboxes, signatures, and complex fields. Errors in extraction create compliance risk for ERISA-regulated retirement plans.
+**Live impact (current state):** 95% time reduction (4–6 hrs → 15 min/week) • $15,000+ annual savings • 10x scalability • zero errors • 450+ incorrect tax codes caught before participants received bad documents.
 
-**AI-Powered Solution:**
+| Layer | Implementation |
+|-------|----------------|
+| **Transformation** | **dbt** — tested models at real scale, docs alongside code, CI that gates merges |
+| **Orchestration** | **Airflow** DAGs with retries, alerting, monitoring |
+| **Quality & governance** | Data contracts, **dbt tests / Great Expectations**, lineage, access-control awareness |
+| **Deploy & ops** | **Docker → ECS/Fargate**, Terraform basics, incident writeups |
+| **Semantic layer** | Metric definitions + dashboard handoff (Power BI) — the AE differentiator |
 
-| Feature | Implementation |
-|---------|----------------|
-| **Vision AI** | Gemini Vision reads checkboxes, handwriting, printed text |
-| **Validation** | Business rule engine for ERISA-regulated distribution processing |
-| **Smart Routing** | Complete → operations ticket \| Incomplete → email to advisor |
-| **Confidence** | Field-level extraction confidence scoring |
+**Tech:** Python • SQL • **dbt** • **Airflow** • **Snowflake/BigQuery** • DuckDB • Parquet • **Great Expectations** • Docker • **AWS (S3, ECS)** • **Terraform** • GitHub Actions CI
 
-**Tech:** Python • Gemini Vision SDK • Streamlit • Pydantic • DeepEval • Docker • GitHub Actions CI
-
-**New skills introduced:** + Multimodal AI (Vision LLM), form extraction, business rule validation, email automation
-
----
-
-### 5. **[Operations-Demand-Intelligence](https://github.com/manuel-reyes-ml/operations-demand-intelligence)** 📊 Enterprise Analytics | 🚧 In Development
-
-**AI-Powered Workflow Demand Analysis** for data-driven staffing decisions using OnBase enterprise data.
-
-Analyzing 8+ months of workflow data to enable intelligent resource allocation with AI-powered natural language insights.
-
-**Business Challenge:**  
-Operations teams lack visibility into workflow demand patterns, leading to reactive staffing and resource inefficiencies. No data-driven approach for Distribution vs Loan workflow segmentation.
-
-**AI-Powered Solution:**
-
-| Feature | Implementation | AI Enhancement |
-|---------|----------------|----------------|
-| **Demand Analysis** | Volume patterns, Distribution vs Loan segmentation | AI-powered trend detection, anomaly alerts |
-| **Interactive Dashboard** | Streamlit with Plotly visualizations | **LLM SDK + PandasAI chat:** "Why did loan volume spike in March?" |
-| **Insights Generation** | Traditional business metrics | **AI-generated commentary** for stakeholders |
-| **Data Privacy** | PII handling, synthetic data for GitHub | AI with privacy guardrails, read-only access |
-
-**Tech:** Python • pandas • Streamlit • Gemini SDK • PandasAI • Plotly • DeepEval • Docker • GitHub Actions CI
-
-**New skills introduced:** + Enterprise real data integration, advanced analytics, stakeholder reporting
+**Stages:** S1 (live, retro-migrated to production standards) → S2 (dbt/orchestration/contracts/deploy — *retains scheduling priority*; feeds the first external move) → maintained S3
 
 ---
 
-### 6. **[StreamSmart Optimizer](https://github.com/manuel-reyes-ml/streamsmart-optimizer)** 📺 Consumer AI App
+### 🏁 Flagship 3 — [Crucible](https://github.com/manuel-reyes-ml/crucible) · *Autonomous Execution Research* | 🦙 Local-First AI
 
-**AI-Powered Streaming Subscription Rotation Advisor** | "Spend Less, Watch More"
+**Backtest → paper → live** autonomous intraday research platform. *"Does this strategy have a real edge that survives out-of-sample validation — and can an autonomous agent trade it without me babysitting it?"*
 
-Consumer-facing dashboard that helps households optimize streaming subscriptions through AI-driven rotation scheduling, cost-per-view analytics, and content search via live APIs.
-
-**Business Challenge:** 36% of U.S. streaming subscribers already rotate services to cut costs (Antenna Research, 2025), but manage it with spreadsheets. No existing tool combines AI rotation planning + content search + cost analytics.
-
-**AI-Powered Solution:**
-
-| Feature | Implementation |
-|---------|----------------|
-| **Content Search** | Watchmode + TMDB API integration ("Where can I watch X?") |
-| **AI Rotation Planner** | LLM analyzes habits + content calendar → optimal schedule |
-| **Savings Engine** | Cost-per-view analytics + annual savings projections |
-| **Guardrails** | Price validation, financial disclaimers, scope limits |
-
-**Tech:** Python • httpx async • Watchmode/TMDB APIs • Streamlit • Gemini SDK • Pydantic • DeepEval • LangSmith • Docker • GitHub Actions CI
-
-**New skills introduced:** + External API integration, consumer UX, optimization algorithms, async HTTP
-
----
-
-### 7. **[Attention-Flow Catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst)** 🚀 Flagship
-
-> **Research Question:** Which trigger or combination best predicts +10% price moves within 3 trading days?
-
-**Flagship project evolving through all 5 career stages:**
-
-| Stage | Focus | AI Integration |
-|-------|-------|----------------|
-| **1 (Active)** | Statistical backtesting, signal leaderboard | LLM SDK chat (**Anthropic primary** for financial reasoning) + PandasAI, AI insights |
-| **2** | AWS pipelines, 500+ tickers, vector + graph storage | RAG infrastructure, embedding pipelines, **GraphRAG (Neo4j knowledge graph)** |
-| **3** | ML predictions, ensemble models | Local LLMs (Ollama), fine-tuned financial models |
-| **4** | Agentic AI trading system | **Multi-agent system implementing orchestrator-workers + sequential + evaluator-optimizer patterns** (Anthropic "Building Effective Agents"); each worker calls SEC/Yahoo/news APIs via MCP servers |
-| **5** | Production deployment + monetization | **A2A protocol** for multi-tenant SaaS (Researcher-Agent ↔ Risk-Agent ↔ Compliance-Agent collaboration); LLMOps testing, CI/CD for AI, monitoring |
-
-**Phase 1A (Active):** Dynamic stock screener • Alternative data collection (SEC, Wikipedia, News) • Statistical backtesting with bootstrap confidence • Trigger leaderboard
-
-**Phase 1B (Next):** Streamlit dashboard + **LLM SDK chat interface** + PandasAI + **AI-generated commentary** + Natural language queries
-
-**What makes it defensible:** Walk-forward validation • Survivorship bias controls • Modern stack (DuckDB, Parquet) • Progressive architecture through all career stages
-
-**Tech:** Python • DuckDB • Parquet • httpx async • edgartools • yfinance • Wikipedia API • **Neo4j (Financial Knowledge Graph capstone)** • **Anthropic SDK (primary, Gemini/OpenAI fallback)** • PandasAI • Streamlit • DeepEval • **SelfCheckGPT + FActScore** • Docker • GitHub Actions CI
-
-**New skills introduced:** + Statistical methodology, DuckDB lakehouse, async data collection, multi-source alternative data (6 triggers incl. **T6 Squeeze-Context** — short-interest / float / days-to-cover), **Financial Knowledge Graph (Neo4j) capstone**, **financial-grade evaluation (faithfulness threshold 0.9)**
-
----
-
-### 8. **[Crucible](https://github.com/manuel-reyes-ml/crucible)** 🔥 Flagship #2 — Autonomous Intraday Trading Research Platform
-
-> **The chosen first build.** Strategy-agnostic platform that takes *any* intraday strategy from backtest → paper → live through validation gates: *"Does this strategy have a real edge that survives out-of-sample validation — and can an autonomous agent trade it without me babysitting it?"*
-
-**How it differs from AFC (why two flagships, not redundancy):** AFC is a *read-only research* system for illiquid sub-$5 small-caps on a multi-day *swing* timeframe. Crucible is an *autonomous execution* platform for liquid names on an *intraday* timeframe. They share ~70% of an engineering spine (point-in-time data, lakehouse, walk-forward backtest, bias controls, evaluation, Docker/CI, agents) but solve two genuinely different hard problems — demonstrating range.
-
-**The core idea — AI behind a wall:** an LLM research analyst proposes strategy improvements, but its ideas are *proved* by deterministic backtests it never optimizes against. The out-of-sample data is a sealed vault opened once per finalized hypothesis, with every "peek" logged in an overfitting-budget ledger. This is what makes it defensible rather than an overfit black box.
-
-**Three build phases (Phase 1 now in Stage 1; agentic phases mature across Stages 3–4):**
+Production-safety engineering for an autonomous system handling irreversible actions: a **mandatory human-in-the-loop sign-off + kill-switch** on the live path, and an **"LLM behind the Wall"** information barrier — the model sees only in-sample aggregated stats, never raw ticker-date outcomes. A **verifier agent** sits before the human gate. Grounded in 5+ years of hands-on independent trading.
 
 | Phase | What it produces | Stage | Real money? |
 |-------|------------------|-------|-------------|
-| **1 — Backtest Engine** | Own event-driven harness + AI research loop + sealed OOS vault; IT-1 ORB + VWAP Reclaim plugins (proves the abstraction) | Stage 1 | No |
-| **2 — Paper Agent** | Migrate to NautilusTrader (engine-parity gate); autonomous paper-trading agent crew (LangGraph); local Qwen3/Ollama analyst | Stages 2–3 | No |
-| **3 — Live Agent** | Autonomous live micro-sizing on Alpaca + Schwab/TOS; deterministic core + multi-agent oversight | Stages 3–4 | Yes (small) |
+| **1 — Backtest Engine** | Own event-driven harness + AI research loop + sealed OOS vault; IT-1 ORB + VWAP Reclaim plugins | S1 | No |
+| **2 — Paper Agent** | Migrate to NautilusTrader (engine-parity gate); autonomous paper agent crew (LangGraph); local Qwen3/Ollama analyst | S2–S3 | No |
+| **3 — Live Agent** | Autonomous live micro-sizing on Alpaca + Schwab/TOS; deterministic core + multi-agent oversight | S3 | Yes (small) |
 
-**Strategies are plugins** (Protocol + ABC + registry — same pattern as the CS50 Speller reimplementation). IT-1 ORB + VWAP Reclaim ship together in Phase 1 specifically to prove that adding a strategy needs zero engine changes.
+**Defensibility:** sealed OOS vault + logged overfitting budget + walk-forward CV • LLM behind the Wall • deterministic core owns every trade • published agentic evals (**Tool Correctness = 1.0**, **Task Completion > 0.8**) • verifier agent before the HITL gate.
 
-**Tech:** Python • own backtest harness → **NautilusTrader** (LGPL, free) • Optuna • DuckDB • Parquet • **Ollama/Qwen3 (local-first)** → Gemini → Anthropic → OpenAI • Pydantic • LangGraph • **Alpaca** (paper + live) + **Schwab Trader API/TOS** (live) • DeepEval • Docker • GitHub Actions CI
-
-**New skills introduced:** + Own event-driven backtest engine, deterministic strategy plugins, walk-forward CV + sealed OOS vault + overfitting budget, local LLM deployment (Ollama/quantization), event-driven trading engine (Nautilus), multi-agent execution oversight, broker API integration, real-time reliability
+**Tech:** Python • own harness → **NautilusTrader** • Optuna • DuckDB • Parquet • **Ollama/Qwen3 (local-first)** → Anthropic/Gemini • Pydantic • **LangGraph** • **Alpaca** + **Schwab/TOS** • DeepEval • Docker • GitHub Actions CI
 
 > ⚖️ *Educational/research project. Not investment advice; makes no claim of positive expectancy — validation is the entire point.*
+
+---
+
+### 🧩 Supporting — [FormSense](https://github.com/manuel-reyes-ml/formsense) · *Document AI*
+
+Multimodal **agentic workflow** (Anthropic *Building Effective Agents* taxonomy — precise vocabulary, *not* multi-agent) that extracts and validates synthetic ERISA distribution forms against a **frozen Pydantic schema contract**, with **GEval schema-adherence** gates and smart routing (complete → ticket | incomplete → advisor email).
+
+**Tech:** Python • Vision LLM • Streamlit • Pydantic • DeepEval (GEval) • Docker • GitHub Actions CI · **Stages:** S1 → S3
+
+---
+
+### 🧩 Supporting — [Attention-Flow Catalyst (AFC)](https://github.com/manuel-reyes-ml/attention-flow-catalyst) · *Research*
+
+Read-only **GraphRAG** financial-research loop over small-cap trigger signals (insider buys, attention spikes, volume, dilution, squeeze-context), with a **faithfulness ≥ 0.9** evaluation showcase for financial-data sensitivity. Demonstrates bounded, unattended-safe agent design (read-only/verifiable).
+
+**Tech:** Python • DuckDB • Parquet • httpx async • edgartools • **Neo4j + ChromaDB (GraphRAG)** • **Anthropic SDK** • DeepEval • SelfCheckGPT + FActScore • Docker • CI · **Stage:** S3 (research)
+
+---
+
+### 📅 Also in the Pipeline (Planned)
+
+Distinct projects with their own repos, scope, and documentation:
+
+- 🔐 **[DataVault Analyst](https://github.com/manuel-reyes-ml/datavault-analyst)** — PII-safe natural-language analytics ("chat with your data") with governance-as-code guardrails and Pydantic-validated outputs
+- 📊 **[Operations-Demand-Intelligence](https://github.com/manuel-reyes-ml/operations-demand-intelligence)** — AI-powered workflow-demand analytics on enterprise OnBase data
+- 📺 **[StreamSmart Optimizer](https://github.com/manuel-reyes-ml/streamsmart-optimizer)** — consumer AI app (external APIs, async HTTP, optimization)
 
 ---
 
@@ -306,165 +198,90 @@ Consumer-facing dashboard that helps households optimize streaming subscriptions
 ```
 learning_journey/
 │
-├── 📄 README.md                          # This file - Complete overview with GenAI-first positioning
+├── 📄 README.md                          # This file — evidence-first overview
 │
 ├── 📂 projects/                          # ⭐ Project directory (links to separate repos)
-│   └── README.md                         # Comprehensive project index
-│       ├── 1099 ETL Pipeline (production, public, $15K savings)
-│       ├── DataVault Analyst (first AI project, PII-safe analytics)
-│       ├── PolicyPulse (RAG chatbot, citations, ticket escalation)
-│       ├── FormSense (multimodal AI, document intelligence)
-│       ├── Operations-Demand-Intelligence (enterprise analytics, AI chat)
-│       ├── StreamSmart Optimizer (consumer AI, API integration)
-│       └── Attention-Flow Catalyst (flagship #1, 5-stage evolution)
-│       └── Crucible (flagship #2, autonomous intraday: backtest → paper → live)
+│   └── README.md                         # Portfolio index
+│       ├── PolicyPulse (Flagship 1 — Applied AI: RAG→GraphRAG, FastMCP)
+│       ├── 1099 Data Platform (Flagship 2 — Data Engineering; live production)
+│       ├── Crucible (Flagship 3 — autonomous execution: backtest→paper→live)
+│       ├── FormSense (Supporting — multimodal agentic workflow)
+│       ├── Attention-Flow Catalyst (Supporting — read-only GraphRAG research)
+│       └── Planned: DataVault Analyst · Operations-Demand-Intelligence · StreamSmart
 │
-├── 📂 getting-started/                   # For new visitors
-│   ├── README.md                         # Navigation & overview
-│   ├── SETUP_GUIDE.md                    # Complete dev environment + AI tools
-│   ├── environment-verification.py       # Test your setup
-│   └── prerequisites.md                  # What you need to begin
+├── 📂 getting_started/                   # For new visitors (setup + AI tools)
 │
 ├── 📂 courses/                           # Course-specific materials
-│   ├── cs50_harvard/                     # CS50 work & notes
-│   │
-│   ├── python_for_everybody/             # Python course materials
-│   │   ├── code/                         # Practice scripts (AI-enhanced)
-│   │   ├── experiments/                  # Enhanced exercises
-│   │   ├── notebooks/                    # Jupyter notebooks
-│   │   └── notes/                        # Course notes by module
-│   │
-│   ├── datacamp_data_analyst/            # DataCamp Data Analyst Track
-│   │   ├── notebooks/                    # Practice notebooks
-│   │   └── README.md                     # Track progress
-│   │
-│   ├── vanderbilt_genai_analyst/         # 🤖 GenAI-Powered Analysis
-│   │   ├── chatgpt_workflows/            # CLUE/TRUST/CAPTURE frameworks
-│   │   ├── prompt_engineering/           # Prompt patterns & examples
-│   │   └── README.md                     # Course progress
-│   │
-│   ├── ibm_genai_engineering/            # 🤖 IBM GenAI Engineering (16 courses)
-│   │
-│   ├── ibm_data_analyst/                 # IBM course materials
-│   │
-│   └── sql_mode_thoughtspot/             # SQL practice
+│   ├── cs50_harvard/                     # CS fundamentals + OMSCS evidence
+│   ├── python_for_everybody/             # Python foundation
+│   ├── ibm_genai_engineering/            # 🤖 IBM GenAI Engineering (Stage 1 spine)
+│   ├── anthropic_claude_api/             # Building with the Claude API (SDK source-of-truth)
+│   ├── deeplearning_ai/                  # Evals, RAG, MCP, Agentic AI short courses
+│   ├── aws_data_engineering/             # 📅 Stage 2 DE spine
+│   └── dbt_airflow_kafka/                # 📅 Stage 2 DE/AE tooling
 │
-├── 📂 certifications/                    # Certificate tracking
-│   ├── README.md                         # All certifications overview
-│   └── in-progress/                      # Current progress tracking
-│       ├── python-for-everybody-progress.md
-│       ├── google-data-analytics-progress.md
-│       ├── ibm-data-analyst-progress.md
-│       ├── ibm-genai-engineering-progress.md  # 🤖 GenAI Engineering cert
-│       ├── vanderbilt-genai-analyst-progress.md
-│       └── statistics-with-python-progress.md
+├── 📂 certifications/                    # Certificate tracking (8 + 1 conditional)
+│   └── in-progress/
+│       ├── ai-901-progress.md            # Azure AI Fundamentals (employer)
+│       ├── ab-620-progress.md            # AI Agent Builder Associate (employer)
+│       ├── ibm-genai-engineering-progress.md
+│       └── ...                            # DP-700, AWS DE, NCA-GENL, Databricks, Neo4j, CCA-F
 │
-├── 📂 docs/                              # Documentation & guides
-│   ├── index.html                        # GitHub Pages landing page
-│   ├── roadmap.html                      # Interactive 37-month GenAI-first roadmap (v8.9)
-│   └── activation-plans/                 # Structured learning guides
-│       ├── README.md                     # Guide overview
-│       ├── WEEK_01_MASTER_ACTIVATION_PLAN.md
-│       ├── DAILY_ROUTINE_GUIDE.md
-│       ├── ACCEPTANCE_CRITERIA.md
-│       └── WEEK_01_QUICK_REFERENCE.md
+├── 📂 docs/                              # Documentation & GitHub Pages
+│   ├── index.html                        # Landing page
+│   └── roadmap.html                      # Interactive roadmap (v10.0)
 │
-├── 📂 notes/                             # Learning journal
-│   ├── week1_summary.md                  # Weekly progress summaries
-│   ├── ai_tools_exploration.md           # 🤖 AI tools learning notes
-│   ├── trading_ideas.md                  # Trading research
-│   └── learning-journal.md               # Daily reflections
+├── 📂 notes/                             # Learning journal (learning-log.md, strict template)
 │
-├── .gitignore                            # Ignore .venv, cache, etc.
+├── .gitignore
 ├── .vscode/                              # VS Code settings
 └── pyproject.toml                        # Python dependencies (PEP 621)
 ```
 
 ---
 
-## 🎯 The 37-Month GenAI-First Roadmap
+## 🎯 The ~32-Month Roadmap (3 Stages)
 
-Systematic progression with GenAI/LLM engineering at every stage. Income secured from Stage 1 onward.
+Systematic progression that compounds the finance/ERISA + trading + eval-first moat at every stage. Income maintained from Stage 1 onward (no comp reset).
 
-### **Stage 1: GenAI-First Data Analyst & AI Engineer** (Months 1-5) 🟢 ACTIVE
+### Stage 1: Internal AI Builder (Months 1–8) 🟢 ACTIVE
 
-**Core Skills:** Python • SQL • Statistics • Visualization • Power BI/Tableau  
-**GenAI Skills:** LLM SDKs (Gemini, OpenAI, Claude) • RAG (ChromaDB) • Multimodal AI (Gemini Vision) • Pydantic • Streamlit • PandasAI • Cursor AI • Prompt Engineering  
-**Evaluation:** DeepEval + pytest • RAGAS (RAG Triad) • LangSmith  
-**Containerization:** Docker fundamentals (KodeKloud)
+**Core:** Production Python (typed, pyproject, ruff/mypy) • SQL • Docker/CI
+**AI:** Anthropic SDK (structured outputs, tool use, prompt caching) • RAG • MCP literacy • Pydantic • Streamlit
+**Eval:** RAGAS/DeepEval blocking gates • golden datasets • hallucination detection
+**Employer:** AI-901 → AB-620 (reimbursed); ZTM Azure Bootcamp; Microsoft Agent Framework awareness
 
-**Learning Path:**
-- CS50 (Harvard) - Computer Science fundamentals
-- Python for Everybody (University of Michigan)
-- Google Data Analytics Professional Certificate
-- IBM Data Analyst Professional Certificate
-- Statistics with Python (University of Michigan)
-- 🤖 **IBM Generative AI Engineering Professional Certificate** (16 courses) — RAG, LangChain, fine-tuning, deployment
-- 🤖 AI Python for Beginners (DeepLearning.AI) — Andrew Ng's AI-first Python
-- 🤖 Generative AI Data Analyst Specialization (Vanderbilt)
-- 🤖 ChatGPT Prompt Engineering (DeepLearning.AI)
-- 🤖 30 Days of Streamlit Challenge — Build AI UIs fast
-- 🧪 **Building & Evaluating Advanced RAG** (DeepLearning.AI) — RAG Triad metrics, evaluation-driven development
-- 🐳 **Docker for Beginners with Hands-on Labs** (KodeKloud/Coursera) — Containerization fundamentals
-- 🤖 **Building with the Claude API** (Anthropic Academy) — official Claude SDK source-of-truth
-- 🕸️ **Knowledge Graphs for RAG** (DeepLearning.AI) — GraphRAG with an SEC-filings demo
+**Learning path:** CS50 (Harvard) • Python for Everybody • AI Python for Beginners • Building with the Claude API (Anthropic Academy) • Improving Accuracy of LLM Apps • Building & Evaluating Advanced RAG • MCP primer • AI Prompting for Everyone • 30 Days of Streamlit • Docker for Beginners • **IBM Generative AI Engineering Professional Certificate** (Stage 1 spine)
 
-**Key Deliverables (8 projects, easy → two flagships):**
-1. **1099 ETL Pipeline** ✅ — Production system, $15K savings (Foundation: ETL + Testing + CI/CD)
-2. **DataVault Analyst** — First AI project (+ LLM SDK, Pydantic, PII handling)
-3. **PolicyPulse** — RAG foundation (+ Embeddings, ChromaDB, semantic search, **FastMCP server, Anthropic SDK primary**)
-4. **FormSense** — Document intelligence (+ Multimodal AI, Vision LLM)
-5. **Operations-Demand-Intelligence** 🚧 — Enterprise analytics (+ real data, advanced analytics)
-6. **StreamSmart Optimizer** — Consumer AI app (+ external APIs, optimization engine)
-7. **Attention-Flow Catalyst** 🚀 — Flagship #1 (+ statistical methodology, DuckDB, async, **Anthropic SDK primary, SelfCheckGPT + FActScore**)
-8. **Crucible** 🔥 — Flagship #2, *started first* (+ own backtest harness, sealed OOS vault, local Qwen3/Ollama, NautilusTrader, multi-agent execution) — Phase 1 in Stage 1; agentic phases in Stages 3–4
+**Deliverables:** PolicyPulse v1 (eval gates + FastMCP) • 1099 pipeline retro-migrated to production standards • AI-901 passed → AB-620 begun • two documented internal automation wins • scope-change conversation in writing by Month 6
 
-**Outcome:** GenAI-First Data Analyst & AI Engineer position
+> **Exit criterion:** documented internal scope change by Month 8. **Fallback:** no change by M8 → external DE/AE search at M10–12 (not a Data Analyst search).
 
----
+### Stage 2: AI-Focused Data Engineer / Analytics Engineer (Months 9–20) 📅 PLANNED — *dual-target*
 
-### **Stage 2: GenAI Data Engineer + AI Systems Architect** (Months 6-15) 📅 Planned
+**Core:** SQL at scale • **dbt** (tested project, CI-gated) • warehouse (Snowflake/BigQuery + Microsoft Fabric) • **Airflow** • **Kafka** basics • **PySpark**
+**Governance:** data contracts • dbt tests / Great Expectations • lineage • access-control awareness
+**Deploy:** Docker → ECS/Fargate • **Terraform** basics • monitoring • incident writeups
+**AI-adjacent:** embedding pipelines • vector stores • unstructured-data ETL feeding RAG
 
-**Core Skills:** AWS • Airflow • PySpark • PostgreSQL • BigQuery • Data warehousing  
-**AI Systems Skills:** Vector DBs (Pinecone/Weaviate/Qdrant) • **GraphRAG (Neo4j hybrid retrieval)** • RAG infrastructure • Embedding pipelines • Unstructured data ETL  
-**Containerization:** Docker & Kubernetes Masterclass (Months 12-13)
-**🆕 Month 14 Sprint (2 weeks):** TypeScript fundamentals + MCP server in TypeScript — unlocks 2026 hiring keyword without committing to TS as primary language
+**Certs:** **DP-700** (Fabric Data Engineer, employer-reimbursed) + **AWS Certified Data Engineer – Associate** + *dbt Analytics Engineering (conditional — only if AE apps stall)*
 
-**Key Deliverable:** All 8 projects evolve — Cloud deployment, production databases, scheduled pipelines
+**Key deliverable:** DE flagship production-hardened; first external offer accepted ~M18–20 (or earlier via M10–12 fallback)
 
----
+### Stage 3: Applied AI Engineer → FDE Track (Months 21–32) 📅 PLANNED
 
-### **Stage 3: ML Engineer + Local LLM Specialist** (Months 16-29) 📅 Planned
+**Core:** production agentic systems (Building Effective Agents taxonomy) • MCP servers in anger • HITL gates for irreversible actions • unattended-safe design for read-only/verifiable agents
+**Eval-as-engineering:** RAGAS/DeepEval/GEval as CI-blocking gates • SelfCheckGPT/FActScore for finance-grade rigor • eval dashboards as portfolio artifacts
+**ML-literacy module (2–3 months, embedded):** embeddings in depth • inference economics • one small fine-tune AS LITERACY (Prompt→RAG→Fine-tune→Distill) — *substituted by OMSCS coursework if the degree track is active*
+**Privacy/compliance edge:** privacy-routed architecture • per-document access clearance at retrieval time
 
-**Core Skills:** scikit-learn • TensorFlow/Keras • PyTorch • MLOps • NVIDIA DLI certification  
-**LLM Skills:** Ollama (local LLMs) • Fine-tuning (LoRA/QLoRA/PEFT) • On-premise AI for finance
+**Certs:** **Anthropic CCA-F** + **Databricks Certified GenAI Engineer Associate** + **NVIDIA NCA-GENL** + **Neo4j Certified Professional**
 
-**Key Deliverable:** Fine-tuned financial LLM solving finance's data privacy problem
+**Key deliverable:** Applied AI Engineer role (~M30); one public talk on a deployed system; FDE apply list live at M32+ (across industries; remote-normal routes weighted)
 
-**🔥 Crucible here:** Phase 2 matures — migrate to NautilusTrader (engine-parity gate) and build the autonomous paper-trading agent crew with a local Qwen3/Ollama analyst. This stage's local-LLM skills are exactly what Crucible Phase 2 needs.
+### 🎓 Parallel Degree Track — Georgia Tech OMSCS (Computing Systems)
 
----
-
-### **Stage 4: Agentic AI Engineer & LLM Specialist** (Months 30-34) 📅 Planned
-
-**Core Skills:** Advanced LLM architecture • System design • Production deployment  
-**Agentic Skills:** **MCP + A2A protocols** • LangGraph • CrewAI • Andrew Ng's Agentic AI • **Loop Engineering** (autonomous agent loops with layered exits, cost caps, human-in-the-loop gates) • Multi-agent orchestration with **Anthropic's "Building Effective Agents" patterns** (orchestrator-workers, sequential, evaluator-optimizer)
-**Advanced Eval:** SelfCheckGPT + FActScore (atomic-fact decomposition for SEC-grounded analysis)
-
-**Key Deliverable:** AI Trading Assistant with multi-agent collaboration (research + analysis + execution agents)
-
-**🔥 Crucible here:** Phase 3 begins — autonomous live execution at micro-sizing on Alpaca + Schwab/TOS, deterministic core wrapped by multi-agent oversight (regime → risk → journalist → fund-manager). Same LangGraph/agent-pattern skills as AFC, applied to live intraday execution with code-enforced guardrails.
-
----
-
-### **Stage 5: Senior LLM Engineer** (Months 35-37) 📅 Planned
-
-**Core Skills:** Production AI architecture • Thought leadership • System design interviews  
-**Evaluation Skills:** Automated Testing for LLMOps • CI/CD for AI • Production monitoring
-
-**Key Deliverable:** Production-grade AI Trading Platform with evaluation-driven development
-
-**Final Target:** Senior LLM Engineer ($180-250K+) with advanced expertise and global opportunities.
+Accredited M.S. Computer Science (~$8–9K total), Computing Systems specialization (distributed systems, databases, OS, architecture). Mapped to Stages 2–3 as a substitute for redundant self-study; AI/ML electives substitute for the Stage 3 ML-literacy module. Academic projects kept **architecturally separate** from public repos.
 
 **📋 [View Interactive Roadmap →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
 
@@ -472,192 +289,87 @@ Systematic progression with GenAI/LLM engineering at every stage. Income secured
 
 ## 🤖 AI Tools & Workflows Integration
 
-### **Current Stack (Stage 1)**
+### Current Stack (Stage 1)
 
 **Development:**
-- **Cursor AI IDE** - Primary editor with AI pair programming (Composer mode)
-- **VS Code (first-class editor)** + **OpenCode** - Agentic coding in Cursor's integrated terminal
+- **VS Code** (first-class editor) — Python, SQL, Jupyter notebooks
+- **Cursor AI IDE** — AI pair programming (with `.cursor/rules` scoped rules)
+- **OpenCode** — agentic harness (custom agents, slash commands); local `qwen3.5-16k` Modelfile
 
 **GenAI Engineering:**
-- **LLM SDKs (Gemini, OpenAI, Claude)** - Provider-agnostic API integration for production AI systems
-- **Pydantic** - Structured output validation for all AI responses
-- **ChromaDB** - Vector store for RAG pipelines (PolicyPulse)
-- **Neo4j + GraphRAG** - Knowledge-graph hybrid retrieval (PolicyPulse upgrade path; AFC Financial Knowledge Graph capstone)
-- **Gemini Vision SDK** - Multimodal AI for document understanding (FormSense)
-- **LangChain** - Framework for building GenAI applications
-- **Streamlit** - AI-powered web app interfaces
-- **PandasAI** - Natural language data querying for dashboard integration
-- **FastMCP** - Python framework for building MCP servers (PolicyPulse exposes retrieval as MCP tools to Cursor/Claude Desktop)
-- **Anthropic SDK** - Primary provider for PolicyPulse + AFC (Claude excels at RAG synthesis + financial reasoning; prompt caching reduces costs ~90%)
-- **Ollama + LM Studio (local-first)** - On-device LLMs with privacy-first model routing (finance/proprietary stays on-machine; public work may use cloud)
+- **Anthropic SDK** — *primary* provider (structured outputs, tool use, prompt caching); PolicyPulse + AFC
+- **Gemini SDK** — fallback (embeddings, multimodal Vision, cheap safety-judge)
+- **Ollama + LM Studio (local-first)** — privacy-routed models; finance/proprietary data stays on-machine
+- **Pydantic** — structured-output validation • **ChromaDB** — vector store • **Neo4j** — GraphRAG hybrid retrieval
+- **FastMCP** — MCP servers exposing retrieval as tools • **LangChain / LangGraph** — agentic workflows
+- **OpenRouter** — PAYG routing for bulk agentic work
 
-**AI Evaluation (v8.3 Cross-Project Standard):**
-- **DeepEval + pytest** - Evaluation-driven development integrated into CI/CD for all projects
-- **RAGAS** - RAG Triad metrics (Context Relevance, Groundedness, Answer Relevance) for PolicyPulse
-- **SelfCheckGPT** - Consistency-based hallucination detection (PolicyPulse + AFC) — sample N=5 responses, score divergence
-- **FActScore** - Atomic-fact decomposition with retrieval verification (AFC only — financial-grade rigor for SEC-grounded claims)
-- **LangSmith** - LLM observability, tracing, and debugging for StreamSmart and beyond
+**AI Evaluation (cross-project standard):**
+- **DeepEval + pytest** — eval-driven development in CI • **RAGAS** — RAG Triad metrics (PolicyPulse)
+- **GEval** — schema-adherence (FormSense) • **SelfCheckGPT + FActScore** — hallucination rigor (AFC)
+- **Thresholds:** faithfulness ≥ 0.9 (AFC) • GEval ≥ 0.85 (FormSense) • Tool Correctness = 1.0 / Task Completion > 0.8 (agentic)
 
-**Containerization:**
-- **Docker** - Dockerfile for every portfolio project (Stage 1 fundamentals via KodeKloud course)
+**Containerization:** Docker (Dockerfile for every repo; Stage 1 fundamentals via KodeKloud)
 
-**Analysis:**
-- **ChatGPT Plus** - Advanced Data Analysis, code generation, debugging
+### Integration Principles
+**Transparency:** document AI assistance in commits • **Validation:** always test AI-generated code • **No vibe coding:** every line understood before merge, diff-review-before-merge, manual commit as the final control gate • **Privacy-first routing:** PII/proprietary local, proprietary via private endpoints, public scaffolding only on free tiers
 
-**Learning:**
-- IBM GenAI Engineering Professional Certificate (RAG, LangChain, fine-tuning, deployment) — Stage 1 primary
-- Vanderbilt GenAI Specialization (CLUE/TRUST/CAPTURE frameworks)
-- DeepLearning.AI Prompt Engineering (API integration, production patterns)
-- AI Python for Beginners (Andrew Ng's AI-first Python foundation)
-- Building & Evaluating Advanced RAG (DeepLearning.AI) — RAG Triad evaluation with TruLens/DeepEval
-- Docker for Beginners with Hands-on Labs (KodeKloud/Coursera) — Containerization fundamentals
-
-### **Integration Principles**
-
-**Transparency:** Document AI assistance in commits and comments  
-**Validation:** Always test AI-generated code  
-**Production:** Implement guardrails (read-only, cost controls, disclaimers)  
-**Progressive:** Expand GenAI capabilities systematically across stages
-
-### **Evolution Path**
+### Evolution Path
 
 | Stage | AI Tools & Frameworks |
 |-------|----------------------|
-| **2** | Vector DBs (Pinecone/Weaviate) + GraphRAG (Neo4j) + RAG infrastructure + Embedding pipelines + Docker & Kubernetes Masterclass + BigQuery |
-| **3** | Ollama (local LLMs) + Fine-tuning (LoRA/QLoRA/PEFT) + Generative AI with LLMs (AWS) + NVIDIA DLI |
-| **4** | MCP + A2A + LangGraph + CrewAI + Andrew Ng's Agentic AI + Loop Engineering (human-in-the-loop gates) + Multi-agent systems with named patterns (orchestrator-workers, sequential, evaluator-optimizer) |
-| **5** | Automated Testing for LLMOps + CI/CD for AI + Production evaluation + Monitoring |
+| **2** | dbt + Airflow + Kafka + PySpark + Snowflake/BigQuery/Fabric + vector DBs + embedding pipelines + unstructured-data ETL + Docker→ECS + Terraform |
+| **3** | Agentic AI (Andrew Ng) + MCP servers (full) + LangGraph + long-term agentic memory + HuggingFace NLP (local embeddings) + Neo4j GraphAcademy + PEFT (literacy) + vLLM inference economics |
 
 ---
 
 ## 💻 Development Environment
 
-**Languages:** Python 3.11+, SQL  
-**Data:** pandas, NumPy, Matplotlib, Seaborn, Plotly  
-**Databases:** SQLite, DuckDB, ChromaDB, Neo4j, PostgreSQL  
-**AI/GenAI:** LLM SDKs (Gemini, OpenAI, Claude), Gemini Vision, Pydantic, LangChain, Streamlit, PandasAI, Cursor AI, ChatGPT Plus  
-**Evaluation:** DeepEval + pytest, RAGAS (RAG Triad), LangSmith observability  
-**Containerization:** Docker (Stage 1 fundamentals), Docker & Kubernetes (Stage 2)  
-**Platforms:** Coursera, DataCamp, DeepLearning.AI
+**Languages:** Python 3.12, SQL
+**Data:** pandas, NumPy, DuckDB, Parquet, Matplotlib, Seaborn, Plotly
+**Databases:** SQLite, DuckDB, ChromaDB, Neo4j, PostgreSQL (Stage 2)
+**AI/GenAI:** Anthropic SDK (primary), Gemini, OpenAI, Ollama/LM Studio (local), Pydantic, LangChain/LangGraph, FastMCP, Streamlit
+**Evaluation:** DeepEval + pytest, RAGAS, GEval, SelfCheckGPT, FActScore, LangSmith
+**Production standards:** `pyproject.toml` + `src/` + `py.typed`, ruff format, mypy (3.12), Docker, GitHub Actions CI, Conventional Commits
 
 ```bash
-# Clone repository
 git clone https://github.com/manuel-reyes-ml/learning_journey.git
 cd learning_journey
-
-# See detailed setup guide (includes AI tools setup)
-open getting_started/SETUP_GUIDE.md
-
-# Verify environment
+open getting_started/SETUP_GUIDE.md          # setup incl. AI tools
 python getting_started/environment-verification.py
 ```
-
-**Setup:** See [Complete Setup Guide](./getting_started/SETUP_GUIDE.md)
 
 ---
 
 ## 💡 Learning Philosophy
 
-### **Core Principles**
+### Core Principles
+**Evidence over keywords:** ship production systems with eval gates, not certificate density
+**Eval-first discipline:** DeepEval/RAGAS/GEval as blocking gates, not afterthoughts
+**No vibe coding:** every line intentionally written and understood before merge
+**Production-first:** proper error handling, testing, typed code, documentation
+**Replace, not stack:** every new cert/course must displace something of lesser signal
+**Domain application:** every skill applied to the finance/ERISA domain (the moat)
+**Systematic progression:** clear 3-stage path with measurable milestones
 
-**GenAI-Enhanced Practice:** Daily coding with AI pair programming, but always understanding and validating outputs
-
-**Production-First:** Every project built to production standards with proper error handling, testing, and documentation
-
-**Transparent Integration:** Document when/how AI assists, show reasoning not just outputs
-
-**Enhancement Always:** Never just complete exercises—optimize, expand, and apply to real-world scenarios
-
-**Domain Application:** Every skill applied to trading/finance domain for authentic learning
-
-**Systematic Progression:** Clear 37-month path with measurable milestones
-
-### 👨‍💻 Enhancement Philosophy
-
-#### **Beyond Basic Completion:**
-
-Every exercise is enhanced with additional functionality, error handling, testing, and real-world application. Now with AI assistance documented transparently.
-
-**Standard Approach:**
-```python
-# Calculate average
-numbers = [1, 2, 3, 4, 5]
-average = sum(numbers) / len(numbers)
-print(f"Average: {average}")
-```
-
-**My GenAI-Enhanced Approach:**
-```python
-def calculate_statistics(data: list[float], include_outliers: bool = True) -> dict:
-    """
-    Calculate comprehensive statistics with multiple methods.
-    
-    Args:
-        data: List of numeric values
-        include_outliers: Whether to include outlier analysis
-    
-    Returns:
-        dict: Statistics including mean, median, mode, std dev
-        
-    Note: Developed with Cursor AI assistance for statistical functions
-    """
-    import statistics
-    from collections import Counter
-    
-    if not data:
-        raise ValueError("Cannot calculate statistics on empty dataset")
-    
-    stats = {
-        'mean': statistics.mean(data),
-        'median': statistics.median(data),
-        'mode': statistics.mode(data) if len(Counter(data)) < len(data) else None,
-        'std_dev': statistics.stdev(data) if len(data) > 1 else 0,
-        'range': (min(data), max(data))
-    }
-    
-    if include_outliers:
-        q1 = statistics.quantiles(data, n=4)[0]
-        q3 = statistics.quantiles(data, n=4)[2]
-        iqr = q3 - q1
-        stats['outliers'] = [x for x in data if x < (q1 - 1.5*iqr) or x > (q3 + 1.5*iqr)]
-    
-    return stats
-
-# Apply to real trading data
-stock_returns = [0.05, 0.03, -0.02, 0.04, 0.01, 0.15]  # 15% is potential outlier
-analysis = calculate_statistics(stock_returns)
-print(f"Return Analysis: {analysis}")
-```
-
-### **Study Commitment**
-
-25 hours/week structured as:
-- **Mornings (4:30-6 AM):** Theory, lectures, reading
-- **Evenings (8-10 PM):** Hands-on coding with AI tools, projects
-- **Weekends:** Deep work on complex projects and integration
-
-Sustainable pace designed for 37-month journey while working full-time.
+### Beyond Basic Completion
+Every exercise is enhanced with real-world application, error handling, tests, and eval gates — with AI assistance documented transparently. Learning is logged in `notes/learning-log.md` under a strict entry template (source, format, stage tag, project tags, takeaway in my own words, and an "Apply" line).
 
 ---
 
 ## 📊 Current Progress
 
-**Active Stage:** 1 of 5 (GenAI-First Data Analyst & AI Engineer)  
-**Projects:** 1 deployed (production), 1 in development (ODI), 6 scoped and queued (incl. two flagships, AFC + Crucible)  
-**Total Pipeline:** 8 production-grade projects (easy → two flagships)  
-**Certifications:** 8 in progress (including 3 GenAI-focused)  
+**Active Stage:** 1 of 3 (Internal AI Builder)
+**Portfolio:** 3 flagships (PolicyPulse, 1099 Data Platform [live], Crucible) • 2 supporting (FormSense, AFC) • 3 planned (DataVault, ODI, StreamSmart)
+**Certifications:** 8 + 1 conditional (2 employer-reimbursed in Stage 1)
 **Study Hours:** 25/week consistent
 
-**Next Milestones:**
-- Complete DataVault Analyst (first AI project to publish)
-- Launch PolicyPulse (RAG foundation)
-- Launch FormSense (Multimodal AI)
-- Complete Operations-Demand-Intelligence (enterprise analytics)
-- Build StreamSmart Optimizer (consumer AI app)
-- Complete Attention-Flow Catalyst Phase 1A & 1B (flagship #1)
-- Build Crucible Phase 1 — backtest engine + AI research loop (flagship #2, started first)
-- Finish 5 core certifications + IBM GenAI Engineering cert
-- Secure GenAI-First Data Analyst & AI Engineer role
+**Next milestones:**
+- PolicyPulse v1 shipped (RAG + eval gates + FastMCP)
+- 1099 pipeline retro-migrated to production standards (the DE flagship's live core)
+- AI-901 passed (employer-reimbursed) → AB-620 begun
+- IBM GenAI Engineering Professional Certificate completed; CS50 on track for OMSCS window
+- Two documented internal automation wins + scope-change conversation (Month 6)
 
 ---
 
@@ -669,72 +381,46 @@ Sustainable pace designed for 37-month journey while working full-time.
 - **Email:** manuelreyesv410@gmail.com
 
 **Portfolio:**
-- [Data Portfolio Repository](https://github.com/manuel-reyes-ml/data-portfolio)
-- [1099 ETL Pipeline](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline) ✅ Production
-- [DataVault Analyst](https://github.com/manuel-reyes-ml/datavault-analyst) — First AI Project
-- [PolicyPulse](https://github.com/manuel-reyes-ml/policypulse) — RAG Foundation
-- [FormSense](https://github.com/manuel-reyes-ml/formsense) — Document Intelligence
-- [Operations-Demand-Intelligence](https://github.com/manuel-reyes-ml/operations-demand-intelligence) 🚧
-- [StreamSmart Optimizer](https://github.com/manuel-reyes-ml/streamsmart-optimizer) — Consumer AI
-- [Attention-Flow Catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst) 🚀 Flagship #1
-- [Crucible](https://github.com/manuel-reyes-ml/crucible) 🔥 Flagship #2 — Autonomous Intraday Trading Platform (started first)
+- [1099 Data Platform](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline) 🏁 Flagship 2 — Data Engineering (live)
+- [PolicyPulse](https://github.com/manuel-reyes-ml/policypulse) 🏁 Flagship 1 — Applied AI
+- [Crucible](https://github.com/manuel-reyes-ml/crucible) 🏁 Flagship 3 — Autonomous execution
+- [FormSense](https://github.com/manuel-reyes-ml/formsense) 🧩 Supporting — Document AI
+- [Attention-Flow Catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst) 🧩 Supporting — Research
+- Planned: [DataVault Analyst](https://github.com/manuel-reyes-ml/datavault-analyst) · [Operations-Demand-Intelligence](https://github.com/manuel-reyes-ml/operations-demand-intelligence) · [StreamSmart Optimizer](https://github.com/manuel-reyes-ml/streamsmart-optimizer)
 
-**Open To:**
-- 💼 GenAI-First Data Analyst & AI Engineer opportunities (remote preferred)
-- 🤝 Networking with data professionals and traders
-- 🤖 GenAI tool and workflow discussions
-- 💡 Code reviews and technical discussions
-- 🎓 Mentorship (giving or receiving)
-
----
-
-## 🤝 How to Engage
-
-**Welcome:**
-- Code quality feedback and best practices
-- GenAI integration approaches and tool recommendations
-- Trading strategy discussions
-- Career advice and networking
-- Collaboration on projects
-
-**How:**
-- Open GitHub issues for technical discussions
-- Connect on LinkedIn for professional networking
-- Comment on commits with feedback
-- Share your own GenAI-powered learning journey
+**Open to:**
+- 💼 Data Engineer / Analytics Engineer roles (dual-target; AE more remote-accessible)
+- 🤖 Applied AI / Forward-Deployed Engineer roles across industries
+- 🤝 Code reviews, technical discussions, knowledge exchange on data + AI + finance
 
 ---
 
 ## 💭 The Vision
 
-This repository documents a complete career transformation: from business ops professional to Senior LLM Engineer, with GenAI/LLM engineering from Day 1.
+This repository documents a complete career transformation: from business-ops professional to **Applied AI Engineer on the FDE track**, with production evidence and evaluation discipline from Day 1.
 
 **What this represents:**
-- 37-month systematic journey (5,000+ hours)
-- 8 production-grade projects demonstrating progressive skill mastery (incl. two flagship trading systems)
-- Production systems with measurable business impact
-- GenAI-first approach positioning ahead of traditional candidates
-- Foundation for six-figure remote tech career
-- Path to building revenue-generating AI systems
-- Demonstration that structured learning + GenAI integration enables career reinvention
+- ~32-month systematic journey with measurable milestones
+- A focused portfolio (3 flagships + 2 supporting) spanning Applied AI, Data Engineering, and autonomous-systems safety
+- Production systems with real business impact
+- An evidence-first approach: proof that stands up to scrutiny, not keyword density
 
-**Ultimate goal:** Production AI Trading Assistant combining deep finance expertise with cutting-edge agentic AI capabilities.
+**Ultimate goal:** Applied AI Engineer → Forward-Deployed Engineer, combining deep finance/ERISA and trading expertise with production agentic AI behind evaluation gates and safety barriers.
 
 ---
 
 ## ⭐ Follow the Journey
 
-Real-time documentation of a GenAI-first career transformation from Day 1 to Senior LLM Engineer.
+Real-time documentation of an evidence-first career transformation.
 
 - ⭐ **Star this repository** to follow the journey
-- 🔔 **Watch** for updates on GenAI integration and project progress
+- 🔔 **Watch** for updates on project progress and eval results
 - 🔗 **Connect** for professional discussions and collaboration
 
 ---
 
-### 💡 *"37 months. 8 projects. Two flagships. GenAI-first from Day 1. Production code. Clear trajectory."*
+### 💡 *"~32 months. 3 flagships. Evidence over keywords. Production code with measurable impact. Clear trajectory."*
 
-**Current Stage:** GenAI-First Data Analyst & AI Engineer (1 of 5) | Building GenAI-Enhanced Foundations  
-**Status:** 🟢 Active • Learning in Public • Deploying Production Systems
+**Current Stage:** Internal AI Builder (1 of 3) | 🟢 Active • Building in Public • Deploying Production Systems
 
 **[→ View Live Progress & Interactive Roadmap](https://manuel-reyes-ml.github.io/learning_journey/)**
