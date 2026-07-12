@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learning Journey - Manuel Reyes | Production AI &amp; Data Systems → Applied AI Engineer (FDE Track)</title>
+    <meta name="description" content="~32-month evidence-first career transformation into data engineering and applied AI (FDE track). Production AI, RAG/GraphRAG, dbt/Airflow, eval-first, building in public.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 60px 40px;
+            max-width: 900px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        h1 {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .ai-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 0.95em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            box-shadow: 0 5px 15px rgba(240, 147, 251, 0.3);
+        }
+        .subtitle {
+            font-size: 1.1em;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+        .career-path {
+            font-weight: 600;
+            color: #667eea;
+            margin-top: 10px;
+        }
+        
+        /* Status Badge */
+        .status-badge {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 0.95em;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        .status-badge:before {
+            content: "🟢 ";
+        }
+        
+        /* Badge Container */
+        .badge-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        /* AI Differentiator Box */
+        .ai-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        .ai-box h2 {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+        }
+        .ai-box p {
+            font-size: 1.05em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            opacity: 0.95;
+        }
+        .ai-tools {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+        .ai-tool {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+        
+        /* Production Highlight */
+        .highlight-box {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 25px;
+            margin: 25px 0;
+            box-shadow: 0 10px 30px rgba(240, 147, 251, 0.3);
+        }
+        .highlight-box h2 {
+            font-size: 1.4em;
+            margin-bottom: 15px;
+        }
+        .highlight-box p {
+            font-size: 1.05em;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        .highlight-metrics {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 20px;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .metric {
+            text-align: center;
+            min-width: 120px;
+        }
+        .metric-number {
+            font-size: 2em;
+            font-weight: bold;
+            display: block;
+        }
+        .metric-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        /* Current Stage Section */
+        .stage-section {
+            background: #f8f9ff;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            text-align: left;
+        }
+        .stage-section h2 {
+            font-size: 1.5em;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .stage-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .stage-item {
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 0.95em;
+        }
+        .stage-item.current {
+            background: #dbeafe;
+            border: 2px solid #3b82f6;
+        }
+        .stage-item.upcoming {
+            background: #f3f4f6;
+            border: 2px solid #e5e7eb;
+            opacity: 0.7;
+        }
+        .stage-item h3 {
+            color: #1e40af;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+        .stage-item.upcoming h3 {
+            color: #6b7280;
+        }
+        .stage-item p {
+            color: #4b5563;
+            font-size: 0.9em;
+            margin: 5px 0;
+        }
+        
+        /* Projects Showcase */
+        .projects-section {
+            background: #fafafa;
+            border-radius: 15px;
+            padding: 30px;
+            margin: 25px 0;
+            text-align: left;
+        }
+        .projects-section h2 {
+            font-size: 1.4em;
+            color: #333;
+            margin-bottom: 5px;
+            text-align: center;
+        }
+        .projects-subtitle {
+            font-size: 0.9em;
+            color: #999;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .project-list {
+            list-style: none;
+        }
+        .project-item {
+            padding: 15px;
+            margin-bottom: 12px;
+            border-radius: 8px;
+            background: white;
+            border-left: 4px solid #667eea;
+        }
+        .project-item.flagship-border {
+            border-left: 4px solid #f5576c;
+        }
+        .project-item h3 {
+            color: #667eea;
+            font-size: 1.05em;
+            margin-bottom: 6px;
+        }
+        .project-item .status {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+        .status.live {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        .status.building {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        .status.planned {
+            background: #e0e7ff;
+            color: #3730a3;
+        }
+        .status.flagship {
+            background: #fce7f3;
+            color: #9d174d;
+        }
+        .project-item p {
+            color: #666;
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+        .project-impact {
+            color: #10b981 !important;
+            font-weight: 600;
+            margin-top: 6px;
+            font-size: 0.85em !important;
+        }
+        .project-tech {
+            color: #667eea !important;
+            font-weight: 600;
+            margin-top: 4px;
+            font-size: 0.8em !important;
+        }
+        .project-skill-tag {
+            display: inline-block;
+            background: #f0f4ff;
+            color: #4b5563;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            margin-top: 4px;
+        }
+        
+        /* CTA Buttons */
+        .cta-section {
+            margin: 35px 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        .primary-cta {
+            width: 100%;
+            max-width: 500px;
+        }
+        .secondary-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            justify-content: center;
+            width: 100%;
+        }
+        .cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 18px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 1.1em;
+            font-weight: 600;
+            transition: transform 0.3s, box-shadow 0.3s;
+            white-space: nowrap;
+        }
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        .secondary-button {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 14px 30px;
+            font-size: 1em;
+        }
+        .secondary-button:hover {
+            background: #f8f9ff;
+        }
+        
+        /* Stats */
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #eee;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .stat {
+            text-align: center;
+            min-width: 100px;
+        }
+        .stat-number {
+            font-size: 2.2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-label {
+            font-size: 0.95em;
+            color: #999;
+            margin-top: 5px;
+        }
+        
+        /* Footer */
+        .footer {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+            color: #999;
+            font-size: 0.9em;
+        }
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        .footer a:hover {
+            text-decoration: underline;
+        }
+        .build-status {
+            display: inline-block;
+            background: #10b981;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            margin: 10px 0;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 40px 20px;
+            }
+            h1 {
+                font-size: 2em;
+            }
+            .badge-container {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .ai-badge, .status-badge {
+                width: auto;
+                max-width: 90%;
+            }
+            .cta-button {
+                padding: 15px 30px;
+                font-size: 1em;
+            }
+            .secondary-button {
+                padding: 12px 25px;
+                font-size: 0.95em;
+            }
+            .stage-grid {
+                grid-template-columns: 1fr;
+            }
+            .highlight-metrics {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .secondary-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+            .secondary-button {
+                width: 100%;
+                max-width: 300px;
+            }
+            .ai-tools {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📚 Learning Journey</h1>
+        
+        <div class="badge-container">
+            <div class="ai-badge">🤖 PRODUCTION AI & DATA SYSTEMS · EVAL-FIRST</div>
+            <div class="status-badge">ACTIVE - Stage 1: Internal AI Builder</div>
+        </div>
+        
+        <p class="subtitle">
+            ~32-Month Evidence-First Career Transformation
+            <br>
+            <span class="career-path">
+                Business Ops → Internal AI Builder → AI-Focused Data Engineer / Analytics Engineer → Applied AI Engineer → Forward-Deployed Engineer (FDE) Track
+            </span>
+        </p>
+        
+        <!-- AI Differentiator -->
+        <div class="ai-box">
+            <h2>🚀 Evidence-First: Proof Over Keywords</h2>
+            <p>The 2026 market is <strong>saturated at the keyword layer and starved at the evidence layer.</strong> This journey is built on proof: production systems with <strong>evaluation gates</strong>, deployed and measured. The stack is real and load-bearing — Anthropic SDK (primary), RAG + GraphRAG (Neo4j), FastMCP server, Pydantic structured outputs, privacy-routed local models — every project ships with blocking eval gates (DeepEval/RAGAS/GEval) and Docker/CI.</p>
+            <p>From there the stack scales into <strong>Data Engineering</strong> (dbt, Airflow, Kafka, Snowflake/BigQuery, data contracts, Docker→ECS/Terraform) and then <strong>production agentic systems</strong> with MCP servers and human-in-the-loop safety gates — the parts that don't automate away.</p>
+            <p><strong>Three flagships anchor the portfolio:</strong> PolicyPulse (Applied-AI: RAG→GraphRAG + FastMCP + access-control retrieval), the 1099 Data Platform (Data Engineering: dbt/Airflow/contracts, built on a live production system), and Crucible (autonomous intraday execution with HITL + kill-switch + "LLM behind the Wall").</p>
+            <div class="ai-tools">
+                <span class="ai-tool">Anthropic SDK (primary)</span>
+                <span class="ai-tool">🦙 Local-First (Qwen3/Ollama + LM Studio)</span>
+                <span class="ai-tool">RAG + ChromaDB</span>
+                <span class="ai-tool">🕸️ GraphRAG + Neo4j</span>
+                <span class="ai-tool">FastMCP Server</span>
+                <span class="ai-tool">dbt + Airflow</span>
+                <span class="ai-tool">Snowflake / BigQuery</span>
+                <span class="ai-tool">Kafka + Terraform</span>
+                <span class="ai-tool">Pydantic</span>
+                <span class="ai-tool">DeepEval + RAGAS + GEval</span>
+                <span class="ai-tool">Docker + K8s + CI</span>
+                <span class="ai-tool">VS Code + Cursor AI + OpenCode</span>
+            </div>
+        </div>
+        
+        <!-- Production Highlight -->
+        <div class="highlight-box">
+            <h2>🏆 Production Code, Not Just Tutorials</h2>
+            <p><strong>1099 Reconciliation ETL Pipeline:</strong> Live system at Daybright Financial — the seed of the Data Engineering flagship. Caught <strong>450+ incorrect tax codes</strong> before participants received bad documents.</p>
+            <div class="highlight-metrics">
+                <div class="metric">
+                    <span class="metric-number">95%</span>
+                    <span class="metric-label">Time Saved</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-number">$15K+</span>
+                    <span class="metric-label">Annual Savings</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-number">10x</span>
+                    <span class="metric-label">Scalability</span>
+                </div>
+                <div class="metric">
+                    <span class="metric-number">0</span>
+                    <span class="metric-label">Errors</span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Current Stage -->
+        <div class="stage-section">
+            <h2>🎯 Career Progression: Stage 1 of 3</h2>
+            <div class="stage-grid">
+                <div class="stage-item current">
+                    <h3>📊 Stage 1: Internal AI Builder</h3>
+                    <p><strong>Status:</strong> Active (Months 1-8)</p>
+                    <p><strong>Focus:</strong> Production Python + SQL + Anthropic SDK + RAG + MCP + eval gates + Docker/CI; AI-901 → AB-620 (employer-reimbursed)</p>
+                    <p><strong>Goal:</strong> AI-builder scope at current employer (no comp reset) + PolicyPulse v1 shipping</p>
+                </div>
+                <div class="stage-item upcoming">
+                    <h3>🔧 Stage 2: AI-Focused Data Engineer / Analytics Engineer</h3>
+                    <p><strong>Timeline:</strong> Months 9-20 (dual-target)</p>
+                    <p><strong>Focus:</strong> dbt + Airflow + Kafka + Snowflake/BigQuery + Microsoft Fabric + data contracts + Docker→ECS/Kubernetes + Terraform</p>
+                    <p><strong>"AI-focused" ≠ vanilla DE:</strong> data platforms built for AI workloads — AI-managed pipelines, embedding pipelines, unstructured-data ETL feeding RAG</p>
+                    <p><strong>Certs:</strong> DP-700 + AWS Data Engineer Associate • first external move ~M18-20</p>
+                </div>
+                <div class="stage-item upcoming">
+                    <h3>🧠 Stage 3: Applied AI Engineer → FDE</h3>
+                    <p><strong>Timeline:</strong> Months 21-32</p>
+                    <p><strong>Focus:</strong> Production agentic systems (Building Effective Agents) + MCP servers + HITL gates + eval-as-engineering + ML-literacy module</p>
+                    <p><strong>Certs:</strong> CCA-F + Databricks GenAI + Neo4j + NVIDIA NCA-GENL • FDE apply list at M32+</p>
+                </div>
+            </div>
+            <p style="text-align:center; margin-top:18px; font-style:italic; opacity:0.85;">🎓 Parallel degree track: Georgia Tech OMSCS (Computing Systems), mapped to Stages 2–3.<br>Fallback: no internal scope change by M8 → external DE/AE search at M10–12 (never a Data Analyst search).</p>
+        </div>
+        
+        <!-- Project Pipeline -->
+        <div class="projects-section">
+            <h2>💼 Portfolio — 3 Flagships + 2 Supporting</h2>
+            <p class="projects-subtitle">A deliberately focused portfolio — a few substantial systems, each targeting a different problem • Every repo ships with architecture diagram, Dockerfile, eval-metrics table, demo GIF, and "What I Learned"</p>
+            <ul class="project-list">
+                <li class="project-item flagship-border">
+                    <span class="status flagship">🏁 FLAGSHIP 1 • APPLIED AI</span>
+                    <h3>PolicyPulse — RAG → GraphRAG + FastMCP</h3>
+                    <p><strong>Sensitive-document intelligence:</strong> answers retirement-plan policy questions with cited sources, auto-escalates when uncertain, and enforces <strong>per-document access control at retrieval time</strong>.</p>
+                    <p class="project-tech">🧠 Anthropic SDK (primary) + ChromaDB + GraphRAG (Neo4j) + FastMCP server + RAGAS/DeepEval blocking gates</p>
+                    <p class="project-impact">🔍 Multi-hop GraphRAG • 📎 Cited answers • 🔌 MCP tools • 🧪 Access-control-aware retrieval</p>
+                    <span class="project-skill-tag">RAG + GraphRAG + MCP + Eval Gates</span>
+                </li>
+                <li class="project-item flagship-border">
+                    <span class="status flagship">🏁 FLAGSHIP 2 • DATA ENGINEERING</span>
+                    <h3>1099 Data Platform</h3>
+                    <p><strong>Production financial data platform</strong> — the live 1099 reconciliation pipeline, hardened end-to-end: ingestion → dbt-tested models (CI-gated) → orchestrated (Airflow) → data-quality contracts → deployed (Docker/ECS) → monitored, with incident postmortems. Adds a semantic/metrics layer for the Analytics-Engineer story.</p>
+                    <p class="project-tech">🔧 Python + SQL + dbt + Airflow + Snowflake/BigQuery + Great Expectations + Docker→ECS + Terraform</p>
+                    <p class="project-impact">✅ Live: $15K+/yr saved • 95% time reduction • 450+ tax codes caught • 🎯 Retains scheduling priority (feeds first external move)</p>
+                    <span class="project-skill-tag">dbt + Orchestration + Contracts + Deploy/Ops</span>
+                </li>
+                <li class="project-item flagship-border">
+                    <span class="status flagship">🏁 FLAGSHIP 3 • AUTONOMOUS EXECUTION</span>
+                    <h3>Crucible — Backtest → Paper → Live</h3>
+                    <p><strong>Autonomous intraday research platform</strong> with production-safety engineering for irreversible actions: <strong>mandatory human-in-the-loop sign-off + kill-switch</strong> on the live path, and an <strong>"LLM behind the Wall"</strong> barrier (aggregates only, never raw rows). A verifier agent sits before the human gate. Grounded in 5+ years of independent trading.</p>
+                    <p class="project-tech">🔥 Own harness → NautilusTrader + Local Qwen3/Ollama + LangGraph + Alpaca + Schwab/TOS + Sealed OOS Vault</p>
+                    <p class="project-impact">🔒 Overfitting-budget ledger • 🛡️ Deterministic core owns every trade • 📏 Tool Correctness = 1.0 / Task Completion &gt; 0.8</p>
+                    <span class="project-skill-tag">Event-Driven Engine + Local LLM + HITL Safety + Broker APIs</span>
+                </li>
+                <li class="project-item">
+                    <span class="status planned">🧩 SUPPORTING • DOCUMENT AI</span>
+                    <h3>FormSense — Multimodal Agentic Workflow</h3>
+                    <p><strong>Agentic workflow</strong> (Anthropic taxonomy — <em>not</em> multi-agent) that extracts and validates synthetic ERISA distribution forms against a frozen Pydantic schema contract, with GEval schema-adherence gates and smart routing.</p>
+                    <p class="project-tech">👁️ Vision LLM + Pydantic (frozen contract) + Streamlit + DeepEval (GEval ≥ 0.85) + Docker + CI</p>
+                    <span class="project-skill-tag">Multimodal + Schema Adherence + Routing</span>
+                </li>
+                <li class="project-item">
+                    <span class="status planned">🧩 SUPPORTING • RESEARCH</span>
+                    <h3>Attention-Flow Catalyst (AFC)</h3>
+                    <p><strong>Read-only GraphRAG financial research</strong> over small-cap trigger signals, with a <strong>faithfulness ≥ 0.9</strong> evaluation showcase for financial-data sensitivity. Demonstrates bounded, unattended-safe agent design.</p>
+                    <p class="project-tech">🔬 DuckDB + Parquet + edgartools + Neo4j + ChromaDB (GraphRAG) + Anthropic SDK + SelfCheckGPT + FActScore</p>
+                    <span class="project-skill-tag">GraphRAG + Financial-Grade Eval + Bounded Agents</span>
+                </li>
+                <li class="project-item">
+                    <span class="status planned">📅 PLANNED</span>
+                    <h3>DataVault Analyst</h3>
+                    <p><strong>PII-safe natural-language analytics:</strong> "chat with your data" for retirement-plan operations, with governance-as-code guardrails and Pydantic-validated outputs.</p>
+                    <p class="project-tech">🔐 LLM SDK + PandasAI + Pydantic + PII guardrails + Streamlit</p>
+                    <span class="project-skill-tag">PII-Safe AI Analytics</span>
+                </li>
+                <li class="project-item">
+                    <span class="status planned">📅 PLANNED</span>
+                    <h3>Operations-Demand-Intelligence</h3>
+                    <p><strong>AI-powered workflow-demand analysis:</strong> enterprise OnBase data for data-driven staffing, with Distribution vs Loan segmentation and an AI chat interface.</p>
+                    <p class="project-tech">📊 pandas + Plotly + LLM SDK + PandasAI + privacy guardrails</p>
+                    <span class="project-skill-tag">Enterprise Analytics</span>
+                </li>
+                <li class="project-item">
+                    <span class="status planned">📅 PLANNED</span>
+                    <h3>StreamSmart Optimizer</h3>
+                    <p><strong>Consumer AI app:</strong> optimizes household streaming spend through AI rotation planning, content search, and savings forecasting via live APIs.</p>
+                    <p class="project-tech">📺 Watchmode/TMDB APIs + httpx async + AI rotation planner + cost analytics</p>
+                    <span class="project-skill-tag">External APIs + Async + Optimization</span>
+                </li>
+            </ul>
+        </div>
+        
+        <!-- CTA Buttons -->
+        <div class="cta-section">
+            <div class="primary-cta">
+                <a href="roadmap.html" target="_blank" class="cta-button">
+                    📋 View Complete Roadmap (v10.0)
+                </a>
+            </div>
+            
+            <div class="secondary-buttons">
+                <a href="https://github.com/manuel-reyes-ml/data-portfolio" target="_blank" class="cta-button secondary-button">
+                    💼 Portfolio Hub
+                </a>
+                
+                <a href="https://github.com/manuel-reyes-ml/learning_journey" target="_blank" class="cta-button secondary-button">
+                    📚 Learning Journey
+                </a>
+                
+                <a href="https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline" target="_blank" class="cta-button secondary-button">
+                    🔧 Production Code
+                </a>
+            </div>
+        </div>
+        
+        <!-- Stats -->
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-number">~32</div>
+                <div class="stat-label">Months Total</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Evidence-First Stages</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">25</div>
+                <div class="stat-label">Hours/Week</div>
+            </div>
+            <div class="stat">
+                <div class="stat-number">3+2</div>
+                <div class="stat-label">Flagships + Supporting</div>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <div class="build-status">🟢 Active • Evidence-First • Building in Public • Production Systems</div>
+            <br><br>
+            Production AI + RAG/GraphRAG + Data Engineering (dbt/Airflow) + Eval-First Gates + Domain Depth
+            <br>
+            <a href="https://github.com/manuel-reyes-ml" target="_blank">GitHub</a> • 
+            <a href="https://www.linkedin.com/in/mr410/" target="_blank">LinkedIn</a> •
+            <a href="mailto:manuelreyesv410@gmail.com">Email</a>
+        </div>
+    </div>
+</body>
+</html>
