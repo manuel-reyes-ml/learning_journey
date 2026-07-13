@@ -14,7 +14,7 @@
 
 📋 **[View Complete Interactive Roadmap (v10.0) →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
 
-> **🆕 v10.0 (2026 Market Realignment):** 5 stages → **3 stages** (~32 months). Path retitled **Internal AI Builder → AI-Focused Data Engineer / Analytics Engineer → Applied AI Engineer → FDE track**. Portfolio focused to **3 flagships + 2 supporting**. No external Data Analyst search (the 0–2 yr analyst band is contracting) — Stage 1 is internal AI-builder elevation, with a fallback to a DE/AE search if scope doesn't change by Month 8. Certifications trimmed to a purposeful **8 + 1 conditional**; **OMSCS (Computing Systems)** added as a parallel degree track. Framing is **evidence over keywords**.
+> **🆕 v10.0 (2026 Market Realignment):** 5 stages → **3 stages** (~32 months). Path retitled **Internal AI Builder → AI-Focused Data Engineer / Analytics Engineer → Applied AI Engineer → FDE track**. Portfolio focused to **3 flagships + 2 supporting**. No external Data Analyst search (the 0–2 yr analyst band is contracting) — Stage 1 is internal AI-builder elevation, with a fallback to a DE/AE search if scope doesn't change by Month 8. Certifications trimmed to a purposeful **9 + 1 conditional** (incl. **AI-103**, the employer-reimbursable Azure code-first counterpart to CCA-F); **OMSCS (Computing Systems)** added as a parallel degree track. Framing is **evidence over keywords**.
 
 ---
 
@@ -69,7 +69,7 @@ Foundation:  Production Python (typed, pyproject, ruff/mypy) + SQL + Docker/CI
 
 **Stage 2: AI-Focused Data Engineer / Analytics Engineer** (Months 9–20) 📅 PLANNED — *dual-target*
 ```
-Foundation:  SQL at scale + dbt (tested project, CI-gated) + warehouse (Snowflake/BigQuery/Fabric)
+Foundation:  SQL at scale + dbt (tested project, CI-gated) + warehouse (Snowflake primary — "one deep"; BigQuery/Fabric awareness)
 + Pipelines: Airflow orchestration + Kafka streaming basics + PySpark
 + Governance: data contracts, dbt tests / Great Expectations, lineage, access-control awareness
 + Deploy:    Docker → ECS/Fargate + Terraform basics + monitoring + incident writeups
@@ -83,7 +83,7 @@ Foundation:  Production agentic systems (Building Effective Agents taxonomy) + M
 + Eval-as-eng: RAGAS/DeepEval/GEval as CI-blocking gates; SelfCheckGPT/FActScore for finance-grade rigor
 + ML-literacy: embeddings, inference economics, one small fine-tune AS LITERACY (Prompt→RAG→Fine-tune→Distill)
 + Privacy edge: privacy-routed architecture (PII local, proprietary via private endpoints)
-= Result: Applied AI Engineer (~M30); FDE apply list live at M32+; CCA-F + Databricks GenAI + Neo4j
+= Result: Applied AI Engineer (~M30); FDE apply list live at M32+; CCA-F + AI-103 + Databricks GenAI + Neo4j
 ```
 
 ### Why This Approach
@@ -141,7 +141,7 @@ An end-to-end production system: ingestion → **dbt-tested models (CI-gated)** 
 | **Deploy & ops** | **Docker → ECS/Fargate**, Terraform basics, incident writeups |
 | **Semantic layer** | Metric definitions + dashboard handoff (Power BI) — the AE differentiator |
 
-**Tech:** Python • SQL • **dbt** • **Airflow** • **Snowflake/BigQuery** • DuckDB • Parquet • **Great Expectations** • Docker • **AWS (S3, ECS)** • **Terraform** • GitHub Actions CI
+**Tech:** Python • SQL • **dbt** • **Airflow** • **Snowflake** (primary) • BigQuery/Fabric awareness • DuckDB • Parquet • **Great Expectations** • Docker • **AWS (S3, ECS)** • **Terraform** • GitHub Actions CI
 
 **Stages:** S1 (live, retro-migrated to production standards) → S2 (dbt/orchestration/contracts/deploy — *retains scheduling priority*; feeds the first external move) → maintained S3
 
@@ -220,12 +220,12 @@ learning_journey/
 │   ├── aws_data_engineering/             # 📅 Stage 2 DE spine
 │   └── dbt_airflow_kafka/                # 📅 Stage 2 DE/AE tooling
 │
-├── 📂 certifications/                    # Certificate tracking (8 + 1 conditional)
+├── 📂 certifications/                    # Certificate tracking (9 + 1 conditional)
 │   └── in-progress/
 │       ├── ai-901-progress.md            # Azure AI Fundamentals (employer)
 │       ├── ab-620-progress.md            # AI Agent Builder Associate (employer)
 │       ├── ibm-genai-engineering-progress.md
-│       └── ...                            # DP-700, AWS DE, NCA-GENL, Databricks, Neo4j, CCA-F
+│       └── ...                            # DP-700, AWS DE, NCA-GENL, Databricks, Neo4j, AI-103, CCA-F
 │
 ├── 📂 docs/                              # Documentation & GitHub Pages
 │   ├── index.html                        # Landing page
@@ -261,12 +261,12 @@ Systematic progression that compounds the finance/ERISA + trading + eval-first m
 
 > *"AI-focused" ≠ vanilla DE:* the target is data platforms built for AI workloads — AI-managed / AI-ready pipelines, embedding pipelines, vector stores, and unstructured-data ETL feeding RAG — not BI-only engineering.
 
-**Core:** SQL at scale • **dbt** (tested project, CI-gated) • warehouse (Snowflake/BigQuery + Microsoft Fabric) • **Airflow** • **Kafka** basics • **PySpark**
+**Core:** SQL at scale • **dbt** (tested project, CI-gated) • warehouse (**Snowflake** primary — the "one deep", canonical dbt pairing; BigQuery + Microsoft Fabric awareness) • **Airflow** • **Kafka** basics • **PySpark**
 **Governance:** data contracts • dbt tests / Great Expectations • lineage • access-control awareness
 **Deploy:** Docker → ECS/Fargate • **Terraform** basics • monitoring • incident writeups
 **AI-adjacent:** embedding pipelines • vector stores • unstructured-data ETL feeding RAG
 
-**Certs:** **DP-700** (Fabric Data Engineer, employer-reimbursed) + **AWS Certified Data Engineer – Associate** + *dbt Analytics Engineering (conditional — only if AE apps stall)*
+**Certs:** **DP-700** (Fabric Data Engineer, employer-reimbursed) + **AWS Certified Data Engineer – Associate** + *conditional platform-cert menu (take **ONE**, matched to a target employer's stack, never stacked): dbt Analytics Engineering (if AE apps stall) · lakehouse slot — **DP-750** (Azure Databricks, reimbursed) preferred / SnowPro Core (COF-C03) / Databricks DE fallback*
 
 **Key deliverable:** DE flagship production-hardened; first external offer accepted ~M18–20 (or earlier via M10–12 fallback)
 
@@ -277,7 +277,7 @@ Systematic progression that compounds the finance/ERISA + trading + eval-first m
 **ML-literacy module (2–3 months, embedded):** embeddings in depth • inference economics • one small fine-tune AS LITERACY (Prompt→RAG→Fine-tune→Distill) — *substituted by OMSCS coursework if the degree track is active*
 **Privacy/compliance edge:** privacy-routed architecture • per-document access clearance at retrieval time
 
-**Certs:** **Anthropic CCA-F** + **Databricks Certified GenAI Engineer Associate** + **NVIDIA NCA-GENL** + **Neo4j Certified Professional**
+**Certs:** **Anthropic CCA-F** + **Azure AI-103** (AI Apps & Agents Developer — code-first Foundry counterpart to CCA-F, employer-reimbursed) + **Databricks Certified GenAI Engineer Associate** + **NVIDIA NCA-GENL** + **Neo4j Certified Professional**
 
 **Key deliverable:** Applied AI Engineer role (~M30); one public talk on a deployed system; FDE apply list live at M32+ (across industries; remote-normal routes weighted)
 
@@ -320,7 +320,7 @@ Accredited M.S. Computer Science (~$8–9K total), Computing Systems specializat
 
 | Stage | AI Tools & Frameworks |
 |-------|----------------------|
-| **2** | dbt + Airflow + Kafka + PySpark + Snowflake/BigQuery/Fabric + vector DBs + embedding pipelines + unstructured-data ETL + Docker→ECS + Terraform |
+| **2** | dbt + Airflow + Kafka + PySpark + Snowflake (primary)/BigQuery/Fabric + vector DBs + embedding pipelines + unstructured-data ETL + Docker→ECS + Terraform |
 | **3** | Agentic AI (Andrew Ng) + MCP servers (full) + LangGraph + long-term agentic memory + HuggingFace NLP (local embeddings) + Neo4j GraphAcademy + PEFT (literacy) + vLLM inference economics |
 
 ---
@@ -380,8 +380,8 @@ python getting_started/environment-verification.py
 ## 📊 Current Progress
 
 **Active Stage:** 1 of 3 (Internal AI Builder)
-**Portfolio:** 3 flagships (PolicyPulse, 1099 Data Platform [live], Crucible) • 2 supporting (FormSense, AFC) • 3 planned (DataVault, ODI, StreamSmart)
-**Certifications:** 8 + 1 conditional (2 employer-reimbursed in Stage 1)
+**Portfolio:** 3 flagships (PolicyPulse, 1099 Data Platform [live], Crucible) • 2 supporting (FormSense, AFC) • 3 planned (DataVault Analyst, ODI, StreamSmart)
+**Certifications:** 9 + 1 conditional (4 employer-reimbursed: AI-901, AB-620, DP-700, AI-103)
 **Study Hours:** 25/week consistent
 
 **Next milestones:**
