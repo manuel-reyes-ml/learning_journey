@@ -454,7 +454,7 @@
         <div class="ai-box">
             <h2>🚀 Evidence-First: Proof Over Keywords</h2>
             <p>The 2026 market is <strong>saturated at the keyword layer and starved at the evidence layer.</strong> This journey is built on proof: production systems with <strong>evaluation gates</strong>, deployed and measured. The stack is real and load-bearing — Anthropic SDK (primary), RAG + GraphRAG (Neo4j), FastMCP server, Pydantic structured outputs, privacy-routed local models — every project ships with blocking eval gates (DeepEval/RAGAS/GEval) and Docker/CI.</p>
-            <p>From there the stack scales into <strong>Data Engineering</strong> (dbt, Airflow, Kafka, Snowflake/BigQuery, data contracts, Docker→ECS/Terraform) and then <strong>production agentic systems</strong> with MCP servers and human-in-the-loop safety gates — the parts that don't automate away.</p>
+            <p>From there the stack scales into <strong>Data Engineering</strong> (dbt, Airflow, Kafka, Snowflake as the primary warehouse with BigQuery/Fabric awareness, data contracts, Docker→ECS/Terraform) and then <strong>production agentic systems</strong> with MCP servers and human-in-the-loop safety gates — the parts that don't automate away.</p>
             <p><strong>Three flagships anchor the portfolio:</strong> PolicyPulse (Applied-AI: RAG→GraphRAG + FastMCP + access-control retrieval), the 1099 Data Platform (Data Engineering: dbt/Airflow/contracts, built on a live production system), and Crucible (autonomous intraday execution with HITL + kill-switch + "LLM behind the Wall").</p>
             <div class="ai-tools">
                 <span class="ai-tool">Anthropic SDK (primary)</span>
@@ -509,15 +509,15 @@
                 <div class="stage-item upcoming">
                     <h3>🔧 Stage 2: AI-Focused Data Engineer / Analytics Engineer</h3>
                     <p><strong>Timeline:</strong> Months 9-20 (dual-target)</p>
-                    <p><strong>Focus:</strong> dbt + Airflow + Kafka + Snowflake/BigQuery + Microsoft Fabric + data contracts + Docker→ECS/Kubernetes + Terraform</p>
+                    <p><strong>Focus:</strong> dbt + Airflow + Kafka + <strong>Snowflake (primary)</strong> + BigQuery/Fabric awareness + data contracts + Docker→ECS/Kubernetes + Terraform</p>
                     <p><strong>"AI-focused" ≠ vanilla DE:</strong> data platforms built for AI workloads — AI-managed pipelines, embedding pipelines, unstructured-data ETL feeding RAG</p>
-                    <p><strong>Certs:</strong> DP-700 + AWS Data Engineer Associate • first external move ~M18-20</p>
+                    <p><strong>Certs:</strong> DP-700 + AWS Data Engineer Associate <em>(+ conditional platform cert — DP-750/SnowPro/dbt AE, take ONE, matched to target stack)</em> • first external move ~M18-20</p>
                 </div>
                 <div class="stage-item upcoming">
                     <h3>🧠 Stage 3: Applied AI Engineer → FDE</h3>
                     <p><strong>Timeline:</strong> Months 21-32</p>
                     <p><strong>Focus:</strong> Production agentic systems (Building Effective Agents) + MCP servers + HITL gates + eval-as-engineering + ML-literacy module</p>
-                    <p><strong>Certs:</strong> CCA-F + Databricks GenAI + Neo4j + NVIDIA NCA-GENL • FDE apply list at M32+</p>
+                    <p><strong>Certs:</strong> CCA-F + AI-103 (Azure AI Apps &amp; Agents Dev, code-first) + Databricks GenAI + Neo4j + NVIDIA NCA-GENL • FDE apply list at M32+</p>
                 </div>
             </div>
             <p style="text-align:center; margin-top:18px; font-style:italic; opacity:0.85;">🎓 Parallel degree track: Georgia Tech OMSCS (Computing Systems), mapped to Stages 2–3.<br>Fallback: no internal scope change by M8 → external DE/AE search at M10–12 (never a Data Analyst search).</p>
@@ -540,7 +540,7 @@
                     <span class="status flagship">🏁 FLAGSHIP 2 • DATA ENGINEERING</span>
                     <h3>1099 Data Platform</h3>
                     <p><strong>Production financial data platform</strong> — the live 1099 reconciliation pipeline, hardened end-to-end: ingestion → dbt-tested models (CI-gated) → orchestrated (Airflow) → data-quality contracts → deployed (Docker/ECS) → monitored, with incident postmortems. Adds a semantic/metrics layer for the Analytics-Engineer story.</p>
-                    <p class="project-tech">🔧 Python + SQL + dbt + Airflow + Snowflake/BigQuery + Great Expectations + Docker→ECS + Terraform</p>
+                    <p class="project-tech">🔧 Python + SQL + dbt + Airflow + Snowflake (primary)/BigQuery + Great Expectations + Docker→ECS + Terraform</p>
                     <p class="project-impact">✅ Live: $15K+/yr saved • 95% time reduction • 450+ tax codes caught • 🎯 Retains scheduling priority (feeds first external move)</p>
                     <span class="project-skill-tag">dbt + Orchestration + Contracts + Deploy/Ops</span>
                 </li>
