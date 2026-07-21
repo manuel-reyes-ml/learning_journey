@@ -83,6 +83,7 @@ Foundation:  Production agentic systems (Building Effective Agents taxonomy) + M
 + Eval-as-eng: RAGAS/DeepEval/GEval as CI-blocking gates; SelfCheckGPT/FActScore for finance-grade rigor
 + ML-literacy: embeddings, inference economics, one small fine-tune AS LITERACY (Prompt→RAG→Fine-tune→Distill)
 + Privacy edge: privacy-routed architecture (PII local, proprietary via private endpoints)
++ FDE edge:   discovery & decomposition (the case-study round that filters most candidates) — ERISA client-facing background as the structural advantage
 = Result: Applied AI Engineer (~M30); FDE apply list live at M32+; CCA-F + AI-103 + Databricks GenAI + Neo4j
 ```
 
@@ -95,7 +96,7 @@ Foundation:  Production agentic systems (Building Effective Agents taxonomy) + M
 | Generic tutorial projects | Real production systems on owned data |
 | "Prompts an LLM" | Builds, evaluates, deploys, and monitors LLM systems |
 
-**Market context (verified, 2026):** evaluation skills are explicitly required by ~40% of AI-first roles yet listed by only ~5.5% of candidates. Applied-AI and FDE demand spans many industries — regulated-finance depth is one edge I bring, not the boundary.
+**Market context (2026):** model evaluation now appears in ~12% of AI/ML engineering postings and is repeatedly named the year's differentiator — while only ~6% of postings request any certification, and deployed systems outrank credentials. The real screen is the gap between *using* AI and being able to *verify, constrain, and evaluate* it — a gap that commands a documented wage premium (the majority of developers use AI tools; a minority trust the output). Applied-AI and FDE demand spans many industries — regulated-finance depth is one edge I bring, not the boundary.
 
 ---
 
@@ -103,7 +104,7 @@ Foundation:  Production agentic systems (Building Effective Agents taxonomy) + M
 
 > **Focused portfolio: 3 flagships + 2 supporting**, built on a live production system.
 >
-> **🏗️ Production standard (every repo):** architecture diagram (Mermaid), Dockerfile, evaluation-metrics table (DeepEval), 15–30s demo GIF, and "What I Learned." **Non-negotiable standards:** no vibe coding, eval-first blocking gates, **synthetic data only** in public repos, `pyproject.toml` + `src/` + `py.typed` + ruff + mypy, Conventional Commits, earned-overlay policy (ML ships only if it beats the baseline).
+> **🏗️ Production standard (every repo):** architecture diagram (Mermaid), **ADR set (`docs/adr/`) + C4 context diagram** (lead flagships add a C4 container view), Dockerfile, evaluation-metrics table (DeepEval), 15–30s demo GIF, and "What I Learned." **Non-negotiable standards:** no vibe coding, eval-first blocking gates, **synthetic data only** in public repos, `pyproject.toml` + `src/` + `py.typed` + ruff + mypy, Conventional Commits, earned-overlay policy (ML ships only if it beats the baseline).
 
 ### 🏁 Flagship 1 — [PolicyPulse](https://github.com/manuel-reyes-ml/policypulse) · *Applied-AI* | 🔌 Exposes FastMCP server
 
@@ -143,13 +144,13 @@ An end-to-end production system: ingestion → **dbt-tested models (CI-gated)** 
 
 **Tech:** Python • SQL • **dbt** • **Airflow** • **Snowflake** (primary) • BigQuery/Fabric awareness • DuckDB • Parquet • **Great Expectations** • Docker • **AWS (S3, ECS)** • **Terraform** • GitHub Actions CI
 
-**Stages:** S1 (live, retro-migrated to production standards) → S2 (dbt/orchestration/contracts/deploy — *retains scheduling priority*; feeds the first external move) → maintained S3
+**Stages:** S1 (live, retro-migrated to production standards) → S2 (dbt/orchestration/contracts/deploy — *retains scheduling priority*; feeds the first external move) → S3 (adds the **DataVault Applied-AI layer** — NL-to-SQL over the semantic layer, HITL on every write)
 
 ---
 
 ### 🏁 Flagship 3 — [Crucible](https://github.com/manuel-reyes-ml/crucible) · *Autonomous Execution Research* | 🦙 Local-First AI
 
-**Backtest → paper → live** autonomous intraday research platform. *"Does this strategy have a real edge that survives out-of-sample validation — and can an autonomous agent trade it without me babysitting it?"*
+**Backtest → paper → live** autonomous **multi-timeframe (swing → intraday)** research platform. *"Does this strategy have a real edge that survives out-of-sample validation — and can an autonomous agent trade it without me babysitting it?"* *(Swing-first is the lower-risk on-ramp; intraday plugins follow once swing clears all three gates.)*
 
 Production-safety engineering for an autonomous system handling irreversible actions: a **mandatory human-in-the-loop sign-off + kill-switch** on the live path, and an **"LLM behind the Wall"** information barrier — the model sees only in-sample aggregated stats, never raw ticker-date outcomes. A **verifier agent** sits before the human gate. Grounded in 5+ years of hands-on independent trading.
 
@@ -179,17 +180,16 @@ Multimodal **agentic workflow** (Anthropic *Building Effective Agents* taxonomy 
 
 Read-only **GraphRAG** financial-research loop over small-cap trigger signals (insider buys, attention spikes, volume, dilution, squeeze-context), with a **faithfulness ≥ 0.9** evaluation showcase for financial-data sensitivity. Demonstrates bounded, unattended-safe agent design (read-only/verifiable).
 
-**Tech:** Python • DuckDB • Parquet • httpx async • edgartools • **Neo4j + ChromaDB (GraphRAG)** • **Anthropic SDK** • DeepEval • SelfCheckGPT + FActScore • Docker • CI · **Stage:** S3 (research)
+**Tech:** Python • DuckDB • Parquet • httpx async • edgartools • **Neo4j + ChromaDB (GraphRAG)** • **Anthropic SDK** • DeepEval • SelfCheckGPT + FActScore • Docker • CI · **Stages:** S1 → S3 *(the SEC-grounded faithfulness benchmark is an S1 deliverable — the smallest publishable high-signal artifact; the GraphRAG research loop is S3)*
 
 ---
 
-### 📅 Also in the Pipeline (Planned)
+### 📅 Backlog (production-grade when built, positioned last)
 
-Distinct projects with their own repos, scope, and documentation:
-
-- 🔐 **[DataVault Analyst](https://github.com/manuel-reyes-ml/datavault-analyst)** — PII-safe natural-language analytics ("chat with your data") with governance-as-code guardrails and Pydantic-validated outputs
-- 📊 **[Operations-Demand-Intelligence](https://github.com/manuel-reyes-ml/operations-demand-intelligence)** — AI-powered workflow-demand analytics on enterprise OnBase data
+- 📊 **[Operations-Demand-Intelligence](https://github.com/manuel-reyes-ml/operations-demand-intelligence)** — AI-powered workflow-demand analytics on enterprise OnBase data (consolidation candidate against the 1099 platform's mart/AI layer)
 - 📺 **[StreamSmart Optimizer](https://github.com/manuel-reyes-ml/streamsmart-optimizer)** — consumer AI app (external APIs, async HTTP, optimization)
+
+> **Note:** the former standalone *DataVault Analyst* (PandasAI / NL querying) is now the **S3 Applied-AI layer of Flagship 2** — text-to-SQL over the semantic layer with HITL on every write. No separate repo.
 
 ---
 
@@ -207,7 +207,7 @@ learning_journey/
 │       ├── Crucible (Flagship 3 — autonomous execution: backtest→paper→live)
 │       ├── FormSense (Supporting — multimodal agentic workflow)
 │       ├── Attention-Flow Catalyst (Supporting — read-only GraphRAG research)
-│       └── Planned: DataVault Analyst · Operations-Demand-Intelligence · StreamSmart
+│       └── Backlog: Operations-Demand-Intelligence · StreamSmart  (DataVault = Flagship 2 S3 layer)
 │
 ├── 📂 getting_started/                   # For new visitors (setup + AI tools)
 │
@@ -251,7 +251,7 @@ Systematic progression that compounds the finance/ERISA + trading + eval-first m
 **Eval:** RAGAS/DeepEval blocking gates • golden datasets • hallucination detection
 **Employer:** AI-901 → AB-620 (reimbursed); ZTM Azure Bootcamp; Microsoft Agent Framework awareness
 
-**Learning path:** CS50 (Harvard) • Python for Everybody • AI Python for Beginners • Building with the Claude API (Anthropic Academy) • Improving Accuracy of LLM Apps • Building & Evaluating Advanced RAG • MCP primer • AI Prompting for Everyone • 30 Days of Streamlit • Docker for Beginners • **IBM Generative AI Engineering Professional Certificate** (Stage 1 spine)
+**Learning path:** CS50x (Harvard) • **CS50P** (Harvard — Python, testing/debugging rigor) • **MITx 6.00.1x** (MIT — Python CS foundations) • Python for Everybody • AI Python for Beginners • Building with the Claude API (Anthropic Academy) • Improving Accuracy of LLM Apps • Building & Evaluating Advanced RAG • MCP primer • AI Prompting for Everyone • 30 Days of Streamlit • Docker for Beginners • **IBM Generative AI Engineering Professional Certificate** (Stage 1 spine)
 
 **Deliverables:** PolicyPulse v1 (eval gates + FastMCP) • 1099 pipeline retro-migrated to production standards • AI-901 passed → AB-620 begun • two documented internal automation wins • scope-change conversation in writing by Month 6
 
@@ -276,6 +276,8 @@ Systematic progression that compounds the finance/ERISA + trading + eval-first m
 **Eval-as-engineering:** RAGAS/DeepEval/GEval as CI-blocking gates • SelfCheckGPT/FActScore for finance-grade rigor • eval dashboards as portfolio artifacts
 **ML-literacy module (2–3 months, embedded):** embeddings in depth • inference economics • one small fine-tune AS LITERACY (Prompt→RAG→Fine-tune→Distill) — *substituted by OMSCS coursework if the degree track is active*
 **Privacy/compliance edge:** privacy-routed architecture • per-document access clearance at retrieval time
+
+**🎯 FDE differentiator — Discovery & Decomposition (first-class skill):** FDE loops run a system-design round, a decomposition/open-ended case study (the round where most technically-strong candidates wash out), and a client-simulation role-play — with customer discovery and communication weighted at roughly half the evaluation, and graders scoring the *process* (clarifying questions before solutioning, clean decomposition, prioritization, transparent trade-offs) over the final answer. My **ERISA client-facing operations background is the structural edge on exactly the round that eliminates most candidates.** Portfolio proof: every flagship carries an **ADR set + C4 diagram** for architecture-defense rehearsal.
 
 **Certs:** **Anthropic CCA-F** + **Azure AI-103** (AI Apps & Agents Developer — code-first Foundry counterpart to CCA-F, employer-reimbursed) + **Databricks Certified GenAI Engineer Associate** + **NVIDIA NCA-GENL** + **Neo4j Certified Professional**
 
@@ -380,7 +382,7 @@ python getting_started/environment-verification.py
 ## 📊 Current Progress
 
 **Active Stage:** 1 of 3 (Internal AI Builder)
-**Portfolio:** 3 flagships (PolicyPulse, 1099 Data Platform [live], Crucible) • 2 supporting (FormSense, AFC) • 3 planned (DataVault Analyst, ODI, StreamSmart)
+**Portfolio:** 3 flagships (PolicyPulse, 1099 / DataVault Platform [live], Crucible) • 2 supporting (FormSense, AFC) • backlog (ODI, StreamSmart)
 **Certifications:** 9 + 1 conditional (4 employer-reimbursed: AI-901, AB-620, DP-700, AI-103)
 **Study Hours:** 25/week consistent
 
@@ -406,7 +408,7 @@ python getting_started/environment-verification.py
 - [Crucible](https://github.com/manuel-reyes-ml/crucible) 🏁 Flagship 3 — Autonomous execution
 - [FormSense](https://github.com/manuel-reyes-ml/formsense) 🧩 Supporting — Document AI
 - [Attention-Flow Catalyst](https://github.com/manuel-reyes-ml/attention-flow-catalyst) 🧩 Supporting — Research
-- Planned: [DataVault Analyst](https://github.com/manuel-reyes-ml/datavault-analyst) · [Operations-Demand-Intelligence](https://github.com/manuel-reyes-ml/operations-demand-intelligence) · [StreamSmart Optimizer](https://github.com/manuel-reyes-ml/streamsmart-optimizer)
+- Backlog: [Operations-Demand-Intelligence](https://github.com/manuel-reyes-ml/operations-demand-intelligence) · [StreamSmart Optimizer](https://github.com/manuel-reyes-ml/streamsmart-optimizer) — *DataVault NL-analytics is folded into Flagship 2 as its S3 Applied-AI layer*
 
 **Open to:**
 - 💼 Data Engineer / Analytics Engineer roles (dual-target; AE more remote-accessible)
