@@ -455,7 +455,7 @@
             <h2>🚀 Evidence-First: Proof Over Keywords</h2>
             <p>The 2026 market is <strong>saturated at the keyword layer and starved at the evidence layer.</strong> This journey is built on proof: production systems with <strong>evaluation gates</strong>, deployed and measured. The stack is real and load-bearing — Anthropic SDK (primary), RAG + GraphRAG (Neo4j), FastMCP server, Pydantic structured outputs, privacy-routed local models — every project ships with blocking eval gates (DeepEval/RAGAS/GEval) and Docker/CI.</p>
             <p>From there the stack scales into <strong>Data Engineering</strong> (dbt, Airflow, Kafka, Snowflake as the primary warehouse with BigQuery/Fabric awareness, data contracts, Docker→ECS/Terraform) and then <strong>production agentic systems</strong> with MCP servers and human-in-the-loop safety gates — the parts that don't automate away.</p>
-            <p><strong>Three flagships anchor the portfolio:</strong> PolicyPulse (Applied-AI: RAG→GraphRAG + FastMCP + access-control retrieval), the 1099 Data Platform (Data Engineering: dbt/Airflow/contracts, built on a live production system), and Crucible (autonomous intraday execution with HITL + kill-switch + "LLM behind the Wall").</p>
+            <p><strong>Three flagships anchor the portfolio:</strong> PolicyPulse (Applied-AI: RAG→GraphRAG + FastMCP + access-control retrieval), the 1099 Data Platform (Data Engineering: dbt/Airflow/contracts, built on a live production system), and Crucible (autonomous multi-timeframe (swing → intraday) execution with HITL + kill-switch + "LLM behind the Wall").</p>
             <div class="ai-tools">
                 <span class="ai-tool">Anthropic SDK (primary)</span>
                 <span class="ai-tool">🦙 Local-First (Qwen3/Ollama + LM Studio)</span>
@@ -517,6 +517,7 @@
                     <h3>🧠 Stage 3: Applied AI Engineer → FDE</h3>
                     <p><strong>Timeline:</strong> Months 21-32</p>
                     <p><strong>Focus:</strong> Production agentic systems (Building Effective Agents) + MCP servers + HITL gates + eval-as-engineering + ML-literacy module</p>
+                    <p><strong>🎯 FDE differentiator:</strong> Discovery &amp; decomposition — the customer-facing case-study round that filters most technically-strong candidates; ERISA client-facing background is the structural edge. Every flagship carries an ADR set + C4 diagram for architecture-defense.</p>
                     <p><strong>Certs:</strong> CCA-F + AI-103 (Azure AI Apps &amp; Agents Dev, code-first) + Databricks GenAI + Neo4j + NVIDIA NCA-GENL • FDE apply list at M32+</p>
                 </div>
             </div>
@@ -526,7 +527,7 @@
         <!-- Project Pipeline -->
         <div class="projects-section">
             <h2>💼 Portfolio — 3 Flagships + 2 Supporting</h2>
-            <p class="projects-subtitle">A deliberately focused portfolio — a few substantial systems, each targeting a different problem • Every repo ships with architecture diagram, Dockerfile, eval-metrics table, demo GIF, and "What I Learned"</p>
+            <p class="projects-subtitle">A deliberately focused portfolio — a few substantial systems, each targeting a different problem • Every repo ships with architecture diagram, ADR set + C4 diagram, Dockerfile, eval-metrics table, demo GIF, and "What I Learned"</p>
             <ul class="project-list">
                 <li class="project-item flagship-border">
                     <span class="status flagship">🏁 FLAGSHIP 1 • APPLIED AI</span>
@@ -539,7 +540,7 @@
                 <li class="project-item flagship-border">
                     <span class="status flagship">🏁 FLAGSHIP 2 • DATA ENGINEERING</span>
                     <h3>1099 Data Platform</h3>
-                    <p><strong>Production financial data platform</strong> — the live 1099 reconciliation pipeline, hardened end-to-end: ingestion → dbt-tested models (CI-gated) → orchestrated (Airflow) → data-quality contracts → deployed (Docker/ECS) → monitored, with incident postmortems. Adds a semantic/metrics layer for the Analytics-Engineer story.</p>
+                    <p><strong>Production financial data platform</strong> — the live 1099 reconciliation pipeline, hardened end-to-end: ingestion → dbt-tested models (CI-gated) → orchestrated (Airflow) → data-quality contracts → deployed (Docker/ECS) → monitored, with incident postmortems. Adds a semantic/metrics layer for the Analytics-Engineer story, plus an S3 DataVault Applied-AI layer (NL-to-SQL over the semantic layer, HITL on every write).</p>
                     <p class="project-tech">🔧 Python + SQL + dbt + Airflow + Snowflake (primary)/BigQuery + Great Expectations + Docker→ECS + Terraform</p>
                     <p class="project-impact">✅ Live: $15K+/yr saved • 95% time reduction • 450+ tax codes caught • 🎯 Retains scheduling priority (feeds first external move)</p>
                     <span class="project-skill-tag">dbt + Orchestration + Contracts + Deploy/Ops</span>
@@ -547,7 +548,7 @@
                 <li class="project-item flagship-border">
                     <span class="status flagship">🏁 FLAGSHIP 3 • AUTONOMOUS EXECUTION</span>
                     <h3>Crucible — Backtest → Paper → Live</h3>
-                    <p><strong>Autonomous intraday research platform</strong> with production-safety engineering for irreversible actions: <strong>mandatory human-in-the-loop sign-off + kill-switch</strong> on the live path, and an <strong>"LLM behind the Wall"</strong> barrier (aggregates only, never raw rows). A verifier agent sits before the human gate. Grounded in 5+ years of independent trading.</p>
+                    <p><strong>Autonomous multi-timeframe (swing → intraday) research platform</strong> with production-safety engineering for irreversible actions: <strong>mandatory human-in-the-loop sign-off + kill-switch</strong> on the live path, and an <strong>"LLM behind the Wall"</strong> barrier (aggregates only, never raw rows). A verifier agent sits before the human gate. Grounded in 5+ years of independent trading.</p>
                     <p class="project-tech">🔥 Own harness → NautilusTrader + Local Qwen3/Ollama + LangGraph + Alpaca + Schwab/TOS + Sealed OOS Vault</p>
                     <p class="project-impact">🔒 Overfitting-budget ledger • 🛡️ Deterministic core owns every trade • 📏 Tool Correctness = 1.0 / Task Completion &gt; 0.8</p>
                     <span class="project-skill-tag">Event-Driven Engine + Local LLM + HITL Safety + Broker APIs</span>
@@ -562,26 +563,19 @@
                 <li class="project-item">
                     <span class="status planned">🧩 SUPPORTING • RESEARCH</span>
                     <h3>Attention-Flow Catalyst (AFC)</h3>
-                    <p><strong>Read-only GraphRAG financial research</strong> over small-cap trigger signals, with a <strong>faithfulness ≥ 0.9</strong> evaluation showcase for financial-data sensitivity. Demonstrates bounded, unattended-safe agent design.</p>
+                    <p><strong>Read-only GraphRAG financial research</strong> over small-cap trigger signals, with a <strong>faithfulness ≥ 0.9</strong> evaluation showcase for financial-data sensitivity. Demonstrates bounded, unattended-safe agent design. <em>Eval-first faithfulness benchmark ships in S1 → S3.</em></p>
                     <p class="project-tech">🔬 DuckDB + Parquet + edgartools + Neo4j + ChromaDB (GraphRAG) + Anthropic SDK + SelfCheckGPT + FActScore</p>
                     <span class="project-skill-tag">GraphRAG + Financial-Grade Eval + Bounded Agents</span>
                 </li>
                 <li class="project-item">
-                    <span class="status planned">📅 PLANNED</span>
-                    <h3>DataVault Analyst</h3>
-                    <p><strong>PII-safe natural-language analytics:</strong> "chat with your data" for retirement-plan operations, with governance-as-code guardrails and Pydantic-validated outputs.</p>
-                    <p class="project-tech">🔐 LLM SDK + PandasAI + Pydantic + PII guardrails + Streamlit</p>
-                    <span class="project-skill-tag">PII-Safe AI Analytics</span>
-                </li>
-                <li class="project-item">
-                    <span class="status planned">📅 PLANNED</span>
+                    <span class="status planned">📅 BACKLOG</span>
                     <h3>Operations-Demand-Intelligence</h3>
                     <p><strong>AI-powered workflow-demand analysis:</strong> enterprise OnBase data for data-driven staffing, with Distribution vs Loan segmentation and an AI chat interface.</p>
                     <p class="project-tech">📊 pandas + Plotly + LLM SDK + PandasAI + privacy guardrails</p>
                     <span class="project-skill-tag">Enterprise Analytics</span>
                 </li>
                 <li class="project-item">
-                    <span class="status planned">📅 PLANNED</span>
+                    <span class="status planned">📅 BACKLOG</span>
                     <h3>StreamSmart Optimizer</h3>
                     <p><strong>Consumer AI app:</strong> optimizes household streaming spend through AI rotation planning, content search, and savings forecasting via live APIs.</p>
                     <p class="project-tech">📺 Watchmode/TMDB APIs + httpx async + AI rotation planner + cost analytics</p>
