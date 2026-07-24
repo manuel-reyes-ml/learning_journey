@@ -22,6 +22,8 @@ Each project is **one system that evolves across stages**, not a set of scattere
 | 6 | 📺 **StreamSmart** · 📊 **ODI** | Backlog | Consumer subscription optimizer · enterprise demand analytics (ODI = consolidation candidate) | 🗒️ Backlog |
 
 > Shared library: **`signalcore`** — point-in-time-safe primitives beneath AFC + Crucible (siblings, no merge). Content tooling: **Cadence** (build-in-public pipeline — a tool, not a portfolio flagship).
+>
+> Toolchain: **uv (Astral)** manages packages and environments across every project above. **Conda** is a deliberate exception, not a default — reserved for **Crucible only**, and only if it grows compiled numerical / CUDA / BLAS backends where binary channels beat wheels.
 
 ---
 
@@ -52,7 +54,7 @@ One system across the arc. **S1:** the live 1099 reconciliation core. **S2:** ha
 
 | Stage | Evolution | Live money? |
 |-------|-----------|-------------|
-| **S1** | Own event-driven backtest harness + AI research loop + integrity spine (sealed OOS vault · overfitting ledger · engine-parity gate) | No |
+| **S1** | Own event-driven backtest harness + AI research loop + integrity spine (sealed OOS vault · overfitting ledger · engine-parity gate); uv-managed env *(Conda only if compiled/GPU backends land)* | No |
 | **S2** | Migrate to NautilusTrader (engine-parity gate); autonomous paper crew (LangGraph); local Qwen/Ollama analyst | No |
 | **S3** | Autonomous micro-sizing (Alpaca); deterministic core + multi-agent oversight; **mandatory HITL sign-off + kill-switch** | Yes (small) |
 
@@ -66,7 +68,7 @@ One system across the arc. **S1:** the live 1099 reconciliation core. **S2:** ha
 
 ## 🏗️ Production Standard (v10.0 — all projects)
 
-Every project ships with a **Mermaid diagram + C4 Context diagram** (+ Container view on lead flagships) · **`docs/adr/`** numbered Architecture Decision Records (context → decision → consequences) · Dockerfile · evaluation-metrics table · demo GIF · "What I Learned" · **eval-first blocking gates** · **synthetic data only** in public repos · `pyproject.toml` + `src/` + `py.typed` + ruff + mypy · Conventional Commits. *Stage 3 adds an ADR set + an architecture-defense rehearsal — present and defend the design against a reviewer, mirroring the FDE panel format.*
+Every project ships with a **Mermaid diagram + C4 Context diagram** (+ Container view on lead flagships) · **`docs/adr/`** numbered Architecture Decision Records (context → decision → consequences) · Dockerfile · evaluation-metrics table · demo GIF · "What I Learned" · **eval-first blocking gates** · **synthetic data only** in public repos · `pyproject.toml` + **`uv.lock`** + `src/` + `py.typed` + ruff + mypy · Conventional Commits. **Environments are uv-managed** (Astral) — a committed lockfile plus `uv sync --frozen` in CI/Docker makes every build byte-reproducible; no `requirements.txt` anywhere. *Stage 3 adds an ADR set + an architecture-defense rehearsal — present and defend the design against a reviewer, mirroring the FDE panel format.*
 
 **Evaluation:** DeepEval + pytest across all projects · RAGAS (PolicyPulse) · SelfCheckGPT (PolicyPulse + AFC) · FActScore (AFC) · Arize Phoenix observability.
 
