@@ -43,7 +43,7 @@
 - ✅ **Focused portfolio: 3 flagships + 2 supporting** — real systems (Applied-AI, Data Engineering, autonomous-execution safety), not a repo pile
 - ✅ **Domain depth** — 15+ yrs business operations (manufacturing, digital marketing) + 2 yrs ERISA-regulated financial operations + 5+ yrs independent trading
 - ✅ **Eval-first engineering** — DeepEval / RAGAS / GEval as **blocking gates** (faithfulness ≥ 0.9 for financial data)
-- ✅ **Production standards** — typed Python, `pyproject.toml` + `src/`, ruff/mypy, Docker, GitHub Actions CI, Conventional Commits; **no vibe coding** (every line understood before merge)
+- ✅ **Production standards** — typed Python, **`uv` + committed `uv.lock`**, `pyproject.toml` + `src/`, ruff/mypy, Docker, GitHub Actions CI, Conventional Commits; **no vibe coding** (every line understood before merge)
 - ✅ **Measurable business impact** — 95% time reduction, 450+ incorrect tax codes caught, documented outcomes
 
 **The key differentiator:** already delivering production value while building toward Data Engineering and Applied AI — with evaluation evidence that stands up to scrutiny.
@@ -60,7 +60,7 @@ Each stage compounds the same moat (finance/ERISA + trading depth + eval-first d
 
 **Stage 1: Internal AI Builder** (Months 1–8) 🟢 ACTIVE
 ```
-Foundation:  Production Python (typed, pyproject, ruff/mypy) + SQL + Docker/CI
+Foundation:  Production Python (typed, uv + uv.lock, pyproject, ruff/mypy) + SQL + Docker/CI
 + AI Layer:  Anthropic SDK (structured outputs, tool use, prompt caching) + RAG + MCP literacy
 + Eval Layer: RAGAS/DeepEval as blocking gates, golden datasets, hallucination detection
 + Employer:  Azure AI Fundamentals (AI-901) → AI Agent Builder Associate (AB-620), reimbursed
@@ -104,7 +104,7 @@ Foundation:  Production agentic systems (Building Effective Agents taxonomy) + M
 
 > **Focused portfolio: 3 flagships + 2 supporting**, built on a live production system.
 >
-> **🏗️ Production standard (every repo):** architecture diagram (Mermaid), **ADR set (`docs/adr/`) + C4 context diagram** (lead flagships add a C4 container view), Dockerfile, evaluation-metrics table (DeepEval), 15–30s demo GIF, and "What I Learned." **Non-negotiable standards:** no vibe coding, eval-first blocking gates, **synthetic data only** in public repos, `pyproject.toml` + `src/` + `py.typed` + ruff + mypy, Conventional Commits, earned-overlay policy (ML ships only if it beats the baseline).
+> **🏗️ Production standard (every repo):** architecture diagram (Mermaid), **ADR set (`docs/adr/`) + C4 context diagram** (lead flagships add a C4 container view), Dockerfile, evaluation-metrics table (DeepEval), 15–30s demo GIF, and "What I Learned." **Non-negotiable standards:** no vibe coding, eval-first blocking gates, **synthetic data only** in public repos, `pyproject.toml` + **`uv.lock`** + `src/` + `py.typed` + ruff + mypy, Conventional Commits, earned-overlay policy (ML ships only if it beats the baseline). *Every image builds with `uv sync --frozen` — reproducible by construction.*
 
 ### 🏁 Flagship 1 — [PolicyPulse](https://github.com/manuel-reyes-ml/policypulse) · *Applied-AI* | 🔌 Exposes FastMCP server
 
@@ -235,7 +235,8 @@ learning_journey/
 │
 ├── .gitignore
 ├── .vscode/                              # VS Code settings
-└── pyproject.toml                        # Python dependencies (PEP 621)
+├── pyproject.toml                        # Python dependencies (PEP 621, uv-managed)
+└── uv.lock                               # committed lockfile — reproducible installs
 ```
 
 ---
@@ -246,14 +247,14 @@ Systematic progression that compounds the finance/ERISA + trading + eval-first m
 
 ### Stage 1: Internal AI Builder (Months 1–8) 🟢 ACTIVE
 
-**Core:** Production Python (typed, pyproject, ruff/mypy) • SQL • Docker/CI
+**Core:** Production Python (typed, **uv + `uv.lock`**, pyproject, ruff/mypy) • SQL • Docker/CI
 **AI:** Anthropic SDK (structured outputs, tool use, prompt caching) • RAG • MCP literacy • Pydantic • Streamlit
 **Eval:** RAGAS/DeepEval blocking gates • golden datasets • hallucination detection
 **Employer:** AI-901 → AB-620 (reimbursed); ZTM Azure Bootcamp; Microsoft Agent Framework awareness
 
-**Learning path:** CS50x (Harvard) • **CS50P** (Harvard — Python, testing/debugging rigor) • **MITx 6.00.1x** (MIT — Python CS foundations) • Python for Everybody • AI Python for Beginners • Building with the Claude API (Anthropic Academy) • Improving Accuracy of LLM Apps • Building & Evaluating Advanced RAG • MCP primer • AI Prompting for Everyone • 30 Days of Streamlit • Docker for Beginners • **IBM Generative AI Engineering Professional Certificate** (Stage 1 spine)
+**Learning path:** CS50x (Harvard) • **CS50P** (Harvard — Python, testing/debugging rigor) • **MITx 6.00.1x** (MIT — Python CS foundations) • Python for Everybody • AI Python for Beginners • Building with the Claude API (Anthropic Academy) • Improving Accuracy of LLM Apps • Building & Evaluating Advanced RAG • MCP primer • AI Prompting for Everyone • 30 Days of Streamlit • Docker for Beginners • **uv — Python packaging** (Astral official docs + Al Sweigart quickstart) • *conditional:* **Conda Basics** (Anaconda — only if Crucible needs compiled/GPU backends) • **IBM Generative AI Engineering Professional Certificate** (Stage 1 spine)
 
-**Deliverables:** PolicyPulse v1 (eval gates + FastMCP) • 1099 pipeline retro-migrated to production standards • AI-901 passed → AB-620 begun • two documented internal automation wins • scope-change conversation in writing by Month 6
+**Deliverables:** PolicyPulse v1 (eval gates + FastMCP) • 1099 pipeline retro-migrated to production standards (incl. `pip → uv` migration) • AI-901 passed → AB-620 begun • two documented internal automation wins • scope-change conversation in writing by Month 6
 
 > **Exit criterion:** documented internal scope change by Month 8. **Fallback:** no change by M8 → external DE/AE search at M10–12 (not a Data Analyst search).
 
@@ -299,6 +300,8 @@ Accredited M.S. Computer Science (~$8–9K total), Computing Systems specializat
 - **VS Code** (first-class editor) — Python, SQL, Jupyter notebooks
 - **Cursor AI IDE** — AI pair programming (with `.cursor/rules` scoped rules)
 - **OpenCode** — agentic harness (custom agents, slash commands); local `qwen3.5-16k` Modelfile
+- **uv (Astral)** — package/environment manager for every repo (`uv init` / `uv add` / `uv run`); committed `uv.lock` = reproducible installs. Replaces pip + virtualenv + pip-tools + pyenv
+- **Conda (Anaconda)** — ⏸️ *conditional, Crucible only* — reserved for compiled numerical / CUDA / BLAS backends where binary channels beat wheels; never mixed with uv in one environment
 
 **GenAI Engineering:**
 - **Anthropic SDK** — *primary* provider (structured outputs, tool use, prompt caching); PolicyPulse + AFC
@@ -313,7 +316,7 @@ Accredited M.S. Computer Science (~$8–9K total), Computing Systems specializat
 - **GEval** — schema-adherence (FormSense) • **SelfCheckGPT + FActScore** — hallucination rigor (AFC)
 - **Thresholds:** faithfulness ≥ 0.9 (AFC) • GEval ≥ 0.85 (FormSense) • Tool Correctness = 1.0 / Task Completion > 0.8 (agentic)
 
-**Containerization:** Docker (Dockerfile for every repo; Stage 1 fundamentals via KodeKloud)
+**Containerization:** Docker (Dockerfile for every repo; Stage 1 fundamentals via KodeKloud) — images build via `uv sync --frozen` for byte-reproducible dependency installs
 
 ### Integration Principles
 **Transparency:** document AI assistance in commits • **Validation:** always test AI-generated code • **No vibe coding:** every line understood before merge, diff-review-before-merge, manual commit as the final control gate • **Privacy-first routing:** PII/proprietary local, proprietary via private endpoints, public scaffolding only on free tiers
@@ -333,6 +336,7 @@ Accredited M.S. Computer Science (~$8–9K total), Computing Systems specializat
 - **VS Code** (primary) — Python, SQL, Jupyter notebooks
 - **Cursor AI** (AI pair programming) + **OpenCode** (agentic harness, custom agents/commands)
 - **Make** (task automation via `Makefile`) • **Git** + Conventional Commits
+- **uv** (packages, virtual envs, Python versions) — `uv run` replaces manual venv activation
 
 **Languages & data:**
 - Python 3.12, SQL
@@ -350,13 +354,15 @@ Accredited M.S. Computer Science (~$8–9K total), Computing Systems specializat
 - Docker → Kubernetes (Stage 2), GitHub Actions CI
 
 **Production standards:**
-- `pyproject.toml` + `src/` + `py.typed`, ruff format, mypy (3.12), Conventional Commits
+- `pyproject.toml` + **`uv.lock`** + `src/` + `py.typed`, ruff format, mypy (3.12), Conventional Commits
+- Dependency management: **uv** (`uv add`, `uv sync --frozen` in CI/Docker) — **no `requirements.txt` anywhere**
 
 ```bash
 git clone https://github.com/manuel-reyes-ml/learning_journey.git
 cd learning_journey
 open getting_started/SETUP_GUIDE.md          # setup incl. AI tools
-python getting_started/environment-verification.py
+uv sync                                      # creates .venv + installs from uv.lock
+uv run python getting_started/environment-verification.py
 ```
 
 ---
