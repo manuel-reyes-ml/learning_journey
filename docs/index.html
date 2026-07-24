@@ -453,7 +453,7 @@
         <!-- AI Differentiator -->
         <div class="ai-box">
             <h2>🚀 Evidence-First: Proof Over Keywords</h2>
-            <p>The 2026 market is <strong>saturated at the keyword layer and starved at the evidence layer.</strong> This journey is built on proof: production systems with <strong>evaluation gates</strong>, deployed and measured. The stack is real and load-bearing — Anthropic SDK (primary), RAG + GraphRAG (Neo4j), FastMCP server, Pydantic structured outputs, privacy-routed local models — every project ships with blocking eval gates (DeepEval/RAGAS/GEval) and Docker/CI.</p>
+            <p>The 2026 market is <strong>saturated at the keyword layer and starved at the evidence layer.</strong> This journey is built on proof: production systems with <strong>evaluation gates</strong>, deployed and measured. The stack is real and load-bearing — Anthropic SDK (primary), RAG + GraphRAG (Neo4j), FastMCP server, Pydantic structured outputs, privacy-routed local models — every project ships with blocking eval gates (DeepEval/RAGAS/GEval) and Docker/CI, and every environment is reproducible by construction — <strong>uv (Astral) with a committed <code>uv.lock</code></strong>, images built via <code>uv sync --frozen</code>.</p>
             <p>From there the stack scales into <strong>Data Engineering</strong> (dbt, Airflow, Kafka, Snowflake as the primary warehouse with BigQuery/Fabric awareness, data contracts, Docker→ECS/Terraform) and then <strong>production agentic systems</strong> with MCP servers and human-in-the-loop safety gates — the parts that don't automate away.</p>
             <p><strong>Three flagships anchor the portfolio:</strong> PolicyPulse (Applied-AI: RAG→GraphRAG + FastMCP + access-control retrieval), the 1099 Data Platform (Data Engineering: dbt/Airflow/contracts, built on a live production system), and Crucible (autonomous multi-timeframe (swing → intraday) execution with HITL + kill-switch + "LLM behind the Wall").</p>
             <div class="ai-tools">
@@ -468,6 +468,8 @@
                 <span class="ai-tool">Pydantic</span>
                 <span class="ai-tool">DeepEval + RAGAS + GEval</span>
                 <span class="ai-tool">Docker + K8s + CI</span>
+                <span class="ai-tool">⚡ uv (Astral) + uv.lock</span>
+                <span class="ai-tool">🐍 Conda (conditional)</span>
                 <span class="ai-tool">VS Code + Cursor AI + OpenCode</span>
             </div>
         </div>
@@ -503,7 +505,7 @@
                 <div class="stage-item current">
                     <h3>📊 Stage 1: Internal AI Builder</h3>
                     <p><strong>Status:</strong> Active (Months 1-8)</p>
-                    <p><strong>Focus:</strong> Production Python + SQL + Anthropic SDK + RAG + MCP + eval gates + Docker/CI; AI-901 → AB-620 (employer-reimbursed)</p>
+                    <p><strong>Focus:</strong> Production Python (typed, <strong>uv + uv.lock</strong>) + SQL + Anthropic SDK + RAG + MCP + eval gates + Docker/CI; AI-901 → AB-620 (employer-reimbursed)</p>
                     <p><strong>Goal:</strong> AI-builder scope at current employer (no comp reset) + PolicyPulse v1 shipping</p>
                 </div>
                 <div class="stage-item upcoming">
@@ -527,7 +529,7 @@
         <!-- Project Pipeline -->
         <div class="projects-section">
             <h2>💼 Portfolio — 3 Flagships + 2 Supporting</h2>
-            <p class="projects-subtitle">A deliberately focused portfolio — a few substantial systems, each targeting a different problem • Every repo ships with architecture diagram, ADR set + C4 diagram, Dockerfile, eval-metrics table, demo GIF, and "What I Learned"</p>
+            <p class="projects-subtitle">A deliberately focused portfolio — a few substantial systems, each targeting a different problem • Every repo ships with architecture diagram, ADR set + C4 diagram, Dockerfile, eval-metrics table, demo GIF, and "What I Learned" • <strong>uv-managed</strong> (<code>pyproject.toml</code> + committed <code>uv.lock</code>, no <code>requirements.txt</code>)</p>
             <ul class="project-list">
                 <li class="project-item flagship-border">
                     <span class="status flagship">🏁 FLAGSHIP 1 • APPLIED AI</span>
@@ -631,7 +633,7 @@
         <div class="footer">
             <div class="build-status">🟢 Active • Evidence-First • Building in Public • Production Systems</div>
             <br><br>
-            Production AI + RAG/GraphRAG + Data Engineering (dbt/Airflow) + Eval-First Gates + Domain Depth
+            Production AI + RAG/GraphRAG + Data Engineering (dbt/Airflow) + Eval-First Gates + Reproducible Builds (uv) + Domain Depth
             <br>
             <a href="https://github.com/manuel-reyes-ml" target="_blank">GitHub</a> • 
             <a href="https://www.linkedin.com/in/mr410/" target="_blank">LinkedIn</a> •
