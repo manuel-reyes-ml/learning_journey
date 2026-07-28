@@ -108,20 +108,52 @@ BLOCKED_OPERATIONS = ["DELETE", "UPDATE", "INSERT", "DROP", "os.", "subprocess"]
 
 ```python
 # src/ai/observability.py
+import structlog
 
-# ✅ Log per-query metrics (provider/model come from config — never hardcoded)
-logger.info(
-    "AI query completed",
-    extra={
-        "provider": provider_name,      # e.g. "ollama", "anthropic", "openrouter"
-        "model": model_name,            # e.g. "qwen3.5", "claude-sonnet-4-6"
-        "tokens_used": usage.total_tokens,
-        "latency_ms": elapsed_ms,
-        "estimated_cost": cost,         # 0.0 for local Ollama
-        "guardrail_triggered": False,
-    }
+log = structlog.stdlib.get_logger(__name__)
+
+# ✅ Log per-query metrics (provider/model come from config — never hardcoded).
+# Kwargs, not extra={} — see python-production-standards.mdc § Structured Logging.
+log.info(
+    "ai_query_completed",
+    provider=provider_name,           # e.g. "ollama", "anthropic", "openrouter"
+    model=model_name,                 # e.g. "qwen3.5", "claude-sonnet-4-6"
+    tokens_used=usage.total_tokens,
+    latency_ms=elapsed_ms,
+    estimated_cost=cost,              # 0.0 for local Ollama
+    guardrail_triggered=False,
 )
+
+# ✅ Bind once per query — every downstream line (including the SDK's own httpx
+# logs) inherits query_id, so one filter reconstructs the whole call.
+structlog.contextvars.clear_contextvars()
+structlog.contextvars.bind_contextvars(query_id=query_id, provider=provider_name)
 ```
+
+### Canonical event names (stable — renaming breaks dashboards)
+
+| Event | Emitted when |
+|---|---|
+| `ai_query_started` | after guardrail validation, before the SDK call |
+| `ai_query_completed` | on success, with tokens/latency/cost |
+| `ai_query_failed` | on SDK error, after retries are exhausted |
+| `guardrail_blocked` | query or response rejected — include `reason`, never the PII |
+| `schema_validation_failed` | Pydantic rejected the LLM response |
+
+### Retries on provider calls
+
+```python
+import stamina
+
+# Retry transient transport/rate-limit failures only. Never retry a schema
+# validation failure — a malformed response will be malformed again.
+@stamina.retry(on=(httpx.HTTPError, RateLimitError), attempts=3, timeout=60.0)
+def _call_provider(prompt: str) -> ProviderResponse:
+    ...
+```
+
+Because `stamina` detects `structlog`, each scheduled retry is logged automatically
+with its own structured event — retry storms become visible without extra code.
 
 > **SDK currency (2026):** if a project uses Gemini for *public* data, use the unified
 > `google-genai` client (`from google import genai; client = genai.Client()`), not the
@@ -132,9 +164,12 @@ logger.info(
 
 ### Rules
 - Every AI call logs: provider, model, tokens, latency, cost, guardrail status
-- AI logs go to dedicated `logs/ai.log` (separate from app logs)
+- AI logs are **derived, not separate** — emit to stdout like everything else and filter
+  on `logger` / event name downstream. A second file handler duplicates and interleaves.
 - Cost estimation uses published API pricing (update when rates change)
 - Surface metrics in Streamlit sidebar for transparency
+- **Never log prompt or completion bodies at INFO.** Log shape and identifiers — token
+  counts, hashes, ids. Bodies at DEBUG only, and the redaction processor still applies.
 
 ---
 
@@ -167,9 +202,11 @@ class AIProvider:
 ```
 
 ### Rules
-- Provider selection via config/env var — never hardcoded
-- Retry logic with exponential backoff for rate limits
-- Timeout: 30 seconds default
+- Provider selection via `settings.ai_provider` (pydantic-settings) — never hardcoded
+- Retries via `stamina` — capped attempts AND total time, jittered backoff, transient
+  errors only (never on `ValidationError`)
+- Timeout: `settings.request_timeout_s`, 30 seconds default
+- API keys typed `SecretStr`; unwrapped only at the client constructor
 - Fallback: if primary provider fails, try secondary
 
 ---
@@ -179,7 +216,10 @@ class AIProvider:
 - [ ] All LLM responses validated through Pydantic schemas
 - [ ] PII scan runs on every response before display
 - [ ] Query validation blocks dangerous operations
-- [ ] Token/cost/latency logged per query
+- [ ] Token/cost/latency logged per query via structlog kwargs (not `extra={}`)
+- [ ] `query_id` bound to contextvars so SDK/httpx logs correlate
+- [ ] No prompt/completion bodies logged at INFO
+- [ ] Provider retries use `stamina`; schema failures are NOT retried
 - [ ] Provider switchable via config (not hardcoded)
 - [ ] Disclaimer injected on every AI response
 - [ ] Guardrail functions have >90% test coverage
