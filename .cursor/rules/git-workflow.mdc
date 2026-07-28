@@ -454,6 +454,8 @@ Before every commit:
 - [ ] `git diff --staged` — Review exact changes
 - [ ] Tests pass locally
 - [ ] No debug code (`print()`, `console.log()`, `debugger`)
+- [ ] Logging uses structlog kwargs; no f-strings in log calls; no new `basicConfig()`
+- [ ] No secrets, PII, or real participant data in code, logs, tests, or fixtures
 - [ ] No commented-out code blocks
 - [ ] Commit message follows convention
 
