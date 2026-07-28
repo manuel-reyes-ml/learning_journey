@@ -93,6 +93,16 @@ st.session_state.chat_history.append({
 # ✅ Keep business logic out of Streamlit pages
 # pages/03_AI_Chat.py calls src/ai/provider.py — never has SDK logic inline
 
+# ✅ Configure logging ONCE per session — Streamlit reruns the script top-to-bottom
+#    on every interaction, so a naive call would stack duplicate handlers.
+@st.cache_resource
+def _init_logging() -> bool:
+    from src.observability.logging import configure_logging
+    configure_logging()
+    return True
+
+_init_logging()
+
 # ✅ Show AI observability to users
 st.sidebar.metric("Tokens Used", st.session_state.total_tokens)
 st.sidebar.metric("Est. Cost", f"${st.session_state.total_cost:.4f}")
@@ -111,4 +121,5 @@ st.caption("⚠️ AI-generated insight. Verify before acting.")
 - [ ] Session state initialized with `if key not in st.session_state`
 - [ ] AI responses show disclaimer caption
 - [ ] Sidebar shows observability metrics (tokens, cost)
+- [ ] `configure_logging()` wrapped in `@st.cache_resource` (no duplicate handlers)
 - [ ] App works without API key (graceful degradation)
