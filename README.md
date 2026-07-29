@@ -43,7 +43,7 @@
 - ✅ **Focused portfolio: 3 flagships + 2 supporting** — real systems (Applied-AI, Data Engineering, autonomous-execution safety), not a repo pile
 - ✅ **Domain depth** — 15+ yrs business operations (manufacturing, digital marketing) + 2 yrs ERISA-regulated financial operations + 5+ yrs independent trading
 - ✅ **Eval-first engineering** — DeepEval / RAGAS / GEval as **blocking gates** (faithfulness ≥ 0.9 for financial data)
-- ✅ **Production standards** — typed Python, **`uv` + committed `uv.lock`**, `pyproject.toml` + `src/`, ruff/mypy, Docker, GitHub Actions CI, Conventional Commits; **no vibe coding** (every line understood before merge)
+- ✅ **Production standards** — typed Python, **`uv` + committed `uv.lock`**, `pyproject.toml` + `src/`, ruff/mypy, Docker, GitHub Actions CI, Conventional Commits; **structured logging (`structlog`) with a PII-redaction processor**, typed config (`pydantic-settings`), capped retries (`stamina`); **no vibe coding** (every line understood before merge)
 - ✅ **Measurable business impact** — 95% time reduction, 450+ incorrect tax codes caught, documented outcomes
 
 **The key differentiator:** already delivering production value while building toward Data Engineering and Applied AI — with evaluation evidence that stands up to scrutiny.
@@ -104,7 +104,7 @@ Foundation:  Production agentic systems (Building Effective Agents taxonomy) + M
 
 > **Focused portfolio: 3 flagships + 2 supporting**, built on a live production system.
 >
-> **🏗️ Production standard (every repo):** architecture diagram (Mermaid), **ADR set (`docs/adr/`) + C4 context diagram** (lead flagships add a C4 container view), Dockerfile, evaluation-metrics table (DeepEval), 15–30s demo GIF, and "What I Learned." **Non-negotiable standards:** no vibe coding, eval-first blocking gates, **synthetic data only** in public repos, `pyproject.toml` + **`uv.lock`** + `src/` + `py.typed` + ruff + mypy, Conventional Commits, earned-overlay policy (ML ships only if it beats the baseline). *Every image builds with `uv sync --frozen` — reproducible by construction.*
+> **🏗️ Production standard (every repo):** architecture diagram (Mermaid), **ADR set (`docs/adr/`) + C4 context diagram** (lead flagships add a C4 container view), Dockerfile, evaluation-metrics table (DeepEval), 15–30s demo GIF, and "What I Learned." **Non-negotiable standards:** no vibe coding, eval-first blocking gates, **synthetic data only** in public repos, `pyproject.toml` + **`uv.lock`** + `src/` + `py.typed` + ruff + mypy · **structured logging (`structlog` over stdlib via `ProcessorFormatter`) + PII redaction processor · typed config (`pydantic-settings`, `SecretStr` credentials) · capped jittered retries (`stamina`)**, Conventional Commits, earned-overlay policy (ML ships only if it beats the baseline). *Every image builds with `uv sync --frozen` — reproducible by construction.*
 
 ### 🏁 Flagship 1 — [PolicyPulse](https://github.com/manuel-reyes-ml/policypulse) · *Applied-AI* | 🔌 Exposes FastMCP server
 
@@ -354,7 +354,7 @@ Accredited M.S. Computer Science (~$8–9K total), Computing Systems specializat
 - Docker → Kubernetes (Stage 2), GitHub Actions CI
 
 **Production standards:**
-- `pyproject.toml` + **`uv.lock`** + `src/` + `py.typed`, ruff format, mypy (3.12), Conventional Commits
+- `pyproject.toml` + **`uv.lock`** + `src/` + `py.typed`, ruff format, mypy (3.12) · **structured logging (`structlog` + `ProcessorFormatter`) + PII redaction processor · typed config (`pydantic-settings`) · capped retries (`stamina`)**, Conventional Commits
 - Dependency management: **uv** (`uv add`, `uv sync --frozen` in CI/Docker) — **no `requirements.txt` anywhere**
 
 ```bash
