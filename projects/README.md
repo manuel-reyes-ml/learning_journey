@@ -29,24 +29,40 @@ Each project is **one system that evolves across stages**, not a set of scattere
 
 ## 🏆 Production Highlight
 
-### 🧾 1099 / DataVault Data Platform (S1 core) — ✅ Live at Daybright Financial
+### 🧾 1099 / DataVault Data Platform (S1 core) — ✅ Live in an ERISA-regulated environment
 
-| ⚡ ~95% time reduction | 💰 ~$15,000/year savings | 📊 10× scalability | ✅ Caught a tax-code error a manual pass missed |
+| ⚡ ~95% time reduction | 📈 Full distribution book, no added headcount | 🛡️ Derived-vs-reported Box-7 validation gate | ✅ Reconciliation success rate held to a freshness SLA |
 |---|---|---|---|
 
-Ingests Matrix + Relius into a canonical model, reconciles them, derives Box-7 codes, and surfaces corrections analytics. The public build uses synthetic data only; the production deployment runs internally on regulated data.
+Ingests Matrix + Relius into a canonical model, reconciles them, derives Box-7 codes, and surfaces corrections analytics.
+
+> 🔒 **Regulated-environment disclosure.** The public build uses synthetic data only; the production deployment runs internally on regulated data. Published claims are limited to **mechanism and non-identifying relative deltas** — no absolute cost figures, participant or plan data, client identifiers, or employer-identifying volumes. The Cost line for this project is therefore thinner than a typical portfolio project's: a disclosure constraint, not a gap.
 
 ---
 
 ## 🚩 Flagship Highlights
 
 ### 📋 PolicyPulse — Applied-AI flagship (RAG)
+
+- **① Production** — Containerised RAG + **FastMCP** service; **RAGAS/DeepEval blocking gates are merge conditions**, not reports; confidence-gated escalation path.
+- **② Cost** — Cost-per-query and p95 latency measured across inference substrates; local-vs-cloud routing policy; embedding/re-index cost.
+- **③ Architecture** — GraphRAG (Neo4j + ChromaDB) · retrieval-strategy **ADRs with rejected alternatives** · C4 Context + Container · MCP read → approval-gated write boundary.
+
 Retrieval-augmented answering over retirement-plan documents with cited sources and confidence-gated escalation; exposes a **FastMCP server**. Evolves from vector RAG (S1) → **GraphRAG hybrid (Neo4j + ChromaDB)** for multi-hop questions (S2/S3) → agentic workflows with a three-layer eval spine (per-query metrics + trajectory tracing + drift vs. a frozen golden set).
 
 ### 🧾 1099 / DataVault Data Platform — Data-Engineering flagship
+
+- **① Production** — Live, depended-upon pipeline in a regulated environment — reconciliation success rate, freshness SLA, quarantine/retry behaviour, schema contracts, on-call reality.
+- **② Cost** — 🔒 *Deliberately constrained.* Mechanism + non-identifying relative deltas + manual hours removed. No absolute figures — see the disclosure above.
+- **③ Architecture** — **ERISA-driven ADRs** (retention, auditability, reconciliation guarantees, PII boundary) · C4 Context + Container · dbt tests and data contracts.
+
 One system across the arc. **S1:** the live 1099 reconciliation core. **S2:** hardened into a platform — dbt-tested models (CI-gated), orchestration (Airflow), data contracts, containerized deploy, monitoring, one written incident/postmortem. **S3:** the Applied-AI analyst layer (natural-language querying) with **human-in-the-loop on every write**.
 
 ### 🔥 Crucible — Autonomous trading-research flagship (started first)
+
+- **① Production** — Backtest → paper → live path with **mandatory HITL sign-off + kill-switch**; deterministic core owns every trade; intended-vs-filled reconciliation.
+- **② Cost** — Compute cost per backtest sweep, data-feed cost, sweep efficiency (results per compute-hour).
+- **③ Architecture** — Multi-timeframe design · execution and risk-control ADRs · C4 Context + Container · `signalcore` boundary (primitives in, strategy logic out).
 
 > **The question it answers, for any strategy:** *Does this have a real edge that survives out-of-sample validation — and can an autonomous agent trade it without babysitting?*
 
