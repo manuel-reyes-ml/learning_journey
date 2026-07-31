@@ -478,23 +478,23 @@
         <!-- Production Highlight -->
         <div class="highlight-box">
             <h2>🏆 Production Code, Not Just Tutorials</h2>
-            <p><strong>1099 Reconciliation ETL Pipeline:</strong> Live system at Daybright Financial — the seed of the Data Engineering flagship. Caught <strong>450+ incorrect tax codes</strong> before participants received bad documents.</p>
+            <p><strong>1099 Reconciliation ETL Pipeline:</strong> Live system in an <strong>ERISA-regulated retirement-plan operations environment</strong> — the seed of the Data Engineering flagship. A <strong>derived-vs-reported Box-7 validation gate</strong> quarantines mismatches before distribution. <em>Mechanism and non-identifying relative deltas only — no absolute cost figures, participant or plan data, client identifiers, or employer-identifying volumes.</em></p>
             <div class="highlight-metrics">
                 <div class="metric">
                     <span class="metric-number">95%</span>
                     <span class="metric-label">Time Saved</span>
                 </div>
                 <div class="metric">
-                    <span class="metric-number">$15K+</span>
-                    <span class="metric-label">Annual Savings</span>
+                    <span class="metric-number">SLA</span>
+                    <span class="metric-label">Freshness Held</span>
                 </div>
                 <div class="metric">
-                    <span class="metric-number">10x</span>
-                    <span class="metric-label">Scalability</span>
+                    <span class="metric-number">Full</span>
+                    <span class="metric-label">Book, No Added Headcount</span>
                 </div>
                 <div class="metric">
-                    <span class="metric-number">0</span>
-                    <span class="metric-label">Errors</span>
+                    <span class="metric-number">Gated</span>
+                    <span class="metric-label">Derived vs Reported</span>
                 </div>
             </div>
         </div>
@@ -545,7 +545,7 @@
                     <h3>1099 Data Platform</h3>
                     <p><strong>Production financial data platform</strong> — the live 1099 reconciliation pipeline, hardened end-to-end: ingestion → dbt-tested models (CI-gated) → orchestrated (Airflow) → data-quality contracts → deployed (Docker/ECS) → monitored, with incident postmortems. Adds a semantic/metrics layer for the Analytics-Engineer story, plus an S3 DataVault Applied-AI layer (NL-to-SQL over the semantic layer, HITL on every write).</p>
                     <p class="project-tech">🔧 Python + SQL + dbt + Airflow + Snowflake (primary)/BigQuery + Great Expectations + Docker→ECS + Terraform</p>
-                    <p class="project-impact">✅ Live: $15K+/yr saved • 95% time reduction • 450+ tax codes caught • 🎯 Retains scheduling priority (feeds first external move)</p>
+                    <p class="project-impact">① <strong>Production:</strong> live in a regulated environment — reconciliation success rate, freshness SLA, quarantine/retry, schema contracts, on-call • ② <strong>Cost:</strong> 95% time reduction (4–6 hrs → 15 min/week); mechanism and relative deltas only • ③ <strong>Architecture:</strong> ERISA-driven ADRs + C4 + dbt tests/contracts • 🎯 Retains scheduling priority (feeds first external move)</p>
                     <span class="project-skill-tag">dbt + Orchestration + Contracts + Deploy/Ops</span>
                 </li>
                 <li class="project-item flagship-border">
@@ -553,7 +553,7 @@
                     <h3>Crucible — Backtest → Paper → Live</h3>
                     <p><strong>Autonomous multi-timeframe (swing → intraday) research platform</strong> with production-safety engineering for irreversible actions: <strong>mandatory human-in-the-loop sign-off + kill-switch</strong> on the live path, and an <strong>"LLM behind the Wall"</strong> barrier (aggregates only, never raw rows). A verifier agent sits before the human gate. Grounded in 5+ years of independent trading.</p>
                     <p class="project-tech">🔥 Own harness → NautilusTrader + Local Qwen3/Ollama + LangGraph + Alpaca + Schwab/TOS + Sealed OOS Vault</p>
-                    <p class="project-impact">🔒 Overfitting-budget ledger • 🛡️ Deterministic core owns every trade • 📏 Tool Correctness = 1.0 / Task Completion &gt; 0.8</p>
+                    <p class="project-impact">① <strong>Production:</strong> paper→live with mandatory human sign-off + kill-switch; deterministic core owns every trade • ② <strong>Cost:</strong> compute per backtest sweep; sweep efficiency • ③ <strong>Architecture:</strong> overfitting-budget ledger • Tool Correctness = 1.0 / Task Completion &gt; 0.8 • execution/risk ADRs + C4 + signalcore boundary</p>
                     <span class="project-skill-tag">Event-Driven Engine + Local LLM + HITL Safety + Broker APIs</span>
                 </li>
                 <li class="project-item">
