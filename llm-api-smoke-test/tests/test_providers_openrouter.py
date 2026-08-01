@@ -6,8 +6,10 @@
 # =============================================================================
 
 from __future__ import annotations
+import http
 
 import httpx
+from numpy import isin
 import pytest
 import respx
 
@@ -22,6 +24,7 @@ from llm_api_smoke_test.providers import (
     AsyncOpenRouterProvider,
     OpenRouterProvider,
     SmokeTestResult,
+    AsyncLLMProvider,
 )
 
 # =============================================================================
@@ -231,3 +234,43 @@ class TestOpenRouterProviderSmokeTest:
 # ASYNC ADAPTER — AsyncOpenRouterProvider
 # =============================================================================
 
+class TestAsyncOpenRouterProviderSmokeTest:
+    """Async adapter — identical parsing contract, awaited HTTP call.
+ 
+    Relies on ``asyncio_mode = "auto"`` so each ``async def test_*`` runs
+    in an event loop without a marker.  Deliberately NO module-level
+    ``pytestmark = pytest.mark.asyncio`` — that would wrongly tag the sync
+    tests above as asyncio.  respx intercepts the SDK's ``httpx.AsyncClient``
+    exactly as it does the sync client.
+    """
+
+    @respx.mock
+    async def test_happy_patch_parses_response(
+        self, openrouter_settings: ProviderSettings,
+    ) -> None:
+        """Async happy path — same parsing as the sync adapter, awaited."""
+        route = respx.post(_COMPLETIONS_URL).mock(
+            return_value=httpx.Response(200, json=_chat_completion_payload())
+        )
+
+        provider = AsyncOpenRouterProvider(openrouter_settings)  # type: ignore[arg-call]
+
+        # runtime_checkable must be implement in AsyncLLMProvider
+        # so it can be used in isinstance().
+        assert isinstance(provider, AsyncLLMProvider)
+        result = await provider.smoke_test("say hello")
+
+        assert route.called
+        assert result.provider_name == "OpenRouter"
+        assert result.response_preview == "hello world"
+        assert result.request_id == "gen-abc123"
+        assert result.usage is not None
+        assert result.usage.input_tokens == 7
+        assert result.usage.output_tokens == 2
+
+    @respx.mock
+    async def test_none_content_coalesces_to_empty_string(
+        self, openrouter_settings: ProviderSettings,
+    ) -> None:
+        """Async — null content coalesces to ``""`` (same guard, async path)."""
+        
