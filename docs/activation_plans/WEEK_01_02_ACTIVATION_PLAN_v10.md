@@ -7,7 +7,7 @@
 **Weekly Hours:** 25 (Mon–Fri 4:30–6:00 AM + 8:00–10:00 PM · Sat 5:00–8:30 AM + 8:00–10:00 PM · Sun 7:30–9:30 PM)
 **Your Level:** Beginning the tech build from scratch — 15+ years business ops, 2 years ERISA-regulated financial operations, 5+ years trading
 
-> **How to use the code in this plan:** TYPE every example yourself — never copy/paste. Typing is how syntax enters your fingers. Read the comments (lines starting with `#`) as you type; they carry the "why." Then run the file, break it on purpose, and fix it. That loop — type → run → break → fix — is how programmers are actually made. This is the roadmap's "no vibe coding" rule applied to yourself: every line understood before it's committed.
+> **How to use the code in this plan:** TYPE every example yourself — never copy/paste, and never let Cursor Tab or an agent complete it (Tab stays OFF these two weeks; the Agent Policy section below governs the rest). Typing is how syntax enters your fingers. Read the comments (lines starting with `#`) as you type; they carry the "why." Then run the file, break it on purpose, and fix it. When you're confused, that's what Cursor **Ask** mode is for: paste YOUR code, ask WHY — the agent explains, you type. That loop — type → run → break → ask → fix — is how programmers who can later *supervise agents* are made. This is the roadmap's "no vibe coding" rule: every line understood before it's committed.
 
 ---
 
@@ -22,7 +22,7 @@ The previous activation plans were aligned to Roadmap **v8.3** (GenAI Data Analy
 | SQLZoo tutorials | ❌ Removed | Correction 7: redundant with Mode SQL Tutorial + daily project SQL |
 | Kaggle | ❌ Removed | Correction 7: competition portfolios read as academic — antithesis of the real-deployed-system thesis |
 | "Data Analyst" job tracker in Week 1 | ❌ Removed | v10.0: NO external analyst search, ever. Stage 1 exit = internal elevation |
-| Cursor as primary editor | **VS Code primary** | Your stated preference: Python, SQL, Jupyter, VS Code |
+| Editor unspecified agent policy | **Cursor (primary, with Cursor Agents) + OpenCode agents · VS Code secondary** | Your stated workflow: build with agents while understanding every script and line — governed by the graduated agent policy below, which operationalizes the roadmap's no-vibe-coding + diff-review-before-merge rules |
 | pip + requirements.txt | **uv + pyproject.toml + committed uv.lock** | 🆕 Correction 13 makes uv the OFFICIAL default across every project (Stage 1 Core Course #15); uv.lock now sits in the non-negotiable production standard; requirements.txt banned everywhere |
 | 37-month / 5-stage framing | **32-month / 3-stage** | v10.0 structural restructure |
 
@@ -50,7 +50,7 @@ Carried forward: the 25 hrs/week schedule, morning-theory/evening-practice split
 
 You're building three things at once:
 
-1. **The environment** — the workspace for ~3,500 hours over 32 months, set up once with the 2026-standard toolchain (`uv`, `ruff`, VS Code) so every project starts at the roadmap's production standard from its first commit.
+1. **The environment** — the workspace for ~3,500 hours over 32 months, set up once with the 2026-standard toolchain (`uv`, `ruff`, Cursor + OpenCode agents, VS Code as fallback) so every project starts at the roadmap's production standard from its first commit.
 2. **The habit engine** — morning theory + evening practice, journaled and committed daily.
 3. **First skills** — Python + SQL from the v10.0 course canon only: CS50x, Python for Everybody (P4E), Mode SQL. No filler platforms.
 
@@ -60,7 +60,7 @@ You are training an **Internal AI Builder → AI-Focused Data Engineer → Appli
 
 - **Evidence over credentials** — every study session ends with a commit; your GitHub is the resume.
 - **Production-grade from the start** — even Week 1 practice code lives in a `pyproject.toml` + `src/` repo with ruff and Conventional Commits.
-- **No vibe coding** — you type and understand every line before committing. AI assistants may *explain*; they don't write your foundations.
+- **No vibe coding — with agents in the loop.** You build WITH Cursor Agents and OpenCode, but the roadmap's rule is absolute: every line understood before merge, diff reviewed file-by-file. In Weeks 1–4 that means a *graduated* agent policy (see the Agent Policy section below): agents explain and review while YOU type the foundations — because the fundamentals you're installing this month are exactly what lets you supervise agents credibly for the next 32 months.
 
 ### Your moat
 
@@ -69,6 +69,25 @@ You are training an **Internal AI Builder → AI-Focused Data Engineer → Appli
 ### Flagships are the lighthouse, not the Week 1 task
 
 PolicyPulse, DataVault, and Crucible S1 cores start once foundations exist (~Weeks 7+). This fortnight's only flagship touches: the habits, the environment, and (Week 2, ten minutes) the free Alpaca account that seeds Crucible later.
+
+---
+
+### 🤖 THE AGENT POLICY (Weeks 1–4) — how to use Cursor Agents & OpenCode without vibe coding
+
+Your workflow is agent-driven, and that's the right long-term call — your roadmap's own harness pattern (`.cursor/rules/`, OpenCode agents) assumes it. But there's a hard truth about Month 1: **you cannot review what you cannot write.** The roadmap's no-vibe-coding rule ("every line understood before merge") is only enforceable by someone whose fingers know the syntax. So the policy ramps:
+
+| Phase | You | Agents (Cursor Agent / OpenCode) |
+|---|---|---|
+| **Weeks 1–2 (foundations)** | TYPE every example and exercise yourself | **Tutor mode only**: explain concepts, explain YOUR code back to you, explain error messages, answer "why" questions. Never generate exercise solutions — if an agent writes your first for-loop, you didn't learn for-loops. |
+| **Weeks 3–4 (first pipeline)** | Type all core logic (matching rules, SQL, tests) | Tutor mode + **boilerplate under review**: agents may draft mechanical scaffolding (a CSV-writer block, an argparse skeleton) — then you read the diff line-by-line, ask the agent to explain anything unclear, and only accept when you could have written it yourself. Reject anything you can't explain. |
+| **Weeks 5+ (SDK era onward)** | Design, review, decide | Progressively more generation, always gated by file-by-file diff review — the roadmap's permanent standard. |
+
+**Three standing rules, all four weeks:**
+1. **The explain-back test:** before accepting ANY agent-written line, you must be able to explain it out loud without looking at the agent's explanation. If you can't, don't accept — ask, learn, then accept.
+2. **Tests and ADRs are always yours.** An agent-written test proving agent-written code is circular. Your tests encode YOUR understanding of the business rules — that's non-negotiable (it's also the eval-first muscle).
+3. **Daily reps stay manual.** The course exercises (P4E, CS50x, Mode SQL) are typed by hand, full stop. They're the gym; agents don't lift your weights.
+
+You'll codify this policy as a `.cursor/rules` file in Step 4 below — your first taste of the rules-file pattern that governs all 14 of your future project scopes.
 
 ---
 
@@ -144,17 +163,54 @@ uv python list              # confirm 3.12 appears in the list
 >
 > 📖 **Core Course #15 (do this weekend, ~2 h total):** read Astral's official uv docs — the "Projects" guide especially — plus Al Sweigart's uv quickstart as the terse command reference. This is a formal course row in your roadmap's Stage 1 table (docs + one tutorial, no certificate — the vendor-official pattern). Log it complete in your README evidence list when done.
 
-### Step 4 — VS Code (~10 min) ⭐ YOUR PRIMARY EDITOR
-1. Download https://code.visualstudio.com → drag to Applications → open.
-2. ⌘+Shift+P → type "shell command" → select **Install 'code' command in PATH** (lets you type `code .` in Terminal to open the current folder).
-3. Extensions (⌘+Shift+X, search + install each):
+### Step 4 — Cursor (primary) + VS Code (secondary) + OpenCode (~30 min) ⭐ YOUR EDITOR + AGENT STACK
+
+**4a. Cursor — your primary editor.** Cursor is a fork of VS Code with AI agents built in, so everything VS Code does (extensions, settings, keybindings) works identically — you're not learning two editors.
+1. Download https://cursor.com → drag to Applications → open → sign in ($20/mo Pro when the free tier runs out; treat it as a committed tool cost).
+2. ⌘+Shift+P → "Shell Command: Install 'cursor' command" (lets you type `cursor .` in Terminal).
+3. Extensions (⌘+Shift+X — Cursor uses the same marketplace):
 ```
 □ Python (Microsoft)        □ Pylance (Microsoft)     □ Jupyter (Microsoft)
 □ Ruff (Astral Software)    □ GitLens                 □ Docker (Microsoft)
 □ Even Better TOML          □ SQLite Viewer           □ Markdown All in One
 ```
-4. Settings (⌘+,): search "format on save" → ✅ enable; search "default formatter" → **Ruff** for Python.
-> **Why Ruff + format-on-save:** ruff is the 2026-standard linter/formatter (same maker as uv). "Linting" = automatic checking for mistakes and style problems. Format-on-save means your code is professionally formatted every time you hit ⌘+S — a senior habit installed on Day 0 for free.
+4. Settings (⌘+,): "format on save" → ✅ enable; "default formatter" → **Ruff** for Python.
+> **Why Ruff + format-on-save:** ruff is the 2026-standard linter/formatter (same maker as uv). Format-on-save means professionally formatted code every ⌘+S — a senior habit installed on Day 0 for free.
+>
+> **Know your three Cursor modes** (⌘+L opens the panel): **Ask** = chat about code without changing it (your Weeks 1–2 tutor mode); **Agent** = it edits files and runs commands (gated by the policy above — Weeks 3–4 boilerplate only, under diff review); **Tab** = inline autocomplete — **turn Tab OFF for Weeks 1–2** (Settings → Cursor Tab → disable): autocomplete finishing your for-loops defeats the typing reps. Re-enable it Week 5.
+
+**4b. VS Code — secondary.** Install from https://code.visualstudio.com (same extensions auto-sync if you enable Settings Sync). It's your agent-free fallback: if you ever wonder "can I still do this without the agent?", open VS Code and find out. That check is a feature.
+
+**4c. OpenCode — terminal agent harness.**
+```bash
+brew install anomaly/tap/opencode 2>/dev/null || npm install -g opencode-ai   # use the current install method from opencode.ai docs
+opencode --version
+```
+OpenCode runs agents from the terminal — the harness your roadmap's project scopes standardize on (`.opencode/agents/`, `.opencode/commands/`). For Weeks 1–4 you only need it installed and authenticated (it can use your Anthropic key from Step 8); its real workload starts with the flagship era. If the install method differs from the above, follow opencode.ai's current docs — and note in your journal what changed (that's a build-in-public artifact).
+
+**4d. Your first rules file — codify the agent policy.** In the learning-journey repo (after Step 7), create `.cursor/rules/learning-phase.mdc`:
+```markdown
+---
+description: Learning-phase agent policy (Weeks 1-4, Roadmap v10.0 Stage 1)
+alwaysApply: true
+---
+
+# Learning-Phase Rules — Manuel is in foundations training
+
+- I am learning Python/SQL fundamentals. DO NOT write solutions to course
+  exercises (P4E, CS50x, Mode SQL) or to scripts I am typing from my
+  activation plan. Explain concepts, review MY code, explain errors.
+- When I ask for help: explain WHY, show the smallest possible example on
+  DIFFERENT data than my exercise, and let me write my own version.
+- Weeks 3-4 exception: mechanical boilerplate (CSV writer blocks, argparse
+  skeletons) may be drafted WHEN I EXPLICITLY ASK — small diffs, heavily
+  commented, and quiz me on one line before we move on.
+- Never write my tests or my ADRs. Ever.
+- Production standard applies to all suggestions: type hints, docstrings,
+  uv (never pip), no requirements.txt, Conventional Commits, no print()
+  inside functions.
+```
+> **Why this matters beyond Week 4:** rules files are how your roadmap governs agents across all 14 project scopes (`.cursor/rules/*.mdc` + shared OpenCode rules). Writing this one teaches the pattern on Day 0 — and it makes the agent itself enforce your learning discipline, which is exactly what a production guardrail is.
 
 ### Step 5 — Git identity + GitHub CLI (~10 min)
 ```bash
@@ -193,7 +249,7 @@ Open it (`code .`), replace `README.md` contents:
 Daily practice, notes, and weekly summaries from my structured career
 transition (Roadmap v10.0 · Stage 1: Internal AI Builder).
 
-- **Stack:** Python 3.12 · uv · ruff · VS Code · Jupyter
+- **Stack:** Python 3.12 · uv · ruff · Cursor (+ Agents) · OpenCode · VS Code · Jupyter
 - **Standard:** pyproject.toml + src/ layout · Conventional Commits · no vibe coding
 - **Cadence:** 25 hrs/week · started July 20, 2026
 ```
@@ -262,7 +318,7 @@ Course-load note: CS50x and P4E overlap on basics **by design** (Correction 11 �
 ### 📌 DAY 1 — Monday, July 20
 
 **Morning (4:30–6:00):**
-- [ ] 10 min — Verify: `uv --version`, `git --version`, open VS Code
+- [ ] 10 min — Verify: `uv --version`, `git --version`, open Cursor (check Tab autocomplete is OFF, rules file present)
 - [ ] 45 min — CS50x Week 0 lecture (1.25x speed; notes in `notebooks/cs50x-notes.md`)
 - [ ] 25 min — The Scratch problem (yes, really — it teaches **decomposition**, the exact skill FDE interviews test: breaking a big problem into small steps)
 - [ ] 10 min — Journal + commit (`docs: day 1 journal + cs50x week 0 notes`)
@@ -362,7 +418,7 @@ print(f"Age {age} → catch-up eligible: {is_catch_up_eligible}")
 
 # --- IF/ELSE: the program chooses a path ---
 # Indentation (4 spaces) is not decoration in Python — it defines which
-# lines belong to which branch. VS Code + Ruff keep this tidy for you.
+# lines belong to which branch. Cursor/VS Code + Ruff keep this tidy for you.
 if is_catch_up_eligible:
     effective_limit = IRS_DEFERRAL_LIMIT + CATCH_UP_LIMIT
 else:
@@ -933,7 +989,8 @@ Run: `uv run python -m learning_journey.projects.contribution_report`
 ## 📊 2-WEEK SUCCESS METRICS
 ```
 TECHNICAL                                  HABITS & DISTRIBUTION
-□ uv/VS Code/git/gh/Docker verified        □ 11+ journal entries (of 13 days)
+□ uv/Cursor/OpenCode/VS Code/git/gh/       □ 11+ journal entries (of 13 days)
+  Docker verified · Tab off · rules file
 □ uv Core Course #15 read + logged         □ 22+ commits, Conventional from Wk 2
 □ uv.lock committed alongside pyproject    □ 2 LinkedIn posts published
 □ P4E Course 1 complete                    □ HackGreenville joined + intro
@@ -951,11 +1008,12 @@ TECHNICAL                                  HABITS & DISTRIBUTION
 
 **`command not found` after installing:** restart Terminal first; then check `~/.zshrc` for the PATH lines the installer printed.
 **Import error in tests (`No module named learning_journey`):** run from the project root, always via `uv run pytest`; confirm `src/learning_journey/` contains your files and `pyproject.toml` is present.
-**`IndentationError`:** Python's indentation is structure. Select the block in VS Code and check every line in a branch aligns at the same depth (4 spaces).
+**`IndentationError`:** Python's indentation is structure. Select the block in the editor and check every line in a branch aligns at the same depth (4 spaces).
 **CS50's C feels brutal:** normal and temporary. Timebox psets; understanding > completion; P4E is the priority thread.
 **Ruff flags something cryptic:** look up the rule code, understand, fix. Never blanket-disable a rule you can't explain.
 **Missed a block:** make up ≥1h same day or +time Saturday. Never let two days stack.
 **Old-platform temptation (DataCamp/HackerRank/etc.):** the decision is made and documented — re-read the top table.
+**Tempted to let the Agent "just write it":** that temptation is strongest exactly when the exercise is working (i.e., when you're learning the most). Switch to Ask mode, get the concept explained, type it yourself. The rules file will push back — let it. In 8 weeks you'll be directing agents across a real pipeline; this month buys that authority.
 
 ---
 
