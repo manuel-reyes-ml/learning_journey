@@ -23,7 +23,7 @@
 
 ## 📊 WHERE YOU STAND AFTER WEEK 2
 
-You have: a 2026-standard environment (uv + VS Code + ruff + pytest), P4E Course 1 done, CS50x Weeks 0–3 in motion, Mode SQL basics, a typed + tested `retirement.py` module, mini-project #1 shipped, 2 public posts, and a two-week commit streak. The engine works. This fortnight adds the payload.
+You have: a 2026-standard environment (uv + Cursor/OpenCode + VS Code + ruff + pytest), P4E Course 1 done, CS50x Weeks 0–3 in motion, Mode SQL basics, a typed + tested `retirement.py` module, mini-project #1 shipped, 2 public posts, and a two-week commit streak. The engine works. This fortnight adds the payload.
 
 ## 🧠 STRATEGIC CONTEXT
 
@@ -32,6 +32,12 @@ You have: a 2026-standard environment (uv + VS Code + ruff + pytest), P4E Course
 1. **Data structures (P4E Course 2)** — lists, dictionaries, tuples: 80% of working Python for data. Every DataVault concept later (canonical models, reconciliation keys) is "dictionaries with discipline."
 2. **SQL becomes real (Mode Intermediate)** — JOINs and aggregation, the ~79%-of-DE-postings skill, practiced against **your own SQLite database**, not just tutorial tables.
 3. **The AI bridge opens** — *AI Python for Beginners* (Andrew Ng) teaches Python in the context of prompting/API calls → on-ramp to *Building with the Claude API* in Weeks 5–6. ⚠️ **Correction 17 changes how you take it:** the DeepLearning.AI free tier is now videos-only (labs, quizzes, and the Accomplishment are Pro-gated). The ruling: **watch free, replicate every exercise yourself in your own Jupyter notebook** — which is better practice than the hosted lab anyway (no vibe coding, your scaffolding, your repo) — and defer the lab month + Accomplishment to the Sprint-1 Pro rental later this quarter (timed to the PolicyPulse eval-harness build; possibly $0 via the optional AMD free month). Do not subscribe to Pro now.
+
+### 🤖 Agent policy — Phase 2 unlocks this fortnight
+
+Per the Weeks 1–2 Agent Policy, you now graduate from tutor-mode-only to **boilerplate under review**: Cursor Agent (or OpenCode) may draft mechanical scaffolding *when you explicitly ask* — CSV-writer blocks, the argparse skeleton on Day 27 — but never the core logic. The matching rules, the SQL, the tolerance policy, every test, and ADR 0001 are typed by you: they encode YOUR understanding of the business, which is the entire portfolio thesis.
+
+**The discipline when an agent drafts something:** read the diff line-by-line in Cursor's review pane → ask it to explain any line you can't explain yourself → pass the explain-back test → accept or reject per line. Update `.cursor/rules/learning-phase.mdc` on Day 22 to reflect Phase 2 (change is one line: the Weeks 3–4 exception is now active — a nice first rules-file edit). One good weekly rep: after finishing a script yourself, ask the Agent to *review* it against your production standard (type hints? docstrings? boundary validation?) and judge whether its critiques are right — reviewing the reviewer is the skill FDE work runs on. Cursor Tab may come back ON from Week 5, not yet.
 
 ### AI-901 kickoff = the elevation engine starts
 
@@ -293,7 +299,7 @@ def load() -> None:
 if __name__ == "__main__":
     load()
 ```
-Run it, then open `recon.db` with the VS Code SQLite Viewer extension and browse both tables — seeing your data in a real DB is a milestone.
+Run it, then open `recon.db` with the SQLite Viewer extension (works identically in Cursor) and browse both tables — seeing your data in a real DB is a milestone.
 - [ ] 30 min — Mode SQL: aggregation functions (COUNT/SUM/AVG/MIN/MAX)
 - [ ] 20 min — Journal + commit (`feat: sqlite loader with schema + parameterized inserts`)
 
@@ -786,6 +792,8 @@ Keep both, permanently, with a test asserting they agree.
 **Morning (5:00–8:30):**
 - [ ] 150 min — **recon-toy v0.3 hardening** — CLI + report integration + two production-standard upgrades:
 
+**Sanctioned agent rep (optional):** the argparse skeleton below is exactly the "mechanical boilerplate" Phase 2 allows. If you want the rep, ask Cursor Agent to draft it — then review the diff against the version printed here line-by-line, and make it match your standard. If you'd rather type it (also correct), do that. Either way, the `run_pipeline` refactor and its tests are yours alone.
+
 ```python
 # Add argparse to recon_toy.py — the standard way scripts take options.
 # Replace the __main__ block with:
@@ -873,6 +881,8 @@ Also: integrate the Day-24 matcher's mismatch bucket into the exceptions report;
 □ Docker ~50% + containers run local   □ SQL ↔ Python cross-check test green
 □ CS50x Week 4 in progress             □ structlog events replace pipeline prints
 □ 24+ commits · 11+ journal entries    □ RPF written-determination question sent
+□ rules file updated to Phase 2        □ agent diffs reviewed line-by-line (0
+                                          unexplained accepted lines)
 □ recon-toy README uses ①Production/   □ 1 meetup attended (or none scheduled)
   ③Architecture order (Cost omitted)   □ Posts #3 and #4 published · no DL.AI
                                           Pro purchased
