@@ -6,8 +6,7 @@ alwaysApply: false
 
 # Streamlit Patterns (Dashboard & AI UI)
 
-> Scoped rules for Streamlit apps. Auto-attached when editing app/ or pages/ files.
-> Extracted from python-production-standards to reduce always-on token usage.
+> Scoped rules for Streamlit apps. Auto-attached when editing `app/` or `pages/` files.
 
 ---
 
@@ -29,6 +28,8 @@ alwaysApply: false
 - **Business logic NEVER lives in `pages/`** — pages import from `src/`
 - Entry point is `app.py` or `app/main.py` (not `Home.py`)
 - Page files use numbered prefixes for ordering: `01_`, `02_`, etc.
+- Config comes from `settings` (`pydantic-settings`), never `os.environ` and never
+  `st.secrets` read directly in a page — see `observability.mdc`
 
 ---
 
@@ -48,11 +49,11 @@ def load_data(filepath: str) -> pd.DataFrame:
 def get_llm_client():
     """Create and cache the LLM client (singleton, shared across reruns).
 
-    Provider comes from config — local Ollama for sensitive data. The example
-    below uses the unified google-genai SDK (public data only).
+    Provider comes from settings.ai_provider — privacy-first, local Ollama by
+    default. Never construct a cloud client directly in a page.
     """
-    from google import genai
-    return genai.Client()  # new unified SDK; picks up GEMINI_API_KEY from env
+    from src.ai.provider import AIProvider
+    return AIProvider()  # resolves provider from config; falls back to local
 ```
 
 ### Caching Rules
@@ -73,17 +74,19 @@ if "chat_history" not in st.session_state:
     st.session_state.total_tokens = 0
     st.session_state.total_cost = 0.0
 
-# ✅ Append AI responses to session state for conversation memory
+# ✅ Append AI responses to session state for conversation memory.
+#    Store the validated Pydantic response, never the raw SDK payload.
 st.session_state.chat_history.append({
     "role": "assistant",
-    "content": response.text,
-    "tokens": response.usage_metadata.total_token_count,
+    "content": response.answer,
+    "tokens": response.tokens_used,
 })
 ```
 
 ### Session State Rules
 - ❌ Don't store large DataFrames in session state (use `@st.cache_data` instead)
 - ❌ Don't assume session state persists across browser tabs
+- ❌ Don't store secrets or unmasked PII in session state — it is not a safe boundary
 
 ---
 
@@ -111,6 +114,17 @@ st.sidebar.metric("Est. Cost", f"${st.session_state.total_cost:.4f}")
 st.caption("⚠️ AI-generated insight. Verify before acting.")
 ```
 
+### Display boundary is a guardrail boundary
+Nothing reaches `st.write`/`st.markdown` without having passed the response-side PII
+scan and Pydantic validation in `src/ai/guardrails.py` (see `ai-sdk-patterns.mdc`).
+Apply the Layer-3 masking helpers (`mask_ssn` et al.) to any participant-adjacent field
+rendered on screen.
+
+### Irreversible actions
+Any Streamlit control that triggers an irreversible action (a write, an order, a
+submission) requires an explicit confirmation step and must surface the kill-switch
+state. A button is not a sign-off gate on its own.
+
 ---
 
 ## ✅ Streamlit Checklist (Before Commit)
@@ -118,8 +132,12 @@ st.caption("⚠️ AI-generated insight. Verify before acting.")
 - [ ] Business logic lives in `src/`, not in `pages/`
 - [ ] `@st.cache_data` has TTL on data-loading functions
 - [ ] `@st.cache_resource` used for API clients / DB connections
+- [ ] Client construction goes through `AIProvider` / `settings`, never a hardcoded SDK
 - [ ] Session state initialized with `if key not in st.session_state`
+- [ ] No secrets or unmasked PII in session state
+- [ ] Rendered output has passed guardrail scan + Pydantic validation
 - [ ] AI responses show disclaimer caption
 - [ ] Sidebar shows observability metrics (tokens, cost)
 - [ ] `configure_logging()` wrapped in `@st.cache_resource` (no duplicate handlers)
+- [ ] Irreversible actions have an explicit confirmation gate
 - [ ] App works without API key (graceful degradation)
