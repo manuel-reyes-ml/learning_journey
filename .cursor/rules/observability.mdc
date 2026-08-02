@@ -1,0 +1,345 @@
+---
+description: Structured logging (structlog), retries (stamina), typed config (pydantic-settings) and secret/PII handling
+globs: ["src/observability/**/*.py", "**/logging*.py", "**/settings*.py", "**/config/**/*.py", "**/retry*.py"]
+alwaysApply: false
+---
+
+# Observability, Retries & Secure Config
+
+> The Correction 16 layer: one logging chain, one config entrypoint, one retry
+> standard. Split from the former `python-production-standards.mdc`.
+>
+> **2026 stack:** `structlog` (logging) · `stamina` (retries) ·
+> `pydantic-settings` (config). Hard rules and the commit gate are in `AGENTS.md`.
+
+---
+
+## 🔁 Retries (`stamina`)
+
+> **Standard: `stamina`** — an opinionated wrapper over `tenacity` by the author of
+> `structlog`. It auto-detects structlog and logs every scheduled retry through the
+> configured chain, so retries land in the same structured stream as everything else,
+> for free. Raw `tenacity` remains the escape hatch for retry policies stamina can't
+> express; never hand-roll a `while` + `time.sleep()` loop.
+
+```python
+import httpx
+import stamina
+
+@stamina.retry(on=httpx.HTTPError, attempts=3, timeout=60.0)
+def fetch_quote(symbol: str) -> httpx.Response:
+    resp = httpx.get(f"https://api.example.com/quote/{symbol}")
+    resp.raise_for_status()
+    return resp
+```
+
+Exponential backoff with jitter, an attempt cap, and a total-time cap are the defaults —
+which is the whole reason to prefer it over configuring `tenacity` by hand each time.
+Async callables use the identical API. Type hints on the decorated callable are preserved.
+
+### Rules
+- **Retry only transient failures** — timeouts, connection errors, 429, 5xx. Never retry
+  a 4xx validation error, an auth failure, or a `ValidationError`: it will fail identically
+  every time and burns the budget.
+- **Only retry idempotent operations.** A retried write needs an idempotency key, or it
+  double-books. This is a hard gate on any DataVault write path.
+- **Always cap both** attempts *and* total time. Unbounded retries turn a slow dependency
+  into an outage.
+- **Jitter is mandatory** — synchronized retries from parallel workers are a thundering
+  herd that keeps a recovering service down.
+- **Deactivate globally in tests** (`stamina.set_active(False)`) so the suite doesn't
+  spend real seconds sleeping through backoffs. Fixture in `testing-and-eval.mdc`.
+
+---
+
+## 📋 Structured Logging (structlog + stdlib)
+
+> **Standard:** `structlog` renders **every** log line — yours *and* every third-party
+> library's (LLM SDKs, httpx, PyTorch, Airflow, uvicorn, Neo4j). One format, one config,
+> one place to redact PII. Implemented with `structlog.stdlib.ProcessorFormatter`.
+>
+> **Why this approach and not the others:** structlog documents four stdlib-integration
+> strategies. Only `ProcessorFormatter` renders foreign (non-structlog) records through
+> *our* processor chain. "Rendering within structlog" leaves third-party logs unformatted;
+> `python-json-logger` works but leaves the event dict to a formatter that silently drops
+> context and swallows exceptions. **Record this choice as an ADR** — see
+> `architecture-docs.mdc`.
+
+### Single configuration module
+
+```python
+# src/observability/logging.py — call configure_logging() ONCE at the entrypoint.
+# Never call basicConfig() or configure() inside a library module.
+from __future__ import annotations
+
+import logging
+import re
+import sys
+
+import structlog
+
+# ---------------------------------------------------------------- redaction
+# Runs on EVERY event dict — structlog AND third-party. A forgotten call site
+# cannot leak: the processor is the choke point, not the discipline of the caller.
+_PII_PATTERNS: tuple[tuple[re.Pattern[str], str], ...] = (
+    (re.compile(r"\b\d{3}-\d{2}-\d{4}\b"), "***-**-REDACTED"),
+    (re.compile(r"\b[\w.-]+@[\w.-]+\.\w+\b"), "<email:redacted>"),
+    (re.compile(r"\b(?:sk|api)-[A-Za-z0-9_\-]{16,}\b"), "<key:redacted>"),
+)
+
+
+def redact_pii(_: object, __: str, event_dict: dict) -> dict:
+    """Mask PII/secrets in every log line. Not optional, not bypassable."""
+    for key, value in event_dict.items():
+        if isinstance(value, str):
+            for pattern, replacement in _PII_PATTERNS:
+                value = pattern.sub(replacement, value)
+            event_dict[key] = value
+    return event_dict
+
+
+# ---------------------------------------------------------------- processors
+# Shared chain runs on BOTH structlog records and foreign stdlib records.
+SHARED_PROCESSORS: list[structlog.typing.Processor] = [
+    structlog.contextvars.merge_contextvars,  # run_id / request_id / plan_year
+    structlog.stdlib.add_logger_name,
+    structlog.stdlib.add_log_level,
+    structlog.processors.TimeStamper(fmt="iso", utc=True),
+    structlog.processors.StackInfoRenderer(),
+    structlog.processors.UnicodeDecoder(),
+    redact_pii,  # MUST run before any renderer
+]
+
+# Chatty dependencies. Tune here, not with scattered setLevel() calls.
+THIRD_PARTY_LEVELS: dict[str, int] = {
+    "httpx": logging.WARNING,
+    "httpcore": logging.WARNING,
+    "urllib3": logging.WARNING,
+    "neo4j": logging.WARNING,
+    "anthropic": logging.INFO,
+    "openai": logging.INFO,
+}
+
+
+def configure_logging(level: int = logging.INFO, *, force_json: bool = False) -> None:
+    """Route stdlib logging and structlog through one ProcessorFormatter.
+
+    Console + colors when attached to a TTY; JSON when running in Docker/CI.
+    """
+    json_mode = force_json or not sys.stderr.isatty()
+
+    final_chain: list[structlog.typing.Processor] = [
+        structlog.stdlib.ProcessorFormatter.remove_processors_meta,
+    ]
+    if json_mode:
+        final_chain.append(structlog.processors.dict_tracebacks)
+        final_chain.append(structlog.processors.JSONRenderer())
+    else:
+        final_chain.append(structlog.dev.ConsoleRenderer(colors=True))
+
+    structlog.configure(
+        processors=[
+            *SHARED_PROCESSORS,
+            structlog.stdlib.PositionalArgumentsFormatter(),
+            # MUST be last. NEVER combine with render_to_log_kwargs().
+            structlog.stdlib.ProcessorFormatter.wrap_for_formatter,
+        ],
+        logger_factory=structlog.stdlib.LoggerFactory(),
+        wrapper_class=structlog.stdlib.BoundLogger,
+        cache_logger_on_first_use=True,  # set False in tests
+    )
+
+    handler = logging.StreamHandler(sys.stdout)
+    handler.setFormatter(
+        structlog.stdlib.ProcessorFormatter(
+            # Runs ONLY on records that did not originate in structlog.
+            # ExtraAdder preserves `extra={...}` payloads from third-party libs.
+            foreign_pre_chain=[structlog.stdlib.ExtraAdder(), *SHARED_PROCESSORS],
+            processors=final_chain,
+        )
+    )
+
+    root = logging.getLogger()
+    root.handlers.clear()  # idempotent — safe across Streamlit reruns
+    root.addHandler(handler)
+    root.setLevel(level)
+
+    for name, lvl in THIRD_PARTY_LEVELS.items():
+        logging.getLogger(name).setLevel(lvl)
+```
+
+### Call-site rules
+
+```python
+import structlog
+
+log = structlog.stdlib.get_logger(__name__)  # typed BoundLogger
+
+# ✅ Event name is a stable snake_case IDENTIFIER; all data goes in kwargs.
+log.info("records_loaded", source=str(path), row_count=len(df), elapsed_ms=elapsed)
+log.warning("column_missing", column=col_name, fallback="default")
+log.error("reconcile_failed", plan_id=plan_id, exc_info=True)
+
+# ❌ The message is not the payload — this destroys every benefit of structured logs.
+log.info(f"Loaded {len(df)} records from {path}")
+
+# ❌ %-interpolation of payload data — correct for stdlib, wrong here.
+log.info("Loaded %d records", len(df))
+```
+
+**Event-name discipline:** `snake_case`, verb-past or noun-state, stable over time
+(`ai_query_completed`, not `"AI query completed"`). The event name is a *queryable key*,
+not a sentence — renaming it breaks dashboards exactly like renaming a column breaks SQL.
+
+### Library-never-configures-logging
+
+A **library** module gets a logger and emits; it never configures. Only the
+application entrypoint calls `configure_logging()`. A shared library that calls
+`basicConfig()` or `structlog.configure()` on import hijacks the config of every
+consumer — the SignalCore boundary spec records this as a named anti-pattern.
+
+### Run context (contextvars)
+
+Bind once per run/request; every downstream log line — including third-party — inherits it.
+
+```python
+structlog.contextvars.clear_contextvars()  # ALWAYS first: prevents cross-run bleed
+structlog.contextvars.bind_contextvars(run_id=run_id, pipeline="1099_reconcile")
+```
+
+`clear_contextvars()` is not optional. Without it, context from one run leaks into the
+next handled by the same worker — you get run B's logs carrying run A's `run_id`.
+
+### Output destination
+
+Log to **stdout only**. Rotation, shipping, and retention belong to Docker / systemd /
+the aggregator — not to Python (12-Factor). Per-domain files (`logs/ai.log`) are *derived*
+by filtering on the `logger` field downstream, never by adding a second handler.
+
+> ⏸️ **Local-run exception (opt-in):** long unattended local runs (Crucible backtests,
+> AFC collectors) may add a `WatchedFileHandler` behind an explicit `log_file=` argument.
+> Never the default; never in a container.
+
+### OpenTelemetry hook (S3 — wired now, activated later)
+
+Keep this stub in place from day one so adding Phoenix/LangSmith later never requires
+touching call sites:
+
+```python
+# def add_otel_context(_, __, event_dict: dict) -> dict:
+#     """Add trace_id/span_id so logs join traces in the observability backend."""
+#     from opentelemetry import trace
+#     span = trace.get_current_span()
+#     ctx = span.get_span_context()
+#     if ctx and ctx.is_valid:
+#         event_dict["trace_id"] = format(ctx.trace_id, "032x")
+#         event_dict["span_id"] = format(ctx.span_id, "016x")
+#     return event_dict
+```
+
+### Anti-patterns
+
+```python
+# ❌ basicConfig() in a module — last import wins, config becomes non-deterministic
+# ❌ render_to_log_kwargs() alongside ProcessorFormatter — raises opaque stdlib errors
+# ❌ A second handler writing the same stream — interleaved/duplicated lines
+# ❌ Logging raw API responses or DataFrame rows — PII risk; log shape, ids, counts
+# ❌ print() anywhere outside scripts/ — no level, no context, no redaction
+```
+
+---
+
+## 🔒 Security & Privacy
+
+### Never Expose Sensitive Data
+
+Three independent layers. Each catches what the others miss — defense in depth, because
+a single forgotten call site should never be able to leak participant data.
+
+**Layer 1 — the log redaction processor** (above). Centralized, unbypassable, covers
+third-party libraries echoing prompts or request bodies.
+
+**Layer 2 — `SecretStr` on every credential.** Pydantic masks the value in `repr()` and
+`model_dump()`, so a secret cannot leak through a debug print, a traceback, or a config
+dump. Reading it requires the explicit, greppable `.get_secret_value()`.
+
+**Layer 3 — masking helpers at display boundaries** (Streamlit, reports, exports):
+
+```python
+def mask_ssn(ssn: str) -> str:
+    """Mask SSN for safe display: 123-45-6789 → ***-**-6789"""
+    return f"***-**-{ssn[-4:]}" if len(ssn) >= 4 else "***"
+```
+
+> Layer 3 is distinct from the response-guardrail PII scan in `ai-sdk-patterns.mdc`,
+> which runs on LLM output *before display*. Both exist deliberately; neither replaces
+> the other.
+
+```python
+# ❌ Never hardcode secrets
+api_key = "sk-abc123..."  # NEVER DO THIS
+
+# ❌ Raw os.environ — untyped, unvalidated, fails late and scattered across the codebase
+import os
+api_key = os.environ.get("API_KEY")
+```
+
+### Typed Configuration (`pydantic-settings`)
+
+`src/config/settings.py` is the **single** place the environment is read. Everywhere else
+imports `settings`. Config errors then fail fast at startup with a clear Pydantic error,
+not at 2am inside a pipeline.
+
+```python
+from __future__ import annotations
+
+from pydantic import Field, SecretStr
+from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+class Settings(BaseSettings):
+    """Validated application configuration. Instantiated once, imported everywhere."""
+
+    model_config = SettingsConfigDict(
+        env_prefix="APP_",
+        env_file=".env",
+        env_nested_delimiter="__",
+        secrets_dir="/run/secrets",  # Docker's default secrets mount point
+        extra="forbid",              # unknown env vars are a typo, not a feature
+    )
+
+    environment: str = "local"
+    log_level: str = "INFO"
+
+    ai_provider: str = "ollama"      # privacy-first default; never a cloud default
+    anthropic_api_key: SecretStr | None = None
+    max_retry_attempts: int = Field(default=3, ge=1, le=10)
+    request_timeout_s: float = Field(default=30.0, gt=0)
+
+
+settings = Settings()
+```
+
+```python
+# ✅ Explicit unwrap at the point of use — greppable, auditable
+client = Anthropic(api_key=settings.anthropic_api_key.get_secret_value())
+```
+
+**Rules**
+- One `Settings` class per project; instantiate once at module scope in `config/settings.py`
+- Every credential is `SecretStr` — no exceptions
+- `extra="forbid"` so a typo'd env var fails loudly instead of silently defaulting
+- Required values have **no default** — fail fast beats booting misconfigured
+- Never instantiate `Settings()` at import time inside library modules (breaks testability);
+  override in tests via `Settings(_env_file=None, ...)`
+- `.env` is gitignored; `.env.example` is committed with **empty** values
+
+### Safe File Handling
+```python
+from pathlib import Path
+data_dir = Path(__file__).parent / 'data'
+output_file = data_dir / 'results.csv'
+
+with open(filepath, 'r') as f:
+    content = f.read()
+```
