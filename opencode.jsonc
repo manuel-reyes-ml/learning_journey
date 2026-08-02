@@ -1,9 +1,10 @@
 {
   // ---------------------------------------------------------------------------
-  // OpenCode project config  ·  Manuel Reyes  ·  Stage 1 (roadmap v8.4)
+  // OpenCode project config  ·  Manuel Reyes  ·  Stage 1 — Internal AI Builder
+  // Roadmap v10.0 (3-stage arc: Internal AI Builder → AI-Focused DE/AE → Applied
+  // AI Engineer / FDE track).
   // Place at project root as `opencode.json` (or keep `.jsonc` for comments).
   // Docs verified: opencode.ai/docs/{providers,agents,commands,rules,config}
-  //                (all pages last updated Jun 18–22, 2026)
   // ---------------------------------------------------------------------------
   "$schema": "https://opencode.ai/config.json",
 
@@ -22,8 +23,8 @@
       "options": { "baseURL": "http://localhost:11434/v1" },
       "models": {
         // Key MUST match the Ollama tag exactly (run `ollama list`).
-        "qwen3.5:9b": { "name": "Qwen3.5 9B (local)" },
-        "qwen3.5-16k":    { "name": "Qwen3.5 9B · 16k (local)" }
+        "qwen3.5:9b":  { "name": "Qwen3.5 9B (local)" },
+        "qwen3.5-16k": { "name": "Qwen3.5 9B · 16k (local)" }
       }
     },
     "lmstudio": {
@@ -73,6 +74,11 @@
           "git add*": "allow",
           "make test": "allow",
           "make lint": "allow",
+          "make eval": "allow",
+          "make diagrams": "allow",
+          "uv run pytest*": "allow",
+          "uv run ruff*": "allow",
+          "uv run mypy*": "allow",
           "pytest*": "allow",
           "ruff*": "allow",
           "mypy*": "allow",
@@ -83,15 +89,38 @@
     }
   },
 
-  // === Reuse your existing standards — DO NOT duplicate ======================
-  // These .mdc rules are combined with AGENTS.md at session start, so OpenCode
-  // inherits the same standards Cursor enforces. Single source of truth.
+  // === Rule loading ==========================================================
+  // AGENTS.md is loaded automatically — it holds the behavioural contract and the
+  // production non-negotiables. It is ALSO read natively by Cursor and Claude Code,
+  // so it is the single portable source of truth.
+  //
+  // IMPORTANT: `instructions` is FLAT — OpenCode has no glob-activation semantics.
+  // Every file listed here loads in EVERY session, regardless of the `globs:` /
+  // `alwaysApply:` frontmatter (those are Cursor-only). So list only the rules that
+  // apply to nearly all work; route the specialist rules per-agent instead (below).
   "instructions": [
-    ".cursor/rules/python-production-standards.mdc",
-    ".cursor/rules/git-workflow.mdc",
-    ".cursor/rules/learning-mode.mdc",
-    ".cursor/rules/ai-sdk-patterns.mdc",
-    ".cursor/rules/streamlit-patterns.mdc",
-    ".cursor/rules/evaluation.mdc"
-  ]
+    ".cursor/rules/python-core.mdc",        // style, types, docstrings, pandas, errors
+    ".cursor/rules/observability.mdc",      // structlog, stamina, pydantic-settings, secrets
+    ".cursor/rules/project-scaffold.mdc"    // tree, uv, ruff/mypy, Makefile, Docker, CI
+  ],
+
+  // === Specialist rules — route per agent, do NOT add to `instructions` ======
+  // Add the matching line to the PROMPT BODY of each agent markdown file in
+  // `.opencode/agents/`. OpenCode resolves `{file:...}` inside an agent prompt, which
+  // is the native equivalent of Cursor's glob scoping — the rule loads only when that
+  // agent runs, instead of on every session.
+  //
+  //   .opencode/agents/eval-guardian.md    → {file:./.cursor/rules/testing-and-eval.mdc}
+  //   .opencode/agents/docs-sync.md        → {file:./.cursor/rules/architecture-docs.mdc}
+  //   .opencode/agents/docs-fix.md         → {file:./.cursor/rules/architecture-docs.mdc}
+  //                                          {file:./.cursor/rules/git-workflow.mdc}
+  //   .opencode/agents/security-auditor.md → {file:./.cursor/rules/observability.mdc}
+  //                                          {file:./.cursor/rules/ai-sdk-patterns.mdc}
+  //   .opencode/agents/pattern-scout.md    → {file:./.cursor/rules/ai-sdk-patterns.mdc}
+  //   .opencode/agents/learn.md            → {file:./.cursor/rules/learning-mode.mdc}
+  //
+  // `streamlit-patterns.mdc` is narrow enough to reference ad hoc with @ when working
+  // in `app/` — it does not need a standing route.
+  //
+  // Cursor loads all nine rules by glob automatically; nothing extra is needed there.
 }
