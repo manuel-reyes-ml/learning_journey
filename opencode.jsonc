@@ -102,7 +102,7 @@
     ".cursor/rules/python-core.mdc",        // style, types, docstrings, pandas, errors
     ".cursor/rules/observability.mdc",      // structlog, stamina, pydantic-settings, secrets
     ".cursor/rules/project-scaffold.mdc"    // tree, uv, ruff/mypy, Makefile, Docker, CI
-  ],
+  ]
 
   // === Specialist rules — route per agent, do NOT add to `instructions` ======
   // Add the matching line to the PROMPT BODY of each agent markdown file in
