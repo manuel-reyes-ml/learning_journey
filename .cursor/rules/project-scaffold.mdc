@@ -1,0 +1,321 @@
+---
+description: Project structure, uv environment management, ruff/mypy config, Makefile, Docker and CI
+globs: ["pyproject.toml", "Dockerfile", ".dockerignore", "Makefile", ".github/**/*.yml", ".github/**/*.yaml", "*.toml", "uv.lock"]
+alwaysApply: false
+---
+
+# Project Scaffold — Structure, Tooling, Docker & CI
+
+> Split from the former `python-production-standards.mdc` (v10.0 rules restructure).
+> Corrected against **Correction 13** (uv + `uv sync --frozen`) and **Correction 14**
+> (ADR / C4 / Structurizr artifacts in the tree).
+
+---
+
+## 📁 Project Structure
+
+```
+project_name/
+├── AGENTS.md                     # Portable agent contract (Cursor + OpenCode + Claude Code)
+├── opencode.json                 # OpenCode config: providers, agents, instructions
+├── .opencode/
+│   ├── agents/                   # docs-fix · docs-sync · eval-guardian
+│   │   └── ...                   # learn · pattern-scout · security-auditor
+│   └── commands/                 # Repeatable agent workflows
+├── .cursor/
+│   ├── rules/                    # Glob-scoped rules (version-controlled)
+│   │   ├── python-core.mdc
+│   │   ├── observability.mdc
+│   │   ├── testing-and-eval.mdc
+│   │   ├── project-scaffold.mdc
+│   │   ├── architecture-docs.mdc
+│   │   ├── ai-sdk-patterns.mdc
+│   │   ├── streamlit-patterns.mdc
+│   │   ├── git-workflow.mdc
+│   │   └── learning-mode.mdc
+│   └── commands/                 # /draft-issue /task-brief /pr-prep /review /test /eval
+├── .cursorignore                 # Excludes data/logs/venv from Cursor indexing
+├── .github/
+│   └── workflows/ci.yml
+├── docs/
+│   └── adr/                      # 🆕 Architecture Decision Records (MADR or Nygard)
+│       ├── 0001-record-architecture-decisions.md
+│       └── ...
+├── architecture.dsl              # 🆕 Structurizr DSL — single C4 model source
+├── src/
+│   ├── __init__.py
+│   ├── py.typed                  # PEP 561 — type hint support marker
+│   ├── config/
+│   │   ├── __init__.py
+│   │   └── settings.py           # pydantic-settings — the ONLY place env is read
+│   ├── observability/
+│   │   ├── __init__.py
+│   │   └── logging.py            # configure_logging() + redact_pii processor
+│   ├── core/
+│   │   ├── __init__.py
+│   │   └── processor.py
+│   ├── ai/                       # LLM SDK integration (provider-agnostic)
+│   │   ├── __init__.py
+│   │   ├── provider.py
+│   │   ├── schemas.py
+│   │   ├── guardrails.py
+│   │   └── observability.py
+│   └── utils/
+│       ├── __init__.py
+│       └── validators.py
+├── tests/
+│   ├── conftest.py
+│   ├── unit/
+│   ├── integration/
+│   ├── test_eval.py              # DeepEval evaluation tests
+│   └── eval_dataset.json         # 30+ query-response pairs
+├── app/                          # Streamlit pages (imports from src/)
+├── scripts/                      # One-off scripts (synthetic data, migrations)
+├── data/
+│   ├── synthetic/                # ✅ In Git — demo data
+│   └── .gitkeep
+├── logs/                         # gitignored; stdout is primary (12-Factor)
+│   └── evaluation/               # DeepEval result artifacts (not app logs)
+├── Dockerfile
+├── .dockerignore
+├── Makefile
+├── pyproject.toml                # PEP 621 — project config (preferred over setup.py)
+├── uv.lock                       # 🆕 committed — exact pins + hashes
+└── README.md
+```
+
+### `py.typed` Marker (PEP 561)
+Every `src/` package includes an empty `py.typed` file. This tells tools like
+`mypy` that the package ships inline type hints. Create it:
+```bash
+touch src/py.typed
+```
+
+---
+
+## 📦 Environment & Dependencies (uv)
+
+`uv` (Astral, Rust) is the environment + dependency manager — it replaces pip, venv, pyenv,
+and pip-tools with one fast binary, and is the 2026 default. `pyproject.toml` is the single
+source of truth; **no `requirements.txt` anywhere**.
+
+```bash
+uv init                     # scaffold pyproject.toml
+uv add pandas pydantic pydantic-settings structlog stamina   # runtime deps
+uv add --dev pytest ruff mypy deepeval   # dev-only → [dependency-groups]
+uv sync                     # reproduce the exact locked env on any machine
+uv sync --frozen            # CI/Docker: fail if the lock is stale, never re-resolve
+uv run pytest               # run inside the env (no manual activate)
+```
+
+- **Commit `uv.lock`** — it pins exact versions/hashes for reproducible installs.
+- Dev tools go in `[dependency-groups]`, keeping runtime deps lean.
+- `uv run <cmd>` auto-activates the env; no `source .venv/bin/activate` needed.
+
+> ⏸️ **Conda exception — one project only.** Conda earns a place in **Crucible only**, and
+> only if it grows heavy numerical / CUDA / C++ (BLAS/compiled) backends where its binary
+> channels resolve compiled scientific stacks more cleanly than wheels. Every other project
+> stays uv-only.
+
+---
+
+## 🔧 Tooling Configuration
+
+> **2026 stack:** `uv` (env + deps) · `ruff` (lint + format + import sort) · `mypy` (types).
+> This collapses pip/venv, Black, isort, and flake8 into two Rust binaries — one config file.
+>
+> **Python version is `3.12` everywhere** — ruff target, mypy target, and the Docker base
+> image must agree. A mismatch means CI checks syntax the runtime will never see.
+
+### Ruff (Linting + Formatting — replaces Black, isort, flake8)
+```toml
+# pyproject.toml
+[tool.ruff]
+target-version = "py312"
+line-length = 88
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "I",    # isort (import sorting)
+    "W",    # pycodestyle warnings
+    "UP",   # pyupgrade (modern Python syntax)
+    "B",    # flake8-bugbear
+    "SIM",  # flake8-simplify
+]
+ignore = ["E501"]  # line length handled by formatter
+
+[tool.ruff.lint.isort]
+known-first-party = ["src"]
+
+[tool.ruff.format]
+quote-style = "double"
+```
+
+### Formatting (`ruff format` — Black is retired)
+`ruff format` is a drop-in Black replacement (~99.9% identical output, far faster) and
+ships the "2026 style" in Ruff ≥ 0.15. **Do not run Black separately** — one tool, one config.
+Import sorting is Ruff's `I` lint rule; no standalone `isort`.
+
+### mypy (Type Checking)
+```toml
+[tool.mypy]
+python_version = "3.12"
+strict = false          # tighten to true as a project matures
+warn_return_any = true
+warn_unused_configs = true
+```
+> `ty` (Astral's fast type checker) is emerging and pairs with uv/ruff; mypy remains the
+> reference implementation with the widest library compatibility — stay on mypy for now.
+
+---
+
+## 🔨 Makefile Standard Targets
+
+```makefile
+.PHONY: test lint format eval diagrams docker-build docker-run clean
+
+test:                ## Run all tests
+	uv run pytest tests/ -v
+
+lint:                ## Run linting (ruff + mypy)
+	uv run ruff check src/ tests/
+	uv run mypy src/
+
+format:              ## Auto-format code (ruff format + lint autofix)
+	uv run ruff format src/ tests/
+	uv run ruff check --fix src/ tests/
+
+eval:                ## Run AI evaluation tests
+	uv run deepeval test run tests/test_eval.py
+
+diagrams:            ## Export C4 views from architecture.dsl to Mermaid for the README
+	structurizr-cli export -workspace architecture.dsl -format mermaid -output docs/diagrams
+
+docker-build:        ## Build Docker image
+	docker build -t $(PROJECT_NAME) .
+
+docker-run:          ## Run Docker container
+	docker run -p 8501:8501 --env-file .env $(PROJECT_NAME)
+
+clean:               ## Remove build artifacts
+	find . -type d -name __pycache__ -exec rm -rf {} +
+	find . -type f -name "*.pyc" -delete
+	rm -rf .pytest_cache .ruff_cache htmlcov dist build
+```
+
+---
+
+## 🐳 Docker Patterns
+
+### Dockerfile Template — `uv sync --frozen` idiom
+```dockerfile
+FROM python:3.12-slim
+
+# uv ships as a static binary; copy it from the official distroless image
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+
+WORKDIR /app
+
+# Layer-cache dependencies separately from source
+COPY pyproject.toml uv.lock ./
+RUN uv sync --frozen --no-install-project --no-dev
+
+COPY . .
+RUN uv sync --frozen --no-dev
+
+ENV PATH="/app/.venv/bin:$PATH"
+EXPOSE 8501
+CMD ["streamlit", "run", "app/main.py", "--server.port=8501", "--server.address=0.0.0.0"]
+```
+
+`--frozen` is the point: it **fails the build if `uv.lock` is out of sync with
+`pyproject.toml`** rather than silently re-resolving. That is what makes the image
+byte-reproducible and the "deterministic build" claim defensible in an interview.
+**Never `pip install` in a Dockerfile on this roadmap.**
+
+### .dockerignore Template
+```
+.git
+.github/
+.cursor/
+.opencode/
+AGENTS.md
+.env
+.env.example
+*.md
+LICENSE
+Makefile
+tests/
+notebooks/
+docs/
+architecture.dsl
+logs/
+data/raw/
+data/processed/
+data/outputs/
+__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+```
+
+### Rules
+- Dockerfile lives in project root
+- `.dockerignore` keeps image small and secure (no tests, no real data, no secrets)
+- Multi-stage builds for production (Stage 2+ optimization)
+- `--env-file .env` for API keys at runtime — never bake secrets into images
+- Docker also hosts **Structurizr Lite** for local C4 rendering (see `architecture-docs.mdc`)
+
+---
+
+## 🚀 CI Pipeline (GitHub Actions)
+
+Every project ships CI. The lint / type / test / eval sequence is **merge-blocking** via
+a branch protection rule on `main`.
+
+```yaml
+# .github/workflows/ci.yml
+name: CI Pipeline
+on: [push, pull_request]
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Set up Python
+        run: uv python install 3.12
+
+      - name: Install locked dependencies
+        run: uv sync --frozen          # fails if uv.lock is stale — never re-resolves
+
+      - name: Lint
+        run: uv run ruff check src/ tests/
+
+      - name: Format check
+        run: uv run ruff format --check src/ tests/
+
+      - name: Type check
+        run: uv run mypy src/
+
+      - name: Test
+        run: uv run pytest tests/ -v --cov=src --cov-report=term-missing
+
+      - name: AI evaluation (blocking gate)
+        run: uv run deepeval test run tests/test_eval.py
+        env:
+          DEEPEVAL_MODEL: ${{ vars.DEEPEVAL_JUDGE }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+```
+
+- **No `pip install ".[dev]"`** — that path predates the uv standard and bypasses the lock.
+- Cache uv, not pip.
+- The eval job is a gate, not a report. See `testing-and-eval.mdc`.
