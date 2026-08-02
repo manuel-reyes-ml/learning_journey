@@ -1,19 +1,22 @@
 ---
-description: Universal Git workflow and collaboration standards for production-grade development
-globs: ["*.md", ".github/**/*", "*.yml", "*.yaml"]
-alwaysApply: true
+description: Git branching, Conventional Commits, PR standards, review conventions, labels, versioning and gitignore policy
+globs: [".github/**/*", "CHANGELOG.md", "*.md", ".gitignore"]
+alwaysApply: false
 ---
 
 # Git Workflow & Collaboration Standards
 
-> Universal rules for professional Git workflows, commit hygiene, and collaboration.
-> Designed for portfolio-quality projects that demonstrate production readiness.
+> Reference detail for professional Git workflow. **The binding rules — never
+> `git commit` / `git push`, branch naming, Conventional Commits, and the commit
+> gate checklist — live in `AGENTS.md`** and apply in every session regardless of
+> which file is open. This file is the depth behind them.
+>
+> CI pipeline configuration lives in `project-scaffold.mdc`.
 
 ---
 
 ## 🎯 Workflow Philosophy
 
-### Core Principles
 1. **Every commit tells a story** — Someone should understand the "why" from history
 2. **Branches are cheap** — Use them liberally, delete when merged
 3. **PRs are documentation** — Future you will thank present you
@@ -46,10 +49,10 @@ git checkout main
 git pull origin main
 git checkout -b feature/42-add-user-export
 
-# Work, commit, push
-git add .
-git commit -m "feat(export): add CSV export endpoint"
-git push -u origin feature/42-add-user-export
+# Work, then stage. I run `git commit` and `git push` manually — agents never do.
+git add -p
+# (human) git commit -m "feat(export): add CSV export endpoint"
+# (human) git push -u origin feature/42-add-user-export
 
 # After PR merged, clean up
 git checkout main
@@ -57,9 +60,10 @@ git pull origin main
 git branch -d feature/42-add-user-export  # Delete local
 ```
 
-### Protected Branch Rules (Recommended)
-- **main**: Require PR, require passing CI, no direct pushes
-- **develop** (if used): Require PR from feature branches
+### Protected Branch Rules
+- **main**: require PR, require passing CI (lint · types · tests · **eval gate**),
+  no direct pushes
+- The eval gate is merge-blocking — see `testing-and-eval.mdc`
 
 ---
 
@@ -74,7 +78,7 @@ git branch -d feature/42-add-user-export  # Delete local
 [optional footer]
 ```
 
-### Types (Required)
+### Types
 | Type | Description | Example |
 |------|-------------|---------|
 | `feat` | New feature | `feat(api): add user authentication` |
@@ -83,21 +87,24 @@ git branch -d feature/42-add-user-export  # Delete local
 | `docs` | Documentation only | `docs(readme): add installation steps` |
 | `test` | Adding/updating tests | `test(auth): add login edge cases` |
 | `chore` | Maintenance (deps, configs) | `chore(deps): upgrade pandas to 2.0` |
-| `style` | Formatting (no code change) | `style(lint): apply black formatting` |
+| `style` | Formatting (no code change) | `style(format): apply ruff format` |
 | `perf` | Performance improvement | `perf(query): add index for faster lookup` |
-| `ci` | CI/CD changes | `ci(actions): add Python 3.11 to matrix` |
+| `ci` | CI/CD changes | `ci(actions): pin uv sync --frozen` |
 
-### Scope (Optional but Recommended)
+> `style` means `ruff format` / `ruff check --fix`. **Black is retired** — never
+> reference it in a commit message, a hook, or a Makefile target.
+
+### Scope
 The scope is the module/area affected:
 ```
 feat(engine-a): add reconciliation matching
 fix(export): correct column alignment
-docs(api): update endpoint documentation
+docs(adr): record structlog ProcessorFormatter decision
 test(validators): add null input tests
 ```
 
 ### Subject Rules
-- Use imperative mood: "add feature" not "added feature"
+- Imperative mood: "add feature" not "added feature"
 - No period at the end
 - Maximum 72 characters
 - Start lowercase
@@ -107,8 +114,8 @@ test(validators): add null input tests
 # ✅ Good commits
 feat(auth): add JWT token validation
 fix(parser): handle unicode characters in names
-refactor(config): extract database settings to env vars
-docs(readme): add troubleshooting section
+refactor(config): move env reads into pydantic-settings
+docs(readme): restructure to production/cost/architecture
 test(api): add integration tests for user endpoints
 
 # ❌ Bad commits
@@ -129,10 +136,13 @@ batch to fail. Now we:
 - Log warnings for manual review
 - Continue processing valid records
 
-This affects ~2% of records in production.
+This affects a small minority of records in production.
 
 Closes #123
 ```
+
+> Keep production figures out of commit messages on regulated systems — the
+> deposition test applies to git history too. See `architecture-docs.mdc`.
 
 ### Footer References
 ```
@@ -149,14 +159,14 @@ BREAKING CHANGE: description  # For major version bumps
 
 ### PR Title Format
 ```
-<type>(<scope>): <description that shows business impact>
+<type>(<scope>): <description that shows the outcome>
 ```
 
 **Examples:**
 ```
-feat(export): Add CSV export reducing manual work by 90%
-fix(validation): Resolve data loss bug affecting 5% of records
-refactor(pipeline): Improve processing speed by 3x
+feat(export): add CSV export removing a recurring manual step
+fix(validation): resolve data-loss path in the reconciliation branch
+refactor(pipeline): cut batch runtime against the prior baseline
 ```
 
 ### PR Description Template
@@ -172,21 +182,24 @@ Brief description of what this PR does and why.
 ## Testing
 - [ ] Unit tests added/updated
 - [ ] Integration tests pass
-- [ ] Manual testing completed
+- [ ] Eval gate passes (`make eval`)
 
 ### How to Test
-1. Run `pytest tests/unit/test_feature.py`
-2. Execute `python -m src.main --validate`
-3. Verify output in `data/output/`
+1. `uv run pytest tests/unit/test_feature.py`
+2. `uv run python -m src.main --validate`
+3. Verify output in `data/outputs/`
 
-## Screenshots (if applicable)
-[Add screenshots for UI changes]
+## Architecture
+- [ ] ADR added if this decision had a rejected alternative
+- [ ] `architecture.dsl` updated if containers/boundaries changed
+- [ ] Mermaid regenerated via `make diagrams` (not hand-edited)
 
 ## Checklist
 - [ ] Code follows project style guidelines
 - [ ] Self-review completed
 - [ ] Documentation updated
-- [ ] No sensitive data committed
+- [ ] `uv.lock` in sync with `pyproject.toml`
+- [ ] No secrets, PII, or real participant data committed
 - [ ] CI passes
 
 ## Related
@@ -211,17 +224,14 @@ Brief description of what this PR does and why.
 
 ## 🔍 Code Review Guidelines
 
-### As a Reviewer
-```markdown
-## Review Checklist
+### Reviewer Checklist
 - [ ] Code solves the stated problem
 - [ ] Logic is correct and handles edge cases
 - [ ] Code is readable and maintainable
 - [ ] Tests are meaningful (not just for coverage)
 - [ ] No security vulnerabilities introduced
 - [ ] Performance is acceptable
-- [ ] Documentation is updated
-```
+- [ ] Documentation and ADRs updated
 
 ### Review Comment Prefixes
 | Prefix | Meaning | Action Required |
@@ -248,7 +258,6 @@ Brief description of what this PR does and why.
 ### As an Author
 - Respond to all comments before requesting re-review
 - Mark resolved conversations after fixing
-- Don't take feedback personally — it's about the code
 - Ask for clarification if feedback is unclear
 
 ---
@@ -265,7 +274,7 @@ Brief description of what this PR does and why.
 [Bug] Application crashes when processing empty CSV
 [Feature] Add ability to export results to PDF
 [Refactor] Extract validation logic into separate module
-[Docs] Add API reference documentation
+[Docs] Add ADR for the retrieval strategy decision
 ```
 
 ### Essential Labels
@@ -308,18 +317,11 @@ MAJOR.MINOR.PATCH
 1.1.0 → 2.0.0  (MAJOR: breaking change)
 ```
 
-### When to Bump
-| Change Type | Version Bump | Example |
-|-------------|--------------|---------|
-| Bug fix | PATCH | `1.0.0` → `1.0.1` |
-| New feature (backward compatible) | MINOR | `1.0.1` → `1.1.0` |
-| Breaking change | MAJOR | `1.1.0` → `2.0.0` |
-
 ### Changelog Format (CHANGELOG.md)
 ```markdown
 # Changelog
 
-## [1.2.0] - 2025-02-03
+## [1.2.0] - 2026-02-03
 
 ### Added
 - New CSV export feature (#42)
@@ -338,7 +340,7 @@ MAJOR.MINOR.PATCH
 - Legacy XML export (deprecated in 1.0.0)
 
 ### Security
-- Updated dependencies to patch CVE-2025-1234
+- Updated dependencies to patch CVE-2026-1234
 ```
 
 ---
@@ -348,10 +350,13 @@ MAJOR.MINOR.PATCH
 ### Never Commit
 - [ ] Passwords, API keys, secrets
 - [ ] `.env` files with real credentials
-- [ ] Production data or PII
+- [ ] Production data, participant data, or PII
 - [ ] Large binary files (use Git LFS if needed)
 - [ ] IDE-specific files (`.idea/`, `.vscode/` settings)
 - [ ] OS-specific files (`.DS_Store`, `Thumbs.db`)
+
+**Always commit:** `uv.lock`, `AGENTS.md`, `.cursor/rules/`, `docs/adr/`,
+`architecture.dsl`, `data/synthetic/`.
 
 ### .gitignore Essentials
 ```gitignore
@@ -369,6 +374,9 @@ venv/
 *.egg-info/
 dist/
 build/
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
 
 # IDE
 .idea/
@@ -379,15 +387,22 @@ build/
 .DS_Store
 Thumbs.db
 
-# Data (keep samples, ignore real data)
+# Data — synthetic demo data IS committed; real data never is
 data/raw/
 data/processed/
-!data/sample/
+data/outputs/
+!data/synthetic/
 
-# Outputs
+# Logs — stdout is primary (12-Factor); files are local-run only
+logs/
 *.log
+
+# Reports
 reports/*.pdf
 ```
+
+> The whitelist is `!data/synthetic/`, matching the directory in the project tree
+> (`project-scaffold.mdc`). There is no `data/sample/` directory in this standard.
 
 ---
 
@@ -401,8 +416,9 @@ git checkout -b feature/123-description
 
 # Save progress
 git add -p                    # Interactive staging (review each change)
-git commit -m "feat: description"
-git push -u origin HEAD
+git status && git diff --staged
+# (human) git commit -m "feat: description"
+# (human) git push -u origin HEAD
 
 # Update branch with main
 git fetch origin
@@ -439,7 +455,6 @@ git rebase -i HEAD~3
     st = status -sb
     co = checkout
     br = branch
-    ci = commit
     lg = log --oneline --graph --decorate -20
     undo = reset --soft HEAD~1
     amend = commit --amend --no-edit
@@ -447,34 +462,13 @@ git rebase -i HEAD~3
 
 ---
 
-## ✅ Pre-Commit Checklist
+## ✅ Before Every PR
 
-Before every commit:
-- [ ] `git status` — Verify only intended files are staged
-- [ ] `git diff --staged` — Review exact changes
-- [ ] Tests pass locally
-- [ ] No debug code (`print()`, `console.log()`, `debugger`)
-- [ ] Logging uses structlog kwargs; no f-strings in log calls; no new `basicConfig()`
-- [ ] No secrets, PII, or real participant data in code, logs, tests, or fixtures
-- [ ] No commented-out code blocks
-- [ ] Commit message follows convention
-
-Before every PR:
 - [ ] Branch is up to date with main
 - [ ] All commits are meaningful (squash if needed)
-- [ ] CI passes
+- [ ] CI passes, including the eval gate
 - [ ] Self-review completed
-- [ ] Documentation updated
+- [ ] ADRs and `architecture.dsl` updated where the design changed
 - [ ] PR description is complete
 
----
-
-## 🎯 Portfolio Impact
-
-Professional Git hygiene demonstrates:
-- **Collaboration readiness** — Clear PRs show you can work with teams
-- **Communication skills** — Good commit messages show clarity of thought
-- **Quality standards** — Consistent conventions show attention to detail
-- **Production experience** — Proper branching shows real-world knowledge
-
-Recruiters and hiring managers **do look at Git history**. Make every commit count.
+> The **per-commit** gate is in `AGENTS.md` — run it before staging, not at PR time.
