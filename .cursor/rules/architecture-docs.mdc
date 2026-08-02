@@ -1,0 +1,222 @@
+---
+description: ADRs, C4 diagrams, Structurizr DSL, and the Production/Cost/Architecture README and résumé structure
+globs: ["docs/adr/**/*.md", "*.dsl", "**/architecture.dsl", "README.md", "docs/**/*.md"]
+alwaysApply: false
+---
+
+# Architecture Documentation & Presentation
+
+> **New file (v10.0 rules restructure).** Closes the gap where roadmap
+> **Correction 14** (ADR + C4 + Structurizr) and **Correction 18** (Production /
+> Cost / Architecture) were production standards with no rules coverage anywhere.
+>
+> These are documentation discipline on work already being built — net-zero cost,
+> and the artifact a reviewer can interrogate line by line.
+
+---
+
+## 📝 ADRs — Architecture Decision Records
+
+**Applies to every project**, flagship and supporting alike.
+
+A numbered, **immutable** log in `docs/adr/`. Each record follows:
+**context → decision → consequences / tradeoffs**.
+
+### Rules
+- **Pick ONE template — MADR or Nygard — and never stack.** Land 4–5 real records
+  before considering any variant.
+- Stored in `docs/adr/` **in the same repo as the code it describes** — in source
+  control, never a wiki, so the record stays in sync with the code.
+- **Immutable once accepted.** A superseded decision is *marked* superseded with a
+  pointer to the record that replaced it. Never deleted, never edited in place.
+  Same additive-only discipline as the roadmap itself.
+- Numbered sequentially: `0001-`, `0002-`, …
+- `0001-record-architecture-decisions.md` is always the first record — the decision
+  to keep ADRs at all.
+
+### Write an ADR whenever there is a rejected alternative
+
+If a choice had a real alternative you considered and declined, it is an ADR. The
+rejected alternative *is the content* — a decision with no alternative is just a fact.
+
+Standing examples from this portfolio:
+- `structlog` + `ProcessorFormatter` over the three other stdlib-integration
+  strategies (see `observability.mdc` for the reasoning to record)
+- GraphRAG hybrid over pure-vector retrieval
+- Human-in-the-loop on every write in the DataVault Analyst layer
+- LLM-behind-the-Wall in Crucible; kill-switch on the live execution path
+- `uv` over Poetry / pip-tools; `ruff format` over Black
+- Regulatory constraints that **shaped the design** — for a regulated system this is
+  the genuinely scarce signal, and it is itself an ADR topic
+
+### Minimal MADR skeleton
+```markdown
+# 0007. Use structlog with ProcessorFormatter for all logging
+
+- Status: accepted
+- Date: 2026-07-15
+- Deciders: Manuel Reyes
+
+## Context and Problem Statement
+Third-party libraries (httpx, Anthropic SDK, Neo4j) emit stdlib log records that
+bypass any structlog-only configuration, leaving PII unredacted and formats mixed.
+
+## Considered Options
+1. Rendering within structlog only
+2. python-json-logger as the stdlib formatter
+3. structlog.stdlib.ProcessorFormatter
+
+## Decision Outcome
+Chosen: option 3 — the only strategy that renders foreign records through our own
+processor chain, making the redaction processor an unbypassable choke point.
+
+## Consequences
+- Good: one format, one config, one redaction point; third-party logs are covered
+- Bad: `render_to_log_kwargs()` becomes incompatible and must never be combined
+- Neutral: requires `foreign_pre_chain` to be kept in sync with SHARED_PROCESSORS
+```
+
+---
+
+## 📐 C4 Diagrams
+
+| Level | Scope | Applies to |
+|---|---|---|
+| **Level 1 — Context** | The system as one box, with its users and external systems | **Every project** |
+| **Level 2 — Container** | Deployable units (API, worker, vector store, warehouse, MCP server) and how they communicate | **The three lead flagships** |
+
+The C4 views sit *alongside* the existing Mermaid diagram, which remains the
+component/flow view.
+
+**Level 1 forces the boundary-and-dependency clarity that Forward Deployed
+Engineering lives on. Level 2 shows you can reason about deployable units, not just
+code.** Both are directly probed in decomposition interviews.
+
+Self-score every diagram against the c4model.com review checklist before committing.
+
+---
+
+## 🛠️ Structurizr DSL — one model, two outputs
+
+**Write the architecture once as Structurizr DSL** in a version-controlled
+`architecture.dsl` at the repo root, then export the C4 views to **Mermaid** for the
+README.
+
+```bash
+structurizr-cli export -workspace architecture.dsl -format mermaid -output docs/diagrams
+```
+
+This is wired as `make diagrams` — see `project-scaffold.mdc`.
+
+### Rules
+- **Direction matters: model in Structurizr, render *out* to Mermaid.** Mermaid's own
+  C4 support is newer and less complete than the dedicated tooling. Never hand-author
+  a C4 diagram directly in Mermaid.
+- `architecture.dsl` is the **single source**. A hand-edited Mermaid C4 block in the
+  README is drift — regenerate instead.
+- **Structurizr Lite** self-hosts in Docker for local rendering. Docker is already a
+  standing requirement, so this adds no new dependency.
+
+---
+
+## 🧱 README structure — three leading headings
+
+**Every flagship README leads with these three headings, in this order.** Everything
+else in the standard follows them. Order changes; content does not.
+
+### ① Production
+Where it runs and who depends on it · deploy path (Docker + CI) · monitoring and
+structured logging · reliability posture: success rate, freshness/SLA, retry and
+failure behaviour · the blocking eval gates that must pass to merge.
+
+> ❌ **Not** "Built with FastAPI." A stack list is not a production claim. If nothing
+> depends on it and nothing watches it, it is not in production — say so honestly and
+> put it under Architecture instead.
+
+### ② Cost
+What it costs to run and what changed: runtime deltas, warehouse/compute discipline,
+cost-per-query or per-run, manual hours removed, and **the mechanism** that produced
+the saving (sizing, caching, partitioning, model routing, batching).
+
+> ❌ **Not** a number with no mechanism, and never a saving with no reliability
+> disclosure. A speedup or cost cut that hides a reliability regression is the
+> bait-and-switch reviewers watch for — always state the SLA the change held to.
+
+> **Cost is explicitly optional for FormSense and AFC.** Do not manufacture a Cost
+> section where there is nothing to report.
+
+### ③ Architecture
+The artifact set: Mermaid diagram · C4 Context (+ Container on leads) · `docs/adr/` ·
+contracts and tests · the decisions and their rejected alternatives.
+
+> ❌ **Not** diagrams presented without the decision behind them. The ADR is what turns
+> a diagram into evidence of judgement.
+
+**Then, in order:** evaluation-metrics table · 15–30s demo GIF · "What I Learned" ·
+Conventional Commit history.
+
+---
+
+## ✍️ Résumé bullets
+
+**Formula:** `Action + What + Outcome + Proof`, carrying the three senior components —
+**a named metric against a baseline · the method · the scope.**
+
+Test: *if a bullet cannot answer "so what?" quickly, it is not doing its job.*
+
+- **Cap at 4–6 bullets per project.** Cut the rest.
+- Every bullet answers one of Production, Cost, or Architecture. **Anything answering
+  none of them is cut.**
+
+### Honesty discipline — binding, and it overrides the formula
+Use numbers **only when they can be defended in an interview.** Where a metric cannot
+be shared, substitute *scale and reliability outcomes* — tables, jobs, refresh cadence,
+incidents, users. **Never invent a figure to fill the shape.** A fabricated metric is a
+failed technical screen with extra steps.
+
+### 🚨 Parse-failure ruling — diagrams stay in repos
+An architecture diagram rendered as an image is **skipped entirely by résumé parsers**.
+Mermaid and C4 are mandatory **for the README**, where GitHub renders them natively.
+
+**The résumé carries the *text* of the architecture** — named components, deploy path,
+contracts — **and a link to the repo.** No diagrams on the résumé, ever. This constrains
+where the artifact is surfaced; it does not change the artifact standard.
+
+---
+
+## 🔒 ERISA constraint — DataVault and any regulated system
+
+The standing rules bind and are not loosened here: **synthetic data only in public
+repos; financial figures never recorded in public documents; neutral language throughout.**
+
+In the public README and on the résumé:
+
+- ✅ **Permitted:** the mechanism · the architecture · the reliability posture ·
+  relative deltas where non-identifying (runtime reduction, manual hours removed, test
+  coverage, reconciliation success rate) · and the **regulatory constraints that shaped
+  the design** — the scarcest signal available, and itself an ADR topic.
+- 🚫 **Prohibited:** absolute dollar amounts · participant or plan data · client
+  identifiers · record volumes that could identify the employer or its clients · and
+  any figure that has not cleared the **"would I say this in a deposition"** test.
+- **Consequence, stated plainly:** DataVault's public **Cost** section will be thinner
+  than a normal portfolio project's. That is correct, not a gap.
+
+**Crucible carries a parallel rule:** no P&L, no returns, no account figures — ever.
+
+---
+
+## ✅ Architecture Documentation Checklist
+
+- [ ] `docs/adr/` exists with `0001-record-architecture-decisions.md`
+- [ ] One ADR template only (MADR *or* Nygard), applied consistently
+- [ ] Every decision with a rejected alternative has a record
+- [ ] Superseded records marked, never deleted or edited in place
+- [ ] `architecture.dsl` present and is the only C4 source
+- [ ] Mermaid C4 export regenerated via `make diagrams`, not hand-edited
+- [ ] C4 Context present; Container present if this is a lead flagship
+- [ ] Diagram self-scored against the c4model.com review checklist
+- [ ] README leads with ① Production · ② Cost · ③ Architecture
+- [ ] No manufactured Cost section (FormSense / AFC may omit it)
+- [ ] Résumé bullets capped at 4–6, each answering one of the three
+- [ ] No diagrams on the résumé; architecture stated as text + repo link
+- [ ] Every figure clears the deposition test
