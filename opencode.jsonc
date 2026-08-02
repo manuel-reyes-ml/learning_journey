@@ -104,23 +104,24 @@
     ".cursor/rules/project-scaffold.mdc"    // tree, uv, ruff/mypy, Makefile, Docker, CI
   ]
 
-  // === Specialist rules — route per agent, do NOT add to `instructions` ======
-  // Add the matching line to the PROMPT BODY of each agent markdown file in
-  // `.opencode/agents/`. OpenCode resolves `{file:...}` inside an agent prompt, which
-  // is the native equivalent of Cursor's glob scoping — the rule loads only when that
-  // agent runs, instead of on every session.
+  // === Specialist rules — routed per agent (already implemented) ============
+  // Each specialist rule is loaded via {file:...} at the top of its agent prompt in
+  // `.opencode/agents/`. That is OpenCode's native equivalent of Cursor's glob scoping:
+  // the rule loads only when that agent runs, not on every session.
   //
-  //   .opencode/agents/eval-guardian.md    → {file:./.cursor/rules/testing-and-eval.mdc}
-  //   .opencode/agents/docs-sync.md        → {file:./.cursor/rules/architecture-docs.mdc}
-  //   .opencode/agents/docs-fix.md         → {file:./.cursor/rules/architecture-docs.mdc}
-  //                                          {file:./.cursor/rules/git-workflow.mdc}
-  //   .opencode/agents/security-auditor.md → {file:./.cursor/rules/observability.mdc}
-  //                                          {file:./.cursor/rules/ai-sdk-patterns.mdc}
-  //   .opencode/agents/pattern-scout.md    → {file:./.cursor/rules/ai-sdk-patterns.mdc}
-  //   .opencode/agents/learn.md            → {file:./.cursor/rules/learning-mode.mdc}
+  //   eval-guardian.md    -> testing-and-eval.mdc
+  //   docs-sync.md        -> architecture-docs.mdc
+  //   docs-fix.md         -> architecture-docs.mdc + git-workflow.mdc
+  //   security-auditor.md -> observability.mdc + ai-sdk-patterns.mdc
+  //   pattern-scout.md    -> ai-sdk-patterns.mdc
+  //   learn.md            -> learning-mode.mdc            (mode: primary, Tab-selectable)
   //
   // `streamlit-patterns.mdc` is narrow enough to reference ad hoc with @ when working
   // in `app/` — it does not need a standing route.
+  //
+  // NOTE: observability.mdc is in `instructions` AND routed to security-auditor. That is
+  // intentional and harmless — a subagent runs in its own context, so there is no
+  // double-load in a single window.
   //
   // Cursor loads all nine rules by glob automatically; nothing extra is needed there.
 }
