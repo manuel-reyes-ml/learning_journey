@@ -170,42 +170,20 @@ refactor(pipeline): cut batch runtime against the prior baseline
 ```
 
 ### PR Description Template
-```markdown
-## Summary
-Brief description of what this PR does and why.
 
-## Changes
-- Added X to handle Y
-- Modified Z to improve W
-- Removed deprecated Q
+**Single source: [`.github/pull_request_template.md`](../../.github/pull_request_template.md).**
+GitHub auto-populates it on every PR — do not maintain a second copy here, and do not
+paste a hand-written structure over it.
 
-## Testing
-- [ ] Unit tests added/updated
-- [ ] Integration tests pass
-- [ ] Eval gate passes (`make eval`)
+It covers: Objective · Scope (in/out) · What changed · **Architecture & decisions**
+(ADR where an alternative was rejected · `architecture.dsl` updated · diagrams
+regenerated via `make diagrams` · README ①②③ still accurate) · Acceptance Criteria ·
+Validation (uv-native commands + the blocking eval gate) · Reproducibility ·
+Security & data hygiene · Risks · Reviewer Notes · Linking — plus the four capability
+packs (DE / ML / LLM-RAG / Agentic).
 
-### How to Test
-1. `uv run pytest tests/unit/test_feature.py`
-2. `uv run python -m src.main --validate`
-3. Verify output in `data/outputs/`
-
-## Architecture
-- [ ] ADR added if this decision had a rejected alternative
-- [ ] `architecture.dsl` updated if containers/boundaries changed
-- [ ] Mermaid regenerated via `make diagrams` (not hand-edited)
-
-## Checklist
-- [ ] Code follows project style guidelines
-- [ ] Self-review completed
-- [ ] Documentation updated
-- [ ] `uv.lock` in sync with `pyproject.toml`
-- [ ] No secrets, PII, or real participant data committed
-- [ ] CI passes
-
-## Related
-- Closes #123
-- Refs #120
-```
+**Fill the core always; tick and expand only the packs this change touches, and delete
+the rest.** The packs ticked here must match the linked Issue and the task brief.
 
 ### PR Size Guidelines
 | Size | Lines Changed | Review Time | Recommendation |
