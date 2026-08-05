@@ -17,7 +17,6 @@ collection even when an SDK is not installed in the current environment.
 # =============================================================================
 
 from __future__ import annotations
-from typing_extensions import runtime
 
 import httpx
 import time
