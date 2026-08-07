@@ -6,7 +6,6 @@
 # =============================================================================
 
 from __future__ import annotations
-import http
 
 import httpx
 from numpy import isin
