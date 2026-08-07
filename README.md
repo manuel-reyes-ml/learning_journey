@@ -43,7 +43,7 @@
 - ✅ **Focused portfolio: 3 flagships + 2 supporting** — real systems (Applied-AI, Data Engineering, autonomous-execution safety), not a repo pile
 - ✅ **Domain depth** — 15+ yrs business operations (manufacturing, digital marketing) + 2 yrs ERISA-regulated financial operations + 5+ yrs independent trading
 - ✅ **Eval-first engineering** — DeepEval / RAGAS / GEval as **blocking gates** (faithfulness ≥ 0.9 for financial data)
-- ✅ **Production standards** — typed Python, **`uv` + committed `uv.lock`**, `pyproject.toml` + `src/`, ruff/mypy, Docker, GitHub Actions CI, Conventional Commits; **structured logging (`structlog`) with a PII-redaction processor**, typed config (`pydantic-settings`), capped retries (`stamina`); **no vibe coding** (every line understood before merge)
+- ✅ **Production standards** — typed Python, **`uv` + committed `uv.lock`**, `pyproject.toml` + `src/`, ruff/mypy, Docker, GitHub Actions CI, Conventional Commits **enforced by a `commit-msg` hook**, **a pinned `.pre-commit-config.yaml` in every repo**; **structured logging (`structlog`) with a PII-redaction processor**, typed config (`pydantic-settings`), capped retries (`stamina`); **no vibe coding** (every line understood before merge)
 - ✅ **Measurable business impact** — 95% time reduction (4–6 hrs → 15 min/week) and a derived-vs-reported validation gate that quarantines mismatches before distribution
 
 **The key differentiator:** already delivering production value while building toward Data Engineering and Applied AI — with evaluation evidence that stands up to scrutiny.
@@ -60,7 +60,7 @@ Each stage compounds the same moat (finance/ERISA + trading depth + eval-first d
 
 **Stage 1: Internal AI Builder** (Months 1–8) 🟢 ACTIVE
 ```
-Foundation:  Production Python (typed, uv + uv.lock, pyproject, ruff/mypy) + SQL + Docker/CI
+Foundation:  Production Python (typed, uv + uv.lock, pyproject, ruff/mypy, pre-commit) + SQL + Docker/CI
 + AI Layer:  Anthropic SDK (structured outputs, tool use, prompt caching) + RAG + MCP literacy
 + Eval Layer: RAGAS/DeepEval as blocking gates, golden datasets, hallucination detection
 + Employer:  Azure AI Fundamentals (AI-901) → AI Agent Builder Associate (AB-620), reimbursed
@@ -104,7 +104,7 @@ Foundation:  Production agentic systems (Building Effective Agents taxonomy) + M
 
 > **Focused portfolio: 3 flagships + 2 supporting**, built on a live production system.
 >
-> **🏗️ Production standard (every repo):** architecture diagram (Mermaid), **ADR set (`docs/adr/`) + C4 context diagram** (lead flagships add a C4 container view), Dockerfile, evaluation-metrics table (DeepEval), 15–30s demo GIF, and "What I Learned." **Non-negotiable standards:** no vibe coding, eval-first blocking gates, **synthetic data only** in public repos, `pyproject.toml` + **`uv.lock`** + `src/` + `py.typed` + ruff + mypy · **structured logging (`structlog` over stdlib via `ProcessorFormatter`) + PII redaction processor · typed config (`pydantic-settings`, `SecretStr` credentials) · capped jittered retries (`stamina`)**, Conventional Commits, earned-overlay policy (ML ships only if it beats the baseline). *Every image builds with `uv sync --frozen` — reproducible by construction.*
+> **🏗️ Production standard (every repo):** architecture diagram (Mermaid), **ADR set (`docs/adr/`) + C4 context diagram** (lead flagships add a C4 container view), Dockerfile, evaluation-metrics table (DeepEval), 15–30s demo GIF, and "What I Learned." **Non-negotiable standards:** no vibe coding, eval-first blocking gates, **synthetic data only** in public repos, `pyproject.toml` + **`uv.lock`** + `src/` + `py.typed` + ruff + mypy · **a pinned `.pre-commit-config.yaml` — hooks are a *strict subset* of the CI gate, so CI stays authoritative and nothing is checked locally that isn't also checked in CI** · **structured logging (`structlog` over stdlib via `ProcessorFormatter`) + PII redaction processor · typed config (`pydantic-settings`, `SecretStr` credentials) · capped jittered retries (`stamina`)**, Conventional Commits, earned-overlay policy (ML ships only if it beats the baseline). *Every image builds with `uv sync --frozen` — reproducible by construction.*
 
 ### 🏁 Flagship 1 — [PolicyPulse](https://github.com/manuel-reyes-ml/policypulse) · *Applied-AI* | 🔌 Exposes FastMCP server
 
@@ -257,6 +257,7 @@ learning_journey/
 │
 ├── .gitignore
 ├── .vscode/                              # VS Code settings
+├── .pre-commit-config.yaml               # pinned hook set; strict subset of the CI gate
 ├── pyproject.toml                        # Python dependencies (PEP 621, uv-managed)
 └── uv.lock                               # committed lockfile — reproducible installs
 ```
@@ -269,12 +270,12 @@ Systematic progression that compounds the finance/ERISA + trading + eval-first m
 
 ### Stage 1: Internal AI Builder (Months 1–8) 🟢 ACTIVE
 
-**Core:** Production Python (typed, **uv + `uv.lock`**, pyproject, ruff/mypy) • SQL • Docker/CI
+**Core:** Production Python (typed, **uv + `uv.lock`**, pyproject, ruff/mypy, **pre-commit**) • SQL • Docker/CI
 **AI:** Anthropic SDK (structured outputs, tool use, prompt caching) • RAG • MCP literacy • Pydantic • Streamlit
 **Eval:** RAGAS/DeepEval blocking gates • golden datasets • hallucination detection
 **Employer:** AI-901 → AB-620 (reimbursed); ZTM Azure Bootcamp; Microsoft Agent Framework awareness
 
-**Learning path:** CS50x (Harvard) • **CS50P** (Harvard — Python, testing/debugging rigor) • **MITx 6.00.1x** (MIT — Python CS foundations) • Python for Everybody • AI Python for Beginners • Building with the Claude API (Anthropic Academy) • Improving Accuracy of LLM Apps • Building & Evaluating Advanced RAG • MCP primer • AI Prompting for Everyone • 30 Days of Streamlit • Docker for Beginners • **uv — Python packaging** (Astral official docs + Al Sweigart quickstart) • *conditional:* **Conda Basics** (Anaconda — only if Crucible needs compiled/GPU backends) • **IBM Generative AI Engineering Professional Certificate** (Stage 1 spine)
+**Learning path:** CS50x (Harvard) • **CS50P** (Harvard — Python, testing/debugging rigor) • **MITx 6.00.1x** (MIT — Python CS foundations) • Python for Everybody • AI Python for Beginners • Building with the Claude API (Anthropic Academy) • Improving Accuracy of LLM Apps • Building & Evaluating Advanced RAG • MCP primer • AI Prompting for Everyone • 30 Days of Streamlit • Docker for Beginners • **uv — Python packaging** (Astral official docs + Al Sweigart quickstart) • **pre-commit hooks** (Stefanie Molin's four-article series + `pre-commit.com` — *no certification exists for this and no substantive course does either; the shipped config is the evidence*) • *conditional:* **Conda Basics** (Anaconda — only if Crucible needs compiled/GPU backends) • **IBM Generative AI Engineering Professional Certificate** (Stage 1 spine)
 
 **Deliverables:** PolicyPulse v1 (eval gates + FastMCP) • 1099 pipeline retro-migrated to production standards (incl. `pip → uv` migration) • AI-901 passed → AB-620 begun • two documented internal automation wins • scope-change conversation in writing by Month 6
 
@@ -341,7 +342,7 @@ Accredited M.S. Computer Science (~$8–9K total), Computing Systems specializat
 **Containerization:** Docker (Dockerfile for every repo; Stage 1 fundamentals via KodeKloud) — images build via `uv sync --frozen` for byte-reproducible dependency installs
 
 ### Integration Principles
-**Transparency:** document AI assistance in commits • **Validation:** always test AI-generated code • **No vibe coding:** every line understood before merge, diff-review-before-merge, manual commit as the final control gate • **Privacy-first routing:** PII/proprietary local, proprietary via private endpoints, public scaffolding only on free tiers
+**Transparency:** document AI assistance in commits • **Validation:** always test AI-generated code • **No vibe coding:** every line understood before merge, diff-review-before-merge, manual commit as the final control gate — with **pre-commit as the automated gate in front of it** (secrets, notebook output, lockfile drift and commit format are caught mechanically, so human review is spent on logic rather than lint) • **Privacy-first routing:** PII/proprietary local, proprietary via private endpoints, public scaffolding only on free tiers
 
 ### Evolution Path
 
@@ -376,6 +377,7 @@ Accredited M.S. Computer Science (~$8–9K total), Computing Systems specializat
 - Docker → Kubernetes (Stage 2), GitHub Actions CI
 
 **Production standards:**
+- **Commit-boundary enforcement: pinned `.pre-commit-config.yaml`** — `ruff-check --fix` ordered *before* `ruff-format`, `uv-lock` (keeps the lockfile honest), `gitleaks` + `detect-private-key`, `nbstripout` wherever notebooks exist, and `conventional-pre-commit` on the `commit-msg` stage. **`mypy` is deliberately CI-only** — the `mirrors-mypy` hook's default `--ignore-missing-imports` silently degrades third-party types to `Any`; the exclusion is recorded as an ADR rather than left as an omission
 - `pyproject.toml` + **`uv.lock`** + `src/` + `py.typed`, ruff format, mypy (3.12) · **structured logging (`structlog` + `ProcessorFormatter`) + PII redaction processor · typed config (`pydantic-settings`) · capped retries (`stamina`)**, Conventional Commits
 - Dependency management: **uv** (`uv add`, `uv sync --frozen` in CI/Docker) — **no `requirements.txt` anywhere**
 
@@ -384,6 +386,7 @@ git clone https://github.com/manuel-reyes-ml/learning_journey.git
 cd learning_journey
 open getting_started/SETUP_GUIDE.md          # setup incl. AI tools
 uv sync                                      # creates .venv + installs from uv.lock
+uv run pre-commit install --hook-type commit-msg   # installs the pinned hook set
 uv run python getting_started/environment-verification.py
 ```
 
