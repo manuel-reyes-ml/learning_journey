@@ -2,11 +2,14 @@
 
 **Evidence-First Career Transformation** | Production code with measurable impact | Systematic ~32-Month Journey
 
-> **Current Stage:** Internal AI Builder (Stage 1 of 3)
-> **Next Milestone:** AI-builder scope at current employer + Flagship #1 (PolicyPulse) shipping with eval gates
+> **🟢 Open to AI-Focused Analytics Engineer** (first door) **and Data Engineer** (parallel) **roles.**
+> **Current Stage:** Internal AI Builder (Stage 1 of 3) — *the build work, not a job title*
+> **Next Milestone:** Flagship #1 (PolicyPulse) shipping with eval gates + DataVault S2 hardening (the stage-exit evidence gate)
 > **Ultimate Goal:** Applied AI Engineer → Forward-Deployed Engineer (FDE) track
 > **Study Commitment:** 25 hours/week systematic learning
 
+[![Open to work](https://img.shields.io/badge/🟢_Open_to-Analytics_Engineer_·_Data_Engineer-success?style=flat-square)]()
+[![Targeting](https://img.shields.io/badge/Targeting-Analytics_Engineer_·_Data_Engineer-4479A1?style=flat-square)]()
 [![Current Stage](https://img.shields.io/badge/Stage-1%3A%20Internal%20AI%20Builder-green)]()
 [![Study Hours](https://img.shields.io/badge/Weekly%20Hours-25-orange)]()
 [![Timeline](https://img.shields.io/badge/Timeline-~32%20Months%20(3%20Stages)-blue)]()
@@ -14,7 +17,9 @@
 
 📋 **[View Complete Interactive Roadmap (v10.0) →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
 
-> **🆕 v10.0 (2026 Market Realignment):** 5 stages → **3 stages** (~32 months). Path retitled **Internal AI Builder → AI-Focused Data Engineer / Analytics Engineer → Applied AI Engineer → FDE track**. Portfolio focused to **3 flagships + 2 supporting**. No external Data Analyst search (the 0–2 yr analyst band is contracting) — Stage 1 is internal AI-builder elevation, with a fallback to a DE/AE search if scope doesn't change by Month 8. Certifications trimmed to a purposeful **9 + 1 conditional** (incl. **AI-103**, the employer-reimbursable Azure code-first counterpart to CCA-F); **OMSCS (Computing Systems)** added as a parallel degree track. Framing is **evidence over keywords**.
+> **🆕 v10.0 (2026 Market Realignment):** 5 stages → **3 stages** (~32 months). Path retitled **Internal AI Builder → AI-Focused Data Engineer / Analytics Engineer → Applied AI Engineer → FDE track**. Portfolio focused to **3 flagships + 2 supporting**. No external Data Analyst search (the 0–2 yr analyst band is contracting) — that ruling stands. Certifications trimmed to a purposeful **9 + 1 conditional**; **OMSCS (Computing Systems)** added as a parallel degree track.
+>
+> **🆕 v10.0 Corrections 22 + 32 (August 2026) — what changed:** the internal-elevation premise is retired. The former *fallback* (external DE/AE search) is now the **primary path**, targeted **Analytics Engineer first, Data Engineer in parallel**, apply window **~Q1 2027**. Stage 1 keeps its name because **the build work is unchanged and continues through the handover** — what retired is the employment premise. Its exit is now an **evidence gate: DataVault S2 hardening shipped**. **All certifications are self-funded** — no employer reimbursement applies to any of them; per-exam costs are now documented in each stage. Framing is **evidence over keywords**.
 
 ---
 
@@ -44,7 +49,7 @@
 - ✅ **Domain depth** — 15+ yrs business operations (manufacturing, digital marketing) + 2 yrs ERISA-regulated financial operations + 5+ yrs independent trading
 - ✅ **Eval-first engineering** — DeepEval / RAGAS / GEval as **blocking gates** (faithfulness ≥ 0.9 for financial data)
 - ✅ **Production standards** — typed Python, **`uv` + committed `uv.lock`**, `pyproject.toml` + `src/`, ruff/mypy, Docker, GitHub Actions CI, Conventional Commits **enforced by a `commit-msg` hook**, **a pinned `.pre-commit-config.yaml` in every repo**; **structured logging (`structlog`) with a PII-redaction processor**, typed config (`pydantic-settings`), capped retries (`stamina`); **no vibe coding** (every line understood before merge)
-- ✅ **Measurable business impact** — 95% time reduction (4–6 hrs → 15 min/week) and a derived-vs-reported validation gate that quarantines mismatches before distribution
+- ✅ **Measurable business impact** — **95% time reduction** and a derived-vs-reported validation gate that quarantines mismatches before distribution
 
 **The key differentiator:** already delivering production value while building toward Data Engineering and Applied AI — with evaluation evidence that stands up to scrutiny.
 
@@ -63,8 +68,10 @@ Each stage compounds the same moat (finance/ERISA + trading depth + eval-first d
 Foundation:  Production Python (typed, uv + uv.lock, pyproject, ruff/mypy, pre-commit) + SQL + Docker/CI
 + AI Layer:  Anthropic SDK (structured outputs, tool use, prompt caching) + RAG + MCP literacy
 + Eval Layer: RAGAS/DeepEval as blocking gates, golden datasets, hallucination detection
-+ Employer:  Azure AI Fundamentals (AI-901) → AI Agent Builder Associate (AB-620), reimbursed
-= Result: AI-builder scope at current employer + PolicyPulse v1 shipping with eval gates (no comp reset)
++ Certs:     Azure AI Fundamentals (AI-901, $99) → AI Agent Builder Associate (AB-620, $165)
+             all self-funded — no employer reimbursement on any credential
+= Result: PolicyPulse v1 shipping with eval gates + DataVault S2 hardening (the exit gate)
+          → available 9 Oct 2026; external AE/DE search is the primary path
 ```
 
 **Stage 2: AI-Focused Data Engineer / Analytics Engineer** (Months 9–20) 📅 PLANNED — *dual-target*
@@ -92,7 +99,7 @@ Foundation:  Production agentic systems (Building Effective Agents taxonomy) + M
 | Keyword-Layer Path | Evidence-First Path (This Journey) |
 |--------------------|------------------------------------|
 | Certificate/keyword density | Shipped production systems with eval gates |
-| Broad titles, title inflation | Sharp identity: DE/AE → Applied AI → FDE |
+| Broad titles, title inflation | Sharp identity: AE/DE → Applied AI → FDE |
 | Generic tutorial projects | Real production systems on owned data |
 | "Prompts an LLM" | Builds, evaluates, deploys, and monitors LLM systems |
 
@@ -130,7 +137,7 @@ Answers retirement-plan policy questions with cited sources, auto-escalates when
 
 ---
 
-### 🏁 Flagship 2 — [1099 Data Platform](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline) · *Data Engineering*
+### 🏁 Flagship 2 — [DataVault / 1099 Data Platform](https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline) · *Data Engineering*
 
 **Production financial data platform** — the live 1099 reconciliation pipeline, hardened end-to-end
 
@@ -140,7 +147,7 @@ Answers retirement-plan policy questions with cited sources, auto-escalates when
 
 An end-to-end production system: ingestion → **dbt-tested models (CI-gated)** → **orchestrated (Airflow)** → **data-quality contracts** → **deployed (Docker/ECS)** → **monitored**, with written incident/postmortems. Adds a **semantic / metrics layer** for the Analytics-Engineer story.
 
-**Live impact (current state):** 95% time reduction (4–6 hrs → 15 min/week) • scales to the full distribution book without added headcount • a **derived-vs-reported Box-7 validation gate** that quarantines mismatches before distribution • reconciliation success rate held against a stated freshness SLA.
+**Live impact (current state):** **95% time reduction** • scales to the full distribution book without added headcount • a **derived-vs-reported Box-7 validation gate** that quarantines mismatches before distribution • reconciliation success rate held against a stated freshness SLA.
 
 > 🔒 *Regulated-environment disclosure: mechanism and non-identifying relative deltas only. No absolute cost figures, participant or plan data, client identifiers, or employer-identifying volumes — per the roadmap's v10.0 Correction 18 ERISA rule.*
 
@@ -225,7 +232,7 @@ learning_journey/
 ├── 📂 projects/                          # ⭐ Project directory (links to separate repos)
 │   └── README.md                         # Portfolio index
 │       ├── PolicyPulse (Flagship 1 — Applied AI: RAG→GraphRAG, FastMCP)
-│       ├── 1099 Data Platform (Flagship 2 — Data Engineering; live production)
+│       ├── DataVault / 1099 Data Platform (Flagship 2 — Data Engineering; live production)
 │       ├── Crucible (Flagship 3 — autonomous execution: backtest→paper→live)
 │       ├── FormSense (Supporting — multimodal agentic workflow)
 │       ├── Attention-Flow Catalyst (Supporting — read-only GraphRAG research)
@@ -266,22 +273,26 @@ learning_journey/
 
 ## 🎯 The ~32-Month Roadmap (3 Stages)
 
-Systematic progression that compounds the finance/ERISA + trading + eval-first moat at every stage. Income maintained from Stage 1 onward (no comp reset).
+Systematic progression that compounds the finance/ERISA + trading + eval-first moat at every stage — the moat is never reset, whoever the employer is.
 
 ### Stage 1: Internal AI Builder (Months 1–8) 🟢 ACTIVE
+
+> **Note on the name:** "Internal AI Builder" labels **the work**, not an employment status — the flagships keep shipping regardless of employer.
 
 **Core:** Production Python (typed, **uv + `uv.lock`**, pyproject, ruff/mypy, **pre-commit**) • SQL • Docker/CI
 **AI:** Anthropic SDK (structured outputs, tool use, prompt caching) • RAG • MCP literacy • Pydantic • Streamlit
 **Eval:** RAGAS/DeepEval blocking gates • golden datasets • hallucination detection
-**Employer:** AI-901 → AB-620 (reimbursed); ZTM Azure Bootcamp; Microsoft Agent Framework awareness
+**Certs (self-funded):** **AI-901 ($99)** → **AB-620 ($165)**; ZTM Azure Bootcamp; Microsoft Agent Framework awareness
+**Collaboration:** Git team workflow — **branch → PR → review → merge**, rebase and conflict resolution *(build target: the falsifiable proof is feature branches and self-reviewed PRs on the flagships, not a certificate)*
+**Last mile:** TypeScript + Zod + **Vercel AI SDK 7** + React — a streaming Claude-powered UI over PolicyPulse retrieval. ⚠️ **Guardrail:** TypeScript is the **last mile only**; PolicyPulse, AFC and Crucible stay Python-primary and no agent core crosses the language boundary
 
 **Learning path:** CS50x (Harvard) • **CS50P** (Harvard — Python, testing/debugging rigor) • **MITx 6.00.1x** (MIT — Python CS foundations) • Python for Everybody • AI Python for Beginners • Building with the Claude API (Anthropic Academy) • Improving Accuracy of LLM Apps • Building & Evaluating Advanced RAG • MCP primer • AI Prompting for Everyone • 30 Days of Streamlit • Docker for Beginners • **uv — Python packaging** (Astral official docs + Al Sweigart quickstart) • **pre-commit hooks** (Stefanie Molin's four-article series + `pre-commit.com` — *no certification exists for this and no substantive course does either; the shipped config is the evidence*) • *conditional:* **Conda Basics** (Anaconda — only if Crucible needs compiled/GPU backends) • **IBM Generative AI Engineering Professional Certificate** (Stage 1 spine)
 
-**Deliverables:** PolicyPulse v1 (eval gates + FastMCP) • 1099 pipeline retro-migrated to production standards (incl. `pip → uv` migration) • AI-901 passed → AB-620 begun • two documented internal automation wins • scope-change conversation in writing by Month 6
+**Deliverables:** PolicyPulse v1 (eval gates + FastMCP) • 1099 pipeline retro-migrated to production standards (incl. `pip → uv` migration) • AI-901 passed → AB-620 begun • two documented production automation wins
 
-> **Exit criterion:** documented internal scope change by Month 8. **Fallback:** no change by M8 → external DE/AE search at M10–12 (not a Data Analyst search).
+> **Exit criterion (evidence gate):** **DataVault S2 hardening shipped.** The prior internal-scope-change criterion is superseded — internal elevation can no longer occur. **Primary path:** external **Analytics Engineer** (first door) / **Data Engineer** (parallel) search, apply window **~Q1 2027**. *Not* a Data Analyst search, under any circumstance.
 
-### Stage 2: AI-Focused Data Engineer / Analytics Engineer (Months 9–20) 📅 PLANNED — *dual-target*
+### Stage 2: Analytics Engineer (first door) / AI-Focused Data Engineer (Months 9–20) 🎯 PRIMARY PATH
 
 > *"AI-focused" ≠ vanilla DE:* the target is data platforms built for AI workloads — AI-managed / AI-ready pipelines, embedding pipelines, vector stores, and unstructured-data ETL feeding RAG — not BI-only engineering.
 
@@ -290,9 +301,11 @@ Systematic progression that compounds the finance/ERISA + trading + eval-first m
 **Deploy:** Docker → ECS/Fargate • **Terraform** basics • monitoring • incident writeups
 **AI-adjacent:** embedding pipelines • vector stores • unstructured-data ETL feeding RAG
 
-**Certs:** **DP-700** (Fabric Data Engineer, employer-reimbursed) + **AWS Certified Data Engineer – Associate** + *conditional platform-cert menu (take **ONE**, matched to a target employer's stack, never stacked): dbt Analytics Engineering (if AE apps stall) · lakehouse slot — **DP-750** (Azure Databricks, reimbursed) preferred / SnowPro Core (COF-C03) / Databricks DE fallback*
+**Certs (self-funded):** **DP-700** ($165) + **AWS Certified Data Engineer – Associate** (DEA-C01, $150) + *conditional menu: dbt Analytics Engineering (free; if AE apps stall)* + **ONE optional lakehouse cert**
 
-**Key deliverable:** DE flagship production-hardened; first external offer accepted ~M18–20 (or earlier via M10–12 fallback)
+> **Lakehouse slot — three co-equal options, take exactly ONE**, matched to a target employer's stack, never stacked: **DP-750** ($165) · **SnowPro Core** (COF-C03, $175) · **Databricks DE Associate** ($200). *No default is set on purpose — with the funding advantage gone they sit within $35 of each other, and the deciding input is the target employer's stack, which isn't knowable until the apply window.*
+
+**Key deliverable:** DataVault production-hardened (**the Stage 1 exit gate**); first external offer — apply window **~Q1 2027**
 
 ### Stage 3: Applied AI Engineer → FDE Track (Months 21–32) 📅 PLANNED
 
@@ -303,7 +316,7 @@ Systematic progression that compounds the finance/ERISA + trading + eval-first m
 
 **🎯 FDE differentiator — Discovery & Decomposition (first-class skill):** FDE loops run a system-design round, a decomposition/open-ended case study (the round where most technically-strong candidates wash out), and a client-simulation role-play — with customer discovery and communication weighted at roughly half the evaluation, and graders scoring the *process* (clarifying questions before solutioning, clean decomposition, prioritization, transparent trade-offs) over the final answer. My **ERISA client-facing operations background is the structural edge on exactly the round that eliminates most candidates.** Portfolio proof: every flagship carries an **ADR set + C4 diagram** for architecture-defense rehearsal.
 
-**Certs:** **Anthropic CCA-F** + **Azure AI-103** (AI Apps & Agents Developer — code-first Foundry counterpart to CCA-F, employer-reimbursed) + **Databricks Certified GenAI Engineer Associate** + **NVIDIA NCA-GENL** + **Neo4j Certified Professional**
+**Certs (self-funded):** **Anthropic CCA-F** (~$125 — ⚠️ *confirm price and the Claude Partner Network access route at booking; both post-date the Pearson VUE migration*) + **Azure AI-103** ($165 — code-first Foundry counterpart to CCA-F) + **Databricks Certified GenAI Engineer Associate** ($200) + **NVIDIA NCA-GENL** ($125) + **Neo4j Certified Professional** (**free**)
 
 **Key deliverable:** Applied AI Engineer role (~M30); one public talk on a deployed system; FDE apply list live at M32+ (across industries; remote-normal routes weighted)
 
@@ -333,6 +346,7 @@ Accredited M.S. Computer Science (~$8–9K total), Computing Systems specializat
 - **Pydantic** — structured-output validation • **ChromaDB** — vector store • **Neo4j** — GraphRAG hybrid retrieval
 - **FastMCP** — MCP servers exposing retrieval as tools • **LangChain / LangGraph** — agentic workflows
 - **OpenRouter** — PAYG routing for bulk agentic work
+- **Vercel AI SDK 7 + TypeScript/Zod + React** — the **last-mile layer**: a streaming Claude-powered UI over PolicyPulse retrieval. **Model-call ownership is ruled, not left ambiguous:** the Next.js route handler owns the call for the single-turn chat and invokes retrieval as a tool; **Python owns the agentic loop**, GraphRAG fusion, access-control retrieval and the full eval suite. ⚠️ **No agent core crosses the language boundary**
 
 **AI Evaluation (cross-project standard):**
 - **DeepEval + pytest** — eval-driven development in CI • **RAGAS** — RAG Triad metrics (PolicyPulse)
@@ -342,7 +356,7 @@ Accredited M.S. Computer Science (~$8–9K total), Computing Systems specializat
 **Containerization:** Docker (Dockerfile for every repo; Stage 1 fundamentals via KodeKloud) — images build via `uv sync --frozen` for byte-reproducible dependency installs
 
 ### Integration Principles
-**Transparency:** document AI assistance in commits • **Validation:** always test AI-generated code • **No vibe coding:** every line understood before merge, diff-review-before-merge, manual commit as the final control gate — with **pre-commit as the automated gate in front of it** (secrets, notebook output, lockfile drift and commit format are caught mechanically, so human review is spent on logic rather than lint) • **Privacy-first routing:** PII/proprietary local, proprietary via private endpoints, public scaffolding only on free tiers
+**Transparency:** document AI assistance in commits • **Team-workflow discipline:** branch → PR → self-review → merge on the flagships, rather than direct commits to `main` — *the checkable artifact, since a solo portfolio has no second reviewer to prove it any other way* • **Validation:** always test AI-generated code • **No vibe coding:** every line understood before merge, diff-review-before-merge, manual commit as the final control gate — with **pre-commit as the automated gate in front of it** (secrets, notebook output, lockfile drift and commit format are caught mechanically, so human review is spent on logic rather than lint) • **Privacy-first routing:** PII/proprietary local, proprietary via private endpoints, public scaffolding only on free tiers
 
 ### Evolution Path
 
@@ -362,7 +376,7 @@ Accredited M.S. Computer Science (~$8–9K total), Computing Systems specializat
 - **uv** (packages, virtual envs, Python versions) — `uv run` replaces manual venv activation
 
 **Languages & data:**
-- Python 3.12, SQL
+- **Python 3.14** (standard GIL build — the free-threaded `python3.14t` build is deliberately **not** used; no CPU-bound multicore workload here, and it is where the C-extension wheel problems live), SQL
 - pandas, NumPy, DuckDB, Parquet, Matplotlib, Seaborn, Plotly
 - Databases: SQLite, DuckDB, ChromaDB, Neo4j, PostgreSQL (Stage 2)
 
@@ -378,8 +392,9 @@ Accredited M.S. Computer Science (~$8–9K total), Computing Systems specializat
 
 **Production standards:**
 - **Commit-boundary enforcement: pinned `.pre-commit-config.yaml`** — `ruff-check --fix` ordered *before* `ruff-format`, `uv-lock` (keeps the lockfile honest), `gitleaks` + `detect-private-key`, `nbstripout` wherever notebooks exist, and `conventional-pre-commit` on the `commit-msg` stage. **`mypy` is deliberately CI-only** — the `mirrors-mypy` hook's default `--ignore-missing-imports` silently degrades third-party types to `Any`; the exclusion is recorded as an ADR rather than left as an omission
-- `pyproject.toml` + **`uv.lock`** + `src/` + `py.typed`, ruff format, mypy (3.12) · **structured logging (`structlog` + `ProcessorFormatter`) + PII redaction processor · typed config (`pydantic-settings`) · capped retries (`stamina`)**, Conventional Commits
+- `pyproject.toml` + **`uv.lock`** + `src/` + `py.typed`, ruff format, mypy (3.14) · **structured logging (`structlog` + `ProcessorFormatter`) + PII redaction processor · typed config (`pydantic-settings`) · capped retries (`stamina`)**, Conventional Commits
 - Dependency management: **uv** (`uv add`, `uv sync --frozen` in CI/Docker) — **no `requirements.txt` anywhere**
+- **Single-source Python pin:** the version is declared **once** as `requires-python = ">=3.14"` in `pyproject.toml`; `[tool.ruff] target-version`, `[tool.mypy] python_version`, the Dockerfile base image and the CI matrix all read from it. **A mismatch is a CI failure, not a lint warning**
 
 ```bash
 git clone https://github.com/manuel-reyes-ml/learning_journey.git
@@ -412,17 +427,19 @@ uv run python getting_started/environment-verification.py
 
 ## 📊 Current Progress
 
-**Active Stage:** 1 of 3 (Internal AI Builder)
-**Portfolio:** 3 flagships (PolicyPulse, 1099 / DataVault Platform [live], Crucible) • 2 supporting (FormSense, AFC) • backlog (ODI, StreamSmart)
-**Certifications:** 9 + 1 conditional (4 employer-reimbursed: AI-901, AB-620, DP-700, AI-103)
+**Availability:** 🟢 **Open to roles** — AI-Focused Analytics Engineer (first door) · Data Engineer (parallel)
+**Active Stage:** 1 of 3 (Internal AI Builder — *the work*, exiting on an evidence gate)
+**Portfolio:** 3 flagships (PolicyPulse, DataVault / 1099 Platform [live], Crucible) • 2 supporting (FormSense, AFC) • backlog (ODI, StreamSmart)
+**Certifications:** 9 + 1 conditional — **all self-funded**, ≈ **$1,194** committed across S1–S3 (≈ $1,394 with the optional lakehouse slot)
 **Study Hours:** 25/week consistent
 
 **Next milestones:**
 - PolicyPulse v1 shipped (RAG + eval gates + FastMCP)
-- 1099 pipeline retro-migrated to production standards (the DE flagship's live core)
-- AI-901 passed (employer-reimbursed) → AB-620 begun
+- **DataVault S2 hardening — the Stage 1 exit gate**
+- AI-901 passed → AB-620 begun
+- Vercel AI SDK 7 last-mile UI over PolicyPulse retrieval (fresh for the Q1 2027 window)
+- Feature-branch + PR workflow visible across the flagship repos
 - IBM GenAI Engineering Professional Certificate completed; CS50 on track for OMSCS window
-- Two documented internal automation wins + scope-change conversation (Month 6)
 
 ---
 
