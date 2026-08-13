@@ -14,7 +14,7 @@ Each project is **one system that evolves across stages**, not a set of scattere
 
 | # | Project | Role | What it does | Status |
 |---|---------|------|-------------|--------|
-| 1 | 🧾 **1099 / DataVault Data Platform** | 🚩 Flagship — Data Engineering | 1099 reconciliation core → dbt-tested platform (CI) → Applied-AI natural-language analyst layer (HITL on every write) | ✅ **S1 core live** |
+| 1 | 🧾 **DataVault / 1099 Data Platform** | 🚩 Flagship — Data Engineering | 1099 reconciliation core → dbt-tested platform (CI) → Applied-AI natural-language analyst layer (HITL on every write) | ✅ **S1 core live** |
 | 2 | 📋 **PolicyPulse** | 🚩 Flagship — Applied AI (RAG) | Cited-source RAG over plan documents → GraphRAG hybrid (Neo4j + ChromaDB) → agentic + eval/observability; exposes a **FastMCP server** | 🏗️ **S1 shipping** |
 | 3 | 🔥 **Crucible** | 🚩 Flagship — Autonomous trading research | Multi-timeframe (swing → intraday) backtest → paper → live through validation gates; **HITL sign-off + kill-switch** on the live path | 🏗️ **S1 in progress** |
 | 4 | 📈 **Attention-Flow Catalyst (AFC)** | Supporting — Research | Eval-first core: SEC-grounded faithfulness benchmark + controlled-perturbation catalog; GraphRAG financial-KG | 🏗️ **S1 core** |
@@ -29,7 +29,7 @@ Each project is **one system that evolves across stages**, not a set of scattere
 
 ## 🏆 Production Highlight
 
-### 🧾 1099 / DataVault Data Platform (S1 core) — ✅ Live in an ERISA-regulated environment
+### 🧾 DataVault / 1099 Data Platform (S1 core) — ✅ Live in an ERISA-regulated environment
 
 | ⚡ ~95% time reduction | 📈 Full distribution book, no added headcount | 🛡️ Derived-vs-reported Box-7 validation gate | ✅ Reconciliation success rate held to a freshness SLA |
 |---|---|---|---|
@@ -50,13 +50,15 @@ Ingests Matrix + Relius into a canonical model, reconciles them, derives Box-7 c
 
 Retrieval-augmented answering over retirement-plan documents with cited sources and confidence-gated escalation; exposes a **FastMCP server**. Evolves from vector RAG (S1) → **GraphRAG hybrid (Neo4j + ChromaDB)** for multi-hop questions (S2/S3) → agentic workflows with a three-layer eval spine (per-query metrics + trajectory tracing + drift vs. a frozen golden set).
 
-### 🧾 1099 / DataVault Data Platform — Data-Engineering flagship
+**Last-mile layer:** a streaming Claude-powered UI on **Vercel AI SDK 7 + TypeScript + Zod + React**. Model-call ownership is ruled rather than left ambiguous — the Next.js route handler owns the call for the single-turn chat and invokes retrieval as a tool. ⚠️ **Language boundary:** TypeScript is the **last mile only**. The agentic loop, GraphRAG fusion, access-control retrieval and the full eval suite stay in **Python**; no agent core crosses the boundary.
+
+### 🧾 DataVault / 1099 Data Platform — Data-Engineering flagship
 
 - **① Production** — Live, depended-upon pipeline in a regulated environment — reconciliation success rate, freshness SLA, quarantine/retry behaviour, schema contracts, on-call reality.
 - **② Cost** — 🔒 *Deliberately constrained.* Mechanism + non-identifying relative deltas + manual hours removed. No absolute figures — see the disclosure above.
 - **③ Architecture** — **ERISA-driven ADRs** (retention, auditability, reconciliation guarantees, PII boundary) · C4 Context + Container · dbt tests and data contracts.
 
-One system across the arc. **S1:** the live 1099 reconciliation core. **S2:** hardened into a platform — dbt-tested models (CI-gated), orchestration (Airflow), data contracts, containerized deploy, monitoring, one written incident/postmortem. **S3:** the Applied-AI analyst layer (natural-language querying) with **human-in-the-loop on every write**.
+One system across the arc. **S1:** the live 1099 reconciliation core. **S2:** hardened into a platform — dbt-tested models (CI-gated), orchestration (Airflow), data contracts, containerized deploy, monitoring, one written incident/postmortem. **This is the Stage 1 exit gate** — the roadmap now exits Stage 1 on shipped evidence rather than on an employment milestone, and this is the evidence. **S3:** the Applied-AI analyst layer (natural-language querying) with **human-in-the-loop on every write**.
 
 ### 🔥 Crucible — Autonomous trading-research flagship (started first)
 
@@ -84,7 +86,7 @@ One system across the arc. **S1:** the live 1099 reconciliation core. **S2:** ha
 
 ## 🏗️ Production Standard (v10.0 — all projects)
 
-Every project ships with a **Mermaid diagram + C4 Context diagram** (+ Container view on lead flagships) · **`docs/adr/`** numbered Architecture Decision Records (context → decision → consequences) · Dockerfile · evaluation-metrics table · demo GIF · "What I Learned" · **eval-first blocking gates** · **synthetic data only** in public repos · `pyproject.toml` + **`uv.lock`** + `src/` + `py.typed` + ruff + mypy · **structured logging** (`structlog` over stdlib via `ProcessorFormatter`, so third-party library logs render through the same chain) with a **PII-redaction processor** in that chain · **typed configuration** (`pydantic-settings`, every credential `SecretStr`) · **capped jittered retries** (`stamina`) · Conventional Commits · a pinned **`.pre-commit-config.yaml`**. **Environments are uv-managed** (Astral) — a committed lockfile plus `uv sync --frozen` in CI/Docker makes every build byte-reproducible; no `requirements.txt` anywhere. **Logs go to stdout** (12-Factor) — rotation and shipping belong to the runtime, and run context (`run_id`) is bound via `contextvars` so one query reconstructs a full pipeline run rather than one file per stage. *Stage 3 adds an ADR set + an architecture-defense rehearsal — present and defend the design against a reviewer, mirroring the FDE panel format.*
+Every project ships with a **Mermaid diagram + C4 Context diagram** (+ Container view on lead flagships) · **`docs/adr/`** numbered Architecture Decision Records (context → decision → consequences) · Dockerfile · evaluation-metrics table · demo GIF · "What I Learned" · **eval-first blocking gates** · **synthetic data only** in public repos · **Python 3.14** · `pyproject.toml` + **`uv.lock`** + `src/` + `py.typed` + ruff + mypy · **structured logging** (`structlog` over stdlib via `ProcessorFormatter`, so third-party library logs render through the same chain) with a **PII-redaction processor** in that chain · **typed configuration** (`pydantic-settings`, every credential `SecretStr`) · **capped jittered retries** (`stamina`) · Conventional Commits · **branch → PR → self-review → merge** (never direct commits to `main`) · a pinned **`.pre-commit-config.yaml`**. **Environments are uv-managed** (Astral) — a committed lockfile plus `uv sync --frozen` in CI/Docker makes every build byte-reproducible; no `requirements.txt` anywhere. **The Python version is a single-source pin:** declared once as `requires-python = ">=3.14"` in `pyproject.toml`, with `[tool.ruff] target-version`, `[tool.mypy] python_version`, the Dockerfile base image and the CI matrix all reading from it — a mismatch is a **CI failure, not a lint warning**. The **standard GIL build** is used deliberately; the free-threaded `python3.14t` build is *not*, because no workload here is CPU-bound across cores and that build is where the C-extension wheel problems still live. **Logs go to stdout** (12-Factor) — rotation and shipping belong to the runtime, and run context (`run_id`) is bound via `contextvars` so one query reconstructs a full pipeline run rather than one file per stage. *Stage 3 adds an ADR set + an architecture-defense rehearsal — present and defend the design against a reviewer, mirroring the FDE panel format.*
 
 **Evaluation:** DeepEval + pytest across all projects · RAGAS (PolicyPulse) · SelfCheckGPT (PolicyPulse + AFC) · FActScore (AFC) · Arize Phoenix observability (S3).
 
