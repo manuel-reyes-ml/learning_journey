@@ -40,9 +40,9 @@ import streamlit as st
 
 # ✅ Cache data loading (returns NEW copy each call — safe for DataFrames)
 @st.cache_data(ttl=3600)  # Cache for 1 hour
-def load_data(filepath: str) -> pd.DataFrame:
+def load_data(filepath: str) -> pl.DataFrame:
     """Load and cache data. TTL prevents stale data."""
-    return pd.read_parquet(filepath)
+    return pl.read_parquet(filepath)
 
 # ✅ Cache resource objects (returns SAME object — use for DB connections, clients)
 @st.cache_resource
@@ -58,6 +58,10 @@ def get_llm_client():
 
 ### Caching Rules
 - `@st.cache_data` → DataFrames, query results, computed values (copies returned)
+- **Cache collected frames, never a `pl.LazyFrame`** — a LazyFrame is an unexecuted
+  plan, so caching one caches nothing and hides the cost. `.collect()` first.
+- `st.dataframe()` and `st.line_chart()` render Polars frames natively; convert with
+  `.to_pandas()` only for a library that demands it (see `python-core.mdc`)
 - `@st.cache_resource` → DB connections, API clients, ML models (singleton)
 - ❌ Don't cache functions with side effects (logging, writes, API mutations)
 - ❌ Don't use `@st.cache_data` for unhashable objects (DB connections, clients)
