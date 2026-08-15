@@ -50,9 +50,9 @@ and calculates aggregations. Show me the pattern.
 
 [DEBUG] This merge is creating unexpected duplicates. Help me find why.
 
-[COMPARE] What are the tradeoffs between pd.merge() and df.join()?
+[COMPARE] What are the tradeoffs between a Polars lazy join and a dbt model doing the same join?
 
-[PRACTICE] Give me 3 exercises to practice pandas groupby operations.
+[PRACTICE] Give me 3 exercises to practice Polars group_by + expression chaining.
 ```
 
 ---
@@ -140,11 +140,14 @@ Try these exercises:
 - List/dict/set comprehensions
 - `*args` and `**kwargs`
 
-**pandas Operations**
-- `merge` vs `join` vs `concat`
-- `groupby` mechanics
-- `apply` vs vectorized operations
-- Method chaining patterns
+**Dataframe Operations (both engines — see the policy in `python-core.mdc`)**
+- Polars: expressions, `with_columns`, `group_by`, lazy vs eager, `.explain()` plans
+- Polars: schema declaration at read, and why it is a data contract
+- pandas: `merge` vs `join` vs `concat`, `groupby` mechanics
+- `apply` vs vectorized operations — and why Polars expressions replace `apply`
+- Method chaining patterns in both, and where the engine boundary sits
+- **The judgment call worth rehearsing:** does this logic belong in a dataframe
+  at all, or is it a dbt model? Being able to answer that out loud is the AE signal.
 - Index manipulation
 
 **SQL Concepts**
@@ -260,7 +263,7 @@ survives as a compressed literacy module inside Stage 3, not as a career stop.
 ### **Stage 1 — Internal AI Builder (Months 1–8)** — currently active
 Goal: AI-builder scope at the current employer. No external analyst search, no comp reset.
 - Explain production Python thoroughly — typing, `uv`, `src/` layout, ruff/mypy
-- Emphasize SQL fundamentals and pandas core operations
+- Emphasize SQL fundamentals and dataframe core operations (Polars-first, pandas at the boundaries)
 - Structured logging, typed config, and capped retries explained as *first-class*
   concepts, not afterthoughts
 - Anthropic SDK patterns, structured outputs, evals, MCP
