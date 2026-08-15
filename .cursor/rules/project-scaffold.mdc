@@ -101,7 +101,9 @@ source of truth; **no `requirements.txt` anywhere**.
 
 ```bash
 uv init                     # scaffold pyproject.toml
-uv add pandas pydantic pydantic-settings structlog stamina   # runtime deps
+uv add polars pydantic pydantic-settings structlog stamina    # runtime deps
+uv add pandas openpyxl                    # retained boundaries only (templates, plotting)
+uv add --optional excel fastexcel         # Polars' calamine reader for .xlsx ingestion
 uv add --dev pytest ruff mypy deepeval   # dev-only → [dependency-groups]
 uv sync                     # reproduce the exact locked env on any machine
 uv sync --frozen            # CI/Docker: fail if the lock is stale, never re-resolve
