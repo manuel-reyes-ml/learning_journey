@@ -1,5 +1,5 @@
 ---
-description: Core Python style, typing, docstrings, pandas and error-handling standards
+description: Core Python style, typing, docstrings, dataframe-engine policy (Polars + pandas) and error-handling standards
 globs: ["**/*.py"]
 alwaysApply: false
 ---
@@ -86,8 +86,9 @@ from datetime import datetime
 from pathlib import Path
 
 # Third-party packages
-import pandas as pd
 import numpy as np
+import pandas as pd
+import polars as pl
 from pydantic import BaseModel
 
 # Local application imports
@@ -102,11 +103,12 @@ from src.utils.validators import validate_input
 ### Function Signatures
 ```python
 # ✅ Good: Full type hints with return type (PEP 604 unions via __future__)
+#    The annotation names the engine the function actually takes.
 def process_records(
-    df: pd.DataFrame,
+    lf: pl.LazyFrame,
     column_name: str,
     threshold: float = 0.5,
-) -> pd.DataFrame:
+) -> pl.LazyFrame:
     """Process records based on threshold."""
     pass
 
@@ -136,6 +138,10 @@ def get_config() -> dict[str, Any]:
 # Callable (function as parameter)
 def apply_transform(data: pd.DataFrame, func: Callable[[pd.Series], pd.Series]) -> pd.DataFrame:
     pass
+
+# Polars prefers expressions over callables — pass pl.Expr, not a lambda
+def apply_expr(lf: pl.LazyFrame, expr: pl.Expr, alias: str) -> pl.LazyFrame:
+    return lf.with_columns(expr.alias(alias))
 ```
 
 ### Layer-boundary rule
@@ -150,31 +156,32 @@ widget. This keeps layers independently testable and independently replaceable.
 ### Function Docstring Template
 ```python
 def reconcile_amounts(
-    source_df: pd.DataFrame,
-    target_df: pd.DataFrame,
-    tolerance: float = 0.50,
-) -> pd.DataFrame:
-    """Reconcile amounts between source and target DataFrames.
+    source: pl.LazyFrame,
+    target: pl.LazyFrame,
+    tolerance_cents: int = 50,
+) -> pl.LazyFrame:
+    """Reconcile amounts between source and target frames.
 
     Compares amounts from two sources and flags discrepancies
-    that exceed the specified tolerance threshold.
+    that exceed the specified tolerance threshold. Lazy in, lazy
+    out — the caller decides where to `.collect()`.
 
     Parameters
     ----------
-    source_df : pd.DataFrame
-        DataFrame containing source system amounts.
-        Must have columns: ['id', 'amount', 'date'].
-    target_df : pd.DataFrame
-        DataFrame containing target system amounts.
-        Must have columns: ['id', 'amount', 'date'].
-    tolerance : float, optional
-        Maximum allowed difference for matching.
-        Defaults to 0.50.
+    source : pl.LazyFrame
+        Frame containing source system amounts.
+        Must have columns: ['id', 'amount_cents', 'date'].
+    target : pl.LazyFrame
+        Frame containing target system amounts.
+        Must have columns: ['id', 'amount_cents', 'date'].
+    tolerance_cents : int, optional
+        Maximum allowed difference for matching, in integer cents.
+        Defaults to 50. Never a float — money is cents.
 
     Returns
     -------
-    pd.DataFrame
-        DataFrame with reconciliation results including:
+    pl.LazyFrame
+        Frame with reconciliation results including:
         - match_status: 'MATCHED' | 'DISCREPANCY' | 'MISSING'
         - difference: Calculated amount difference
         - action: Recommended action for review
@@ -182,16 +189,16 @@ def reconcile_amounts(
     Raises
     ------
     ValueError
-        If required columns are missing from input DataFrames.
+        If required columns are missing from the input frames.
     TypeError
-        If tolerance is not a numeric value.
+        If tolerance_cents is not an integer.
 
     Examples
     --------
-    >>> source = pd.DataFrame({'id': [1, 2], 'amount': [100.0, 200.0]})
-    >>> target = pd.DataFrame({'id': [1, 2], 'amount': [100.0, 199.0]})
-    >>> result = reconcile_amounts(source, target, tolerance=0.50)
-    >>> result['match_status'].tolist()
+    >>> source = pl.LazyFrame({'id': [1, 2], 'amount_cents': [10000, 20000]})
+    >>> target = pl.LazyFrame({'id': [1, 2], 'amount_cents': [10000, 19900]})
+    >>> result = reconcile_amounts(source, target, tolerance_cents=50)
+    >>> result.collect()['match_status'].to_list()
     ['MATCHED', 'DISCREPANCY']
     """
     pass
@@ -226,7 +233,106 @@ class DataPipeline:
 
 ---
 
-## 🐼 pandas Best Practices
+## 🧊 Dataframe Engine Policy (Polars + pandas)
+
+> **Roadmap CORRECTION 35.** Two engines, one boundary. This is not a migration —
+> it is a division of labour, and the boundary is the rule that matters.
+
+### The boundary
+
+| Layer | Engine | Why |
+|---|---|---|
+| Ingestion, schema enforcement, normalization, type coercion | **Polars** (`pl`) | Explicit schema at read = a data contract; Arrow-native; immutable |
+| Bulk transforms in Python (joins, aggregations, window logic) | **Polars** (`pl`) | Lazy plan is inspectable via `.explain()`; declarative and read-optimized |
+| Business logic that belongs in the warehouse | **Neither — dbt/SQL** | If it is a model, it is a dbt model. Do not rebuild dbt in a dataframe. |
+| Writing into an existing `.xlsx` **template** | **pandas + openpyxl** | `pl.DataFrame.write_excel` is xlsxwriter-based and cannot fill a template |
+| matplotlib / seaborn / scikit-learn / PandasAI hand-off | **pandas** (`pd`) | Third-party libraries expect `pd.DataFrame`; convert at the edge |
+
+**Default for new code is Polars.** pandas is retained *deliberately* at the two
+boundaries above, not by inertia. Existing shipped pandas code is **not rewritten
+without a reason** — a live pipeline is evidence, and churning it is not.
+
+### Conversion happens once, at the edge
+
+```python
+import polars as pl
+
+# ✅ Polars owns the pipeline; convert only where a boundary demands it
+lf = pl.scan_parquet("data/silver/reviews.parquet")
+result = lf.filter(pl.col("status") == "NIGO").collect()
+
+result.to_pandas().plot(...)          # rendering boundary
+write_template(result.to_pandas())    # openpyxl template boundary
+
+# ❌ Converting back and forth mid-pipeline — pick a side per layer
+df = pl.read_parquet(p).to_pandas().groupby("a").sum()
+```
+
+### Schema-first reads are the contract
+
+```python
+# ✅ Declare the schema — drift fails loudly at the door, not silently downstream
+lf = pl.scan_csv(
+    path,
+    schema_overrides={"plan_id": pl.String, "gross_amt": pl.Int64},
+)
+
+# ✅ Lazy by default; collect once, at the end
+(
+    lf.filter(pl.col("gross_amt") > 0)
+      .group_by("plan_id")
+      .agg(pl.col("gross_amt").sum().alias("total_cents"))
+      .collect()
+)
+
+# ✅ Money stays in integer cents — never float. Same rule as the pandas layer.
+```
+
+### Polars idioms (the ones LLM assistants get wrong)
+
+Assistants frequently emit pandas method signatures against Polars objects.
+Treat any of the following in generated code as a defect to fix, not a style choice:
+
+```python
+# ❌ pandas habits that do not exist / do not belong in Polars
+df[df["a"] > 1]              # ✅ df.filter(pl.col("a") > 1)
+df["b"] = df["a"] * 2        # ✅ df.with_columns((pl.col("a") * 2).alias("b"))
+df.groupby("a")              # ✅ df.group_by("a")
+df.rename(columns={...})     # ✅ df.rename({...})
+df.apply(lambda r: ...)      # ✅ expressions; map_elements only as a last resort
+df.reset_index()             # ✅ no index exists in Polars — nothing to reset
+```
+
+- **No index.** Polars has no row index. If code reaches for one, the design is wrong.
+- **Immutable.** Every operation returns a new frame; there is no in-place assignment.
+- **`.explain()` the plan** before optimizing anything. Guessing is not optimizing.
+- **Multiprocessing:** use `spawn` (the Python 3.14 default). `fork` is unsafe with
+  any multi-threaded engine and will hang.
+
+### Type hints across the boundary
+
+```python
+def load_relius(path: Path) -> pl.LazyFrame:      # ingestion layer → Polars
+    ...
+
+def render_corrections(df: pd.DataFrame) -> Path:  # template layer → pandas
+    ...
+```
+
+A function signature names the engine it actually takes. Never annotate a
+boundary function with the wrong frame type "because it converts internally."
+
+---
+
+## 🐼 pandas — Retained Boundaries Only
+
+> Everything below still applies **within the retained boundaries** (template
+> writing, plotting, third-party hand-off) and to existing shipped pandas code.
+> It is not guidance to start new pipeline code in pandas.
+>
+> **pandas 3.0** (January 2026) is the floor: Copy-on-Write is default, strings
+> have a dedicated dtype, and `pd.col()` exists. Code written against 2.x
+> chained-assignment behaviour is a defect.
 
 ### DataFrame Operations
 ```python
@@ -303,7 +409,7 @@ class ConfigurationError(Exception):
     pass
 
 # ✅ Raise early with context
-def process_file(filepath: Path) -> pd.DataFrame:
+def process_file(filepath: Path) -> pl.LazyFrame:
     if not filepath.exists():
         raise FileNotFoundError(f"Input file not found: {filepath}")
 
