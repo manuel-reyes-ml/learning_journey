@@ -86,7 +86,7 @@ git branch -d feature/42-add-user-export  # Delete local
 | `refactor` | Code change (no behavior change) | `refactor(utils): extract validation logic` |
 | `docs` | Documentation only | `docs(readme): add installation steps` |
 | `test` | Adding/updating tests | `test(auth): add login edge cases` |
-| `chore` | Maintenance (deps, configs) | `chore(deps): upgrade pandas to 2.0` |
+| `chore` | Maintenance (deps, configs) | `chore(deps): upgrade polars to 1.24` |
 | `style` | Formatting (no code change) | `style(format): apply ruff format` |
 | `perf` | Performance improvement | `perf(query): add index for faster lookup` |
 | `ci` | CI/CD changes | `ci(actions): pin uv sync --frozen` |
