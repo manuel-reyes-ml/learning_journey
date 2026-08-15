@@ -46,6 +46,11 @@ Standing examples from this portfolio:
 - Human-in-the-loop on every write in the DataVault Analyst layer
 - LLM-behind-the-Wall in Crucible; kill-switch on the live execution path
 - `uv` over Poetry / pip-tools; `ruff format` over Black
+- **Polars for the ingestion and transform layers, pandas retained at the template
+  and plotting boundaries** — the rejected alternative is full pandas 3.0 retention,
+  and the falsifier belongs in the ADR (roadmap CORRECTION 35). Record the *boundary*,
+  not the benchmark: "which engine owns which layer, and why" is the reviewable
+  decision; a speed number on a small dataset is not
 - Regulatory constraints that **shaped the design** — for a regulated system this is
   the genuinely scarce signal, and it is itself an ADR topic
 
