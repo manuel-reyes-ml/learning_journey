@@ -1,5 +1,5 @@
 ---
-description: pytest standards plus DeepEval/RAGAS evaluation-driven development
+description: pytest standards (Polars + pandas frame assertions) plus DeepEval/RAGAS evaluation-driven development
 globs: ["tests/**/*.py", "**/conftest.py", "**/eval_dataset.json", "**/eval*.py", "**/test_*.py"]
 alwaysApply: false
 ---
@@ -60,15 +60,61 @@ class TestFunctionName:
 ```
 
 ### DataFrame Testing
+
+Test with **the engine the function under test actually uses** — see the dataframe
+engine policy in `python-core.mdc`. Polars for pipeline code, pandas for the retained
+rendering and template boundaries.
+
 ```python
+# ✅ Polars — the default for pipeline code
+from polars.testing import assert_frame_equal
+
+
+def test_frame_transformation():
+    """Should transform the frame correctly."""
+    input_df = pl.DataFrame({"a": [1, 2], "b": [3, 4]})
+    expected = pl.DataFrame({"a": [1, 2], "b": [3, 4], "c": [4, 6]})
+    assert_frame_equal(transform_function(input_df), expected)
+
+
+def test_lazy_transformation():
+    """LazyFrame in, LazyFrame out — collect only inside the test."""
+    lf = pl.LazyFrame({"a": [1, 2], "b": [3, 4]})
+    result = transform_function(lf).collect()
+    assert_frame_equal(result, pl.DataFrame({"a": [1, 2], "b": [3, 4], "c": [4, 6]}))
+```
+
+> `assert_frame_equal` is **strict on dtype and column order by default** in Polars.
+> Do not reach for `check_dtypes=False` to make a test pass — a dtype change *is* a
+> behaviour change, and silencing it defeats the schema contract the ingestion layer
+> exists to enforce. Loosen only with a comment saying why.
+
+```python
+# ✅ pandas — retained boundaries only (template rendering, plotting hand-off)
 import pandas.testing as tm
 
-def test_dataframe_transformation():
-    """Should transform DataFrame correctly."""
-    input_df = pd.DataFrame({'a': [1, 2], 'b': [3, 4]})
+
+def test_correction_file_frame():
+    """Should build the template-ready pandas frame."""
     expected_df = pd.DataFrame({'a': [1, 2], 'b': [3, 4], 'c': [4, 6]})
-    result = transform_function(input_df)
-    tm.assert_frame_equal(result, expected_df)
+    tm.assert_frame_equal(build_template_frame(...), expected_df)
+```
+
+### Boundary tests (the ones that actually catch regressions)
+
+The engine boundary is where defects hide. Two tests earn their keep on every project:
+
+```python
+def test_schema_drift_fails_loudly():
+    """A missing or retyped source column must raise at read, not corrupt downstream."""
+    with pytest.raises(pl.exceptions.SchemaError):
+        load_source(path_with_missing_column)
+
+
+def test_conversion_preserves_money_exactly():
+    """Cents survive the Polars → pandas hand-off with no float drift."""
+    frame = pl.DataFrame({"amount_cents": [10000, 19999]})
+    assert frame.to_pandas()["amount_cents"].tolist() == [10000, 19999]
 ```
 
 ### Testing Log Output
@@ -126,12 +172,12 @@ def _no_retry_sleeps():
 ### Fixtures for Reusable Test Data
 ```python
 @pytest.fixture
-def sample_dataframe():
-    """Create sample DataFrame for testing."""
-    return pd.DataFrame({
-        'id': ['A001', 'A002', 'A003'],
-        'amount': [100.0, 200.0, 300.0],
-        'status': ['active', 'active', 'inactive'],
+def sample_frame() -> pl.DataFrame:
+    """Create a sample frame for testing. Money in integer cents."""
+    return pl.DataFrame({
+        "id": ["A001", "A002", "A003"],
+        "amount_cents": [10000, 20000, 30000],
+        "status": ["active", "active", "inactive"],
     })
 ```
 
