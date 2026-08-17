@@ -1,8 +1,10 @@
 # OpenCode — Commands, Tips & Configuration Reference
 
 **Focus:** Using OpenCode inside **Cursor** (as the integrated-terminal extension), with model-agnostic providers (local Ollama + OpenRouter).
-**Compiled:** June 2026 · Aligned to a Cursor-primary, learning-while-building, "no vibe coding" workflow.
-**Version:** 1.1 (June 22, 2026)
+**Compiled:** June 2026 · Last verified August 2026 · Aligned to a Cursor-primary, learning-while-building, "no vibe coding" workflow.
+**Version:** 1.2 (August 17, 2026)
+
+> 📝 **Changelog v1.2:** + §9 OpenCode Go provider (model-ID format, tier caveat, OpenRouter slug difference) · + §9 provider-choice note (Go vs OpenRouter vs Ollama) · + §15 four Go troubleshooting rows · + §16 Go docs source. See the companion **OpenCode_Go_Setup.md** for account creation, cost model and limits. v1.1 = previous.
 
 > 📝 **Changelog v1.1:** + §7 Plan & Build modes (Tab to switch, per-mode model config) · + §9 model-ID format + routing/performance notes (incl. the DeepSeek-V4-Pro slowness fix) · + F2 model-cycling · + 404-slug / slow-agent / Claude-auth troubleshooting rows · cleaned up some broken markdown. v1.0 = original.
 
@@ -206,8 +208,11 @@ In the TUI: `/connect` to add a provider+key, `/models` to switch models live, `
 |---|---|---|
 | OpenRouter | `openrouter/` + the OpenRouter slug | `openrouter/anthropic/claude-opus-4.8`, `openrouter/qwen/qwen3.7-max`, `openrouter/deepseek/deepseek-v4-pro` |
 | Local Ollama | `ollama/` + the tag | `ollama/qwen3.5:9b`, `ollama/qwen2.5-coder:7b` |
+| OpenCode Go | `opencode-go/` + the **bare** model id | `opencode-go/glm-5.2`, `opencode-go/minimax-m3`, `opencode-go/qwen3.7-max` |
 
 > Always keep the **`vendor/` prefix** inside OpenRouter slugs — `claude-sonnet-4.6` 404s; `anthropic/claude-sonnet-4.6` works.
+>
+> ⚠️ **Go is the exception:** it drops the vendor sub-path. OpenRouter needs `openrouter/z-ai/glm-5.2`; Go needs `opencode-go/glm-5.2`. Migrating a config between the two means editing the slug, not just the prefix.
 
 **Local Ollama (free, private)** — run a model first (`ollama run qwen2.5-coder:7b`), then configure OpenCode to point at the local OpenAI-compatible endpoint. Representative `opencode.json` (verify keys against `opencode.ai/docs/providers`):
 
@@ -229,6 +234,12 @@ In the TUI: `/connect` to add a provider+key, `/models` to switch models live, `
 - **Fix:** use a **fast model for Plan, a stronger model for Build** (§7 per-mode config). Good planners: `ollama/qwen3.5:9b` (no network), `openrouter/deepseek/deepseek-v4-flash`, or `openrouter/z-ai/glm-5.2`.
 - **OpenRouter variability:** it farms requests to whichever host is free, some slow. Try the throughput variant (`…:nitro`) or set provider routing to sort by throughput / exclude slow providers in OpenRouter settings.
 - **Smoother heavy models in OpenCode:** `z-ai/glm-5.2` and `qwen/qwen3.7-max` tend to run more cleanly than `deepseek-v4-pro` here.
+
+**OpenCode Go (flat-rate alternative to OpenRouter)** — $5 first month then $10/month, giving up to $60/month of curated open-model usage (limits: $12/5h, $30/week, $60/month, all measured in dollar *value*, not spend). It coexists with Ollama and OpenRouter in the same config, so the usual posture is **Go as primary, OpenRouter as overflow** — OpenRouter only charges when actually used.
+
+> ⚠️ **Tier trap:** not every Go model gets the full 6× multiplier. `glm-5.2`, `glm-5.1`, `minimax-m3`, `minimax-m2.7`, `qwen3.7-max`, `qwen3.7-plus`, `qwen3.6-plus`, `kimi-k2.7-code`, `kimi-k2.6`, `mimo-v2.5` and `hy3` get **$60/month**. `glm-5.3`, `kimi-k3`, `grok-4.5`, `qwen3.8-max`, `gpt-5.6-luna`, `mimo-v2.5-pro` and both DeepSeek V4 variants get **$15/month**. Counterintuitively **GLM-5.3 is the reduced tier and GLM-5.2 is full tier** (~1,080 vs ~4,300 requests/month). Default to 5.2. Full setup, cost model and limits: **OpenCode_Go_Setup.md**.
+
+Go does **not** fix the DeepSeek-V4-Pro slowness above — that's model/SDK behaviour, not routing. Go also has **no `:nitro` or provider-routing controls**; you rely on OpenCode's failover.
 
 **Quick routing** (see the separate Routing Cheat-Sheet for slugs): plan → fast/cheap · build → strong open model · learning/private → local Ollama · hardest 20% → escalate to Claude.
 
@@ -336,9 +347,13 @@ opencode --version | --help
 | Old sessions missing in `/sessions` | TUI shows ~30 days only → use `opencode session list`; set `OPENCODE_DISABLE_PRUNE=true` |
 | `Shift+Enter` won't make a newline | Known integrated-terminal keybind issue → add a `workbench.action.terminal.sendSequence` binding for `shift+enter` in `keybindings.json` (or use `Ctrl+J`) |
 | Two agents responding at once | Disable Cursor AI features (section 4) during OpenCode sessions |
+| **Go model 404s** | Go drops the vendor sub-path → use `opencode-go/glm-5.2`, **not** `opencode-go/z-ai/glm-5.2` |
+| **Go requests suddenly blocked** | A usage window is exhausted ($12/5h · $30/wk · $60/mo). Check the console at `opencode.ai/auth`; switch to a free model, Ollama or OpenRouter, or wait for reset. You are **not** charged for blocked requests. |
+| **Billed more than $10 on Go** | "Use balance" is enabled in the Zen console → turn it off to restore a hard ceiling |
+| **Go allowance draining unexpectedly fast** | You're on a reduced-tier ($15) model — most often `glm-5.3`. Switch to `glm-5.2` (§9) |
 
 ---
 
 ## 16. Sources
 
-opencode.ai/docs (CLI, TUI, **Modes**, **Agents**, Commands, References, IDE, Providers) · DeepWiki sst/opencode VS Code extension · CodeReaper "Using OpenCode with VSCode" · Warp & NxCode OpenCode setup guides · Educative "Plan Mode vs Build Mode" · CodeSignal / OpenCode School session lessons · explainx.ai slash-command reference · ComputingForGeeks CLI cheat sheet · OpenCode GitHub issues (#16733 sessions, #14810 keybinds, #2129 line ranges). Re-verify command names/keybinds against `opencode.ai/docs` and `/help` before relying on them.
+opencode.ai/docs (CLI, TUI, **Modes**, **Agents**, Commands, References, IDE, Providers, **Go**) · DeepWiki sst/opencode VS Code extension · CodeReaper "Using OpenCode with VSCode" · Warp & NxCode OpenCode setup guides · Educative "Plan Mode vs Build Mode" · CodeSignal / OpenCode School session lessons · explainx.ai slash-command reference · ComputingForGeeks CLI cheat sheet · OpenCode GitHub issues (#16733 sessions, #14810 keybinds, #2129 line ranges). Re-verify command names/keybinds against `opencode.ai/docs` and `/help` before relying on them.
