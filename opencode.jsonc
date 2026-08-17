@@ -4,14 +4,19 @@
   // Roadmap v10.0 (3-stage arc: Internal AI Builder → AI-Focused DE/AE → Applied
   // AI Engineer / FDE track).
   // Place at project root as `opencode.json` (or keep `.jsonc` for comments).
-  // Docs verified: opencode.ai/docs/{providers,agents,commands,rules,config}
+  // Docs verified: opencode.ai/docs/{providers,agents,commands,rules,config,go}
+  //
+  // PROVIDER STRATEGY (Aug 2026): OpenCode Go = primary (flat $10/mo, hard-capped);
+  // OpenRouter = overflow (metered, only bills when used). Same model slugs on both
+  // so F2 switching is seamless when a Go window blocks. Keep "Use balance" OFF in
+  // the Zen console so Go BLOCKS at its limits instead of billing through.
   // ---------------------------------------------------------------------------
   "$schema": "https://opencode.ai/config.json",
 
   // === Default + small model =================================================
   // Primary agents use `model` unless they override it. `small_model` handles
   // session titles/summaries — pinned LOCAL so finance work never leaks to cloud.
-  "model": "openrouter/minimax/minimax-m3",
+  "model": "opencode-go/glm-5.2",
   "small_model": "ollama/qwen3.5-16k",
 
   // === Providers =============================================================
@@ -35,34 +40,90 @@
         "qwen3.5-9b": { "name": "Qwen3.5 9B · MLX (LM Studio)" }
       }
     },
-    // OpenRouter is built-in — add the key once: /connect → OpenRouter → paste key
+    // Both cloud providers are built-in — add each key once via /connect
     // (stored in ~/.local/share/opencode/auth.json). Naming the slugs here just
     // makes them tidy to pick in /models and cycle with F2. Slugs are yours.
+
+    // --- PRIMARY cloud provider: OpenCode Go ($10/mo flat, hard-capped) ------
+    // Connect once: /connect -> OpenCode Go -> paste sk-... key.
+    // Slugs drop the vendor sub-path OpenRouter requires:
+    //   OpenRouter  openrouter/z-ai/glm-5.2
+    //   Go          opencode-go/glm-5.2
+    //
+    // TIER = list-price VALUE allowance, not request volume. Counter-intuitively a
+    // cheap reduced-tier model can buy MORE requests than a costly full-tier one:
+    //   minimax-m3       FULL $60  ~16,000 req/mo   (~150/hr @ 25 hr/wk)
+    //   deepseek-v4-pro  RED  $15  ~ 5,200 req/mo   (~49/hr)  <- beats glm-5.2!
+    //   glm-5.2          FULL $60  ~ 4,300 req/mo   (~40/hr)
+    //   kimi-k3          RED  $15  ~   490 req/mo   (~4.6/hr) <- scarce, ration it
+    //
+    // UNVERIFIED: whether $15 and $60 are separate per-model allowances or
+    // proportional draws on one shared $60 pool. Watch the console in month 1 —
+    // if mixed usage drains faster than expected, it is a shared pool.
+    "opencode-go": {
+      "models": {
+        "glm-5.2":         { "name": "GLM-5.2 (build · DEFAULT) [FULL $60]" },
+        "minimax-m3":      { "name": "MiniMax M3 (plan · public repos) [FULL $60]" },
+        "deepseek-v4-pro": { "name": "DeepSeek V4 Pro (build · alt) [RED $15]" },
+        "kimi-k3":         { "name": "Kimi K3 (hard / frontend ONLY) [RED $15]" }
+      }
+    },
+
+    // --- OVERFLOW provider: OpenRouter (metered; only bills when used) -------
+    // When a Go window blocks, F2 to the matching slug here. NOTE: Go is curated
+    // single-provider; OpenRouter routes across providers and quantisations, so the
+    // same slug can serve differently. Expect minor output drift, not a bug.
     "openrouter": {
       "models": {
-        "minimax/minimax-m3":       { "name": "MiniMax M3 (build · default)" },
-        "z-ai/glm-5.2":             { "name": "GLM-5.2 (build · alt)" },
-        "qwen/qwen3.7-max":         { "name": "Qwen3.7 Max (build · alt)" },
-        "deepseek/deepseek-v4-pro": { "name": "DeepSeek V4 Pro (plan · backup)" }
+        "z-ai/glm-5.2":                 { "name": "GLM-5.2 (overflow · build default)" },
+        "minimax/minimax-m3":           { "name": "MiniMax M3 (overflow · plan public)" },
+        "deepseek/deepseek-v4-pro":     { "name": "DeepSeek V4 Pro (overflow · build alt)" },
+        "moonshotai/kimi-k3":           { "name": "Kimi K3 (overflow · hard/frontend)" },
+        "deepseek/deepseek-v4-flash":   { "name": "DeepSeek V4 Flash (CHEAP overflow $0.14/$0.28)" },
+        "qwen/qwen3.7-max":             { "name": "Qwen3.7 Max (overflow · legacy alt)" }
       }
     }
   },
 
   // === Built-in primary agents: your non-vibecode loop =======================
   "agent": {
+    // === PLAN — REGULATED / PROPRIETARY (default) ===========================
+    // LOCAL ONLY. Plan mode READS THE REPO, so on DataVault / PostCheck
+    // non-synthetic runs this agent is the ERISA privacy boundary — not just
+    // `small_model`. Never point this at a cloud provider.
     "plan": {
-      // Default: fast/local planning. If the local 9B plans poorly, switch this
-      // session via /models or F2, in order of preference:
-      //   1) openrouter/z-ai/glm-5.2            (first fallback — runs clean in Plan)
-      //   2) openrouter/deepseek/deepseek-v4-pro (last resort — can be slow / look
-      //      frozen in Plan mode: reasoning-MoE + ai-sdk thinking-stream, not a hang)
       "model": "ollama/qwen3.5-16k",
       "permission": { "edit": "deny", "bash": "deny" }   // true read-only gate
     },
+
+    // === PLAN — PUBLIC / SYNTHETIC repos (Tab-selectable) ===================
+    // Use ONLY where no regulated or proprietary data is in the working tree.
+    // Cheapest full-tier model on Go (~16,000 req/mo), so planning is effectively
+    // free against the allowance.
+    //   Fallback order if it plans poorly: 1) opencode-go/glm-5.2
+    //   2) opencode-go/deepseek-v4-pro (LAST resort — reasoning-MoE + ai-sdk
+    //      thinking-stream can look frozen in Plan mode; that is not a hang)
+    "plan-cloud": {
+      "mode": "primary",
+      "description": "Planning for PUBLIC/synthetic repos only — cloud-routed. Do not use on regulated data.",
+      "model": "opencode-go/minimax-m3",
+      "permission": { "edit": "deny", "bash": "deny" }   // true read-only gate
+    },
     "build": {
-      // Default build model. If MiniMax struggles on a portion, switch this session
-      // via /models or F2 to:  openrouter/z-ai/glm-5.2  or  openrouter/qwen/qwen3.7-max
-      "model": "openrouter/minimax/minimax-m3",
+      // BUILD LADDER (F2 / /models to switch mid-session):
+      //   1. opencode-go/glm-5.2         DEFAULT — FULL tier, MIT, fastest (~168 tok/s),
+      //                                  81% Terminal-Bench, beats GPT-5.5 on SWE-bench Pro
+      //   2. opencode-go/deepseek-v4-pro ALT — 80.6% SWE-bench Verified (top open score),
+      //                                  cheapest per task ($0.04 vs Kimi K3's $0.94)
+      //   3. opencode-go/kimi-k3         HARD / FRONTEND ONLY — #3 AA Index, #1 Arena
+      //                                  Frontend Code Arena. ~490 req/mo = ~1 per 13 min
+      //                                  of work. Ration it.
+      //   overflow: same slugs under openrouter/*, or deepseek-v4-flash for cheap bulk.
+      //
+      // GLM-5.3 deliberately EXCLUDED: reduced $15 tier, first-party benchmarks only,
+      // weights promised not shipped — while GLM-5.2 sits on FULL tier with ~4x the
+      // requests. Revisit only as an experiment, not in the standing ladder.
+      "model": "opencode-go/glm-5.2",
       "permission": {
         "edit": "allow",              // looser: apply edits without a per-diff prompt
                                       // your gate is now the git-diff review + manual commit
