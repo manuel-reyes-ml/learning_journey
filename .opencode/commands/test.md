@@ -1,6 +1,6 @@
 ---
 description: Run the test suite and report results (report only)
-agent: plan
+agent: plan-cloud
 ---
 
 Run and interpret the test suite.
