@@ -1,7 +1,7 @@
 ---
 description: Updates documentation files directly (markdown, README, CHANGELOG, docs/). Edits docs ONLY, never code, never ADRs, never generated diagrams. The writable counterpart to docs-sync. Invoke with @docs-fix.
 mode: subagent
-model: ollama/qwen3.5:9b
+model: opencode-go/minimax-m3
 temperature: 0.1
 permission:
   webfetch: deny
