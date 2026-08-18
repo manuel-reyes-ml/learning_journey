@@ -1,6 +1,7 @@
 ---
 description: Generate a Task Brief for a GitHub Issue number — Gate 1, no implementation
-agent: plan
+agent: plan-cloud
+model: opencode-go/minimax-m3 
 ---
 
 Generate a complete Agent Task Brief for Issue #$1.
