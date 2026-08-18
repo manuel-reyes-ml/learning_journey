@@ -1,6 +1,7 @@
 ---
 description: Generate a pull request description for the current branch (does not create the PR)
-agent: build
+agent: plan-cloud
+model: opencode-go/minimax-m3
 ---
 
 Generate a PR description for the current branch.
