@@ -1,7 +1,7 @@
 ---
 description: Runs the AI evaluation suite and reports scores vs thresholds — RAG, agentic (tool correctness, task completion), and GEval; stricter 0.90 faithfulness for AFC/Crucible. Read + eval commands only, no edits. Invoke with @eval-guardian.
 mode: subagent
-model: ollama/qwen3.5:9b
+model: opencode-go/glm-5.2
 temperature: 0.0
 permission:
   edit: deny
