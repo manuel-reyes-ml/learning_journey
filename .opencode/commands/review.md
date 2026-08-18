@@ -1,6 +1,8 @@
 ---
 description: Production-readiness review of the working tree (report only, no fixes)
-agent: plan
+agent: plan-cloud
+model: opencode-go/kimi-k3
+subtask: true
 ---
 
 Review the current working state for production readiness. Report only.
