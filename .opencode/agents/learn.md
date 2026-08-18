@@ -1,7 +1,7 @@
 ---
 description: Teaching pair-programmer. Explains concepts, patterns, and tradeoffs without writing code. Switch to with Tab when you want to learn, not build.
 mode: primary
-model: ollama/qwen3.5-16k
+model: opencode-go/glm-5.2
 temperature: 0.2
 permission:
   edit: deny
