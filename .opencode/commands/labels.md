@@ -1,6 +1,8 @@
 ---
 description: Create/update GitHub labels for a repo and regenerate the label reference (writes to GitHub)
 agent: build
+model: opencode-go/minimax-m3
+subtask: true
 ---
 
 Set up the standard label taxonomy on GitHub and refresh the agent-facing reference.
