@@ -1,7 +1,7 @@
 ---
 description: Scouts current production-grade patterns and compares them to this codebase. Read-only, can fetch docs/the web. Use to find better, newer approaches. Invoke with @pattern-scout.
 mode: subagent
-model: openrouter/z-ai/glm-5.2
+model: opencode-go/kimi-k3
 temperature: 0.2
 permission:
   edit: deny
