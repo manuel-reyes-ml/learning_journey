@@ -1,7 +1,7 @@
 ---
 description: Reviews documentation against the actual codebase to find drift, including ADRs, C4 diagrams and README structure. Read-only. Invoke with @docs-sync.
 mode: subagent
-model: ollama/qwen3.5:9b
+model: opencode-go/minimax-m3
 temperature: 0.1
 permission:
   edit: deny
