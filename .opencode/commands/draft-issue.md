@@ -1,6 +1,7 @@
 ---
 description: Draft a production-grade GitHub Issue from a one-line goal (does not create it)
-agent: plan
+agent: plan-cloud
+model: opencode-go/minimax-m3 
 ---
 
 Draft a GitHub Issue for this goal: **$ARGUMENTS**
