@@ -1,6 +1,8 @@
 ---
 description: Draft a production-grade README from the repo + template (does not write files)
-agent: build
+agent: build                    <!-- permissions from build -->
+model: opencode-go/minimax-m3   <!-- but run on M3 -->
+subtask: true                   <!-- and keep it out of your context -->   
 ---
 
 Draft a complete `README.md` for this repository, following the flagship standard.
