@@ -1,7 +1,7 @@
 ---
 description: Audits for hardcoded secrets, exposed PII, unsafe logging and config, and privacy-routing violations. Read-only, local model. Use before commits on finance/data work. Invoke with @security-auditor.
 mode: subagent
-model: ollama/qwen3.5:9b
+model: opencode-go/glm-5.2
 temperature: 0.0
 permission:
   edit: deny
