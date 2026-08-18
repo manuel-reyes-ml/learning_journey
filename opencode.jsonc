@@ -147,6 +147,53 @@
           "git push*": "deny"
         }
       }
+    },
+
+    // === BUILD — GATED (Tab-selectable) =====================================
+    // Same ladder and bash rules as `build`, but edits are gated BEFORE the write
+    // instead of after: y accept · n reject · d full diff · e edit before accepting.
+    //
+    // USE THIS FOR: unfamiliar libraries/patterns, first pass on a new subsystem,
+    // single-file work, deliberate learning sessions. The slowdown IS the point —
+    // it forces the conceptual-inquiry loop rather than delegation.
+    //
+    // DO NOT USE FOR: large multi-file refactors (e.g. the DataVault S2 Polars
+    // rewrite). Per-edit approval hides the whole-change picture, and 15 sequential
+    // prompts produce reflex-`y` approval — a gate that feels real but is not.
+    // Use plain `build` + `git diff` there.
+    //
+    // NOTE: OpenCode's inline diff shows ~4 lines of context — press Ctrl+F for
+    // fullscreen before accepting anything non-trivial.
+    //
+    // PRECONDITION FOR BOTH BUILD AGENTS: start every session on a CLEAN tree
+    // (commit or stash first). Otherwise `git diff` mixes your edits with the
+    // agent's and the review stops being trustworthy.
+    "build-gated": {
+      "mode": "primary",
+      "description": "Build with a pre-write diff gate on every edit. For unfamiliar code, new patterns, and learning sessions. Prefer plain `build` for multi-file refactors.",
+      "model": "opencode-go/glm-5.2",
+      "permission": {
+        "edit": "ask",                // gate BEFORE the write, not after
+        "bash": {
+          "*": "ask",
+          "git status*": "allow",
+          "git diff*": "allow",
+          "git log*": "allow",
+          "git add*": "allow",
+          "make test": "allow",
+          "make lint": "allow",
+          "make eval": "allow",
+          "make diagrams": "allow",
+          "uv run pytest*": "allow",
+          "uv run ruff*": "allow",
+          "uv run mypy*": "allow",
+          "pytest*": "allow",
+          "ruff*": "allow",
+          "mypy*": "allow",
+          "git commit*": "deny",      // you ALWAYS commit manually
+          "git push*": "deny"
+        }
+      }
     }
   },
 
