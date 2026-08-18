@@ -1,6 +1,8 @@
 ---
 description: Generate a conventional-commits message for staged changes (does not commit)
-agent: build
+agent: plan-cloud
+model: opencode-go/minimax-m3
+subtask: true
 ---
 
 Generate a commit message for the currently staged changes.
