@@ -98,15 +98,34 @@
 
     // === PLAN — PUBLIC / SYNTHETIC repos (Tab-selectable) ===================
     // Use ONLY where no regulated or proprietary data is in the working tree.
-    // Cheapest full-tier model on Go (~16,000 req/mo), so planning is effectively
-    // free against the allowance.
-    //   Fallback order if it plans poorly: 1) opencode-go/glm-5.2
-    //   2) opencode-go/deepseek-v4-pro (LAST resort — reasoning-MoE + ai-sdk
-    //      thinking-stream can look frozen in Plan mode; that is not a hang)
+    //
+    // WHY GLM-5.2 AND NOT MINIMAX M3: plan output is the architecture every later
+    // build depends on, and a bad plan propagates silently where a bad diff does
+    // not. Volume is low (~80-120 calls/mo at 25 hr/wk), so the larger M3 allowance
+    // buys nothing here — spend reasoning quality instead. AA Index 51 vs M3's 44.
+    //
+    // NOT DeepSeek V4 Pro: tied with M3 at AA 44, and it can look frozen in Plan
+    // mode (reasoning-MoE + ai-sdk thinking-stream). That is not a hang, but it is
+    // a poor fit for an interactive planning loop.
     "plan-cloud": {
       "mode": "primary",
       "description": "Planning for PUBLIC/synthetic repos only — cloud-routed. Do not use on regulated data.",
-      "model": "opencode-go/minimax-m3",
+      "model": "opencode-go/glm-5.2",
+      "permission": { "edit": "deny", "bash": "deny" }   // true read-only gate
+    },
+
+    // === PLAN — HARD ARCHITECTURE (Tab-selectable, PUBLIC repos only) =======
+    // Kimi K3: AA Index 57, GPQA 93.5 — the strongest reasoning available on Go.
+    // RED tier, ~490 req/mo (~4.6/hr). Planning is low-volume enough that this is
+    // affordable IF reserved for genuinely hard calls:
+    //   - ADR-worthy decisions where a real rejected alternative is the content
+    //   - cross-cutting architecture (ingestion topology, eval-gate design)
+    //   - anything you expect to defend in an interview
+    // Do NOT use for routine session planning — that is plan-cloud's job.
+    "plan-cloud-hard": {
+      "mode": "primary",
+      "description": "Hard architecture planning on Kimi K3 — ADR-worthy and cross-cutting decisions. PUBLIC/synthetic repos only. Scarce allowance; use sparingly.",
+      "model": "opencode-go/kimi-k3",
       "permission": { "edit": "deny", "bash": "deny" }   // true read-only gate
     },
     "build": {
