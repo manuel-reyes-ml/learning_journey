@@ -1,7 +1,7 @@
 ---
 description: Runs the AI evaluation suite and reports scores vs thresholds — RAG, agentic (tool correctness, task completion), and GEval; stricter 0.90 faithfulness for AFC/Crucible. Read + eval commands only, no edits. Invoke with @eval-guardian.
 mode: subagent
-model: opencode-go/glm-5.2
+model: opencode-go/kimi-k3
 temperature: 0.0
 permission:
   edit: deny
@@ -38,7 +38,7 @@ project uses):
 - `GEval:<criterion>` ≥ 0.85  (or the project's stated threshold)
 
 **Scope:** the active portfolio is DataVault, PolicyPulse and Crucible (leads) plus
-FormSense and AFC (supporting). **ODI and StreamSmart are backlog** — if a suite for
+FormSense and AFC (supporting), and PostCheck. **ODI and StreamSmart are backlog** — if a suite for
 either appears, note it as out of the active set rather than reporting it as a
 portfolio gate.
 
