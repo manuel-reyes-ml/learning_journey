@@ -1,6 +1,7 @@
 ---
 description: Run the AI evaluation suite and report scores vs thresholds (RAG + agentic + GEval)
 agent: eval-guardian
+subtask: true
 ---
 
 Run the AI evaluation suite and report quality scores.
