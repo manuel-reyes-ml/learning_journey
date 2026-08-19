@@ -2,6 +2,7 @@
 description: Generate a pull request description for the current branch (does not create the PR)
 agent: plan-cloud
 model: opencode-go/minimax-m3
+subtask: true
 ---
 
 Generate a PR description for the current branch.
