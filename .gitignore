@@ -54,3 +54,7 @@ experiments/scratch.py
 
 # Logs with sensitive info
 *.log
+
+# Claude
+.claude/settings.local.json
+CLAUDE.local.md
