@@ -94,3 +94,60 @@ keep-coding-instructions: true""",
 }
 
 
+# =============================================================================
+# CORE FUNCTION
+# =============================================================================
+
+def render(name: str) -> tuple[Path, str]:
+    """Assemble one output file from its frontmatter, shared body and optional delta."""
+    kind, frontmatter = AGENTS[name]
+    body = (PROMPTS / f"{name}.md").read_text(encoding="utf-8").rstrip()
+
+    delta_path = PROMPTS / f"{name}.claude-delta.md"
+    delta = delta_path.read_text(encoding="utf-8").strip() if delta_path.exists() else ""
+
+    parts = [f"---\n{frontmatter}\n---\n", BANNER.format(name=name)]
+    if delta:
+        parts.append("\n" + delta + "\n")
+    parts.append("\n" + body + "\n")
+
+    out_dir = AGENTS_OUT if kind == "agent" else STYLES_OUT
+    return out_dir / f"{name}.md", "".join(parts)
+
+
+# =============================================================================
+# MAIN FUNCTION
+# =============================================================================
+
+def main(argv: list[str] | None = None) -> int:
+    """Write or verify every generated agent file."""
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--check", action="store_true", help="exit 1 if any file is stale")
+    args = parser.parse_args(argv)
+
+    AGENTS_OUT.mkdir(parents=True, exist_ok=True)
+    STYLES_OUT.mkdir(parents=True, exist_ok=True)
+
+    stale: list[str] = []
+    for name in AGENTS:
+        path, content = render(name)
+        if args.check:
+            current = path.read_text(encoding="utf-8") if path.exists() else ""
+            if current != content:
+                stale.append(str(path.relative_to(ROOT)))
+        else:
+            path.write_text(content, encoding="utf-8")
+            print(f"wrote {path.relative_to(ROOT)}")
+    
+    if args.check:
+        if stale:
+            print("STALE - run 'make claude-agents' :", file=sys.stderr)
+            for s in stale:
+                print(f"  {s}", file=sys.stderr)
+            return 1
+        print("all generated agent files are up to date")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
