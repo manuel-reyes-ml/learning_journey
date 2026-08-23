@@ -1,4 +1,25 @@
-"""
+#!/usr/bin/env python3
+"""Build `.claude/agents/*.md` and `.claude/output-styles/learn.md` from shared prompts.
+
+WHY THIS SCRIPT EXISTS
+----------------------
+Claude Code subagent files have no import mechanism. The markdown body *is* the
+system prompt, parsed once, and `@path` does not expand there (open requests
+anthropics/claude-code#5914 and #6899). OpenCode agents *do* support `{file:...}`.
+
+So agents cannot share a body by reference the way commands can. They share it by
+**generation** instead — the same shape as `architecture.dsl` → Mermaid via
+`make diagrams`: one model source, rendered out to a committed artifact that is
+never hand-edited.
+
+  Instructions  →  .github/docs/prompts/agents/<name>.md          (edit this)
+  Claude-only   →  .github/docs/prompts/agents/<name>.claude-delta.md  (optional)
+  Settings      →  the AGENTS table below                          (edit this)
+  Output        →  .claude/agents/<name>.md                        (never edit)
+
+Usage:
+    python3 scripts/build_claude_agents.py            # write the files
+    python3 scripts/build_claude_agents.py --check    # fail if out of date (CI)
 """
 
 # =============================================================================
