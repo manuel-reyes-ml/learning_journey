@@ -21,6 +21,10 @@ from typing import Final
 # Constants
 # =====================================================
 
+# Set by the caller: `guard.py` (global) or `guard.py docs-only` (the docs-fix
+# subagent). Claude Code has no per-subagent path permissions — `permissions` in
+# settings.json is project-global — so a scoped hook is the only way to give one
+# agent a narrower write surface than the rest.
 PROFILE: Final[str] = sys.argv[1] if len(sys.argv) > 1 else "global"
 
 # --- git verbs the human owns, never the agent (AGENTS.md commit gate) -----------
@@ -68,6 +72,10 @@ READ_TOOLS: Final[set[str]]= {"Read", "NotebookRead"}
 
 def block(reason: str) -> None:
     """Block the tool call and hand the reason back to Claude as the error."""
+    # stderr, NOT print(). `print()` writes to stdout, which Claude Code parses
+    # as structured JSON — a prose message there is at best ignored, at worst
+    # confuses the parser. The block itself still lands (exit 2 does that), but
+    # Claude would be refused with no idea why and would likely just retry.
     print(f"BlOCKED by .claude/hooks/guard.py - {reason}", file=sys.stderr)
     sys.exit(2)
 
@@ -80,7 +88,22 @@ def normalise(cmd: str) -> str:
     Strip those, and flatten `cd /path && git commit` chains, before testing.
     """
     cmd = " ".join(cmd.split())
+
+    # re.sub(pattern, replacement, string)
+    # "Find every place pattern matches, swap in replacement, hand me back a new string."
+    # 1. It returns a new string. Python strings are immutable, so nothing is modified in place.
+    #    You must assign the result — re.sub(...) on its own line does nothing.
+    # 2. It replaces all matches by default, not just the first. Pass count=1 to limit it.
+    # 3. If nothing matches, you get the original string back. No error, no None. Silent no-op.
+    #
+    # \b        word boundary — matches `git`, not `legit` or `gitlab`
+    # \s+       one or more whitespace
+    # (?: ... ) group the alternatives WITHOUT capturing them
+    # \S+       the path or key=value that follows the flag
+    # +         the whole group, repeated — catches stacked flags
     cmd = re.sub(r"\bgit\s+(?:-C\s+\S+\s+|-c\s+\S+\s+)+", "git ", cmd)
+
+    # Empty replacement string = delete. `cd /tmp && git push` -> `git push`.
     cmd = re.sub(r"\bcd\s+\S+\s*&&\s*", "", cmd)
     return cmd
 
@@ -97,6 +120,18 @@ def matches(path: str, patterns: tuple[str, ...]) -> bool:
 def main() -> None:
     """Inspect one PreToolUse event and allow or block it."""
     try:
+    # Claude Code pipes the event in as JSON on stdin — no arguments. Because
+    # stdin is a slot the caller wires up, `make claude-verify` can feed the same
+    # bytes with `echo` and exercise the exact production path, not a mock.
+    #
+    # `sys.stdin` is a file object, so `json.load()` reads it directly
+    # (`json.loads()` is the string form). A JSON object becomes a dict, so
+    # `event["tool_name"]` is an ordinary dict lookup.
+    #
+    # DECISION: fail OPEN on malformed input. Exit 0 means "allow, no opinion".
+    # Failing closed would block every tool call over one bad byte, and a hook
+    # that crashes protects nothing. The alternative — fail closed — is stricter
+    # but can lock you out of your own session. Revisit if this ever fires.
         event = json.load(sys.stdin)
     except (json.JSONDecodeError, ValueError):
         sys.exit(0)
@@ -131,7 +166,7 @@ def main() -> None:
         )
     if PROFILE == "docs-only":
         if matches(path, DOCS_EXTRA_DENY):
-            block(f"{path} is config/tooñomg, not a doc describing code.")
+            block(f"{path} is config/tooling, not a doc describing code.")
         if not matches(path, DOCS_ALLOW):
             block(
                 f"{path} is not a documentation file. This agent edits docs only; "
