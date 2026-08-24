@@ -66,3 +66,31 @@ READ_TOOLS: Final[set[str]]= {"Read", "NotebookRead"}
 # CORE FUNCTIONS
 # =============================================================================
 
+def block(reason: str) -> None:
+    """Block the tool call and hand the reason back to Claude as the error."""
+    print(f"BlOCKED by .claude/hooks/guard.py - {reason}", file=sys.stderr)
+    sys.exit(2)
+
+
+def normalize(cmd: str) -> str:
+    """Collapse the documented bypasses before pattern-matching.
+
+    `git -C /path commit` and `git -c user.name=x commit` are functionally
+    `git commit` but slip past naive substring matching — a real reported escape.
+    Strip those, and flatten `cd /path && git commit` chains, before testing.
+    """
+    cmd = " ".join(cmd.split())
+    cmd = re.sub(r"\bgit\s+(?:-C\s+\S+\s+|-c\s+\S+\s+)+", "git ", cmd)
+    cmd = re.sub(r"\bcd\s+\S+\s*&&\s*", "", cmd)
+    return cmd
+
+
+def matches(path: str, patterns: tuple[str, ...]) -> bool:
+    """True if `path` matches any glob in `patterns`."""
+    return any(fnmatch(path, p) for p in patterns)
+
+
+# =============================================================================
+# MAIN FUNCTION
+# =============================================================================
+
