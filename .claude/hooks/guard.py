@@ -17,6 +17,25 @@ reason on stderr. Exit 2 is used rather than `permissionDecision: "deny"` JSON
 because the combined form has an open non-enforcement report; exit 2 blocks
 unconditionally.
 
+HOW THIS SCRIPT TALKS TO CLAUDE CODE
+------------------------------------
+Every program starts with three streams already open: stdin (input), stdout
+(normal output), stderr (errors). They default to the terminal, but the caller
+can rewire them before the program starts — and Claude Code does.
+
+This hook uses all three, each for a different job:
+
+    stdin   ← the tool-call event, as JSON. No command-line arguments are passed.
+    stdout  → RESERVED. Claude Code parses this as structured JSON (the channel
+              for {"permissionDecision": ...} style replies). Never `print()` a
+              human-readable message here — it lands in a slot meant for data.
+    stderr  → the human-readable reason, which Claude receives and can act on.
+    exit    → the actual verdict. 0 = allow, 2 = block.
+
+Both stdout and stderr reach the same terminal, so they look identical on screen.
+They are still separate channels, and that is the whole point: whoever is reading
+one is not polluted by the other.
+
 Usage:
     python3 .claude/hooks/guard.py            # global profile
     python3 .claude/hooks/guard.py docs-only  # scoped: docs-fix subagent
