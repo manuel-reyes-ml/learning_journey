@@ -1,4 +1,25 @@
-"""
+#!/usr/bin/env python3
+"""PreToolUse gate for Claude Code.
+
+Why this file exists
+--------------------
+Instruction files (CLAUDE.md, AGENTS.md, agent bodies) are *context*: Claude reads
+them and tries to comply. `permissions.deny` is *configuration*, and has a documented
+history of non-enforcement for Read/Edit in some releases. A PreToolUse hook is the
+only layer that fires before the permission-mode check and holds even under
+`bypassPermissions` / `--dangerously-skip-permissions`.
+
+This is CORRECTION 39 §11 restated one layer down: a prohibition in a prompt is
+persuasion, a permission is configuration, a hook is architecture.
+
+Contract: read the event JSON on stdin, exit 0 to allow, exit 2 to block with the
+reason on stderr. Exit 2 is used rather than `permissionDecision: "deny"` JSON
+because the combined form has an open non-enforcement report; exit 2 blocks
+unconditionally.
+
+Usage:
+    python3 .claude/hooks/guard.py            # global profile
+    python3 .claude/hooks/guard.py docs-only  # scoped: docs-fix subagent
 """
 
 # =============================================================================
