@@ -72,7 +72,7 @@ def block(reason: str) -> None:
     sys.exit(2)
 
 
-def normalize(cmd: str) -> str:
+def normalise(cmd: str) -> str:
     """Collapse the documented bypasses before pattern-matching.
 
     `git -C /path commit` and `git -c user.name=x commit` are functionally
@@ -94,3 +94,52 @@ def matches(path: str, patterns: tuple[str, ...]) -> bool:
 # MAIN FUNCTION
 # =============================================================================
 
+def main() -> None:
+    """Inspect one PreToolUse event and allow or block it."""
+    try:
+        event = json.load(sys.stdin)
+    except (json.JSONDecodeError, ValueError):
+        sys.exit(0)
+
+    tool = event.get("tool_name", "")
+    data = event.get("tool_input") or {}
+
+    if tool == "Bash":
+        cmd = normalise(str(data.get("command", "")))
+        for verb in FORBIDDEN_GIT:
+            if re.search(rf"\bgit\s+{re.escape(verb)}\b", cmd):
+                block(
+                    f"`git {verb}` is human-controlled. Stage with `git add` if asked, "
+                    "then report the diff and stop. I commit manually after review."
+                )
+        for pattern in FORBIDDEN_CMDS:
+            if re.search(pattern, cmd):
+                block(
+                   f"command matches a prohibited pattern ({pattern}). "
+                    "Report what you would run and why; I execute it." 
+                )
+        sys.exit(0)
+
+    path = str(data.get("file_path") or data.get("notebook_path") or "")
+    if not path:
+        sys.exit(0)
+
+    if tool in READ_TOOLS and matches(path, DENY_READ):
+        block(
+            f"{path} is immutable or generated. Propose the change and hand it "
+            "to me — ADRs are superseded not rewritten, diagrams are regenerated."
+        )
+    if PROFILE == "docs-only":
+        if matches(path, DOCS_EXTRA_DENY):
+            block(f"{path} is config/tooñomg, not a doc describing code.")
+        if not matches(path, DOCS_ALLOW):
+            block(
+                f"{path} is not a documentation file. This agent edits docs only; "
+                "report the exact change and hand it to Build mode."  
+            )
+
+    sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()
