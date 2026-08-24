@@ -580,6 +580,7 @@
                 <div><span class="fs-name">🏁 PolicyPulse</span><span class="fs-desc">Applied AI — RAG → GraphRAG, FastMCP server, access-control-aware retrieval</span></div>
                 <div><span class="fs-name">🏁 DataVault / 1099 Platform</span><span class="fs-desc">Data Engineering — dbt, Airflow, data contracts, built on the live system above</span></div>
                 <div><span class="fs-name">🏁 Crucible</span><span class="fs-desc">Autonomous execution — HITL sign-off, kill-switch, "LLM behind the Wall"</span></div>
+                <div><span class="fs-name">🏁 PostCheck</span><span class="fs-desc">Dual-target — agentic QA review + event log → dbt NIGO quality mart</span></div>
             </div>
 
             <div class="ai-tools">
@@ -588,6 +589,7 @@
                 <span class="ai-tool">RAG + ChromaDB</span>
                 <span class="ai-tool">🕸️ GraphRAG + Neo4j</span>
                 <span class="ai-tool">FastMCP Server</span>
+                <span class="ai-tool">⚡ Polars (default engine)</span>
                 <span class="ai-tool">dbt + Airflow</span>
                 <span class="ai-tool">Snowflake / BigQuery</span>
                 <span class="ai-tool">Kafka + Terraform</span>
@@ -638,7 +640,7 @@
                         <p><strong>Active</strong> · Months 1-8</p>
                     </div>
                     <div class="stage-body">
-                    <p><strong>Focus:</strong> Production Python (typed, <strong>uv + uv.lock</strong>, <strong>structlog</strong> + <code>pydantic-settings</code> + <code>stamina</code>, <strong>pre-commit</strong>) + SQL + Anthropic SDK + RAG + MCP + eval gates + Docker/CI. <strong>Python 3.14</strong> (standard GIL build), single-source pinned via <code>requires-python</code>. Last mile: <strong>Vercel AI SDK 7</strong> + TypeScript/Zod/React — <em>last mile only; Python owns the agentic loop</em>. Git team workflow: <strong>branch → PR → review → merge</strong>. Certs: AI-901 → AB-620 <em>(self-funded, $99 / $165)</em></p>
+                    <p><strong>Focus:</strong> Production Python (typed, <strong>uv + uv.lock</strong>, <strong>structlog</strong> + <code>pydantic-settings</code> + <code>stamina</code>, <strong>pre-commit</strong>) + SQL + Anthropic SDK + RAG + MCP + eval gates + Docker/CI. <strong>Python 3.14</strong> (standard GIL build), single-source pinned via <code>requires-python</code>. Last mile: <strong>Vercel AI SDK 7</strong> + TypeScript/Zod/React — <em>last mile only; Python owns the agentic loop</em>. Git team workflow: <strong>branch → PR → review → merge</strong>. Certs: <strong>AI-901</strong> ($99, self-funded) <em>— AB-620 moved to conditional: the low-code Copilot Studio path does not evidence production Python</em></p>
                     <p><strong>Goal:</strong> PolicyPulse v1 shipping + <strong>DataVault S2 hardening</strong></p>
                     <p><strong>Exit criterion:</strong> an <strong>evidence gate</strong> — DataVault S2 shipped — not an employment milestone. <em>&quot;Internal AI Builder&quot; labels the work, not a job title.</em></p>
                     </div>
@@ -650,9 +652,10 @@
                     </div>
                     <div class="stage-body">
                     <p><strong>Target:</strong> <strong>Analytics Engineer is the first door</strong>, Data Engineer in parallel</p>
-                    <p><strong>Focus:</strong> dbt + Airflow + Kafka + <strong>Snowflake (primary)</strong> + BigQuery/Fabric awareness + data contracts + Docker→ECS/Kubernetes + Terraform</p>
-                    <p><strong>"AI-focused" ≠ vanilla DE:</strong> data platforms built for AI workloads — AI-managed pipelines, embedding pipelines, unstructured-data ETL feeding RAG</p>
-                    <p><strong>Certs (self-funded):</strong> DP-700 ($165) + AWS Data Engineer Associate ($150) <em>(+ optional lakehouse cert — three co-equal options, take ONE, matched to target stack: DP-750 $165 / SnowPro Core $175 / Databricks DE $200)</em></p>
+                    <p><strong>Focus:</strong> <strong>Polars</strong> (default engine — pandas retained deliberately at the openpyxl template write and plotting hand-off) + dbt + Airflow + Kafka + <strong>Snowflake (primary)</strong> + BigQuery/Fabric awareness + data contracts + Docker→ECS/Kubernetes + Terraform</p>
+                    <p><strong>"AI-focused" ≠ vanilla DE:</strong> data platforms built for AI workloads — embedding pipelines, vector retrieval as data infrastructure, and unstructured-data ETL feeding RAG</p>
+                    <p><strong>The depth behind the title:</strong> vector schemas and retrieval governance · <strong>PII-safe corpus preparation</strong> and citation-grade chunking · reproducible ML-ready datasets with <strong>point-in-time correctness</strong>, leakage detection and CI gates for schema/drift/bias</p>
+                    <p><strong>Certs (self-funded):</strong> DP-700 ($165) + AWS Data Engineer Associate ($150) <em>(+ conditional dbt Analytics Engineering ~$200 — the tested dbt project is the primary signal; + optional lakehouse cert — three co-equal options, take ONE, matched to target stack: DP-750 $165 / SnowPro Core $175 / Databricks DE $200)</em></p>
                     </div>
                 </div>
                 <div class="stage-item upcoming">
@@ -667,12 +670,12 @@
                     </div>
                 </div>
             </div>
-            <p style="text-align:center; margin-top:18px; font-style:italic; opacity:0.85;">🎓 Parallel degree track: Georgia Tech OMSCS (Computing Systems), mapped to Stages 2–3.<br>The external <strong>Analytics Engineer / Data Engineer</strong> search is the <strong>primary path</strong>, not a fallback — never a Data Analyst search, under any circumstance.<br>All certifications are <strong>self-funded</strong> (≈ $1,194 committed across three stages).</p>
+            <p style="text-align:center; margin-top:18px; font-style:italic; opacity:0.85;">🎓 Parallel degree track: Georgia Tech OMSCS (Computing Systems), mapped to Stages 2–3.<br>The external <strong>Analytics Engineer / Data Engineer</strong> search is the <strong>primary path</strong>, not a fallback — never a Data Analyst search, under any circumstance.<br>All certifications are <strong>self-funded</strong> — <strong>eight committed ≈ $1,029</strong> across three stages; ≈ <strong>$1,594</strong> if every conditional is taken (optional lakehouse slot, dbt AE, AB-620).</p>
         </div>
         
         <!-- Project Pipeline -->
         <div class="projects-section">
-            <h2>💼 Portfolio — 3 Flagships + 2 Supporting</h2>
+            <h2>💼 Portfolio — 4 Flagships + 2 Supporting</h2>
             <p class="projects-subtitle">A deliberately focused portfolio — a few substantial systems, each targeting a different problem • Every repo ships with architecture diagram, ADR set + C4 diagram, Dockerfile, eval-metrics table, demo GIF, and "What I Learned" • <strong>uv-managed</strong> (<code>pyproject.toml</code> + committed <code>uv.lock</code>, no <code>requirements.txt</code>) • <strong>pinned <code>.pre-commit-config.yaml</code></strong> (hooks a strict subset of CI; <code>gitleaks</code> + <code>nbstripout</code> keep secrets and notebook output out of public repos by construction) • <strong>structured logging</strong> with a PII-redaction processor, typed config, capped retries</p>
             <ul class="project-list">
                 <li class="project-item flagship-border">
@@ -692,7 +695,7 @@
                     <span class="status flagship">🏁 FLAGSHIP 2 • DATA ENGINEERING</span>
                     <h3>DataVault / 1099 Data Platform</h3>
                     <p><strong>Production financial data platform</strong> — the live 1099 reconciliation pipeline, hardened end-to-end: ingestion → dbt-tested models (CI-gated) → orchestrated (Airflow) → data-quality contracts → deployed (Docker/ECS) → monitored, with incident postmortems. Adds a semantic/metrics layer for the Analytics-Engineer story, plus an S3 DataVault Applied-AI layer (NL-to-SQL over the semantic layer, HITL on every write).</p>
-                    <p class="project-tech">🔧 Python + SQL + dbt + Airflow + Snowflake (primary)/BigQuery + Great Expectations + Docker→ECS + Terraform</p>
+                    <p class="project-tech">🔧 Python + SQL + <strong>Polars</strong> + dbt + Airflow + Snowflake (primary)/BigQuery + Great Expectations + Docker→ECS + Terraform</p>
                     <ul class="pca-list">
                         <li><span class="pca-label">① Production:</span> live in a regulated environment — reconciliation success rate, freshness SLA, quarantine/retry, schema contracts, on-call</li>
                         <li><span class="pca-label">② Cost:</span> <strong>95% time reduction</strong>; mechanism and non-identifying relative deltas only — no absolute figures or manual-hour counts</li>
@@ -713,6 +716,19 @@
                     </ul>
                     <span class="project-skill-tag">Event-Driven Engine + Local LLM + HITL Safety + Broker APIs</span>
                 </li>
+                <li class="project-item flagship-border">
+                    <span class="status flagship">🏁 FLAGSHIP 4 • DUAL-TARGET (APPLIED AI + AE/DE)</span>
+                    <h3>PostCheck — Autonomous Post-Posting QA Review</h3>
+                    <p><strong>The only project whose single deliverable produces first-class evidence for both target doors.</strong> An autonomous review agent for regulated distribution operations: it claims each intake packet <strong>exactly once</strong>, parses the posted-transaction export deterministically, segments and extracts a scanned multi-document packet with a multimodal model, then adjudicates against a <strong>versioned SOP</strong> across a fixed 15-item verification surface → <strong>IGO / NIGO</strong>. Every adjudication appends to an event log feeding a <strong>dbt-modelled NIGO quality mart</strong> (first-pass IGO rate, reason Pareto, agent-vs-human agreement).</p>
+                    <p class="project-tech">🧾 Exactly-once ingestion (content-hash idempotency + lease TTL) + deterministic row-type dispatch + multimodal extraction + versioned SOP adjudication + dbt event log &amp; metrics layer + MCP + HITL</p>
+                    <ul class="pca-list">
+                        <li><span class="pca-label">① Production:</span> <strong>read-only and advisory — binding, tested safety invariant.</strong> Never keys, posts, reverses or corrects; never contacts a participant, advisor, TPA or sponsor; an IGO verdict is a recommendation to a human, never an authorization</li>
+                        <li><span class="pca-label">② Cost:</span> provider-agnostic across three named substrates (Anthropic · Azure OpenAI via Microsoft Foundry · local Ollama) — one eval suite, gates run per substrate</li>
+                        <li><span class="pca-label">③ Architecture:</span> the spreadsheet is a <em>rendered export</em>, never the source of truth · declared grain (one row per packet × review run) · ADRs + C4 Context + Container</li>
+                    </ul>
+                    <p class="pca-note">📏 <strong>Measured against a real incumbent</strong> — a prompt-only reviewer already in use — so the headline is a genuine before/after, not an unfalsifiable claim. Blocking gate is <strong>false-NIGO rate, not accuracy</strong> (precision blocks, recall reported). Synthetic corpus only; the controlled-NIGO-injection generator is itself a portfolio artifact.</p>
+                    <span class="project-skill-tag">Agentic Adjudication + Event Log + dbt Metrics Layer + HITL Boundary</span>
+                </li>
                 <li class="project-item">
                     <span class="status planned">🧩 SUPPORTING • DOCUMENT AI</span>
                     <h3>FormSense — Multimodal Agentic Workflow</h3>
@@ -723,6 +739,7 @@
                         <li><span class="pca-label">② Cost:</span> ⚪ optional at supporting tier — <em>not manufactured where there is nothing to report</em></li>
                         <li><span class="pca-label">③ Architecture:</span> frozen Pydantic schema contract · full ADR set + C4 Context · document → parse → validate → route boundary</li>
                     </ul>
+                    <p class="pca-note">🔀 <strong>Not PostCheck:</strong> FormSense is <em>pre-index</em> — is this form complete and legible enough to file? It judges the form against itself. PostCheck is <em>post-posting</em> — does the posted transaction match the request? Different position in the workflow, different source of truth. Never merged.</p>
                     <span class="project-skill-tag">Multimodal + Schema Adherence + Routing</span>
                 </li>
                 <li class="project-item">
@@ -792,7 +809,7 @@
                 <div class="stat-label">Hours/Week</div>
             </div>
             <div class="stat">
-                <div class="stat-number">3+2</div>
+                <div class="stat-number">4+2</div>
                 <div class="stat-label">Flagships + Supporting</div>
             </div>
         </div>
