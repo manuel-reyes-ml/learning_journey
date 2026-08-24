@@ -172,3 +172,16 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
+# .relative.to(other=)
+# p = Path("/Users/manuel/repo/.claude/agents/docs-fix.md")
+# p.relative_to("/Users/manuel/repo")
+# PosixPath('.claude/agents/docs-fix.md')
+# It strips a prefix off a path and gives you what's left. Returns a Path object, not a string.
+# It raises ValueError if the prefix doesn't match:
+#   Path("/etc/hosts").relative_to("/Users/manuel")
+#   ValueError: '/etc/hosts' is not in the subpath of '/Users/manuel'
+#
+# That's actually useful — it's a cheap way to assert a path is inside a directory you expect.
+# Since Python 3.12 you can pass walk_up=True to get ../.. style results instead of an error.
