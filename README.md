@@ -17,7 +17,7 @@
 
 📋 **[View Complete Interactive Roadmap (v10.0) →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
 
-> **🆕 v10.0 (2026 Market Realignment):** 5 stages → **3 stages** (~32 months). Path retitled **Internal AI Builder → AI-Focused Data Engineer / Analytics Engineer → Applied AI Engineer → FDE track**. Portfolio focused to **3 flagships + 2 supporting**. No external Data Analyst search (the 0–2 yr analyst band is contracting) — that ruling stands. Certifications trimmed to a purposeful **9 + 1 conditional**; **OMSCS (Computing Systems)** added as a parallel degree track.
+> **🆕 v10.0 (2026 Market Realignment):** 5 stages → **3 stages** (~32 months). Path retitled **Internal AI Builder → AI-Focused Data Engineer / Analytics Engineer → Applied AI Engineer → FDE track**. Portfolio focused to **4 flagships + 2 supporting**. No external Data Analyst search (the 0–2 yr analyst band is contracting) — that ruling stands. Certifications trimmed to a purposeful **9 + 1 conditional**; **OMSCS (Computing Systems)** added as a parallel degree track.
 >
 > **🆕 v10.0 Corrections 22 + 32 (August 2026) — what changed:** the internal-elevation premise is retired. The former *fallback* (external DE/AE search) is now the **primary path**, targeted **Analytics Engineer first, Data Engineer in parallel**, apply window **~Q1 2027**. Stage 1 keeps its name because **the build work is unchanged and continues through the handover** — what retired is the employment premise. Its exit is now an **evidence gate: DataVault S2 hardening shipped**. **All certifications are self-funded** — no employer reimbursement applies to any of them; per-exam costs are now documented in each stage. Framing is **evidence over keywords**.
 
@@ -26,7 +26,7 @@
 ## 🗺️ Quick Navigation
 
 **👔 For Recruiters / Hiring Managers:**
-1. **[💼 Portfolio →](https://github.com/manuel-reyes-ml/data-portfolio)** — Live ETL system + 3 flagships ⭐ **START HERE**
+1. **[💼 Portfolio →](https://github.com/manuel-reyes-ml/data-portfolio)** — Live ETL system + 4 flagships ⭐ **START HERE**
 2. **[🎯 Evidence-First Approach →](#-evidence-first-approach)** — How this is built
 3. **[📊 Complete Roadmap →](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)** — 3-stage visualization
 4. **[🔗 LinkedIn →](https://www.linkedin.com/in/mr410/)** — Professional background
@@ -45,7 +45,7 @@
 
 **This repository demonstrates:**
 - ✅ **Production system deployed** — a live ETL pipeline running in an ERISA-regulated retirement-plan operations environment, with public code and evaluation discipline
-- ✅ **Focused portfolio: 3 flagships + 2 supporting** — real systems (Applied-AI, Data Engineering, autonomous-execution safety), not a repo pile
+- ✅ **Focused portfolio: 4 flagships + 2 supporting** — real systems (Applied-AI, Data Engineering, autonomous-execution safety, and one dual-target system that evidences both doors at once), not a repo pile
 - ✅ **Domain depth** — 15+ yrs business operations (manufacturing, digital marketing) + 2 yrs ERISA-regulated financial operations + 5+ yrs independent trading
 - ✅ **Eval-first engineering** — DeepEval / RAGAS / GEval as **blocking gates** (faithfulness ≥ 0.9 for financial data)
 - ✅ **Production standards** — typed Python, **`uv` + committed `uv.lock`**, `pyproject.toml` + `src/`, ruff/mypy, Docker, GitHub Actions CI, Conventional Commits **enforced by a `commit-msg` hook**, **a pinned `.pre-commit-config.yaml` in every repo**; **structured logging (`structlog`) with a PII-redaction processor**, typed config (`pydantic-settings`), capped retries (`stamina`); **no vibe coding** (every line understood before merge)
@@ -68,7 +68,8 @@ Each stage compounds the same moat (finance/ERISA + trading depth + eval-first d
 Foundation:  Production Python (typed, uv + uv.lock, pyproject, ruff/mypy, pre-commit) + SQL + Docker/CI
 + AI Layer:  Anthropic SDK (structured outputs, tool use, prompt caching) + RAG + MCP literacy
 + Eval Layer: RAGAS/DeepEval as blocking gates, golden datasets, hallucination detection
-+ Certs:     Azure AI Fundamentals (AI-901, $99) → AI Agent Builder Associate (AB-620, $165)
++ Certs:     Azure AI Fundamentals (AI-901, $99) — committed
++             AI Agent Builder Associate (AB-620, ~$165) — CONDITIONAL (Microsoft-ecosystem trigger only)
              all self-funded — no employer reimbursement on any credential
 = Result: PolicyPulse v1 shipping with eval gates + DataVault S2 hardening (the exit gate)
           → available 9 Oct 2026; external AE/DE search is the primary path
@@ -109,7 +110,7 @@ Foundation:  Production agentic systems (Building Effective Agents taxonomy) + M
 
 ## 🏆 Production & Portfolio Highlights
 
-> **Focused portfolio: 3 flagships + 2 supporting**, built on a live production system.
+> **Focused portfolio: 4 flagships + 2 supporting**, built on a live production system.
 >
 > **🏗️ Production standard (every repo):** architecture diagram (Mermaid), **ADR set (`docs/adr/`) + C4 context diagram** (lead flagships add a C4 container view), Dockerfile, evaluation-metrics table (DeepEval), 15–30s demo GIF, and "What I Learned." **Non-negotiable standards:** no vibe coding, eval-first blocking gates, **synthetic data only** in public repos, `pyproject.toml` + **`uv.lock`** + `src/` + `py.typed` + ruff + mypy · **a pinned `.pre-commit-config.yaml` — hooks are a *strict subset* of the CI gate, so CI stays authoritative and nothing is checked locally that isn't also checked in CI** · **structured logging (`structlog` over stdlib via `ProcessorFormatter`) + PII redaction processor · typed config (`pydantic-settings`, `SecretStr` credentials) · capped jittered retries (`stamina`)**, Conventional Commits, earned-overlay policy (ML ships only if it beats the baseline). *Every image builds with `uv sync --frozen` — reproducible by construction.*
 
@@ -189,6 +190,33 @@ Production-safety engineering for an autonomous system handling irreversible act
 
 ---
 
+### 🏁 Flagship 4 — [PostCheck](https://github.com/manuel-reyes-ml/postcheck) · *Dual-target: Applied AI **and** Analytics/Data Engineering*
+
+**The only project whose single deliverable produces first-class evidence for both target doors.**
+
+- **① Production** — **Read-only and advisory — a binding, tested safety invariant.** Never keys, posts, reverses or corrects; never contacts a participant, advisor, TPA or sponsor; never edits SSN, name or DOB. An IGO verdict is a **recommendation to a human, never an authorization**.
+- **② Cost** — Provider-agnostic across three named substrates (**Anthropic · Azure OpenAI via Microsoft Foundry · local Ollama**); one eval suite, gates run per substrate.
+- **③ Architecture** — The spreadsheet is a **rendered export, never the source of truth** · declared grain (`fct_document_reviews` = one row per packet × review run) · ADRs + C4 Context + Container.
+
+An autonomous **post-posting QA review agent** for regulated distribution operations. It watches an intake folder and claims each packet **exactly once** (event-as-hint + poll floor + content-hash idempotency + lease TTL), parses the posted-transaction export **deterministically** (row-type discriminator dispatch — *the LLM never sees the workbook*), segments and extracts a scanned multi-document packet with a multimodal model, routes on form family, resolves live-vs-dead payee legs, then adjudicates against a **versioned SOP** across a fixed 15-item verification surface (PASS / EXCEPTION / CRITICAL / N/A) → **IGO** / **NIGO (needs clarification)** / **NIGO (do not process)**.
+
+Findings escalate to the human processor with field, form value, export value, **SOP citation** and fix. Every adjudication appends to an **event log feeding a dbt-modelled NIGO quality mart** — first-pass IGO rate, reason Pareto, reason-mix drift, agent-vs-human agreement.
+
+| Door | What this system evidences |
+|------|----------------------------|
+| 🤖 **Applied AI** | Agentic adjudication with a **hard escalation boundary** · multimodal reasoning over scanned packets · three-layer eval with a blocking gate · MCP + HITL |
+| 📊 **Analytics / Data Engineering** | **Exactly-once event ingestion** · deterministic parsing of a ragged block-structured source · **append-only event log with a declared grain** · dbt models + contracts · a metrics layer answering a real operational question |
+
+**📏 Measured against a real incumbent** — a prompt-only reviewer already in use — so the headline is a genuine before/after rather than an unfalsifiable claim. Headline metric: **false-CRITICAL rate** versus a flattened-text baseline running the identical rule pack on the identical golden set. **The blocking gate is false-NIGO rate, not accuracy** (precision blocks, recall is reported). **Synthetic corpus only** — the controlled-NIGO-injection generator is itself a portfolio artifact and the only route to ground-truth labels.
+
+> 🔀 **PostCheck is not FormSense.** FormSense sits **pre-index** — is this form complete, legible and internally consistent enough to file? It judges the form *against itself*. PostCheck sits **post-posting** — does the posted transaction match the request and comply with the SOP? It judges the form *against the posted export*. Different position in the workflow, different source of truth, different escalation target. **Never merged.**
+
+**Tech:** Python • Anthropic SDK • Azure OpenAI / Microsoft Foundry • Ollama (local) • multimodal extraction • Pydantic • **dbt** • DeepEval • FastMCP • Docker • GitHub Actions CI
+
+> 🗓️ **Scheduling:** the standard budget stays 25 hrs/week and the priority order when hours are scarce is **DataVault → PolicyPulse → Crucible**. PostCheck S1 is scoped to be **independently shippable and independently evidence-bearing**, so it never blocks the evidence gate.
+
+---
+
 ### 🧩 Supporting — [FormSense](https://github.com/manuel-reyes-ml/formsense) · *Document AI*
 
 - **① Production** — Deploy path (Docker + CI) with **GEval schema-adherence gates** as merge conditions; escalation routing on low confidence.
@@ -234,6 +262,7 @@ learning_journey/
 │       ├── PolicyPulse (Flagship 1 — Applied AI: RAG→GraphRAG, FastMCP)
 │       ├── DataVault / 1099 Data Platform (Flagship 2 — Data Engineering; live production)
 │       ├── Crucible (Flagship 3 — autonomous execution: backtest→paper→live)
+│       ├── PostCheck (Flagship 4 — dual-target: agentic QA review + dbt NIGO quality mart)
 │       ├── FormSense (Supporting — multimodal agentic workflow)
 │       ├── Attention-Flow Catalyst (Supporting — read-only GraphRAG research)
 │       └── Backlog: Operations-Demand-Intelligence · StreamSmart  (DataVault = Flagship 2 S3 layer)
@@ -247,12 +276,13 @@ learning_journey/
 │   ├── anthropic_claude_api/             # Building with the Claude API (SDK source-of-truth)
 │   ├── deeplearning_ai/                  # Evals, RAG, MCP, Agentic AI short courses
 │   ├── aws_data_engineering/             # 📅 Stage 2 DE spine
-│   └── dbt_airflow_kafka/                # 📅 Stage 2 DE/AE tooling
+│   ├── dbt_airflow_kafka/                # 📅 Stage 2 DE/AE tooling
+│   └── ai_native_data_engineering/       # 📅 Stage 2 — vector schemas, PII-safe corpora, reproducible datasets
 │
 ├── 📂 certifications/                    # Certificate tracking (9 + 1 conditional)
 │   └── in-progress/
-│       ├── ai-901-progress.md            # Azure AI Fundamentals (employer)
-│       ├── ab-620-progress.md            # AI Agent Builder Associate (employer)
+│       ├── ai-901-progress.md            # Azure AI Fundamentals (committed, self-funded)
+│       ├── ab-620-progress.md            # AI Agent Builder Associate (⏸️ conditional)
 │       ├── ibm-genai-engineering-progress.md
 │       └── ...                            # DP-700, AWS DE, NCA-GENL, Databricks, Neo4j, AI-103, CCA-F
 │
@@ -282,13 +312,13 @@ Systematic progression that compounds the finance/ERISA + trading + eval-first m
 **Core:** Production Python (typed, **uv + `uv.lock`**, pyproject, ruff/mypy, **pre-commit**) • SQL • Docker/CI
 **AI:** Anthropic SDK (structured outputs, tool use, prompt caching) • RAG • MCP literacy • Pydantic • Streamlit
 **Eval:** RAGAS/DeepEval blocking gates • golden datasets • hallucination detection
-**Certs (self-funded):** **AI-901 ($99)** → **AB-620 ($165)**; ZTM Azure Bootcamp; Microsoft Agent Framework awareness
+**Certs (self-funded):** **AI-901 ($99)** — committed. **AB-620 (~$165) is conditional, not committed:** it is the low-code Copilot Studio maker path, and this portfolio's evidence standard is production Python — typed, tested, eval-gated, ADR-documented. Single activation trigger: a deliberate decision to specialize in the Microsoft ecosystem. The committed Azure-native credential is **AI-103** (code-first Foundry, Stage 3).
 **Collaboration:** Git team workflow — **branch → PR → review → merge**, rebase and conflict resolution *(build target: the falsifiable proof is feature branches and self-reviewed PRs on the flagships, not a certificate)*
 **Last mile:** TypeScript + Zod + **Vercel AI SDK 7** + React — a streaming Claude-powered UI over PolicyPulse retrieval. ⚠️ **Guardrail:** TypeScript is the **last mile only**; PolicyPulse, AFC and Crucible stay Python-primary and no agent core crosses the language boundary
 
 **Learning path:** CS50x (Harvard) • **CS50P** (Harvard — Python, testing/debugging rigor) • **MITx 6.00.1x** (MIT — Python CS foundations) • Python for Everybody • AI Python for Beginners • Building with the Claude API (Anthropic Academy) • Improving Accuracy of LLM Apps • Building & Evaluating Advanced RAG • MCP primer • AI Prompting for Everyone • 30 Days of Streamlit • Docker for Beginners • **uv — Python packaging** (Astral official docs + Al Sweigart quickstart) • **pre-commit hooks** (Stefanie Molin's four-article series + `pre-commit.com` — *no certification exists for this and no substantive course does either; the shipped config is the evidence*) • *conditional:* **Conda Basics** (Anaconda — only if Crucible needs compiled/GPU backends) • **IBM Generative AI Engineering Professional Certificate** (Stage 1 spine)
 
-**Deliverables:** PolicyPulse v1 (eval gates + FastMCP) • 1099 pipeline retro-migrated to production standards (incl. `pip → uv` migration) • AI-901 passed → AB-620 begun • two documented production automation wins
+**Deliverables:** PolicyPulse v1 (eval gates + FastMCP) • 1099 pipeline retro-migrated to production standards (incl. `pip → uv` migration) • AI-901 passed • two documented production automation wins
 
 > **Exit criterion (evidence gate):** **DataVault S2 hardening shipped.** The prior internal-scope-change criterion is superseded — internal elevation can no longer occur. **Primary path:** external **Analytics Engineer** (first door) / **Data Engineer** (parallel) search, apply window **~Q1 2027**. *Not* a Data Analyst search, under any circumstance.
 
@@ -296,14 +326,16 @@ Systematic progression that compounds the finance/ERISA + trading + eval-first m
 
 > *"AI-focused" ≠ vanilla DE:* the target is data platforms built for AI workloads — AI-managed / AI-ready pipelines, embedding pipelines, vector stores, and unstructured-data ETL feeding RAG — not BI-only engineering.
 
-**Core:** SQL at scale • **dbt** (tested project, CI-gated) • warehouse (**Snowflake** primary — the "one deep", canonical dbt pairing; BigQuery + Microsoft Fabric awareness) • **Airflow** • **Kafka** basics • **PySpark**
+**Core:** SQL at scale • **Polars** (default dataframe engine for ingestion and bulk transforms; pandas retained deliberately at the `openpyxl` template write and the plotting hand-off — the reviewable artifact is the ADR recording which engine owns which layer, plus a `.explain()` query plan, never a speed number on a small dataset) • **dbt** (tested project, CI-gated) • warehouse (**Snowflake** primary — the "one deep", canonical dbt pairing; BigQuery + Microsoft Fabric awareness) • **Airflow** • **Kafka** basics • **PySpark**
 **Governance:** data contracts • dbt tests / Great Expectations • lineage • access-control awareness
 **Deploy:** Docker → ECS/Fargate • **Terraform** basics • monitoring • incident writeups
 **AI-adjacent:** embedding pipelines • vector stores • unstructured-data ETL feeding RAG
 
-**Certs (self-funded):** **DP-700** ($165) + **AWS Certified Data Engineer – Associate** (DEA-C01, $150) + *conditional menu: dbt Analytics Engineering (free; if AE apps stall)* + **ONE optional lakehouse cert**
+**Certs (self-funded):** **DP-700** ($165) + **AWS Certified Data Engineer – Associate** (DEA-C01, $150) + *conditional menu: dbt Analytics Engineering (**~$200** — the tested dbt project with CI is the primary signal; the cert is a tiebreaker, not the unlock)* + **ONE optional lakehouse cert**
 
 > **Lakehouse slot — three co-equal options, take exactly ONE**, matched to a target employer's stack, never stacked: **DP-750** ($165) · **SnowPro Core** (COF-C03, $175) · **Databricks DE Associate** ($200). *No default is set on purpose — with the funding advantage gone they sit within $35 of each other, and the deciding input is the target employer's stack, which isn't knowable until the apply window.*
+
+**AI-native depth (Correction 43):** the **IBM AI-Native Data Engineering Professional Certificate** (7 courses, Coursera Plus) sits in Stage 2 for the three layers with no prior coverage — **vector schemas + retrieval governance**, **PII-safe corpus preparation and citation-grade chunking**, and **reproducible ML-ready datasets** (leakage, contamination, point-in-time correctness, CI gates for schema/slice/drift/bias). Scope chosen at enrolment; subordinate to the DataVault S2 ship, which it never competes with.
 
 **Key deliverable:** DataVault production-hardened (**the Stage 1 exit gate**); first external offer — apply window **~Q1 2027**
 
@@ -362,7 +394,7 @@ Accredited M.S. Computer Science (~$8–9K total), Computing Systems specializat
 
 | Stage | AI Tools & Frameworks |
 |-------|----------------------|
-| **2** | dbt + Airflow + Kafka + PySpark + Snowflake (primary)/BigQuery/Fabric + vector DBs + embedding pipelines + unstructured-data ETL + Docker→ECS + Terraform |
+| **2** | **Polars** + dbt + Airflow + Kafka + PySpark + Snowflake (primary)/BigQuery/Fabric + vector DBs + embedding pipelines + **PII-safe unstructured-data ETL** + **reproducible ML-ready datasets (point-in-time correctness)** + Docker→ECS + Terraform |
 | **3** | Agentic AI (Andrew Ng) + MCP servers (full) + LangGraph + long-term agentic memory + HuggingFace NLP (local embeddings) + Neo4j GraphAcademy + PEFT (literacy) + vLLM inference economics |
 
 ---
@@ -371,13 +403,13 @@ Accredited M.S. Computer Science (~$8–9K total), Computing Systems specializat
 
 **Editors & workflow:**
 - **VS Code** (primary) — Python, SQL, Jupyter notebooks
-- **Cursor AI** (AI pair programming) + **OpenCode** (agentic harness, custom agents/commands)
+- **Cursor AI** (AI pair programming) + a **dual agentic harness — OpenCode + Claude Code** — governed by one portable `AGENTS.md` contract and a shared prompt-extraction layer, so the same standards drive both and nothing is duplicated
 - **Make** (task automation via `Makefile`) • **Git** + Conventional Commits
 - **uv** (packages, virtual envs, Python versions) — `uv run` replaces manual venv activation
 
 **Languages & data:**
 - **Python 3.14** (standard GIL build — the free-threaded `python3.14t` build is deliberately **not** used; no CPU-bound multicore workload here, and it is where the C-extension wheel problems live), SQL
-- pandas, NumPy, DuckDB, Parquet, Matplotlib, Seaborn, Plotly
+- **Polars** (default engine), pandas (boundary-scoped), NumPy, DuckDB, Parquet, Matplotlib, Seaborn, Plotly
 - Databases: SQLite, DuckDB, ChromaDB, Neo4j, PostgreSQL (Stage 2)
 
 **AI / GenAI:**
@@ -429,14 +461,14 @@ uv run python getting_started/environment-verification.py
 
 **Availability:** 🟢 **Open to roles** — AI-Focused Analytics Engineer (first door) · Data Engineer (parallel)
 **Active Stage:** 1 of 3 (Internal AI Builder — *the work*, exiting on an evidence gate)
-**Portfolio:** 3 flagships (PolicyPulse, DataVault / 1099 Platform [live], Crucible) • 2 supporting (FormSense, AFC) • backlog (ODI, StreamSmart)
-**Certifications:** 9 + 1 conditional — **all self-funded**, ≈ **$1,194** committed across S1–S3 (≈ $1,394 with the optional lakehouse slot)
+**Portfolio:** 4 flagships (PolicyPulse, DataVault / 1099 Platform [live], Crucible, PostCheck) • 2 supporting (FormSense, AFC) • backlog (ODI, StreamSmart)
+**Certifications:** 9 + 1 conditional — **all self-funded**. **Eight committed ≈ $1,029** across S1–S3; ≈ **$1,594** full-canon ceiling if every conditional is taken (optional lakehouse slot ~$165–200, dbt AE ~$200, AB-620 ~$165)
 **Study Hours:** 25/week consistent
 
 **Next milestones:**
 - PolicyPulse v1 shipped (RAG + eval gates + FastMCP)
 - **DataVault S2 hardening — the Stage 1 exit gate**
-- AI-901 passed → AB-620 begun
+- AI-901 passed (AB-620 held as conditional)
 - Vercel AI SDK 7 last-mile UI over PolicyPulse retrieval (fresh for the Q1 2027 window)
 - Feature-branch + PR workflow visible across the flagship repos
 - IBM GenAI Engineering Professional Certificate completed; CS50 on track for OMSCS window
@@ -471,7 +503,7 @@ This repository documents a complete career transformation: from business-ops pr
 
 **What this represents:**
 - ~32-month systematic journey with measurable milestones
-- A focused portfolio (3 flagships + 2 supporting) spanning Applied AI, Data Engineering, and autonomous-systems safety
+- A focused portfolio (4 flagships + 2 supporting) spanning Applied AI, Data Engineering, autonomous-systems safety, and regulated-operations QA
 - Production systems with real business impact
 - An evidence-first approach: proof that stands up to scrutiny, not keyword density
 
@@ -489,7 +521,7 @@ Real-time documentation of an evidence-first career transformation.
 
 ---
 
-### 💡 *"~32 months. 3 flagships. Evidence over keywords. Production code with measurable impact. Clear trajectory."*
+### 💡 *"~32 months. 4 flagships. Evidence over keywords. Production code with measurable impact. Clear trajectory."*
 
 **Current Stage:** Internal AI Builder (1 of 3) | 🟢 Active • Building in Public • Deploying Production Systems
 
