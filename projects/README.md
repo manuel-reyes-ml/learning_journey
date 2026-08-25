@@ -1,6 +1,6 @@
 # 🚀 Project Portfolio Directory
 
-**3 Flagships + 2 Supporting** | One system per project, evolved S1 → S3 | Evidence-first, evaluation-gated
+**4 Flagships + 2 Supporting** | One system per project, evolved S1 → S3 | Evidence-first, evaluation-gated
 
 > **Portfolio Hub:** **[data-portfolio →](https://github.com/manuel-reyes-ml/data-portfolio)** for full project summaries, tech stacks, scope documents, and skills badges. This page is the index that lives alongside the roadmap.
 
@@ -17,13 +17,14 @@ Each project is **one system that evolves across stages**, not a set of scattere
 | 1 | 🧾 **DataVault / 1099 Data Platform** | 🚩 Flagship — Data Engineering | 1099 reconciliation core → dbt-tested platform (CI) → Applied-AI natural-language analyst layer (HITL on every write) | ✅ **S1 core live** |
 | 2 | 📋 **PolicyPulse** | 🚩 Flagship — Applied AI (RAG) | Cited-source RAG over plan documents → GraphRAG hybrid (Neo4j + ChromaDB) → agentic + eval/observability; exposes a **FastMCP server** | 🏗️ **S1 shipping** |
 | 3 | 🔥 **Crucible** | 🚩 Flagship — Autonomous trading research | Multi-timeframe (swing → intraday) backtest → paper → live through validation gates; **HITL sign-off + kill-switch** on the live path | 🏗️ **S1 in progress** |
-| 4 | 📈 **Attention-Flow Catalyst (AFC)** | Supporting — Research | Eval-first core: SEC-grounded faithfulness benchmark + controlled-perturbation catalog; GraphRAG financial-KG | 🏗️ **S1 core** |
-| 5 | 📄 **FormSense** | Supporting — Document ops | Multimodal structured extraction from distribution forms; Pydantic frozen-schema contract; agentic workflow | 📅 Planned |
-| 6 | 📺 **StreamSmart** · 📊 **ODI** | Backlog | Consumer subscription optimizer · enterprise demand analytics (ODI = consolidation candidate) | 🗒️ Backlog |
+| 4 | 🧾 **PostCheck** | 🚩 Flagship — **Dual-target** (Applied AI **and** AE/DE) | Autonomous post-posting QA review: agentic SOP adjudication with a hard escalation boundary **+** exactly-once event ingestion → dbt **NIGO quality mart**. One deliverable, evidence for both doors | 🏗️ **S1 scoped** |
+| 5 | 📈 **Attention-Flow Catalyst (AFC)** | Supporting — Research | Eval-first core: SEC-grounded faithfulness benchmark + controlled-perturbation catalog; GraphRAG financial-KG | 🏗️ **S1 core** |
+| 6 | 📄 **FormSense** | Supporting — Document ops | Multimodal structured extraction from distribution forms; Pydantic frozen-schema contract; agentic workflow | 📅 Planned |
+| 7 | 📺 **StreamSmart** · 📊 **ODI** | Backlog | Consumer subscription optimizer · enterprise demand analytics (ODI = consolidation candidate) | 🗒️ Backlog |
 
 > Shared library: **`signalcore`** — point-in-time-safe primitives beneath AFC + Crucible (siblings, no merge). Content tooling: **Cadence** (build-in-public pipeline — a tool, not a portfolio flagship).
 >
-> Toolchain: **uv (Astral)** manages packages and environments across every project above; **`structlog` + `pydantic-settings` + `stamina`** are the shared observability, configuration and retry layer beneath all of them; a pinned **`.pre-commit-config.yaml`** is the shared enforcement layer at the commit boundary. **Conda** is a deliberate exception, not a default — reserved for **Crucible only**, and only if it grows compiled numerical / CUDA / BLAS backends where binary channels beat wheels.
+> Toolchain: **Polars** is the default dataframe engine for ingestion and bulk transforms — pandas is retained deliberately at the `openpyxl` template write and the plotting hand-off, and business logic lives in **dbt**, not in either engine; **uv (Astral)** manages packages and environments across every project above; **`structlog` + `pydantic-settings` + `stamina`** are the shared observability, configuration and retry layer beneath all of them; a pinned **`.pre-commit-config.yaml`** is the shared enforcement layer at the commit boundary, alongside a **dual agentic harness (OpenCode + Claude Code)** governed by one portable **`AGENTS.md`** contract and a `PreToolUse` guard hook that blocks `git commit`/`push` — so every commit is made by a human, by construction. **Conda** is a deliberate exception, not a default — reserved for **Crucible only**, and only if it grows compiled numerical / CUDA / BLAS backends where binary channels beat wheels.
 
 ---
 
@@ -58,7 +59,7 @@ Retrieval-augmented answering over retirement-plan documents with cited sources 
 - **② Cost** — 🔒 *Deliberately constrained.* Mechanism + non-identifying relative deltas + manual hours removed. No absolute figures — see the disclosure above.
 - **③ Architecture** — **ERISA-driven ADRs** (retention, auditability, reconciliation guarantees, PII boundary) · C4 Context + Container · dbt tests and data contracts.
 
-One system across the arc. **S1:** the live 1099 reconciliation core. **S2:** hardened into a platform — dbt-tested models (CI-gated), orchestration (Airflow), data contracts, containerized deploy, monitoring, one written incident/postmortem. **This is the Stage 1 exit gate** — the roadmap now exits Stage 1 on shipped evidence rather than on an employment milestone, and this is the evidence. **S3:** the Applied-AI analyst layer (natural-language querying) with **human-in-the-loop on every write**.
+One system across the arc. **S1:** the live 1099 reconciliation core. **S2:** hardened into a platform — **Polars** ingestion and bulk transforms, dbt-tested models (CI-gated), orchestration (Airflow), data contracts, containerized deploy, monitoring, one written incident/postmortem. *(The S1 pandas pipeline is frozen as the "before," not rewritten — the delta is the S2 headline metric.)* **This is the Stage 1 exit gate** — the roadmap now exits Stage 1 on shipped evidence rather than on an employment milestone, and this is the evidence. **S3:** the Applied-AI analyst layer (natural-language querying) with **human-in-the-loop on every write**.
 
 ### 🔥 Crucible — Autonomous trading-research flagship (started first)
 
@@ -79,6 +80,24 @@ One system across the arc. **S1:** the live 1099 reconciliation core. **S2:** ha
 **Distinct from AFC (why both, not redundancy):** AFC is *read-only research* on illiquid sub-$5 small-caps over a multi-day *swing* horizon; Crucible is *autonomous execution* on liquid names *intraday*. ~70% shared engineering spine (`signalcore`), two genuinely different hard problems.
 
 > ⚖️ *Educational/research project. Not investment advice; makes no claim of positive expectancy — validation is the entire point.*
+
+### 🧾 PostCheck — Dual-target flagship (Applied AI **and** Analytics/Data Engineering)
+
+- **① Production** — **Read-only and advisory — a binding, tested safety invariant.** Never keys, posts, reverses or corrects; never contacts a participant, advisor, TPA or sponsor. An IGO verdict is a **recommendation to a human, never an authorization**.
+- **② Cost** — Provider-agnostic across three named substrates (Anthropic · Azure OpenAI/Foundry · local Ollama); one eval suite, gates run per substrate.
+- **③ Architecture** — The spreadsheet is a **rendered export, never the source of truth** · declared grain (`fct_document_reviews` = one row per packet × review run) · ADRs + C4 Context + Container.
+
+> **The question it answers:** *Was this distribution keyed correctly, and does it comply with the SOP — before a human has to check it by hand?*
+
+Claims each intake packet **exactly once** (content-hash idempotency + lease TTL), parses the posted-transaction export **deterministically** (the LLM never sees the workbook), extracts a scanned multi-document packet with a multimodal model, then adjudicates against a **versioned SOP** across a fixed 15-item surface → **IGO / NIGO**. Every adjudication appends to an event log feeding a **dbt-modelled quality mart** (first-pass IGO rate, reason Pareto, agent-vs-human agreement).
+
+**Why it counts twice:** the agentic adjudication and escalation boundary answer the Applied-AI door; the exactly-once ingestion, append-only event log with a declared grain, and dbt metrics layer answer the AE/DE door — **one deliverable, two first-class stories**.
+
+📏 **It has a real incumbent to beat** — a prompt-only reviewer already in use — so the headline is a genuine before/after. **The blocking gate is false-NIGO rate, not accuracy**: precision blocks the merge, recall is reported, because a review agent that cries wolf destroys the trust it needs to be useful. Synthetic corpus only.
+
+> 🔀 **Not FormSense.** FormSense is **pre-index** — is this form complete enough to file? It judges the form *against itself*. PostCheck is **post-posting** — does the posted transaction match the request? It judges the form *against the export*. Different source of truth; never merged.
+
+> 🗓️ When hours are scarce the priority order is **DataVault → PolicyPulse → Crucible**; PostCheck S1 is scoped to be independently shippable, so it never blocks the Stage 1 exit gate.
 
 **Supporting projects:** AFC (eval-first research core → GraphRAG financial-KG) and FormSense (multimodal document ops) carry the same production standard at smaller scope.
 
@@ -117,6 +136,6 @@ Every project ships with a **Mermaid diagram + C4 Context diagram** (+ Container
 
 ---
 
-### 💡 *Three flagships. One system per project, evolved S1 → S3. Production code, evaluation-gated, in a regulated domain.*
+### 💡 *Four flagships. One system per project, evolved S1 → S3. Production code, evaluation-gated, in a regulated domain.*
 
 **[→ Full Portfolio Hub](https://github.com/manuel-reyes-ml/data-portfolio)** | **[→ Interactive Roadmap](https://manuel-reyes-ml.github.io/learning_journey/roadmap.html)**
