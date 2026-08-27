@@ -149,8 +149,15 @@ def normalise(cmd: str) -> str:
 
 
 def matches(path: str, patterns: tuple[str, ...]) -> bool:
-    """True if `path` matches any glob in `patterns`."""
-    return any(fnmatch(path, p) for p in patterns)
+    """True if `path` matches any glob in `patterns`, case-insensitively.
+
+    fnmatch is case-insensitive in Windows but case-sensitive on macOS/Linux,
+    but macOS filesystems are not — `.ENV` is a real, openable file that
+    `*.env` would miss. Lowercase both sides so a case variant cannot
+    walk past a deny rule.
+    """
+    lowered_path = path.lower()
+    return any(fnmatch(lowered_path, p.lower()) for p in patterns)
 
 
 # =============================================================================
