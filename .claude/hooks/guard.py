@@ -157,6 +157,9 @@ def matches(path: str, patterns: tuple[str, ...]) -> bool:
     walk past a deny rule.
     """
     lowered_path = path.lower()
+    # fnmatch matches a string against a glob pattern
+    # fnmatch("/repo/.env", "*.env")        # True
+    # fnmatch("/repo/main.py", "*.env")     # False
     return any(fnmatch(lowered_path, p.lower()) for p in patterns)
 
 
