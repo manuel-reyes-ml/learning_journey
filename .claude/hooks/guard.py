@@ -198,6 +198,8 @@ def main() -> None:
                     "then report the diff and stop. I commit manually after review."
                 )
         for pattern in FORBIDDEN_CMDS:
+            # re.search() returns a Match object when it finds something, and None when it doesn't.
+            # It carries the matched text, its position, and any captured groups.
             if re.search(pattern, cmd):
                 block(
                    f"command matches a prohibited pattern ({pattern}). "
