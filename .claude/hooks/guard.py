@@ -192,6 +192,15 @@ def main() -> None:
     if tool == "Bash":
         cmd = normalise(str(data.get("command", "")))
         for verb in FORBIDDEN_GIT:
+            # re.escape() --> It takes a plain string and returns a version where
+            # every character that regex treats as special has been defused —
+            # turned into "just this literal character.
+            #   commit           -> commit
+            #   reset --hard     -> reset\ \-\-hard
+            #   stash.pop        -> stash\.pop
+            #   checkout*        -> checkout\*
+            # commit comes back unchanged — nothing in it is special. The others pick up backslashes.
+            # e.g. re.escape() turns . into \., meaning an actual period, nothing else.
             if re.search(rf"\bgit\s+{re.escape(verb)}\b", cmd):
                 block(
                     f"`git {verb}` is human-controlled. Stage with `git add` if asked, "
