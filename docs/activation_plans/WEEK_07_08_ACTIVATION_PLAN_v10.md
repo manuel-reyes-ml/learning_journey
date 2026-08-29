@@ -1,13 +1,30 @@
 # 🚀 WEEKS 7–8 MASTER ACTIVATION PLAN (v10.0)
 ## Flagship Era Opens — DataVault S1 v0 + AI-901 Exam | August 31 – September 13, 2026
 
-**Document Version:** 1.0
+**Document Version:** 1.1 (realigned to roadmap Corrections 21–43)
 **Covers:** Monday, August 31 – Sunday, September 13, 2026 (Stage 1 · Month 2 · Weeks 7–8)
-**Aligned To:** Career Roadmap v10.0, Corrections 1–20
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–43**
 **Prerequisite:** Weeks 5–6 metrics ≥80% (non-negotiables: mini-project #3 + AI-901 exam booked)
 **Weekly Hours:** 25 · 🇺🇸 Labor Day (Mon Sep 7) is a day off work — an optional bonus deep-work block if family plans allow; never mandatory.
 
 > 🤖 **Agent Policy — Phase 3 continues.** Flagship rule stays: eval/test logic and ADRs human-authored through Q1. New rep this fortnight: before each DataVault build session, write the requirement as a comment block FIRST, then decide build-vs-delegate per function. Requirements-first is the decomposition habit FDE interviews test.
+
+---
+
+---
+
+## 🔄 REALIGNMENT PASS — ROADMAP CORRECTIONS 21–43 (applied 27 Aug 2026)
+
+This is the **next fortnight you will execute**, so it is fully re-cut rather than annotated. Five changes:
+
+1. **🔴 Every reimbursement task is void.** Corrections 22/32/37: all certifications are **self-funded**, and the Month-6 scope-change conversation with Jen **cannot occur** — employment ends **9 Oct 2026**. AI-901 is a **$99 purchase you make**, a retake is another $99, and there is no claim to file on Day 54. The "elevation file" is renamed the **evidence file**: its audience is now the Q1 2027 external AE/DE interviewer, not an internal manager.
+2. **⚠️ AI-901 content re-weighting** — the highest-value change in this pass, and it is *not* from a correction. Verified against Microsoft Learn (Aug 2026): AI-901 replaced AI-900 on 30 June 2026 and is **~55–60% Microsoft Foundry implementation**. Your Weeks 3–6 module plan used AI-900-era concept labels, which map to the smaller half. See the re-weighting note in the AI-901 section below before you drill.
+3. **🪝 pre-commit lands on Day 47**, in the same session as CI — because they are the same gate at two boundaries, and Correction 21's governing rule is that the hook set is a **strict subset of CI**. Full pinned config is inline below.
+4. **🐍🐻‍❄️ DataVault scaffolds on Python 3.14 with Polars as the default engine** (Corrections 28, 35). `uv add polars` is in the scaffold block. Keep pandas out of DataVault except at the two named boundaries — writing into an existing `.xlsx` template via openpyxl, and hand-off to matplotlib/plotly/scikit-learn/PandasAI. **Name the boundary in an ADR when you first cross it.**
+5. **🗺️ Dual harness** (your ruling, 27 Aug): OpenCode in Cursor, Claude Code in VS Code, one shared `AGENTS.md`. The DataVault scaffold on Day 43 is the first repo built with both — **put `AGENTS.md` in the scaffold from commit one**, so the contract exists before either harness has a chance to diverge from it.
+6. **🎯 The reframe worth more than the engine choice** (Correction 35 §2): for an Analytics-Engineer-first target, the first question is not pandas-vs-Polars, it is **how much logic leaves dataframes entirely for dbt**. DataVault's reconciliation engines belong in **tested dbt models** in S2, not in either dataframe library. Build the S1 Python version knowing it is the "before"; do not over-invest in it.
+
+> 🧭 **What this fortnight is really producing now.** Under the old premise, DataVault + AI-901 were exhibits for an internal elevation case. Under Correction 22 they are the **first two artifacts of an external application package** with a hard date on it. Nothing about the build changes. What changes is that the README, the CI badge and the score report are now read by strangers — so write them for a stranger.
 
 ---
 
@@ -23,8 +40,12 @@ Per the Build Progression (Correction 6), DataVault leads when hours are scarce 
 
 **The data-boundary rule (Correction 18's ERISA framework, applied from day one):** the public repo contains ONLY synthetic data your generators invent. Real Matrix/Relius exports, real participant data, real volumes NEVER touch this repo. What crosses over is *shape knowledge* — you know what these files look like structurally, and encoding that shape in synthetic generators is itself the domain moat at work. Test everything you write here against the deposition test.
 
+> 🔄 **Note (27 Aug 2026):** you have confirmed the 1099 codebase is **not company-private**, which resolves the *ownership* question for that project. **It does not touch this rule.** Ownership and data are separate axes: code you are free to publish still cannot carry participant records. This data-boundary rule applies unchanged to DataVault, to the 1099 repo, and to every public repo in the portfolio — synthetic only, always.
+
 ### The fortnight's second thread: AI-901
-Exam target **Fri Sep 11 / Sat Sep 12**. Weeks of Learn modules + practice test #1 are done; this fortnight is drilling + practice tests #2–3 + the exam. A pass = the reimbursement path proven + elevation-file evidence #1 + AB-620 unlocked.
+Exam target **Fri Sep 11 / Sat Sep 12**. Weeks of Learn modules + practice test #1 are done; this fortnight is drilling + practice tests #2–3 + the exam. ~~A pass = the reimbursement path proven + elevation-file evidence #1 + AB-620 unlocked.~~ → **A pass = evidence-file item #1, self-funded, and a Tier-3 line for the Q1 2027 applications.** AB-620 is **conditional** in the roadmap (Correction 37); you have elected to commit it as a **self-funded (~$165) extra-time thread** opening Week 9 — exam booked **after 9 Oct**, not before.
+
+> ⚠️ **EXAM-CONTENT CORRECTION — verify before you drill (checked against Microsoft Learn, Aug 2026).** AI-901 replaced the retired AI-900 on 30 June 2026 and is **not** an AI-900 reskin. The current exam is split into two areas: identifying AI concepts and responsibilities (~40–45%) and **implementing AI solutions using Microsoft Foundry (~55–60%)**, passing score **700**. Weeks 3–6 scheduled your Learn modules with AI-900-era labels ("AI workloads overview," "ML fundamentals concepts") — those map to the *smaller* half of the exam. **Re-weight this fortnight's drilling toward Foundry**: deploying models, building with the Foundry SDK, creating agents, and information extraction with Azure Content Understanding. Practice tests #2–3 that are AI-900-derived will over-report your readiness — score them, but weight the Foundry gaps heavier than the raw number suggests. Price is **$99**, self-funded; the credential does not expire.
 
 Also: Claude API course (tool use + prompt caching sections), **CS50P starts** (the testing/debugging rigor layer — and per Correction 20, your modern-Python idiom source), P4E Course 3 (web data: regex, JSON, APIs) begins.
 
@@ -54,16 +75,16 @@ Python:      regex (P4E C3 — Day 15's pain, relieved) · CS50P test discipline
 **Evening:**
 - [ ] 70 min — Scaffold the repo (you know this dance now — from memory, not notes):
 ```bash
-cd ~/dev && uv init datavault --python 3.12 && cd datavault
+cd ~/dev && uv init datavault --python 3.14 && cd datavault   # 3.14 floor — Correction 28
 mkdir -p src/datavault/{ingest,models,recon,rules} tests docs/adr data output
-uv add pydantic pydantic-settings structlog
-uv add --dev ruff pytest mypy
+uv add polars pydantic pydantic-settings structlog   # 🐻❄️ Polars = the default engine (Correction 35)
+uv add --dev ruff pytest mypy pre-commit             # 🪝 pre-commit — Correction 21
 touch src/datavault/py.typed        # marker file: "this package ships type info"
 ```
 Add `mypy` config to `pyproject.toml`:
 ```toml
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.14"
 strict = false              # honest start; ratchet to true as the code matures
 warn_unused_ignores = true
 disallow_untyped_defs = true   # every function signature MUST be typed — the
@@ -194,6 +215,42 @@ jobs:
 # externally verifiable production claim.
 ```
 Push, watch the Actions tab run, fix anything red until green. Then break it on purpose (push a lint error), watch it fail, revert. **Know both colors — same lesson as Week 2's tests.**
+- [ ] 25 min — 🪝 **pre-commit: the local half of the same gate** ⭐ · 🆕 **Correction 21**. CI is authoritative, but it catches defects at the *last* place anyone looks. Hooks catch them at the commit boundary. `.pre-commit-config.yaml`:
+
+```yaml
+# THE GOVERNING RULE (matters more than the tool): this hook set is a STRICT
+# SUBSET of the CI gate above. Nothing runs locally that CI does not also run.
+# Hooks and CI silently disagreeing is a portfolio defect an interviewer finds.
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0                      # PINNED — never floating
+    hooks:
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: check-yaml
+      - id: check-added-large-files
+      - id: detect-private-key       # commit-time enforcement of synthetic-data-only
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.8.4
+    hooks:
+      - id: ruff-check               # the hook id is ruff-check; the bare `ruff` id is retired
+        args: [--fix]
+      - id: ruff-format              # ORDER MATTERS: fixes can emit changes that need reformatting
+  - repo: https://github.com/astral-sh/uv-pre-commit
+    rev: 0.5.11
+    hooks:
+      - id: uv-lock                  # turns the Correction 13 reproducibility CLAIM into an
+                                     # enforced invariant — lockfile can never drift from pyproject
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.21.2
+    hooks:
+      - id: gitleaks                 # secret scanning
+```
+```bash
+uv run pre-commit install            # installs the git hook
+uv run pre-commit run --all-files    # first run is slow (it builds envs) — expected
+```
+> **Verify the rev pins against the current releases before committing** — pinned means pinned to something real, and these were current at roadmap-writing time, not necessarily today. Then prove the invariant: edit `pyproject.toml` to add a dependency, `git add` + commit, and watch `uv-lock` regenerate `uv.lock` and *block the commit* until you stage it. That block is the whole point.
 - [ ] 30 min — normalizer #1: `ingest/normalize_matrix.py` — Matrix CSV row → `CanonicalDistribution` (start it; finish Saturday)
 - [ ] 20 min — Journal + commit (`ci: blocking quality gates via github actions`)
 
@@ -216,7 +273,7 @@ Week summary · publish post #7 · plan Week 8 (exam week — front-load DataVau
 ```
 □ Box-7 rules engine v0 + exceptions report end-to-end (pipeline runs via CLI)
 □ AI-901: practice test #3 ≥85% → EXAM TAKEN (Fri/Sat)
-□ Reimbursement claim filed same day as pass · elevation file updated
+□ ~~Reimbursement claim filed same day as pass~~ ❌ VOID (C22/32/37) · **evidence file** updated
 □ CS50P Week 2 · P4E C3 continues · Post #8
 ```
 
@@ -296,13 +353,13 @@ Tests: one per rule (triggering + non-triggering record each).
 **Evening:** 45 min flashcards max · prep exam logistics (ID, quiet room if online-proctored, system check done TONIGHT not tomorrow) · early night.
 
 ### 📌 DAY 54 — Friday, September 11 · 🎯 **AI-901 EXAM** (or Sat slot)
-- [ ] Take the exam. Pass → **file the reimbursement claim the SAME DAY** (the program's proof-of-completion step), screenshot the score report, add both to the elevation file, and tell Jen the good news in writing (one line — it plants the seed for the Month-6 conversation).
-- [ ] Evening: celebrate properly. No study. 🎉 (If the attempt misses: the program covers two attempts — book the retake within 48h, log the gap areas, no spiral. The evidence layer doesn't care about attempt counts.)
+- [ ] Take the exam. Pass → screenshot the score report, save the Credly badge link, and add both to the **evidence file**. ~~file the reimbursement claim the SAME DAY~~ · ~~tell Jen the good news in writing (one line — it plants the seed for the Month-6 conversation)~~ → ❌ **both void (C22/32/37): the cert is self-funded and the Month-6 conversation cannot occur.** Instead: **draft the résumé line and the LinkedIn post the same day**, while the detail is fresh — that is where this credential now does its work, pointed at the **Q1 2027** applications.
+- [ ] Evening: celebrate properly. No study. 🎉 (If the attempt misses: ~~the program covers two attempts~~ — **there is no program; a retake is another $99 out of pocket.** Book it within 48h anyway, log the gap areas, no spiral. The evidence layer doesn't care about attempt counts — your wallet does, so use the free Microsoft practice assessment before rebooking.)
 
 ### 📌 DAY 55 — Saturday, September 12 (flex 5.5h)
 If exam was today: same protocol as Day 54. Otherwise:
 **Morning:** 120 min DataVault — corrections-analytics stub: aggregate rule findings by type × week (SQL window functions ON your own pipeline output — the Week 5 skill, deployed) · 60 min CS50P pset · 30 min buffer
-**Evening:** 60 min Claude API course · 45 min draft post #8 ("I passed my first cloud cert — here's how the employer-reimbursement play works" OR the rules-engine artifact) · journal + commit
+**Evening:** 60 min Claude API course · 45 min draft post #8 (~~"I passed my first cloud cert — here's how the employer-reimbursement play works"~~ ❌ that post is now false — use **the rules-engine artifact**, or "what a self-funded cert ladder actually costs and why I still bought this one") · journal + commit
 
 ### 📌 DAY 56 — Sunday, September 13 (2h)
 Week summary + **Month-2 retro** (hours honest, exam outcome, DataVault v0 state) · publish post #8 · read Weeks 9–10 plan **and make the Sprint-1 decision** (next section explains) · journal 🎉
@@ -312,8 +369,8 @@ Week summary + **Month-2 retro** (hours honest, exam outcome, DataVault v0 state
 ## 📊 2-WEEK SUCCESS METRICS
 ```
 □ datavault repo: scaffold + CI green      □ AI-901 TAKEN (pass or retake booked)
-□ Both generators, seeded + defect-logged  □ Reimbursement claim filed on pass
-□ Canonical model + validators tested      □ Elevation file: 3+ artifacts now
+□ Both generators, seeded + defect-logged  □ pre-commit installed + uv-lock invariant proven
+□ Canonical model + validators tested      □ Evidence file: 3+ artifacts now
 □ Both normalizers + quarantine path       □ CS50P Weeks 0–2 · P4E C3 ~60%
 □ Recon engine matches planted defects     □ Claude API course ~75%
 □ Box-7 rules engine, test per rule        □ Posts #7–8 · ADRs 0001–0002 (DV)
