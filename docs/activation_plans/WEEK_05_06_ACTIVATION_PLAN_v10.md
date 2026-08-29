@@ -1,9 +1,9 @@
 # 🚀 WEEKS 5–6 MASTER ACTIVATION PLAN (v10.0)
 ## The SDK Era Opens | August 17–30, 2026
 
-**Document Version:** 1.0
+**Document Version:** 1.1 (realigned to roadmap Corrections 21–43)
 **Covers:** Monday, August 17 – Sunday, August 30, 2026 (Stage 1 · Month 2 · Weeks 5–6)
-**Aligned To:** Career Roadmap v10.0, Corrections 1–20
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–43** · ⚠️ delta recorded below — **you are inside this fortnight now (Day 39 = Thu 27 Aug)**, so read the block before Friday.
 **Prerequisite:** Weeks 3–4 metrics ≥80% (non-negotiables: recon-toy shipped + AI-901 kickoff)
 **Weekly Hours:** 25 (same block schedule)
 
@@ -13,9 +13,24 @@
 
 ---
 
+---
+
+## 🔄 REALIGNMENT PASS — ROADMAP CORRECTIONS 21–43 (applied 27 Aug 2026)
+
+⏰ **You are mid-fortnight** — today is Day 39 (Thu 27 Aug). Three items below change what you do **this week**, not next quarter.
+
+1. **🔴 Day 33's exam booking is self-funded.** Corrections 22/32/37: **all certifications are self-funded**, no employer reimbursement applies, and the Month-6 scope conversation is closed (**employment ends 9 Oct 2026**). Book AI-901 and pay the **$99** yourself. Check for a voucher first (Correction 38 notes Cloud Skills Challenge / virtual training day vouchers recur).
+2. **🐍 The Day 34 Dockerfile now says `python:3.14-slim`** — Correction 28 pins **Python 3.14** as the floor, standard GIL build only (never `python3.14t`). If you already built the recon-toy image on 3.12, rebuild it on 3.14 when you do retrofit item **R2**; the two-stage pattern and the `--frozen` idiom are unchanged.
+3. **✅ Python 3.14 retrofit is APPROVED and scheduled Day 41 (Sat 29 Aug)** — both `learning-journey` and `recon-toy`, before DataVault scaffolds on 3.14 on Day 43. Full command block is inline at Day 41.
+4. **🪝 Add pre-commit to `recon-toy` before the Day 34 Docker block** — ~20 minutes, and it belongs in the same session as the Dockerfile because both are "the build is reproducible" claims. Tier A pinned set: `pre-commit-hooks` basics + `detect-private-key` · `ruff-check --fix` **ordered before** `ruff-format` (the linter's fixes can emit changes that then need reformatting; the hook id is `ruff-check`, not the retired bare `ruff`) · `uv-lock` (this is what turns your Correction 13 reproducibility claim from an assertion into an enforced invariant) · `gitleaks`. **The set must be a strict subset of CI** — never a local check that CI does not also run, because hooks and CI silently disagreeing is exactly the defect an interviewer finds.
+
+**Not urgent this fortnight, but now standing policy:** Polars is the default dataframe engine (C35) · Cursor moves to Hobby, OpenCode is the sole harness (C39/40) · the reading layer is live and you are in S1, so *Robust Python* and *AI Engineering* are buy-now (C34) · PostCheck is Flagship #4 (C33).
+
+---
+
 ## 📊 WHERE YOU STAND
 
-Environment complete, recon-toy shipped (pipeline + CLI + structlog + ADR 0001), P4E Courses 1–2 done, Mode SQL through aggregation, Docker ~50%, AI-901 underway with reimbursement filed. This fortnight: **your code starts talking to Claude**, and recon-toy earns its Dockerfile.
+Environment complete, recon-toy shipped (pipeline + CLI + structlog + ADR 0001), P4E Courses 1–2 done, Mode SQL through aggregation, Docker ~50%, AI-901 underway (~~with reimbursement filed~~ → **self-funded, $99** — C22/32/37). This fortnight: **your code starts talking to Claude**, and recon-toy earns its Dockerfile.
 
 ## 🧠 STRATEGIC CONTEXT
 
@@ -178,7 +193,7 @@ Refactor Days 29–30 scripts to use it. Then prove the mask: `print(settings)` 
 **Morning:** Docker for Beginners — final sections → **course COMPLETE**.
 **Evening:**
 - [ ] 50 min — AI-901 Learn module 4
-- [ ] 30 min — **Book the AI-901 exam** for Week 8 (target Fri Sep 11 or Sat Sep 12 slot; Pearson VUE online or center). Booked = committed. Add to elevation file.
+- [ ] 30 min — **Book the AI-901 exam** for Week 8 (target Fri Sep 11 or Sat Sep 12 slot; Pearson VUE online or center). Booked = committed. **Pay it yourself — $99, self-funded (C22/32/37); there is no pre-approval and no claim.** ⚠️ Verify the price at checkout: Correction 38 records that Microsoft voucher programs recur through Cloud Skills Challenges and virtual training days — check before paying full price. Add to the **evidence file**.
 - [ ] 20 min — Claude API course lesson
 - [ ] 20 min — Journal + commit
 
@@ -190,7 +205,7 @@ Refactor Days 29–30 scripts to use it. Then prove the mask: `print(settings)` 
 # Dockerfile — recon-toy
 # Two-stage pattern: tiny, reproducible, exactly what uv.lock says.
 
-FROM python:3.12-slim AS base
+FROM python:3.14-slim AS base
 
 # Install uv inside the image by copying its binary from Astral's image —
 # faster and more reproducible than curl-piping an installer at build time.
@@ -399,7 +414,35 @@ def test_non_json_rejected(mock_cls):
   - structlog events per document (tokens in/out, validation pass/fail); settings via pydantic-settings; failures logged and skipped, never crashing the batch
   - Report written to `output/` · 6+ mocked tests · ruff clean · README section in ①Production/③Architecture order (Cost omitted honestly — or included if you note real token costs: your call, defend it in the ADR)
   - ADR 0003: one real decision you made and its trade-off
-- [ ] 30 min — Buffer / finish
+- [ ] 30 min — ✅ **PYTHON 3.14 RETROFIT** (approved 27 Aug) ⭐ · 🆕 **Correction 28**. Do it today, before DataVault scaffolds on 3.14 on Day 43 — two repos on two interpreters is exactly the drift the single-source rule exists to prevent.
+
+```bash
+# Do this in BOTH repos: learning-journey and recon-toy
+uv python install 3.14        # standard GIL build. NEVER python3.14t (Correction 28)
+cd ~/dev/learning-journey
+uv python pin 3.14            # rewrites .python-version
+```
+Then edit `pyproject.toml` — **`requires-python` is the single source; four consumers read from it:**
+```toml
+[project]
+requires-python = ">=3.14"     # ← THE single declaration
+
+[tool.ruff]
+target-version = "py314"       # consumer 1
+
+[tool.mypy]
+python_version = "3.14"        # consumer 2
+```
+```bash
+# consumer 3: Dockerfile   -> FROM python:3.14-slim AS base
+# consumer 4: CI matrix    -> python-version: "3.14"  (if pinned explicitly)
+rm -rf .venv && uv sync        # rebuild the env against the new floor
+uv run pytest && uv run mypy src/ && uv run ruff check .
+git commit -m "build: raise python floor 3.12 -> 3.14 (roadmap correction 28)"
+```
+> **Why a mismatch is a CI failure, not a lint warning.** Correction 28 makes `requires-python` authoritative and the other four sites *derived*. If ruff targets py312 while the interpreter is 3.14, ruff will happily pass code that the runtime treats differently — a green build that proves nothing. Same one-source-no-drift discipline as `uv.lock` under the pre-commit `uv-lock` hook, and as Structurizr→Mermaid under Correction 14.
+> **Why 3.14 and not 3.13 or 3.15:** 3.12 went security-only around Oct 2025 (no bug fixes — every non-security defect becomes yours to work around); 3.13's bug-fix window closes ~Oct 2026, two months out, so it is a dead end rather than a safe middle; 3.15 ships Oct 2026 and is **explicitly not adopted on release**. Falsifier: raise the floor only when a named dependency in a committed lockfile requires it, or when 3.14 leaves security support — never to chase a release.
+> ⚠️ **Banked for Stage 2:** Airflow's 3.14 constraint files are reported out of sync between the published Docker image and pip/uv. Documented workaround — fall back to `constraints-3.13.txt` **for the Airflow service only**. That is a constraint-file selection, not a second Python version; the interpreter stays 3.14.
 
 **Evening:** 60 min Claude API course · 45 min draft post #6 (finance→tech bridge: "I taught an AI to summarize plan documents — and taught my tests not to trust it") · 15 min journal + commit
 
@@ -416,6 +459,7 @@ Week summary · publish post #6 · **AI Prompting videos done → log as Tier-5 
 □ SecretStr masking proven                 □ AI Prompting videos done (Tier 5 log)
 □ 8+ mocked tests, zero live-API tests     □ AI-901 exam BOOKED + practice test #1
 □ Mini-project #3 shipped                  □ Posts #5–6 · 24+ commits · rules file
+□ ✅ Python 3.14 retrofit: both repos green  □ pre-commit on recon-toy
                                              at Phase 3 · Tab re-enabled
 ```
 **Passing bar: 80%.** Non-negotiables: mini-project #3 (the SDK-fluency proof) and the booked AI-901 exam.
@@ -423,7 +467,7 @@ Week summary · publish post #6 · **AI Prompting videos done → log as Tier-5 
 ---
 
 ## 🔭 WHAT COMES NEXT
-**Weeks 7–8 (Aug 31 – Sep 13): the flagship era opens.** DataVault S1 v0 gets its own production-scaffolded repo — synthetic Matrix/Relius-shaped generators, a pydantic canonical model, recon engine, Box-7 rules skeleton — plus your first **CI pipeline** (GitHub Actions running ruff + pytest as a blocking gate). Claude API course reaches tool use + prompt caching. CS50P starts. And Week 8 ends with the **AI-901 exam** — elevation-file evidence #1.
+**Weeks 7–8 (Aug 31 – Sep 13): the flagship era opens.** DataVault S1 v0 gets its own production-scaffolded repo — synthetic Matrix/Relius-shaped generators, a pydantic canonical model, recon engine, Box-7 rules skeleton — plus your first **CI pipeline** (GitHub Actions running ruff + pytest as a blocking gate). Claude API course reaches tool use + prompt caching. CS50P starts. And Week 8 ends with the **AI-901 exam** — **evidence-file item #1** (self-funded, $99).
 
 ---
 *Aligned to Career Roadmap v10.0 (Corrections 1–20). No roadmap edits made; propose→approve governance applies.*
