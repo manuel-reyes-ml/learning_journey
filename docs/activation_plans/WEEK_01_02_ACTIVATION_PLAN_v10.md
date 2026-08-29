@@ -1,13 +1,50 @@
 # 🚀 WEEKS 1–2 MASTER ACTIVATION PLAN (v10.0)
 ## Internal AI Builder Track | Starting Monday, July 20, 2026
 
-**Document Version:** 2.2 (realigned to roadmap Corrections 13–20: uv official + uv.lock, DL.AI Pro-tier ruling, ADR learning pack, credential ladder)
+**Document Version:** 2.3 (realigned to roadmap Corrections 21–43 — see the Realignment Pass block below)
 **Covers:** Monday, July 20 – Sunday, August 2, 2026 (Stage 1 · Month 1 · Weeks 1–2)
-**Aligned To:** Career Roadmap v10.0, Corrections 1–20 — Stage 1: Internal AI Builder (Months 1–8)
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–43** — Stage 1: Internal AI Builder (Months 1–8) · ⚠️ Corrections 21–43 landed after this plan was written; the delta is recorded in the Realignment Pass block below.
 **Weekly Hours:** 25 (Mon–Fri 4:30–6:00 AM + 8:00–10:00 PM · Sat 5:00–8:30 AM + 8:00–10:00 PM · Sun 7:30–9:30 PM)
 **Your Level:** Beginning the tech build from scratch — 15+ years business ops, 2 years ERISA-regulated financial operations, 5+ years trading
 
 > **How to use the code in this plan:** TYPE every example yourself — never copy/paste, and never let Cursor Tab or an agent complete it (Tab stays OFF these two weeks; the Agent Policy section below governs the rest). Typing is how syntax enters your fingers. Read the comments (lines starting with `#`) as you type; they carry the "why." Then run the file, break it on purpose, and fix it. When you're confused, that's what Cursor **Ask** mode is for: paste YOUR code, ask WHY — the agent explains, you type. That loop — type → run → break → ask → fix — is how programmers who can later *supervise agents* are made. This is the roadmap's "no vibe coding" rule: every line understood before it's committed.
+
+---
+
+---
+
+## 🔄 REALIGNMENT PASS — ROADMAP CORRECTIONS 21–43 (applied 27 Aug 2026)
+
+This plan was frozen against Corrections 1–20. The roadmap now stands at **Correction 43** — twenty-three corrections landed afterwards. **Weeks 1–2 are already executed**, so the daily instructions below are left standing as the historical record; nothing is rewritten after the fact. What changed is recorded here, and what needs fixing in the repos this fortnight created is listed as a retrofit backlog.
+
+**Superseded premises** (struck through in place below, per Correction 32's preserve-and-append pattern):
+
+| Was | Now | Correction |
+|---|---|---|
+| Stage 1 exit = internal elevation at the employer | Stage 1 exits on an **evidence gate** (DataVault S2 hardening). Employment ends **9 Oct 2026**; external **AE-first / DE-parallel** search is the primary path, apply window **Q1 2027** | 22, 32 |
+| Certifications employer-reimbursed | **All certifications self-funded.** No employer reimbursement applies to any credential in the canon | 22, 32, 37 |
+| Cursor Agents + OpenCode (dual agents) | ⚠️ **Roadmap C39 says "OpenCode sole harness." Your actual setup is a DUAL HARNESS: OpenCode inside Cursor + Claude Code inside VS Code.** These plans follow your setup; **the roadmap is the document that is now stale** and needs a correction — see the harness note below | 39 → **superseded in practice** |
+| Cursor Pro $20/mo | **Cursor Hobby ($0)**, provisional with a falsifier | 40 |
+| Python 3.12 | **Python 3.14**, standard GIL build only (never `python3.14t`) | 27→28 |
+| Dataframe engine unnamed | **Polars is the default** for new pipeline code; pandas retained at two named boundaries only | 35 |
+| pre-commit absent | **pre-commit is a named production-standard tool**, pinned, a strict subset of CI | 21 |
+| No reading layer | **Reading list is a governed layer.** S1: *Robust Python* (Viafore), *AI Engineering* (Huyen), *Python Testing with pytest 2e* (Okken), *Fluent Python 2e* (owned). Buy at stage entry, never upfront | 34 |
+| 3 flagships | **4 flagships** — PostCheck added as the dual-target artifact | 33 |
+
+### 🔧 RETROFIT BACKLOG — what this fortnight built, and what now needs fixing
+
+| # | Item | Correction | Est. | Status |
+|---|---|---|---|---|
+| **R1** | `learning-journey`: add `.pre-commit-config.yaml` (Tier A: `pre-commit-hooks` basics + `detect-private-key` · `ruff-check --fix` **before** `ruff-format` · `uv-lock` · `gitleaks`; Tier B: `nbstripout` — it is a notebook-bearing repo), then `pre-commit install`. Governing rule: **the hook set is a strict subset of CI — no local check that does not also run in CI.** | 21 | ~40 min | ⬜ |
+| **R2** | Re-pin **3.12 → 3.14** in `learning-journey` and `recon-toy`: `requires-python = ">=3.14"` in `pyproject.toml` (the single source), then the four consumers — ruff `target-version = "py314"`, mypy `python_version = "3.14"`, Dockerfile base image, CI matrix. A mismatch is a **CI failure**, not a lint warning. | 28 | ~30 min | ✅ **APPROVED** — scheduled **Day 41 (Sat 29 Aug)**, Weeks 5–6 |
+| **R3** | Cursor: downgrade **Pro → Hobby**. Verify OpenCode still launches from the integrated terminal (detection is via terminal env vars — an external terminal will not work). | 40 | ~5 min | ⬜ |
+| **R4** | Rename `elevation file` → **`evidence file`** across your local notes. Its audience changed: it is no longer an exhibit for an internal scope conversation, it is the STAR-story and artifact bank for the **Q1 2027** external interviews. | 22, 32 | ~10 min | ⬜ |
+| **R5** | Buy the S1 books **now** (you are in S1): *Robust Python* + *AI Engineering*. *Python Testing with pytest 2e* is secondary; *Fluent Python 2e* you already own. Re-verify editions at purchase. | 34 | — | ⬜ |
+| **R6** | **Google — Introduction to Git and GitHub** (Stage 1 row 3️⃣.5, ~8 hrs committed) | 29→31 | ~8 hrs | ✅ **APPROVED for Stage 1**, run as an **extra-time thread** (outside the 25) from **Week 9**, ~2 hrs/wk · see Weeks 9–10 |
+
+> ⏱️ **On "extra time" (R6, and AB-620 in Weeks 9–10).** You've elected to run the Google Git course and AB-620 *outside* the 25 hrs/week. Recorded, with one honest caveat: the roadmap's hours model is frozen at 25 for a reason — 4:30 AM five days a week plus a 5.5-hour Saturday is already near the sustainable ceiling, and the Week-12 retro has a **SUSTAINABILITY** line specifically to catch this. Two mitigations built in: (a) both extra-time threads are **~2 hrs/week, capped**, not open-ended; (b) capacity genuinely increases after **9 Oct 2026**, when the job ends — so if either thread slips before then, **move it past Day 82 rather than stealing from the 25**. Falsifier: if the Week-12 retro shows actual hours above ~29/week or the 4:30 AM trend degrading, the extra-time threads pause, not the flagships.
+
+> **Why R1 is first.** Correction 21's trigger was that every quality rule was declared and CI-enforced, but **nothing enforced anything at the commit boundary** — so the first place a defect could be caught was the last place anyone looked. `detect-private-key` and `gitleaks` are also the commit-time enforcement of your synthetic-data-only rule, and `nbstripout` extends the Correction 16 PII choke point from the logging boundary to the git boundary. On a repo that will hold ERISA-adjacent work, that is the demonstrable form of the discipline, not a convenience.
 
 ---
 
@@ -21,8 +58,8 @@ The previous activation plans were aligned to Roadmap **v8.3** (GenAI Data Analy
 | HackerRank badge grinding | ❌ Removed | Correction 7: badges ≠ credentials; <16% of hiring managers rank certs top-3 |
 | SQLZoo tutorials | ❌ Removed | Correction 7: redundant with Mode SQL Tutorial + daily project SQL |
 | Kaggle | ❌ Removed | Correction 7: competition portfolios read as academic — antithesis of the real-deployed-system thesis |
-| "Data Analyst" job tracker in Week 1 | ❌ Removed | v10.0: NO external analyst search, ever. Stage 1 exit = internal elevation |
-| Editor unspecified agent policy | **Cursor (primary, with Cursor Agents) + OpenCode agents · VS Code secondary** | Your stated workflow: build with agents while understanding every script and line — governed by the graduated agent policy below, which operationalizes the roadmap's no-vibe-coding + diff-review-before-merge rules |
+| "Data Analyst" job tracker in Week 1 | ❌ Removed | v10.0: NO external *analyst* search, ever. ~~Stage 1 exit = internal elevation~~ → **Correction 22**: Stage 1 exits on an **evidence gate** (DataVault S2 hardening). The external **Analytics Engineer (first door) / Data Engineer (parallel)** search is now the primary path, apply window **Q1 2027**. |
+| Editor unspecified agent policy | **Dual harness: Cursor (Hobby) + OpenCode · VS Code + Claude Code**, both under one portable `AGENTS.md` — ~~Cursor Agents~~ retired; tier re-set to Hobby by **Correction 40** | Your stated workflow: build with agents while understanding every script and line — governed by the graduated agent policy below, which operationalizes the roadmap's no-vibe-coding + diff-review-before-merge rules |
 | pip + requirements.txt | **uv + pyproject.toml + committed uv.lock** | 🆕 Correction 13 makes uv the OFFICIAL default across every project (Stage 1 Core Course #15); uv.lock now sits in the non-negotiable production standard; requirements.txt banned everywhere |
 | 37-month / 5-stage framing | **32-month / 3-stage** | v10.0 structural restructure |
 
@@ -60,7 +97,7 @@ You are training an **Internal AI Builder → AI-Focused Data Engineer → Appli
 
 - **Evidence over credentials** — every study session ends with a commit; your GitHub is the resume.
 - **Production-grade from the start** — even Week 1 practice code lives in a `pyproject.toml` + `src/` repo with ruff and Conventional Commits.
-- **No vibe coding — with agents in the loop.** You build WITH Cursor Agents and OpenCode, but the roadmap's rule is absolute: every line understood before merge, diff reviewed file-by-file. In Weeks 1–4 that means a *graduated* agent policy (see the Agent Policy section below): agents explain and review while YOU type the foundations — because the fundamentals you're installing this month are exactly what lets you supervise agents credibly for the next 32 months.
+- **No vibe coding — with agents in the loop.** You build WITH OpenCode (in Cursor) and Claude Code (in VS Code), but the roadmap's rule is absolute: every line understood before merge, diff reviewed file-by-file. In Weeks 1–4 that means a *graduated* agent policy (see the Agent Policy section below): agents explain and review while YOU type the foundations — because the fundamentals you're installing this month are exactly what lets you supervise agents credibly for the next 32 months.
 
 ### Your moat
 
@@ -72,11 +109,15 @@ PolicyPulse, DataVault, and Crucible S1 cores start once foundations exist (~Wee
 
 ---
 
-### 🤖 THE AGENT POLICY (Weeks 1–4) — how to use Cursor Agents & OpenCode without vibe coding
+### 🤖 THE AGENT POLICY (Weeks 1–4) — how to use your harnesses without vibe coding
+
+> 🔄 **Harness update (your ruling, 27 Aug 2026):** where this section says "Cursor Agent," read **OpenCode (in Cursor) or Claude Code (in VS Code)**. Cursor's own agent is retired from the stack (Correction 40 → Hobby tier); the two harnesses you actually run are OpenCode and Claude Code. The policy below is unchanged in substance and applies **identically to both** — a dual harness doubles the surface the no-vibe-coding rule has to cover, it does not relax it.
+>
+> ⚠️ **Roadmap divergence, logged:** Correction 39 rules OpenCode the *sole* harness and Claude Code *evaluated and declined*. Your live setup contradicts it. Until the roadmap records a correction, **these plans are the accurate document and `roadmap.html` is the stale one** — which is the exact inversion the correction system exists to prevent. See the Q2 note in Weeks 11–12.
 
 Your workflow is agent-driven, and that's the right long-term call — your roadmap's own harness pattern (`.cursor/rules/`, OpenCode agents) assumes it. But there's a hard truth about Month 1: **you cannot review what you cannot write.** The roadmap's no-vibe-coding rule ("every line understood before merge") is only enforceable by someone whose fingers know the syntax. So the policy ramps:
 
-| Phase | You | Agents (Cursor Agent / OpenCode) |
+| Phase | You | Agents (OpenCode · Claude Code) |
 |---|---|---|
 | **Weeks 1–2 (foundations)** | TYPE every example and exercise yourself | **Tutor mode only**: explain concepts, explain YOUR code back to you, explain error messages, answer "why" questions. Never generate exercise solutions — if an agent writes your first for-loop, you didn't learn for-loops. |
 | **Weeks 3–4 (first pipeline)** | Type all core logic (matching rules, SQL, tests) | Tutor mode + **boilerplate under review**: agents may draft mechanical scaffolding (a CSV-writer block, an argparse skeleton) — then you read the diff line-by-line, ask the agent to explain anything unclear, and only accept when you could have written it yourself. Reject anything you can't explain. |
@@ -154,8 +195,11 @@ brew --version
 curl -LsSf https://astral.sh/uv/install.sh | sh
 # Quit and reopen Terminal, then:
 uv --version
-uv python install 3.12      # downloads & installs Python 3.12
-uv python list              # confirm 3.12 appears in the list
+uv python install 3.14      # downloads & installs Python 3.14 — the OFFICIAL floor (Correction 28)
+uv python list              # confirm 3.14 appears in the list
+# ⚠️ Standard GIL build ONLY. Never `python3.14t` (free-threaded) — Correction 28
+#    rules it out: that is where the C-extension wheel breakage lives, and this
+#    portfolio has no CPU-bound multicore workload that would benefit.
 ```
 > **Concept — why "environments" matter:** two projects may need different library versions. uv gives each project its own private set (a "virtual environment" in `.venv/`), so projects never contaminate each other. You'll never think about this — `uv run` handles it — but you should know *why* it exists: reproducibility, the first production virtue.
 >
@@ -166,7 +210,7 @@ uv python list              # confirm 3.12 appears in the list
 ### Step 4 — Cursor (primary) + VS Code (secondary) + OpenCode (~30 min) ⭐ YOUR EDITOR + AGENT STACK
 
 **4a. Cursor — your primary editor.** Cursor is a fork of VS Code with AI agents built in, so everything VS Code does (extensions, settings, keybindings) works identically — you're not learning two editors.
-1. Download https://cursor.com → drag to Applications → open → sign in ($20/mo Pro when the free tier runs out; treat it as a committed tool cost).
+1. Download https://cursor.com → drag to Applications → open → sign in. **Stay on Hobby ($0)** — **Correction 40** re-tiers Cursor Pro → Hobby: the agentic capacity lives in OpenCode, and Pro exists to buy agent requests you are now buying twice. Hobby keeps the full editor, extensions, git integration and the integrated terminal that hosts OpenCode; what it throttles is inline Tab autocomplete — which is OFF for Weeks 1–2 anyway. ⚠️ Correction 40 also records that Pro was never a flat $20: it is ~$20 of metered agent usage, a floor rather than a ceiling. Falsifier for upgrading: Hobby Tab-throttling *measurably* blocks work, on recorded evidence, not discomfort.
 2. ⌘+Shift+P → "Shell Command: Install 'cursor' command" (lets you type `cursor .` in Terminal).
 3. Extensions (⌘+Shift+X — Cursor uses the same marketplace):
 ```
@@ -179,7 +223,11 @@ uv python list              # confirm 3.12 appears in the list
 >
 > **Know your three Cursor modes** (⌘+L opens the panel): **Ask** = chat about code without changing it (your Weeks 1–2 tutor mode); **Agent** = it edits files and runs commands (gated by the policy above — Weeks 3–4 boilerplate only, under diff review); **Tab** = inline autocomplete — **turn Tab OFF for Weeks 1–2** (Settings → Cursor Tab → disable): autocomplete finishing your for-loops defeats the typing reps. Re-enable it Week 5.
 
-**4b. VS Code — secondary.** Install from https://code.visualstudio.com (same extensions auto-sync if you enable Settings Sync). It's your agent-free fallback: if you ever wonder "can I still do this without the agent?", open VS Code and find out. That check is a feature.
+**4b. VS Code — second harness (NOT a fallback).** Install from https://code.visualstudio.com (same extensions auto-sync if you enable Settings Sync). ~~It's your agent-free fallback~~ → 🔄 **REVISED:** VS Code now hosts **Claude Code**, so it is a second *agentic* workstation, not an agent-free one.
+
+> ⚠️ **What this costs you, and how to get it back.** The original design gave VS Code a real job: *"can I still do this without the agent?"* — an honest, unfakeable check on comprehension debt. With Claude Code in VS Code, **no agent-free surface remains in your stack**, and the no-vibe-coding rule loses its only mechanical enforcement. Replace it deliberately: **one agent-free hour per week** (suggest the Sunday block — both harnesses closed, write something small from memory). Log it in the journal. If you can't, that *is* the comprehension-debt signal the check existed to catch.
+
+> 🗺️ **Harness division of labour (your ruling, 27 Aug 2026).** **OpenCode in Cursor** = the in-editor agent, buffer-local work, the `.cursor/rules/*.mdc` surface. **Claude Code in VS Code** = the second harness. Both read one portable **`AGENTS.md`** contract so the rules live once, not twice. ⚠️ Claude Code has **no native import for subagent files**, so its agent definitions must be *generated* from the shared source (`scripts/build_claude_agents.py`) rather than hand-maintained — otherwise the two harnesses drift, which is the same silent-disagreement defect Correction 21 forbids between hooks and CI. **Write the generator once, in Q2, and treat drift between harnesses as a build failure.**
 
 **4c. OpenCode — terminal agent harness.**
 ```bash
@@ -236,11 +284,11 @@ docker --version
 ```bash
 mkdir -p ~/dev                       # mkdir = make directory; -p = create parents if needed; ~ = your home folder
 cd ~/dev                             # cd = change directory ("go into this folder")
-uv init learning-journey --python 3.12   # scaffolds a project: pyproject.toml, .python-version, README
+uv init learning-journey --python 3.14   # scaffolds a project: pyproject.toml, .python-version, README
 cd learning-journey
 mkdir -p src/learning_journey notebooks journal weekly-summaries sql tests
 ```
-> **What `uv init` just gave you:** `pyproject.toml` (the single config file describing your project + dependencies — the modern standard) and `.python-version` (pins Python 3.12 for this project, so it behaves the same on any machine). The `src/` folder is where real code lives — the professional layout your roadmap standard requires, from literally your first repo.
+> **What `uv init` just gave you:** `pyproject.toml` (the single config file describing your project + dependencies — the modern standard) and `.python-version` (pins Python 3.14 for this project, so it behaves the same on any machine). The `src/` folder is where real code lives — the professional layout your roadmap standard requires, from literally your first repo.
 
 Open it (`code .`), replace `README.md` contents:
 ```markdown
@@ -249,7 +297,7 @@ Open it (`code .`), replace `README.md` contents:
 Daily practice, notes, and weekly summaries from my structured career
 transition (Roadmap v10.0 · Stage 1: Internal AI Builder).
 
-- **Stack:** Python 3.12 · uv · ruff · Cursor (+ Agents) · OpenCode · VS Code · Jupyter
+- **Stack:** Python 3.14 · uv · ruff · pre-commit · Cursor (Hobby) + OpenCode · VS Code + Claude Code · shared `AGENTS.md` · Jupyter
 - **Standard:** pyproject.toml + src/ layout · Conventional Commits · no vibe coding
 - **Cadence:** 25 hrs/week · started July 20, 2026
 ```
@@ -1019,7 +1067,7 @@ TECHNICAL                                  HABITS & DISTRIBUTION
 
 ## 🔭 WHAT COMES NEXT
 
-**Weeks 3–4 (Aug 3–16):** P4E Course 2 (data structures — the real workhorse), Mode SQL Intermediate (JOINs — the ~79%-of-DE-postings skill), *AI Python for Beginners* videos on the free tier with exercises replicated locally (labs are Pro-gated — Correction 17), Docker begins, your **first ADR** using the roadmap's new ADR learning pack (Correction 14), a first taste of **structlog** (Correction 16), and **AI-901 kickoff** (employer-reimbursed cert #1 + reimbursement paper trail = elevation-file evidence), plus mini-project #2: a two-system reconciliation toy that is deliberately DataVault's S1 pattern in miniature.
+**Weeks 3–4 (Aug 3–16):** P4E Course 2 (data structures — the real workhorse), Mode SQL Intermediate (JOINs — the ~79%-of-DE-postings skill), *AI Python for Beginners* videos on the free tier with exercises replicated locally (labs are Pro-gated — Correction 17), Docker begins, your **first ADR** using the roadmap's new ADR learning pack (Correction 14), a first taste of **structlog** (Correction 16), and **AI-901 kickoff** (~~employer-reimbursed cert #1 + reimbursement paper trail~~ → **self-funded, $99** — C22/32/37 — = evidence-file item #1), plus mini-project #2: a two-system reconciliation toy that is deliberately DataVault's S1 pattern in miniature.
 
 ---
 *Aligned to Career Roadmap v10.0 (Corrections 1–20). Propose→approve governance: this plan edits nothing; items flagged for review are in Day 5 and the Step-7 checkpoint.*
