@@ -57,6 +57,7 @@ your-repo/
 ├── Makefile                     ← add 3 targets (Step 6)
 ├── .gitignore                   ← add 2 lines (Step 2)
 ├── .pre-commit-config.yaml      ← add 1 hook (Step 7)
+├── opencode.jsonc               ← unchanged, don't touch it. Lives at ROOT.
 │
 ├── .cursor/rules/*.mdc          ← unchanged. Your coding standards.
 │
@@ -75,7 +76,6 @@ your-repo/
 │   └── build_claude_agents.py   ← NEW. Writes .claude/agents/ from the prompts.
 │
 ├── .opencode/                   ← REPLACED with thin versions
-│   ├── opencode.jsonc           ← unchanged, don't touch it
 │   ├── agent/    (6 files)      ← now ~20 lines each instead of ~90
 │   └── command/  (9 files)      ← now ~8 lines each instead of ~60
 │
