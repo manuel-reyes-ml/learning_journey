@@ -1,9 +1,9 @@
 # 🚀 WEEKS 3–4 MASTER ACTIVATION PLAN (v10.0)
 ## Internal AI Builder Track | August 3–16, 2026
 
-**Document Version:** 2.2 (realigned to roadmap Corrections 13–20: DL.AI Pro-tier ruling, ADR learning pack + Nygard template, structlog first touch, RPF written-determination ask)
+**Document Version:** 2.3 (realigned to roadmap Corrections 21–43 — see the Realignment Pass block below)
 **Covers:** Monday, August 3 – Sunday, August 16, 2026 (Stage 1 · Month 1 → 2 · Weeks 3–4)
-**Aligned To:** Career Roadmap v10.0, Corrections 1–20
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–43** · ⚠️ Corrections 21–43 post-date this plan; delta recorded below.
 **Prerequisite:** Weeks 1–2 metrics ≥80% (below that: close gaps in this fortnight's flex slots first)
 **Weekly Hours:** 25 (same block schedule)
 
@@ -21,6 +21,21 @@
 
 ---
 
+---
+
+## 🔄 REALIGNMENT PASS — ROADMAP CORRECTIONS 21–43 (applied 27 Aug 2026)
+
+Frozen against Corrections 1–20; the roadmap now stands at **Correction 43**. **Weeks 3–4 are already executed** — daily instructions stand as the record. The delta that matters for this fortnight:
+
+- **🔴 The reimbursement thread in this plan is void.** Corrections 22, 32 and 37 rule **every certification self-funded** — no employer reimbursement applies to any credential in the canon — and Correction 22 closes the Month-6 scope-change conversation entirely (**employment ends 9 Oct 2026**). Every "pre-approval," "claim filed" and "reimbursement" task in this fortnight is struck below. AI-901 is a **$99 self-funded purchase**.
+- **⚠️ AB-620 is now conditional** (Correction 37), not an automatic cert #2. It is committed only if the Microsoft-ecosystem specialization decision goes that way — at ~$165, self-funded.
+- **🐍 Python 3.14** is the floor (Correction 28), standard GIL build only. The `python:3.12-slim` Docker examples below are corrected in place; see Weeks 1–2 retrofit item **R2** for the repo re-pin.
+- **🪝 pre-commit** is now a named production-standard tool (Correction 21) — it belongs on `recon-toy` too, not just `learning-journey`. Same Tier A set; `recon-toy` gets Tier B `nbstripout` only if it carries notebooks.
+- **📐 ADR 0001 stands.** Correction 14's C4 + ADR standard is unchanged by anything in 21–43; what this fortnight built is still correct.
+- **🐻‍❄️ Polars** (Correction 35): the roadmap now names a default dataframe engine. It does not touch this fortnight — `recon-toy` is dict/stdlib work — but from DataVault onward, **Polars is the default for ingestion and bulk transforms**, with pandas retained at exactly two named boundaries (writing into an existing `.xlsx` template via openpyxl, and hand-off to matplotlib/plotly/scikit-learn/PandasAI).
+
+---
+
 ## 📊 WHERE YOU STAND AFTER WEEK 2
 
 You have: a 2026-standard environment (uv + Cursor/OpenCode + VS Code + ruff + pytest), P4E Course 1 done, CS50x Weeks 0–3 in motion, Mode SQL basics, a typed + tested `retirement.py` module, mini-project #1 shipped, 2 public posts, and a two-week commit streak. The engine works. This fortnight adds the payload.
@@ -35,13 +50,15 @@ You have: a 2026-standard environment (uv + Cursor/OpenCode + VS Code + ruff + p
 
 ### 🤖 Agent policy — Phase 2 unlocks this fortnight
 
-Per the Weeks 1–2 Agent Policy, you now graduate from tutor-mode-only to **boilerplate under review**: Cursor Agent (or OpenCode) may draft mechanical scaffolding *when you explicitly ask* — CSV-writer blocks, the argparse skeleton on Day 27 — but never the core logic. The matching rules, the SQL, the tolerance policy, every test, and ADR 0001 are typed by you: they encode YOUR understanding of the business, which is the entire portfolio thesis.
+Per the Weeks 1–2 Agent Policy, you now graduate from tutor-mode-only to **boilerplate under review**: OpenCode (Cursor) or Claude Code (VS Code) may draft mechanical scaffolding *when you explicitly ask* — CSV-writer blocks, the argparse skeleton on Day 27 — but never the core logic. The matching rules, the SQL, the tolerance policy, every test, and ADR 0001 are typed by you: they encode YOUR understanding of the business, which is the entire portfolio thesis.
 
 **The discipline when an agent drafts something:** read the diff line-by-line in Cursor's review pane → ask it to explain any line you can't explain yourself → pass the explain-back test → accept or reject per line. Update `.cursor/rules/learning-phase.mdc` on Day 22 to reflect Phase 2 (change is one line: the Weeks 3–4 exception is now active — a nice first rules-file edit). One good weekly rep: after finishing a script yourself, ask the Agent to *review* it against your production standard (type hints? docstrings? boundary validation?) and judge whether its critiques are right — reviewing the reviewer is the skill FDE work runs on. Cursor Tab may come back ON from Week 5, not yet.
 
-### AI-901 kickoff = the elevation engine starts
+### AI-901 kickoff = the evidence engine starts
 
-Week 4 opens **Azure AI Fundamentals (AI-901)** study — employer-reimbursed cert #1. Per the roadmap, every cert doubles as evidence for the Month-6 scope-change conversation with Jen. **Action this fortnight: submit the reimbursement pre-approval** through the Financial Industry Professional Education Program — the paper trail starts now.
+Week 4 opens **Azure AI Fundamentals (AI-901)** study — **self-funded, $99** (Microsoft Fundamentals tier). ~~employer-reimbursed cert #1~~ · ~~every cert doubles as evidence for the Month-6 scope-change conversation with Jen~~ · ~~submit the reimbursement pre-approval through the Financial Industry Professional Education Program~~.
+
+> 🔄 **Corrections 22 / 32 / 37 — the funding premise is retired.** All certifications in the canon are **self-funded**; no employer reimbursement applies to any of them, and the Month-6 scope-change conversation **can no longer occur** (employment ends 9 Oct 2026). There is no pre-approval to file and no claim to submit. **Skip every reimbursement task in this fortnight.** The cert's job is unchanged — it is Tier-3 evidence for the **Q1 2027 external AE/DE applications** — but it is now a $99 purchase you make and expense to yourself. ⚠️ Note also that **AB-620 moved to conditional** (Correction 37): it is committed only if the Microsoft-ecosystem specialization decision goes that way, so do not treat it as an automatic next exam.
 
 ### New concepts
 ```
@@ -536,7 +553,7 @@ Run: `uv run python -m learning_journey.projects.recon_toy` — then open the re
                                           replicated locally (Accomplishment
                                           deferred to Sprint-1 — Correction 17)
 □ Docker for Beginners ~50%             □ AI-901 Learn path started (2 modules)
-□ Reimbursement pre-approval submitted  □ recon-toy v0.2 dict matcher + ADR 0001
+□ ~~Reimbursement pre-approval submitted~~ ❌ VOID (C22/32/37)  □ recon-toy v0.2 dict matcher + ADR 0001
 □ RPF written-determination question    □ ADR pack read (Core Course #17,
   sent (Correction 15 open item)          ADR half) · Nygard template chosen
 □ Greenville Python meetup attended     □ structlog first touch in recon-toy
@@ -596,7 +613,7 @@ sample_id = distributions[0]["participant_id"]
 print(f"{sample_id} belongs to {by_id[sample_id]['name']}, "
       f"total distributed ${total_by_participant[sample_id]:,.2f}")
 ```
-- [ ] 40 min — **AI-901 + RPF admin** ⭐: open the official Microsoft Learn AI-901 path; skim the exam outline (know the map before studying); then draft + send ONE email to the Financial Industry Professional Education Program administrator covering two things: (1) **AI-901 reimbursement pre-approval** per the program process, and (2) **the RPF written-determination question** (Correction 15's open item): the program schedule lists "RPF-1, RPF-2" — the superseded two-exam structure — while ASPPA's current course is a single six-module certificate, so ask in writing how the bonus maps onto the current structure *before* any enrollment. You are NOT enrolling in RPF now (it's a later, ~30–50 h item); you're just closing the open item while the pre-approval channel is open anyway. **BCC yourself — this email is elevation-file evidence.**
+- [ ] 40 min — **AI-901 admin** ⭐ · 🔄 **REVISED (C22/32/37)**: open the official Microsoft Learn AI-901 path; skim the exam outline (know the map before studying). ~~then draft + send ONE email to the Financial Industry Professional Education Program administrator covering (1) AI-901 reimbursement pre-approval~~ — **void: all certs are self-funded and the employer channel is closed.** What survives is the second half only, and only if you still judge it worth an internal ask before 9 Oct: **the RPF written-determination question** (Correction 15's open item): the program schedule lists "RPF-1, RPF-2" — the superseded two-exam structure — while ASPPA's current course is a single six-module certificate, so ask in writing how the bonus maps onto the current structure *before* any enrollment. You are NOT enrolling in RPF now (it's a later, ~30–50 h item). ⚠️ The stated reason — *"while the pre-approval channel is open anyway"* — no longer holds; there is no pre-approval channel. Ask only if the written determination has standalone value to you. **BCC yourself — this email is evidence-file material.**
 - [ ] 20 min — Journal + commit (`feat: dict aggregation + index patterns`)
 
 ---
@@ -728,9 +745,9 @@ docker run hello-world
 # it from Docker Hub, (3) created a CONTAINER from it, (4) ran it, printed,
 # exited. Image = frozen recipe; container = a running instance of it.
 
-docker run -it python:3.12-slim python
+docker run -it python:3.14-slim python
 # -it = interactive terminal. You are now INSIDE a container, at a Python
-# prompt, in a minimal Linux that has exactly Python 3.12 and nothing else.
+# prompt, in a minimal Linux that has exactly Python 3.14 and nothing else.
 # Try: import sys; print(sys.version)  → then exit() to leave.
 # THE point: this identical Python runs on any machine on earth. "Works on
 # my machine" stops being an excuse — that's why your README standard
@@ -792,7 +809,7 @@ Keep both, permanently, with a test asserting they agree.
 **Morning (5:00–8:30):**
 - [ ] 150 min — **recon-toy v0.3 hardening** — CLI + report integration + two production-standard upgrades:
 
-**Sanctioned agent rep (optional):** the argparse skeleton below is exactly the "mechanical boilerplate" Phase 2 allows. If you want the rep, ask Cursor Agent to draft it — then review the diff against the version printed here line-by-line, and make it match your standard. If you'd rather type it (also correct), do that. Either way, the `run_pipeline` refactor and its tests are yours alone.
+**Sanctioned agent rep (optional):** the argparse skeleton below is exactly the "mechanical boilerplate" Phase 2 allows. If you want the rep, ask OpenCode or Claude Code to draft it — then review the diff against the version printed here line-by-line, and make it match your standard. If you'd rather type it (also correct), do that. Either way, the `run_pipeline` refactor and its tests are yours alone.
 
 ```python
 # Add argparse to recon_toy.py — the standard way scripts take options.
@@ -875,7 +892,7 @@ Also: integrate the Day-24 matcher's mismatch bucket into the exceptions report;
 
 ## 📊 2-WEEK SUCCESS METRICS
 ```
-□ P4E Course 2 complete                □ AI-901 started + reimbursement filed
+□ P4E Course 2 complete                □ AI-901 started (self-funded — no claim to file)
 □ AI Python videos done + replicated   □ recon-toy v0.3: pipeline + CLI + 15+ tests
 □ Mode SQL joins/aggregation done      □ ADR 0001 written (Nygard) + ADR pack read
 □ Docker ~50% + containers run local   □ SQL ↔ Python cross-check test green
@@ -887,7 +904,7 @@ Also: integrate the Day-24 matcher's mismatch bucket into the exceptions report;
   ③Architecture order (Cost omitted)   □ Posts #3 and #4 published · no DL.AI
                                           Pro purchased
 ```
-**Passing bar: 80%.** Non-negotiables: the recon-toy thread (feeds DataVault S1) and the AI-901 kickoff (feeds the elevation file).
+**Passing bar: 80%.** Non-negotiables: the recon-toy thread (feeds DataVault S1) and the AI-901 kickoff (feeds the **evidence file**).
 
 ---
 
