@@ -1,15 +1,30 @@
 # 🚀 WEEKS 9–10 MASTER ACTIVATION PLAN (v10.0)
 ## Eval-First Engineering — The Differentiator Fortnight | September 14–27, 2026
 
-**Document Version:** 1.0
+**Document Version:** 1.1 (realigned to roadmap Corrections 21–43)
 **Covers:** Monday, September 14 – Sunday, September 27, 2026 (Stage 1 · Month 3 · Weeks 9–10)
-**Aligned To:** Career Roadmap v10.0, Corrections 1–20
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–43**
 **Prerequisite:** Weeks 7–8 metrics ≥80% (non-negotiables: AI-901 attempted + DataVault end-to-end)
 **Weekly Hours:** 25
 
 > **Why this is the most important fortnight of Stage 1:** your roadmap's Stage 1 skill plan calls evaluation literacy THE 2026 differentiator — 39.6% of AI-first roles explicitly require eval skills, yet only ~5.5% of candidates list them. This fortnight you stop being in the 94.5%. Everything the flagships become — PolicyPulse's RAGAS gates, Crucible's Tool Correctness = 1.0, DataVault S3's HITL layer — stands on what you build here.
 
 > 🤖 **Agent Policy:** unchanged Phase 3 — and this fortnight shows WHY eval/test logic stays human-authored: the golden dataset and judge criteria ARE your standards. Delegate those and you've delegated your judgment, which is the product.
+
+---
+
+---
+
+## 🔄 REALIGNMENT PASS — ROADMAP CORRECTIONS 21–43 (applied 27 Aug 2026)
+
+Three changes, one of which frees up hours:
+
+1. **⏸️ AB-620 is no longer an automatic cert #2.** Correction 37 moved it to **conditional**; Corrections 22/32 made it **self-funded (~$165)** with the employer channel closed. Thread 6 below is re-marked **HOLD pending your ruling**, and the Day 58 pre-approval email is void. My recommendation: **hold**. Your Q1 2027 target is AE-first / DE-parallel, and AB-620 is a Copilot-ecosystem credential that neither door screens on. The freed hours are better spent on this fortnight's eval harness — which *is* the differentiator (39.6% of AI-first roles require evaluation skills against ~5.5% of candidates listing them).
+2. **🪝 The eval harness gets pre-commit too** (Correction 21). Your own eval harness lives in `learning_journey` and graduates into PolicyPulse next fortnight — it should carry the Tier A set plus **`nbstripout`** (Tier B), since this repo is notebook-bearing. `nbstripout` is the commit-time enforcement of synthetic-data-only: it extends the Correction 16 PII choke point from the logging boundary to the git boundary, so it no longer depends on you remembering to clear cell output.
+3. **✅ Two extra-time threads open here** (your rulings): **AB-620 study** (~$165 self-funded — exam targeted *after* 9 Oct) and the **Google Git/GitHub course** (Stage 1 row 3️⃣.5). Both ~2 hrs/week, outside the 25, capped, and both pause before any flagship does. Details at Day 58.
+4. **📖 Read *AI Engineering* (Huyen) alongside this fortnight, not later.** Correction 34 moved it from the old Stage-4 slot **into Stage 1** on exactly this reasoning: a book that improves your eval gates in month 3 is worth more than the same book read in month 25. It is evaluation-first and framework-neutral. This is the fortnight it pays for itself.
+
+> 🎯 **Why this fortnight matters more under the new premise.** The Sprint-1 decision and the eval harness were always the plan's differentiator. Under Correction 22 they became the *load-bearing* one: with the internal path closed, "I built a blocking eval gate and ran a documented improve cycle against it" is the single hardest claim to fake in a Q1 2027 interview, and almost nobody applying will have it.
 
 ---
 
@@ -56,7 +71,7 @@ Week 6's mocked tests verify plumbing: given a fake model reply, does your code 
 3. **Your OWN harness** — pointed at Week 6's Box-7 explainer: golden set, dual graders, pytest-gated thresholds, in the learning_journey repo (it graduates into PolicyPulse next fortnight).
 4. **DeepEval first contact** — the roadmap's named eval library (with RAGAS); GEval for judge-based metrics.
 5. **DataVault corrections analytics** matures (the 450+-pattern analytics, synthetic).
-6. **AB-620 study opens** (post-AI-901; employer-reimbursed cert #2 — file the pre-approval Day 58).
+6. **AB-620 study opens — ✅ GO, as an EXTRA-TIME thread** (your ruling, 27 Aug 2026). ~~(post-AI-901; employer-reimbursed cert #2 — file the pre-approval Day 58)~~ → **self-funded ~$165** (Corrections 22/32); Correction 37 lists it as **conditional** in the roadmap, and you have elected to commit it anyway. **Run it entirely outside the 25 hrs/week — it must not displace the eval harness, DataVault, or PolicyPulse**, which are the artifacts the Q1 2027 doors actually screen on. ⚠️ Two things to keep honest: (a) this is a **roadmap divergence** — the file says conditional, you are treating it as committed, so it needs a logged correction with a falsifier, not a silent change; (b) **AB-620 is a Copilot-ecosystem credential and neither the AE nor the DE door screens on it** — its value here is Azure-stack breadth and the AI-103 path in Stage 3, not the first door. Budget ~2 hrs/week extra, capped.
 
 ### New concepts
 ```
@@ -110,7 +125,12 @@ Tools:  DeepEval (GEval) · DL.AI lab workflow (download discipline)
 ]
 ```
 > **Design notes (this is the skill):** every case carries a *rationale* — your golden set is reviewable evidence, not vibes. `must_mention_any` (semantic anchors) beats exact-string matching — models phrase things differently; correctness ≠ identical wording. Include HARD cases: ambiguous codes, codes your enum doesn't support yet (correct behavior = the boundary refuses). A golden set of only easy cases measures nothing — same principle as Week 3's planted defects.
-- [ ] 30 min — **AB-620 pre-approval email** (the AI-901 template, reused; BCC self; elevation file)
+- [ ] 30 min — ~~**AB-620 pre-approval email** (the AI-901 template, reused; BCC self; elevation file)~~ ❌ **VOID (C22/32/37)** — no pre-approval channel exists. **Reallocate these 30 minutes to the golden-set rationales** (below); they are the higher-value artifact.
+
+> ⏱️ **EXTRA-TIME THREADS OPEN THIS FORTNIGHT (outside the 25 hrs/week — your ruling, 27 Aug 2026).** Two threads, ~2 hrs/week each, both capped:
+> - 📘 **AB-620 study** — self-funded ~$165. Open the Microsoft Learn path; do not book the exam yet. **Target the exam after 9 Oct**, when the job ends and real capacity appears — booking it into a fortnight that also carries PolicyPulse's opening and a last-day-of-work is how a 25-hour plan quietly becomes a 32-hour one.
+> - 🐙 **Google — Introduction to Git and GitHub** (Stage 1 row 3️⃣.5, ~8 hrs committed · published as ~20 hrs / 4 weeks — the **~8 hrs is the commitment**, per Correction 31). Coursera Plus, shareable certificate → **Tier 4/5, never a Certifications line**. Move fast: nine weeks of daily commits already cover the basics. The material worth your attention is the part solo work never teaches — **the staging area vs HEAD distinction, rebasing, and conflict resolution**.
+> - ⚠️ **Cap discipline:** if a week runs over, the extra-time threads pause — never the flagships. If the Week-12 retro shows actual hours above ~29/week, both pause until after Day 82.
 - [ ] 20 min — Journal + commit (`feat: golden dataset v1 with rationales`)
 
 ### 📌 DAY 58 — Tuesday, September 15
@@ -264,7 +284,7 @@ Week summary · publish post #9 · plan Week 10 · journal 🎉
 **Evening:** 60 min AB-620 · 45 min draft post #10 (finance→tech bridge: "code-graders vs AI judges — how I decide who checks the AI's homework") · journal + commit
 
 ### 📌 DAY 70 — Sunday, September 27 (2h)
-Week summary + **Month-3-minus-one check**: elevation file inventory (AI-901 pass, reimbursement proof, automation-win drafts?) — Weeks 11–12 must close automation win #1, so identify THIS WEEK which work automation story you'll document · publish post #10 · plan Weeks 11–12 · journal 🎉
+Week summary + **Month-3-minus-one check**: **evidence file** inventory (AI-901 pass, ~~reimbursement proof~~, automation-win drafts?) — Weeks 11–12 must close automation win #1, so identify THIS WEEK which work automation story you'll document · publish post #10 · plan Weeks 11–12 · journal 🎉
 
 ---
 
