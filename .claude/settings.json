@@ -1,0 +1,79 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+  "permissions": {
+    "defaultMode": "plan",
+    "deny": [
+      "Read(./.env)",
+      "Read(./.env.*)",
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(./data/raw/**)",
+      "Read(./data/processed/**)",
+      "Read(./data/outputs/**)",
+      "Edit(./data/raw/**)",
+      "Edit(./data/processed/**)",
+      "Edit(./data/outputs/**)",
+      "Write(./data/raw/**)",
+      "Write(./data/processed/**)",
+      "Write(./data/outputs/**)",
+      "Edit(./roadmap.html)",
+      "Write(./roadmap.html)",
+      "Edit(./docs/adr/**)",
+      "Write(./docs/adr/**)",
+      "Edit(./docs/diagrams/**)",
+      "Edit(**/architecture.dsl)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(git reset --hard:*)",
+      "Bash(gh pr create:*)",
+      "Bash(gh pr merge:*)",
+      "Bash(gh issue create:*)",
+      "Bash(sudo:*)",
+      "Bash(rm -rf:*)",
+      "Bash(pip install:*)"
+    ],
+    "ask": [
+      "Bash(git add:*)",
+      "Bash(gh label:*)",
+      "Bash(uv add:*)",
+      "Bash(uv lock:*)"
+    ],
+    "allow": [
+      "Read(**)",
+      "Glob(**)",
+      "Grep(**)",
+      "Bash(git status:*)",
+      "Bash(git diff:*)",
+      "Bash(git log:*)",
+      "Bash(git branch:*)",
+      "Bash(gh issue view:*)",
+      "Bash(gh pr diff:*)",
+      "Bash(gh repo view:*)",
+      "Bash(uv run ruff:*)",
+      "Bash(uv run mypy:*)",
+      "Bash(uv run pytest:*)",
+      "Bash(uv run deepeval:*)",
+      "Bash(uv sync --frozen)",
+      "Bash(uv lock --check)",
+      "Bash(make test)",
+      "Bash(make lint)",
+      "Bash(make eval)",
+      "Bash(make diagrams)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"${CLAUDE_PROJECT_DIR}/.claude/hooks/guard.py\"",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  },
+  "includeCoAuthoredBy": false
+}
