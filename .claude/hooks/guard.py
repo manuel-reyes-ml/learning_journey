@@ -237,5 +237,6 @@ def main() -> None:
     sys.exit(0)
 
 
+# Safeguard to avoide module to run when imported.
 if __name__ == "__main__":
     main()
