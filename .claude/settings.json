@@ -59,7 +59,9 @@
       "Bash(make lint)",
       "Bash(make eval)",
       "Bash(make diagrams)"
-    ]
+    ],
+    "disableBypassPermissionsMode": "disable",
+    "disableAutoMode": "disable"
   },
   "hooks": {
     "PreToolUse": [
