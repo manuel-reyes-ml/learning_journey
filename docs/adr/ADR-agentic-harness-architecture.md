@@ -174,6 +174,72 @@ The instinct is that planning is high-frequency and should get the biggest allow
 
 ---
 
+## 5a. Config file location — root, not `.opencode/`
+
+**`opencode.jsonc` lives at the repository root. `.opencode/` holds the agent, command
+and plugin directories, not the config file.**
+
+```
+your-repo/
+├── opencode.jsonc          ← the config
+└── .opencode/
+    ├── agent/     (6)      ← the 11-agent surface of §6
+    └── command/   (9)
+```
+
+The vendor docs are explicit that project config belongs in the project root, and that
+OpenCode resolves it by checking the current directory first and then traversing up to
+the nearest Git directory. `.opencode/` appears separately in the precedence list as the
+directory searched for agents, commands, modes and plugins.
+
+### Why not `.opencode/opencode.jsonc`
+
+It works. It is also **undocumented**, and the OpenCode project's own repository stores
+its config that way, which is where the confusion comes from.
+
+⚠️ **It has a known defect.** Per-repo configuration in `.opencode/opencode.json` is not
+picked up when OpenCode creates a sandbox as a linked worktree; the community workaround
+is a startup script that symlinks `.opencode` into each new worktree. Root has no
+equivalent bug. **An undocumented path that works today is a poor bet across a 32-month
+roadmap** — the same platform-risk reasoning that declined Windsurf in §8.
+
+### 🔒 Precedence consequence for the §6 agent surface
+
+`.opencode` directories load **after** project config:
+
+| # | Source | Loads |
+|:--:|:---|:---|
+| 4 | `opencode.jsonc` (project root) | before |
+| 5 | `.opencode/` directories | **after — wins on conflict** |
+
+An agent defined **both** in the `agent:` block of `opencode.jsonc` **and** as
+`.opencode/agent/<name>.md` resolves to the markdown file. Silently. **One home per
+agent** — the single-source-no-drift rule applied to the harness itself, and the same
+failure mode the `.github/docs/prompts/` extraction exists to prevent.
+
+### ⚠️ Directory naming drift
+
+Current docs specify **plural** subdirectory names — `agents/` `commands/` `modes/`
+`plugins/` `skills/` `tools/` `themes/` — with singular retained *for backwards
+compatibility*. This harness uses singular (`agent/`, `command/`).
+
+Singular works. "Retained for backwards compatibility" is an undated deprecation notice.
+**Renaming is cheap now and expensive mid-Stage-2.** Before renaming, check
+`scripts/build_claude_agents.py` and the `claude-agents-check` pre-commit hook for
+hardcoded paths.
+
+### Falsifiers
+
+| Claim | Falsifier |
+|:---|:---|
+| Root is the correct location | Vendor docs move project config into `.opencode/` and document it |
+| Singular directory names are safe | A release note dates the deprecation, or `--debug` warns |
+
+> **Verification date:** 2026-08-29, against `opencode.ai/docs/config` (docs last updated
+> 2026-08-28). This section postdates the ADR's own 2026-08-18 verification date.
+
+---
+
 ## 6. Agent surface — 11 agents, 9 commands
 
 ### Primary agents (`Tab`-selectable)
