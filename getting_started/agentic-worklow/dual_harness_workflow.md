@@ -31,6 +31,9 @@
 | **Gates** | 0–6 | 0–6 **plus Gate 1.5 (harness switch)** |
 | **Plan artifacts** | `.cursor/plans/` | `.github/plans/` — harness-neutral, repo-tracked ⚠️ *pending path audit* |
 | **Prompts in this doc** | Pasted inline — and one of them taught the *inverse* of the logging standard | **Referenced by `/command` name only.** Bodies stay in `.github/docs/prompts/` — see §4.0 |
+| **`CLAUDE.md`** | Absent — and **Claude Code silently ignores `AGENTS.md`** | 🔴 Required. One line: `@AGENTS.md` — §7.1 |
+| **Learning mode** | Undocumented | §3.1 — different mechanism per harness; does **not** reach forked skills |
+| **Greenfield work** | Unaddressed | §4.8 — Issues from day one, scoped by deliverable |
 | **Repo scope** | Implicit — all repos | ⚠️ *Proposed:* public synthetic-only repos. **Track A stays single-harness + local Ollama** — §1.7 |
 | **Stale items** | `black` in `format.sh`; 6 `.mdc` rules; Roadmap v8.2 | Corrected — see §12 |
 
@@ -323,6 +326,93 @@ approval hides the whole-change picture, and long prompt chains produce reflex a
 **a gate that feels real but is not.**
 
 **Precondition binding on both:** start every session on a clean tree.
+
+### 3.1 Learning mode — orthogonal to the cycle, not a step in it
+
+`learn` is the same body in both harnesses and a **different mechanism in each.**
+
+| | Claude Code (VS Code) | OpenCode (Cursor) |
+|---|---|---|
+| **What it is** | **Output style** — rewrites the system prompt | **Agent** — its own prompt + permissions |
+| **Lives at** | `.claude/output-styles/learn.md` | `.opencode/agents/learn.md` |
+| **How to enter** | `/config` → **Output style** → `learn`, or set `"outputStyle": "learn"` in a settings file | **Tab** to cycle primary agents, or `@learn` if `mode: subagent` |
+| **Takes effect** | 🔴 **Only after `/clear` or a new session** | Immediately, mid-session |
+| **Scope** | 🔴 **Main conversation only** | The agent's own session |
+
+**🔴 `/output-style` no longer exists.** It was deprecated in v2.1.73 and removed in
+v2.1.91. Many guides and cheat sheets still tell you to type it; that instruction is
+dead. Use `/config` → Output style, or set the `outputStyle` key directly — **the key
+outlived the command.** `/config` writes your choice to `.claude/settings.local.json`,
+which is gitignored, so the selection is machine-local and does not travel with the repo.
+
+**🔴 An output style is part of the system prompt, and Claude Code builds the system
+prompt once at session start.** A change made mid-session is saved but **not applied** —
+the running session keeps sending the prompt it built at startup. `/clear` or start a new
+session. If it still hasn't applied, `/status` shows which settings source won.
+
+#### 🔴 The interaction nobody planned for: **learn mode does not reach forked skills**
+
+Output styles apply to the **main conversation only** — a subagent runs its own system
+prompt, so styles do not change how subagents respond.
+
+Under §8.1, **seven of the nine skills use `context: fork`**, which means they run as
+subagents. **Learn mode therefore has no effect inside `/review`, `/test`, `/eval`,
+`/draft-issue`, `/task-brief`, `/pr-prep` or `/readme`.** Running `/review` while in learn
+mode gives you an ordinary review, not a pedagogical one — and it will look like learn
+mode simply didn't do very much, rather than like a configuration boundary you crossed.
+
+This is not a defect. It is arguably correct: a review that teaches instead of reporting
+is a worse review. **But it must be known, or you will conclude the style is broken.**
+`labels` and `commit-msg` — the two unforked skills — *are* affected, being main-conversation.
+
+#### One more Claude Code note
+
+Custom output styles **leave out Claude Code's built-in software-engineering
+instructions** unless `keep-coding-instructions: true` is set. For `learn.md` that is the
+behaviour you want — its whole premise is *"Your job is understanding, not output"* — but
+it means learn mode is **not** a reduced-verbosity coding mode. It is a different job.
+
+#### OpenCode side — make the read-only rule architectural
+
+`learn.md` says *"do not start writing the module yourself."* That is prompt text, and
+§1.3's distinction applies: **persuasion, not a boundary.** OpenCode supports per-agent
+permission keys, so pin it:
+
+```yaml
+---
+description: Teaching pair-programmer — understanding, not output
+mode: primary          # Tab-reachable. Use `subagent` if you prefer @learn.
+permission:
+  edit: deny
+  bash: deny
+---
+```
+
+Note the limit: **a user can always invoke any subagent directly via the `@` autocomplete
+menu, even when task permissions would deny it.** Agent permissions restrict the *model*,
+not you.
+
+#### Where it sits in the cycle
+
+**Learn mode is not a step. It is a lane you step into and back out of.**
+
+```
+Gate 0 (Issue approved)  →  [ LEARN — you don't yet understand the technique ]  →  Step 1
+Step 7 (merged)          →  [ LEARN — retrospective on what you just shipped ]
+```
+
+**Never between Gate 1.5 and Gate 3.** Two reasons, both structural rather than
+stylistic. In Claude Code, entering learn mode requires `/clear` — which **destroys the
+review session** you are in the middle of. And the jobs are incompatible: learn explains
+so you can act; review reports so you can decide. Conflating them yields a session that
+teaches you about the code instead of telling you what is wrong with it.
+
+**The highest-value slot is between Gate 0 and Step 1** — you have committed to the work
+but not yet chosen the approach. That is exactly when `learn.md`'s ADR trigger fires:
+*"when an explanation lands on a decision with a **real rejected alternative**, say so and
+prompt for an ADR while the reasoning is fresh — the rejected option is the content."*
+**Learn mode is where ADRs are born.** Deferring it until after the build means writing
+the ADR from memory, which is when the rejected alternative quietly goes missing.
 
 ---
 
@@ -661,6 +751,60 @@ git branch -d feature/XX-short-description
 
 ---
 
+### 4.8 Greenfield vs. existing codebase — when does work need an Issue?
+
+**Yes, greenfield work gets Issues too. The unit is the deliverable, not the file.**
+
+The instinct to skip Issues while scaffolding is understandable and backwards.
+CORRECTION 39 §7 rules that **a bad plan propagates silently where a bad diff does not**
+— and scaffolding decisions are the highest-propagation decisions in the repository.
+`src/` layout, the Polars/pandas boundary, the structlog processor chain, the provider
+abstraction: every file written afterwards inherits them. Skipping the contract there
+skips it precisely where it costs most.
+
+**The decisive argument is downstream, and it comes from your own files.** `draft-issue`
+carries a **Decisions expected** section: *"If a real alternative is likely to be
+rejected, mark that an ADR is required as part of the work."* Greenfield is where
+rejected alternatives are densest — uv over pip, Polars over pandas, structlog over
+stdlib, ruff over black. And `readme.md` requires the Architecture section to carry
+*"`docs/adr/` links with the rejected alternative named."*
+
+> **No scaffold Issue → no ADR → the flagship README has nothing to link.**
+> The decision still gets made. It just gets made without a record, and the record was
+> the portfolio artifact.
+
+**Granularity rule — one Issue per deliverable that has its own acceptance criteria and
+could ship as one reviewable PR.** Derive them from
+`@.github/docs/FLAGSHIP_CHECKLIST.md`, which is already the definition-of-done bar.
+
+| ✅ One Issue | ❌ Not an Issue |
+|---|---|
+| "Scaffold repo to production standard: `pyproject.toml` + uv, ruff, mypy, pre-commit Tier A, CI, `src/` layout" | One Issue per config file |
+| "Add `settings` + structlog observability layer with PII-redaction processor" | "Create `logging.py`" |
+| "First vertical slice: ingest → validate → write, with tests" | "Add a function" |
+| "Wire the eval harness and make it merge-blocking in CI" | Renaming a variable |
+
+Roughly **4–8 Issues to first working slice**, not thirty. If you cannot write testable
+acceptance criteria for it, it is not an Issue — it is a step inside one.
+
+**Exempt from the cycle entirely:** exploratory spikes on a throwaway branch, and
+debugging (§10, item 2 — the split is wrong where the state is a hunch rather than an
+artifact). Spike freely, then throw it away and open the Issue for the real thing.
+
+#### ⚠️ Both commands degrade on an empty repo
+
+`draft-issue` runs `find src -name '*.py' | head -100` and `task-brief` runs
+`find src tests -name '*.py' | head -100`. **On a repo with no `src/` yet, both return
+nothing** — so "modules in scope" comes back empty and the Files-to-Change table has
+nothing to build from. The commands still work; they just cannot infer.
+
+**On greenfield, supply the intended layout yourself** in the `/draft-issue` argument, and
+read the resulting table as **files to *create*** rather than files to change. Everything
+else in the template — decisions expected, acceptance criteria, edge cases, the uv-native
+validation set — applies unchanged and is where the value is anyway.
+
+---
+
 ## 5. Control gates
 
 | Gate | What | Who | When |
@@ -723,7 +867,11 @@ git branch -d feature/XX-short-description
 
 ```
 repo-root/
-├── AGENTS.md                          # ⭐ SHARED governance — both harnesses read this
+├── AGENTS.md                          # ⭐ THE contract. OpenCode reads this NATIVELY.
+├── CLAUDE.md                          # 🔴 LOAD-BEARING. One line: `@AGENTS.md`
+│                                      #   Claude Code CANNOT see AGENTS.md without it.
+│                                      #   Inline rule prose here = one-source broken;
+│                                      #   docs-sync flags it ⚠️ Stale. See §7.1
 ├── opencode.jsonc                     # canonical location = repo root (ADR-001 §5a)
 │
 ├── .claude/                           # Claude Code — PLAN + REVIEW, read-only
@@ -800,6 +948,43 @@ repo-root/
 ├── .pre-commit-config.yaml            # Tier A/B/C per CORRECTION 21
 └── docs/adr/                          # Nygard template
 ```
+
+### 7.1 🔴 Why `CLAUDE.md` is not optional
+
+**Your instinct is right and the evidence is unanimous. Claude Code does not read
+`AGENTS.md`.** It reads `CLAUDE.md` at the repository root, and if a repo has only an
+`AGENTS.md`, Claude Code **silently ignores it** — no warning, no degraded mode. The
+supported bridge is a `CLAUDE.md` whose first line is the import `@AGENTS.md`, or a
+symlink. One source is explicit that the widely repeated claim that Claude Code reads
+`AGENTS.md` "as a fallback" is **not accurate**; the import is the supported bridge.
+
+This is not an obscure edge. The feature request to support `AGENTS.md` natively
+(#6235, opened August 2025) has accumulated **5,200+ reactions and 300+ comments**, and
+is by a wide margin the largest unmet request in the Claude Code tracker; 173 distinct
+issues mention `AGENTS.md`. As of mid-2026 it remains open with no roadmap signal.
+
+**The failure mode this prevents is the worst one available to this topology.** Without
+`CLAUDE.md`, the planning and review harness runs with **none** of the standards in
+`AGENTS.md` — no structlog kwargs rule, no `SecretStr` rule, no synthetic-data rule, no
+stage context — while OpenCode runs with all of them. The reviewer would then approve
+diffs against a standard it has never seen, and **the cross-harness review would look
+like it was working.** A silent ignore is far more dangerous than an error.
+
+```markdown
+<!-- CLAUDE.md — the entire file -->
+@AGENTS.md
+```
+
+**Import, not symlink.** Both work; the import is correct here for three reasons: it
+leaves room for genuinely Claude-only content below the import line without a second
+source of truth; it needs no administrator rights or Developer Mode on Windows, which a
+symlink does; and `docs-sync` already rules on it — *"`CLAUDE.md` imports `AGENTS.md`…
+if any of those pointer files has grown **inline rule prose** instead of an import, that
+is ⚠️ **Stale** — the one-source rule has been broken and the two harnesses will
+diverge."* The ruling exists; only the file was missing.
+
+**Verify it loaded** — do not assume. `/context` at session start should show
+`AGENTS.md` pulled in through the import. This is **§11-Q7**.
 
 **⚠️ Correction to an error in this document's own first draft — `.cursor/` is NOT dead.**
 `.cursor/rules/*.mdc` are the **canonical rule bodies**; `.claude/rules/*.md` import them.
@@ -1062,6 +1247,16 @@ about OpenCode's `` !`shell` `` expansion, and it has the same shape: if expansi
 the mode, the shell-running commands break under a read-only posture; if it does not,
 read-only is not a boundary against commands. **Test:** run `/test` once from a
 plan-mode session.
+
+**Q7 — Does `CLAUDE.md`'s `@AGENTS.md` import actually resolve?** §7.1. The failure is
+silent, and a reviewer running without `AGENTS.md` approves diffs against a standard it
+has never seen. *Test:* `/context` at session start; confirm `AGENTS.md` appears. **Run
+this at the same time as Q4a.**
+
+**Q8 — Confirm learn mode does not reach forked skills.** §3.1. *Test:* enter learn mode,
+`/clear`, run `/test`, and check whether the output is pedagogical or ordinary. Expected:
+ordinary. If it *is* pedagogical, output styles reach subagents after all and §3.1 needs
+revising.
 
 **Q6 — Does `git status --porcelain` stay empty across a full review session?** The
 §1.4 formulation depends on it. **Test:** run it before and after one review.
