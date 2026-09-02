@@ -3,6 +3,9 @@ Generate a complete Agent Task Brief for Issue #$1.
 Issue details:
 !`gh issue view $1`
 
+Issue revision stamp:
+!`gh issue view $1 --json updatedAt --jq .updatedAt`
+
 Task Brief format: @.github/docs/templates/task_brief.md
 
 Modules in scope:
@@ -10,6 +13,9 @@ Modules in scope:
 
 Existing decision records:
 !`ls docs/adr 2>/dev/null || echo "no docs/adr yet"`
+
+Prior brief for this Issue, if one exists:
+!`cat .github/plans/issue-$1-task-brief.md 2>/dev/null || echo "no prior brief"`
 
 Fill in every section of the template:
 - **Metadata:** Issue #$1, branch `feature/$1-<short-description>`, today's date,
@@ -40,4 +46,40 @@ If a file not listed in the Issue appears to need changes, flag it explicitly.
 If the Issue implies a decision with a real rejected alternative and no ADR is planned,
 say so — that is a gap in the Issue, not something to silently add.
 
-Output the brief for my review. Do **NOT** start implementing — this is Gate 1.
+## Persist the brief
+
+Write the completed brief to `.github/plans/issue-$1-task-brief.md`.
+
+The file must open with exactly this frontmatter block, filled in:
+
+```
+---
+issue: $1
+issue_updated_at: <the revision stamp printed above, verbatim>
+branch: feature/$1-<short-description>
+generated: <today's date, YYYY-MM-DD>
+status: PROPOSAL
+---
+```
+
+Rules governing the write — these are constraints, not suggestions:
+
+1. **One file per Issue, deterministic name.** If `.github/plans/issue-$1-task-brief.md`
+   already exists, overwrite it. Git history is the audit trail; do not create `-v2`,
+   `-final`, or dated variants.
+2. **Never set `status: APPROVED`.** The brief is written at `PROPOSAL` and stays there.
+   Only I change that field, by hand. A brief still at `PROPOSAL` has not passed Gate 1
+   and is not an execution contract.
+3. **Staleness check.** If a prior brief was printed above and its `issue_updated_at`
+   differs from the current revision stamp, state that explicitly at the top of your
+   report — the Issue moved underneath the previous brief, and the delta may not be
+   covered by the diff you are about to produce.
+4. **This write is the Gate 1 deliverable, not implementation.** `.github/plans/` is the
+   only path this command may write to. Any other write is out of scope — stop and report.
+5. **No proprietary or client data in the brief.** Same standard as the repository:
+   synthetic or redacted only. If the Issue body contains real plan, participant or
+   employer data, stop and report rather than copying it into a committed file.
+
+Then output the brief in full for my review.
+
+Do **NOT** start implementing — this is Gate 1.
