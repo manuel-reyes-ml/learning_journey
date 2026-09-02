@@ -6,8 +6,6 @@ Issue details:
 Issue revision stamp:
 !`gh issue view $1 --json updatedAt --jq .updatedAt`
 
-Task Brief format: @.github/docs/templates/task_brief.md
-
 Modules in scope:
 !`find src tests -name '*.py' | head -100`
 
@@ -17,7 +15,29 @@ Existing decision records:
 Prior brief for this Issue, if one exists:
 !`cat .github/plans/issue-$1-task-brief.md 2>/dev/null || echo "no prior brief"`
 
-Fill in every section of the template:
+## Read the template before writing anything
+
+**Read `.github/docs/templates/task_brief.md` in full, with the Read tool, now.**
+
+That file — not this one — defines the brief's section order, headings and wording.
+This file defines only what goes *inside* each section. A brief written without the
+template read is not a brief; it is an improvisation that will drift from every other
+brief in `.github/plans/`.
+
+Do **not** assume the template arrived via an `@` reference. This prompt body is
+imported into the harness command file (`@` on OpenCode, `cat` on Claude Code), and
+nested `@`/`!` references inside an imported body are **not** re-expanded. Read the
+template by path, explicitly, with the tool.
+
+If the template cannot be read, **STOP and report**. Do not improvise a structure.
+
+**Same check on the context blocks above:** if any of them shows the literal command
+instead of its output, the expansion did not run. Re-run it yourself with the tools you
+have and say that you did. If you are not permitted to run it, **STOP** — do not write a
+brief from missing Issue context.
+
+## Fill in every section of the template
+
 - **Metadata:** Issue #$1, branch `feature/$1-<short-description>`, today's date,
   packs ticked to match the Issue
 - **Objective:** one paragraph from the Issue context
@@ -58,6 +78,7 @@ issue: $1
 issue_updated_at: <the revision stamp printed above, verbatim>
 branch: feature/$1-<short-description>
 generated: <today's date, YYYY-MM-DD>
+template: .github/docs/templates/task_brief.md
 status: PROPOSAL
 ---
 ```
@@ -72,8 +93,7 @@ Rules governing the write — these are constraints, not suggestions:
    and is not an execution contract.
 3. **Staleness check.** If a prior brief was printed above and its `issue_updated_at`
    differs from the current revision stamp, state that explicitly at the top of your
-   report — the Issue moved underneath the previous brief, and the delta may not be
-   covered by the diff you are about to produce.
+   report — the Issue moved underneath the previous brief.
 4. **This write is the Gate 1 deliverable, not implementation.** `.github/plans/` is the
    only path this command may write to. Any other write is out of scope — stop and report.
 5. **No proprietary or client data in the brief.** Same standard as the repository:
