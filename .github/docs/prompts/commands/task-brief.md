@@ -96,7 +96,10 @@ Rules governing the write — these are constraints, not suggestions:
    report — the Issue moved underneath the previous brief.
 4. **This write is the Gate 1 deliverable, not implementation.** `.github/plans/` is the
    only path this command may write to. Any other write is out of scope — stop and report.
-5. **No proprietary or client data in the brief.** Same standard as the repository:
+5. **If your harness denies the write, do not work around it.** Output the brief and
+   state plainly that it was not persisted and why. Do not retry through a shell command,
+   a different path, or a different agent.
+6. **No proprietary or client data in the brief.** Same standard as the repository:
    synthetic or redacted only. If the Issue body contains real plan, participant or
    employer data, stop and report rather than copying it into a committed file.
 
