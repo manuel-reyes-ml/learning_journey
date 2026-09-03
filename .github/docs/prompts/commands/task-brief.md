@@ -1,40 +1,21 @@
 Generate a complete Agent Task Brief for Issue #$1.
 
-Issue details:
-!`gh issue view $1`
+All context you need — the brief template, the Issue, its revision stamp, the modules
+in scope, the existing ADRs, and any prior brief for this Issue — has already been
+injected above this text by `.github/scripts/task_brief_context.sh`.
 
-Issue revision stamp:
-!`gh issue view $1 --json updatedAt --jq .updatedAt`
+**Do not attempt to load any of it yourself.** This body contains no `!` blocks and no
+`@` references by design: command-template substitution is single-pass, so a `!` or `@`
+written here would arrive as literal text and silently never run. That is the defect
+this structure exists to prevent — do not reintroduce it.
 
-Modules in scope:
-!`find src tests -name '*.py' | head -100`
+**First, check the context you were given.** If any block above is missing, empty, or
+shows a line beginning `CONTEXT_ERROR`, **STOP and report which one**. Do not improvise
+around missing context and do not try to fetch it another way.
 
-Existing decision records:
-!`ls docs/adr 2>/dev/null || echo "no docs/adr yet"`
-
-Prior brief for this Issue, if one exists:
-!`cat .github/plans/issue-$1-task-brief.md 2>/dev/null || echo "no prior brief"`
-
-## Read the template before writing anything
-
-**Read `.github/docs/templates/task_brief.md` in full, with the Read tool, now.**
-
-That file — not this one — defines the brief's section order, headings and wording.
-This file defines only what goes *inside* each section. A brief written without the
-template read is not a brief; it is an improvisation that will drift from every other
-brief in `.github/plans/`.
-
-Do **not** assume the template arrived via an `@` reference. This prompt body is
-imported into the harness command file (`@` on OpenCode, `cat` on Claude Code), and
-nested `@`/`!` references inside an imported body are **not** re-expanded. Read the
-template by path, explicitly, with the tool.
-
-If the template cannot be read, **STOP and report**. Do not improvise a structure.
-
-**Same check on the context blocks above:** if any of them shows the literal command
-instead of its output, the expansion did not run. Re-run it yourself with the tools you
-have and say that you did. If you are not permitted to run it, **STOP** — do not write a
-brief from missing Issue context.
+The `BRIEF TEMPLATE` block above — not this file — defines the brief's section order,
+headings and wording. This file defines only what goes *inside* each section. Follow the
+template's structure exactly.
 
 ## Fill in every section of the template
 
@@ -62,6 +43,9 @@ brief from missing Issue context.
   commit-gate status and the stop conditions for proprietary data reaching this harness
   and for a destructive edit without a capability audit
 
+Every entry in **Files to Change** must correspond to a path that appeared in the
+`MODULES IN SCOPE` block or is being newly created. Do not name a file you have not seen.
+
 If a file not listed in the Issue appears to need changes, flag it explicitly.
 If the Issue implies a decision with a real rejected alternative and no ADR is planned,
 say so — that is a gap in the Issue, not something to silently add.
@@ -75,7 +59,7 @@ The file must open with exactly this frontmatter block, filled in:
 ```
 ---
 issue: $1
-issue_updated_at: <the revision stamp printed above, verbatim>
+issue_updated_at: <the revision stamp from the context above, verbatim>
 branch: feature/$1-<short-description>
 generated: <today's date, YYYY-MM-DD>
 template: .github/docs/templates/task_brief.md
@@ -85,23 +69,22 @@ status: PROPOSAL
 
 Rules governing the write — these are constraints, not suggestions:
 
-1. **One file per Issue, deterministic name.** If `.github/plans/issue-$1-task-brief.md`
-   already exists, overwrite it. Git history is the audit trail; do not create `-v2`,
-   `-final`, or dated variants.
+1. **One file per Issue, deterministic name.** If the file already exists, overwrite it.
+   Git history is the audit trail; do not create `-v2`, `-final`, or dated variants.
 2. **Never set `status: APPROVED`.** The brief is written at `PROPOSAL` and stays there.
    Only I change that field, by hand. A brief still at `PROPOSAL` has not passed Gate 1
    and is not an execution contract.
-3. **Staleness check.** If a prior brief was printed above and its `issue_updated_at`
-   differs from the current revision stamp, state that explicitly at the top of your
-   report — the Issue moved underneath the previous brief.
+3. **Staleness check.** If a prior brief appeared in the context and its
+   `issue_updated_at` differs from the current revision stamp, state that at the top of
+   your report — the Issue moved underneath the previous brief.
 4. **This write is the Gate 1 deliverable, not implementation.** `.github/plans/` is the
    only path this command may write to. Any other write is out of scope — stop and report.
-5. **If your harness denies the write, do not work around it.** Output the brief and
-   state plainly that it was not persisted and why. Do not retry through a shell command,
-   a different path, or a different agent.
-6. **No proprietary or client data in the brief.** Same standard as the repository:
-   synthetic or redacted only. If the Issue body contains real plan, participant or
-   employer data, stop and report rather than copying it into a committed file.
+5. **If your harness denies the write, do not work around it.** Output the brief and say
+   plainly that it was not persisted and why. Do not retry through a shell command, a
+   different path, or a different agent.
+6. **No proprietary or client data in the brief.** Synthetic or redacted only. If the
+   Issue body contains real plan, participant or employer data, stop and report rather
+   than copying it into a committed file.
 
 Then output the brief in full for my review.
 
