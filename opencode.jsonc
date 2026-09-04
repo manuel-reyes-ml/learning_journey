@@ -93,7 +93,9 @@
     // `small_model`. Never point this at a cloud provider.
     "plan": {
       "model": "ollama/qwen3.5-16k",
-      "permission": { "edit": "deny", "bash": "deny" }   // true read-only gate
+      "permission": { "edit": "deny", "bash": "deny" }
+      // Read-only for AGENT-INITIATED actions only. Command-template `!` is NOT
+      // gated here: it runs client-side before any agent exists (ADR-0003).
     },
 
     // === PLAN — PUBLIC / SYNTHETIC repos (Tab-selectable) ===================
@@ -111,7 +113,16 @@
       "mode": "primary",
       "description": "Planning for PUBLIC/synthetic repos only — cloud-routed. Do not use on regulated data.",
       "model": "opencode-go/glm-5.2",
-      "permission": { "edit": "deny", "bash": "deny" }   // true read-only gate
+      "permission": {
+        // ADR-0002: read-only against ALL source; the Gate 1 task brief is the
+        // single exception. Pattern is worktree-RELATIVE — an absolute or `~`
+        // pattern silently never matches (opencode#40945) and fails open.
+        "edit": { "*": "deny", ".github/plans/**": "allow" },
+        "bash": "deny"
+        // ADR-0003: this gates the agent's Bash TOOL, not command-template `!`,
+        // which the .github/scripts context loaders rely on. Verified twice on
+        // 1.17.9: shell ran and wrote to disk under this exact block.
+      }
     },
 
     // === PLAN — HARD ARCHITECTURE (Tab-selectable, PUBLIC repos only) =======
@@ -126,7 +137,9 @@
       "mode": "primary",
       "description": "Hard architecture planning on Kimi K3 — ADR-worthy and cross-cutting decisions. PUBLIC/synthetic repos only. Scarce allowance; use sparingly.",
       "model": "opencode-go/kimi-k3",
-      "permission": { "edit": "deny", "bash": "deny" }   // true read-only gate
+      "permission": { "edit": "deny", "bash": "deny" }
+      // Read-only for AGENT-INITIATED actions only. Command-template `!` is NOT
+      // gated here: it runs client-side before any agent exists (ADR-0003).
     },
     "build": {
       // BUILD LADDER (F2 / /models to switch mid-session):
