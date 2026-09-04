@@ -1,24 +1,25 @@
 Review the current working state for production readiness. Report only.
 
-Linting:
-!`uv run ruff check src/ tests/`
+All context you need has already been injected above this text by
+`.github/scripts/review_context.sh`.
 
-Format check:
-!`uv run ruff format --check src/ tests/`
+**Do not attempt to load any of it yourself.** This body contains no `!` blocks and no
+`@` references by design: command-template substitution is single-pass, so either would
+arrive as literal text and silently never run (ADR-0001).
 
-Type checking:
-!`uv run mypy src/`
+**Check the context first.** If a block above is missing, empty, or shows a line
+beginning `CONTEXT_ERROR`, **STOP and report which one**. Do not infer, reconstruct, or
+reason from the rules files in place of the missing output.
 
-Tests:
-!`uv run pytest tests/ -v --tb=short`
+The context blocks give you `RUFF CHECK`, `RUFF FORMAT CHECK`, `MYPY`, `PYTEST`,
+`UV.LOCK IN SYNC`, `CHANGED FILES`, and the full source of every changed or new `.py`
+file. Report from those blocks only.
 
-Lock file in sync:
-!`uv lock --check 2>&1 || echo "uv.lock is STALE — run 'uv lock'"`
+**If the changed-files source block reports `CONTEXT_ERROR`, STOP.** A
+production-readiness verdict with no source in context is a fabrication, and this
+command's output is used to decide what ships.
 
-Changed files:
-!`git diff --stat`
-
-Then statically verify across changed/new `.py` files:
+Then statically verify across the `.py` sources provided:
 
 **Code**
 - `from __future__ import annotations` is the first line after the docstring
@@ -48,9 +49,12 @@ Then statically verify across changed/new `.py` files:
 **Packaging**
 - `pyproject.toml` + committed `uv.lock`; no `requirements.txt`; no `pip install` in Dockerfile
 
+Every finding must cite `file:line` from a source block you were given. A finding you
+cannot cite is not a finding — omit it.
+
 Summarize as:
-- ✅ Passing checks
-- ❌ Failing checks with `file:line`
-- 🔧 Suggested fix (one line each)
+- Passing checks
+- Failing checks with `file:line`
+- Suggested fix (one line each)
 
 Do **NOT** fix anything — I decide what to address.
