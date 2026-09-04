@@ -1,12 +1,17 @@
 Generate a commit message for the currently staged changes.
 
-Staged changes (full):
-!`git diff --staged`
+All context you need has already been injected above this text by
+`.github/scripts/commit_msg_context.sh`.
 
-File-level summary:
-!`git diff --staged --stat`
+**Do not attempt to load any of it yourself.** This body contains no `!` blocks and no
+`@` references by design: command-template substitution is single-pass, so either would
+arrive as literal text and silently never run (ADR-0001).
 
-Write a commit message in **conventional commits** format:
+**Check the context first.** If a block above is missing, empty, or shows a line
+beginning `CONTEXT_ERROR`, **STOP and report which one**. Do not infer, reconstruct, or
+reason from the rules files in place of the missing output.
+
+Write a commit message in **conventional commits** format, from the `STAGED DIFF` block:
 
     type(scope): subject in imperative mood (max 72 characters)
 
@@ -27,8 +32,8 @@ Rules:
 - **Keep production figures out of the message.** The deposition test applies to git
   history too: no absolute dollar amounts, participant data, or client identifiers.
   *(Crucible: no P&L, returns, or account figures.)*
-- If the diff contains a decision with a real rejected alternative and no ADR is staged,
-  say so before writing the message.
+- If the diff contains a decision with a real rejected alternative and the `ADRs STAGED`
+  block is empty, say so before writing the message.
 - Do not add a Co-Authored-By trailer. `includeCoAuthoredBy` is off in this repo.
 - Output the complete message in a single code block I can copy.
 - Do **NOT** run `git commit` — I commit manually after review. The PreToolUse hook
