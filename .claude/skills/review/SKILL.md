@@ -3,7 +3,7 @@ description: Production-readiness review of the working tree — lint, format, t
 allowed-tools: Read, Grep, Glob, Bash(cat *), Bash(bash .github/scripts/*), Bash(uv run *), Bash(git diff*), Bash(git ls-files*)
 model: sonnet
 context: fork
-agent: Explore
+agent: Plan
 background: false
 disable-model-invocation: true
 ---
