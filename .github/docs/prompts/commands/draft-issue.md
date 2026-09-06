@@ -1,4 +1,9 @@
-Draft a GitHub Issue for this goal: **$ARGUMENTS**
+Draft a GitHub Issue for the goal supplied as this command's argument.
+
+**The goal text is the argument you were invoked with.** Do not look for a `$ARGUMENTS`
+token — argument substitution differs per harness (it interpolates on OpenCode, and
+arrives as a separate `ARGUMENTS:` line on Claude Code). Read the goal from wherever it
+landed. If you cannot find one, **STOP and report** rather than inventing a goal.
 
 All context you need has already been injected above this text by
 `.github/scripts/draft_issue_context.sh`.
