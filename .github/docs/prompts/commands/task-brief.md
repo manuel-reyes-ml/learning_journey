@@ -1,25 +1,29 @@
-Generate a complete Agent Task Brief for Issue #$1.
+Generate a complete Agent Task Brief for the GitHub Issue named in the context below.
 
-All context you need — the brief template, the Issue, its revision stamp, the modules
-in scope, the existing ADRs, and any prior brief for this Issue — has already been
-injected above this text by `.github/scripts/task_brief_context.sh`.
+All context you need — the Issue number, the brief template, the Issue itself, its
+revision stamp, the modules in scope, the existing ADRs, and any prior brief — is
+supplied by `.github/scripts/task_brief_context.sh`.
 
-**Do not attempt to load any of it yourself.** This body contains no `!` blocks and no
-`@` references by design: command-template substitution is single-pass, so a `!` or `@`
-written here would arrive as literal text and silently never run. That is the defect
-this structure exists to prevent — do not reintroduce it.
+**Read the Issue number from the `ISSUE NUMBER` block** (`ISSUE_NUMBER=<n>`). Do not
+look for a `$1` token anywhere in this file: argument substitution differs per harness —
+it interpolates on OpenCode and is literal in a Claude Code skill body — so this body
+does not use it (ADR-0006). Everywhere below, `<n>` means the number on that line.
 
-**First, check the context you were given.** If any block above is missing, empty, or
-shows a line beginning `CONTEXT_ERROR`, **STOP and report which one**. Do not improvise
-around missing context and do not try to fetch it another way.
+**Do not attempt to load any context yourself.** This body contains no `!` blocks and no
+`@` references by design: substitution is single-pass, so either would arrive as literal
+text and silently never run (ADR-0001).
 
-The `BRIEF TEMPLATE` block above — not this file — defines the brief's section order,
-headings and wording. This file defines only what goes *inside* each section. Follow the
+**Check the context first.** If a block is missing, empty, or shows a line beginning
+`CONTEXT_ERROR`, **STOP and report which one**. Do not infer, reconstruct, or reason
+from the rules files in place of the missing output.
+
+The `BRIEF TEMPLATE` block — not this file — defines the brief's section order, headings
+and wording. This file defines only what goes *inside* each section. Follow the
 template's structure exactly.
 
 ## Fill in every section of the template
 
-- **Metadata:** Issue #$1, branch `feature/$1-<short-description>`, today's date,
+- **Metadata:** Issue #`<n>`, branch `feature/<n>-<short-description>`, today's date,
   packs ticked to match the Issue
 - **Objective:** one paragraph from the Issue context
 - **Hard Constraints:** keep all **9** standard constraints verbatim (no commits/pushes ·
@@ -52,15 +56,16 @@ say so — that is a gap in the Issue, not something to silently add.
 
 ## Persist the brief
 
-Write the completed brief to `.github/plans/issue-$1-task-brief.md`.
+Write the completed brief to `.github/plans/issue-<n>-task-brief.md`, substituting the
+number from the `ISSUE NUMBER` block.
 
 The file must open with exactly this frontmatter block, filled in:
 
 ```
 ---
-issue: $1
+issue: <n>
 issue_updated_at: <the revision stamp from the context above, verbatim>
-branch: feature/$1-<short-description>
+branch: feature/<n>-<short-description>
 generated: <today's date, YYYY-MM-DD>
 template: .github/docs/templates/task_brief.md
 status: PROPOSAL
