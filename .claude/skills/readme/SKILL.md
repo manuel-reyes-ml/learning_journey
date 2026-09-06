@@ -1,7 +1,7 @@
 ---
 description: Draft a production-grade README from the repo and the flagship template. Outputs Markdown; does not write files.
 argument-hint: "[optional]"
-allowed-tools: Read, Grep, Glob, Bash(cat *), Bash(bash .github/scripts/*), Bash(git log*), Bash(find *), Bash(ls *), Bash(head *)
+allowed-tools: Read, Grep, Glob, Bash(cat:*), Bash(bash .github/scripts/readme_context.sh:*), Bash(git log:*), Bash(find:*), Bash(ls:*), Bash(head:*)
 model: sonnet
 context: fork
 agent: Plan
@@ -11,12 +11,15 @@ disable-model-invocation: true
 
 <!-- STUB. Instructions live once at .github/docs/prompts/commands/readme.md and are
      shared with OpenCode. Edit the prompt body, not this file.
-     Both lines below run at level 1. `!` substitution is single-pass, so shell inside
-     the imported body would arrive as literal text (ADR-0001). All shell for this
-     command is in .github/scripts/readme_context.sh.
-     UNVERIFIED on this harness: whether `$1` / `$ARGUMENTS` substitute BEFORE the `!`
-     shell runs. Confirmed on OpenCode; probe before trusting the argument here. -->
+     NO CLAUDE_PROJECT_DIR ANYWHERE (no dollar-brace form) — DELIBERATE (ADR-0006). Claude Code statically
+     analyses every `!` command and REFUSES any containing shell expansion
+     ("Contains simple_expansion"), command substitution or brace expansion
+     (anthropics/claude-code#43713, #11645). that variable in dollar-brace form is an expansion, so
+     every stub that used it was refused before running. Relative paths only.
+     Verified on this harness: expansion-free `!` DOES execute at level 1.
+     `agent: Plan`, not Explore: this command judges output against project
+     standards, and Explore deliberately skips CLAUDE.md to stay cheap (ADR-0004). -->
  
-!`bash ${CLAUDE_PROJECT_DIR}/.github/scripts/readme_context.sh`
+!`bash .github/scripts/readme_context.sh`
  
-!`cat ${CLAUDE_PROJECT_DIR}/.github/docs/prompts/commands/readme.md`
+!`cat .github/docs/prompts/commands/readme.md`
