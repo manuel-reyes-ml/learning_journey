@@ -4,13 +4,13 @@ argument-hint: "[one-line goal]"
 allowed-tools: Read, Grep, Glob, Bash(cat *), Bash(bash .github/scripts/*), Bash(gh issue list*), Bash(find *), Bash(ls *)
 model: sonnet
 context: fork
-agent: Explore
+agent: Plan
 background: false
 disable-model-invocation: true
 ---
 
 <!-- STUB. Instructions live once at .github/docs/prompts/commands/draft-issue.md and are
-     shared with OpenCode. Edit the prompt body, not this file.
+     shared with OpenCode. Edit the pr0ompt body, not this file.
      Both lines below run at level 1. `!` substitution is single-pass, so shell inside
      the imported body would arrive as literal text (ADR-0001). All shell for this
      command is in .github/scripts/draft_issue_context.sh.
