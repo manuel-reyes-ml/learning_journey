@@ -4,7 +4,7 @@ argument-hint: "[optional]"
 allowed-tools: Read, Grep, Glob, Bash(cat *), Bash(bash .github/scripts/*), Bash(git diff*), Bash(git log*), Bash(git rev-parse*)
 model: sonnet
 context: fork
-agent: Explore
+agent: Plan
 background: false
 disable-model-invocation: true
 ---
