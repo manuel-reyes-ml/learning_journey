@@ -1,7 +1,7 @@
 ---
 description: Generate a pull request description for the current branch. Outputs Markdown; does not create the PR.
 argument-hint: "[optional]"
-allowed-tools: Read, Grep, Glob, Bash(cat *), Bash(bash .github/scripts/*), Bash(git diff*), Bash(git log*), Bash(git rev-parse*)
+allowed-tools: Read, Grep, Glob, Bash(cat:*), Bash(bash .github/scripts/pr_prep_context.sh:*), Bash(git diff:*), Bash(git log:*), Bash(git rev-parse:*)
 model: sonnet
 context: fork
 agent: Plan
@@ -11,12 +11,15 @@ disable-model-invocation: true
 
 <!-- STUB. Instructions live once at .github/docs/prompts/commands/pr-prep.md and are
      shared with OpenCode. Edit the prompt body, not this file.
-     Both lines below run at level 1. `!` substitution is single-pass, so shell inside
-     the imported body would arrive as literal text (ADR-0001). All shell for this
-     command is in .github/scripts/pr_prep_context.sh.
-     UNVERIFIED on this harness: whether `$1` / `$ARGUMENTS` substitute BEFORE the `!`
-     shell runs. Confirmed on OpenCode; probe before trusting the argument here. -->
+     NO CLAUDE_PROJECT_DIR ANYWHERE (no dollar-brace form) — DELIBERATE (ADR-0006). Claude Code statically
+     analyses every `!` command and REFUSES any containing shell expansion
+     ("Contains simple_expansion"), command substitution or brace expansion
+     (anthropics/claude-code#43713, #11645). that variable in dollar-brace form is an expansion, so
+     every stub that used it was refused before running. Relative paths only.
+     Verified on this harness: expansion-free `!` DOES execute at level 1.
+     `agent: Plan`, not Explore: this command judges output against project
+     standards, and Explore deliberately skips CLAUDE.md to stay cheap (ADR-0004). -->
  
-!`bash ${CLAUDE_PROJECT_DIR}/.github/scripts/pr_prep_context.sh $1`
-
-!`cat ${CLAUDE_PROJECT_DIR}/.github/docs/prompts/commands/pr-prep.md`
+!`bash .github/scripts/pr_prep_context.sh`
+ 
+!`cat .github/docs/prompts/commands/pr-prep.md`
