@@ -10,6 +10,6 @@ subtask: true
      single-pass, so shell written inside the imported body never executes (ADR-0001).
      Do not add ad-hoc `!` here — extend the script instead (ADR-0003). -->
  
-!`bash .github/scripts/pr_prep_context.sh $1`
+!`bash .github/scripts/pr_prep_context.sh`
  
 !`cat .github/docs/prompts/commands/pr-prep.md`
