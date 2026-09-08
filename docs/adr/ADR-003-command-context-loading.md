@@ -4,7 +4,7 @@
 - **Date:** 2026-09-03
 - **Deciders:** Manuel Reyes
 - **Supersedes:** none
-- **Related:** ADR-0002 (plan artifact ownership), ADR-0003 (command shell trust boundary)
+- **Related:** ADR-0004 (plan artifact ownership), ADR-0005 (command shell trust boundary)
 
 > **Numbering note:** verify with `ls docs/adr` and renumber if `0001` is taken.
 
