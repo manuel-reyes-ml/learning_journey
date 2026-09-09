@@ -1,4 +1,4 @@
-# ADR-0003 — Command-template shell sits outside the agent permission boundary
+# ADR-0005 — Command-template shell sits outside the agent permission boundary
 
 - **Status:** Proposed
 - **Date:** 2026-09-03
@@ -25,10 +25,12 @@ That claim is false for command-template shell.
 Two probes on OpenCode 1.17.9, run on agent `plan` with `"bash": "deny"` in force,
 executed shell and wrote marker files to `/tmp`:
 
-| Probe | Body | Outcome |
-|---|---|---|
-| 1 | `` !`echo EXPANSION_OK` `` | Output reached the model |
-| 3 | `` !`{ echo NESTED_BASH_OK; ls -la .github/docs/templates/; } > /tmp/probe_out.txt` `` | **File created on disk** |
+
+| Probe | Body                                                                               | Outcome                  |
+| ----- | ---------------------------------------------------------------------------------- | ------------------------ |
+| 1     | `!`echo EXPANSION_OK``                                                             | Output reached the model |
+| 3     | `!`{ echo NESTED_BASH_OK; ls -la .github/docs/templates/; } > /tmp/probe_out.txt`` | **File created on disk** |
+
 
 The mechanism explains it: `!` is resolved by the client during template expansion,
 before any agent or model is invoked. The agent's `permission` map governs the agent's
@@ -49,27 +51,29 @@ model cannot be relied on as a backstop either. See ADR-0004 (owed).
 
 ## Decision
 
-**The `permission` map is the boundary for agent-initiated actions only. Command files
+**The** `permission` **map is the boundary for agent-initiated actions only. Command files
 and the scripts they invoke are trusted code, and their boundary is human review plus
-pre-commit — not `opencode.jsonc`.**
+pre-commit — not** `opencode.jsonc`**.**
 
 Concretely:
 
-1. **`opencode.jsonc` comments are corrected.** `// true read-only gate` becomes
-   `// read-only for AGENT-INITIATED actions; command-template ! is NOT gated here`
+1. `opencode.jsonc` **comments are corrected.** `// true read-only gate` becomes
+  `// read-only for AGENT-INITIATED actions; command-template ! is NOT gated here`
    on all three plan agents. A comment that overstates a guarantee is worse than none.
-2. **All command shell lives in `.github/scripts/*.sh`** — one reviewable file per
-   command, per ADR-0001. Ad-hoc `!` in a wrapper is not permitted; the wrapper's two
+2. **All command shell lives in** `.github/scripts/*.sh` — one reviewable file per
+  command, per ADR-0001. Ad-hoc `!` in a wrapper is not permitted; the wrapper's two
    lines are the whole of its shell surface.
 3. **Those scripts are read-only by convention, enforced by review.** The one
-   deliberate exception is `labels_run.sh`, which writes to GitHub; it is named `_run`
+  deliberate exception is `labels_run.sh`, which writes to GitHub; it is named `_run`
    rather than `_context` precisely so the exception is visible in the wrapper.
-4. **`bash -n` on every `.github/scripts/*.sh` is added to pre-commit.** Shell that the
-   permission layer will not stop must at least be syntax-gated before it lands.
+4. `bash -n` **on every** `.github/scripts/*.sh` **is added to pre-commit.** Shell that the
+  permission layer will not stop must at least be syntax-gated before it lands.
 5. **The regulated-data boundary is restated** in `AGENTS.md` as: *no proprietary data
-   leaves the machine because the model is local, and no command script exfiltrates
+  leaves the machine because the model is local, and no command script exfiltrates
    because every script is reviewed.* Provider routing plus script review — not the
    permission map.
+
+
 
 ## Alternatives considered
 
@@ -77,14 +81,14 @@ Concretely:
 consequence, not a defect, and ADR-0001's context scripts require the behaviour. Waiting
 would leave the false comment in place indefinitely.
 
-**Forbid `!` in command files entirely; have agents fetch context via tools.** Rejected
+**Forbid** `!` **in command files entirely; have agents fetch context via tools.** Rejected
 on evidence. `plan` runs under `bash: "deny"` so its Bash tool genuinely is blocked, and
 a 9B model that fabricates five times out of five is not a dependable executor of "read
 this file first." This would trade deterministic shell for the exact failure mode ADR-0001
 was written to eliminate.
 
 **Route regulated work through a harness without template shell.** Rejected as
-unverified: Claude Code's stub uses `` !`cat` `` at level 1 too, and whether its
+unverified: Claude Code's stub uses `!`cat`` at level 1 too, and whether its
 `allowed-tools` gates that is untested. Worth probing, but not a basis for a decision
 today.
 
