@@ -1,9 +1,9 @@
-# ADR-0002 — OpenCode owns the plan artifact; `.github/plans/` is the only writable path for a planner
+# ADR-0004 — OpenCode owns the plan artifact; `.github/plans/` is the only writable path for a planner
 
 - **Status:** Accepted
 - **Date:** 2026-09-03
 - **Deciders:** Manuel Reyes
-- **Related:** ADR-0001 (command context loading), ADR-0003 (command shell trust boundary)
+- **Related:** ADR-0003 (command context loading), ADR-0005 (command shell trust boundary)
 
 ## Context
 
@@ -22,14 +22,16 @@ All 13 project scope documents still document `.cursor/plans/`.
 Two constraints shape where the write can happen:
 
 - OpenCode agent `plan-cloud` is `{"edit": "deny", "bash": "deny"}` — the write is
-  refused as configured.
+refused as configured.
 - Claude Code's `allowed-tools` grants pre-approval, not capability; with `context: fork`
-  the named subagent supplies the tool set. `agent: Plan` is read-only, so adding `Write`
-  to `allowed-tools` is inert. Anthropic issues
-  [#17283](https://github.com/anthropics/claude-code/issues/17283) and
-  [#49559](https://github.com/anthropics/claude-code/issues/49559) further report that
-  `context: fork` and `agent:` are sometimes ignored, and an unresolved `agent:` falls
-  back to `general-purpose` — a *wider* tool pool. That fails open.
+the named subagent supplies the tool set. `agent: Plan` is read-only, so adding `Write`
+to `allowed-tools` is inert. Anthropic issues
+[#17283](https://github.com/anthropics/claude-code/issues/17283) and
+[#49559](https://github.com/anthropics/claude-code/issues/49559) further report that
+`context: fork` and `agent:` are sometimes ignored, and an unresolved `agent:` falls
+back to `general-purpose` — a *wider* tool pool. That fails open.
+
+
 
 ## Decision
 
@@ -46,7 +48,7 @@ them.** `plan-cloud` gains a narrow allowance:
 Plan artifacts live at `.github/plans/issue-<n>-task-brief.md`, one file per Issue,
 overwritten on regeneration — git history is the audit trail. Every brief carries
 frontmatter with `issue`, `issue_updated_at`, `branch`, `generated`, `template`, and
-`status: PROPOSAL`. **The agent may never write `status: APPROVED`;** only the human
+`status: PROPOSAL`. **The agent may never write** `status: APPROVED`**;** only the human
 sets it, and a brief at `PROPOSAL` is not an execution contract.
 
 The shared body instructs that if a harness denies the write, the agent outputs the
@@ -63,15 +65,15 @@ the fail-open behaviour above.
 OpenCode's permission model is a glob in a versioned config that either matches or does
 not; Claude Code's depends on fork behaviour with open defects against it.
 
-**`.opencode/plans/`** — OpenCode's built-in plan agent natively permits edits to plan
+`.opencode/plans/` — OpenCode's built-in plan agent natively permits edits to plan
 files there. Rejected: harness-specific, so Claude Code could never read briefs from a
 neutral path. `.github/` already holds the harness-neutral shared material.
 
-**`docs/plans/`** — beside `docs/adr/`, recruiter-visible. Rejected: briefs arrive one
+`docs/plans/` — beside `docs/adr/`, recruiter-visible. Rejected: briefs arrive one
 per Issue and would bury the ADRs, which carry higher signal. Selected exemplar briefs
 can be linked from the README instead.
 
-**Keep `.cursor/plans/`.** Rejected: `.cursor/` is a third harness's directory and
+**Keep** `.cursor/plans/`**.** Rejected: `.cursor/` is a third harness's directory and
 neither active harness has a reason to write there.
 
 **Keep the brief as terminal output; human saves it.** Rejected: reintroduces the
@@ -84,8 +86,7 @@ what OpenCode's own built-in plan agent does. The brief becomes a versioned arti
 sitting beside the PR it produced — evidence for the plan-then-execute discipline rather
 than a claim about it. `issue_updated_at` makes a stale brief detectable.
 
-**Negative.** `plan-cloud` is no longer absolutely read-only; the `// true read-only
-gate` comment becomes inaccurate and must change. Propagation is owed to 13 scope
+**Negative.** `plan-cloud` is no longer absolutely read-only; the `// true read-only gate` comment becomes inaccurate and must change. Propagation is owed to 13 scope
 documents. Briefs add repository volume.
 
 **Risk.** OpenCode matches edit patterns against worktree-relative paths; absolute or
