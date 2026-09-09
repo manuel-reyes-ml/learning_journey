@@ -1,4 +1,4 @@
-# ADR-0001 — Command context is loaded by level-1 shell; shared bodies are instructions-only
+# ADR-0003 — Command context is loaded by level-1 shell; shared bodies are instructions-only
 
 - **Status:** Accepted
 - **Date:** 2026-09-03
@@ -12,18 +12,20 @@
 
 The dual harness shares one prompt body per command. `.github/docs/prompts/commands/*.md`
 is the single source; `.opencode/command/*.md` imports it with `@`, and
-`.claude/skills/*/SKILL.md` imports it with `` !`cat` ``. Each body carried its own
-context via `` !`shell` `` blocks and `@file` references.
+`.claude/skills/*/SKILL.md` imports it with `!`cat``. Each body carried its own
+context via `!`shell`` blocks and `@file` references.
 
 Four probes run on OpenCode 1.17.9 (agent `plan`, Ollama Qwen3.5 9B) established:
 
-| # | Observation | Result |
-|---|---|---|
-| 1 | `` !`echo` `` in a command file | Executes |
-| 2 | `` !`…` `` under agent `"bash": "deny"` | **Still executes** |
-| 3 | `@path` in a command file | Injects nothing — literal string only |
-| 4 | `` !`…` `` inside a `cat`-imported body | **Never executes** — marker file absent |
-| 5 | `$1` inside a level-1 `` !`…` `` | Substitutes before the shell runs |
+
+| #   | Observation                         | Result                                  |
+| --- | ----------------------------------- | --------------------------------------- |
+| 1   | `!`echo`` in a command file         | Executes                                |
+| 2   | `!`…`` under agent `"bash": "deny"` | **Still executes**                      |
+| 3   | `@path` in a command file           | Injects nothing — literal string only   |
+| 4   | `!`…`` inside a `cat`-imported body | **Never executes** — marker file absent |
+| 5   | `$1` inside a level-1 `!`…``        | Substitutes before the shell runs       |
+
 
 Probes 3 and 4 were disk-verified (`/tmp` marker files), so they are independent of
 model behaviour.
@@ -35,12 +37,12 @@ received the context it was written to consume.** Nine commands are affected.
 The consequences are not uniform in severity:
 
 - `/eval` emits a **PASS/FAIL verdict on eval gates** with no `deepeval` output in
-  context. A fabricated PASS propagates into README claims and the flagship checklist.
+context. A fabricated PASS propagates into README claims and the flagship checklist.
 - `/review` emits a production-readiness report with no `ruff`, `mypy`, `pytest` or
-  `uv lock --check` output.
+`uv lock --check` output.
 - `/labels` invokes `setup-labels.sh` from inside the body, so **the script has never
-  run** and `.github/docs/project_labels.md` may not exist. `/draft-issue` and `/pr-prep`
-  both reference that file, so the failure cascades.
+run** and `.github/docs/project_labels.md` may not exist. `/draft-issue` and `/pr-prep`
+both reference that file, so the failure cascades.
 - `/commit-msg` writes commit messages without seeing the staged diff.
 
 Observed alongside: the local `plan` agent produced fabricated repository findings on
@@ -50,7 +52,7 @@ nothing. See ADR-0004 (owed).
 ## Decision
 
 **All command shell moves to level 1, in a per-command context script. Shared bodies
-contain instructions only — no `!`, no `@`.**
+contain instructions only — no** `!`**, no** `@`**.**
 
 ```
 .github/scripts/<command>_context.sh     # the only place shell lives
@@ -73,15 +75,15 @@ guards against.
 
 ## Alternatives considered
 
-**Swap `@` for `` !`cat` `` inside the bodies.** Rejected: probe 4 shows level-2 `!`
+**Swap** `@` **for** `!`cat`` **inside the bodies.** Rejected: probe 4 shows level-2 `!`
 never fires. Fixes the symptom on one reference type and leaves the shell dead.
 
-**Duplicate the `!` blocks into both wrappers.** Rejected: `/review` alone has six
+**Duplicate the** `!` **blocks into both wrappers.** Rejected: `/review` alone has six
 blocks; across nine commands that is 54 lines maintained in two places. This is the
 `cursor_workflow.md` defect of April 2026 — a pasted prompt body taught an inverted
 logging standard for months. Single-source-no-drift is the invariant.
 
-**One dispatcher script with a `case` per command.** Rejected: couples nine unrelated
+**One dispatcher script with a** `case` **per command.** Rejected: couples nine unrelated
 context contracts into one file, so a change to `/eval` context can break `/review`.
 Per-command scripts are independently reviewable and independently testable.
 
