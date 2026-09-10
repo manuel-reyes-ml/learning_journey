@@ -1,9 +1,9 @@
-# ADR-0007 — The local `plan` agent is not fit to author plans; it is demoted to retrieval
+# ADR-0008 — The local `plan` agent is not fit to author plans; it is demoted to retrieval
 
 - **Status:** Proposed
 - **Date:** 2026-09-04
 - **Deciders:** Manuel Reyes
-- **Related:** ADR-0001 (command context loading), ADR-0003 (command shell trust boundary)
+- **Related:** ADR-0003 (command context loading), ADR-00035(command shell trust boundary)
 
 > **Numbering note:** this record was reserved as ADR-0004 during the harness session and
 > renumbered when subagent routing took that slot. Confirm with `ls docs/adr`.
@@ -16,18 +16,19 @@ role in the harness. It is the only agent permitted to read DataVault and PostCh
 non-synthetic data, because a local model means no proprietary content leaves the
 machine. Cloud agents are restricted to public, synthetic repos.
 
-During the ADR-0001 investigation this agent was invoked five times with prompts that
-contained little or no real content — probe files consisting of a single `echo`, a bare
+During the ADR-0003 investigation this agent was invoked five times with prompts that contained little or no real content — probe files consisting of a single `echo`, a bare
 path, or one literal instruction. It never once reported that it had received nothing.
 Every run produced confident, specific, plausible output:
 
-| Run | Prompt actually received | Output produced |
-|---|---|---|
-| 1 | A bare file path (unresolved `@`) | Plan-mode capability table, offer to read four rule files |
-| 2 | One literal `echo` line | "Executive Plan — PII Leakage Remediation", with `basicConfig()` in multiple modules, `sk-abc123…` in plain text, SSNs in raw CSV rows, all marked Critical, prefaced *"After scanning your repo"* |
-| 3 | One literal `echo` line | Reconciliation-project requirements questionnaire — data volumes, guardrail modes, LLM choices |
-| 4 | One literal `echo` line | DocSync design review with HAML templates, conflict policy, CI integration depth |
-| 5 | One `echo` plus "Say DONE" | Multi-phase implementation plan; never said DONE |
+
+| Run | Prompt actually received          | Output produced                                                                                                                                                                                    |
+| --- | --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | A bare file path (unresolved `@`) | Plan-mode capability table, offer to read four rule files                                                                                                                                          |
+| 2   | One literal `echo` line           | "Executive Plan — PII Leakage Remediation", with `basicConfig()` in multiple modules, `sk-abc123…` in plain text, SSNs in raw CSV rows, all marked Critical, prefaced *"After scanning your repo"* |
+| 3   | One literal `echo` line           | Reconciliation-project requirements questionnaire — data volumes, guardrail modes, LLM choices                                                                                                     |
+| 4   | One literal `echo` line           | DocSync design review with HAML templates, conflict policy, CI integration depth                                                                                                                   |
+| 5   | One `echo` plus "Say DONE"        | Multi-phase implementation plan; never said DONE                                                                                                                                                   |
+
 
 Each set of "findings" is a restatement of the `.mdc` rule files loaded through
 `instructions[]` — `observability.mdc` supplies structlog, PII redaction and secrets;
@@ -53,24 +54,26 @@ in equivalent conditions. The problem tracks the model, not the harness.
 
 ## Decision
 
-**`plan` is demoted from planner to retrieval. It may read, locate and quote. It may not
+`plan` **is demoted from planner to retrieval. It may read, locate and quote. It may not
 author a plan, a task brief, or any artifact that a build agent will execute against.**
 
 Concretely:
 
-1. **No `/task-brief` on `plan`.** Gate 1 artifacts for regulated repositories are
-   authored by a human, optionally assisted by `plan` for retrieval only — "show me every
+1. **No** `/task-brief` **on** `plan`**.** Gate 1 artifacts for regulated repositories are
+  authored by a human, optionally assisted by `plan` for retrieval only — "show me every
    file that imports `settings`", not "what should change".
-2. **`plan`'s permitted outputs are quotation and location.** File paths, line numbers,
-   literal excerpts. Anything it asserts must be traceable to text it can quote.
-3. **Every `plan` response is treated as unverified** until a claim is checked against the
-   file it names. This is a review obligation on me, not an instruction to the model —
+2. `plan`**'s permitted outputs are quotation and location.** File paths, line numbers,
+  literal excerpts. Anything it asserts must be traceable to text it can quote.
+3. **Every** `plan` **response is treated as unverified** until a claim is checked against the
+  file it names. This is a review obligation on me, not an instruction to the model —
    the model cannot be trusted to flag its own fabrication, which is the finding.
 4. **Regulated-repo planning has no agent author.** DataVault and PostCheck task briefs
-   are written by hand until a fit local model is available. This is a real cost and is
+  are written by hand until a fit local model is available. This is a real cost and is
    accepted rather than worked around.
 5. **The privacy story is unchanged.** Proprietary content still never reaches a cloud
-   provider. What changes is the claim about what the local agent produces.
+  provider. What changes is the claim about what the local agent produces.
+
+
 
 ## Alternatives considered
 
@@ -88,7 +91,7 @@ not a control surface for this failure.
 Already implemented in ADR-0001, and worth having, but it does not close this. A model
 that fabricates a repo scan can fabricate an acknowledgement.
 
-**Route regulated planning to `plan-cloud`.** Rejected outright: it sends participant
+**Route regulated planning to** `plan-cloud`**.** Rejected outright: it sends participant
 and plan data to a cloud provider. The privacy boundary is not negotiable for a
 capability convenience.
 
@@ -125,7 +128,7 @@ Say the word DONE.
 
 - Replies `DONE` and nothing else → the behaviour has changed; re-open this ADR.
 - Produces an analysis, a plan, or a set of "findings" → confirmed, five of five becomes
-  six of six.
+six of six.
 
 Run the same prompt against `plan-cloud` as a control.
 
