@@ -52,7 +52,7 @@ import pytest
 from speller.benchmarks import BenchmarkResult
 from speller.protocols import DictionaryProtocol
 from speller.register import dicts
-from speller.speller import REPORT, SpellerResult, run_speller
+from speller.speller import Report, SpellerResult, run_speller
 
 # MockDictionary and FailingDictionary are in conftest.py.
 # pytest auto-discovers them — no import needed for fixtures,
@@ -247,7 +247,7 @@ class TestFormatReport:
         optional misspelled-words file content.
         """
         report = result_with_benchmarks.format_report()
-        assert isinstance(report, REPORT)
+        assert isinstance(report, Report)
         assert isinstance(report.main, str)
         
     def test_report_contains_statistics(
