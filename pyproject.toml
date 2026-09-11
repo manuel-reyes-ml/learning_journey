@@ -27,11 +27,3 @@ members = [
     "llm-api-smoke-test",
     "courses/cs50_harvard/code/05_data_structures/speller/py_src",
 ]
-
-[tool.pytest.ini_options]
-addopts = "--import-mode=importlib"
-consider_namespace_packages = true
-testpaths = [
-    "llm-api-smoke-test/tests",
-    "courses/cs50_harvard/code/05_data_structures/speller/py_src/tests",
-]
