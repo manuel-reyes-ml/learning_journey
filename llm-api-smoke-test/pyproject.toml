@@ -45,7 +45,7 @@ dependencies = [
 #   (`>=0.40`) is reasonable for a 0.x library you actively track. When Anthropic
 #   ships 1.0, add `,<2.0` and re-test for breaking changes before bumping.
 
-[project.optional-dependencies]
+[dependency-groups]
 # Split test (just the pytest stack) from dev (test + lint + type-check) so CI's
 # test job installs only what it needs. The self-reference `[test]` is the
 # idiomatic "dev includes everything in test, plus more."
