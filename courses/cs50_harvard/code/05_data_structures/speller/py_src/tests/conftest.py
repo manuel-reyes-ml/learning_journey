@@ -107,8 +107,8 @@ def project_root() -> Path:
     Path
         Absolute path to the speller project root.
     """
-    # tests/conftest.py → parent is tests/ → parent is speller/
-    return Path(__file__).resolve().parent.parent
+    # tests/conftest.py → parent is tests/ → parent is py_src -> parent is speller/
+    return Path(__file__).resolve().parent.parent.parent
 
 
 @pytest.fixture
