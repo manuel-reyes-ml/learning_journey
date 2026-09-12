@@ -289,15 +289,36 @@ class TestMain:
                 str(text_path),
                 str(large_dict_path),
             ])
-        
+
         # │  caplog lets you assert on level and message separately,        │
         # │  without depending on the exact log format string.   
         assert len(caplog.records) > 0
-        
-        record = caplog.records[0]
-        assert record.levelname == "DEBUG"
-        assert "Verbose mode enabled" in record.message
-        assert record.name == "speller.__main__"
+
+        # caplog.records is a list of LogRecord objects.
+        # caplog.records[0] is the first LogRecord object.
+        # caplog.records[0].levelname is the level name of the first LogRecord object.
+        # caplog.records[0].message is the message of the first LogRecord object.
+        # caplog.records[0].name is the name of the first LogRecord object.
+
+        # Assert on presence and properties, not position.
+        debug_records = [
+            r for r in caplog.records
+            if r.name == "speller.__main__" and r.levelno == logging.DEBUG
+        ]
+
+        assert debug_records, "--verbose should emit at least one DEBUG record"
+        assert any(
+            "Verbose mode enabled" in r.getMessage() for r in debug_records
+        )
+
+        # getMessage() over .message. .message is an attribute a Formatter sets during formatting —
+        # it isn't guaranteed to exist on a raw LogRecord. getMessage() always works and performs the
+        # %s interpolation, which matters for your other log calls like logger.debug("Arguments
+        # parsed: %s", args).
+        #   record = caplog.records[0]
+        #   assert record.levelname == "DEBUG"
+        #   assert "Verbose mode enabled" in record.message
+        #   assert record.name == "speller.__main__"
         
         # caplog's capture handler sits on the root logger. With propagate = False on "speller",
         # records emitted by "speller.__main__" flow up to "speller" and stop there — they never
