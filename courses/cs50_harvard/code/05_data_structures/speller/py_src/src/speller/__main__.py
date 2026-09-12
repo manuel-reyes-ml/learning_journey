@@ -980,6 +980,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         logger.info("Structured logging mode enabled")
 
     else:
+        # regular logging mode is the default
         configure_logging(
             console_verbose=args.verbose,
             log_to_file=not args.no_log_file,
