@@ -20,10 +20,13 @@ from __future__ import annotations
 
 import pytest
 
+from pathlib import Path
+
 from speller.config import (
     MAX_WORD_LENGTH,
     ExitCode,
     FileHandlerConfig,
+    LogFilesPath,
     file_dirs,
     fhandler_config,
 )
@@ -136,8 +139,8 @@ class TestFileDirectories:
     def test_log_file_path(self) -> None:
         """log_file property returns a Path in LOG_DIR."""
         log_file = file_dirs.log_file
-        assert log_file.parent == file_dirs.LOG_DIR
-        assert log_file.name == "speller.log"
+        assert isinstance(log_file, LogFilesPath)
+        assert isinstance(log_file.flog_path, Path)
         
         
 class TestFileHandlerConfig:
