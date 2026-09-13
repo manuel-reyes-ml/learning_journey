@@ -3,10 +3,10 @@ revision = 3
 requires-python = ">=3.14"
 resolution-markers = [
     "python_full_version >= '3.15' and sys_platform == 'win32'",
-    "python_full_version < '3.15' and sys_platform == 'win32'",
     "python_full_version >= '3.15' and sys_platform == 'emscripten'",
-    "python_full_version < '3.15' and sys_platform == 'emscripten'",
     "python_full_version >= '3.15' and sys_platform != 'emscripten' and sys_platform != 'win32'",
+    "python_full_version < '3.15' and sys_platform == 'win32'",
+    "python_full_version < '3.15' and sys_platform == 'emscripten'",
     "python_full_version < '3.15' and sys_platform != 'emscripten' and sys_platform != 'win32'",
 ]
 
@@ -1566,8 +1566,10 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
-    { name = "llm-api-smoke-test" },
     { name = "pyright" },
+    { name = "pytest" },
+    { name = "pytest-asyncio" },
+    { name = "pytest-cov" },
     { name = "respx" },
     { name = "ruff" },
 ]
@@ -1592,8 +1594,10 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "llm-api-smoke-test", extras = ["test"] },
     { name = "pyright", specifier = ">=1.1,<2.0" },
+    { name = "pytest", specifier = ">=8.0,<10.0" },
+    { name = "pytest-asyncio", specifier = ">=0.23,<2.0" },
+    { name = "pytest-cov", specifier = ">=5.0,<7.0" },
     { name = "respx", specifier = ">=0.23,<1.0" },
     { name = "ruff", specifier = ">=0.5,<1.0" },
 ]
