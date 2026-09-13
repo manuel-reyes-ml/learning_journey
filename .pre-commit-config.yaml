@@ -1,0 +1,102 @@
+# learning_journey — local enforcement layer (roadmap CORRECTION 21).
+#
+# Governing rule: this hook set is a strict SUBSET of the CI gate. CI stays
+# authoritative. Nothing runs here that does not also run in CI.
+#
+# Setup:
+#   pipx install pre-commit
+#   pre-commit run --all-files     # inspect the blast radius first
+#   make hooks                     # == pre-commit install --install-hooks
+#
+# Maintenance:
+#   pre-commit autoupdate --freeze # resolve tags -> SHAs, mitigates version drift
+#
+# Config for the tools themselves lives in pyproject.toml, never in `args:`,
+# so hooks / CI / editor cannot disagree. (No pyproject.toml in this repo yet.)
+
+minimum_pre_commit_version: "3.2.0"
+
+# A plain `pre-commit install` wires BOTH stages, so the commit-msg hook below
+# is actually installed rather than silently skipped.
+default_install_hook_types: [pre-commit, commit-msg]
+
+repos:
+  # ---------------------------------------------------------------------------
+  # Tier A — basics + secret boundary. Applies to every repo in the portfolio.
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      # The two rewriting hooks skip courses/ — that tree is a finished archive,
+      # and a whitespace pass over it is churn, not quality.
+      - id: trailing-whitespace
+        exclude: ^courses/
+      - id: end-of-file-fixer
+        exclude: ^courses/
+      - id: check-yaml
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=1000]
+      # Secret boundary. Deliberately NOT excluded anywhere — a scanner with
+      # holes in it is a scanner you cannot cite.
+      - id: detect-private-key
+
+  # ---------------------------------------------------------------------------
+  # Tier A — lint + format. `ruff-check --fix` runs BEFORE `ruff-format`,
+  # because a lint fix can emit code that then needs reformatting.
+  # Hook id is `ruff-check`; the retired bare `ruff` id is not used.
+  #
+  # Scoped with `files:` on purpose. Ruff's pre-commit hook receives the changed
+  # files directly, which means `include`/`exclude` in pyproject.toml is ignored
+  # — scoping has to happen here. courses/ holds ~138 CS50/PY4E files that were
+  # never written to this standard; they are archive, not production code.
+  # Widen this regex as production code lands.
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.4
+    hooks:
+      - id: ruff-check
+        args: [--fix]
+        files: ^(scripts/|llm-api-smoke-test/)
+      - id: ruff-format
+        files: ^(scripts/|llm-api-smoke-test/)
+
+  # ---------------------------------------------------------------------------
+  # Tier A — secret scanning.
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+
+  # ---------------------------------------------------------------------------
+  # Tier C — Conventional Commits, enforced rather than merely declared.
+  # Runs on the commit-msg stage, so it sees the message, not the diff.
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/compilerla/conventional-pre-commit
+    rev: v4.4.0
+    hooks:
+      - id: conventional-pre-commit
+        stages: [commit-msg]
+
+  # ---------------------------------------------------------------------------
+  # Claude Code harness — generated-artifact drift.
+  #
+  # .claude/agents/*.md and .claude/output-styles/learn.md are GENERATED from
+  # .github/docs/prompts/agents/ by scripts/build_claude_agents.py. A generated
+  # file that drifts from its source is the same class of defect as a stale
+  # lockfile: invisible in review, wrong at runtime.
+  #
+  # language: system  -> use the interpreter on PATH; the script is stdlib-only.
+  # pass_filenames: false -> the script walks the tree itself, takes no file args.
+  # files: -> only pay the cost when sources, generator, or outputs change.
+  # ---------------------------------------------------------------------------
+  - repo: local
+    hooks:
+      - id: claude-agents-check
+        name: claude agents in sync with shared prompts
+        entry: python3 scripts/build_claude_agents.py --check
+        language: system
+        pass_filenames: false
+        files: ^(\.github/docs/prompts/agents/|scripts/build_claude_agents\.py|\.claude/agents/|\.claude/output-styles/)
