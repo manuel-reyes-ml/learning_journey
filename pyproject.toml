@@ -1,6 +1,21 @@
+# learning_journey — workspace root.
+#
+# This file is the ROOT of a uv workspace. It owns:
+#   - the shared dependency set for notebooks and scripts
+#   - the list of workspace members (packages with their own pyproject.toml)
+#   - ruff config for code that is NOT inside a member
+#
+# It deliberately does NOT define [tool.pytest.ini_options]. pytest reads exactly
+# one config file per run; a root-level block would silently override each
+# member's own settings (asyncio_mode, --strict-markers, coverage scope).
+# Tests are run one invocation per member — see `make test`.
+
 [project]
 name = "learning-journey"
 version = "0.1.0"
+# Must be <= the floor of every workspace member, and the CI matrix must be a
+# subset of this range. Members declare >=3.12; local dev runs 3.14 via
+# .python-version.
 requires-python = ">=3.12"
 dependencies = [
     "beautifulsoup4>=4.15.0",
@@ -16,21 +31,42 @@ dependencies = [
     "yfinance>=1.7.0",
 ]
 
+# No pytest here on purpose. The root project has no tests of its own, and a
+# root-level pytest floor collides with any member that pins a ceiling — that is
+# exactly what produced the "requirements are unsatisfiable" error. Each member
+# owns its own pytest pin; `uv sync --all-groups` brings them into the venv.
 [dependency-groups]
 dev = [
-    "pytest>=9.1.1",
     "ruff>=0.16.7",
 ]
-
-[tool.ruff]
-line-length = 100
-target-version = "py312"
-
-[tool.ruff.lint]
-select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
 
 [tool.uv.workspace]
 members = [
     "llm-api-smoke-test",
     "courses/cs50_harvard/code/05_data_structures/speller/py_src",
+]
+
+# ---------------------------------------------------------------------------
+# ruff — applies only to files NOT inside a workspace member.
+#
+# ruff resolves config by walking UP from each file, so anything under
+# llm-api-smoke-test/ or speller/py_src/ uses that package's own [tool.ruff].
+# Without this block, files in scripts/ would fall back to ruff's bare defaults
+# (line-length 88, E/F only). `D` is omitted: scripts/ is not a documented
+# public API.
+# ---------------------------------------------------------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "F",    # pyflakes
+    "W",    # pycodestyle warnings
+    "I",    # isort
+    "B",    # bugbear
+    "UP",   # pyupgrade
+    "SIM",  # simplify
+    "RUF",  # ruff-specific
 ]
