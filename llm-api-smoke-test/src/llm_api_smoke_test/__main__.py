@@ -497,8 +497,7 @@ def _build_providers(
     *,
     run_async: Literal[True],  # ← the discriminator
     model_override: str | None = None,
-) -> list[AsyncLLMProvider]:
-    ...
+) -> list[AsyncLLMProvider]: ...
 
 
 # ─── Overload 2: run_async=False → sync providers ─────────────────────
@@ -509,8 +508,7 @@ def _build_providers(
     *,
     run_async: Literal[False],  # ← the discriminator
     model_override: str | None = None,
-) -> list[LLMProvider]:
-    ...
+) -> list[LLMProvider]: ...
 
 
 # ─── Implementation: NO @overload decorator, accepts plain bool ──────

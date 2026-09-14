@@ -180,32 +180,32 @@ async def batch_smoke_test(
             limiter,  # rate cap — leaky bucket, 50 calls / 60s
             sem,  # concurrency cap — max_concurrent in flight
         ):
-                for provider in providers:
-                    provider_class = type(provider).__name__
-                    logger.debug("Running smoke test with %s", provider_class)
+            for provider in providers:
+                provider_class = type(provider).__name__
+                logger.debug("Running smoke test with %s", provider_class)
 
-                    try:
-                        result = await provider.smoke_test(prompt)
-                        slogger.info(
-                            "call_successful",
-                            provider_name=result.provider_name,
-                            model=result.model,
-                            response=result.response_preview,
-                        )
-                        successes.append(result)
-                    except Exception as exc:
-                        slogger.error(
-                            "call_failed",
-                            provider_class=provider_class,
-                            type_exception=type(exc).__name__,
-                            exc_info=True,  # <- structlog's blessed way to log exceptions
-                            # replace exception=exc with exc_info=True.
-                            # exc_info=True tells structlog "grab the current exception from
-                            # sys.exc_info() and render it properly through format_exc_info.
-                            # " This is what that processor is built to consume — no more
-                            # concatenation error, and you get a proper traceback in your logs.
-                        )
-                        failures.append((provider_class, exc))
+                try:
+                    result = await provider.smoke_test(prompt)
+                    slogger.info(
+                        "call_successful",
+                        provider_name=result.provider_name,
+                        model=result.model,
+                        response=result.response_preview,
+                    )
+                    successes.append(result)
+                except Exception as exc:
+                    slogger.error(
+                        "call_failed",
+                        provider_class=provider_class,
+                        type_exception=type(exc).__name__,
+                        exc_info=True,  # <- structlog's blessed way to log exceptions
+                        # replace exception=exc with exc_info=True.
+                        # exc_info=True tells structlog "grab the current exception from
+                        # sys.exc_info() and render it properly through format_exc_info.
+                        # " This is what that processor is built to consume — no more
+                        # concatenation error, and you get a proper traceback in your logs.
+                    )
+                    failures.append((provider_class, exc))
 
     # Schedule all N tasks. `gather` returns them in input order even though
     # they complete in some other order, which is what we want for matching
