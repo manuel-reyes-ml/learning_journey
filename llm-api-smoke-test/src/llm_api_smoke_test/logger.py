@@ -138,7 +138,7 @@ class LogFilesPath(NamedTuple):
 
 @dataclass(frozen=True, slots=True)
 class FileDirectories:
-    """Resolved filesystem paths for the package's writable directories.
+    r"""Resolved filesystem paths for the package's writable directories.
 
     Uses :class:`platformdirs.PlatformDirs` to put logs in
     OS-appropriate user locations (``~/Library/Logs/llm-api-smoke-test``

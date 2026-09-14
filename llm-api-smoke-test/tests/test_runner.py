@@ -187,7 +187,7 @@ class TestRunSmokeTestsFailures:
         bad = FakeSyncProvider(provider_settings, should_raise=OSError("boom"))
         good = FakeSyncProvider(provider_settings, response="still ran")
 
-        successes, failures = run_smoke_tests(providers=[bad, good])  # type: ignore[type-arg]
+        successes, _failures = run_smoke_tests(providers=[bad, good])  # type: ignore[type-arg]
 
         # The good provider ran - its call is recorded
         assert good.calls == [DEFAULT_PROMPT]

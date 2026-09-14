@@ -73,7 +73,7 @@ class TestBatchSmokeTestHappyPath:
         """
         prompts = ["one", "two", "three"]
 
-        successes, failures = await batch_smoke_test(
+        successes, _failures = await batch_smoke_test(
             providers=[fake_async_provider],  # type: ignore[type-arg]
             prompts=prompts,
         )
