@@ -156,6 +156,6 @@ Resources that made this possible:
 
 ---
 
-**Last Updated:** November 20, 2025  
-**Current Stage:** Stage 1, Week 1  
+**Last Updated:** November 20, 2025
+**Current Stage:** Stage 1, Week 1
 **Status:** 🔥 Building from zero to Senior LLM Engineer

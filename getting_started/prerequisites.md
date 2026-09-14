@@ -58,14 +58,14 @@ This document outlines the requirements, recommendations, and expectations befor
 
 This journey starts from **absolute zero**:
 - ❌ No programming experience needed
-- ❌ No computer science degree required  
+- ❌ No computer science degree required
 - ❌ No prior data analysis experience necessary
 - ❌ No math beyond high school algebra (initially)
 
 ### **What Actually Helps:**
-✅ **Basic computer literacy** - Can navigate folders, install apps, use web browser  
-✅ **Comfortable with learning** - Reading docs, watching videos, googling errors  
-✅ **Problem-solving mindset** - Willing to debug and figure things out  
+✅ **Basic computer literacy** - Can navigate folders, install apps, use web browser
+✅ **Comfortable with learning** - Reading docs, watching videos, googling errors
+✅ **Problem-solving mindset** - Willing to debug and figure things out
 ✅ **English proficiency** - Most resources are in English
 
 ### **Nice to Have (But Not Required):**
@@ -142,19 +142,19 @@ This journey starts from **absolute zero**:
 
 ### **Common Misconceptions to Avoid:**
 
-❌ **"I need to be a math genius"**  
+❌ **"I need to be a math genius"**
 ✅ Reality: Basic algebra is enough for Stage 1. Advanced math comes gradually.
 
-❌ **"I'm too old to learn programming"**  
+❌ **"I'm too old to learn programming"**
 ✅ Reality: Career changers in 30s-50s succeed all the time. Age ≠ ability.
 
-❌ **"I need to finish everything before applying to jobs"**  
+❌ **"I need to finish everything before applying to jobs"**
 ✅ Reality: Apply when you have 3-5 solid projects (Month 4-5).
 
-❌ **"I should learn everything before building projects"**  
+❌ **"I should learn everything before building projects"**
 ✅ Reality: Build projects while learning. Projects solidify knowledge.
 
-❌ **"Tutorial hell is learning"**  
+❌ **"Tutorial hell is learning"**
 ✅ Reality: Doing > watching. Code every day, even if just 20 minutes.
 
 ### **Success Mindset:**
@@ -252,7 +252,7 @@ This journey starts from **absolute zero**:
 
 **Documentation (Free):**
 - Python official docs
-- pandas documentation  
+- pandas documentation
 - SQL tutorials (W3Schools, Mode Analytics)
 - GitHub guides
 
@@ -283,16 +283,16 @@ This journey starts from **absolute zero**:
 
 Let's clear up common myths:
 
-❌ **Expensive equipment** - Basic laptop is fine  
-❌ **Computer science degree** - Not required  
-❌ **Math PhD** - High school algebra sufficient (Stage 1)  
-❌ **Perfect English** - Good enough English is enough  
-❌ **Prior coding experience** - Starting from zero works  
-❌ **Bootcamp** - Self-paced learning is viable  
-❌ **Quit your job** - Learn while working (25 hrs/week)  
-❌ **Perfect plan** - Start, adjust as you go  
-❌ **Expensive courses** - Free/cheap resources are excellent  
-❌ **Know everything upfront** - Google/AI assistants exist  
+❌ **Expensive equipment** - Basic laptop is fine
+❌ **Computer science degree** - Not required
+❌ **Math PhD** - High school algebra sufficient (Stage 1)
+❌ **Perfect English** - Good enough English is enough
+❌ **Prior coding experience** - Starting from zero works
+❌ **Bootcamp** - Self-paced learning is viable
+❌ **Quit your job** - Learn while working (25 hrs/week)
+❌ **Perfect plan** - Start, adjust as you go
+❌ **Expensive courses** - Free/cheap resources are excellent
+❌ **Know everything upfront** - Google/AI assistants exist
 
 **What matters more:**
 - ✅ Consistency
@@ -371,11 +371,11 @@ For the **first 5 months (Data Analyst stage)**, you specifically need:
 ## 🚀 Ready to Start?
 
 ### **If you have:**
-✅ A computer  
-✅ Internet access  
-✅ 20-25 hours/week  
-✅ Willingness to learn  
-✅ Growth mindset  
+✅ A computer
+✅ Internet access
+✅ 20-25 hours/week
+✅ Willingness to learn
+✅ Growth mindset
 
 **You're ready! → Continue to [SETUP_GUIDE.md](./SETUP_GUIDE.md)**
 
@@ -392,8 +392,8 @@ It's **showing up consistently**, even when:
 - Progress feels slow
 - Others seem further ahead
 
-**Consistency beats intelligence.**  
-**Persistence beats talent.**  
+**Consistency beats intelligence.**
+**Persistence beats talent.**
 **Action beats planning.**
 
 The person who studies 25 hours/week for 37 months beats the genius who studies sporadically.

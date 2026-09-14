@@ -47,10 +47,10 @@ When generating or rewriting artifacts, instruct Browser Codex to read and follo
 - Risks / impact
 
 **Example prompt (Browser Codex)**
-> Using `.github/templates/issue_template.md`, draft (or rewrite) a GitHub Issue for: **[one-sentence goal]**, if after your review in repo's module you find is a valid issue to be solved.  
+> Using `.github/templates/issue_template.md`, draft (or rewrite) a GitHub Issue for: **[one-sentence goal]**, if after your review in repo's module you find is a valid issue to be solved.
 > To determine the correct implementation plan review all modules in main branch to make sure changes are made globally (considering all affected modules) and to avoid unwanted changes are applied.
-> Use `.github/templates/project_labels.md` to recommend the correct labels (only from that file).  
-> Include explicit acceptance criteria (checkboxes) and a validation/smoke test plan with commands and expected outcomes.  
+> Use `.github/templates/project_labels.md` to recommend the correct labels (only from that file).
+> Include explicit acceptance criteria (checkboxes) and a validation/smoke test plan with commands and expected outcomes.
 > Output the final Issue body in Markdown file ready to copy and paste into GitHub and include issue title to be production grade and recruiter friendly.
 
 **Outcome**
@@ -70,8 +70,8 @@ When generating or rewriting artifacts, instruct Browser Codex to read and follo
 2. Copy/paste the completed Task Brief into VS Code Codex.
 
 **Example prompt (Browser Codex)**
-> Using `.github/templates/vscode_codex_task_brief.md`, generate a complete Task Brief for Issue #X.  
-> Enforce: no commits, no pushes, minimal incremental changes, and include validation commands with expected outputs.  
+> Using `.github/templates/vscode_codex_task_brief.md`, generate a complete Task Brief for Issue #X.
+> Enforce: no commits, no pushes, minimal incremental changes, and include validation commands with expected outputs.
 > Ensure the acceptance criteria aligns with the Issue.
 > Output the final task_brief body in a Markdown file ready to copy and paste into Codex VS code.
 
@@ -114,7 +114,7 @@ When generating or rewriting artifacts, instruct Browser Codex to read and follo
   - Documentation clarity
 
 **Example prompt (Browser Codex)**
-> I implemented Issue #X on branch `<branch>`. Review the diff for correctness, edge cases, and consistency with repo conventions.  
+> I implemented Issue #X on branch `<branch>`. Review the diff for correctness, edge cases, and consistency with repo conventions.
 > Do not propose scope expansion; only recommend fixes, naming/structure improvements, and missing validations/tests.
 > Do not make edit codes, I want your review and recommendation only if any bug is found.
 
@@ -141,9 +141,9 @@ When generating or rewriting artifacts, instruct Browser Codex to read and follo
 - Any checklist items from the Issue that are now completed
 
 **Example prompt (Browser Codex)**
-> Using `.github/templates/pull_request_template.md`, generate a PR description for Issue #X.  
-> Base it on the branch diff and this summary: [paste summary].  
-> Include verification steps (commands) and add “Closes #X”.  
+> Using `.github/templates/pull_request_template.md`, generate a PR description for Issue #X.
+> Base it on the branch diff and this summary: [paste summary].
+> Include verification steps (commands) and add “Closes #X”.
 > Keep language concise and consistent with the template headings.
 > Output the final PR body in Markdown file ready to copy and paste into GitHub and include PR title to be production grade and recruiter friendly. Also include suggested labels to be used in the new PR, based on `.github/templates/project_labels.md`.
 > Generate 1 paragraph for PR merge extended description in GitHub.
@@ -166,7 +166,7 @@ When generating or rewriting artifacts, instruct Browser Codex to read and follo
 - Ensuring PR labels align with Issue labels
 
 **Example prompt (Browser Codex)**
-> Using `templates/project_labels.md`, recommend the correct labels for Issue #X and the corresponding PR.  
+> Using `templates/project_labels.md`, recommend the correct labels for Issue #X and the corresponding PR.
 > Explain each label choice in one sentence.
 
 ---
@@ -183,10 +183,10 @@ Everything else: **VS Code Codex**.
 
 ## Concrete example (Issue 3: Roth engine)
 
-- **Browser Codex:**  
-  - Draft/refine Issue using `templates/issue_template.md`  
-  - Suggest labels using `templates/project_labels.md`  
-  - Confirm output schema + validation checklist  
+- **Browser Codex:**
+  - Draft/refine Issue using `templates/issue_template.md`
+  - Suggest labels using `templates/project_labels.md`
+  - Confirm output schema + validation checklist
   - Generate VS Code Task Brief using `templates/vscode_codex_task_brief.md`
-- **VS Code Codex:** implement `roth_taxable_analysis.py` + run local smoke tests  
+- **VS Code Codex:** implement `roth_taxable_analysis.py` + run local smoke tests
 - **Browser Codex:** review diff + generate PR description using `templates/pull_request_template.md`

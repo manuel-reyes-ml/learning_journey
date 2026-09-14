@@ -9,8 +9,8 @@ This guide will walk you through setting up EVERY tool, platform, and account yo
 - Verification steps to ensure it's working
 - Common troubleshooting tips
 
-**Time Required:** 3-4 hours total (spread across Thursday-Saturday)  
-**Difficulty:** Beginner-friendly with screenshots  
+**Time Required:** 3-4 hours total (spread across Thursday-Saturday)
+**Difficulty:** Beginner-friendly with screenshots
 **Support:** If stuck, see troubleshooting section at bottom
 
 ---
@@ -20,8 +20,8 @@ This guide will walk you through setting up EVERY tool, platform, and account yo
 
 ### 1.1 Python Installation
 
-**What:** Python programming language  
-**Why:** Core language for data analysis  
+**What:** Python programming language
+**Why:** Core language for data analysis
 **When to do:** Thursday 5:00-5:15 AM
 
 #### For Windows:
@@ -47,7 +47,7 @@ This guide will walk you through setting up EVERY tool, platform, and account yo
    # Open Command Prompt (Windows key + R, type "cmd")
    python --version
    # Should show: Python 3.11.7
-   
+
    pip --version
    # Should show: pip 23.x.x from [location]
    ```
@@ -56,7 +56,7 @@ This guide will walk you through setting up EVERY tool, platform, and account yo
    ```bash
    # In Command Prompt:
    pip install jupyter pandas numpy matplotlib seaborn
-   
+
    # You should see:
    # "Successfully installed jupyter-X.X.X pandas-X.X.X ..."
    ```
@@ -85,7 +85,7 @@ This guide will walk you through setting up EVERY tool, platform, and account yo
    # Open Terminal (Cmd + Space, type "Terminal")
    python3 --version
    # Should show: Python 3.11.7
-   
+
    pip3 --version
    # Should show: pip 23.x.x
    ```
@@ -104,8 +104,8 @@ This guide will walk you through setting up EVERY tool, platform, and account yo
 
 ### 1.2 VS Code Installation & Setup
 
-**What:** Professional code editor (like Microsoft Word for code)  
-**Why:** Industry-standard tool, free, powerful  
+**What:** Professional code editor (like Microsoft Word for code)
+**Why:** Industry-standard tool, free, powerful
 **When to do:** Thursday 5:15-5:30 AM
 
 #### Installation:
@@ -116,7 +116,7 @@ This guide will walk you through setting up EVERY tool, platform, and account yo
    - File downloads: `VSCodeSetup.exe` (Windows) or `VSCode.dmg` (Mac)
 
 2. **Install VS Code:**
-   
+
    **Windows:**
    ```
    ✅ Run VSCodeSetup.exe
@@ -128,7 +128,7 @@ This guide will walk you through setting up EVERY tool, platform, and account yo
    ✅ Click "Install"
    ✅ Launch VS Code
    ```
-   
+
    **Mac:**
    ```
    ✅ Open VSCode.dmg
@@ -143,7 +143,7 @@ This guide will walk you through setting up EVERY tool, platform, and account yo
    ```
    Click Extensions icon (left sidebar, 4 squares)
    Search and install these:
-   
+
    ✅ Python (by Microsoft) - ESSENTIAL
    ✅ Jupyter (by Microsoft) - ESSENTIAL
    ✅ Python Indent (by Kevin Rose)
@@ -203,8 +203,8 @@ print(f"This month's profit: ${profit:.2f}")
 
 ### 1.3 Git & GitHub Setup
 
-**What:** Version control system (tracks code changes)  
-**Why:** Industry requirement, backs up your work, showcases projects  
+**What:** Version control system (tracks code changes)
+**Why:** Industry requirement, backs up your work, showcases projects
 **When to do:** Thursday 8:00-8:30 PM
 
 #### Install Git:
@@ -371,8 +371,8 @@ git push origin main
 
 ### 1.4 Jupyter Notebook Setup
 
-**What:** Interactive coding environment (mix of code, results, notes)  
-**Why:** Perfect for data analysis, experimentation, sharing work  
+**What:** Interactive coding environment (mix of code, results, notes)
+**Why:** Perfect for data analysis, experimentation, sharing work
 **When to do:** Monday 5:30-6:00 AM (Week 1)
 
 **Installation:**
@@ -413,7 +413,7 @@ jupyter notebook
 Click dropdown "Code" → Change to "Markdown"
 Type:
 # Week 1 Python Learning Notes
-**Date:** November 24, 2025  
+**Date:** November 24, 2025
 **Topic:** Variables, Data Types, and Basic Operations
 
 Press Shift+Enter to render
@@ -459,8 +459,8 @@ In Terminal: Ctrl+C (twice)
 
 ### 2.1 SQLite & DB Browser
 
-**What:** Lightweight database + visual database tool  
-**Why:** Practice SQL without complex setup  
+**What:** Lightweight database + visual database tool
+**Why:** Practice SQL without complex setup
 **When to do:** Friday 8:30-9:00 PM
 
 #### Install SQLite:
@@ -617,13 +617,13 @@ Example:
 **About Section:**
 ```markdown
 🔍 Who I Am:
-Detail-oriented professional transitioning from 10 years of bookkeeping 
-to data analytics. Currently completing comprehensive training in Python, 
+Detail-oriented professional transitioning from 10 years of bookkeeping
+to data analytics. Currently completing comprehensive training in Python,
 SQL, and data visualization.
 
 📊 What I'm Learning:
 • Python for data analysis (Pandas, NumPy)
-• SQL for data extraction and manipulation  
+• SQL for data extraction and manipulation
 • Data visualization (Matplotlib, Tableau)
 • Statistical analysis and business insights
 
@@ -634,11 +634,11 @@ SQL, and data visualization.
 • Self-motivated learner committed to daily growth
 
 💻 Current Projects:
-Building portfolio of data analysis projects. Check out my GitHub: 
+Building portfolio of data analysis projects. Check out my GitHub:
 [Your GitHub URL]
 
 📫 Let's Connect:
-Always happy to connect with data professionals, mentors, and fellow 
+Always happy to connect with data professionals, mentors, and fellow
 learners. Feel free to reach out!
 
 #DataAnalytics #Python #SQL #CareerTransition
