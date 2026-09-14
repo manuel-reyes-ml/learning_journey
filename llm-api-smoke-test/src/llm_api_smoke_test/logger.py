@@ -44,16 +44,15 @@ References
 from __future__ import annotations
 
 import logging
-import structlog
 import sys
-
 from dataclasses import dataclass
 from logging.handlers import RotatingFileHandler
 from pathlib import Path
+from typing import Any, Final, NamedTuple, TextIO
 
+import structlog
 from platformdirs import PlatformDirs
 from structlog.types import EventDict, Processor, WrappedLogger
-from typing import Any, Final, NamedTuple, TextIO
 
 # =============================================================================
 # EXPORTS
@@ -114,6 +113,7 @@ _KEY_ORDER: Final[list[str]] = ["timestamp", "level", "logger", "event"]
 # Dataclass Frozen Constants
 # =====================================================
 
+
 class LogFilesPath(NamedTuple):
     """Resolved paths for the structured-logging output files.
 
@@ -131,7 +131,7 @@ class LogFilesPath(NamedTuple):
         Indented JSON (``indent=2``) variant.  Same payload as
         ``struct_path`` but formatted for grep-and-read debugging.
     """
-    
+
     struct_path: Path
     struct_indent_path: Path
 
@@ -161,16 +161,16 @@ class FileDirectories:
         Used purely as a naming anchor by :meth:`create_log_fname` —
         not for resolving any other path.
     """
-    
+
     # --- Writable, per-user paths (resolved by platformdirs) --------
     LOG_DIR: Final[Path] = _PLATFORM_DIRS.user_log_path
-    
+
     # `CUR_DIR` is no longer needed by path resolution, but keep it
     # for the existing `create_log_fname()` method which uses
     # `self.CUR_DIR.name` for the log filename. It's now purely a
     # naming helper, not a path anchor.
     CUR_DIR: Final[Path] = Path(__file__).resolve().parent  # llm_api_smoke_test/
-    
+
     def create_log_fname(self) -> tuple[str, str]:
         """Build the two log filenames from the package directory name.
 
@@ -189,7 +189,7 @@ class FileDirectories:
         s_log = f"{self.CUR_DIR.name}.log"
         s_indent_log = f"{self.CUR_DIR.name}_indent.log"
         return s_log, s_indent_log
-    
+
     @property  # Access function's return as an attribute
     def log_file(self) -> LogFilesPath:
         """Full resolved paths to the two rotating log files.
@@ -204,10 +204,10 @@ class FileDirectories:
             log, one for the indented variant.
         """
         s_log, s_indent_log = self.create_log_fname()
-        
+
         s_log_path = self.LOG_DIR / s_log
         s_indent_log_path = self.LOG_DIR / s_indent_log
-        
+
         return LogFilesPath(s_log_path, s_indent_log_path)
 
 
@@ -235,14 +235,14 @@ class FileHandlerConfig:
     KILOBYTE : int
         Bytes per unit (1024).
     """
-    
+
     LEVEL_DEFAULT: Final[int] = logging.INFO
     ENCODING: Final[str] = "utf-8"
     BACKUP_COUNT: Final[int] = 3
     FILE_MB: Final[int] = 5
     MEGABYTE: Final[int] = 1024
     KILOBYTE: Final[int] = 1024
-    
+
     def negative_value(self, var: str) -> Exception:
         """Build a :class:`ValueError` for an invalid configuration field.
 
@@ -260,7 +260,7 @@ class FileHandlerConfig:
             Ready-to-raise exception with a descriptive message.
         """
         return ValueError(f"{var} must be positive (>0)")
-    
+
     # The position of __post_init__ in source code doesn't matter-
     # Python's calls it automatically after the generated __init__
     # finishes (in dataclasses).
@@ -293,7 +293,7 @@ class FileHandlerConfig:
             raise self.negative_value("MEGABYTE")
         if self.KILOBYTE <= 0:
             raise self.negative_value("KILOBYTE")
-        
+
     @property  # Access function's return as an attribute
     def max_log_bytes(self) -> int:
         """Maximum log file size in bytes.
@@ -327,6 +327,7 @@ except ValueError as e:
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
 
+
 def _reorder_keys(preferred_order: list[str]) -> Processor:
     """Processor factory: move specified keys to the front of the event_dict.
 
@@ -344,10 +345,8 @@ def _reorder_keys(preferred_order: list[str]) -> Processor:
     Processor
         A callable compatible with structlog's processor protocol.
     """
-    
-    def processor(
-        logger: WrappedLogger, method_name: str, event_dict: EventDict
-    ) -> EventDict:
+
+    def processor(logger: WrappedLogger, method_name: str, event_dict: EventDict) -> EventDict:
         """Pull the configured keys to the front of ``event_dict``.
 
         See :func:`_reorder_keys` for the full description.  This is the
@@ -358,20 +357,20 @@ def _reorder_keys(preferred_order: list[str]) -> Processor:
         for key in preferred_order:
             if key in event_dict:
                 # pop() does two things: returns the value AND
-                # removes the key from event_dict. 
+                # removes the key from event_dict.
                 ordered[key] = event_dict.pop(key)
-        
+
         # update() merges one dict into another in place. For each
         # key-value pair in the argument, it writes that pair into
         # the receiving dict:
-            # - If the key doesn't exist in the receiver → it's added
-            #   at the end (preserving the receiver's insertion order,
-            #   then the argument's order).
-            # - If the key already exists in the receiver → its value
-            #   is overwritten.
+        # - If the key doesn't exist in the receiver → it's added
+        #   at the end (preserving the receiver's insertion order,
+        #   then the argument's order).
+        # - If the key already exists in the receiver → its value
+        #   is overwritten.
         ordered.update(event_dict)  # .update() returns None
         return ordered
-    
+
     return processor
 
 
@@ -435,15 +434,14 @@ def _setup_chandler(
                 structlog.stdlib.ProcessorFormatter.remove_processors_meta,
                 _reorder_keys(_KEY_ORDER),
                 structlog.dev.ConsoleRenderer(colors=custom_console),
-            ],    
+            ],
         )
     )
     return console_handler
 
 
 def _setup_fhandler(
-    file_dirs: FileDirectories,
-    fhandler_config: FileHandlerConfig
+    file_dirs: FileDirectories, fhandler_config: FileHandlerConfig
 ) -> RotatingFileHandler:
     """Create and configure a rotating JSON file handler.
 
@@ -559,7 +557,9 @@ def _setup_fhandler_indent(
             processors=[
                 structlog.stdlib.ProcessorFormatter.remove_processors_meta,
                 _reorder_keys(_KEY_ORDER),
-                structlog.processors.JSONRenderer(indent=2),  # indent JSON output to improve readability
+                structlog.processors.JSONRenderer(
+                    indent=2
+                ),  # indent JSON output to improve readability
             ],
         )
     )
@@ -569,6 +569,7 @@ def _setup_fhandler_indent(
 # =============================================================================
 # CORE FUNCTIONS
 # =============================================================================
+
 
 def configure_structured_logging(
     *,
@@ -646,23 +647,23 @@ def configure_structured_logging(
         logger_factory=structlog.stdlib.LoggerFactory(),
         cache_logger_on_first_use=True,
     )
-    
+
     # ─── 2. Grab the top-level package logger ───────────────────────
     # Same package_logger pattern as speller.logger.configure_logging —
     # child loggers (speller.dictionaries, speller.speller, ...)
     # propagate messages upward to this one.
     package_logger = logging.getLogger(file_dirs.CUR_DIR.name)
     package_logger.setLevel(logging.DEBUG)  # Let handlers decide their own level
-    
+
     # ─── 3. Prevent duplicate handlers on re-configuration ──────────
     if package_logger.hasHandlers():
         package_logger.handlers.clear()
-        
+
     # ─── 4. Console handler — pretty key=value, color optional ──────
     level = logging.DEBUG if console_verbose else fhandler_config.LEVEL_DEFAULT
     console_handler = _setup_chandler(level=level, custom_console=custom_console)
     package_logger.addHandler(console_handler)
-    
+
     # ─── 5. File handlers — NDJSON, always captures DEBUG ────────────
     if log_to_file:
         # parents=True: create any missing parent directories
@@ -670,18 +671,18 @@ def configure_structured_logging(
         file_dirs.LOG_DIR.mkdir(parents=True, exist_ok=True)
         file_handler = _setup_fhandler(file_dirs, fhandler_config)
         package_logger.addHandler(file_handler)
-        
+
         # Generate JSON log with indentation = 2 for human readability
         file_handler_indent = _setup_fhandler_indent(file_dirs, fhandler_config)
         package_logger.addHandler(file_handler_indent)
-       
+
     # ─── 6. Propagation control ─────────────────────────────────────
     # Same choice as speller.logger.configure_logging — propagate to
     # root so parent loggers (if any) see these messages.  Set False
     # if you notice double-printing in specific environments.
-    package_logger.propagate = True 
-    
-    
+    package_logger.propagate = True
+
+
 def get_structured_logger(name: str | None = None) -> structlog.stdlib.BoundLogger:
     """Return a structlog bound logger with correct type hints.
 

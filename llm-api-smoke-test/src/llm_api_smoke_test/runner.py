@@ -31,7 +31,6 @@ AFC's data-source fan-out — both will reuse this exact return shape.
 from __future__ import annotations
 
 import logging
-
 from collections.abc import Iterable
 from typing import Final
 
@@ -46,9 +45,9 @@ from llm_api_smoke_test.providers import (
 # =============================================================================
 
 __all__ = [
-    "run_smoke_tests",
-    "CallFailure",
     "BatchResult",
+    "CallFailure",
+    "run_smoke_tests",
 ]
 
 
@@ -88,7 +87,7 @@ type BatchResult = tuple[list[SmokeTestResult], list[CallFailure]]
 # Iterable[T] -> "I will loop over your collection"
 # Caller pass Anything iterable — lists, tuples, sets, generators.
 # Caller can pass the list directly.
-# 
+#
 # Sequence[T] -> "I need indexed access too".
 # Caller can pass Lists and tuples; not sets or generators.
 #
@@ -97,20 +96,21 @@ type BatchResult = tuple[list[SmokeTestResult], list[CallFailure]]
 #
 # Lists can be re-iterated freely; iterators cannot.
 
+
 def run_smoke_tests(
     *,
     providers: Iterable[LLMProvider],
     prompt: str = DEFAULT_PROMPT,
 ) -> BatchResult:
     """Run the smoke test against every provided adapter.
- 
+
     Parameters
     ----------
     providers : Iterable[LLMProvider]
         Configured adapters. Each adapter is exercised exactly once.
     prompt : str, optional
         Prompt sent to each provider. Defaults to ``DEFAULT_PROMPT``.
- 
+
     Returns
     -------
     tuple[list[SmokeTestResult], list[tuple[str, Exception]]]
@@ -118,7 +118,7 @@ def run_smoke_tests(
         ``(provider_class_name, exception)`` tuples — failures are
         captured rather than raised so one provider's outage does not
         block the second test.
- 
+
     Notes
     -----
     Logger calls use ``%s``-style lazy formatting so the format string is
@@ -127,11 +127,11 @@ def run_smoke_tests(
     """
     successes: list[SmokeTestResult] = []
     failures: list[CallFailure] = []
-    
+
     for provider in providers:
         provider_class = type(provider).__name__
         logger.debug("Running smoke test with %s", provider_class)
-        
+
         try:
             result = provider.smoke_test(prompt)
             slogger.info(
@@ -154,7 +154,7 @@ def run_smoke_tests(
                 # concatenation error, and you get a proper traceback in your logs.
             )
             failures.append((provider_class, exc))
-            
+
     return successes, failures
 
 

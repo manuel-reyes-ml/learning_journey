@@ -54,27 +54,26 @@ try:
     import argparse
     import logging
     import string
-
-    from dataclasses import dataclass, KW_ONLY
+    from dataclasses import KW_ONLY, dataclass
     from enum import IntEnum, unique
-    from pydantic import ValidationError
-    from typing import Final, Literal, overload, TYPE_CHECKING, NoReturn
+    from typing import TYPE_CHECKING, Final, Literal, NoReturn, overload
 
-    from llm_api_smoke_test.config import SmokeTestSettings
-    from llm_api_smoke_test.logger import get_structured_logger
+    from pydantic import ValidationError
 
     from llm_api_smoke_test.batch_runner import batch_smoke_test
+    from llm_api_smoke_test.config import SmokeTestSettings
+    from llm_api_smoke_test.logger import get_structured_logger
     from llm_api_smoke_test.register import dicts
     from llm_api_smoke_test.runner import DEFAULT_PROMPT, run_smoke_tests
-    
+
 except ImportError as e:
     sys.exit(f"Error missing llm_api_smoke_test module.\nDetails: {e}")
-    
-# Runtime skips, type checkers includes. 
+
+# Runtime skips, type checkers includes.
 if TYPE_CHECKING:
     from llm_api_smoke_test.providers import (
-        LLMProvider,
         AsyncLLMProvider,
+        LLMProvider,
     )
 
 
@@ -101,6 +100,7 @@ provider_list: Final[str] = ", ".join(dicts.keys())
 # =====================================================
 # Class Constants Configuration
 # =====================================================
+
 
 @unique
 class ExitCode(IntEnum):
@@ -139,16 +139,17 @@ class ExitCode(IntEnum):
         signal that to CI immediately rather than letting the user
         deploy with a half-working config.
     """
-    
+
     SUCCESS = 0
     CONFIG_ERROR = 1
     PROVIDER_ERROR = 2
     KEYBOARD_INTERRUPT = 130
-    
+
 
 # =====================================================
 # CLI Args Frozen Dataclass
 # =====================================================
+
 
 @dataclass(frozen=True, slots=True)
 class LLMApiArgs:
@@ -185,7 +186,7 @@ class LLMApiArgs:
     ``FormSenseArgs``.  Reuses the pattern established in
     :mod:`speller.__main__`.
     """
-    
+
     _: KW_ONLY  # Everything after is keyword-only
     prompts: list[str]
     provider: list[str]
@@ -193,11 +194,12 @@ class LLMApiArgs:
     run_async: bool
     verbose: bool
     no_log_file: bool
-    
+
 
 # =============================================================================
 # INTERNAL HELPER FUNCTIONS
 # =============================================================================
+
 
 # Extracting parser construction into its own function means tests can parse
 # arguments without running the full program.
@@ -256,7 +258,7 @@ def _build_parser() -> argparse.ArgumentParser:
         ),
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
-    
+
     # -- Positional: which providers --
     # nargs="+" means "one or more values". argparse calls type(value) on EACH
     # token, so type=str (per-element) is right; type=list[str] would crash.
@@ -270,12 +272,12 @@ def _build_parser() -> argparse.ArgumentParser:
         default=list(dicts.keys()),
         help=f"LLM providers to use. Default runs all: {provider_list}.",
     )
-    
+
     parser.add_argument(
         "--model",
         type=str,
-        default=None,   # None = "not provided" — env/default wins
-        metavar="SLUG", # sets the display name for the argument in help message.
+        default=None,  # None = "not provided" — env/default wins
+        metavar="SLUG",  # sets the display name for the argument in help message.
         help=(
             "Override the OpenRouter model slug for this run "
             "(e.g. 'anthropic/claude-sonnet-4.5'). "
@@ -288,7 +290,7 @@ def _build_parser() -> argparse.ArgumentParser:
     # parse if the user passes more than one. This prevents the ambiguity of
     # "which prompts do I run if both --prompts AND --prompts-file are given?"
     prompt_group = parser.add_mutually_exclusive_group()
-    
+
     # OPTION A — space-separated list (current pattern, kept)
     # Best for: 1-3 short prompts, scripted use.
     prompt_group.add_argument(
@@ -296,12 +298,9 @@ def _build_parser() -> argparse.ArgumentParser:
         nargs="+",  # one or more
         type=str,  # argparse calls type(value) per token
         default=None,  # None = "user didn't pass --prompts" (vs an empty list)
-        help=(
-            "One or more prompts (space-separated). "
-            "Quote each prompt that contains spaces."
-        ),
+        help=("One or more prompts (space-separated). Quote each prompt that contains spaces."),
     )
-    
+
     # OPTION B — repeated flag (production pattern from git/docker/curl)
     # Best for: prompts with weird characters, interactive use.
     # action="append" means each --prompt invocation appends to a list.
@@ -329,9 +328,8 @@ def _build_parser() -> argparse.ArgumentParser:
             "Read prompts from a file, one per line. "
             "Lines starting with '#' are treated as comments and ignored."
         ),
-        
     )
-    
+
     # -- Mode flag: sync vs async --
     # Even with one prompt, async exercises the AsyncLLMProvider path —
     # important for smoke-testing the async adapters before the real
@@ -343,22 +341,23 @@ def _build_parser() -> argparse.ArgumentParser:
         default=False,
         help="Run the async batch runner with concurrency + rate-limit caps.",
     )
-    
+
     # -- Standard flags --
     parser.add_argument(
-        "-v", "--verbose",
+        "-v",
+        "--verbose",
         action="store_true",
         default=False,
         help="Enable verbose output (DEBUG-level logging).",
     )
-    
+
     parser.add_argument(
         "--no-log-file",
         action="store_true",
         default=False,
         help="Disable file logging (console only).",
     )
-    
+
     return parser
 
 
@@ -408,17 +407,14 @@ def _validate_providers(providers: list[str]) -> list[str]:
     ``.sync_provider`` or ``.async_provider`` based on whether
     ``run_smoke_tests`` or ``batch_smoke_test`` is being dispatched.
     """
-    clean_names = [
-        name.strip().strip(string.punctuation).lower()
-        for name in providers
-    ]
-    
+    clean_names = [name.strip().strip(string.punctuation).lower() for name in providers]
+
     for name in clean_names:
         # This validates against the actual registry,
         # which is the single source of truth.
         if name not in dicts:
             raise KeyError(f"Unknown provider '{name}'. Available: {provider_list}")
-        
+
     return clean_names
 
 
@@ -448,15 +444,15 @@ def _resolve_prompts(args: argparse.Namespace) -> list[str]:
     """
     # Priority order matches argparse's mutual exclusion — at most ONE of
     # these three is non-None thanks to add_mutually_exclusive_group.
-    
+
     # --- Case 1: --prompts "a" "b" "c" ---
     if args.prompts is not None:
         return args.prompts
-    
+
     # --- Case 2: --prompt "a" --prompt "b" ---
     if args.prompt is not None:
         return args.prompt
-    
+
     # --- Case 3: --prompts-file FILE ---
     if args.prompts_file is not None:
         # argparse already opened the file via FileType("r"). 'with' here
@@ -472,19 +468,18 @@ def _resolve_prompts(args: argparse.Namespace) -> list[str]:
                 # if stripped and not stripped.startswith("#"):
                 #     return stripped
                 if (stripped := raw_line.strip()) and not stripped.startswith("#")
-            ] 
-            
+            ]
+
         # Fail fast if the file existed but had no real prompts.
         # ValueError is the right boundary signal — main() catches it and
         # exits with CONFIG_ERROR.
         if not lines:
             raise ValueError(
-                "Prompts file is empty or contains only comments: "
-                f"{args.prompts_file.name}"
+                f"Prompts file is empty or contains only comments: {args.prompts_file.name}"
             )
-            
+
         return lines
-    
+
     # --- Default: no prompt flag at all ---
     # Single-prompt list keeps the downstream loop uniform — runners
     # always iterate, never special-case "one vs many".
@@ -500,11 +495,12 @@ def _build_providers(
     provider_names: list[str],
     settings: SmokeTestSettings,
     *,
-    run_async: Literal[True],       # ← the discriminator
+    run_async: Literal[True],  # ← the discriminator
     model_override: str | None = None,
 ) -> list[AsyncLLMProvider]:
     """Async overload — ``run_async=True`` returns async adapters."""
     ...
+
 
 # ─── Overload 2: run_async=False → sync providers ─────────────────────
 @overload
@@ -512,11 +508,12 @@ def _build_providers(
     provider_names: list[str],
     settings: SmokeTestSettings,
     *,
-    run_async: Literal[False],      # ← the discriminator
+    run_async: Literal[False],  # ← the discriminator
     model_override: str | None = None,
 ) -> list[LLMProvider]:
     """Sync overload — ``run_async=False`` returns sync adapters."""
     ...
+
 
 # ─── Implementation: NO @overload decorator, accepts plain bool ──────
 def _build_providers(
@@ -559,7 +556,7 @@ def _build_providers(
     # Adapter to the per-provider settings shape (each provider needs
     # its own ProviderSettings with name + api_key + model).
     config = settings.to_smoke_test_config()
-    
+
     # Map registry key → its ProviderSettings. Centralised here so
     # __main__ doesn't need to know how SmokeTestConfig is structured.
     settings_map = {
@@ -581,25 +578,23 @@ def _build_providers(
     # Only applies when an openrouter provider actually exists.
     if model_override is not None and config.openrouter is not None:
         # ProviderSettings is frozen, so rebuild via model_copy(update=...).
-        settings_map["openrouter"] = config.openrouter.model_copy(
-            update={"model": model_override}
-        )
-    
+        settings_map["openrouter"] = config.openrouter.model_copy(update={"model": model_override})
+
     # Choose which slot to read from each ProviderList.
     # f-string ensures kind matches the field name exactly.
     kind = "async" if run_async else "sync"
     slot_attr = f"{kind}_provider"
-    
+
     instances = []
     for name in provider_names:
-        bundle = dicts[name]      # ProviderList
-        # Looks up an attribute by string name. 
+        bundle = dicts[name]  # ProviderList
+        # Looks up an attribute by string name.
         # Equivalent to writing bundle.sync_provider or
         # bundle.async_provider based on the runtime kind.
         #
         # it's how you write code that handles dynamic attribute names cleanly.
-        info = getattr(bundle, slot_attr)       # DictInfo | None
-        
+        info = getattr(bundle, slot_attr)  # DictInfo | None
+
         # Fail loudly if the requested kind isn't registered.
         # This catches "user asked for --async but only sync exists".
         if info is None:
@@ -608,14 +603,14 @@ def _build_providers(
                 f"Either register one with @register_class('{name}', '{kind}', ...) "
                 f"or omit --{kind} from the command line."
             )
-          
+
         # info.provider_class is the CLASS (e.g. AnthropicProvider).
         # Calling it with (ProviderSettings) constructs an instance,
         # to access the Api key for that provider.
         # The type checker knows this returns LLMProvider | AsyncLLMProvider.
         instance = info.provider_class(settings_map[name])
         instances.append(instance)
-        
+
         # Structured event — one per provider built, useful for diagnosing
         # "did the provider even initialize?" before the API call runs.
         slogger.info(
@@ -624,13 +619,14 @@ def _build_providers(
             class_name=info.class_name,
             kind=kind,
         )
-        
+
     return instances
 
 
 # =============================================================================
 # MAIN FUNCTION
 # =============================================================================
+
 
 def main(argv: list[str] | None = None) -> ExitCode:
     """Composition root for the llm-api-smoke-test CLI.
@@ -674,7 +670,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
     # Tests pass argv=["anthropic", "--verbose"] to skip sys.argv.
     parser = _build_parser()
     raw = parser.parse_args(argv)
-    
+
     # ─── 2. Resolve prompts from whichever flag was used ─────────────
     # Wrapped in try/except so file-not-found and empty-file errors
     # become CONFIG_ERROR (1) — they're user input problems.
@@ -685,14 +681,14 @@ def main(argv: list[str] | None = None) -> ExitCode:
         # — argparse and prompt resolution happen BEFORE configure_logging.
         print(f"Configuration Error: {exc}", file=sys.stderr)
         return ExitCode.CONFIG_ERROR
-    
+
     # ─── 3. Validate provider names against the registry ─────────────
     try:
         provider_names = _validate_providers(raw.provider)
     except KeyError as exc:
         print(f"Configuration error: {exc}", file=sys.stderr)
         return ExitCode.CONFIG_ERROR
-    
+
     # ─── 4. Build the typed args dataclass ────────────────────────────
     # Everything that touches args from here on gets full Pyright
     # coverage. raw.* has type Any; args.* has concrete types.
@@ -704,24 +700,25 @@ def main(argv: list[str] | None = None) -> ExitCode:
         no_log_file=raw.no_log_file,
         model_override=raw.model,
     )
-    
+
     # ─── 5. Configure logging ─────────────────────────────────────────
     # NOW the structured logger is live — every subsequent log call
     # routes through structlog + the file handler.
     from llm_api_smoke_test.logger import configure_structured_logging
+
     configure_structured_logging(
         console_verbose=args.verbose,
         log_to_file=not args.no_log_file,
     )
-    
+
     logger.debug(f"Parsed arguments: {raw}")
     slogger.info(
-       "smoke_test_started",
-       providers=args.provider,
-       prompt_count=len(args.prompts),
-       run_async=args.run_async, 
+        "smoke_test_started",
+        providers=args.provider,
+        prompt_count=len(args.prompts),
+        run_async=args.run_async,
     )
-    
+
     # ─── 6. Load settings (Pydantic validates env vars) ──────────────
     try:
         # SmokeTestSettings reads ANTHROPIC_API_KEY, GEMINI_API_KEY,
@@ -733,15 +730,14 @@ def main(argv: list[str] | None = None) -> ExitCode:
     except ValidationError as exc:
         slogger.error("model_validation_error", error=str(exc))
         return ExitCode.CONFIG_ERROR
-    
+
     except Exception as exc:
         # ValidationError is a Pydantic class — catching Exception is
         # broad on purpose because we don't want to import the specific
         # Pydantic exception type at the top of __main__.
         slogger.error("settings_load_failed", error=str(exc))
         return ExitCode.CONFIG_ERROR
-    
-    
+
     # ─── 7. Dispatch to the right runner ──────────────────────────────
     # The branches return DIFFERENT tuple shapes but BOTH conform to
     # tuple[list[SmokeTestResult], list[CallFailure]] — so the
@@ -754,14 +750,15 @@ def main(argv: list[str] | None = None) -> ExitCode:
             providers = _build_providers(
                 provider_names=args.provider,
                 settings=settings,
-                run_async=True,     # explicit Literal
+                run_async=True,  # explicit Literal
                 model_override=args.model_override,
             )
-            
+
             # asyncio.run creates a new event loop, runs the coroutine,
             # and tears the loop down. The only place we touch the
             # event-loop lifecycle in this whole package.
             import asyncio
+
             successes, failures = asyncio.run(
                 batch_smoke_test(
                     providers=providers,  # Iterable(list), not Iterator
@@ -773,15 +770,15 @@ def main(argv: list[str] | None = None) -> ExitCode:
             # cursor that yields elements one at a time and remembers its position.
             # A list is the container itself; iterating it creates a new iterator
             # each time under the hood.
-            
+
         else:
             providers = _build_providers(
                 provider_names=args.provider,
                 settings=settings,
-                run_async=False,     # explicit Literal
+                run_async=False,  # explicit Literal
                 model_override=args.model_override,
             )
-            
+
             # Sync path — run one prompt against all providers.
             # For multiple prompts in sync mode, iterate the prompts
             # list and accumulate. Simplest possible shape.
@@ -799,11 +796,11 @@ def main(argv: list[str] | None = None) -> ExitCode:
         # User pressed Ctrl-C — graceful exit with the POSIX 130 code.
         logger.warning("interrupted_by_user")
         return ExitCode.KEYBOARD_INTERRUPT
-    
+
     except ValueError as exc:
         slogger.error("provider_build_failed", error=str(exc))
         return ExitCode.CONFIG_ERROR
-    
+
     # ─── 8. Summarise + decide exit code ──────────────────────────────
     slogger.info(
         "smoke_test_completed",
@@ -812,18 +809,19 @@ def main(argv: list[str] | None = None) -> ExitCode:
         success_providers=[r.provider_name for r in successes],
         failure_providers=[name for name, _ in failures],
     )
-    
+
     # Any failure → exit non-zero so CI catches it.
     # This is the "fail on any provider error" rule documented on ExitCode.
     if failures:
         return ExitCode.PROVIDER_ERROR
-    
+
     return ExitCode.SUCCESS
 
 
 # =============================================================================
 # CONSOLE ENTRY
 # =============================================================================
+
 
 # NoReturn annotation honesty:
 #   sys.exit() raises SystemExit — it never returns control. The NoReturn type tells
@@ -832,7 +830,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
 #   type-check exhaustively.
 def cli_entry() -> NoReturn:
     """Console-script entry point. Calls main() and exits with its code.
-    
+
     Notes
     -----
     Declared as ``NoReturn`` because ``sys.exit`` always raises
@@ -844,7 +842,8 @@ def cli_entry() -> NoReturn:
     # sys.exit() inside main() because it makes main() unit-testable.
     sys.exit(main())
     # any code here would be flagged as unreachable by the type checker
-    
+
+
 # ─── Module-level entry point ────────────────────────────────────────
 # This block runs ONLY when the file is executed directly
 # (python -m llm_api_smoke_test or python -m __main__.py).

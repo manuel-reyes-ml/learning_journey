@@ -60,8 +60,8 @@ implementations.
 from __future__ import annotations
 
 from collections.abc import Callable
-from dataclasses import dataclass, field, KW_ONLY, replace
-from typing import Literal, TypedDict, TYPE_CHECKING
+from dataclasses import KW_ONLY, dataclass, field, replace
+from typing import TYPE_CHECKING, Literal, TypedDict
 
 # To import just for type checker, run time skips
 # Also to avoid circular import error, when the imports
@@ -102,6 +102,7 @@ type RegDecorator = Callable[[SyncAsyncProvider], SyncAsyncProvider]
 # Dict Metadata Configuration
 # =====================================================
 
+
 class RunResults(TypedDict):
     """Typed mapping for one provider's accumulated smoke-test outcomes.
 
@@ -120,10 +121,10 @@ class RunResults(TypedDict):
         that raised.  Captured rather than re-raised so a batch run
         can continue past a single provider's outage.
     """
-    
+
     successes: list[SmokeTestResult]
     failures: list[CallFailure]
-    
+
 
 @dataclass(frozen=True)
 class DictInfo:
@@ -164,16 +165,17 @@ class DictInfo:
         Accumulated outcomes keyed by run label.  Empty by default;
         populated during ``main()`` execution.
     """
-    
+
     # Required fields (no default) must come first
-    _:  KW_ONLY  # Everything after this is keyword-only
+    _: KW_ONLY  # Everything after this is keyword-only
     provider_class: SyncAsyncProvider
     class_name: str
     description: str
-    
+
     # Optional fields with defaults afterwards
     results: dict[str, RunResults] = field(default_factory=dict)
-    
+
+
 # Tells pyright this is an INSTANCE
 #   dict_class: DictionaryProtocol          # an object with .load(), .check()
 
@@ -225,9 +227,9 @@ class ProviderList:
         The second decorator call replaces ``async_provider`` and
         leaves ``sync_provider`` intact.
     """
-    
+
     _: KW_ONLY  # After this is keyword only
-    
+
     # Default makes them optional
     async_provider: DictInfo | None = None
     sync_provider: DictInfo | None = None
@@ -244,10 +246,11 @@ dicts: dict[str, ProviderList] = {}
 # DICTIONARY REGISTRY
 # =============================================================================
 
+
 # A decorator factory is just a function that takes custom parameters
 # and generates a decorator.
 def register_class(
-    name: str, 
+    name: str,
     kind: ProviderKind,  # explicit only -> kind="sync" / kind="async"
     description: str = "",
 ) -> RegDecorator:
@@ -316,7 +319,7 @@ def register_class(
         as sync.  Explicit ``Literal`` typing eliminates the ambiguity
         AND lets Pyright catch typos at edit time.
     """
-    
+
     def decorator(provider_class: SyncAsyncProvider) -> SyncAsyncProvider:
         """Insert ``provider_class`` into :data:`dicts` and return it unchanged.
 
@@ -359,19 +362,19 @@ def register_class(
             class_name=provider_class.__name__,
             description=description or provider_class.__doc__ or "",
         )
-        
+
         # Get-or-create the ProviderList for this name
         # bucket = dicts.setdefault(name, ProviderList())
-        
+
         # match kind:
         #     case "sync":
         #         bucket.sync_provider = info
         #     case _:  # "async" - mypy/pyright narrows it because of Literal
         #         bucket.async_provider = info
-        
+
         bucket = dicts.get(name, ProviderList())
         field_name = f"{kind}_provider"  # "sync_provider" or "async_provider"
-        
+
         # Return a new object replacing specified fields with new values.
         # This is especially useful for frozen classes
         #
@@ -390,12 +393,12 @@ def register_class(
         #
         # General rule: * spreads sequences into positional args; ** spreads dicts into keyword args.
         # Same syntax on both sides of the function call (sender unpacks; receiver collects).
-        dicts[name] = replace(bucket, **{field_name: info}) 
-        
+        dicts[name] = replace(bucket, **{field_name: info})
+
         # RECEIVER — function definition collects loose args INTO a container
         #   def func(*args, **kwargs):
-                # args   = tuple of positional args
-                # kwargs = dict of keyword args
+        # args   = tuple of positional args
+        # kwargs = dict of keyword args
         #       print(args, kwargs)
         #
         # SENDER — call site spreads a container OUT INTO loose args
@@ -408,13 +411,14 @@ def register_class(
         # Looks redundant, but it isn't — the value at the call site is a real dict variable, while
         # the receiver gets loose keyword arguments that happen to be collected into a dict.
         # The transformation is meaningful when you're forwarding kwargs through layers.
-    
+
         return provider_class  # Return unchanged class
         # class goes in, class comes out. The class' __name__, __doc__, __qualname__
         # are all intact because you never created a replacement. Nothing to fix,
         # so @wraps would do nothing useful.
-        
+
     return decorator
+
 
 # Instantiate by key - calling a class creates an instance
 # dictionary = dicts["hash"].dict_class() -> HashTableDictionary()

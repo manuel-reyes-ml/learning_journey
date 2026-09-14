@@ -31,10 +31,10 @@ from __future__ import annotations
 
 import asyncio
 import logging
+from collections.abc import Iterable
+from typing import TYPE_CHECKING, Final
 
 from aiolimiter import AsyncLimiter
-from collections.abc import Iterable
-from typing import Final, TYPE_CHECKING
 
 from llm_api_smoke_test.logger import get_structured_logger
 
@@ -86,7 +86,7 @@ type BatchResult = tuple[list[SmokeTestResult], list[CallFailure]]
 # Iterable[T] -> "I will loop over your collection"
 # Caller pass Anything iterable — lists, tuples, sets, generators.
 # Caller can pass the list directly.
-# 
+#
 # Sequence[T] -> "I need indexed access too".
 # Caller can pass Lists and tuples; not sets or generators.
 #
@@ -94,6 +94,7 @@ type BatchResult = tuple[list[SmokeTestResult], list[CallFailure]]
 # Caller can pass Only lists. Most restrictive.
 #
 # Lists can be re-iterated freely; iterators cannot.
+
 
 async def batch_smoke_test(
     *,  # after this all parameters are keyword only
@@ -138,13 +139,13 @@ async def batch_smoke_test(
     """
     successes: list[SmokeTestResult] = []
     failures: list[CallFailure] = []
-    
+
     # Create the semaphore INSIDE the async function (or anywhere after the
     # event loop is running). Creating it at module scope used to attach it
     # to the wrong loop in older Python versions — still safest to do it here.
     sem = asyncio.Semaphore(max_concurrent)
     limiter = AsyncLimiter(50, 60)  # 50 calls per 60 seconds
-    
+
     async def _bounded_call(prompt: str) -> None:
         """Run one prompt across every provider under the shared limits.
 
@@ -167,7 +168,7 @@ async def batch_smoke_test(
         on shared mutable state (acceptable because all writes happen
         sequentially within a single coroutine).
         """
-        async with limiter:   # composes cleanly with Semaphore
+        async with limiter:  # composes cleanly with Semaphore
             # The semaphore protocol in 3 lines:
             # - `async with sem:` acquires a slot (parks if 0 free)
             # - The body runs only when this coroutine holds a slot
@@ -176,11 +177,11 @@ async def batch_smoke_test(
                 for provider in providers:
                     provider_class = type(provider).__name__
                     logger.debug("Running smoke test with %s", provider_class)
-                    
+
                     try:
                         result = await provider.smoke_test(prompt)
                         slogger.info(
-                            "call_successful", 
+                            "call_successful",
                             provider_name=result.provider_name,
                             model=result.model,
                             response=result.response_preview,
@@ -199,12 +200,12 @@ async def batch_smoke_test(
                             # concatenation error, and you get a proper traceback in your logs.
                         )
                         failures.append((provider_class, exc))
-        
+
     # Schedule all N tasks. `gather` returns them in input order even though
     # they complete in some other order, which is what we want for matching
     # results back to prompts.
     await asyncio.gather(*[_bounded_call(p) for p in prompts])
-    
+
     return successes, failures
 
 

@@ -1,19 +1,19 @@
 """Shared pytest fixtures for the llm_api_smoke_test test suite.
- 
+
 Why a top-level conftest.py?
 ----------------------------
 Pytest auto-discovers ``conftest.py`` at every directory level on its
 way down to a test file.  Fixtures defined here are visible to EVERY
 test module in this folder without explicit imports — that's the
 convention recruiters expect to see.
- 
+
 What goes here vs. in individual test modules?
 ----------------------------------------------
 - Here: fixtures shared across ≥2 test files (env vars, fake providers,
   the validated settings object).
 - In test modules: fixtures used by ONE test file (e.g., a registry
   snapshot used only by ``test_register.py``).
- 
+
 Roadmap relevance
 -----------------
 The fake-provider pattern below (a class that satisfies the Protocol
@@ -37,7 +37,7 @@ from llm_api_smoke_test.providers import SmokeTestResult, TokenUsage
 
 # When you write from llm_api_smoke_test.config import ..., Python (and Pylance)
 # ask the same question: "Is there a package called llm_api_smoke_test on sys.path?"
-# 
+#
 # Without an install, sys.path looks roughly like:
 #   /usr/lib/python3.12          # stdlib
 #   /usr/lib/python3.12/site-packages   # installed packages
@@ -52,15 +52,16 @@ from llm_api_smoke_test.providers import SmokeTestResult, TokenUsage
 # ENVIRONMENT FIXTURES
 # =============================================================================
 
+
 @pytest.fixture
 def valid_env(monkeypatch: pytest.MonkeyPatch) -> dict[str, str]:
     """Populate os.environ with VALID test credentials.
- 
+
     Uses monkeypatch.setenv so the env is restored after the test —
     other tests aren't polluted with these fake keys.  This is the
     canonical pytest pattern for env-var manipulation: NEVER set
     os.environ directly in a test.
- 
+
     Returns
     -------
     dict of {str : str}
@@ -76,23 +77,23 @@ def valid_env(monkeypatch: pytest.MonkeyPatch) -> dict[str, str]:
         "ANTHROPIC_MODEL": "claude-sonnet-4-6",
         "GEMINI_MODEL": "gemini-2.5-flash",
     }
-    
+
     # monkeypatch.setenv = "set this env var, restore after the test"
     # This is what makes the fixture safe to use in any test order.
     for key, value in env.items():
         monkeypatch.setenv(key, value)
-        
+
     return env
 
 
 @pytest.fixture
 def settings(valid_env: dict[str, str]) -> SmokeTestSettings:
     """Validated SmokeTestSettings built from valid_env.
- 
+
     Depends on valid_env so the env is populated BEFORE pydantic-settings
     reads from os.environ.  The dependency chain is automatic — pytest
     sees the parameter name and runs valid_env first.
- 
+
     Returns
     -------
     SmokeTestSettings
@@ -106,7 +107,7 @@ def settings(valid_env: dict[str, str]) -> SmokeTestSettings:
 
 @pytest.fixture
 def valid_env_with_openrouter(
-    valid_env: dict[str, str],      # runs first; sets Anthropic + Gemini
+    valid_env: dict[str, str],  # runs first; sets Anthropic + Gemini
     monkeypatch: pytest.MonkeyPatch,
 ) -> dict[str, str]:
     """valid_env + the two OpenRouter vars, so SmokeTestSettings sees all three."""
@@ -116,7 +117,7 @@ def valid_env_with_openrouter(
     }
     for key, value in extra.items():
         monkeypatch.setenv(key, value)
-    return {**valid_env, **extra}   # merged so a test can inspect every var
+    return {**valid_env, **extra}  # merged so a test can inspect every var
 
 
 @pytest.fixture
@@ -124,13 +125,13 @@ def settings_with_openrouter(
     valid_env_with_openrouter: dict[str, str],
 ) -> SmokeTestSettings:
     """Validated settings with OpenRouter configured."""
-    return SmokeTestSettings() # type: ignore[call-arg]
+    return SmokeTestSettings()  # type: ignore[call-arg]
 
 
 @pytest.fixture
 def provider_settings() -> ProviderSettings:
     """A standalone ProviderSettings for unit tests.
- 
+
     Returns
     -------
     ProviderSettings
@@ -145,12 +146,12 @@ def provider_settings() -> ProviderSettings:
         api_key=SecretStr("sk-ant-test-fake-key"),
         model="claude-sonnet-4-6",
     )
-    
+
 
 # =============================================================================
 # FAKE PROVIDER FIXTURES (no real API calls)
 # =============================================================================
- 
+
 # Why classes, not fixtures, for the fakes?
 # ----------------------------------------
 # Fixtures are for INSTANCES — values that get constructed once per test.
@@ -162,14 +163,15 @@ def provider_settings() -> ProviderSettings:
 # So we define classes at module scope and pytest-style fixtures that
 # return instances of them.
 
+
 class FakeSyncProvider:
     """A test double that satisfies LLMProvider without network calls.
- 
+
     Records every prompt it receives and returns a configurable result.
     This is the textbook fake-object pattern from "xUnit Test Patterns"
     by Meszaros — it stands in for the real provider in tests without
     requiring an API key or producing flaky network behaviour.
- 
+
     Parameters
     ----------
     settings : ProviderSettings
@@ -180,7 +182,7 @@ class FakeSyncProvider:
     should_raise : Exception or None, optional
         If non-None, ``smoke_test`` raises this exception instead of
         returning.  Used to test failure paths.
- 
+
     Examples
     --------
     >>> provider = FakeSyncProvider(settings)
@@ -188,7 +190,7 @@ class FakeSyncProvider:
     >>> provider.calls
     ['hello']
     """
-    
+
     def __init__(
         self,
         settings: ProviderSettings,
@@ -200,15 +202,15 @@ class FakeSyncProvider:
         self._should_raise = should_raise
         # Public so tests can assert on call history.
         self.calls: list[str] = []
-        
+
     def smoke_test(self, prompt: str) -> SmokeTestResult:
         """Record the prompt; return a SmokeTestResult or raise."""
         self.calls.append(prompt)
-        
+
         # Failure path — test how runners handle exceptions.
         if self._should_raise is not None:
             raise self._should_raise
-        
+
         # Success path — return a result with all fields populated, so
         # downstream tests can assert on token counts, latency, etc.
         return SmokeTestResult(
@@ -219,21 +221,19 @@ class FakeSyncProvider:
             usage=TokenUsage(input_tokens=10, output_tokens=5),
             latency_ms=12.3,
         )
-        
+
     def generate_structured(self, prompt: str, schema) -> Exception:
         """Stub — not used by smoke_test runners."""
-        raise NotImplementedError(
-            "FakeSyncProvider doesn't implement structured output"
-        )
-    
+        raise NotImplementedError("FakeSyncProvider doesn't implement structured output")
+
 
 class FakeAsyncProvider:
     """Async twin of FakeSyncProvider.
-    
+
     Same attributes, same constructor — only smoke_test is async.
     Used to test batch_runner.py without real network I/O.
     """
-    
+
     def __init__(
         self,
         settings: ProviderSettings,
@@ -244,14 +244,14 @@ class FakeAsyncProvider:
         self._response = response
         self._should_raise = should_raise
         self.calls: list[str] = []
-        
+
     async def smoke_test(self, prompt: str) -> SmokeTestResult:
         """Async — same shape as FakeSyncProvider.smoke_test."""
         self.calls.append(prompt)
-        
+
         if self._should_raise is not None:
             raise self._should_raise
-        
+
         return SmokeTestResult(
             provider_name=self._settings.name,
             model=self._settings.model,
@@ -260,13 +260,11 @@ class FakeAsyncProvider:
             usage=TokenUsage(input_tokens=10, output_tokens=5),
             latency_ms=8.1,
         )
-        
+
     async def generate_structured(self, prompt: str, schema) -> Exception:
         """Stub — not used by smoke_test runners."""
-        raise NotImplementedError(
-            "FakeAsyncProvider doesn't implement structured output"
-        )
-        
+        raise NotImplementedError("FakeAsyncProvider doesn't implement structured output")
+
 
 @pytest.fixture
 def fake_sync_provider(provider_settings: ProviderSettings) -> FakeSyncProvider:
@@ -287,8 +285,8 @@ def failing_sync_provider(provider_settings: ProviderSettings) -> FakeSyncProvid
         provider_settings,
         should_raise=RuntimeError("simulated API outage"),
     )
-    
-    
+
+
 @pytest.fixture
 def failing_async_provider(provider_settings: ProviderSettings) -> FakeAsyncProvider:
     """A FakeAsyncProvider that always raises RuntimeError."""
@@ -296,8 +294,8 @@ def failing_async_provider(provider_settings: ProviderSettings) -> FakeAsyncProv
         provider_settings,
         should_raise=RuntimeError("simulated async API outage"),
     )
-    
-    
+
+
 # Why src/ layout makes this matter more
 # You're using src/llm_api_smoke_test/ (the modern PEP 660 layout), not llm_api_smoke_test/
 # at the project root. The src/ layout has one specific benefit: it forces you to install

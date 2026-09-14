@@ -1,5 +1,4 @@
-"""
-"""
+""" """
 
 # =============================================================================
 # IMPORTS
@@ -8,10 +7,8 @@
 from __future__ import annotations
 
 import httpx
-from numpy import isin
 import pytest
 import respx
-
 from pydantic import SecretStr
 
 from llm_api_smoke_test.config import ProviderSettings
@@ -20,10 +17,10 @@ from llm_api_smoke_test.config import ProviderSettings
 # explicit import like this works regardless because the names exist at
 # module scope.  (Adding them to __all__ is a one-line polish item.)
 from llm_api_smoke_test.providers import (
+    AsyncLLMProvider,
     AsyncOpenRouterProvider,
     OpenRouterProvider,
     SmokeTestResult,
-    AsyncLLMProvider,
 )
 
 # =============================================================================
@@ -32,7 +29,7 @@ from llm_api_smoke_test.providers import (
 # =====================================================
 # Constants
 # =====================================================
- 
+
 # The OpenAI SDK appends "/chat/completions" to the client base_url.
 # OpenRouterProvider sets base_url="https://openrouter.ai/api/v1", so the
 # full URL respx must intercept is this.  Matching the absolute URL (rather
@@ -44,6 +41,7 @@ _COMPLETIONS_URL: str = "https://openrouter.ai/api/v1/chat/completions"
 # TEST HELPERS
 # =============================================================================
 
+
 def _chat_completion_payload(
     *,
     content: str | None = "hello world",
@@ -52,12 +50,12 @@ def _chat_completion_payload(
     model: str = "deepseek/deepseek-v4-flash",
 ) -> dict[str, object]:
     """Build a minimal OpenAI-/OpenRouter-shaped ``chat.completion`` body.
- 
+
     Only the fields the SDK requires to deserialise — plus the ones our
     adapter reads — are included.  Keyword flags let each test bend a
     single dimension (null content, missing usage) without rebuilding the
     whole dict.
- 
+
     Parameters
     ----------
     content : str or None, optional
@@ -73,7 +71,7 @@ def _chat_completion_payload(
     model : str, optional
         Echoed model slug; not asserted on (the adapter reports
         ``self._settings.model``, not the body's), but kept realistic.
- 
+
     Returns
     -------
     dict of {str : object}
@@ -113,15 +111,16 @@ def _chat_completion_payload(
 # FIXTURES
 # =============================================================================
 
+
 @pytest.fixture
 def openrouter_settings() -> ProviderSettings:
     """Frozen OpenRouter ProviderSettings with a fake (non-placeholder) key.
- 
+
     Kept local to this module because it carries the "OpenRouter" identity
     and a provider/model slug — distinct from conftest's Anthropic-shaped
     ``provider_settings``.  Promote it to conftest only if a second module
     needs it.
- 
+
     Returns
     -------
     ProviderSettings
@@ -139,9 +138,10 @@ def openrouter_settings() -> ProviderSettings:
 # SYNC ADAPTER — OpenRouterProvider
 # =============================================================================
 
+
 class TestOpenRouterProviderSmokeTest:
     """Sync adapter parsing, with the httpx boundary faked by respx.
- 
+
     ``@respx.mock`` (default config) asserts every registered route is
     actually called AND that no unmocked request escapes to the network —
     so a single registered route that fires exactly once is the contract.
@@ -149,7 +149,8 @@ class TestOpenRouterProviderSmokeTest:
 
     @respx.mock
     def test_happy_path_parses_response(
-        self, openrouter_settings: ProviderSettings,
+        self,
+        openrouter_settings: ProviderSettings,
     ) -> None:
         """A well-formed body → a fully-populated SmokeTestResult."""
         # Register the fake endpoint; the SDK's POST will match it.
@@ -180,17 +181,16 @@ class TestOpenRouterProviderSmokeTest:
 
     @respx.mock
     def test_none_content_coalesces_to_empty_string(
-        self, openrouter_settings: ProviderSettings,
+        self,
+        openrouter_settings: ProviderSettings,
     ) -> None:
         """``message.content`` is null → ``content or ""`` yields ``""``.
- 
+
         Without the coalesce, ``None[:60]`` would raise ``TypeError`` —
         this pins the guard that prevents it.
         """
         route = respx.post(_COMPLETIONS_URL).mock(
-            return_value=httpx.Response(
-                200, json=_chat_completion_payload(content=None)
-            )
+            return_value=httpx.Response(200, json=_chat_completion_payload(content=None))
         )
 
         provider = OpenRouterProvider(openrouter_settings)  # type: ignore[arg-call]
@@ -204,18 +204,17 @@ class TestOpenRouterProviderSmokeTest:
 
     @respx.mock
     def test_missing_usage_yields_none(
-        self, openrouter_settings: ProviderSettings,
+        self,
+        openrouter_settings: ProviderSettings,
     ) -> None:
         """``usage`` is null → the ``is not None`` guard leaves usage as None.
- 
+
         The distinction matters: a missing usage block must surface as
         ``None`` (unknown), NOT a zero-filled TokenUsage (which would lie
         about a genuine "0 tokens" call).
         """
         route = respx.post(_COMPLETIONS_URL).mock(
-            return_value=httpx.Response(
-                200, json=_chat_completion_payload(include_usage=False)
-            )
+            return_value=httpx.Response(200, json=_chat_completion_payload(include_usage=False))
         )
 
         provider = OpenRouterProvider(openrouter_settings)  # type: ignore[arg-call]
@@ -233,9 +232,10 @@ class TestOpenRouterProviderSmokeTest:
 # ASYNC ADAPTER — AsyncOpenRouterProvider
 # =============================================================================
 
+
 class TestAsyncOpenRouterProviderSmokeTest:
     """Async adapter — identical parsing contract, awaited HTTP call.
- 
+
     Relies on ``asyncio_mode = "auto"`` so each ``async def test_*`` runs
     in an event loop without a marker.  Deliberately NO module-level
     ``pytestmark = pytest.mark.asyncio`` — that would wrongly tag the sync
@@ -245,7 +245,8 @@ class TestAsyncOpenRouterProviderSmokeTest:
 
     @respx.mock
     async def test_happy_patch_parses_response(
-        self, openrouter_settings: ProviderSettings,
+        self,
+        openrouter_settings: ProviderSettings,
     ) -> None:
         """Async happy path — same parsing as the sync adapter, awaited."""
         route = respx.post(_COMPLETIONS_URL).mock(
@@ -269,7 +270,7 @@ class TestAsyncOpenRouterProviderSmokeTest:
 
     @respx.mock
     async def test_none_content_coalesces_to_empty_string(
-        self, openrouter_settings: ProviderSettings,
+        self,
+        openrouter_settings: ProviderSettings,
     ) -> None:
         """Async — null content coalesces to ``""`` (same guard, async path)."""
-        

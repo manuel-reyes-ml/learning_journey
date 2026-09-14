@@ -6,7 +6,7 @@
 # (where pyproject.toml lives) with a virtual environment activated.
 # =============================================================================
 
-## Variables: 
+## Variables:
 # 	:= means "set this value once, right now"
 # 	?= means "set this only if it's not already set in the environment"
 # The ?= python lets someone override it: make PY=python3.13 test
@@ -39,7 +39,7 @@ TESTS := tests
 # 3. awk splits on ##  and prints with cyan ANSI color codes (\033[36m) on the target name
 # The $$ is a make-escape for the shell's $. Make uses $ for its own variables, so to pass a
 # literal $ through to the shell you double it.
-# 
+#
 # You don't need to memorize this line. Just copy it into every Makefile and keep writing
 # target: ## Description comments. The help menu takes care of itself forever.
 help:  ## Show this help menu
@@ -51,7 +51,7 @@ help:  ## Show this help menu
 	@echo ""
 
 
-# ─── SETUP ────────────────────────────────────────────────────── 
+# ─── SETUP ──────────────────────────────────────────────────────
 install:  ## Install the package editable mode
 	$(PY) -m pip install -e .
 
@@ -79,7 +79,7 @@ typecheck:  ## Run mypy static type checker (strict mode via pyproject.toml)
 check: lint typecheck  ## Run lint + typecheck without modifying files
 	@echo ""
 	@echo "✓ All checks passed"
- 
+
 pre-commit:  ## Run all pre-commit hooks against every file
 	pre-commit run --all-files
 

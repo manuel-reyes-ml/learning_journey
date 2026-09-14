@@ -213,6 +213,7 @@ from llm_api_smoke_test.config import ProviderSettings
 class OpenAIProvider:
     def __init__(self, settings: ProviderSettings) -> None:
         import openai
+
         self._client = openai.OpenAI(api_key=settings.api_key.get_secret_value())
         self._settings = settings
 
