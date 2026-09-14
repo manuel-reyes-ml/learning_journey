@@ -14,36 +14,78 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # ---------------------------------------------------------------------------
+  # Runs the SAME hook set as .pre-commit-config.yaml, so CI is a superset of the
+  # local gate by construction rather than by discipline. Anything a --no-verify
+  # commit slipped past locally is caught here.
+  #
+  # commit-msg hooks (conventional-pre-commit) are skipped automatically by
+  # `run --all-files` — there is no commit message to inspect.
+  # ---------------------------------------------------------------------------
+  lint:
+    name: lint + hooks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v6
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+
+      - name: Cache pre-commit environments
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}
+
+      - name: Run every hook
+        run: uvx pre-commit run --all-files --show-diff-on-failure
+
+  # ---------------------------------------------------------------------------
+  # One pytest invocation per workspace member, on purpose.
+  #
+  # pytest reads exactly ONE config file per run. A single root-level run would
+  # pick up the root pyproject.toml and silently discard each member's
+  # [tool.pytest.ini_options] — asyncio_mode, --strict-markers, coverage scope.
+  # It would also collect both `tests` packages into one process, where their
+  # identical package names collide (ImportPathMismatchError).
+  #
+  # No PYTHONPATH hack: the workspace installs both members editable, so imports
+  # resolve through the venv the way they will for anyone who clones this repo.
+  # ---------------------------------------------------------------------------
   tests:
+    name: tests (py${{ matrix.python-version }})
     runs-on: ubuntu-latest
     timeout-minutes: 15
 
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.11", "3.12", "3.13", "3.14"]
+        # Must stay a subset of requires-python in the root pyproject.toml.
+        python-version: ["3.12", "3.13", "3.14"]
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v5
+      - name: Install uv and set Python ${{ matrix.python-version }}
+        uses: astral-sh/setup-uv@v10
         with:
           python-version: ${{ matrix.python-version }}
-          cache: pip
-          cache-dependency-path: |
-            requirements.txt
-            requirements-dev.txt
+          enable-cache: true
 
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements-dev.txt
-          python -m pip check
+      # --locked fails if uv.lock is stale instead of silently regenerating it.
+      # --all-packages installs every workspace member; --all-groups pulls each
+      # member's dev/test dependency groups (pytest-asyncio lives there).
+      - name: Install workspace
+        run: uv sync --all-packages --all-groups --locked
 
-      - name: Run tests
-        env:
-          PYTHONPATH: .
-        run: |
-          python -m pytest -q
+      - name: Tests — llm-api-smoke-test
+        run: uv run pytest llm-api-smoke-test/tests
+
+      - name: Tests — cs50-speller
+        run: uv run pytest courses/cs50_harvard/code/05_data_structures/speller/py_src/tests
