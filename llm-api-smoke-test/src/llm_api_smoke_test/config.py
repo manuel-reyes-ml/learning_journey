@@ -71,7 +71,8 @@ class ProviderSettings(BaseModel):
     #   - If extra was set to 'forbid', Pydantic Rejects unknown fields instead of silently
     #     dropping them. 'api_kye' would not be permitted in construction.
     #
-    # Other production flags worth knowing for later: strict=True (no type coercion — int won't accept "5")
+    # Other production flags worth knowing for later: 
+    # strict=True (no type coercion — int won't accept "5")
     # and validate_assignment=True (re-validates on attribute set, only meaningful if not frozen).
     model_config = ConfigDict(frozen=True, extra="forbid")
 
@@ -88,17 +89,18 @@ class ProviderSettings(BaseModel):
     # you get a clear ValidationError pointing at the exact field on the line
     # load_config() runs. Fail fast, fail at the boundary.
     #
-    # Class method - gets 'cls' -> works WITHOUT an instance (ProviderSettings._reject_placeholder())
+    # Class method - gets 'cls' -> works WITHOUT an instance
+    # (ProviderSettings._reject_placeholder()).
     # cls is the class object itself, not an instance of it. Inside a classmethod, cls and
     # ProviderSettings refer to the same thing.
     #
     # When field_validator runs, the model instance doesn't exist yet.
-    # Pydantic validates each field during construction, before __init__ finishes. So at that moment,
-    # there's no self to give the validator. What Pydantic has on hand is the class itself —
-    # so it passes cls.
+    # Pydantic validates each field during construction, before __init__ finishes.
+    # So at that moment, there's no self to give the validator. What Pydantic has
+    # on hand is the class itself — so it passes cls.
     #
-    # That's why @classmethod is required. It tells Python: "this method takes the class as its first
-    # argument, not an instance" — which matches exactly how Pydantic calls it.
+    # That's why @classmethod is required. It tells Python: "this method takes the class as
+    # its first argument, not an instance" — which matches exactly how Pydantic calls it.
     @field_validator("api_key")  # <- which field - outer decorator (applied last)
     @classmethod  # <- MUST be classmethod - inner decorator (applied first)
     def _reject_placeholder(cls, value: SecretStr) -> SecretStr:
@@ -165,10 +167,12 @@ class SmokeTestSettings(BaseSettings):
     model_config = SettingsConfigDict(
         # Also looks at the .env file in the working directory. Real env vars win if both exists.
         env_file=".env",
-        # Specifies the text encoding when reading .env. Without it, Python falls back to the OS default
+        # Specifies the text encoding when reading .env. Without it, Python falls back
+        # to the OS default
         # Explicit "utf-8" makes the behavior identical everywhere.
         env_file_encoding="utf-8",
-        # Decides how to handle env vars (or .env entries) that don't correspond to a field on your model.
+        # Decides how to handle env vars (or .env entries) that don't correspond
+        # to a field on your model.
         # 'forbid' (default in pydantic-settings): Raise ValidationError if any extra appears
         # 'ignore': Silently drop unknown variables
         # 'allow': Accept and store them as model attributes
@@ -261,8 +265,9 @@ def load_config(env: Mapping[str, str] | None = None) -> SmokeTestConfig:
     # 1. It's per-process, not global. A subprocess inherits a copy; changes don't propagate back.
     # Changes you make in Python (os.environ["X"] = "y") only affect the current process and
     # its future children.
-    # 2. Values are always strings. No types, no validation — which is exactly why your load_config()
-    # exists: to translate the untyped string world into the typed SmokeTestConfig world.
+    # 2. Values are always strings. No types, no validation — which is exactly
+    # why your load_config() exists: to translate the untyped string world into
+    # the typed SmokeTestConfig world.
     # 3. Reading it directly couples your code to the OS. Your decision to accept
     # env: Mapping[str, str] | None = None and default to os.environ is the right one —
     # it's the dependency-injection pattern applied to the environment. Tests pass a dict;

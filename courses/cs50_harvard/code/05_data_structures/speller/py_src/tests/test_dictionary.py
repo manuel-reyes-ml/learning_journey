@@ -56,7 +56,8 @@ def empty_dictionary(request: pytest.FixtureRequest) -> DictionaryProtocol:
 
 @pytest.fixture(params=list(dicts.keys()))
 def loaded_dictionary(
-    request: pytest.FixtureRequest,  # type annotation for the built-in request object that pytest injects
+    # type annotation for the built-in request object that pytest injects
+    request: pytest.FixtureRequest,
     sample_dict_file: Path,
 ) -> DictionaryProtocol:
     """Loaded instance of every registered backend."""

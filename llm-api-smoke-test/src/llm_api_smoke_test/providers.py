@@ -1056,7 +1056,8 @@ class AsyncOpenRouterProvider:
 # TypedDict-based request params:
 #   Anthropic, OpenAI, AWS Bedrock -- Annotate the variable: tools: list[ToolParam] = [{...}]
 # Pydantic-based request params:
-#   Google google-genai, LangChain, Pydantic AI -- Just call the constructor — validation is automatic
+#   Google google-genai, LangChain, Pydantic AI -- Just call the constructor —
+#   validation is automatic.
 
 # When DataVault eventually calls:
 # pythonresults = await asyncio.gather(*[

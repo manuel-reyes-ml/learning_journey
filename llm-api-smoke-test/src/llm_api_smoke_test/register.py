@@ -386,12 +386,13 @@ def register_class(
         # because Python would treat field_name literally as a keyword called "field_name",
         # not as a variable to interpolate.
         #
-        # The **{field_name: info} pattern is the workaround: build the kwargs dict programmatically,
-        # then unpack:
+        # The **{field_name: info} pattern is the workaround: build the kwargs
+        # dict programmatically, then unpack:
         #   Step 1: Build the dict       → {"sync_provider": info}
         #   Step 2: Unpack with **       → replace(bucket, sync_provider=info)
         #
-        # General rule: * spreads sequences into positional args; ** spreads dicts into keyword args.
+        # General rule: * spreads sequences into positional args;
+        # ** spreads dicts into keyword args.
         # Same syntax on both sides of the function call (sender unpacks; receiver collects).
         dicts[name] = replace(bucket, **{field_name: info})
 

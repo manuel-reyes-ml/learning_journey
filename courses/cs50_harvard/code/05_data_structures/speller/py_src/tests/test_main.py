@@ -309,9 +309,9 @@ class TestMain:
         assert any("Verbose mode enabled" in r.getMessage() for r in debug_records)
 
         # getMessage() over .message. .message is an attribute a Formatter sets during formatting —
-        # it isn't guaranteed to exist on a raw LogRecord. getMessage() always works and performs the
-        # %s interpolation, which matters for your other log calls like logger.debug("Arguments
-        # parsed: %s", args).
+        # it isn't guaranteed to exist on a raw LogRecord. getMessage() always works and performs
+        # the %s interpolation, which matters for your other log calls like
+        # logger.debug("Arguments parsed: %s", args).
         #   record = caplog.records[0]
         #   assert record.levelname == "DEBUG"
         #   assert "Verbose mode enabled" in record.message
