@@ -51,15 +51,15 @@ if TYPE_CHECKING:
             format_spec: str = "",
         ) -> Interpolation: ...
 
-# When you write dog = Dog("Rex"), Python actually does two things behind the scenes:
-# Step 1:  Dog.__new__(Dog, "Rex")
-#          "Hey class, please make me a new empty Dog."
-#          Returns:  a fresh, blank Dog object with no attributes yet.
+    # When you write dog = Dog("Rex"), Python actually does two things behind the scenes:
+    # Step 1:  Dog.__new__(Dog, "Rex")
+    #          "Hey class, please make me a new empty Dog."
+    #          Returns:  a fresh, blank Dog object with no attributes yet.
 
-# Step 2:  __init__(that_new_dog, "Rex")
-#          "Now fill that Dog up with data."
-#          Sets:     dog.name = "Rex"
-#          Returns:  None  (it just modifies the dog in place)
+    # Step 2:  __init__(that_new_dog, "Rex")
+    #          "Now fill that Dog up with data."
+    #          Sets:     dog.name = "Rex"
+    #          Returns:  None  (it just modifies the dog in place)
 
     class Template:
         """Inline type stub for string.templatelib.Template."""
@@ -91,7 +91,7 @@ else:
 #         return super().__new__(cls)        # default behavior — just make blank
 #     def __init__(self, name):
 #         self.name = name
-#You skip writing __new__ because there's nothing to customize about the making step.
+# You skip writing __new__ because there's nothing to customize about the making step.
 
 # =============================================================================
 # EXPORTS

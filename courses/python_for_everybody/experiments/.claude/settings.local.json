@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(jupytext --to notebook 27_contextmanager_decorators_reference.py)",
+      "Bash(pip3 install *)",
+      "Bash(python3 -m jupytext --to notebook /Users/manuelreyes/Desktop/dev/projects/learning_journey/courses/python_for_everybody/experiments/27_contextmanager_decorators_reference.py)",
+      "Bash(git -C /Users/manuelreyes/Desktop/dev/projects/learning_journey/courses/python_for_everybody/experiments diff --stat HEAD 27_contextmanager_decorators_reference.py)",
+      "Bash(python3 -m jupytext --to notebook 27_nb_build.py --output 27_contextmanager_decorators_reference.ipynb)",
+      "Bash(python3 -m jupyter nbconvert --to notebook --execute 27_contextmanager_decorators_reference.ipynb --output 27_contextmanager_decorators_reference.ipynb)",
+      "Bash(jupytext --version)",
+      "Bash(jupytext --to notebook 28_python_generators_iterators_contextmanagers_reference.py)",
+      "Bash(git checkout *)"
+    ]
+  }
+}

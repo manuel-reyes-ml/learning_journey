@@ -18,19 +18,18 @@ Pytest Patterns Introduced
 
 from __future__ import annotations
 
-import pytest
-
 from pathlib import Path
+
+import pytest
 
 from speller.config import (
     MAX_WORD_LENGTH,
     ExitCode,
     FileHandlerConfig,
     LogFilesPath,
-    file_dirs,
     fhandler_config,
+    file_dirs,
 )
-
 
 # =============================================================================
 # CONSTANTS
@@ -38,6 +37,7 @@ from speller.config import (
 
 # Test classes must start with capital T, colleted by class-name pattern
 # Test functions/methods must start with 'test_', collected by function-name pattern
+
 
 class TestConstants:
     """Test module-level constants.
@@ -50,27 +50,28 @@ class TestConstants:
 
     No __init__ needed — pytest instantiates it automatically.
     """
-    
+
     def test_max_word_length_values(self) -> None:
         """MAX_WORD_LENGTH matches CS50's #define LENGTH 45."""
         assert MAX_WORD_LENGTH == 45
-        
+
     def test_max_word_length_is_int(self) -> None:
         """MAX_WORD_LENGTH is an integer, not a string or float."""
         assert isinstance(MAX_WORD_LENGTH, int)
-        
+
 
 # =============================================================================
 # ENUMS
 # =============================================================================
 
+
 class TestExitCode:
     """Test ExitCode enum values and behavior."""
-    
+
     def test_success_is_zero(self) -> None:
         """Unix convention: success is exit code 0."""
         assert ExitCode.SUCCESS == 0
-        
+
     def test_all_codes_are_unique(self) -> None:
         """No two exit codes share the same value.
 
@@ -79,12 +80,12 @@ class TestExitCode:
         """
         values = [code.value for code in ExitCode]
         assert len(values) == len(set(values))
-        
+
     def test_exit_codes_are_integers(self) -> None:
         """All exit codes are integers (IntEnum guarantee)."""
         for code in ExitCode:
             assert isinstance(code, int)
-            
+
     def test_known_exit_codes(self) -> None:
         """Verify all expected exit codes exist.
 
@@ -101,27 +102,28 @@ class TestExitCode:
         }
         actual = {code.name for code in ExitCode}  # Set comprehension
         assert actual == expected
-        
+
 
 # =============================================================================
 # FROZEN DATACLASSES
 # =============================================================================
 
+
 class TestFileDirectories:
     """Test FileDirectories frozen dataclass."""
-    
+
     def test_instance_exists(self) -> None:
         """Module-level file_dirs instance is created at import time."""
         assert file_dirs is not None
-        
+
     def test_cur_dir_exists(self) -> None:
         """CUR_DIR points to an existing directory (src/speller/)."""
         assert file_dirs.CUR_DIR.exists()
-        
+
     def test_cur_dir_is_speller(self) -> None:
         """CUR_DIR name is 'speller' (the package directory)."""
         assert file_dirs.CUR_DIR.name == "speller"
-        
+
     def test_frozen_immutability(self) -> None:
         """Frozen dataclass prevents attribute mutation.
 
@@ -135,23 +137,23 @@ class TestFileDirectories:
         """
         with pytest.raises(AttributeError):
             file_dirs.CUR_DIR = "hacked"  # type: ignore[misc]
-            
+
     def test_log_file_path(self) -> None:
         """log_file property returns a Path in LOG_DIR."""
         log_file = file_dirs.log_file
         assert isinstance(log_file, LogFilesPath)
         assert isinstance(log_file.flog_path, Path)
-        
-        
+
+
 class TestFileHandlerConfig:
     """Test FileHandlerConfig frozen dataclass with validation."""
-       
+
     def test_default_values(self) -> None:
         """Default config values are sensible."""
         assert fhandler_config.ENCODING == "utf-8"
         assert fhandler_config.BACKUP_COUNT == 3
         assert fhandler_config.FILE_MB == 5
-        
+
     def test_max_log_bytes_computation(self) -> None:
         """max_log_bytes property computes correctly.
 
@@ -159,7 +161,7 @@ class TestFileHandlerConfig:
         """
         expected = 5 * 1024 * 1024
         assert fhandler_config.max_log_bytes == expected
-        
+
     def test_negative_backup_count_raises(self) -> None:
         """Negative BACKUP_COUNT raises ValueError in __post_init__.
 
@@ -173,19 +175,18 @@ class TestFileHandlerConfig:
         # contains "BACKUP_COUNT".If the wrong ValueError fires, the test fails.
         with pytest.raises(ValueError, match="BACKUP_COUNT"):
             FileHandlerConfig(BACKUP_COUNT=-1)
-            
+
     def test_zero_file_mb_raises(self) -> None:
         """Zero FILE_MB raises ValueError."""
         with pytest.raises(ValueError, match="FILE_MB"):
             FileHandlerConfig(FILE_MB=0)
-            
+
     def test_custom_valid_config(self) -> None:
         """Custom config with valid values succeeds."""
         config = FileHandlerConfig(FILE_MB=10, BACKUP_COUNT=5)
         assert config.FILE_MB == 10
         assert config.BACKUP_COUNT == 5
         assert config.max_log_bytes == 10 * 1024 * 1024
-        
 
 
 # =============================================================================
@@ -193,7 +194,7 @@ class TestFileHandlerConfig:
 # =============================================================================
 # =====================================================
 # pytest.raises(Exception, match=)
-# =====================================================  
+# =====================================================
 
 # What match= actually does
 # match= is a regex pattern run against str(exception). It uses re.search(),

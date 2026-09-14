@@ -70,11 +70,11 @@ Every project gets its own conftest.py:
 from __future__ import annotations
 
 from pathlib import Path
+
 import pytest
 
 from speller.dictionaries import HashTableDictionary
 from speller.protocols import DictionaryProtocol
-
 
 # =============================================================================
 # PATH FIXTURES — Resolve test file locations
@@ -272,11 +272,11 @@ def mixed_text_file(tmp_path: Path) -> Path:
     content = (
         "Hello world\n"
         "cat's hat\n"
-        "abc123def next\n"            # digit mid-word: skip "abc123def"
+        "abc123def next\n"  # digit mid-word: skip "abc123def"
         "test   multiple   spaces\n"  # multiple spaces between words
-        "'apostrophe start\n"         # apostrophe at start: not part of word
-        "word123 another\n"           # digit mid-word: skip "word123"
-        "superlongword end\n"         # normal words (under 45 chars)
+        "'apostrophe start\n"  # apostrophe at start: not part of word
+        "word123 another\n"  # digit mid-word: skip "word123"
+        "superlongword end\n"  # normal words (under 45 chars)
     )
     text_file = tmp_path / "mixed.txt"
     text_file.write_text(content, encoding="utf-8")
@@ -416,7 +416,8 @@ def loaded_dictionary(sample_dict_file: Path) -> HashTableDictionary:
 #   FormSense:   MockExtractor (no Gemini Vision API calls)
 #   AFC:         MockDataSource (no SEC API rate limiting)
 
-# When your mock classes rely purely on structural typing (duck typing), 
+
+# When your mock classes rely purely on structural typing (duck typing),
 # this technically satisfies the Protocol, adding explicit Protocol
 # inheritance to your test doubles gives you a compile-time safety net: if you
 # ever add a new method to DictionaryProtocol, Pyright will immediately flag
@@ -427,7 +428,7 @@ class MockDictionary(DictionaryProtocol):
     Provides deterministic, predictable behavior for testing
     run_speller() without real file I/O. The words set is
     configurable so each test can control what's "in the dictionary."
-    
+
     Explicit inheritance isn't required (structural typing works
     (duck typing)), but it gives Pyright a compile-time check: if
     DictionaryProtocol gains a new method, this class immediately
@@ -447,13 +448,13 @@ class MockDictionary(DictionaryProtocol):
         Words to include in the mock dictionary.
         Defaults to {"the", "cat", "sat", "on", "mat"}.
     """
-    
+
     # You already use slots=True on all your dataclasses — applying it to your mock
     # classes shows consistent engineering discipline. It prevents accidental attribute
     # creation (a real bug source in test doubles) and the default behavior of a dataclass
     # is mutable, which makes them great for objects that evolve through your pipeline — but
     # for mocks, you want tight control over what attributes exist.
-    __slots__ = ("_words", "_loaded")
+    __slots__ = ("_loaded", "_words")
 
     def __init__(self, words: set[str] | None = None) -> None:
         # If no words provided, use a default set that matches
@@ -485,11 +486,11 @@ class MockDictionary(DictionaryProtocol):
     def __contains__(self, word: str) -> bool:
         """Support 'word in dictionary' — delegates to check()."""
         return self.check(word)
-    
+
     def unload(self) -> bool:
         """Pretend to unload - always succeeds"""
         self._loaded = False
-        return True 
+        return True
 
 
 # This is a nuance worth learning: structural typing catches errors at call sites;
@@ -526,11 +527,11 @@ class FailingDictionary(DictionaryProtocol):
     def __contains__(self, word: str) -> bool:
         """Always returns False (nothing is 'in' a failed dictionary)."""
         return False
-    
+
     def unload(self) -> bool:
         """Pretend to unload - always succeeds"""
         self._loaded = False
-        return True 
+        return True
 
 
 # =============================================================================

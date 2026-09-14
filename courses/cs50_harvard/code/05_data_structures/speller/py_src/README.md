@@ -140,20 +140,24 @@ __main__.py ────────────────── imports EVERY
 ```python
 WordContainer = TypeVar("WordContainer", set[str], list[str], dict[str, None])
 
+
 class _BaseDictionary(ABC, Generic[WordContainer]):
     self._words: WordContainer = self._create_container()  # unresolved
 
-class HashTableDictionary(_BaseDictionary[set[str]]):      # W = set[str]
-    def _add_word(self, word: str) -> None:
-        self._words.add(word)       # pyright knows _words IS set[str] ✓
 
-class ListDictionary(_BaseDictionary[list[str]]):          # W = list[str]
+class HashTableDictionary(_BaseDictionary[set[str]]):  # W = set[str]
     def _add_word(self, word: str) -> None:
-        self._words.append(word)    # pyright knows _words IS list[str] ✓
+        self._words.add(word)  # pyright knows _words IS set[str] ✓
 
-class DictDictionary(_BaseDictionary[dict[str, None]]):    # W = dict[str, None]
+
+class ListDictionary(_BaseDictionary[list[str]]):  # W = list[str]
     def _add_word(self, word: str) -> None:
-        self._words[word] = None    # pyright knows _words IS dict[str, None] ✓
+        self._words.append(word)  # pyright knows _words IS list[str] ✓
+
+
+class DictDictionary(_BaseDictionary[dict[str, None]]):  # W = dict[str, None]
+    def _add_word(self, word: str) -> None:
+        self._words[word] = None  # pyright knows _words IS dict[str, None] ✓
 ```
 
 **Plugin registry** — each backend self-registers at import time via `@register_class`. `__main__.py` selects backends by key from `dicts{}` — it never imports or names a concrete class. Adding a new backend requires zero changes to `__main__.py`, `speller.py`, or `protocols.py`.
@@ -167,11 +171,15 @@ class DictDictionary(_BaseDictionary[dict[str, None]]): ...
 
 ```python
 # load_dictionary.py — runs once per backend
-loaded_dict, load_result = load_dictionary(dictionary=HashTableDictionary(), dict_path=dict_path)
+loaded_dict, load_result = load_dictionary(
+    dictionary=HashTableDictionary(), dict_path=dict_path
+)
 
 # run_speller() — runs N times, no reload
 for text_path in text_paths:
-    result = run_speller(dictionary=loaded_dict, text_path=text_path, benchmarks={"load": load_result})
+    result = run_speller(
+        dictionary=loaded_dict, text_path=text_path, benchmarks={"load": load_result}
+    )
 ```
 
 **Layer-boundary exception handling** — `run_speller()` raises `ValueError` for per-file errors (bad encoding, empty file). `main()` catches `ValueError` at the CLI boundary, logs a warning, and continues the batch — other files are not affected. `SystemExit` is reserved for fatal errors (dictionary fails to load) where no further processing is possible. Domain functions never import `ExitCode`; the CLI layer translates domain exceptions to exit codes.
@@ -194,7 +202,7 @@ except ValueError as e:
 ```python
 raw: argparse.Namespace = _build_parser().parse_args(argv)
 
-args = SpellerArgs(          # 12 fully typed fields from this point forward
+args = SpellerArgs(  # 12 fully typed fields from this point forward
     text=raw.text,
     dictionary=raw.dictionary,
     operations=raw.ops,
@@ -214,11 +222,11 @@ args = SpellerArgs(          # 12 fully typed fields from this point forward
 
 ```python
 if args.template_logging:
-    configure_template_logging(...)        # PEP 750 t-strings → JSON + console
+    configure_template_logging(...)  # PEP 750 t-strings → JSON + console
 elif args.structured_logging:
-    configure_structured_logging(...)      # structlog → NDJSON + ConsoleRenderer
+    configure_structured_logging(...)  # structlog → NDJSON + ConsoleRenderer
 else:
-    configure_logging(...)                 # ColoredFormatter + plain text
+    configure_logging(...)  # ColoredFormatter + plain text
 ```
 
 **Cross-version feature gating** — `_compat.py` dispatches Template/Interpolation imports based on `sys.version_info >= (3, 14)`. The 3.14+ module uses the real `string.templatelib` types; the 3.12 module exposes empty sentinel classes whose `isinstance()` checks always return False, so isinstance-guarded code paths fall through harmlessly. Type checkers see the real types unconditionally through `TYPE_CHECKING`. Three audiences (mypy, Python 3.14 runtime, Python 3.12 runtime), three views, one source file.
@@ -386,11 +394,21 @@ The dependency injection payoff — `MockDictionary` satisfies `DictionaryProtoc
 
 ```python
 class MockDictionary:
-    def load(self, filepath: str) -> bool: return True
-    def check(self, word: str) -> bool: return word in {"cat", "dog"}
-    def size(self) -> int: return 2
-    def __len__(self) -> int: return 2
-    def __contains__(self, word: str) -> bool: return self.check(word)
+    def load(self, filepath: str) -> bool:
+        return True
+
+    def check(self, word: str) -> bool:
+        return word in {"cat", "dog"}
+
+    def size(self) -> int:
+        return 2
+
+    def __len__(self) -> int:
+        return 2
+
+    def __contains__(self, word: str) -> bool:
+        return self.check(word)
+
 
 def test_run_speller_counts(tmp_text_file):
     result = run_speller(
