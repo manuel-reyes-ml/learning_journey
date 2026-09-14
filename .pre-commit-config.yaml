@@ -4,7 +4,7 @@
 # authoritative. Nothing runs here that does not also run in CI.
 #
 # Setup:
-#   pipx install pre-commit
+#   uv tool install pre-commit --with pre-commit-uv
 #   pre-commit run --all-files     # inspect the blast radius first
 #   make hooks                     # == pre-commit install --install-hooks
 #
@@ -12,7 +12,7 @@
 #   pre-commit autoupdate --freeze # resolve tags -> SHAs, mitigates version drift
 #
 # Config for the tools themselves lives in pyproject.toml, never in `args:`,
-# so hooks / CI / editor cannot disagree. (No pyproject.toml in this repo yet.)
+# so hooks / CI / editor cannot disagree.
 
 minimum_pre_commit_version: "3.2.0"
 
@@ -62,6 +62,13 @@ repos:
       - id: ruff-format
         files: ^(scripts/|llm-api-smoke-test/)
 
+  # ---------------------------------------------------------------------------
+  # Tier A — lockfile.
+  # ---------------------------------------------------------------------------
+  # It fires only when pyproject.toml or uv.lock change, and it fails if you
+  # edited your dependencies without regenerating the lock. This is exactly the
+  # "stale lockfile" defect class your Claude harness hook was modeled on — now
+  # you have the literal version of it.
   - repo: https://github.com/astral-sh/uv-pre-commit
     rev: 0.9.28
     hooks:
