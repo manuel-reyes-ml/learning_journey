@@ -200,7 +200,7 @@ project tag**, and **1–3 topic tags**.
   owns the control flow.  **Workflows** orchestrate LLM and tool calls through predefined code—you own
   the control flow. **Agents** let the model choose its next tool call from environment feedback—you
   own the goal and guardrails, not every branch.
-  **In your design you own the path:** if confidence < 0.8 → review, if incomplete → email, if complete → 
+  **In your design you own the path:** if confidence < 0.8 → review, if incomplete → email, if complete →
   ticket are branches you wrote in code. The LLM reasons inside each step (reading the form, judging
   validation) but never decides what to do next. That is the literal workflow definition. An agent
   would be the model deciding, turn by turn, "I'll look up this participant's history, then maybe

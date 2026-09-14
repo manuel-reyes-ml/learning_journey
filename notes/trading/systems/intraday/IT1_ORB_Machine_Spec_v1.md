@@ -268,7 +268,7 @@ dow_policy       = "tag_only"  # [DECISION] baseline does NOT skip/resize by wee
 
 - **Entries:** next-bar open ± `slippage` (adverse).
 - **Stops:** if a 5m bar's `low <= stop` ⇒ filled at `min(open, stop) − slippage` (gap-through handled).
-- **Targets/partials:** if `high >= target` ⇒ filled at `target` (limit). 
+- **Targets/partials:** if `high >= target` ⇒ filled at `target` (limit).
 - **Same-bar stop & target:** assume **stop first** (conservative).
 - `slippage` per share `[OPEN PARAMETER] = $0.03` (v2 cites $0.02–0.05). `commission [OPEN PARAMETER] = $0.005/share or per-trade as your broker`.
 

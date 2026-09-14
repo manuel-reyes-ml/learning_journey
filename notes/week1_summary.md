@@ -3,10 +3,10 @@
 > Foundation first: tools, basics, and habits.
 
 - 🐍 **Python**
-  - Starting **Python for Everybody (Py4E)** and writing small scripts  
+  - Starting **Python for Everybody (Py4E)** and writing small scripts
   - Running Python from **VS Code** and the terminal
 - 🗄️ **SQL**
-  - Learning SQL basics with **Mode SQL**, **SQLZoo**, and **SQLite**  
+  - Learning SQL basics with **Mode SQL**, **SQLZoo**, and **SQLite**
 - 📊 **Excel**
   - Refreshing formulas & pivot tables for analytics work
 - 🧰 **Tools**
@@ -19,7 +19,7 @@
   * Diagnostic Analytics, that helps us understand “Why it happened.” 
   * Predictive Analytics, that analyzes historical data and trends to suggest “What will happen next.” 
   * Prescriptive Analytics, that prescribes “What should be done next.” 
-  
+
 - The Data Analysis process involves:
   * Developing an understanding of the problem and the desired outcome. 
   * Setting a clear metric for evaluating outcomes. 
@@ -38,15 +38,15 @@
 
   * Interpreting and effectively communicating the message to stakeholders who need to act on the findings.
 
-  * Ensuring that the process is documented for future reference and repeatability.  
+  * Ensuring that the process is documented for future reference and repeatability.
 
-- In order to play this role successfully, Data Analysts need a mix of technical, functional, and soft skills.  
+- In order to play this role successfully, Data Analysts need a mix of technical, functional, and soft skills.
 
   * Technical Skills include varying levels of proficiency in using spreadsheets, statistical tools, visualization tools, programming and querying languages, and the ability to work with different types of data repositories and big data platforms.
 
   * An understanding of Statistics, Analytical techniques, problem-solving, the ability to probe a situation from multiple perspectives, data visualization, and project management skills – all of which come under Functional Skills a Data Analyst needs in order to play an effective role.
 
-  * Soft Skills include the ability to work collaboratively, communicate effectively, tell a compelling story with data, and garner support and buy-in from stakeholders. Curiosity to explore different pathways and intuition that helps to give a sense of the future based on past experiences are also essential skills for being a good Data Analyst.  
+  * Soft Skills include the ability to work collaboratively, communicate effectively, tell a compelling story with data, and garner support and buy-in from stakeholders. Curiosity to explore different pathways and intuition that helps to give a sense of the future based on past experiences are also essential skills for being a good Data Analyst.
 
 - Applications of generative AI in data analytics
   * Generative AI has many applications that can enhance your data analytics work:
@@ -65,7 +65,7 @@ As a beginner in data analytics, you’re stepping into a field that’s rapidly
 
 #### What is generative AI?
 
-Generative AI refers to a class of artificial intelligence models that create new content such as text, images, music, and more by learning patterns from existing data. 
+Generative AI refers to a class of artificial intelligence models that create new content such as text, images, music, and more by learning patterns from existing data.
 
 Generative AI can respond naturally to human conversation and serve as a tool for customer service and personalization of customer workflows. For example, you can use AI-powered chatbots, voice bots, and virtual assistants that respond more accurately to customers for first-contact resolution.
 
@@ -84,4 +84,3 @@ Generative adversarial networks (GANs): GANs consist of two neural networks: the
 Variational autoencoders (VAEs): VAEs encode input data into a compressed format and then decode it back, generating new data points similar to the input data.
 
 Transformers: Used primarily in natural language processing (NLP), transformers generate human-like text by predicting the next word in a sequence. Generative Pre-trained Transformer 3 (GPT-3) is a notable example.
-
