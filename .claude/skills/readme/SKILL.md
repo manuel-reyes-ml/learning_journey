@@ -19,7 +19,7 @@ disable-model-invocation: true
      Verified on this harness: expansion-free `!` DOES execute at level 1.
      `agent: Plan`, not Explore: this command judges output against project
      standards, and Explore deliberately skips CLAUDE.md to stay cheap (ADR-0004). -->
- 
+
 !`bash .github/scripts/readme_context.sh`
- 
+
 !`cat .github/docs/prompts/commands/readme.md`

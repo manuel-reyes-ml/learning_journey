@@ -7,7 +7,7 @@ agent: Plan
 background: false
 disable-model-invocation: true
 ---
- 
+
 <!-- STUB. Instructions live once at .github/docs/prompts/commands/review.md and are
      shared with OpenCode. Edit the prompt body, not this file.
      NO CLAUDE_PROJECT_DIR ANYWHERE (no dollar-brace form) — DELIBERATE (ADR-0006). Claude Code statically
@@ -18,7 +18,7 @@ disable-model-invocation: true
      Verified on this harness: expansion-free `!` DOES execute at level 1.
      `agent: Plan`, not Explore: this command judges output against project
      standards, and Explore deliberately skips CLAUDE.md to stay cheap (ADR-0004). -->
- 
+
 !`bash .github/scripts/review_context.sh`
- 
+
 !`cat .github/docs/prompts/commands/review.md`
