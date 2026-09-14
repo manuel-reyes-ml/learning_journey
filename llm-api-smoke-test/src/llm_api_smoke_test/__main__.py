@@ -498,7 +498,6 @@ def _build_providers(
     run_async: Literal[True],  # ← the discriminator
     model_override: str | None = None,
 ) -> list[AsyncLLMProvider]:
-    """Async overload — ``run_async=True`` returns async adapters."""
     ...
 
 
@@ -511,7 +510,6 @@ def _build_providers(
     run_async: Literal[False],  # ← the discriminator
     model_override: str | None = None,
 ) -> list[LLMProvider]:
-    """Sync overload — ``run_async=False`` returns sync adapters."""
     ...
 
 
