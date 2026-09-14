@@ -30,7 +30,6 @@ from __future__ import annotations
 
 import argparse
 import sys
-
 from pathlib import Path
 from typing import Final
 
@@ -119,6 +118,7 @@ keep-coding-instructions: true""",
 # CORE FUNCTION
 # =============================================================================
 
+
 def render(name: str) -> tuple[Path, str]:
     """Assemble one output file from its frontmatter, shared body and optional delta."""
     kind, frontmatter = AGENTS[name]
@@ -140,6 +140,7 @@ def render(name: str) -> tuple[Path, str]:
 # MAIN FUNCTION
 # =============================================================================
 
+
 def main(argv: list[str] | None = None) -> int:
     """Write or verify every generated agent file."""
     parser = argparse.ArgumentParser()
@@ -159,7 +160,7 @@ def main(argv: list[str] | None = None) -> int:
         else:
             path.write_text(content, encoding="utf-8")
             print(f"wrote {path.relative_to(ROOT)}")
-    
+
     if args.check:
         if stale:
             print("STALE - run 'make claude-agents' :", file=sys.stderr)
