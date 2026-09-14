@@ -8,7 +8,7 @@ subtask: true
      .github/docs/prompts/commands/eval.md is instructions-only. `!` substitution is
      single-pass, so shell written inside the imported body never executes (ADR-0001).
      Do not add ad-hoc `!` here — extend the script instead (ADR-0003). -->
- 
+
 !`bash .github/scripts/eval_context.sh`
- 
+
 !`cat .github/docs/prompts/commands/eval.md`

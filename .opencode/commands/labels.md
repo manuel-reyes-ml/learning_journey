@@ -12,7 +12,7 @@ subtask: true
      AGENT CHOICE: the GitHub write happens in the level-1 script, before any
      agent exists. The agent only reads the result and reports, so it is
      deliberately the READ-ONLY plan-cloud, not build. -->
- 
+
 !`bash .github/scripts/labels_run.sh $ARGUMENTS`
- 
+
 !`cat .github/docs/prompts/commands/labels.md`
