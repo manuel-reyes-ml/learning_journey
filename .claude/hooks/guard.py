@@ -212,7 +212,7 @@ def main() -> None:
             if re.search(pattern, cmd):
                 block(
                    f"command matches a prohibited pattern ({pattern}). "
-                    "Report what you would run and why; I execute it." 
+                    "Report what you would run and why; I execute it."
                 )
         sys.exit(0)
 
@@ -231,7 +231,7 @@ def main() -> None:
         if not matches(path, DOCS_ALLOW):
             block(
                 f"{path} is not a documentation file. This agent edits docs only; "
-                "report the exact change and hand it to Build mode."  
+                "report the exact change and hand it to Build mode."
             )
 
     sys.exit(0)
