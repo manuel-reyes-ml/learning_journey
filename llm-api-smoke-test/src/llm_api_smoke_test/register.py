@@ -6,7 +6,7 @@ provider adapters are added to the system by decorating a class with
 ``batch_runner.py``, or ``providers.py``'s Protocol definitions are
 required.
 
-Two-axis indexing — name × kind
+Two-axis indexing — name X kind
 -------------------------------
 Each provider name (``"anthropic"``, ``"gemini"``) maps to a single
 :class:`ProviderList` that bundles BOTH the sync and async variants.

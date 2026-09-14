@@ -299,14 +299,14 @@ class FileHandlerConfig:
         """Maximum log file size in bytes.
 
         Converts :attr:`FILE_MB` from megabytes to bytes using the
-        standard definition: 1 MB = 1 024 × 1 024 bytes.  This is the
+        standard definition: 1 MB = 1 024 X 1 024 bytes.  This is the
         value passed to :class:`~logging.handlers.RotatingFileHandler`
         as ``maxBytes``.
 
         Returns
         -------
         int
-            Maximum size in bytes (default: 5 × 1 024 × 1 024 = 5 242 880).
+            Maximum size in bytes (default: 5 X 1 024 X 1 024 = 5 242 880).
         """
         return self.FILE_MB * self.MEGABYTE * self.KILOBYTE
 

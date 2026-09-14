@@ -52,7 +52,7 @@ class TestBatchSmokeTestHappyPath:
         self,
         fake_async_provider: FakeAsyncProvider,
     ) -> None:
-        """One provider × one prompt → one success."""
+        """One provider X one prompt → one success."""
         successes, failures = await batch_smoke_test(
             providers=[fake_async_provider],  # type: ignore[type-arg]
             prompts=["hello"],
