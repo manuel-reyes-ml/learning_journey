@@ -74,6 +74,6 @@ Completed certificates will be stored as:
 
 ---
 
-**Total Certifications Target:** 15+ across all 5 stages  
-**Current Count:** 0 complete, 3 in progress  
+**Total Certifications Target:** 15+ across all 5 stages
+**Current Count:** 0 complete, 3 in progress
 **Next Milestone:** Python for Everybody (Week 8)

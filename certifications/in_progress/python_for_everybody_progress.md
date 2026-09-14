@@ -75,5 +75,5 @@
 
 ---
 
-**Last Updated:** November 26, 2025  
+**Last Updated:** November 26, 2025
 **Next Update:** December 3, 2025 (Week 2 summary)
