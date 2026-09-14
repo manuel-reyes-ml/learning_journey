@@ -1,12 +1,12 @@
 # 🚀 WEEKS 5-6 MASTER ACTIVATION PLAN
 ## GenAI-First Career Transformation | December 18–31, 2025
 
-**Document Version:** 1.1 (Crucible-aware — practice-project naming clarified)  
-**Covers:** December 18, 2025 – December 31, 2025  
-**Continues From:** Weeks 3-4 Activation Plan (Dec 4 – Dec 17)  
-**Aligned To:** Career Roadmap v8.3 — Stage 1: GenAI-First Data Analyst & AI Engineer  
-**Weekly Hours:** ~20-22 hours/week (holiday-adjusted from 25)  
-**Month Position:** Month 1 wrap-up → Month 2 launch  
+**Document Version:** 1.1 (Crucible-aware — practice-project naming clarified)
+**Covers:** December 18, 2025 – December 31, 2025
+**Continues From:** Weeks 3-4 Activation Plan (Dec 4 – Dec 17)
+**Aligned To:** Career Roadmap v8.3 — Stage 1: GenAI-First Data Analyst & AI Engineer
+**Weekly Hours:** ~20-22 hours/week (holiday-adjusted from 25)
+**Month Position:** Month 1 wrap-up → Month 2 launch
 **Special Note:** Christmas (Dec 25) and New Year's Eve (Dec 31) are REST DAYS
 
 ---
@@ -482,11 +482,11 @@ FROM contributions
 -- ============================================
 
 -- 1. Classify plan participants by contribution level
-SELECT 
+SELECT
     employee_name,
     department,
     contribution_pct,
-    CASE 
+    CASE
         WHEN contribution_pct >= 15 THEN '🟢 Maxing Out'
         WHEN contribution_pct >= 10 THEN '🔵 Strong Saver'
         WHEN contribution_pct >= 5  THEN '🟡 Moderate'
@@ -497,8 +497,8 @@ FROM employees
 ORDER BY contribution_pct DESC;
 
 -- 2. Revenue analysis by quarter (common interview question!)
-SELECT 
-    CASE 
+SELECT
+    CASE
         WHEN EXTRACT(MONTH FROM transaction_date) IN (1,2,3)  THEN 'Q1'
         WHEN EXTRACT(MONTH FROM transaction_date) IN (4,5,6)  THEN 'Q2'
         WHEN EXTRACT(MONTH FROM transaction_date) IN (7,8,9)  THEN 'Q3'
@@ -517,7 +517,7 @@ ORDER BY 1;
 -- These are asked in 50%+ of data analyst interviews
 
 -- 3. Rank employees by salary within each department
-SELECT 
+SELECT
     employee_name,
     department,
     annual_salary,
@@ -526,7 +526,7 @@ SELECT
 FROM employees;
 
 -- 4. Running total of contributions (cumulative sum)
-SELECT 
+SELECT
     transaction_date,
     employee_name,
     amount,
@@ -536,13 +536,13 @@ FROM contributions
 ORDER BY transaction_date;
 
 -- 5. Month-over-month change (LAG function)
-SELECT 
+SELECT
     month,
     total_distributions,
     LAG(total_distributions) OVER (ORDER BY month) AS prev_month,
     total_distributions - LAG(total_distributions) OVER (ORDER BY month) AS mom_change,
     ROUND(
-        (total_distributions - LAG(total_distributions) OVER (ORDER BY month))::DECIMAL 
+        (total_distributions - LAG(total_distributions) OVER (ORDER BY month))::DECIMAL
         / LAG(total_distributions) OVER (ORDER BY month) * 100, 1
     ) AS mom_pct_change
 FROM monthly_summary
@@ -550,7 +550,7 @@ ORDER BY month;
 
 -- 6. Top 3 contributors per department (interview classic!)
 SELECT * FROM (
-    SELECT 
+    SELECT
         employee_name,
         department,
         annual_contribution,
@@ -609,7 +609,7 @@ This is one of the most important exercises in your entire journey. Before you B
 ## Architecture & Planning Document
 
 ### 🎯 Project Goal
-Build a data analysis dashboard that demonstrates Python, Pandas, SQL, 
+Build a data analysis dashboard that demonstrates Python, Pandas, SQL,
 visualization, and domain expertise in financial/retirement plan data.
 
 ### 🤔 Business Question
@@ -1280,9 +1280,9 @@ Data Analyst | Python & SQL | Financial Services & Retirement Plans
 ## Overview (max 5000 chars)
 [Draft — will polish before launching in January]
 
-Data Analyst specializing in financial data with 15+ years of business 
-operations experience and 6 years of active trading. I combine traditional 
-data analysis (Python, SQL, Excel) with emerging AI tools to deliver 
+Data Analyst specializing in financial data with 15+ years of business
+operations experience and 6 years of active trading. I combine traditional
+data analysis (Python, SQL, Excel) with emerging AI tools to deliver
 insights faster than conventional approaches.
 
 **What I do:**
@@ -1302,7 +1302,7 @@ insights faster than conventional approaches.
 - Currently building AI-powered financial analytics dashboard
 
 ## Skills to List
-Python, SQL, Pandas, Data Analysis, Excel, Financial Analysis, 
+Python, SQL, Pandas, Data Analysis, Excel, Financial Analysis,
 Data Visualization, ETL, Data Cleaning, Retirement Plans, Matplotlib
 
 ## Hourly Rate
@@ -1701,7 +1701,7 @@ While the rest of the world is making resolutions on January 1, you'll be six we
 
 ---
 
-*Document created: December 2025*  
-*Aligned to: GenAI-First Career Roadmap v8.3*  
-*Previous: Weeks 3-4 Activation Plan (Dec 4 – Dec 17)*  
+*Document created: December 2025*
+*Aligned to: GenAI-First Career Roadmap v8.3*
+*Previous: Weeks 3-4 Activation Plan (Dec 4 – Dec 17)*
 *Next activation plan: Weeks 7-8 (January 1-14, 2026)*

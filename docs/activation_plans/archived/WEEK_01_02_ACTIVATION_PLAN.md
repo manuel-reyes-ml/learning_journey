@@ -1,10 +1,10 @@
 # 🚀 WEEKS 1-2 MASTER ACTIVATION PLAN
 ## GenAI-First Career Transformation | Starting Thursday, November 20, 2025
 
-**Document Version:** 1.1 (Crucible-aware — flagship #2 framing + Alpaca prep added)  
-**Covers:** November 20, 2025 – December 3, 2025  
-**Aligned To:** Career Roadmap v8.3 — Stage 1: GenAI-First Data Analyst & AI Engineer  
-**Weekly Hours:** 25 hours/week  
+**Document Version:** 1.1 (Crucible-aware — flagship #2 framing + Alpaca prep added)
+**Covers:** November 20, 2025 – December 3, 2025
+**Aligned To:** Career Roadmap v8.3 — Stage 1: GenAI-First Data Analyst & AI Engineer
+**Weekly Hours:** 25 hours/week
 **Your Level:** Complete Beginner in Tech (15+ years business ops, 6 years trading)
 
 ---
@@ -67,7 +67,7 @@ Every step includes the **exact commands to type**, **what you should see on scr
 
 ## ✅ PRE-DAY 1 CHECKLIST (Do This BEFORE Nov 20)
 
-**Time needed:** ~2-3 hours on November 18 or 19 (evening is fine)  
+**Time needed:** ~2-3 hours on November 18 or 19 (evening is fine)
 **Why before Day 1:** You don't want to waste your first precious morning session installing software. Show up ready to CODE.
 
 ### Hardware Check
@@ -1685,6 +1685,6 @@ That's the difference.
 
 ---
 
-*Document created: November 2025*  
-*Aligned to: GenAI-First Career Roadmap v8.3*  
+*Document created: November 2025*
+*Aligned to: GenAI-First Career Roadmap v8.3*
 *Next activation plan: Weeks 3-4 (December 4-17, 2025)*

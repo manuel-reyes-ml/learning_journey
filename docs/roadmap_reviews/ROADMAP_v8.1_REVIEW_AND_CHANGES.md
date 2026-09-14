@@ -3,7 +3,7 @@
 ## Expert Tech Career Coach Analysis — March 29, 2026
 ## For: Manuel Reyes | Goal: Junior AI Engineer ASAP + Production-Grade Portfolio
 
-**Status:** 📋 DRAFT — Awaiting Manuel's Approval Before Any Changes  
+**Status:** 📋 DRAFT — Awaiting Manuel's Approval Before Any Changes
 **Scope:** Roadmap v8.1 changes + Course recommendations + All 7 project scope updates
 
 ---
@@ -101,29 +101,29 @@ For your Stage 1 projects, the practical choice is:
 
 **Recommended Course:**
 
-> **Best Option: "Docker for Beginners with Hands-on Labs" (KodeKloud on Coursera)**  
-> - Platform: Coursera (included in your Coursera Plus)  
-> - Duration: ~6 hours (1 week at your pace)  
-> - Why: Hands-on labs in-browser (no local setup needed), covers Dockerfile, Docker Compose, and basics of orchestration. KodeKloud is known for practical DevOps training.  
-> - URL: https://www.coursera.org/learn/docker-for-the-absolute-beginner  
-> - Certificate: Yes  
+> **Best Option: "Docker for Beginners with Hands-on Labs" (KodeKloud on Coursera)**
+> - Platform: Coursera (included in your Coursera Plus)
+> - Duration: ~6 hours (1 week at your pace)
+> - Why: Hands-on labs in-browser (no local setup needed), covers Dockerfile, Docker Compose, and basics of orchestration. KodeKloud is known for practical DevOps training.
+> - URL: https://www.coursera.org/learn/docker-for-the-absolute-beginner
+> - Certificate: Yes
 
-> **Alternative: "Introduction to Docker" (LearnQuest on Coursera)**  
-> - Platform: Coursera (included in your Coursera Plus)  
-> - Duration: ~10 hours (1 week)  
-> - Why: More structured (3 modules), covers Dockerfile, volumes, networking, and Docker Compose with Python projects specifically.  
-> - URL: https://www.coursera.org/learn/introduction-to-docker  
-> - Certificate: Yes  
+> **Alternative: "Introduction to Docker" (LearnQuest on Coursera)**
+> - Platform: Coursera (included in your Coursera Plus)
+> - Duration: ~10 hours (1 week)
+> - Why: More structured (3 modules), covers Dockerfile, volumes, networking, and Docker Compose with Python projects specifically.
+> - URL: https://www.coursera.org/learn/introduction-to-docker
+> - Certificate: Yes
 
 **Stage 2 Deep Dive (Month 12-13):**
 The full Docker + Kubernetes mastery happens in Stage 2 alongside Airflow:
 
-> **"Docker and Kubernetes Masterclass: From Beginner to Advanced" (Packt on Coursera)**  
-> - Platform: Coursera (included in your Coursera Plus)  
-> - Duration: ~40 hours (4-6 weeks)  
-> - Why: Covers Docker → Kubernetes → GKE deployment. Bridges directly into your AWS deployment skills.  
-> - URL: https://www.coursera.org/specializations/packt-docker-and-kubernetes-masterclass-from-beginner-to-advanced  
-> - Certificate: Yes  
+> **"Docker and Kubernetes Masterclass: From Beginner to Advanced" (Packt on Coursera)**
+> - Platform: Coursera (included in your Coursera Plus)
+> - Duration: ~40 hours (4-6 weeks)
+> - Why: Covers Docker → Kubernetes → GKE deployment. Bridges directly into your AWS deployment skills.
+> - URL: https://www.coursera.org/specializations/packt-docker-and-kubernetes-masterclass-from-beginner-to-advanced
+> - Certificate: Yes
 
 ### 3.2 ADD: LLM Evaluation Frameworks (Intro — integrated into project work, Month 4-5)
 
@@ -137,20 +137,20 @@ The full Docker + Kubernetes mastery happens in Stage 2 alongside Airflow:
 
 **Recommended Courses:**
 
-> **Best Option: "Building and Evaluating Advanced RAG Applications" (DeepLearning.AI — FREE)**  
-> - Platform: DeepLearning.AI (free, no account needed)  
-> - Duration: ~1 hour  
-> - Why: Teaches the RAG Triad (Context Relevance, Groundedness, Answer Relevance) using TruLens/TruEra evaluation. Directly applicable to your PolicyPulse project. Uses LlamaIndex but concepts transfer.  
-> - URL: https://www.deeplearning.ai/short-courses/building-evaluating-advanced-rag/  
-> - Certificate: Yes  
+> **Best Option: "Building and Evaluating Advanced RAG Applications" (DeepLearning.AI — FREE)**
+> - Platform: DeepLearning.AI (free, no account needed)
+> - Duration: ~1 hour
+> - Why: Teaches the RAG Triad (Context Relevance, Groundedness, Answer Relevance) using TruLens/TruEra evaluation. Directly applicable to your PolicyPulse project. Uses LlamaIndex but concepts transfer.
+> - URL: https://www.deeplearning.ai/short-courses/building-evaluating-advanced-rag/
+> - Certificate: Yes
 
-> **Alternative: "Retrieval Augmented Generation (RAG)" (DeepLearning.AI on Coursera)**  
-> - Platform: Coursera (included in your Coursera Plus)  
-> - Duration: ~20 hours (multi-week course)  
-> - Why: Comprehensive RAG course that covers evaluation, deployment, observability. Includes Weaviate vector DB and Phoenix (Arize) for tracing. More depth than the short course.  
-> - URL: https://www.coursera.org/learn/retrieval-augmented-generation-rag  
-> - Certificate: Yes  
-> - Note: This could replace your Stage 2 "RAG - Production Ready" DeepLearning.AI short course since it's more comprehensive.  
+> **Alternative: "Retrieval Augmented Generation (RAG)" (DeepLearning.AI on Coursera)**
+> - Platform: Coursera (included in your Coursera Plus)
+> - Duration: ~20 hours (multi-week course)
+> - Why: Comprehensive RAG course that covers evaluation, deployment, observability. Includes Weaviate vector DB and Phoenix (Arize) for tracing. More depth than the short course.
+> - URL: https://www.coursera.org/learn/retrieval-augmented-generation-rag
+> - Certificate: Yes
+> - Note: This could replace your Stage 2 "RAG - Production Ready" DeepLearning.AI short course since it's more comprehensive.
 
 **Self-Study Resource (no course needed):**
 - DeepEval docs: https://deepeval.com/docs — excellent, example-driven documentation
@@ -214,13 +214,13 @@ Insert as course **7.5** (between Airflow and dbt):
 
 ### 4.3 CLARIFY: IBM GenAI Engineering Cert
 
-The IBM GenAI Engineering Professional Certificate currently appears in both Stage 1 and Stage 2. 
+The IBM GenAI Engineering Professional Certificate currently appears in both Stage 1 and Stage 2.
 
 **Recommended change:** Keep it in Stage 1 (your GenAI-First philosophy). In Stage 2 course #9, change the description to:
 
 ```
-"REINFORCE & APPLY your Stage 1 GenAI skills to Data Engineering contexts. 
-Focus on the RAG + LangChain courses that apply to your DE projects. 
+"REINFORCE & APPLY your Stage 1 GenAI skills to Data Engineering contexts.
+Focus on the RAG + LangChain courses that apply to your DE projects.
 Skip courses you already completed in Stage 1."
 ```
 
@@ -317,7 +317,7 @@ Every AI-powered feature includes measurable quality evaluation using DeepEval.
 
 **Why This Matters for Portfolio:**
 Hiring managers in 2026 specifically scan for evaluation-driven development.
-"This project signals that you understand the difference between building 
+"This project signals that you understand the difference between building
 an AI system and knowing whether it works." — AgenticCareers.co
 ```
 
@@ -355,7 +355,7 @@ services:
 ```
 
 **Why This Matters for Portfolio:**
-Docker appears in 60%+ of AI/ML job postings. Including a Dockerfile 
+Docker appears in 60%+ of AI/ML job postings. Including a Dockerfile
 shows deployment readiness — even for a Stage 1 project.
 ```
 
@@ -449,7 +449,7 @@ Add new subsection to **Phase 2 (Section 8):**
 ```markdown
 ### 8.X Evaluation-Driven RAG Development
 
-PolicyPulse implements evaluation-driven development — measuring retrieval 
+PolicyPulse implements evaluation-driven development — measuring retrieval
 and generation quality at every iteration.
 
 **Evaluation Dataset:**
@@ -466,7 +466,7 @@ and generation quality at every iteration.
 
 **Why This Matters:**
 This is the single most differentiating aspect of the project.
-Most portfolios show "I built a RAG chatbot." 
+Most portfolios show "I built a RAG chatbot."
 PolicyPulse shows "I built, MEASURED, and ITERATED on a RAG chatbot."
 ```
 
@@ -605,8 +605,8 @@ Before implementing any changes, please confirm:
 
 ---
 
-**Document Status:** 📋 DRAFT — Awaiting Manuel's Approval  
-**Date:** March 29, 2026  
-**Next Steps:** Upon approval, I will modify each project scope .md file and draft the specific HTML changes for roadmap.html  
+**Document Status:** 📋 DRAFT — Awaiting Manuel's Approval
+**Date:** March 29, 2026
+**Next Steps:** Upon approval, I will modify each project scope .md file and draft the specific HTML changes for roadmap.html
 
 *"Build it, MEASURE it, then ship it — that's what separates production engineers from tutorial followers in 2026."* 🚀

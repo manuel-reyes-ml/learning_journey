@@ -1,15 +1,15 @@
 # 🚀 WEEKS 7-8 MASTER ACTIVATION PLAN
 ## GenAI-First Career Transformation | January 1–14, 2026
 
-**Document Version:** 2.2 (v8.3 alignment + Crucible-aware project ordering)  
-**Covers:** January 1, 2026 – January 14, 2026  
-**Continues From:** Weeks 5-6 Activation Plan (Dec 18 – Dec 31)  
-**Aligned To:** Career Roadmap v8.3 — Stage 1: GenAI-First Data Analyst & AI Engineer  
-**Weekly Hours:** 25 hours/week (full intensity returns)  
-**Month Position:** Month 2 — Weeks 1-2  
+**Document Version:** 2.2 (v8.3 alignment + Crucible-aware project ordering)
+**Covers:** January 1, 2026 – January 14, 2026
+**Continues From:** Weeks 5-6 Activation Plan (Dec 18 – Dec 31)
+**Aligned To:** Career Roadmap v8.3 — Stage 1: GenAI-First Data Analyst & AI Engineer
+**Weekly Hours:** 25 hours/week (full intensity returns)
+**Month Position:** Month 2 — Weeks 1-2
 **Theme:** "BUILD MODE — DataVault Analyst Phase 1: Pipeline + Traditional Dashboard"
 
-**🔑 Project Focus:** DataVault Analyst (Project #2 in portfolio) — AI-Powered PII-Safe Data Intelligence  
+**🔑 Project Focus:** DataVault Analyst (Project #2 in portfolio) — AI-Powered PII-Safe Data Intelligence
 **Scope Document:** `DATAVAULT_ANALYST_SCOPE_v1.md` — Phase 1: Data Pipeline & Traditional Analytics
 
 ---
@@ -608,8 +608,8 @@ Your project transforms from "good dashboard" to "GenAI-powered intelligence too
 
 ---
 
-*Document updated: February 2026 (v2.0)*  
-*Aligned to: GenAI-First Career Roadmap v8.3 + Portfolio Project Ecosystem*  
-*Project: DataVault Analyst Phase 1 (Pipeline + Traditional Analytics)*  
-*Previous: Weeks 5-6 Activation Plan*  
+*Document updated: February 2026 (v2.0)*
+*Aligned to: GenAI-First Career Roadmap v8.3 + Portfolio Project Ecosystem*
+*Project: DataVault Analyst Phase 1 (Pipeline + Traditional Analytics)*
+*Previous: Weeks 5-6 Activation Plan*
 *Next: Weeks 9-10 — DataVault Analyst Phase 2 (AI Chat + Deploy)*

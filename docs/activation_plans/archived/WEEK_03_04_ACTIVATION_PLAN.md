@@ -1,11 +1,11 @@
 # 🚀 WEEKS 3-4 MASTER ACTIVATION PLAN
 ## GenAI-First Career Transformation | December 4–17, 2025
 
-**Document Version:** 1.1 (Crucible-aware — no content change; fundamentals weeks are unaffected by the flagship addition)  
-**Covers:** December 4, 2025 – December 17, 2025  
-**Continues From:** Weeks 1-2 Activation Plan (Nov 20 – Dec 3)  
-**Aligned To:** Career Roadmap v8.3 — Stage 1: GenAI-First Data Analyst & AI Engineer  
-**Weekly Hours:** 25 hours/week  
+**Document Version:** 1.1 (Crucible-aware — no content change; fundamentals weeks are unaffected by the flagship addition)
+**Covers:** December 4, 2025 – December 17, 2025
+**Continues From:** Weeks 1-2 Activation Plan (Nov 20 – Dec 3)
+**Aligned To:** Career Roadmap v8.3 — Stage 1: GenAI-First Data Analyst & AI Engineer
+**Weekly Hours:** 25 hours/week
 **Month Position:** End of Month 1 → Start of Month 2 transition
 
 ---
@@ -807,7 +807,7 @@ else:
 
     # --- USE CASE 1: Financial Analysis ---
     print("=== 📊 FINANCIAL ANALYSIS ===")
-    prompt = """You are a financial analyst assistant. 
+    prompt = """You are a financial analyst assistant.
     Analyze this stock data briefly (3-4 sentences max):
     - AAPL: +15% YTD, P/E ratio 28, RSI 65
     - Current market conditions: mixed signals
@@ -820,9 +820,9 @@ else:
     print("=== 🧹 DATA CLEANING WITH AI ===")
     prompt = """Convert this messy data into clean CSV format.
     Return ONLY the CSV, no explanation:
-    
+
     john doe works at acme corp earning 85k started jan 2020
-    jane smith - tech industries - $92,000 - march 2019  
+    jane smith - tech industries - $92,000 - march 2019
     bob jones, freelance, 75000/year, 2021"""
 
     result = ask_gemini(prompt, api_key)
@@ -1859,7 +1859,7 @@ You're not "learning to code" anymore. **You're a programmer who builds things.*
 
 ---
 
-*Document created: December 2025*  
-*Aligned to: GenAI-First Career Roadmap v8.3*  
-*Previous: Weeks 1-2 Activation Plan (Nov 20 – Dec 3)*  
+*Document created: December 2025*
+*Aligned to: GenAI-First Career Roadmap v8.3*
+*Previous: Weeks 1-2 Activation Plan (Nov 20 – Dec 3)*
 *Next activation plan: Weeks 5-6 (December 18-31, 2025)*

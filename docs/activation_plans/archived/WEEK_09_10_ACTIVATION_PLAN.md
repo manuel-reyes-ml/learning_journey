@@ -1,15 +1,15 @@
 # 🚀 WEEKS 9-10 MASTER ACTIVATION PLAN
 ## GenAI-First Career Transformation | January 15–28, 2026
 
-**Document Version:** 2.2 (v8.3 alignment — provider-agnostic + DeepEval foundation; Crucible-aware — DataVault Phase 2 weeks unaffected by the flagship addition)  
-**Covers:** January 15, 2026 – January 28, 2026  
-**Continues From:** Weeks 7-8 Activation Plan (Jan 1 – Jan 14)  
-**Aligned To:** Career Roadmap v8.3 — Stage 1: GenAI-First Data Analyst & AI Engineer  
-**Weekly Hours:** 25 hours/week  
-**Month Position:** Month 2 — Weeks 3-4  
+**Document Version:** 2.2 (v8.3 alignment — provider-agnostic + DeepEval foundation; Crucible-aware — DataVault Phase 2 weeks unaffected by the flagship addition)
+**Covers:** January 15, 2026 – January 28, 2026
+**Continues From:** Weeks 7-8 Activation Plan (Jan 1 – Jan 14)
+**Aligned To:** Career Roadmap v8.3 — Stage 1: GenAI-First Data Analyst & AI Engineer
+**Weekly Hours:** 25 hours/week
+**Month Position:** Month 2 — Weeks 3-4
 **Theme:** "The GenAI Differentiator — DataVault Gets an AI Brain"
 
-**🔑 Project Focus:** DataVault Analyst Phase 2 — AI-Powered Chat Interface + PII Guardrails + Deploy  
+**🔑 Project Focus:** DataVault Analyst Phase 2 — AI-Powered Chat Interface + PII Guardrails + Deploy
 **Scope Document:** `DATAVAULT_ANALYST_SCOPE_v1.md` — Phase 2: AI Chat Interface (Weeks 3-4)
 
 ---
@@ -333,12 +333,12 @@ def pandasai_query(question: str, df: pd.DataFrame) -> dict:
     # Use analytics-only DataFrame (no PII columns)
     safe_df = df.drop(columns=["SSN", "First Name", "Last Name", "Date of Birth"], errors="ignore")
     sdf = SmartDataframe(safe_df, config={"llm": MODEL, "verbose": True})
-    
+
     result = sdf.chat(question)
-    
+
     # PandasAI exposes the generated code
     generated_code = sdf.last_code_generated
-    
+
     return {
         "answer": str(result),
         "generated_code": generated_code,
@@ -833,8 +833,8 @@ Your THIRD AI project — a RAG chatbot that introduces embeddings, ChromaDB, an
 
 ---
 
-*Document updated: February 2026 (v2.0)*  
-*Aligned to: GenAI-First Career Roadmap v8.3 + Portfolio Project Ecosystem*  
-*Project: DataVault Analyst Phase 2 (AI Chat + Deploy)*  
-*Previous: Weeks 7-8 — DataVault Phase 1*  
+*Document updated: February 2026 (v2.0)*
+*Aligned to: GenAI-First Career Roadmap v8.3 + Portfolio Project Ecosystem*
+*Project: DataVault Analyst Phase 2 (AI Chat + Deploy)*
+*Previous: Weeks 7-8 — DataVault Phase 1*
 *Next: Weeks 11-12 — PolicyPulse Phase 1 + IBM GenAI Certificate*

@@ -190,7 +190,7 @@ skills = {
 1. **Python for Everybody** (University of Michigan)
    - Progress: Week 1/8 ✅
    - Certificate: Expected Feb 2026
-   
+
 2. **Google Data Analytics Professional**
    - Progress: 0/8 courses
    - Certificate: Expected March 2026
@@ -412,8 +412,8 @@ tmp/
 
 ```markdown
 # Week 1: Foundation & Setup
-**Dates:** November 20-26, 2025  
-**Theme:** Environment Setup, Python Basics, SQL Introduction  
+**Dates:** November 20-26, 2025
+**Theme:** Environment Setup, Python Basics, SQL Introduction
 **Hours:** 25.5 total
 
 ---
@@ -475,16 +475,16 @@ tmp/
 
 ## 🌟 Highlights
 
-**Biggest Win:**  
+**Biggest Win:**
 Created first complete Python script with functions, docstrings, and test cases!
 
-**Biggest Challenge:**  
+**Biggest Challenge:**
 Understanding integer vs. float division. Needed to experiment multiple times.
 
-**Favorite Learning:**  
+**Favorite Learning:**
 F-strings in Python - makes string formatting so much easier than Java!
 
-**Surprise Discovery:**  
+**Surprise Discovery:**
 How much free learning resources exist. Felt overwhelming at first, now feels empowering.
 
 ---

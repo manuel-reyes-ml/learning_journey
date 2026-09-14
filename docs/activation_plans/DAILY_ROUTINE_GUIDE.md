@@ -22,7 +22,7 @@
 ✅ Check today's plan in this guide
 ```
 
-**Why This Matters:**  
+**Why This Matters:**
 Your brain is freshest 4:30-6 AM. This is GOLD TIME for absorbing new concepts. Don't waste it on email or setup - jump straight into learning.
 
 ---
@@ -96,15 +96,15 @@ variable_name = value
 def calculate_simple_interest(principal, rate, time):
     """
     Calculate simple interest.
-    
+
     Args:
         principal (float): Initial amount
         rate (float): Annual interest rate (as decimal)
         time (int): Time period in years
-    
+
     Returns:
         float: Interest amount
-    
+
     Example:
         >>> calculate_simple_interest(1000, 0.05, 2)
         100.0
@@ -126,21 +126,21 @@ print(f"Interest on $5000 at 3.5% for 5 years: ${calculate_simple_interest(5000,
 2. **Update learning journal:**
    ```markdown
    ## November 20, 2025 - Morning Session
-   
+
    **Completed:**
    - Python for Everybody: Variables & Expressions
    - DataCamp: Python Basics exercises 1-3
    - Created: financial_calculator.py
-   
+
    **Key Learnings:**
    - Variables in Python don't need type declaration
    - f-strings make string formatting easier
    - Comments are crucial for future me!
-   
+
    **Challenges:**
    - Still confused about: integer vs float division
    - Need to practice: string methods
-   
+
    **Tomorrow Morning:**
    - Review division operators
    - Complete DataCamp Lists chapter
@@ -420,14 +420,14 @@ python script_name.py
    Job Title: [Exact title]
    Location: Remote / [Location]
    Salary Range: $[X-Y] (if listed)
-   
+
    Required Skills:
    - Skill 1 (have it? Y/N)
    - Skill 2 (have it? Y/N)
-   
+
    Nice-to-Have Skills:
    - Skill 1
-   
+
    Notes:
    - [Interesting company info]
    - [Why you want to work here]
@@ -466,7 +466,7 @@ python script_name.py
    ```bash
    # Review every file you created this week
    git log --oneline  # See all commits
-   
+
    # Test each script still runs
    python week-01-learnings/financial_calculator.py
    ```
@@ -482,7 +482,7 @@ python script_name.py
 3. **Create Week Summary (15 min):**
    ```markdown
    # Week 1 Summary - November 20-26, 2025
-   
+
    ## 🎯 Goals vs. Actual
    | Goal | Status | Notes |
    |------|--------|-------|
@@ -490,22 +490,22 @@ python script_name.py
    | 5 HackerRank problems | ✅ | Completed 6! |
    | GitHub repo created | ✅ | |
    | SQL basics | ⚠️ | Need more practice |
-   
+
    ## 📊 Stats
    - Total study hours: 25.5 hours
    - GitHub commits: 15
    - Courses started: 3
    - Platform accounts: 8
-   
+
    ## 💡 Key Learnings
    1. [Most important thing you learned]
    2. [Second most important]
    3. [Surprising discovery]
-   
+
    ## 🚧 Challenges Faced
    - [Challenge 1] → [How you solved it]
    - [Challenge 2] → [Still working on it]
-   
+
    ## 🎯 Week 2 Focus
    - [Top priority 1]
    - [Top priority 2]
@@ -556,7 +556,7 @@ Complete Data Smart Chapters 1-2
 
 **Template:**
 ```
-🚀 Week 1 of my Data Analyst Journey - COMPLETE! 
+🚀 Week 1 of my Data Analyst Journey - COMPLETE!
 
 Starting from absolute zero in tech, here's what I accomplished:
 

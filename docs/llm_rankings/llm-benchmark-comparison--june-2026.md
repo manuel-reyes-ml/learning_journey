@@ -1,6 +1,6 @@
 # 🏆 LLM Benchmark Comparison — June 2026
 
-> **Last Updated:** June 18, 2026  
+> **Last Updated:** June 18, 2026
 > **Sources:** Artificial Analysis (artificialanalysis.ai), Scale AI SEAL Leaderboard, LMSys Chatbot Arena, PricePerToken, llm-stats.com, and official vendor reports (OpenAI, Anthropic, Google, DeepSeek, Meta, Alibaba, Z AI)
 
 ---
@@ -29,8 +29,8 @@
 
 # 1️⃣ SWE-bench Verified (Coding)
 
-> **What it tests:** Real-world software engineering — models fix actual GitHub issues and submit patches that must pass unit tests.  
-> **Scale:** 500 tasks from popular Python repositories.  
+> **What it tests:** Real-world software engineering — models fix actual GitHub issues and submit patches that must pass unit tests.
+> **Scale:** 500 tasks from popular Python repositories.
 > **Important:** OpenAI deprecated SWE-bench Verified from official reporting in Feb 2026, citing concerns about contamination. Anthropic and others continue reporting.
 
 ---
@@ -97,7 +97,7 @@
 
 # 2️⃣ SWE-bench Pro (Coding — Contamination-Resistant)
 
-> **What it tests:** Identical task format to SWE-bench but with **1,865 freshly created tasks** (post-training-cutoff for all major models). Developed by Scale AI's SEAL team specifically to prevent benchmark leakage.  
+> **What it tests:** Identical task format to SWE-bench but with **1,865 freshly created tasks** (post-training-cutoff for all major models). Developed by Scale AI's SEAL team specifically to prevent benchmark leakage.
 > **Two scoring columns:**
 > - **Score (SEAL):** Scale AI's independently verified results using standardized scaffold.
 > - **Score (Vendor):** Self-reported results from model creators, sometimes using optimized scaffolds.
@@ -165,8 +165,8 @@
 
 # 3️⃣ GPQA Diamond (Scientific Reasoning)
 
-> **What it tests:** 198 graduate-level multiple-choice questions in physics, chemistry, and biology. Designed to be "Google-proof" — questions cannot be answered by simple web search.  
-> **Scale:** 198 questions. Human PhD baseline: ~65-74%.  
+> **What it tests:** 198 graduate-level multiple-choice questions in physics, chemistry, and biology. Designed to be "Google-proof" — questions cannot be answered by simple web search.
+> **Scale:** 198 questions. Human PhD baseline: ~65-74%.
 > **Top human score:** ~81%.
 
 ---
@@ -239,8 +239,8 @@
 
 # 4️⃣ HLE — Humanity's Last Exam (Frontier Reasoning)
 
-> **What it tests:** 3,000 extremely difficult questions across 100+ academic subjects, co-created by 1,000+ experts from 500+ institutions globally. Designed as "the hardest benchmark" — questions that even top experts find challenging.  
-> **Human expert baseline:** ~10% (estimated).  
+> **What it tests:** 3,000 extremely difficult questions across 100+ academic subjects, co-created by 1,000+ experts from 500+ institutions globally. Designed as "the hardest benchmark" — questions that even top experts find challenging.
+> **Human expert baseline:** ~10% (estimated).
 > **Scale:** 3,000 questions.
 
 ---
@@ -310,8 +310,8 @@
 
 # 5️⃣ AIME 2026 (Math Competition)
 
-> **What it tests:** The 2026 American Invitational Mathematics Examination — 15 integer-answer questions (0-999), 3-hour time limit. Designed for the top 5% of US high school math students.  
-> **Scale:** 15 questions. Top human score: 15 (perfect).  
+> **What it tests:** The 2026 American Invitational Mathematics Examination — 15 integer-answer questions (0-999), 3-hour time limit. Designed for the top 5% of US high school math students.
+> **Scale:** 15 questions. Top human score: 15 (perfect).
 > **Average qualifying AIME participant:** ~6-8.
 
 ---
@@ -380,8 +380,8 @@
 
 # 6️⃣ Arena Elo (Chatbot Arena — Human Preference)
 
-> **What it tests:** Head-to-head blind pairwise comparisons by human voters. Models respond to the same prompt; users pick the better response without knowing which model produced it.  
-> **Scale:** 2M+ human votes across 200+ models.  
+> **What it tests:** Head-to-head blind pairwise comparisons by human voters. Models respond to the same prompt; users pick the better response without knowing which model produced it.
+> **Scale:** 2M+ human votes across 200+ models.
 > **Elo reference:** GPT-4 (original) anchored at ~1,185.
 
 ---
@@ -432,7 +432,7 @@
 
 # 7️⃣ Context Window (Maximum Capacity)
 
-> **What it measures:** The maximum number of tokens a model can process in a single prompt (input + output).  
+> **What it measures:** The maximum number of tokens a model can process in a single prompt (input + output).
 > **Larger context** enables processing of entire books, codebases, or long conversations.
 
 ---
@@ -581,5 +581,5 @@
 
 > **Legend:** ⚡ = Reasoning model | ★ = Open Weights | * = Estimated score (pending third-party verification)
 
-> **Last Updated:** June 18, 2026  
+> **Last Updated:** June 18, 2026
 > **Next Update:** When new models or scores are released by major labs.

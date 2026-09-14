@@ -5,7 +5,7 @@
 
 ## 📊 WHAT IS "ACCEPTANCE CRITERIA"?
 
-**Simple Definition:**  
+**Simple Definition:**
 Acceptance criteria = How you know you're DONE and your work is GOOD ENOUGH.
 
 Think of it like a quality checklist. Each activity has specific, measurable standards that ensure:
@@ -69,32 +69,32 @@ Think of it like a quality checklist. Each activity has specific, measurable sta
    # Author: Your Name
    # Purpose: Calculate simple interest for bookkeeping clients
    # Usage: python financial_calculator.py
-   
+
    """
    Financial Calculator Module
-   
+
    This module provides basic financial calculations commonly used
    in bookkeeping and accounting.
    """
-   
+
    def calculate_simple_interest(principal, rate, time):
        """Calculate simple interest.
-       
+
        Args:
            principal (float): Initial amount in dollars
            rate (float): Annual interest rate as decimal (e.g., 0.05 for 5%)
            time (int): Time period in years
-           
+
        Returns:
            float: Interest amount
-           
+
        Example:
            >>> calculate_simple_interest(1000, 0.05, 2)
            100.0
        """
        return principal * rate * time
-   
-   
+
+
    def main():
        """Main function with example calculations."""
        # Test case 1
@@ -103,15 +103,15 @@ Think of it like a quality checklist. Each activity has specific, measurable sta
        t1 = 2
        interest1 = calculate_simple_interest(p1, r1, t1)
        print(f"Interest on ${p1} at {r1*100}% for {t1} years: ${interest1:.2f}")
-       
+
        # Test case 2
        p2 = 5000
        r2 = 0.035
        t2 = 5
        interest2 = calculate_simple_interest(p2, r2, t2)
        print(f"Interest on ${p2} at {r2*100}% for {t2} years: ${interest2:.2f}")
-   
-   
+
+
    if __name__ == "__main__":
        main()
    ```
@@ -119,7 +119,7 @@ Think of it like a quality checklist. Each activity has specific, measurable sta
    ```python
    # ❌ BAD Example:
    # script.py
-   
+
    p = 1000
    r = 0.05
    t = 2
@@ -188,29 +188,29 @@ pylint financial_calculator.py
    Topic: Introduction
    Date Solved: 2026-01-09
    Status: ✅ Accepted
-   
+
    Problem Description:
    Print "Hello, World!" to stdout.
-   
+
    My Approach:
    Use the print() function with the exact string required.
-   
+
    What I Learned:
    - Python print() automatically adds newline
    - Strings can use single or double quotes
    - Python is case-sensitive ("hello" ≠ "Hello")
-   
+
    Time Complexity: O(1)
    Space Complexity: O(1)
    """
-   
+
    # Solution
    print("Hello, World!")
-   
+
    # Alternative approaches I considered:
    # 1. Using f-strings: print(f"Hello, World!")  # Overkill for this
    # 2. Using .format(): print("{}".format("Hello, World!"))  # Also overkill
-   
+
    # Best practice: KISS principle (Keep It Simple, Stupid)
    ```
 
@@ -306,14 +306,14 @@ pylint financial_calculator.py
    -- Created: 2026-01-09
    -- Topic: SQL SELECT statements
    -- Practice: SQLZoo Tutorial 1-10
-   
-   /* 
+
+   /*
    EXERCISE 1: Select all columns from students table
    Source: SQLZoo Tutorial 1
    Date: 2026-01-09
    */
    SELECT * FROM students;
-   
+
    /* Result:
    id | name          | age | gpa
    ---+---------------+-----+-----
@@ -321,52 +321,52 @@ pylint financial_calculator.py
    2  | Bob Smith     | 22  | 3.5
    3  | Carol White   | 21  | 3.9
    */
-   
-   
+
+
    /*
    EXERCISE 2: Select specific columns
    Goal: Practice selecting only needed data
    */
-   SELECT name, gpa 
+   SELECT name, gpa
    FROM students;
-   
+
    /* Learning: Only selecting needed columns is more efficient */
-   
-   
+
+
    /*
    EXERCISE 3: Filter with WHERE clause
    Goal: Find high-performing students
    */
-   SELECT name, gpa 
-   FROM students 
+   SELECT name, gpa
+   FROM students
    WHERE gpa > 3.7;
-   
+
    /* Result:
    name          | gpa
    --------------+-----
    Alice Johnson | 3.8
    Carol White   | 3.9
    */
-   
-   
+
+
    /*
    EXERCISE 4: ORDER BY clause
    Goal: Sort students by GPA descending
    */
-   SELECT name, gpa 
-   FROM students 
+   SELECT name, gpa
+   FROM students
    ORDER BY gpa DESC;
-   
+
    /* Learning: DESC = descending, ASC = ascending (default) */
-   
-   
+
+
    /*
    PRACTICE PROBLEM: Combining concepts
    Find students with GPA > 3.5, show name and age, order by age
    */
-   SELECT name, age 
-   FROM students 
-   WHERE gpa > 3.5 
+   SELECT name, age
+   FROM students
+   WHERE gpa > 3.5
    ORDER BY age;
    ```
 
@@ -421,26 +421,26 @@ pylint financial_calculator.py
    ```markdown
    # Python for Everybody - Week 1 Notes
    ## Date: November 20-26, 2025
-   
+
    ### Chapter 2: Variables, Expressions, Statements
-   
+
    #### Key Concepts:
    1. **Variables:**
       - Container for storing data
       - No need to declare type (dynamic typing)
       - Example: `x = 5`, `name = "Alice"`
-   
+
    2. **Data Types:**
       - int: whole numbers (1, 42, -7)
       - float: decimals (3.14, -0.5)
       - str: text ("hello", 'world')
       - bool: True/False
-   
+
    3. **Operators:**
       - Math: +, -, *, /, //, %, **
       - Comparison: ==, !=, <, >, <=, >=
       - Assignment: =, +=, -=, *=, /=
-   
+
    #### Code Examples I Tried:
    ```python
    # Testing division operators
@@ -448,23 +448,23 @@ pylint financial_calculator.py
    print(10 // 3)  # 3 (integer division)
    print(10 % 3)   # 1 (remainder/modulo)
    ```
-   
+
    #### Questions I Had:
    - Q: Why does `5 / 2` give 2.5 but `5 // 2` gives 2?
    - A: / is float division, // is integer division
-   
+
    #### What I Still Need to Practice:
    - String formatting with f-strings
    - When to use += vs = x + 1
-   
+
    #### Quiz Results:
    - Attempt 1: 8/10 (80%)
    - Reviewed mistakes, retook
    - Attempt 2: 10/10 (100%)
-   
+
    #### Time Spent:
    - Videos: 45 min
-   - Exercises: 30 min  
+   - Exercises: 30 min
    - Note-taking: 20 min
    - Total: ~95 min
    ```
@@ -530,7 +530,7 @@ def my_function():
 
 ## 🎯 Accomplishments
 ✅ [Completed item 1]
-✅ [Completed item 2]  
+✅ [Completed item 2]
 ✅ [Completed item 3]
 
 ## 💡 Key Learnings
@@ -627,8 +627,8 @@ data-analyst-journey/
 
 ## 👋 About This Repository
 
-This repository documents my transition from bookkeeping to data analytics. 
-I'm committing to 25 hours of focused learning per week for 5 months to 
+This repository documents my transition from bookkeeping to data analytics.
+I'm committing to 25 hours of focused learning per week for 5 months to
 land my first Data Analyst role.
 
 ## 🎯 Goals
@@ -710,7 +710,7 @@ land my first Data Analyst role.
 
 ---
 
-⭐ **Star this repo** if you're on a similar journey!  
+⭐ **Star this repo** if you're on a similar journey!
 📧 **Email me** if you want to connect or collaborate!
 
 *"Every expert was once a beginner."*
@@ -831,24 +831,24 @@ Check:
 Example:
 "🚀 WEEK 1 COMPLETE!
 
-I officially started my journey from bookkeeping to data analytics 
+I officially started my journey from bookkeeping to data analytics
 7 days ago. Here's what learning 3.5 hours a day at 4:30 AM looks like:
 
 ✅ Set up full dev environment (Python, VS Code, Git, Jupyter)
 ✅ Completed Python for Everybody Week 1
-✅ Solved 6 coding challenges on HackerRank  
+✅ Solved 6 coding challenges on HackerRank
 ✅ Created my first Python scripts
 ✅ Learned SQL basics
 ✅ Made 15 commits to my GitHub repo
 
-Biggest surprise? How much I DON'T know... and how exciting that is. 
+Biggest surprise? How much I DON'T know... and how exciting that is.
 
 Biggest challenge? Waking up at 4:15 AM. Coffee helps. ☕
 
-This week? Diving into Pandas for data manipulation and tackling my 
+This week? Diving into Pandas for data manipulation and tackling my
 first data visualization project.
 
-For anyone thinking about a career transition: You don't need to be 
+For anyone thinking about a career transition: You don't need to be
 "ready." You just need to START.
 
 #DataAnalytics #Python #LearningInPublic #CareerTransition #Day7
@@ -906,7 +906,7 @@ If below targets:
 
 **Production Grade Check:**
 ```
-Question: If a recruiter looked at my GitHub right now, 
+Question: If a recruiter looked at my GitHub right now,
 would they think I'm serious about becoming a data analyst?
 
 If NO → Focus on:
@@ -960,7 +960,7 @@ Target: Average score of 4+ across all files
 
 ---
 
-**Remember:** 
+**Remember:**
 - Done is better than perfect
 - Progress over perfection
 - But "done" still means QUALITY DONE

@@ -1,15 +1,15 @@
 # 🚀 WEEKS 11-12 MASTER ACTIVATION PLAN
 ## GenAI-First Career Transformation | January 29 – February 11, 2026
 
-**Document Version:** 2.2 (v8.3 alignment — Anthropic SDK primary + FastMCP server preview + SelfCheckGPT eval; Crucible-aware project ordering)  
-**Covers:** January 29, 2026 – February 11, 2026  
-**Continues From:** Weeks 9-10 Activation Plan (Jan 15 – Jan 28)  
-**Aligned To:** Career Roadmap v8.3 — Stage 1: GenAI-First Data Analyst & AI Engineer  
-**Weekly Hours:** 25 hours/week  
-**Month Position:** Month 2 wrap → Month 3 launch  
+**Document Version:** 2.2 (v8.3 alignment — Anthropic SDK primary + FastMCP server preview + SelfCheckGPT eval; Crucible-aware project ordering)
+**Covers:** January 29, 2026 – February 11, 2026
+**Continues From:** Weeks 9-10 Activation Plan (Jan 15 – Jan 28)
+**Aligned To:** Career Roadmap v8.3 — Stage 1: GenAI-First Data Analyst & AI Engineer
+**Weekly Hours:** 25 hours/week
+**Month Position:** Month 2 wrap → Month 3 launch
 **Theme:** "Month 3 Ignition — IBM GenAI Cert + PolicyPulse RAG Chatbot (Anthropic SDK + FastMCP) + Job Applications BEGIN"
 
-**🔑 Project Focus:** PolicyPulse (Project #3) — RAG Foundation | HR Policy Chatbot with ChromaDB + Embeddings + **FastMCP server** (v8.3 Stage 1 deliverable)  
+**🔑 Project Focus:** PolicyPulse (Project #3) — RAG Foundation | HR Policy Chatbot with ChromaDB + Embeddings + **FastMCP server** (v8.3 Stage 1 deliverable)
 **Scope Document:** `POLICYPULSE_HR_RAG_SCOPE_v1_STAGE1.md` — Phase 1: Document Pipeline & Knowledge Base (Weeks 1-2)
 
 ---
@@ -1009,8 +1009,8 @@ You're not "learning to be a data analyst" anymore. **You ARE a GenAI-First Data
 
 ---
 
-*Document updated: February 2026 (v2.0)*  
-*Aligned to: GenAI-First Career Roadmap v8.3 + Portfolio Project Ecosystem*  
-*Project: PolicyPulse Phase 1 (Document Pipeline + Knowledge Base)*  
-*Previous: Weeks 9-10 — DataVault Analyst Phase 2*  
+*Document updated: February 2026 (v2.0)*
+*Aligned to: GenAI-First Career Roadmap v8.3 + Portfolio Project Ecosystem*
+*Project: PolicyPulse Phase 1 (Document Pipeline + Knowledge Base)*
+*Previous: Weeks 9-10 — DataVault Analyst Phase 2*
 *Next: Weeks 13-14 — PolicyPulse Phase 2 (RAG Chat + Escalation)*

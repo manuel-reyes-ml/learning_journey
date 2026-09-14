@@ -387,15 +387,15 @@ Signal "study mode" to your brain:
 
 ---
 
-## 🎪 WEEK 1 SUCCESS = 
+## 🎪 WEEK 1 SUCCESS =
 
 ```python
-if (hours_studied >= 20 and 
-    github_commits >= 10 and 
-    python_works == True and 
-    linkedin_updated == True and 
+if (hours_studied >= 20 and
+    github_commits >= 10 and
+    python_works == True and
+    linkedin_updated == True and
     learning_journal_days >= 6):
-    
+
     print("🎉 WEEK 1 SUCCESS! YOU DID IT!")
     print("You're officially on your way to Data Analyst!")
     print("Week 2 loading... Get ready! 🚀")
@@ -410,29 +410,29 @@ else:
 ## 📌 PRINT & STICK THIS SOMEWHERE VISIBLE
 
 **Week 1 Mantra:**
-> "I don't need to know everything.  
-> I just need to learn something today.  
+> "I don't need to know everything.
+> I just need to learn something today.
 > And I'm showing up. Every. Single. Day."
 
 **Your Commitment:**
-> "I, [Your Name], commit to 25 hours of focused learning this week.  
-> I will be patient with myself, celebrate small wins,  
-> and remember WHY I'm doing this.  
-> 
+> "I, [Your Name], commit to 25 hours of focused learning this week.
+> I will be patient with myself, celebrate small wins,
+> and remember WHY I'm doing this.
+>
 > Future me will thank present me for starting TODAY."
 
-Date: ________________  
+Date: ________________
 Signature: ________________
 
 ---
 
-**START DATE:** Thursday, November 20, 2025  
-**END DATE:** Wednesday, November 26, 2025  
+**START DATE:** Thursday, November 20, 2025
+**END DATE:** Wednesday, November 26, 2025
 **JOURNEY:** Week 1 of 160 weeks (37 months) to Senior LLM Engineer
 
 **YOU'VE GOT THIS!** 🚀💪🔥
 
 ---
 
-*Keep this guide handy. Refer to it daily. Check off items. Feel accomplished.*  
+*Keep this guide handy. Refer to it daily. Check off items. Feel accomplished.*
 *Small daily actions → Big career change. Let's go!*
