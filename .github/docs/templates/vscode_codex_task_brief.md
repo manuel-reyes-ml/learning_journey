@@ -24,7 +24,7 @@ The implementation must align with existing repo conventions and satisfy the acc
 
 ## Hard constraints (must follow)
 
-1. **Do not commit. Do not push. Do not tag. Do not open PRs.**  
+1. **Do not commit. Do not push. Do not tag. Do not open PRs.**
    - If you believe a commit is necessary, stop and explain why; wait for manual action.
 2. Make **minimal, incremental changes**. Prefer small diffs over broad refactors.
 3. **Do not change behavior outside scope.** If scope is unclear, stop and list assumptions/questions.
@@ -101,15 +101,15 @@ If an edge case cannot be addressed without scope expansion, stop and explain tr
 Provide commands I can run, and what “success” looks like.
 
 ### Quick checks (after each major step)
-- `python -m compileall <relevant_dir>`  
+- `python -m compileall <relevant_dir>`
   **Expected:** no syntax errors.
-- `<lint/test command>`  
+- `<lint/test command>`
   **Expected:** no failures.
 
 ### Functional validation (end-to-end)
-- `<command to run unit tests or a focused test file>`  
+- `<command to run unit tests or a focused test file>`
   **Expected:** tests pass.
-- `<command to run a notebook/script if applicable>`  
+- `<command to run a notebook/script if applicable>`
   **Expected:** output matches expected schema and key scenarios.
 
 ---
