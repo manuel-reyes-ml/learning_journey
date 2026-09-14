@@ -1077,7 +1077,7 @@ class AsyncOpenRouterProvider:
 # 7. When all 50 are done, gather returns the list of QueryResponse instances in input order.
 
 # Wall time: ~the slowest single Anthropic response (~2s). Sequential time would've been ~100s.
-# That's the 50× speedup async gives you for free on this workload.
+# That's the 50X speedup async gives you for free on this workload.
 #
 # Summary
 # Where does code stop?

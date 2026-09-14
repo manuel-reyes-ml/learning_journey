@@ -168,12 +168,18 @@ async def batch_smoke_test(
         on shared mutable state (acceptable because all writes happen
         sequentially within a single coroutine).
         """
-        async with limiter:  # composes cleanly with Semaphore
-            # The semaphore protocol in 3 lines:
-            # - `async with sem:` acquires a slot (parks if 0 free)
-            # - The body runs only when this coroutine holds a slot
-            # - Exit releases the slot, wakes the next waiter
-            async with sem:
+        # Limiter first (rate cap), semaphore second (concurrency cap).
+        # `async with A, B` enters A then B and exits B then A — identical
+        # semantics to nesting, one less level of indentation.
+        #
+        # The semaphore protocol in 3 lines:
+        # - acquires a slot (parks if 0 free)
+        # - the body runs only when this coroutine holds a slot
+        # - exit releases the slot, wakes the next waiter
+        async with (
+            limiter,  # rate cap — leaky bucket, 50 calls / 60s
+            sem,  # concurrency cap — max_concurrent in flight
+        ):
                 for provider in providers:
                     provider_class = type(provider).__name__
                     logger.debug("Running smoke test with %s", provider_class)
