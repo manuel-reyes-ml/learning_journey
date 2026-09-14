@@ -1,7 +1,8 @@
 # learning_journey — local enforcement layer (roadmap CORRECTION 21).
 #
 # Governing rule: this hook set is a strict SUBSET of the CI gate. CI stays
-# authoritative. Nothing runs here that does not also run in CI.
+# authoritative — .github/workflows/ci.yml runs `pre-commit run --all-files`,
+# so CI is a superset of these hooks by construction, not by discipline.
 #
 # Setup:
 #   uv tool install pre-commit --with pre-commit-uv
@@ -12,7 +13,9 @@
 #   pre-commit autoupdate --freeze # resolve tags -> SHAs, mitigates version drift
 #
 # Config for the tools themselves lives in pyproject.toml, never in `args:`,
-# so hooks / CI / editor cannot disagree.
+# so hooks / CI / editor cannot disagree. Note that ruff resolves its config by
+# walking up from each file: files inside a workspace member use that member's
+# [tool.ruff]; everything else uses the root's.
 
 minimum_pre_commit_version: "3.2.0"
 
@@ -25,7 +28,7 @@ repos:
   # Tier A — basics + secret boundary. Applies to every repo in the portfolio.
   # ---------------------------------------------------------------------------
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v6.0.0
+    rev: 3e8a8703264a2f4a69428a0aa4dcb512790b2c8c  # frozen: v6.0.0
     hooks:
       # The two rewriting hooks skip courses/ — that tree is a finished archive,
       # and a whitespace pass over it is churn, not quality.
@@ -49,28 +52,28 @@ repos:
   #
   # Scoped with `files:` on purpose. Ruff's pre-commit hook receives the changed
   # files directly, which means `include`/`exclude` in pyproject.toml is ignored
-  # — scoping has to happen here. courses/ holds ~138 CS50/PY4E files that were
-  # never written to this standard; they are archive, not production code.
-  # Widen this regex as production code lands.
+  # — scoping has to happen here. The three paths are the real code: the harness
+  # scripts and the two workspace members. The rest of courses/ is ~138 CS50 and
+  # PY4E files that were never written to this standard; they are archive.
   # ---------------------------------------------------------------------------
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.16.4
+    rev: e8f7d69b957a30acb2c875078d5fd012de24b64c  # frozen: v0.16.7
     hooks:
       - id: ruff-check
         args: [--fix]
-        files: ^(scripts/|llm-api-smoke-test/)
+        files: ^(scripts/|llm-api-smoke-test/|courses/cs50_harvard/code/05_data_structures/speller/py_src/)
       - id: ruff-format
-        files: ^(scripts/|llm-api-smoke-test/)
+        files: ^(scripts/|llm-api-smoke-test/|courses/cs50_harvard/code/05_data_structures/speller/py_src/)
 
   # ---------------------------------------------------------------------------
   # Tier A — lockfile.
+  #
+  # Fires only when pyproject.toml or uv.lock change, and fails if dependencies
+  # were edited without regenerating the lock. Same defect class as a stale
+  # generated agent file: invisible in review, wrong at runtime.
   # ---------------------------------------------------------------------------
-  # It fires only when pyproject.toml or uv.lock change, and it fails if you
-  # edited your dependencies without regenerating the lock. This is exactly the
-  # "stale lockfile" defect class your Claude harness hook was modeled on — now
-  # you have the literal version of it.
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.9.28
+    rev: 4f783b6470be305483837130a5be2e21ed7ff52b  # frozen: 0.12.13
     hooks:
       - id: uv-lock
 
@@ -78,16 +81,18 @@ repos:
   # Tier A — secret scanning.
   # ---------------------------------------------------------------------------
   - repo: https://github.com/gitleaks/gitleaks
-    rev: v8.30.1
+    rev: 2ca41cc1372d1e939a6a879f18cdc19fc1cac1ce  # frozen: v8.30.0
     hooks:
       - id: gitleaks
 
   # ---------------------------------------------------------------------------
   # Tier C — Conventional Commits, enforced rather than merely declared.
   # Runs on the commit-msg stage, so it sees the message, not the diff.
+  # (Skipped automatically by `pre-commit run --all-files` in CI — there is no
+  # commit message to inspect there.)
   # ---------------------------------------------------------------------------
   - repo: https://github.com/compilerla/conventional-pre-commit
-    rev: v4.4.0
+    rev: 3db014c16a9d31997ab8c07a4d61fcce936c8f0d  # frozen: v4.4.0
     hooks:
       - id: conventional-pre-commit
         stages: [commit-msg]
