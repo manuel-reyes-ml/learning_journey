@@ -135,9 +135,7 @@ class TestValidatePaths:
     and main() simpler and independently testable.
     """
 
-    def test_valid_path_return_none(
-        self, sample_dict_file: Path, sample_text_file: Path
-    ) -> None:
+    def test_valid_path_return_none(self, sample_dict_file: Path, sample_text_file: Path) -> None:
         """Both files exist → returns None (success).
 
         None means "no error" — the absence of a value.
@@ -304,9 +302,7 @@ class TestMain:
 
         # Assert on presence and properties, not position.
         debug_records = [
-            r
-            for r in caplog.records
-            if r.name == "speller.__main__" and r.levelno == logging.DEBUG
+            r for r in caplog.records if r.name == "speller.__main__" and r.levelno == logging.DEBUG
         ]
 
         assert debug_records, "--verbose should emit at least one DEBUG record"

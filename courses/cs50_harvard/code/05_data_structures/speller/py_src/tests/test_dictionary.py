@@ -159,15 +159,11 @@ class TestLoad:
 class TestCheck:
     """Test word checking behavior."""
 
-    def test_check_finds_existing_word(
-        self, loaded_dictionary: DictionaryProtocol
-    ) -> None:
+    def test_check_finds_existing_word(self, loaded_dictionary: DictionaryProtocol) -> None:
         """check() returns True for a word in the dictionary."""
         assert loaded_dictionary.check("cat") is True
 
-    def test_check_is_case_insensitive(
-        self, loaded_dictionary: DictionaryProtocol
-    ) -> None:
+    def test_check_is_case_insensitive(self, loaded_dictionary: DictionaryProtocol) -> None:
         """check() matches regardless of case.
 
         "Cat", "CAT", and "cat" should all match a dictionary
@@ -177,15 +173,11 @@ class TestCheck:
         assert loaded_dictionary.check("Cat") is True
         assert loaded_dictionary.check("CAT") is True
 
-    def test_check_rejects_missing_word(
-        self, loaded_dictionary: DictionaryProtocol
-    ) -> None:
+    def test_check_rejects_missing_word(self, loaded_dictionary: DictionaryProtocol) -> None:
         """check() returns False for a word NOT in the dictionary."""
         assert loaded_dictionary.check("xyz") is False
 
-    def test_check_raises_if_not_loaded(
-        self, empty_dictionary: DictionaryProtocol
-    ) -> None:
+    def test_check_raises_if_not_loaded(self, empty_dictionary: DictionaryProtocol) -> None:
         """check() raises RuntimeError if dictionary not loaded.
 
         This is the "fail fast" guard — prevents silent bugs where
@@ -271,9 +263,7 @@ class TestSizeAndDunders:
         """
         assert len(loaded_dictionary) == loaded_dictionary.size()
 
-    def test_contains_existing_word(
-        self, loaded_dictionary: DictionaryProtocol
-    ) -> None:
+    def test_contains_existing_word(self, loaded_dictionary: DictionaryProtocol) -> None:
         """'word in dictionary' returns True for existing words.
 
         Tests the Pythonic __contains__ syntax.
@@ -292,9 +282,7 @@ class TestSizeAndDunders:
         assert type(loaded_dictionary).__name__ in r
         assert "loaded=True" in r
 
-    def test_unload_clears_dictionary(
-        self, loaded_dictionary: DictionaryProtocol
-    ) -> None:
+    def test_unload_clears_dictionary(self, loaded_dictionary: DictionaryProtocol) -> None:
         """unload() resets the dictionary to empty state."""
         assert loaded_dictionary.size() > 0
 

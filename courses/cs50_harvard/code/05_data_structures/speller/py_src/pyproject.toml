@@ -231,7 +231,7 @@ show_error_codes = true
 target-version = "py312"
 
 # Maximum line length (88 is black's default, widely adopted)
-line-length = 88
+line-length = 100
 
 # Directories to exclude from linting
 exclude = [

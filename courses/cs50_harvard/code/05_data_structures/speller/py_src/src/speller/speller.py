@@ -270,9 +270,7 @@ class SpellerResult:
         lines.append(
             f"[cyan]{'WORDS IN DICTIONARY:':<{COL}}[/cyan][bold]{self.words_in_dictionary:,}[/bold]"
         )
-        lines.append(
-            f"[cyan]{'WORDS IN TEXT:':<{COL}}[/cyan][bold]{self.words_in_text:,}[/bold]"
-        )
+        lines.append(f"[cyan]{'WORDS IN TEXT:':<{COL}}[/cyan][bold]{self.words_in_text:,}[/bold]")
         #                  ↑             ↑↑                         ↑
         #                  │             ││                         |__ means apply separator: 100,000
         #               the text         │└── 22 characters total width
@@ -326,8 +324,7 @@ class SpellerResult:
         # )
 
         lines.append(
-            f"[bold cyan]{'TIME IN TOTAL:':<{COL}}[/bold cyan]"
-            f"[bold]{self.time_total:.2f}[/bold]\n"
+            f"[bold cyan]{'TIME IN TOTAL:':<{COL}}[/bold cyan][bold]{self.time_total:.2f}[/bold]\n"
         )
 
         # Report to show in console

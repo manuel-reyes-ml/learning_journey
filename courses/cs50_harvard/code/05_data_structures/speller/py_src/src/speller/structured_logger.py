@@ -134,9 +134,7 @@ def _reorder_keys(preferred_order: list[str]) -> Processor:
         A callable compatible with structlog's processor protocol.
     """
 
-    def processor(
-        logger: WrappedLogger, method_name: str, event_dict: EventDict
-    ) -> EventDict:
+    def processor(logger: WrappedLogger, method_name: str, event_dict: EventDict) -> EventDict:
         ordered: dict[str, Any] = {}
         for key in preferred_order:
             if key in event_dict:

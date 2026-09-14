@@ -149,9 +149,7 @@ def load_dictionary(
 
     logger.info(
         "Dictionary loaded: %s words",
-        format(
-            len(dictionary), ","
-        ),  # format number to use ',' separator and return str
+        format(len(dictionary), ","),  # format number to use ',' separator and return str
     )
 
     # Structured event - queryable metrics

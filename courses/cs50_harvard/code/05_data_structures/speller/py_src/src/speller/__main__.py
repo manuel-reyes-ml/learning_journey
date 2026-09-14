@@ -312,9 +312,7 @@ class GeneralReport:
             f"[blue]{'FILES NOT FOUND':<22}[/blue]"
             f"[bold {summary_color}]{self.files_not_found}[/bold {summary_color}]"
         )
-        lines.append(
-            f"[blue]{'FILES IN DIRECTORY:':<22}[/blue][bold]{self.files_in_dir}[/bold]"
-        )
+        lines.append(f"[blue]{'FILES IN DIRECTORY:':<22}[/blue][bold]{self.files_in_dir}[/bold]")
         lines.append(
             f"[blue]{'FILES WITH ERROR:':<22}[/blue]"
             f"[bold {summary_color}]{self.files_with_error}[/bold {summary_color}]"
@@ -476,9 +474,7 @@ def _build_parser() -> argparse.ArgumentParser:
         default=str(
             file_dirs.DICT_DIR / default_fnames["dictionaries"].large  # "large"
         ),
-        help=(
-            "Path to dictionary file. One word per line. Default: dictionaries/large"
-        ),
+        help=("Path to dictionary file. One word per line. Default: dictionaries/large"),
     )
 
     # -- Keyword arguments --
@@ -548,8 +544,7 @@ def _build_parser() -> argparse.ArgumentParser:
         "--template-logging",
         action="store_true",
         default=False,
-        help="Use t-string (PEP 750) logging with JSON file output. "
-        "Requires Python 3.14+.",
+        help="Use t-string (PEP 750) logging with JSON file output. Requires Python 3.14+.",
     )
     logging_group.add_argument(
         "-s",
@@ -695,8 +690,7 @@ def _resolve_text_paths(args: SpellerArgs) -> list[Path | Traversable]:
             text_path = file_dirs.TXT_DIR / args.text
             if not text_path.is_file():
                 raise SystemExit(
-                    f"Bundled sample '{args.text}' not found. "
-                    f"Available: {', '.join(bundled)}"
+                    f"Bundled sample '{args.text}' not found. Available: {', '.join(bundled)}"
                 )
             if text_path not in seen:
                 paths.append(text_path)
@@ -717,8 +711,7 @@ def _resolve_text_paths(args: SpellerArgs) -> list[Path | Traversable]:
                 seen.add(p)
             elif p.name in bundled:
                 logger.warning(
-                    "Did you mean to use a bundled sample? Try: "
-                    f"speller --demo {p.name}"
+                    f"Did you mean to use a bundled sample? Try: speller --demo {p.name}"
                 )
                 console.print(
                     f"[bold yellow]Bundle samples available: [/bold yellow]"
@@ -734,9 +727,7 @@ def _resolve_text_paths(args: SpellerArgs) -> list[Path | Traversable]:
 
             # glob(pattern) is a search — it returns only entries matching a shell-style
             # wildcard pattern, and with ** can recurse arbitrarily deep.
-            for txt_file in sorted(
-                dir_path.glob("*.txt")
-            ):  # sorted = deterministic order
+            for txt_file in sorted(dir_path.glob("*.txt")):  # sorted = deterministic order
                 if txt_file not in seen:
                     paths.append(txt_file)
                     seen.add(txt_file)
@@ -995,9 +986,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
 
     # -- Step 3: Convert and validate paths --
     dict_path = Path(args.dictionary)
-    path_validation: ExitCode | None = _validate_paths(
-        dict_path, path_name="dictionary"
-    )
+    path_validation: ExitCode | None = _validate_paths(dict_path, path_name="dictionary")
     if path_validation is not None:
         return path_validation
 
@@ -1040,9 +1029,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
             )
 
             # rich.panel.Panel wraps any content in a decorated box with a title:
-            console.print(
-                Panel("Dictionary loaded successfully", title="[green]SUCCESS[/green]")
-            )
+            console.print(Panel("Dictionary loaded successfully", title="[green]SUCCESS[/green]"))
 
             # -- Step 5: Run spell checker --
             # run_speller() accepts DictionaryProtocol - it doesn't know

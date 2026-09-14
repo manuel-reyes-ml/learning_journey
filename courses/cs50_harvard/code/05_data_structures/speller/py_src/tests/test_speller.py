@@ -227,9 +227,7 @@ class TestFormatReport:
             },
         )
 
-    def test_report_returns_report_namedtuple(
-        self, result_with_benchmarks: SpellerResult
-    ) -> None:
+    def test_report_returns_report_namedtuple(self, result_with_benchmarks: SpellerResult) -> None:
         """format_report() returns a REPORT namedtuple, not a plain str.
 
         REPORT has two fields: .main (str) and .misspelled (str | None).
@@ -240,9 +238,7 @@ class TestFormatReport:
         assert isinstance(report, Report)
         assert isinstance(report.main, str)
 
-    def test_report_contains_statistics(
-        self, result_with_benchmarks: SpellerResult
-    ) -> None:
+    def test_report_contains_statistics(self, result_with_benchmarks: SpellerResult) -> None:
         """Report includes all required statistics lines."""
         report = result_with_benchmarks.format_report()
 
@@ -251,22 +247,16 @@ class TestFormatReport:
         assert "TIME IN size:" in report.main
         assert "TIME IN TOTAL:" in report.main
 
-    def test_report_contains_timings(
-        self, result_with_benchmarks: SpellerResult
-    ) -> None:
+    def test_report_contains_timings(self, result_with_benchmarks: SpellerResult) -> None:
         """Report includes all timing lines."""
         report = result_with_benchmarks.format_report()
 
-    def test_report_contains_header(
-        self, result_with_benchmarks: SpellerResult
-    ) -> None:
+    def test_report_contains_header(self, result_with_benchmarks: SpellerResult) -> None:
         """Report starts with MISSPELLED WORDS header."""
         report = result_with_benchmarks.format_report()
         assert "MISSPELLED WORDS" in report.main
 
-    def test_misspelled_none_by_default(
-        self, result_with_benchmarks: SpellerResult
-    ) -> None:
+    def test_misspelled_none_by_default(self, result_with_benchmarks: SpellerResult) -> None:
         """misspelled field is None when log_misspelled=False (default)."""
         report = result_with_benchmarks.format_report(log_misspelled=False)
         assert report.misspelled is None

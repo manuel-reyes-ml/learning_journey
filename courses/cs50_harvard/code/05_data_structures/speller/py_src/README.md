@@ -171,9 +171,7 @@ class DictDictionary(_BaseDictionary[dict[str, None]]): ...
 
 ```python
 # load_dictionary.py — runs once per backend
-loaded_dict, load_result = load_dictionary(
-    dictionary=HashTableDictionary(), dict_path=dict_path
-)
+loaded_dict, load_result = load_dictionary(dictionary=HashTableDictionary(), dict_path=dict_path)
 
 # run_speller() — runs N times, no reload
 for text_path in text_paths:

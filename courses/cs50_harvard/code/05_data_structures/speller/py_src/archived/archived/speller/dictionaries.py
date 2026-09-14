@@ -347,9 +347,7 @@ class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation
         self._loaded = True
         logger.info(
             "Loaded %s words from '%s'",
-            format(
-                len(self._words), ","
-            ),  # format number to use ',' separator and return str
+            format(len(self._words), ","),  # format number to use ',' separator and return str
             path.name,
         )
         return True
@@ -511,9 +509,7 @@ class _BaseDictionary(ABC, Generic[WordContainer]):  # shared implementation
         developer view is sufficient — Python falls back to ``__repr__``
         when ``__str__`` is absent.
         """
-        return (
-            f"{type(self).__name__}(loaded={self._loaded}, words={len(self._words):,})"
-        )
+        return f"{type(self).__name__}(loaded={self._loaded}, words={len(self._words):,})"
 
     def unload(self) -> bool:
         """Clear the dictionary from memory and reset the loaded flag.

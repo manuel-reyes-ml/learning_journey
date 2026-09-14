@@ -391,11 +391,7 @@ class TestInterface:
         # Direct string - must product identical results
         words_from_string = list(extract_words(raw, path.name))
 
-        assert (
-            words_from_file
-            == words_from_string
-            == ["The", "cat", "sat", "on", "the", "mat"]
-        )
+        assert words_from_file == words_from_string == ["The", "cat", "sat", "on", "the", "mat"]
 
 
 # =============================================================================
