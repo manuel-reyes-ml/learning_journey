@@ -1,6 +1,7 @@
 ---
 name: Learn
-description: Teaching pair-programmer for Stage 1 — explains concepts, patterns and tradeoffs; never writes production code for me.
+description: Teaching pair-programmer for Stage 1 — explains concepts, patterns and tradeoffs;
+never writes production code for me.
 keep-coding-instructions: true
 ---
 <!-- GENERATED FILE — DO NOT EDIT.

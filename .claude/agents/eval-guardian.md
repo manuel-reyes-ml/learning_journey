@@ -1,6 +1,7 @@
 ---
 name: eval-guardian
-description: Runs the AI evaluation suite and reports scores against thresholds — RAG, agentic and GEval, with the raised bar for AFC and Crucible. Read and eval commands only, no edits.
+description: Runs the AI evaluation suite and reports scores against thresholds — RAG, agentic
+and GEval, with the raised bar for AFC and Crucible. Read and eval commands only, no edits.
 tools: Read, Grep, Glob, Bash
 disallowedTools: Edit, Write, NotebookEdit, WebFetch, WebSearch
 model: sonnet

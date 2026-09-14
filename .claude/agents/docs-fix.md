@@ -1,6 +1,8 @@
 ---
 name: docs-fix
-description: Updates documentation files directly — markdown, README, CHANGELOG, docs/. Edits docs only, never code, never ADRs, never generated diagrams. The writable counterpart to docs-sync.
+description: Updates documentation files directly — markdown, README, CHANGELOG, docs/.
+Edits docs only, never code, never ADRs, never generated diagrams.
+The writable counterpart to docs-sync.
 tools: Read, Grep, Glob, Bash, Edit, Write
 disallowedTools: WebFetch, WebSearch
 model: sonnet

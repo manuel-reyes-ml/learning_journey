@@ -1,6 +1,7 @@
 ---
 name: security-auditor
-description: Audits for hardcoded secrets, exposed PII, unsafe logging and config, and data-boundary violations. Read-only. Use before staging any change on finance-adjacent work.
+description: Audits for hardcoded secrets, exposed PII, unsafe logging and config, and
+data-boundary violations. Read-only. Use before staging any change on finance-adjacent work.
 tools: Read, Grep, Glob, Bash
 disallowedTools: Edit, Write, NotebookEdit, WebFetch, WebSearch
 model: sonnet

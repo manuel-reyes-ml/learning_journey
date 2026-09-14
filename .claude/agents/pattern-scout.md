@@ -1,6 +1,7 @@
 ---
 name: pattern-scout
-description: Scouts current production-grade patterns and compares them to this codebase. Read-only, can fetch docs and the web. Use to find better or newer approaches.
+description: Scouts current production-grade patterns and compares them to this codebase.
+Read-only, can fetch docs and the web. Use to find better or newer approaches.
 tools: Read, Grep, Glob, Bash, WebFetch, WebSearch
 disallowedTools: Edit, Write, NotebookEdit
 model: opus

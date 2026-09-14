@@ -1,6 +1,7 @@
 ---
 name: docs-sync
-description: Reviews documentation against the actual codebase to find drift, including ADRs, C4 diagrams and README structure. Read-only, reports but never edits.
+description: Reviews documentation against the actual codebase to find drift, including ADRs,
+C4 diagrams and README structure. Read-only, reports but never edits.
 tools: Read, Grep, Glob, Bash
 disallowedTools: Edit, Write, NotebookEdit, WebFetch, WebSearch
 model: sonnet
