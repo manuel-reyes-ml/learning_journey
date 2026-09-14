@@ -100,7 +100,7 @@ class TestTimer:
     def test_timer_produces_result(self) -> None:
         """timer() populates the container with a BenchmarkResult."""
         with timer("test_op") as t:
-            total = sum(range(1000))  # some work
+            sum(range(1000))  # some work
 
         assert "result" in t
         assert isinstance(t["result"], BenchmarkResult)
@@ -255,7 +255,6 @@ class TestTimed:
             return sum(range(n))
 
         work(100)
-        first_time = work.benchmark.elapsed_seconds  # type: ignore[attr-define]
 
         work(100_000)
         second_time = work.benchmark.elapsed_seconds  # type: ignore[attr-define]

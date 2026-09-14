@@ -64,7 +64,6 @@ __all__ = [
     "ExitCode",
     "file_dirs",
     "fhandler_config",
-    "default_fnames",
     # Class
     "FileDirectories",
     "FileHandlerConfig",

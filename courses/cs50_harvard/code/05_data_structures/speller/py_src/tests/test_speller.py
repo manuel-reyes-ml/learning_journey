@@ -249,7 +249,7 @@ class TestFormatReport:
 
     def test_report_contains_timings(self, result_with_benchmarks: SpellerResult) -> None:
         """Report includes all timing lines."""
-        report = result_with_benchmarks.format_report()
+        result_with_benchmarks.format_report()
 
     def test_report_contains_header(self, result_with_benchmarks: SpellerResult) -> None:
         """Report starts with MISSPELLED WORDS header."""
