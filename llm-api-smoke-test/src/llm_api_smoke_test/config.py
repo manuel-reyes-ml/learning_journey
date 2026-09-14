@@ -71,7 +71,7 @@ class ProviderSettings(BaseModel):
     #   - If extra was set to 'forbid', Pydantic Rejects unknown fields instead of silently
     #     dropping them. 'api_kye' would not be permitted in construction.
     #
-    # Other production flags worth knowing for later: 
+    # Other production flags worth knowing for later:
     # strict=True (no type coercion — int won't accept "5")
     # and validate_assignment=True (re-validates on attribute set, only meaningful if not frozen).
     model_config = ConfigDict(frozen=True, extra="forbid")
