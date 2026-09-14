@@ -57,7 +57,7 @@ from speller.text_processor import extract_words
 
 @pytest.fixture
 def make_text_file(tmp_path: Path) -> Callable[[str, str], Path]:
-    """Factory fixture — creates text files from content strings.
+    """Build factory fixture — creates text files from content strings.
 
     A "factory fixture" returns a FUNCTION instead of a value.
     The test calls the function to create files with specific content.

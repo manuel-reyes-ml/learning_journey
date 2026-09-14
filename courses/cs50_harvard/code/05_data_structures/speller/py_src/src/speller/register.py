@@ -170,7 +170,7 @@ dicts: dict[str, DictInfo] = {}  # now DictInfo is defined above
 # A decorator factory is just a function that takes custom parameters
 # and generates a decorator.
 def register_class(name: str, description: str = "") -> RegDecorator:
-    """Decorator factory that registers a dictionary class in :data:`dicts`.
+    """Build a decorator factory that registers a dictionary class in :data:`dicts`.
 
     Returns a decorator that inserts the decorated class into :data:`dicts`
     under ``name``, then returns the class **unchanged**.  Because the

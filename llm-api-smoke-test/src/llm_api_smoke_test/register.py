@@ -254,9 +254,9 @@ def register_class(
     kind: ProviderKind,  # explicit only -> kind="sync" / kind="async"
     description: str = "",
 ) -> RegDecorator:
-    """Decorator factory that upserts a provider class into :data:`dicts`.
+    """Build a decorator factory that upserts a provider class into :data:`dicts`.
 
-    Returns a decorator that inserts the decorated class into the
+    Return a decorator that inserts the decorated class into the
     ``kind``-typed slot of ``dicts[name]`` (creating the
     :class:`ProviderList` if absent), then returns the class
     **unchanged**.  Because the class is returned as-is,

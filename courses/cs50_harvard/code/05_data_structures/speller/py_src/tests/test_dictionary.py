@@ -60,7 +60,7 @@ def loaded_dictionary(
     request: pytest.FixtureRequest,
     sample_dict_file: Path,
 ) -> DictionaryProtocol:
-    """Loaded instance of every registered backend."""
+    """Already loaded instance of every registered backend."""
     d = dicts[request.param].dict_class()
     d.load(str(sample_dict_file))
     return d

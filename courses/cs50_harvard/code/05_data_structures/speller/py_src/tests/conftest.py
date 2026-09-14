@@ -509,23 +509,23 @@ class FailingDictionary(DictionaryProtocol):
     """
 
     def load(self, filepath: str) -> bool:
-        """Always returns False — simulates a load failure."""
+        """Return False — simulates a load failure."""
         return False
 
     def check(self, word: str) -> bool:
-        """Always returns False (dictionary has no words)."""
+        """Return False (dictionary has no words)."""
         return False
 
     def size(self) -> int:
-        """Always returns 0 (empty dictionary)."""
+        """Return 0 (empty dictionary)."""
         return 0
 
     def __len__(self) -> int:
-        """Always returns 0."""
+        """Return 0."""
         return 0
 
     def __contains__(self, word: str) -> bool:
-        """Always returns False (nothing is 'in' a failed dictionary)."""
+        """Return False (nothing is 'in' a failed dictionary)."""
         return False
 
     def unload(self) -> bool:

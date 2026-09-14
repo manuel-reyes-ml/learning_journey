@@ -242,7 +242,7 @@ class TestTimed:
 
         @timed("test")
         def documented_func() -> None:
-            """This is my docstring."""
+            """Sample of my docstring."""
             pass
 
         assert documented_func.__doc__ == "This is my docstring."

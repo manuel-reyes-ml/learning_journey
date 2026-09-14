@@ -201,7 +201,7 @@ class BenchmarkResult:
         return f"{self.operation}: {self.elapsed_seconds:.2f}s"
 
     def __format__(self, spec: str) -> str:
-        """Custom format spec dispatcher for ``f"{result:spec}"``.
+        """Dispatch on the format spec in ``f"{result:spec}"``.
 
         Implements the third leg of the format trio
         (``f-string`` → :func:`format` → ``__format__``).  Recognises
@@ -413,7 +413,7 @@ def timer(
 # Syntax: Callable[[INPUT_TYPES], RETURN_TYPE]
 #   - Input parameters in a list
 def timed(operation_name: str) -> Callable[[Callable[P, T]], Callable[P, T]]:
-    """Decorator factory that times a single function call.
+    """Return a decorator that times a single function call.
 
     Wraps the decorated function in a :func:`timer` context manager.
     After each call, attaches the :class:`BenchmarkResult` to the
