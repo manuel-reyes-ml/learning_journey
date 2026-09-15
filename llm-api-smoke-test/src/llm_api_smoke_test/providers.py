@@ -243,13 +243,13 @@ class AnthropicProvider:
         not at module scope, so ``import providers`` stays cheap during
         test collection even when the SDK isn't installed.
         """
-        from anthropic import Anthropic  # lazy import - keeps module import cheap
+        from anthropic import Anthropic, Timeout  # lazy import - keeps module import cheap
 
         self._settings = settings
         self._client = Anthropic(
             api_key=settings.api_key.get_secret_value(),
             max_retries=3,  # default is 2 - bump for flakier CI environments
-            timeout=httpx.Timeout(60.0, read=30.0, write=10.0, connect=5.0),
+            timeout=Timeout(60.0, read=30.0, write=10.0, connect=5.0),
         )
 
     # Instance method (the default) - gets 'self'
@@ -551,13 +551,13 @@ class AsyncAnthropicProvider:
         # AsyncAnthropic is a separate class — same kwargs as Anthropic,
         # but every method on it is a coroutine. Internally it uses
         # httpx.AsyncClient instead of httpx.Client.
-        from anthropic import AsyncAnthropic
+        from anthropic import AsyncAnthropic, Timeout
 
         self._settings = settings
         self._client = AsyncAnthropic(
             api_key=settings.api_key.get_secret_value(),
             max_retries=3,
-            timeout=httpx.Timeout(60.0, read=30.0, write=10.0, connect=5.0),
+            timeout=Timeout(60.0, read=30.0, write=10.0, connect=5.0),
         )
 
     async def smoke_test(self, prompt: str) -> SmokeTestResult:
