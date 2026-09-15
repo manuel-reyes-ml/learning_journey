@@ -147,24 +147,45 @@ class TestOpenRouterProviderSmokeTest:
     so a single registered route that fires exactly once is the contract.
     """
 
-    @respx.mock
+    # 1. The fake transport is now in place. Nothing can reach the internet
+    # for the rest of this function.
+    # 2. You register one rule. respx.post(url) creates the rule; .mock(return_value=...)
+    # says what it answers with. Nothing has happened yet — you've only written it down.
+    # 3. Building the provider doesn't touch the network, so nothing fires.
+    # 4. This is the moment. The SDK builds a POST to
+    # https://openrouter.ai/api/v1/chat/completions, hands it to the transport —
+    # which is respx's fake — and respx checks its rules. The URL matches, so it hands
+    # back your fake httpx.Response(200, ...) instead of making a connection.
+    # Total elapsed: microseconds. No API key used, no money spent.
+    #
+    # The SDK then parses that fake response exactly as it would a real one.
+    # Your adapter reads .content, .id, .usage off it and builds a SmokeTestResult.
+    # Every line of your own code ran for real.
+    #
+    # 5. route.called is True because the rule got used.
+    # Without that line, a test where the HTTP call never happened at all
+    # would still go green.
+
+    @respx.mock  # 1. swap the transport
     def test_happy_path_parses_response(
         self,
         openrouter_settings: ProviderSettings,
     ) -> None:
         """A well-formed body → a fully-populated SmokeTestResult."""
         # Register the fake endpoint; the SDK's POST will match it.
-        route = respx.post(_COMPLETIONS_URL).mock(
+        route = respx.post(_COMPLETIONS_URL).mock(  # 2. write the sticky note
             return_value=httpx.Response(200, json=_chat_completion_payload())
         )
 
         # Constructing the client touches no network; the call below does
         # (and respx intercepts it).
+        # 3. no network yet
         provider = OpenRouterProvider(openrouter_settings)  # type: ignore[arg-call]
+        # 4. the call happens
         result = provider.smoke_test("say hello")
 
         # Route firing proves base_url → OpenRouter, not api.openai.com.
-        assert route.called
+        assert route.called  # 5. check the sticky note
         assert isinstance(result, SmokeTestResult)
 
         # Field-by-field: the adapter reports its OWN settings for name/model
