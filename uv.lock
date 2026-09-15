@@ -1817,6 +1817,7 @@ dependencies = [
 
 [package.dev-dependencies]
 dev = [
+    { name = "httpx2" },
     { name = "pyright" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
@@ -1825,6 +1826,7 @@ dev = [
     { name = "ruff" },
 ]
 test = [
+    { name = "httpx2" },
     { name = "pytest" },
     { name = "pytest-asyncio" },
     { name = "pytest-cov" },
@@ -1833,7 +1835,7 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "aiolimiter", specifier = ">=1.1,<2.0" },
-    { name = "anthropic", specifier = ">=0.40" },
+    { name = "anthropic", specifier = ">=1.0,<2.0" },
     { name = "google-genai", specifier = ">=1.0,<3.0" },
     { name = "httpx", specifier = ">=0.27,<1.0" },
     { name = "openai", specifier = ">=1.40,<3.0" },
@@ -1845,6 +1847,7 @@ requires-dist = [
 
 [package.metadata.requires-dev]
 dev = [
+    { name = "httpx2", specifier = ">=2.0,<3.0" },
     { name = "pyright", specifier = ">=1.1,<2.0" },
     { name = "pytest", specifier = ">=8.0,<10.0" },
     { name = "pytest-asyncio", specifier = ">=0.23,<2.0" },
@@ -1853,6 +1856,7 @@ dev = [
     { name = "ruff", specifier = ">=0.5,<1.0" },
 ]
 test = [
+    { name = "httpx2", specifier = ">=2.0,<3.0" },
     { name = "pytest", specifier = ">=8.0,<10.0" },
     { name = "pytest-asyncio", specifier = ">=0.23,<2.0" },
     { name = "pytest-cov", specifier = ">=5.0,<7.0" },
