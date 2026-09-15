@@ -31,7 +31,7 @@ classifiers = [
 dependencies = [
     "pydantic>=2.5,<3.0",
     "pydantic-settings>=2.1,<3.0",   # config.py: BaseSettings, SettingsConfigDict
-    "anthropic>=0.40",               # 0.x SDK; no upper bound yet (see note below)
+    "anthropic>=1.0,<2.0",               # 0.x SDK; no upper bound yet (see note below)
     "google-genai>=1.0,<3.0",        # GenerateContent API; current is 2.8.x
     "openai>=1.40,<3.0",             # OpenRouter is OpenAI-compatible
     "httpx>=0.27,<1.0",              # providers.py: httpx.Timeout(...)
@@ -97,7 +97,11 @@ testpaths = ["tests"]   # Where pytest searches for tests.
 # is the real fix, not this line.
 pythonpath = ["src"]
 
+# -p loads it as a plugin at startup, ahead of respx and your test modules.
+# It raises RuntimeError if anything imported httpx first, so a wrong ordering
+# fails loudly rather than silently.
 addopts = [
+    "-p", "tests._alias_httpx",
     "-ra",
     "--strict-markers",
     "--strict-config",
