@@ -7,6 +7,10 @@
 from __future__ import annotations
 
 import httpx
+import respx
+
+from llm_api_smoke_test.config import ProviderSettings
+from llm_api_smoke_test.providers import AnthropicProvider, SmokeTestResult
 
 # =============================================================================
 # MODULE CONFIGURATION
@@ -134,4 +138,111 @@ def test_httpx_is_aliased_to_httpx2() -> None:
 
 # =============================================================================
 # SYNC ADAPTER — AnthropicProvider
+# =============================================================================
+
+
+class TestAnthropicProviderSmokeTest:
+    """Sync adapter parsing, with the transport faked by respx.
+
+    ``@respx.mock`` (the bare decorator, global router) asserts that no
+    unmocked request escapes to the network — but it does **not** assert that
+    registered routes were called.  ``assert_all_called`` is disabled on the
+    global router; it only defaults on for routers built by calling
+    ``respx.mock(**kwargs)``.  Hence the explicit ``assert route.called`` in
+    every test below: it is the only thing enforcing that the HTTP call
+    actually happened.
+    """
+
+    @respx.mock  # swap the transport for the duration of this function
+    def test_happy_path_parses_response(
+        self,
+        provider_settings: ProviderSettings,
+    ) -> None:
+        """A well-formed body → a fully-populated SmokeTestResult."""
+        # Register the rule. Nothing has happened yet — this only records
+        # "if a POST to this URL shows up, answer with that".
+        route = respx.post(_MESSAGES_URL).mock(return_value=_ok(_messages_payload()))
+
+        # Constructing the client touches no network (the SDK's `Anthropic`
+        # import is lazy, inside __init__); the call below is what fires.
+        provider = AnthropicProvider(provider_settings)  # type: ignore[arg-call]
+        result = provider.smoke_test("say hello")
+
+        # Route firing proves the client aimed at api.anthropic.com AND that
+        # respx patched the transport the SDK actually reached for.
+        assert route.called
+        assert isinstance(result, SmokeTestResult)
+
+        # Identity fields come from OUR settings, never from the body — the
+        # adapter reports what it was configured with.
+        assert result.provider_name == "Anthropic"
+        assert result.model == "claude-sonnet-4-6"
+
+        # Payload fields come from the deserialised SDK object.
+        assert result.response_preview == "hello world"
+
+        # From the HEADER, not the body. This assertion is what catches a
+        # mock that forgot `headers={"request-id": ...}`.
+        assert result.request_id == _REQUEST_ID
+
+        assert result.usage is not None
+        assert result.usage.input_tokens == 7
+        assert result.usage.output_tokens == 2
+
+        # perf_counter is monotonic, so elapsed time can never be negative.
+        # A loose bound on purpose — asserting a tight range would make this
+        # test flaky on a loaded CI runner.
+        assert result.latency_ms >= 0.0
+
+    @respx.mock
+    def test_long_text_is_truncated_to_sixty_chars(
+        self,
+        provider_settings: ProviderSettings,
+    ) -> None:
+        """``text[:60]`` caps the preview — a preview is not the full reply.
+
+        Pins the slice in the adapter.  Without it a multi-kilobyte reply
+        would be copied wholesale into logs and result objects.
+        """
+        long_text = "x" * 100
+        route = respx.post(_MESSAGES_URL).mock(return_value=_ok(_messages_payload(text=long_text)))
+
+        provider = AnthropicProvider(provider_settings)  # type: ignore[arg-call]
+        result = provider.smoke_test("say hello")
+
+        assert route.called
+        assert isinstance(result, SmokeTestResult)
+        # Both halves matter: the right LENGTH and the right CONTENT. Checking
+        # only the length would pass for any 60 characters.
+        assert len(result.response_preview) == 60
+        assert result.response_preview == long_text[:60]
+
+    @respx.mock
+    def test_non_text_block_yields_empty_preview(
+        self,
+        provider_settings: ProviderSettings,
+    ) -> None:
+        """No ``TextBlock`` in ``content`` → the preview stays ``""``.
+
+        The adapter loops over ``message.content`` and breaks on the first
+        ``TextBlock``.  If a reply contains only tool-use blocks the loop
+        finds nothing, and ``text`` must remain the empty-string default
+        rather than raising or leaking ``None``.
+        """
+        route = respx.post(_MESSAGES_URL).mock(return_value=_ok(_messages_payload(text=None)))
+
+        provider = AnthropicProvider(provider_settings)  # type: ignore[arg-call]
+        result = provider.smoke_test("say hello")
+
+        assert route.called
+        assert isinstance(result, SmokeTestResult)
+
+        assert result.response_preview == ""
+        # The rest of the result is still well-formed — only the text is absent.
+        assert result.usage is not None
+        assert result.usage.input_tokens == 7
+
+
+# =============================================================================
+# ASYNC ADAPTER — AsyncAnthropicProvider
 # =============================================================================
