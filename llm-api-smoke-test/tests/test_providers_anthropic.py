@@ -10,7 +10,12 @@ import httpx
 import respx
 
 from llm_api_smoke_test.config import ProviderSettings
-from llm_api_smoke_test.providers import AnthropicProvider, SmokeTestResult
+from llm_api_smoke_test.providers import (
+    AnthropicProvider,
+    AsyncAnthropicProvider,
+    AsyncLLMProvider,
+    SmokeTestResult,
+)
 
 # =============================================================================
 # MODULE CONFIGURATION
@@ -246,3 +251,55 @@ class TestAnthropicProviderSmokeTest:
 # =============================================================================
 # ASYNC ADAPTER — AsyncAnthropicProvider
 # =============================================================================
+
+
+class TestAsyncAnthropicProviderSmokeTest:
+    """Async adapter — identical parsing contract, awaited HTTP call.
+
+    Relies on ``asyncio_mode = "auto"`` so each ``async def test_*`` runs in
+    an event loop without a marker.  Deliberately NO module-level
+    ``pytestmark = pytest.mark.asyncio`` — that would wrongly tag the sync
+    tests above as asyncio.  respx intercepts the SDK's async client exactly
+    as it does the sync one; the transport swap is agnostic to which.
+    """
+
+    @respx.mock
+    async def test_happy_path_parses_response(
+        self,
+        provider_settings: ProviderSettings,
+    ) -> None:
+        """Async happy path — same parsing as the sync adapter, awaited."""
+        route = respx.post(_MESSAGES_URL).mock(return_value=_ok(_messages_payload()))
+
+        provider = AsyncAnthropicProvider(provider_settings)  # type: ignore[arg-call]
+
+        # AsyncLLMProvider must be @runtime_checkable for isinstance() to work
+        # on a Protocol. This pins the structural contract, not just the call.
+        assert isinstance(provider, AsyncLLMProvider)
+
+        result = await provider.smoke_test("say hello")
+
+        assert route.called
+        assert result.provider_name == "Anthropic"
+        assert result.model == "claude-sonnet-4-6"
+        assert result.response_preview == "hello world"
+        assert result.request_id == _REQUEST_ID
+        assert result.usage is not None
+        assert result.usage.input_tokens == 7
+        assert result.usage.output_tokens == 2
+
+    @respx.mock
+    async def test_non_text_block_yields_empty_preview(
+        self,
+        provider_settings: ProviderSettings,
+    ) -> None:
+        """Async — a tool-use-only reply yields ``""`` (same guard, async path)."""
+        route = respx.post(_MESSAGES_URL).mock(return_value=_ok(_messages_payload(text=None)))
+
+        provider = AsyncAnthropicProvider(provider_settings)  # type: ignore[arg-call]
+
+        assert isinstance(provider, AsyncLLMProvider)
+        result = await provider.smoke_test("say_hello")
+
+        assert route.called
+        assert result.response_preview == ""
