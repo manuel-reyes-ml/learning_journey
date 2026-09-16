@@ -117,3 +117,21 @@ def _ok(payload: dict[str, object]) -> httpx.Response:
 # =============================================================================
 # TRANSPORT GUARD
 # =============================================================================
+
+
+def test_httpx_is_aliased_to_httpx2() -> None:
+    """The alias plugin ran, so respx and the SDK patch the same library.
+
+    A canary, not a behaviour test.  If ``tests/_alias_httpx.py`` stops being
+    loaded, every mocked test below would silently start hitting the network;
+    this fails first and names the cause.
+    """
+    import httpx2
+
+    # Same object, not merely a compatible one — proof the alias took effect.
+    assert httpx.Client is httpx2.Client
+
+
+# =============================================================================
+# SYNC ADAPTER — AnthropicProvider
+# =============================================================================
