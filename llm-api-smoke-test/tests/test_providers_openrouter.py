@@ -325,3 +325,17 @@ class TestAsyncOpenRouterProviderSmokeTest:
         openrouter_settings: ProviderSettings,
     ) -> None:
         """Async — null content coalesces to ``""`` (same guard, async path)."""
+        route = respx.post(_COMPLETIONS_URL).mock(
+            return_value=httpx.Response(200, json=_chat_completion_payload(content=None))
+        )
+
+        provider = AsyncOpenRouterProvider(openrouter_settings)  # type: ignore[arg-call]
+
+        assert isinstance(provider, AsyncLLMProvider)
+        result = await provider.smoke_test("say hello")
+
+        assert route.called
+        assert isinstance(result, SmokeTestResult)
+
+        # The line under test: None becomes "", never reaches the slice as None.
+        assert result.response_preview == ""
