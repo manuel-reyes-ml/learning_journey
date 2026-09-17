@@ -1,4 +1,38 @@
-""" """
+"""Contract tests for the Anthropic adapters, with the HTTP boundary faked.
+
+Covers :class:`~llm_api_smoke_test.providers.AnthropicProvider` (sync) and
+:class:`~llm_api_smoke_test.providers.AsyncAnthropicProvider` (async).  Both
+wrap the ``anthropic`` SDK; these tests pin the *translation layer* — how a
+Messages API body becomes a :class:`~llm_api_smoke_test.providers.SmokeTestResult`
+— without ever leaving the process.
+
+Why this module exists beyond ordinary coverage
+-----------------------------------------------
+``anthropic`` 1.0 swapped its transport from ``httpx`` to ``httpx2``.  respx
+patches ``httpx``.  If the two ever drift apart, respx patches a library the
+SDK no longer uses: the mock stops matching, a **real socket** opens, and the
+test still passes green because a registered-but-unused route is not an error
+under ``@respx.mock``.
+
+``assert route.called`` in every test is the tripwire for exactly that.  See
+``tests/_alias_httpx.py``, which makes ``import httpx`` resolve to ``httpx2``
+before respx loads.
+
+Notes
+-----
+``request_id`` is read from the ``request-id`` **response header**, not the
+JSON body — the SDK exposes it as ``message._request_id``.  Every mocked
+response therefore sets that header; omit it and ``result.request_id`` is
+silently ``None``.
+
+Unlike the OpenRouter adapter, ``usage`` is non-optional in Anthropic's
+Messages response, so ``TokenUsage`` is built unconditionally and there is no
+"missing usage" branch to test.
+
+See Also
+--------
+tests.test_providers_openrouter : the same contract for the OpenAI-shaped path.
+"""
 
 # =============================================================================
 # IMPORTS
