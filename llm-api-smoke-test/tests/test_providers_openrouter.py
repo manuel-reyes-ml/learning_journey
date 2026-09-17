@@ -1,4 +1,30 @@
-""" """
+"""Contract tests for the OpenRouter adapters, with the HTTP boundary faked.
+
+Covers :class:`~llm_api_smoke_test.providers.OpenRouterProvider` (sync) and
+:class:`~llm_api_smoke_test.providers.AsyncOpenRouterProvider` (async).  Both
+speak to OpenRouter through the OpenAI SDK, so these tests pin the
+*translation layer* — how an OpenAI-shaped ``chat.completion`` body becomes a
+:class:`~llm_api_smoke_test.providers.SmokeTestResult` — without ever leaving
+the process.
+
+Every test asserts ``route.called``.  Under the bare ``@respx.mock`` decorator
+a registered-but-never-called route is **not** an error, so without that line
+a test where the HTTP call never happened would still pass green.  Route
+firing also proves the client aimed at ``openrouter.ai`` rather than
+``api.openai.com`` — the one thing an OpenAI-SDK-based adapter can get wrong
+in a way no parsing assertion would catch.
+
+Notes
+-----
+The OpenAI SDK appends ``/chat/completions`` to the client ``base_url``, so
+:data:`_COMPLETIONS_URL` is the absolute URL respx must intercept.  Matching
+the full URL rather than configuring a respx ``base_url`` keeps the assertion
+self-documenting.
+
+See Also
+--------
+tests.test_providers_anthropic : the same contract for the Anthropic path.
+"""
 
 # =============================================================================
 # IMPORTS
@@ -142,9 +168,13 @@ def openrouter_settings() -> ProviderSettings:
 class TestOpenRouterProviderSmokeTest:
     """Sync adapter parsing, with the httpx boundary faked by respx.
 
-    ``@respx.mock`` (default config) asserts every registered route is
-    actually called AND that no unmocked request escapes to the network —
-    so a single registered route that fires exactly once is the contract.
+    ``@respx.mock`` (the bare decorator, global router) asserts that no
+    unmocked request escapes to the network — but it does **not** assert that
+    registered routes were called.  ``assert_all_called`` is disabled on the
+    global router; it only defaults on for routers built by calling
+    ``respx.mock(**kwargs)``.  Hence the explicit ``assert route.called`` in
+    every test below: it is the only thing enforcing that the HTTP call
+    actually happened.
     """
 
     # 1. The fake transport is now in place. Nothing can reach the internet
