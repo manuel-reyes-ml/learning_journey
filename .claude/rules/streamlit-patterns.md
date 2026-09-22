@@ -10,4 +10,4 @@ paths:
 
 Streamlit structure, masking at display boundaries.
 
-@../../.cursor/rules/streamlit-patterns.mdc
+@.cursor/rules/streamlit-patterns.mdc
