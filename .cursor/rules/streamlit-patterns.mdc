@@ -145,3 +145,5 @@ state. A button is not a sign-off gate on its own.
 - [ ] `configure_logging()` wrapped in `@st.cache_resource` (no duplicate handlers)
 - [ ] Irreversible actions have an explicit confirmation gate
 - [ ] App works without API key (graceful degradation)
+
+MARKER_STREAMLIT_RULE_LIVE_4417
