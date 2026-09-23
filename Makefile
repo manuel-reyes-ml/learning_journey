@@ -48,6 +48,12 @@ claude-agents-check:  ## Fail if any generated agent file is stale
 claude-rules:  ## Rebuild .claude/rules/*.md from the canonical .cursor/rules/*.mdc bodies.
 	python3 scripts/build_claude_rules.py
 
+claude-rules-check:  ## Fail if a generated rule file is out of date or orphaned (CI / pre-commit).
+	python3 scripts/build_claude_rules.py --check
+
+claude-rules-list:  ## Show which .mdc maps to which rule, and whether it is path-scoped.
+	python3 scripts/build_claude_rules.py --list
+
 # --- quality -----------------------------------------------------------------
 # Paths match the `files:` scope of the ruff hooks in .pre-commit-config.yaml.
 # If one changes, change the other.
