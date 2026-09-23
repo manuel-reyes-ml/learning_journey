@@ -14,7 +14,8 @@ CODE_PATHS := scripts llm-api-smoke-test $(SPELLER)
 
 .DEFAULT_GOAL := help
 
-.PHONY: help sync hooks hooks-run hooks-update claude-agents claude-agents-check lint format test
+.PHONY: help sync hooks hooks-run hooks-update claude-agents claude-agents-check claude-rules \
+		claude-rules-check claude-rules-list lint format test
 
 help:  ## Show the available targets
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) \
@@ -43,6 +44,9 @@ claude-agents:  ## Regenerate .claude/agents/ and .claude/output-styles/ from sh
 
 claude-agents-check:  ## Fail if any generated agent file is stale
 	$(PYTHON) scripts/build_claude_agents.py --check
+
+claude-rules:  ## Rebuild .claude/rules/*.md from the canonical .cursor/rules/*.mdc bodies.
+	python3 scripts/build_claude_rules.py
 
 # --- quality -----------------------------------------------------------------
 # Paths match the `files:` scope of the ruff hooks in .pre-commit-config.yaml.
