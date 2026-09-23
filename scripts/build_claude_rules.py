@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 from typing import Final
 
@@ -52,3 +53,190 @@ def _unquote(value: str) -> str:
     if len(value) >= 2 and value[0] == value[-1] and value[0] in {'"', "'"}:
         return value[1:-1]
     return value
+
+
+# =============================================================================
+# CORE FUNCTIONS
+# =============================================================================
+
+
+def split_frontmatter(text: str, source: Path) -> tuple[str, str]:
+    """Split a `.mdc` file into its YAML frontmatter and its body.
+
+    Parameters
+    ----------
+    text : str
+        Full contents of the source file.
+    source : Path
+        Path used in error messages.
+
+    Returns
+    -------
+    tuple of (str, str)
+        ``(frontmatter, body)``. Frontmatter is an empty string when the file has
+        none, in which case the whole file is the body.
+
+    Raises
+    ------
+    RuleError
+        If the file opens a frontmatter block and never closes it.
+    """
+    if not text.startswith("---"):
+        return "", text
+
+    end = text.find("\n---", 3)
+    if end < 0:
+        raise RuleError(f"{source}: frontmatter opened with --- but never closed")
+
+    frontmatter = text[3:end]
+    body = text[end + 4 :].lstrip("\n")
+    return frontmatter, body
+
+
+def parse_globs(frontmatter: str, source: Path) -> tuple[list[str], bool]:
+    """Read the `globs:` and `alwaysApply:` fields out of Cursor frontmatter.
+
+    Deliberately a small hand parser rather than PyYAML: this runs in pre-commit,
+    where a third-party import would be one more thing that can break the commit
+    path. Cursor frontmatter is flat and covers only the three forms below.
+
+    Supported `globs:` forms::
+
+        globs: ["app/**/*.py", "pages/**/*.py"]     # inline list
+        globs: app/**/*.py, pages/**/*.py           # comma-separated scalar
+        globs:                                      # block list
+          - "app/**/*.py"
+          - "pages/**/*.py"
+
+    Parameters
+    ----------
+    frontmatter : str
+        Text between the `---` fences.
+    source : Path
+        Path used in error messages.
+
+    Returns
+    -------
+    tuple of (list of str, bool)
+        ``(globs, always_apply)``. ``globs`` is empty when the field is absent or
+        blank.
+
+    Raises
+    ------
+    RuleError
+        If `alwaysApply` holds something other than a boolean.
+    """
+    globs: list[str] = []
+    always_apply = False
+    in_block_list = False
+
+    for raw_line in frontmatter.splitlines():
+        line = raw_line.rstrip()
+        if not line.strip():
+            continue
+
+        # A new top-level key ends any block list we were collecting.
+        is_top_level_key = not line.startswith((" ", "\t", "-")) and ":" in line
+        if is_top_level_key:
+            in_block_list = False
+
+        if in_block_list:
+            item = line.strip()
+            if item.startswith("-"):
+                globs.append(_unquote(item[1:].strip()))
+                continue
+            in_block_list = False
+
+        if line.startswith("globs:"):
+            value = line[len("globs:") :].strip()
+            if not value:
+                in_block_list = True
+            elif value.startswith("["):
+                inner = value.strip("[]")
+                globs.extend(_unquote(part.strip()) for part in inner.split(",") if part.strip())
+            else:
+                globs.extend(_unquote(part.strip()) for part in value.split(",") if part.strip())
+        elif line.startswith("alwaysApply:"):
+            value = line[len("alwaysApply") :].strip().lower()
+            if value not in {"true", "false"}:
+                raise RuleError(f"{source}: alwaysApply must be true or false, got {value!r}")
+            always_apply = value == "true"
+
+    return [g for g in globs if g], always_apply
+
+
+def render(source: Path) -> str:
+    """Render one `.mdc` source file into its `.claude/rules/` output text.
+
+    Parameters
+    ----------
+    source : Path
+        Path to a `.cursor/rules/<name>.mdc` file.
+
+    Returns
+    -------
+    str
+        Complete file content: optional `paths:` frontmatter, the generated-file
+        banner, then the rule body verbatim.
+
+    Raises
+    ------
+    RuleError
+        If the source body is empty, or its frontmatter is malformed.
+    """
+    name = source.stem
+    frontmatter, body = split_frontmatter(source.read_text(encoding="utf-8"), source)
+    globs, always_apply = parse_globs(frontmatter, source)
+
+    body = body.rstrip()
+    if not body:
+        raise RuleError(f"{source}: body is emtpy, nothing to mirror")
+
+    parts: list[str] = []
+
+    # alwaysApply rules get no `paths` field: a Claude rule without one loads
+    # unconditionally, which is exactly what alwaysApply means in Cursor.
+    if globs and not always_apply:
+        rendered = "\n".join(f'  - "{glob}"' for glob in globs)
+        parts.append(f"---\npaths:\n{rendered}\n---\n\n")
+    elif not globs and not always_apply:
+        # No scoping information at all. Loading unconditionally is the safe
+        # failure — a rule that never loads is worse than one that always does.
+        print(
+            f"note: {source.name} has neither globs nor alwaysApply; "
+            "the generated rule will load unconditionally",
+            file=sys.stderr,
+        )
+
+    parts.append(BANNER.format(name=name))
+    parts.append("\n" + body + "\n")
+    return "".join(parts)
+
+
+def sources() -> list[Path]:
+    """Return the `.mdc` files to mirror, sorted, with EXCLUDE applied."""
+    if not SOURCE_DIR.is_dir():
+        raise RuleError(f"{SOURCE_DIR} does not exist")
+    return [p for p in sorted(SOURCE_DIR.glob("*.mdc")) if p.stem not in EXCLUDE]
+
+
+def orphans(expected: set[Path]) -> list[Path]:
+    """Return generated-looking outputs that no longer have a source.
+
+    Only files carrying the generated banner are reported, so a hand-written rule
+    that lives solely in `.claude/rules/` is never flagged.
+    """
+    if not OUTPUT_DIR.is_dir():
+        return []
+    found: list[Path] = []
+    for path in sorted(OUTPUT_DIR.glob("*.md")):
+        if path in expected:
+            continue
+        if "GENERATED FILE - DO NOT EDIT" in path.read_text(encoding="utf-8"):
+            found.append(path)
+    return found
+
+
+# =============================================================================
+# MAIN FUNCTION
+# =============================================================================
