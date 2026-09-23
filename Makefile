@@ -15,7 +15,7 @@ CODE_PATHS := scripts llm-api-smoke-test $(SPELLER)
 .DEFAULT_GOAL := help
 
 .PHONY: help sync hooks hooks-run hooks-update claude-agents claude-agents-check claude-rules \
-		claude-rules-check claude-rules-list lint format test
+		claude-rules-check claude-rules-list lint format test claude-gen
 
 help:  ## Show the available targets
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) \
@@ -53,6 +53,8 @@ claude-rules-check:  ## Fail if a generated rule file is out of date or orphaned
 
 claude-rules-list:  ## Show which .mdc maps to which rule, and whether it is path-scoped.
 	python3 scripts/build_claude_rules.py --list
+
+claude-gen: claude-agents claude-rules  ## Regenerate both harness artifacts in one step.
 
 # --- quality -----------------------------------------------------------------
 # Paths match the `files:` scope of the ruff hooks in .pre-commit-config.yaml.
