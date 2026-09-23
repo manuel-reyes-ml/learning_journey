@@ -36,3 +36,19 @@ BANNER: str = (
     "     carries a full copy of the rule body rather than a pointer to it.\n"
     "-->\n"
 )
+
+
+class RuleError(Exception):
+    """A source rule file cannot be rendered."""
+
+
+# =============================================================================
+# HELPER FUNCTIONS
+# =============================================================================
+
+
+def _unquote(value: str) -> str:
+    """Strip one layer of matching single or double quotes."""
+    if len(value) >= 2 and value[0] == value[-1] and value[0] in {'"', "'"}:
+        return value[1:-1]
+    return value
