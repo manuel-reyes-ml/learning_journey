@@ -6,6 +6,7 @@
 
 from __future__ import annotations
 
+import argparse
 import sys
 from pathlib import Path
 from typing import Final
@@ -240,3 +241,93 @@ def orphans(expected: set[Path]) -> list[Path]:
 # =============================================================================
 # MAIN FUNCTION
 # =============================================================================
+
+
+def main(argv: list[str] | None = None) -> int:
+    """Write or verify every generated rule file."""
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="exit 1 if any file is stale",
+    )
+    parser.add_argument(
+        "--list",
+        action="store_true",
+        help="print the source -> output mapping",
+    )
+    args = parser.parse_args()
+
+    try:
+        source_files = sources()
+    except RuleError as exc:
+        print(f"ERROR: {exc}", sys.stderr)
+        return 1
+
+    if not source_files:
+        print(f"ERROR: no .mdc files found in {SOURCE_DIR}", file=sys.stderr)
+        return 1
+
+    # Render everything before writing anything: a malformed source must not leave
+    # half the rules directory regenerated and half stale.
+    rendered: list[tuple[Path, Path, str]] = []
+    for source in source_files:
+        out_path = OUTPUT_DIR / f"{source.stem}.md"
+        try:
+            rendered.append((source, out_path, render(source)))
+        except RuleError as exc:
+            print(f"ERROR: {exc}", file=sys.stderr)
+            print("nothing was written", file=sys.stderr)
+            return 1
+
+    expected = {out_path for _, out_path, _ in rendered}
+
+    if args.list:
+        for source, out_path, content in rendered:
+            scope = "paths-scoped" if content.startswith("---") else "unconditional"
+            print(f"{source.relative_to(ROOT)} -> {out_path.relative_to(ROOT)}    [{scope}]")
+        return 0
+
+    left_over = orphans(expected)
+
+    if args.check:
+        stale = [
+            str(out_path.relative_to(ROOT))
+            for _, out_path, content in rendered
+            if (out_path.read_text(encoding="utf-8") if out_path.exists() else "") != content
+        ]
+        failed = False
+        if stale:
+            print("STALE - run `make claude-rules`:", file=sys.stderr)
+            for stale_path in stale:
+                print(f"  {stale_path}", file=sys.stderr)
+            failed = True
+        if left_over:
+            # A generated rule whose source is gone still loads into every Claude
+            # Code session, so this is a failure rather than a warning.
+            print(
+                "ORPHANED - generated rule files with no .mdc source. Delete them:",
+                file=sys.stderr,
+            )
+            for orphan_path in left_over:
+                print(f"  {orphan_path.relative_to(ROOT)}", file=sys.stderr)
+            failed = True
+        if failed:
+            return 1
+        print("all generated rule files are up to date")
+        return 0
+
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    for _, out_path, content in rendered:
+        out_path.write_text(content, encoding="utf-8")
+        print(f"wrote {out_path.relative_to(ROOT)}")
+
+    if left_over:
+        print(
+            "WARNING: generated rule files with no matching .mdc source "
+            "(delete them by hand if the source was removed):",
+            file=sys.stderr,
+        )
+        for orphan_path in left_over:
+            print(f"  {orphan_path.relative_to(ROOT)}", file=sys.stderr)
+    return 0
