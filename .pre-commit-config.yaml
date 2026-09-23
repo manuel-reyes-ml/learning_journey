@@ -117,3 +117,16 @@ repos:
         language: system
         pass_filenames: false
         files: ^(\.github/docs/prompts/agents/|scripts/build_claude_agents\.py|\.claude/agents/|\.claude/output-styles/)
+
+  # ---- Claude Code rules (append under `repos:` in .pre-commit-config.yaml) -----
+  # Tier A (blocking): a generated rule that drifts from its .mdc source is the same
+  # class of defect as a stale uv.lock — caught by the hook, not by review. Without
+  # this, an edited .mdc silently leaves Claude Code running the previous standard.
+  - repo: local
+    hooks:
+      - id: claude-rules-check
+        name: claude rules in sync with .cursor/rules
+        entry: python3 scripts/build_claude_rules.py --check
+        language: system
+        pass_filenames: false
+        files: ^(\.cursor/rules/|\.claude/rules/|scripts/build_claude_rules\.py)
