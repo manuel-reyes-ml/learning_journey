@@ -1,11 +1,3 @@
----
-paths:
-  - ".github/**/*"
-  - "CHANGELOG.md"
-  - "*.md"
-  - ".gitignore"
----
-
 <!-- GENERATED FILE — DO NOT EDIT.
      Body:    .cursor/rules/git-workflow.mdc
      Scoping: the `globs:` field in that file
