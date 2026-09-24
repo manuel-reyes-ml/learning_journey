@@ -3,10 +3,538 @@ paths:
   - "**/*.py"
 ---
 
-<!-- Pointer, not a copy. The rule text lives once, in the .mdc file, and is read by
-     both harnesses: OpenCode via its `instructions` array, Claude Code via this
-     import. Editing the .mdc updates both. Do not paste rule text here. -->
+<!-- GENERATED FILE — DO NOT EDIT.
+     Body:    .cursor/rules/python-core.mdc
+     Scoping: the `globs:` field in that file
+     Rebuild: make claude-rules
 
-Style, types, NumPy docstrings, Polars/pandas boundaries, errors, async.
+     `.claude/rules/` does not expand @path imports (ADR-0008), so this file
+     carries a full copy of the rule body rather than a pointer to it.
+-->
 
-@.cursor/rules/python-core.mdc
+# Python Core Standards
+
+> Language-level rules for every `.py` file. Split from the former
+> `python-production-standards.mdc` (v10.0 rules restructure).
+>
+> **Companions (glob-scoped, load separately):** `observability.mdc` (logging,
+> retries, config, secrets) · `testing-and-eval.mdc` · `project-scaffold.mdc`
+> (uv, ruff/mypy config, Makefile, Docker, CI) · `architecture-docs.mdc` ·
+> `ai-sdk-patterns.mdc` · `streamlit-patterns.mdc`.
+>
+> The non-negotiables and the commit gate live in **`AGENTS.md`** at the repo root.
+
+---
+
+## 🎯 Code Philosophy
+
+1. **Readability over cleverness** — Code is read 10x more than written
+2. **Explicit over implicit** — No magic; make intentions clear
+3. **Fail fast, fail loud** — Catch errors early with meaningful messages
+4. **Test what matters** — Coverage is a tool, not a goal
+5. **Document for your future self** — You won't remember in 6 months
+
+---
+
+## 📐 Code Style
+
+### Module Header (Required in Every .py File)
+
+```python
+from __future__ import annotations  # PEP 604 unions (X | Y) in all Python 3.x
+```
+
+This is the **first line** (after the docstring) in every module. It enables modern
+union syntax (`str | None` instead of `Optional[str]`) and deferred annotation
+evaluation for forward references. Non-negotiable across all projects.
+
+### Naming Conventions
+```python
+# Variables and functions: snake_case
+user_count = 0
+def calculate_total_amount():
+    pass
+
+# Classes: PascalCase
+class DataProcessor:
+    pass
+
+# Constants: SCREAMING_SNAKE_CASE
+MAX_RETRY_ATTEMPTS = 3
+DEFAULT_TIMEOUT_SECONDS = 30
+
+# Private methods/attributes: single leading underscore
+def _internal_helper():
+    pass
+
+# "Dunder" methods: double underscore (Python reserved)
+def __init__(self):
+    pass
+```
+
+### Formatting Standards
+- **Line length:** 88 characters (Ruff formatter default; matches Black's old default)
+- **Indentation:** 4 spaces (never tabs)
+- **Imports:** Group in order: stdlib → third-party → local, alphabetized within groups
+- **Blank lines:** 2 between top-level definitions, 1 between methods
+- **Trailing commas:** Always in multi-line structures (enables cleaner diffs)
+
+> Formatting is enforced by `ruff format`. **Black is retired** — do not run it,
+> do not reference it in commit messages or hooks. Import sorting is Ruff's `I`
+> lint rule; there is no standalone `isort`. Config lives in `project-scaffold.mdc`.
+
+### Import Organization
+```python
+from __future__ import annotations
+
+# Standard library
+import logging
+import os
+from datetime import datetime
+from pathlib import Path
+
+# Third-party packages
+import numpy as np
+import pandas as pd
+import polars as pl
+from pydantic import BaseModel
+
+# Local application imports
+from src.config import settings
+from src.utils.validators import validate_input
+```
+
+---
+
+## 🔤 Type Hints (Required)
+
+### Function Signatures
+```python
+# ✅ Good: Full type hints with return type (PEP 604 unions via __future__)
+#    The annotation names the engine the function actually takes.
+def process_records(
+    lf: pl.LazyFrame,
+    column_name: str,
+    threshold: float = 0.5,
+) -> pl.LazyFrame:
+    """Process records based on threshold."""
+    pass
+
+# ✅ Modern union syntax (enabled by from __future__ import annotations)
+def find_user(user_id: str) -> dict | None:
+    pass
+
+def parse_value(value: str | int) -> float:
+    pass
+
+# ❌ Bad: No type hints
+def process_records(df, column_name, threshold=0.5):
+    pass
+```
+
+### Common Type Patterns
+```python
+from typing import Any, Callable
+
+# Collections with element types
+def get_names() -> list[str]:
+    pass
+
+def get_config() -> dict[str, Any]:
+    pass
+
+# Callable (function as parameter)
+def apply_transform(data: pd.DataFrame, func: Callable[[pd.Series], pd.Series]) -> pd.DataFrame:
+    pass
+
+# Polars prefers expressions over callables — pass pl.Expr, not a lambda
+def apply_expr(lf: pl.LazyFrame, expr: pl.Expr, alias: str) -> pl.LazyFrame:
+    return lf.with_columns(expr.alias(alias))
+```
+
+### Layer-boundary rule
+A function's return type contains only concepts from **its own layer or below**.
+Domain code never imports a CLI `ExitCode`; a repository never returns a Streamlit
+widget. This keeps layers independently testable and independently replaceable.
+
+---
+
+## 📝 Docstrings (NumPy Style)
+
+### Function Docstring Template
+```python
+def reconcile_amounts(
+    source: pl.LazyFrame,
+    target: pl.LazyFrame,
+    tolerance_cents: int = 50,
+) -> pl.LazyFrame:
+    """Reconcile amounts between source and target frames.
+
+    Compares amounts from two sources and flags discrepancies
+    that exceed the specified tolerance threshold. Lazy in, lazy
+    out — the caller decides where to `.collect()`.
+
+    Parameters
+    ----------
+    source : pl.LazyFrame
+        Frame containing source system amounts.
+        Must have columns: ['id', 'amount_cents', 'date'].
+    target : pl.LazyFrame
+        Frame containing target system amounts.
+        Must have columns: ['id', 'amount_cents', 'date'].
+    tolerance_cents : int, optional
+        Maximum allowed difference for matching, in integer cents.
+        Defaults to 50. Never a float — money is cents.
+
+    Returns
+    -------
+    pl.LazyFrame
+        Frame with reconciliation results including:
+        - match_status: 'MATCHED' | 'DISCREPANCY' | 'MISSING'
+        - difference: Calculated amount difference
+        - action: Recommended action for review
+
+    Raises
+    ------
+    ValueError
+        If required columns are missing from the input frames.
+    TypeError
+        If tolerance_cents is not an integer.
+
+    Examples
+    --------
+    >>> source = pl.LazyFrame({'id': [1, 2], 'amount_cents': [10000, 20000]})
+    >>> target = pl.LazyFrame({'id': [1, 2], 'amount_cents': [10000, 19900]})
+    >>> result = reconcile_amounts(source, target, tolerance_cents=50)
+    >>> result.collect()['match_status'].to_list()
+    ['MATCHED', 'DISCREPANCY']
+    """
+    pass
+```
+
+### Class Docstring Template
+```python
+class DataPipeline:
+    """Orchestrates data extraction, transformation, and loading.
+
+    This class manages the end-to-end data pipeline workflow,
+    handling configuration, validation, and error recovery.
+
+    Attributes
+    ----------
+    config : dict
+        Pipeline configuration settings.
+    log : structlog.stdlib.BoundLogger
+        Configured structured logger.
+    is_initialized : bool
+        Whether pipeline has been set up.
+
+    Examples
+    --------
+    >>> pipeline = DataPipeline(config={'source': 'db'})
+    >>> pipeline.run()
+    >>> print(pipeline.status)
+    'completed'
+    """
+    pass
+```
+
+---
+
+## 🧊 Dataframe Engine Policy (Polars + pandas)
+
+> **Roadmap CORRECTION 35.** Two engines, one boundary. This is not a migration —
+> it is a division of labour, and the boundary is the rule that matters.
+
+### The boundary
+
+| Layer | Engine | Why |
+|---|---|---|
+| Ingestion, schema enforcement, normalization, type coercion | **Polars** (`pl`) | Explicit schema at read = a data contract; Arrow-native; immutable |
+| Bulk transforms in Python (joins, aggregations, window logic) | **Polars** (`pl`) | Lazy plan is inspectable via `.explain()`; declarative and read-optimized |
+| Business logic that belongs in the warehouse | **Neither — dbt/SQL** | If it is a model, it is a dbt model. Do not rebuild dbt in a dataframe. |
+| Writing into an existing `.xlsx` **template** | **pandas + openpyxl** | `pl.DataFrame.write_excel` is xlsxwriter-based and cannot fill a template |
+| matplotlib / seaborn / scikit-learn / PandasAI hand-off | **pandas** (`pd`) | Third-party libraries expect `pd.DataFrame`; convert at the edge |
+
+**Default for new code is Polars.** pandas is retained *deliberately* at the two
+boundaries above, not by inertia. Existing shipped pandas code is **not rewritten
+without a reason** — a live pipeline is evidence, and churning it is not.
+
+### Conversion happens once, at the edge
+
+```python
+import polars as pl
+
+# ✅ Polars owns the pipeline; convert only where a boundary demands it
+lf = pl.scan_parquet("data/silver/reviews.parquet")
+result = lf.filter(pl.col("status") == "NIGO").collect()
+
+result.to_pandas().plot(...)          # rendering boundary
+write_template(result.to_pandas())    # openpyxl template boundary
+
+# ❌ Converting back and forth mid-pipeline — pick a side per layer
+df = pl.read_parquet(p).to_pandas().groupby("a").sum()
+```
+
+### Schema-first reads are the contract
+
+```python
+# ✅ Declare the schema — drift fails loudly at the door, not silently downstream
+lf = pl.scan_csv(
+    path,
+    schema_overrides={"plan_id": pl.String, "gross_amt": pl.Int64},
+)
+
+# ✅ Lazy by default; collect once, at the end
+(
+    lf.filter(pl.col("gross_amt") > 0)
+      .group_by("plan_id")
+      .agg(pl.col("gross_amt").sum().alias("total_cents"))
+      .collect()
+)
+
+# ✅ Money stays in integer cents — never float. Same rule as the pandas layer.
+```
+
+### Polars idioms (the ones LLM assistants get wrong)
+
+Assistants frequently emit pandas method signatures against Polars objects.
+Treat any of the following in generated code as a defect to fix, not a style choice:
+
+```python
+# ❌ pandas habits that do not exist / do not belong in Polars
+df[df["a"] > 1]              # ✅ df.filter(pl.col("a") > 1)
+df["b"] = df["a"] * 2        # ✅ df.with_columns((pl.col("a") * 2).alias("b"))
+df.groupby("a")              # ✅ df.group_by("a")
+df.rename(columns={...})     # ✅ df.rename({...})
+df.apply(lambda r: ...)      # ✅ expressions; map_elements only as a last resort
+df.reset_index()             # ✅ no index exists in Polars — nothing to reset
+```
+
+- **No index.** Polars has no row index. If code reaches for one, the design is wrong.
+- **Immutable.** Every operation returns a new frame; there is no in-place assignment.
+- **`.explain()` the plan** before optimizing anything. Guessing is not optimizing.
+- **Multiprocessing:** use `spawn` (the Python 3.14 default). `fork` is unsafe with
+  any multi-threaded engine and will hang.
+
+### Type hints across the boundary
+
+```python
+def load_relius(path: Path) -> pl.LazyFrame:      # ingestion layer → Polars
+    ...
+
+def render_corrections(df: pd.DataFrame) -> Path:  # template layer → pandas
+    ...
+```
+
+A function signature names the engine it actually takes. Never annotate a
+boundary function with the wrong frame type "because it converts internally."
+
+---
+
+## 🐼 pandas — Retained Boundaries Only
+
+> Everything below still applies **within the retained boundaries** (template
+> writing, plotting, third-party hand-off) and to existing shipped pandas code.
+> It is not guidance to start new pipeline code in pandas.
+>
+> **pandas 3.0** (January 2026) is the floor: Copy-on-Write is default, strings
+> have a dedicated dtype, and `pd.col()` exists. Code written against 2.x
+> chained-assignment behaviour is a defect.
+
+### DataFrame Operations
+```python
+# ✅ Always use .copy() when creating derived DataFrames
+filtered_df = original_df[original_df['status'] == 'active'].copy()
+
+# ✅ Use .loc[] for assignment (avoids SettingWithCopyWarning)
+df.loc[df['amount'] < 0, 'flag'] = 'NEGATIVE'
+
+# ❌ Avoid chained indexing
+df[df['amount'] < 0]['flag'] = 'NEGATIVE'  # May not work!
+
+# ✅ Use nullable dtypes for data with missing values
+df['count'] = df['count'].astype('Int64')      # Nullable integer
+df['amount'] = df['amount'].astype('Float64')  # Nullable float
+
+# ✅ Prefer vectorized operations over .apply()
+df['total'] = df['price'] * df['quantity']
+
+# ✅ Use .query() for complex filtering (more readable)
+result = df.query('amount > 100 and status == "active"')
+```
+
+### Memory and Performance
+```python
+# ✅ Specify dtypes when reading data
+df = pd.read_csv(
+    'data.csv',
+    dtype={
+        'id': 'str',
+        'amount': 'Float64',
+        'category': 'category',
+    },
+    parse_dates=['created_at'],
+)
+
+# ✅ Select only needed columns early
+df = pd.read_csv('large_file.csv', usecols=['id', 'amount', 'date'])
+```
+
+### Merging and Joining
+```python
+# ✅ Always specify merge type explicitly
+result = pd.merge(
+    left_df,
+    right_df,
+    on='key_column',
+    how='left',
+    validate='m:1',
+    indicator=True,
+)
+
+# ✅ Check for unexpected duplicates after merge
+assert result.duplicated(subset=['id']).sum() == 0, "Unexpected duplicates!"
+```
+
+---
+
+## ⚠️ Error Handling
+
+> **Pydantic model design, `Field()` conventions and structured-output rules live in
+> `ai-sdk-patterns.mdc`** — that is the single source for them. This section covers
+> exception design and control flow only.
+
+### Exception Patterns
+```python
+# ✅ Create custom exceptions for domain-specific errors
+class ValidationError(Exception):
+    """Raised when data validation fails."""
+    pass
+
+class ConfigurationError(Exception):
+    """Raised when configuration is invalid or missing."""
+    pass
+
+# ✅ Raise early with context
+def process_file(filepath: Path) -> pl.LazyFrame:
+    if not filepath.exists():
+        raise FileNotFoundError(f"Input file not found: {filepath}")
+
+    if filepath.suffix not in ['.csv', '.xlsx']:
+        raise ValueError(f"Unsupported file type: {filepath.suffix}")
+
+# ✅ Catch specific exceptions, not bare except.
+#    Log with structlog kwargs — see observability.mdc.
+try:
+    result = risky_operation()
+except ValueError as e:
+    log.warning("invalid_value", error=str(e))
+    result = default_value
+except FileNotFoundError:
+    log.error("required_file_missing", path=str(filepath), exc_info=True)
+    raise
+```
+
+### Guard Clauses (Early Returns)
+```python
+# ✅ Good: Guard clauses reduce nesting
+def calculate_bonus(employee: dict) -> float:
+    if employee is None:
+        return 0.0
+    if employee.get('status') != 'active':
+        return 0.0
+    if employee.get('tenure_years', 0) < 1:
+        return 0.0
+    base_salary = employee['salary']
+    return base_salary * 0.10
+```
+
+---
+
+## ⚡ Async Patterns (API Calls & Data Collection)
+
+### When to Use Async
+```python
+# Use async when:
+# - Making multiple API calls (LLM SDKs, REST APIs, data collectors)
+# - I/O-bound operations that can run concurrently
+# - Building Streamlit apps that call external services
+
+# Do NOT use async when:
+# - CPU-bound operations (use multiprocessing instead)
+# - Simple scripts with a single sequential flow
+# - You don't understand the pattern yet (learn sync first)
+```
+
+### Basic Async Pattern with httpx
+```python
+import httpx
+import asyncio
+
+async def fetch_market_data(
+    symbols: list[str],
+    client: httpx.AsyncClient,
+) -> dict[str, dict]:
+    """Fetch market data for multiple symbols concurrently."""
+    tasks = [client.get(f"/api/quote/{s}") for s in symbols]
+    responses = await asyncio.gather(*tasks, return_exceptions=True)
+
+    results = {}
+    for symbol, response in zip(symbols, responses):
+        if isinstance(response, Exception):
+            log.error("quote_fetch_failed", symbol=symbol, error=str(response))
+            continue
+        results[symbol] = response.json()
+    return results
+
+# ✅ Always use async context manager for clients
+async def main():
+    async with httpx.AsyncClient(base_url="https://api.example.com") as client:
+        data = await fetch_market_data(["AAPL", "MSFT", "GOOGL"], client)
+```
+
+Retry policy for these calls is `stamina` — see `observability.mdc`.
+
+---
+
+## 🚫 Anti-Patterns to Avoid
+```python
+# ❌ Mutable default arguments
+def append_item(item, items=[]):  # BUG: list persists between calls!
+    items.append(item)
+    return items
+
+# ✅ Use None and create inside function
+def append_item(item, items=None):
+    if items is None:
+        items = []
+    items.append(item)
+    return items
+
+# ❌ Using == for None comparison
+if value == None:
+    pass
+
+# ✅ Use 'is' for None
+if value is None:
+    pass
+
+# ❌ Catching and silencing all errors
+try:
+    risky_thing()
+except:
+    pass  # Silent failure hides bugs
+
+# ❌ String concatenation in loops (inefficient)
+result = ""
+for item in items:
+    result += str(item)
+
+# ✅ Use join
+result = "".join(str(item) for item in items)
+
+# ❌ print() outside scripts/ — no level, no context, no redaction
+# ❌ f-strings or %-interpolation of payload data in log calls
+#    (both destroy structured logging — see observability.mdc)
+```
