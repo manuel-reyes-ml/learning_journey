@@ -1,13 +1,157 @@
 ---
 paths:
-  - "**/app/**"
-  - "**/pages/**"
+  - "app/**/*.py"
+  - "pages/**/*.py"
+  - "**/streamlit*.py"
 ---
 
-<!-- Pointer, not a copy. The rule text lives once, in the .mdc file, and is read by
-     both harnesses: OpenCode via its `instructions` array, Claude Code via this
-     import. Editing the .mdc updates both. Do not paste rule text here. -->
+<!-- GENERATED FILE — DO NOT EDIT.
+     Body:    .cursor/rules/streamlit-patterns.mdc
+     Scoping: the `globs:` field in that file
+     Rebuild: make claude-rules
 
-Streamlit structure, masking at display boundaries.
+     `.claude/rules/` does not expand @path imports (ADR-0008), so this file
+     carries a full copy of the rule body rather than a pointer to it.
+-->
 
-@.cursor/rules/streamlit-patterns.mdc
+# Streamlit Patterns (Dashboard & AI UI)
+
+> Scoped rules for Streamlit apps. Auto-attached when editing `app/` or `pages/` files.
+
+---
+
+## 🏗️ App Structure
+
+```
+# ✅ Multi-page app structure (recommended for dashboards)
+# project/
+# ├── app.py                  # Entry point with st.navigation
+# ├── pages/
+# │   ├── 01_Overview.py
+# │   ├── 02_Analysis.py
+# │   ├── 03_AI_Chat.py
+# │   └── 04_Settings.py
+# └── src/                    # Business logic (NOT in pages/)
+```
+
+### Key Rules
+- **Business logic NEVER lives in `pages/`** — pages import from `src/`
+- Entry point is `app.py` or `app/main.py` (not `Home.py`)
+- Page files use numbered prefixes for ordering: `01_`, `02_`, etc.
+- Config comes from `settings` (`pydantic-settings`), never `os.environ` and never
+  `st.secrets` read directly in a page — see `observability.mdc`
+
+---
+
+## 💾 Caching Strategy
+
+```python
+import streamlit as st
+
+# ✅ Cache data loading (returns NEW copy each call — safe for DataFrames)
+@st.cache_data(ttl=3600)  # Cache for 1 hour
+def load_data(filepath: str) -> pl.DataFrame:
+    """Load and cache data. TTL prevents stale data."""
+    return pl.read_parquet(filepath)
+
+# ✅ Cache resource objects (returns SAME object — use for DB connections, clients)
+@st.cache_resource
+def get_llm_client():
+    """Create and cache the LLM client (singleton, shared across reruns).
+
+    Provider comes from settings.ai_provider — privacy-first, local Ollama by
+    default. Never construct a cloud client directly in a page.
+    """
+    from src.ai.provider import AIProvider
+    return AIProvider()  # resolves provider from config; falls back to local
+```
+
+### Caching Rules
+- `@st.cache_data` → DataFrames, query results, computed values (copies returned)
+- **Cache collected frames, never a `pl.LazyFrame`** — a LazyFrame is an unexecuted
+  plan, so caching one caches nothing and hides the cost. `.collect()` first.
+- `st.dataframe()` and `st.line_chart()` render Polars frames natively; convert with
+  `.to_pandas()` only for a library that demands it (see `python-core.mdc`)
+- `@st.cache_resource` → DB connections, API clients, ML models (singleton)
+- ❌ Don't cache functions with side effects (logging, writes, API mutations)
+- ❌ Don't use `@st.cache_data` for unhashable objects (DB connections, clients)
+- ❌ Don't forget TTL on data caches — stale data causes confusion
+
+---
+
+## 🧠 Session State
+
+```python
+# ✅ Initialize state once, use everywhere
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+    st.session_state.total_tokens = 0
+    st.session_state.total_cost = 0.0
+
+# ✅ Append AI responses to session state for conversation memory.
+#    Store the validated Pydantic response, never the raw SDK payload.
+st.session_state.chat_history.append({
+    "role": "assistant",
+    "content": response.answer,
+    "tokens": response.tokens_used,
+})
+```
+
+### Session State Rules
+- ❌ Don't store large DataFrames in session state (use `@st.cache_data` instead)
+- ❌ Don't assume session state persists across browser tabs
+- ❌ Don't store secrets or unmasked PII in session state — it is not a safe boundary
+
+---
+
+## 🤖 Streamlit + LLM SDK Pattern
+
+```python
+# ✅ Keep business logic out of Streamlit pages
+# pages/03_AI_Chat.py calls src/ai/provider.py — never has SDK logic inline
+
+# ✅ Configure logging ONCE per session — Streamlit reruns the script top-to-bottom
+#    on every interaction, so a naive call would stack duplicate handlers.
+@st.cache_resource
+def _init_logging() -> bool:
+    from src.observability.logging import configure_logging
+    configure_logging()
+    return True
+
+_init_logging()
+
+# ✅ Show AI observability to users
+st.sidebar.metric("Tokens Used", st.session_state.total_tokens)
+st.sidebar.metric("Est. Cost", f"${st.session_state.total_cost:.4f}")
+
+# ✅ Always show disclaimers for AI-generated content
+st.caption("⚠️ AI-generated insight. Verify before acting.")
+```
+
+### Display boundary is a guardrail boundary
+Nothing reaches `st.write`/`st.markdown` without having passed the response-side PII
+scan and Pydantic validation in `src/ai/guardrails.py` (see `ai-sdk-patterns.mdc`).
+Apply the Layer-3 masking helpers (`mask_ssn` et al.) to any participant-adjacent field
+rendered on screen.
+
+### Irreversible actions
+Any Streamlit control that triggers an irreversible action (a write, an order, a
+submission) requires an explicit confirmation step and must surface the kill-switch
+state. A button is not a sign-off gate on its own.
+
+---
+
+## ✅ Streamlit Checklist (Before Commit)
+
+- [ ] Business logic lives in `src/`, not in `pages/`
+- [ ] `@st.cache_data` has TTL on data-loading functions
+- [ ] `@st.cache_resource` used for API clients / DB connections
+- [ ] Client construction goes through `AIProvider` / `settings`, never a hardcoded SDK
+- [ ] Session state initialized with `if key not in st.session_state`
+- [ ] No secrets or unmasked PII in session state
+- [ ] Rendered output has passed guardrail scan + Pydantic validation
+- [ ] AI responses show disclaimer caption
+- [ ] Sidebar shows observability metrics (tokens, cost)
+- [ ] `configure_logging()` wrapped in `@st.cache_resource` (no duplicate handlers)
+- [ ] Irreversible actions have an explicit confirmation gate
+- [ ] App works without API key (graceful degradation)
