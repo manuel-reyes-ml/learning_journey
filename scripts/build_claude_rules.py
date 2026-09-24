@@ -158,7 +158,7 @@ def parse_globs(frontmatter: str, source: Path) -> tuple[list[str], bool]:
             else:
                 globs.extend(_unquote(part.strip()) for part in value.split(",") if part.strip())
         elif line.startswith("alwaysApply:"):
-            value = line[len("alwaysApply") :].strip().lower()
+            value = line[len("alwaysApply:") :].strip().lower()
             if value not in {"true", "false"}:
                 raise RuleError(f"{source}: alwaysApply must be true or false, got {value!r}")
             always_apply = value == "true"
@@ -331,3 +331,12 @@ def main(argv: list[str] | None = None) -> int:
         for orphan_path in left_over:
             print(f"  {orphan_path.relative_to(ROOT)}", file=sys.stderr)
     return 0
+
+
+# =============================================================================
+# MAIN GUARD
+# =============================================================================
+
+
+if __name__ == "__main__":
+    sys.exit(main())
