@@ -1,13 +1,417 @@
 ---
 paths:
-  - "**/tests/**"
+  - "tests/**/*.py"
+  - "**/conftest.py"
   - "**/eval_dataset.json"
+  - "**/eval*.py"
+  - "**/test_*.py"
 ---
 
-<!-- Pointer, not a copy. The rule text lives once, in the .mdc file, and is read by
-     both harnesses: OpenCode via its `instructions` array, Claude Code via this
-     import. Editing the .mdc updates both. Do not paste rule text here. -->
+<!-- GENERATED FILE — DO NOT EDIT.
+     Body:    .cursor/rules/testing-and-eval.mdc
+     Scoping: the `globs:` field in that file
+     Rebuild: make claude-rules
 
-pytest fixtures, DeepEval thresholds, merge-blocking gates, judge routing.
+     `.claude/rules/` does not expand @path imports (ADR-0008), so this file
+     carries a full copy of the rule body rather than a pointer to it.
+-->
 
-@.cursor/rules/testing-and-eval.mdc
+# Testing & Evaluation
+
+> Merge of the former `python-production-standards.mdc` § Testing and the former
+> standalone `evaluation.mdc` (v10.0 rules restructure). They shared a glob and are
+> one concern: **eval-first, with blocking gates.**
+>
+> Synced to roadmap **v10.0**.
+
+---
+
+## 🎯 Philosophy
+
+Evaluation is not optional and not an afterthought. It is a **merge-blocking gate**:
+if scores fall below the project threshold, the build fails and the PR does not
+merge. Measurable AI quality metrics are part of the production standard, on the same
+footing as ruff, mypy and the test suite.
+
+---
+
+## 🧪 pytest Standards
+
+### Test Structure
+```python
+import pytest
+import pandas as pd
+from src.module import function_to_test
+
+class TestFunctionName:
+    """Tests for function_to_test."""
+
+    def test_happy_path(self):
+        """Should return expected result for valid input."""
+        result = function_to_test(valid_input)
+        assert result == expected_output
+
+    def test_empty_input(self):
+        """Should handle empty input gracefully."""
+        result = function_to_test([])
+        assert result == []
+
+    def test_invalid_input_raises(self):
+        """Should raise ValueError for invalid input."""
+        with pytest.raises(ValueError, match="Invalid"):
+            function_to_test(invalid_input)
+
+    @pytest.mark.parametrize("input,expected", [
+        (1, 2),
+        (2, 4),
+        (0, 0),
+    ])
+    def test_multiple_cases(self, input, expected):
+        """Should handle various inputs correctly."""
+        assert function_to_test(input) == expected
+```
+
+### DataFrame Testing
+
+Test with **the engine the function under test actually uses** — see the dataframe
+engine policy in `python-core.mdc`. Polars for pipeline code, pandas for the retained
+rendering and template boundaries.
+
+```python
+# ✅ Polars — the default for pipeline code
+from polars.testing import assert_frame_equal
+
+
+def test_frame_transformation():
+    """Should transform the frame correctly."""
+    input_df = pl.DataFrame({"a": [1, 2], "b": [3, 4]})
+    expected = pl.DataFrame({"a": [1, 2], "b": [3, 4], "c": [4, 6]})
+    assert_frame_equal(transform_function(input_df), expected)
+
+
+def test_lazy_transformation():
+    """LazyFrame in, LazyFrame out — collect only inside the test."""
+    lf = pl.LazyFrame({"a": [1, 2], "b": [3, 4]})
+    result = transform_function(lf).collect()
+    assert_frame_equal(result, pl.DataFrame({"a": [1, 2], "b": [3, 4], "c": [4, 6]}))
+```
+
+> `assert_frame_equal` is **strict on dtype and column order by default** in Polars.
+> Do not reach for `check_dtypes=False` to make a test pass — a dtype change *is* a
+> behaviour change, and silencing it defeats the schema contract the ingestion layer
+> exists to enforce. Loosen only with a comment saying why.
+
+```python
+# ✅ pandas — retained boundaries only (template rendering, plotting hand-off)
+import pandas.testing as tm
+
+
+def test_correction_file_frame():
+    """Should build the template-ready pandas frame."""
+    expected_df = pd.DataFrame({'a': [1, 2], 'b': [3, 4], 'c': [4, 6]})
+    tm.assert_frame_equal(build_template_frame(...), expected_df)
+```
+
+### Boundary tests (the ones that actually catch regressions)
+
+The engine boundary is where defects hide. Two tests earn their keep on every project:
+
+```python
+def test_schema_drift_fails_loudly():
+    """A missing or retyped source column must raise at read, not corrupt downstream."""
+    with pytest.raises(pl.exceptions.SchemaError):
+        load_source(path_with_missing_column)
+
+
+def test_conversion_preserves_money_exactly():
+    """Cents survive the Polars → pandas hand-off with no float drift."""
+    frame = pl.DataFrame({"amount_cents": [10000, 19999]})
+    assert frame.to_pandas()["amount_cents"].tolist() == [10000, 19999]
+```
+
+### Testing Log Output
+
+Structured logs are testable in a way string logs never were — assert on **fields**,
+not on regex-matched sentences. If an event name or field is load-bearing (audit trails,
+guardrail activations, reconciliation outcomes), it deserves a test.
+
+```python
+import structlog
+from structlog.testing import capture_logs
+
+
+def test_reconcile_logs_discrepancy_count():
+    """Should emit a structured event with the discrepancy count."""
+    with capture_logs() as logs:
+        reconcile_amounts(source_df, target_df)
+
+    events = [entry for entry in logs if entry["event"] == "reconcile_completed"]
+    assert len(events) == 1
+    assert events[0]["discrepancy_count"] == 2
+    assert events[0]["log_level"] == "info"
+
+
+def test_pii_never_reaches_logs():
+    """Guardrail: an SSN in the payload must be redacted before rendering."""
+    with capture_logs() as logs:
+        log = structlog.get_logger()
+        log.info("record_processed", note="SSN 123-45-6789 on file")
+
+    assert "123-45-6789" not in str(logs)
+```
+
+### Required conftest fixtures
+```python
+# conftest.py
+@pytest.fixture(autouse=True)
+def _reset_structlog():
+    configure_logging(force_json=True)
+    structlog.configure(cache_logger_on_first_use=False)
+    yield
+    structlog.reset_defaults()
+
+
+@pytest.fixture(autouse=True)
+def _no_retry_sleeps():
+    stamina.set_active(False)   # no real backoff sleeps in the suite
+    yield
+    stamina.set_active(True)
+```
+
+> `cache_logger_on_first_use=True` is correct in production and **wrong in tests** — a
+> cached bound logger ignores later reconfiguration, so assertions silently test stale config.
+
+### Fixtures for Reusable Test Data
+```python
+@pytest.fixture
+def sample_frame() -> pl.DataFrame:
+    """Create a sample frame for testing. Money in integer cents."""
+    return pl.DataFrame({
+        "id": ["A001", "A002", "A003"],
+        "amount_cents": [10000, 20000, 30000],
+        "status": ["active", "active", "inactive"],
+    })
+```
+
+---
+
+## 📦 Evaluation Framework
+
+- **DeepEval** — pytest-compatible, open-source AI evaluation framework (50+ metrics)
+- **RAGAS** — deeper RAG-specific evaluation (PolicyPulse + AFC GraphRAG)
+- **Metric families used here:**
+  - *RAG:* Answer Relevancy, Faithfulness, Contextual Precision/Recall
+  - *Generation:* Hallucination, **GEval** (custom natural-language criteria — e.g. FormSense
+    schema/field adherence)
+  - *Agentic:* **Task Completion**, **Tool Correctness** (deterministic) — for AFC & Crucible
+- **Judge routing (privacy-first):** DeepEval's LLM-as-judge runs on **local Ollama at $0** —
+  use a local judge for finance/proprietary eval data; a cloud judge only for public data.
+- **Install:** `uv add --dev deepeval` · **Run:** `deepeval test run tests/test_eval.py`
+
+---
+
+## 📊 Metric Targets by Project
+
+Synced to the roadmap **v10.0** portfolio set.
+
+**Lead flagships**
+
+| Project | Answer Relevancy | Faithfulness | Hallucination | Notes |
+|---------|-----------------|--------------|---------------|-------|
+| DataVault (1099 Data Platform) | > 0.8 | > 0.85 | < 0.15 | S3 NL-query Analyst layer; ERISA guardrails apply |
+| PolicyPulse | > 0.8 | > 0.85 | < 0.15 | + RAGAS RAG Triad metrics |
+| Crucible | > 0.8 | **> 0.9** | **< 0.10** | Agentic trading — **Tool Correctness + Task Completion** are primary; local judge |
+
+**Supporting**
+
+| Project | Answer Relevancy | Faithfulness | Hallucination | Notes |
+|---------|-----------------|--------------|---------------|-------|
+| FormSense | > 0.8 | > 0.85 | < 0.15 | + extraction accuracy via **GEval** (schema adherence) |
+| AFC | > 0.8 | **> 0.9** | **< 0.10** | Higher bar — financial data sensitivity; + agentic + RAGAS |
+
+**Backlog — not active portfolio** (v10.0 Correction 6). ODI and StreamSmart carry the
+full production standard *if* built, but are sequenced behind the lead trio and the
+supporting set. Apply the baseline thresholds (> 0.8 / > 0.85 / < 0.15) when they
+become active; do not treat them as current eval targets.
+
+> Cadence is a tooling-hub workflow, not a flagship eval target, so it is intentionally excluded.
+
+---
+
+## 📁 File Structure
+
+```
+tests/
+├── conftest.py               # Shared fixtures, mock LLM providers
+├── unit/
+├── integration/
+├── test_eval.py              # DeepEval evaluation tests
+└── eval_dataset.json         # 30+ query-response pairs
+
+logs/
+└── evaluation/               # DeepEval result artifacts (not app logs)
+```
+
+---
+
+## 📝 Eval Dataset Format
+
+```json
+{
+  "test_cases": [
+    {
+      "input": "How many distributions were processed last week?",
+      "expected_output": "There were 47 distributions processed last week.",
+      "context": ["The operations data shows 47 distribution records with Date Stored in the last 7 days."],
+      "retrieval_context": ["Optional: retrieved chunks for RAG evaluation"]
+    }
+  ]
+}
+```
+
+### Rules
+- Minimum 30 test cases per project
+- Cover: happy path, edge cases, out-of-scope questions, PII-probing questions
+- Include adversarial inputs (attempts to extract PII, inject prompts)
+- Context field must match what the system would actually retrieve
+- **Synthetic data only** — no participant or plan data in any committed fixture
+
+---
+
+## 🧪 Eval Test Structure
+
+```python
+import pytest
+from deepeval import assert_test
+from deepeval.test_case import LLMTestCase
+from deepeval.metrics import (
+    AnswerRelevancyMetric,
+    FaithfulnessMetric,
+    HallucinationMetric,
+)
+
+
+class TestAIEvaluation:
+    """DeepEval quality evaluation for AI responses."""
+
+    @pytest.fixture
+    def relevancy_metric(self) -> AnswerRelevancyMetric:
+        return AnswerRelevancyMetric(threshold=0.8)
+
+    @pytest.fixture
+    def faithfulness_metric(self) -> FaithfulnessMetric:
+        return FaithfulnessMetric(threshold=0.85)
+
+    @pytest.fixture
+    def hallucination_metric(self) -> HallucinationMetric:
+        return HallucinationMetric(threshold=0.15)
+
+    def test_answer_relevancy(self, relevancy_metric, eval_test_case):
+        """AI response addresses the user's question."""
+        assert_test(eval_test_case, [relevancy_metric])
+
+    def test_faithfulness(self, faithfulness_metric, eval_test_case):
+        """AI response is grounded in provided context."""
+        assert_test(eval_test_case, [faithfulness_metric])
+
+    def test_hallucination(self, hallucination_metric, eval_test_case):
+        """AI response does not contain fabricated information."""
+        assert_test(eval_test_case, [hallucination_metric])
+```
+
+---
+
+## 🔄 RAGAS RAG Triad (PolicyPulse + AFC GraphRAG)
+
+| Metric | What It Measures | Target |
+|--------|-----------------|--------|
+| Context Precision | Are retrieved chunks relevant? | > 0.8 |
+| Context Recall | Are all needed chunks retrieved? | > 0.75 |
+| Faithfulness | Is the answer grounded in retrieved text? | > 0.85 |
+| Answer Relevancy | Does the answer address the question? | > 0.8 |
+
+---
+
+## 🧩 GEval — Custom Criteria (FormSense & domain checks)
+
+Use `GEval` (LLM-as-judge with chain-of-thought) for qualities no built-in metric covers —
+schema adherence, field-level extraction correctness, tone, domain rules. Pair it with a
+system-specific metric; use `DAGMetric` when you need a deterministic decision-tree score.
+
+```python
+from deepeval.metrics import GEval
+from deepeval.test_case import LLMTestCaseParams
+
+schema_adherence = GEval(
+    name="SchemaAdherence",
+    criteria="Does the extracted output match the frozen Pydantic schema exactly, "
+             "with every required field present and correctly typed?",
+    evaluation_params=[LLMTestCaseParams.INPUT, LLMTestCaseParams.ACTUAL_OUTPUT],
+    threshold=0.85,
+)
+```
+
+---
+
+## 🤖 Agentic Evaluation (AFC & Crucible)
+
+Agents are scored on the **path, not just the answer** — attach metrics to traces/spans.
+
+| Metric | Type | What It Measures |
+|--------|------|------------------|
+| Tool Correctness | deterministic | Were the expected tools called, correctly and optimally? |
+| Task Completion | LLM-judge | Did the agent complete the multi-step task? |
+| (Faithfulness / GEval) | LLM-judge | Grounding + domain-specific correctness on key spans |
+
+```python
+from deepeval.metrics import ToolCorrectnessMetric, TaskCompletionMetric
+
+tool_correctness = ToolCorrectnessMetric()          # tools_called vs expected_tools
+task_completion  = TaskCompletionMetric(threshold=0.8)
+```
+
+- Start with **Task Completion + Tool Correctness + Answer Relevancy**; add more only if a
+  real failure mode demands it.
+- **Match the metric to the taxonomy.** FormSense and PolicyPulse are *agentic workflows* —
+  fixed paths, so Tool Correctness is largely deterministic. Crucible's live path is a true
+  *agent* — dynamic tool selection, so Task Completion carries more weight.
+- **Crucible's live path is gated by mandatory human sign-off + a kill-switch regardless of
+  eval scores** — evals inform, they do not authorize a live trade. This is the only tier in
+  the portfolio with an irreversibility gate.
+
+---
+
+## 🚀 CI Integration — blocking gate
+
+```yaml
+# In GitHub Actions CI workflow (see project-scaffold.mdc for the full job)
+- name: Run AI evaluation
+  run: uv run deepeval test run tests/test_eval.py
+  env:
+    # Provider-agnostic: set the judge for the project. Use a LOCAL Ollama judge
+    # for finance/proprietary eval data; a cloud key only for public data.
+    DEEPEVAL_MODEL: ${{ vars.DEEPEVAL_JUDGE }}   # e.g. ollama/qwen3.5 or anthropic/claude-sonnet-4-6
+    ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}   # only if judge is cloud
+```
+
+- The eval step is **merge-blocking**: a score regression fails the build, and the branch
+  protection rule requires a passing CI run. This is what "eval-first with blocking gates"
+  means in practice — not a report you read afterwards.
+- Results logged to `logs/evaluation/` for the README metrics table
+- README carries an evaluation-metrics table showing latest scores, under **① Production**
+  per the README structure in `architecture-docs.mdc`
+
+---
+
+## ✅ Testing & Evaluation Checklist (Before Commit)
+
+- [ ] Unit tests cover happy path, edge cases, and the raising branch
+- [ ] `_reset_structlog` and `_no_retry_sleeps` fixtures present in `conftest.py`
+- [ ] Load-bearing log events have field-level assertions
+- [ ] No real participant data in any fixture — synthetic only
+- [ ] `eval_dataset.json` has 30+ test cases incl. adversarial and PII-probing inputs
+- [ ] `uv run deepeval test run tests/test_eval.py` passes
+- [ ] Scores meet project-specific thresholds (raised bar for AFC and Crucible)
+- [ ] Judge routing correct — local Ollama for finance/proprietary eval data
+- [ ] Results logged to `logs/evaluation/`
+- [ ] README evaluation metrics table updated
