@@ -1,12 +1,3 @@
----
-paths:
-  - "docs/adr/**/*.md"
-  - "*.dsl"
-  - "**/architecture.dsl"
-  - "README.md"
-  - "docs/**/*.md"
----
-
 <!-- GENERATED FILE — DO NOT EDIT.
      Body:    .cursor/rules/architecture-docs.mdc
      Scoping: the `globs:` field in that file
