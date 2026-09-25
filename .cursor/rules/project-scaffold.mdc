@@ -1,7 +1,7 @@
 ---
 description: Project structure, uv environment management, ruff/mypy config, Makefile, Docker and CI
 globs: ["pyproject.toml", "Dockerfile", ".dockerignore", "Makefile", ".github/**/*.yml", ".github/**/*.yaml", "*.toml", "uv.lock"]
-alwaysApply: false
+alwaysApply: true
 ---
 
 # Project Scaffold — Structure, Tooling, Docker & CI
