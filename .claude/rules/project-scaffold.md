@@ -1,15 +1,3 @@
----
-paths:
-  - "pyproject.toml"
-  - "Dockerfile"
-  - ".dockerignore"
-  - "Makefile"
-  - ".github/**/*.yml"
-  - ".github/**/*.yaml"
-  - "*.toml"
-  - "uv.lock"
----
-
 <!-- GENERATED FILE — DO NOT EDIT.
      Body:    .cursor/rules/project-scaffold.mdc
      Scoping: the `globs:` field in that file
