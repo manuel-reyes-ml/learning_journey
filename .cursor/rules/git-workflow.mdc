@@ -1,7 +1,7 @@
 ---
 description: Git branching, Conventional Commits, PR standards, review conventions, labels, versioning and gitignore policy
-globs: [".github/**/*", "CHANGELOG.md", "*.md", ".gitignore"]
-alwaysApply: false
+globs: [".github/**/*", "CHANGELOG.md", ".gitignore"]
+alwaysApply: true
 ---
 
 # Git Workflow & Collaboration Standards
