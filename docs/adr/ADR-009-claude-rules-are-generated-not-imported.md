@@ -90,7 +90,20 @@ Mapping rules:
 - Cursor's `globs:` becomes Claude Code's `paths:`. Inline lists, comma-separated
   scalars and block lists are all accepted.
 - Cursor's `alwaysApply: true` emits **no** `paths:` field. A Claude rule without one
-  loads unconditionally, which is the same semantics.
+  loads unconditionally, which is the same semantics. This field is therefore the tier
+  switch: it is set in the `.mdc` source, so one edit changes the rule's behaviour in
+  Cursor, OpenCode and Claude Code at once.
+
+**Rules are tiered by when they are needed, and the tier lives in the `.mdc`.**
+
+| Tier | Rules | Frontmatter | Rationale |
+|---|---|---|---|
+| Always-on | `architecture-docs`, `git-workflow`, `project-scaffold` | `alwaysApply: true` | Applied while planning, before any file is opened: ADR obligations, branch and commit conventions, repository layout |
+| Path-scoped | `python-core`, `observability`, `testing-and-eval`, `ai-sdk-patterns`, `streamlit-patterns` | `alwaysApply: false` + `globs:` | Only meaningful once a matching file is open |
+
+The always-on list is deliberately short. Promoting all eight would return the 85%
+always-on load reduction won in the earlier rules restructure, which is the cost this
+tiering exists to keep bounded.
 - A source with neither field emits no `paths:` and prints a note. Loading
   unconditionally is the safe failure; a rule that never loads is worse than one that
   always does.
@@ -117,6 +130,16 @@ Any judgement it made against "the project standards" during that window was mad
 without them. Work produced in Claude Code sessions since the harness install is
 unreviewed against the actual rule bodies.
 
+**Path-scoped rules are lazy, and that is a property worth stating plainly.** A rule
+reaches context only after Claude reads a file matching its globs — not at session start,
+and not on a directory listing, both confirmed in runs 1 and 2 above. Before the tiering
+decision above, every rule in this repo was `alwaysApply: false`, so **a planning session
+that reasoned before opening any file ran with no rule bodies loaded at all**; only
+`AGENTS.md`, reached through `CLAUDE.md`, carried the contract in that window. The
+always-on tier closes that gap for the three standards that apply to planning itself.
+Rules also reload lazily after `/compact`, so the same gap reopens mid-session until a
+matching file is touched again.
+
 **OpenCode is unaffected** — it reads the `.mdc` files through its `instructions` array.
 `CLAUDE.md → @AGENTS.md` is also unaffected: imports work in `CLAUDE.md`, and `/context`
 confirms both files load.
@@ -135,6 +158,16 @@ a generated copy.
 fallback named in the setup guide. Rejected because imports load at launch
 unconditionally: all eight rule bodies would enter every session, which is the 85%
 always-on load reduction from the earlier rules restructure given straight back.
+
+**Inject the rules with a `SessionStart` hook.** The hook's
+`hookSpecificOutput.additionalContext` is documented to add text to Claude's context
+before the first prompt, and the hook could `cat` the same `.mdc` files, so single-source
+would survive. Rejected for this harness: Claude Code runs here as the **VS Code
+extension**, and [#88086](https://github.com/anthropics/claude-code/issues/88086) reports
+`SessionStart` `additionalContext` logged as succeeded but never delivered to the model
+in the extension, while the identical hook works through the terminal CLI. That is the
+same silent-failure class this ADR exists to close, so it is not a route to take on
+trust. Revisit only with a marker probe proving delivery in the extension.
 
 **Inline the rule bodies into `.claude/rules/` by hand.** Same on-disk result as the
 generator, minus the guarantee. Rejected — a hand-maintained second copy is drift
