@@ -1,7 +1,7 @@
 ---
 description: ADRs, C4 diagrams, Structurizr DSL, and the Production/Cost/Architecture README and résumé structure
-globs: ["docs/adr/**/*.md", "*.dsl", "**/architecture.dsl", "README.md", "docs/**/*.md"]
-alwaysApply: false
+globs: ["docs/adr/**/*.md", "*.dsl", "**/architecture.dsl", "README.md", "docs/**/*.md", "docs/diagrams/**"]
+alwaysApply: true
 ---
 
 # Architecture Documentation & Presentation
