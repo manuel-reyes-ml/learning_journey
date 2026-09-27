@@ -1,5 +1,5 @@
 ---
-description: Project structure, uv environment management, ruff/mypy config, Makefile, Docker and CI
+description: Project structure (incl. the dual agent-harness layer), uv environment management, ruff/mypy config, Makefile, Docker and CI
 globs: ["pyproject.toml", "Dockerfile", ".dockerignore", "Makefile", ".github/**/*.yml", ".github/**/*.yaml", "*.toml", "uv.lock"]
 alwaysApply: true
 ---
@@ -9,6 +9,8 @@ alwaysApply: true
 > Split from the former `python-production-standards.mdc` (v10.0 rules restructure).
 > Corrected against **Correction 13** (uv + `uv sync --frozen`) and **Correction 14**
 > (ADR / C4 / Structurizr artifacts in the tree).
+> Synced to **Correction 28** (Python 3.14 floor, standard GIL build) and **Correction 42**
+> (dual harness: OpenCode writer + Claude Code read-only reviewer) — see CORRECTION 45.
 
 ---
 
@@ -16,14 +18,22 @@ alwaysApply: true
 
 ```
 project_name/
-├── AGENTS.md                     # Portable agent contract (Cursor + OpenCode + Claude Code)
-├── opencode.json                 # OpenCode config: providers, agents, instructions
-├── .opencode/
+├── AGENTS.md                     # Portable agent contract — the single behaviour source
+├── CLAUDE.md                     # 🆕 `@AGENTS.md` import + Claude-only addenda (see Harness Layer)
+├── opencode.jsonc                # OpenCode config at the ROOT, not in .opencode/ (ADR-001 §5a)
+├── .opencode/                    # agents/ · commands/ · plugins/ ONLY — plural dir names
 │   ├── agents/                   # docs-fix · docs-sync · eval-guardian
 │   │   └── ...                   # learn · pattern-scout · security-auditor
-│   └── commands/                 # Repeatable agent workflows
+│   └── commands/                 # thin wrappers → .github/docs/prompts/commands/
+├── .claude/                      # 🆕 Claude Code — read-only reviewer harness (C42)
+│   ├── settings.json             # plan mode · deny/ask/allow · PreToolUse hook (committed)
+│   ├── hooks/guard.py            # ENFORCEMENT — blocks commit/push, .env + data/* access
+│   ├── skills/<name>/SKILL.md    # thin stubs → .github/docs/prompts/commands/<name>.md
+│   ├── agents/                   # GENERATED — scripts/build_claude_agents.py
+│   ├── output-styles/learn.md    # GENERATED — Claude twin of learning-mode.mdc
+│   └── rules/                    # GENERATED — scripts/build_claude_rules.py (ADR-0009)
 ├── .cursor/
-│   ├── rules/                    # Glob-scoped rules (version-controlled)
+│   ├── rules/                    # Glob-scoped rules — canonical SOURCE for .claude/rules/
 │   │   ├── python-core.mdc
 │   │   ├── observability.mdc
 │   │   ├── testing-and-eval.mdc
@@ -33,10 +43,22 @@ project_name/
 │   │   ├── streamlit-patterns.mdc
 │   │   ├── git-workflow.mdc
 │   │   └── learning-mode.mdc
-│   └── commands/                 # /draft-issue /task-brief /pr-prep /review /test /eval
+│   ├── commands/                 # commit-msg draft-issue eval labels pr-prep readme review task-brief test
+│   ├── hooks.json                # 🆕 editor hooks wiring
+│   └── hooks/                    # 🆕 format.sh
 ├── .cursorignore                 # Excludes data/logs/venv from Cursor indexing
 ├── .github/
-│   └── workflows/ci.yml
+│   ├── workflows/ci.yml
+│   ├── docs/
+│   │   ├── prompts/agents/       # 🆕 SHARED agent bodies (+ optional <n>.claude-delta.md)
+│   │   ├── prompts/commands/     # 🆕 SHARED command bodies — edit here, never in wrappers
+│   │   └── templates/            # 🆕 README_template · MODEL_CARD · task_brief
+│   ├── scripts/                  # 🆕 *_context.sh — context loaders for commands/skills
+│   ├── plans/                    # 🆕 plan artifacts — the only planner write path (ADR-0004/0007)
+│   ├── ISSUE_TEMPLATE/
+│   └── pull_request_template.md
+├── .pre-commit-config.yaml       # 🆕 gitleaks · ruff · claude-agents-check · claude-rules-check
+├── .python-version               # 🆕 3.14 — written by `uv python pin 3.14`
 ├── docs/
 │   └── adr/                      # 🆕 Architecture Decision Records (MADR or Nygard)
 │       ├── 0001-record-architecture-decisions.md
@@ -71,6 +93,8 @@ project_name/
 │   └── eval_dataset.json         # 30+ query-response pairs
 ├── app/                          # Streamlit pages (imports from src/)
 ├── scripts/                      # One-off scripts (synthetic data, migrations)
+│   ├── build_claude_agents.py    # 🆕 generator — Claude subagents have no import mechanism
+│   └── build_claude_rules.py     # 🆕 generator — .claude/rules/ does not expand @path
 ├── data/
 │   ├── synthetic/                # ✅ In Git — demo data
 │   └── .gitkeep
@@ -93,6 +117,30 @@ touch src/py.typed
 
 ---
 
+## 🤖 Agent Harness Layer (dual harness — CORRECTION 42)
+
+> Kept deliberately short: this rule loads in every Cursor and Claude Code session.
+> The reasoning lives in the ADRs, not here.
+
+- **One contract.** `AGENTS.md` is the behaviour source. `CLAUDE.md` = `@AGENTS.md` +
+  Claude-only addenda. Keep Claude Code's `/config` → *Project instructions* on the
+  default (`claude-md-or-agents-md`): the load-both mode is expected to double-load
+  `AGENTS.md` alongside the import — confirm with `/memory` before ever changing it.
+- **Generated ≠ edited.** `.claude/agents/`, `.claude/output-styles/` and `.claude/rules/`
+  are build outputs — edit the source (`.github/docs/prompts/agents/`, `.cursor/rules/`),
+  then `make claude-gen`. Drift is blocked by pre-commit and re-checked in CI.
+- **Enforcement lives in config.** `.claude/settings.json` permissions + `hooks/guard.py`.
+  Prose in `CLAUDE.md` or a rule is guidance, not a boundary (CORRECTION 39 §11).
+- **Commit:** `settings.json`, `hooks/`, `skills/`, `agents/`, `rules/`, `output-styles/`.
+  **Never commit:** `**/.claude/settings.local.json`, `**/CLAUDE.local.md`,
+  `**/.claude/agent-memory-local/` (see the `.gitignore` block below).
+- **Privacy boundary.** The Claude layer ships only in public, synthetic-data repos. The
+  proprietary 1099 / DataVault repo is never opened in Claude Code (C42 §7); it carries the
+  deny-all *tripwire* `.claude/settings.json` + stop-only `CLAUDE.md` instead.
+- **Size.** `CLAUDE.md` + `AGENTS.md` ≤ ~200 lines combined; push depth into skills and ADRs.
+
+---
+
 ## 📦 Environment & Dependencies (uv)
 
 `uv` (Astral, Rust) is the environment + dependency manager — it replaces pip, venv, pyenv,
@@ -101,6 +149,7 @@ source of truth; **no `requirements.txt` anywhere**.
 
 ```bash
 uv init                     # scaffold pyproject.toml
+uv python pin 3.14          # writes .python-version — standard GIL build, never 3.14t
 uv add polars pydantic pydantic-settings structlog stamina    # runtime deps
 uv add pandas openpyxl                    # retained boundaries only (templates, plotting)
 uv add --optional excel fastexcel         # Polars' calamine reader for .xlsx ingestion
@@ -111,6 +160,8 @@ uv run pytest               # run inside the env (no manual activate)
 ```
 
 - **Commit `uv.lock`** — it pins exact versions/hashes for reproducible installs.
+- **`requires-python = ">=3.14"` in `pyproject.toml` is THE single declaration** of the
+  Python floor; ruff, mypy, the Docker base image and the CI interpreter are its consumers.
 - Dev tools go in `[dependency-groups]`, keeping runtime deps lean.
 - `uv run <cmd>` auto-activates the env; no `source .venv/bin/activate` needed.
 
@@ -126,14 +177,15 @@ uv run pytest               # run inside the env (no manual activate)
 > **2026 stack:** `uv` (env + deps) · `ruff` (lint + format + import sort) · `mypy` (types).
 > This collapses pip/venv, Black, isort, and flake8 into two Rust binaries — one config file.
 >
-> **Python version is `3.12` everywhere** — ruff target, mypy target, and the Docker base
-> image must agree. A mismatch means CI checks syntax the runtime will never see.
+> **Python version is `3.14` everywhere** (CORRECTION 28) — `requires-python`, ruff target,
+> mypy target, the Docker base image and CI must agree. A mismatch means CI checks syntax
+> the runtime will never see. **Standard GIL build only — never `python3.14t`.**
 
 ### Ruff (Linting + Formatting — replaces Black, isort, flake8)
 ```toml
 # pyproject.toml
 [tool.ruff]
-target-version = "py312"
+target-version = "py314"
 line-length = 88
 
 [tool.ruff.lint]
@@ -163,7 +215,7 @@ Import sorting is Ruff's `I` lint rule; no standalone `isort`.
 ### mypy (Type Checking)
 ```toml
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.14"
 strict = false          # tighten to true as a project matures
 warn_return_any = true
 warn_unused_configs = true
@@ -176,7 +228,11 @@ warn_unused_configs = true
 ## 🔨 Makefile Standard Targets
 
 ```makefile
-.PHONY: test lint format eval diagrams docker-build docker-run clean
+.PHONY: test lint format eval diagrams docker-build docker-run clean \
+        claude-agents claude-rules claude-gen claude-check
+
+# Generators are stdlib-only; same interpreter as the pre-commit hooks.
+PYTHON ?= python3
 
 test:                ## Run all tests
 	uv run pytest tests/ -v
@@ -201,6 +257,18 @@ docker-build:        ## Build Docker image
 docker-run:          ## Run Docker container
 	docker run -p 8501:8501 --env-file .env $(PROJECT_NAME)
 
+claude-agents:       ## Regenerate .claude/agents/ + output-styles/ from shared prompts
+	$(PYTHON) scripts/build_claude_agents.py
+
+claude-rules:        ## Regenerate .claude/rules/*.md from .cursor/rules/*.mdc
+	$(PYTHON) scripts/build_claude_rules.py
+
+claude-gen: claude-agents claude-rules  ## Regenerate every Claude Code artifact
+
+claude-check:        ## Fail if any generated harness file is stale (CI / pre-commit)
+	$(PYTHON) scripts/build_claude_agents.py --check
+	$(PYTHON) scripts/build_claude_rules.py --check
+
 clean:               ## Remove build artifacts
 	find . -type d -name __pycache__ -exec rm -rf {} +
 	find . -type f -name "*.pyc" -delete
@@ -213,7 +281,7 @@ clean:               ## Remove build artifacts
 
 ### Dockerfile Template — `uv sync --frozen` idiom
 ```dockerfile
-FROM python:3.12-slim
+FROM python:3.14-slim        # CORRECTION 28 — standard GIL build
 
 # uv ships as a static binary; copy it from the official distroless image
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
@@ -243,7 +311,14 @@ byte-reproducible and the "deterministic build" claim defensible in an interview
 .github/
 .cursor/
 .opencode/
+.claude/
 AGENTS.md
+CLAUDE.md
+CLAUDE.local.md
+opencode.jsonc
+.cursorignore
+.pre-commit-config.yaml
+.mcp.json
 .env
 .env.example
 *.md
@@ -269,6 +344,16 @@ __pycache__/
 - Multi-stage builds for production (Stage 2+ optimization)
 - `--env-file .env` for API keys at runtime — never bake secrets into images
 - Docker also hosts **Structurizr Lite** for local C4 rendering (see `architecture-docs.mdc`)
+- The image carries **none** of the agent harness — it is development tooling, not runtime
+
+### .gitignore — agent-harness entries
+```
+# Claude Code — personal, never committed. `**/` covers nested .claude/ dirs;
+# a bare `.claude/...` pattern is anchored to the root and misses subdirectories.
+**/.claude/settings.local.json
+**/CLAUDE.local.md
+**/.claude/agent-memory-local/
+```
 
 ---
 
@@ -294,10 +379,15 @@ jobs:
           enable-cache: true
 
       - name: Set up Python
-        run: uv python install 3.12
+        run: uv python install 3.14      # CORRECTION 28 — matches requires-python
 
       - name: Install locked dependencies
         run: uv sync --frozen          # fails if uv.lock is stale — never re-resolves
+
+      - name: Pre-commit hooks (gitleaks · ruff · harness drift)
+        run: uvx pre-commit run --all-files --show-diff-on-failure
+        # Superset of the local gate: anything a --no-verify commit slipped past lands
+        # here — including claude-agents-check / claude-rules-check drift.
 
       - name: Lint
         run: uv run ruff check src/ tests/
@@ -320,4 +410,5 @@ jobs:
 
 - **No `pip install ".[dev]"`** — that path predates the uv standard and bypasses the lock.
 - Cache uv, not pip.
+- Harness drift (`make claude-check`) runs through the pre-commit step — no separate job.
 - The eval job is a gate, not a report. See `testing-and-eval.mdc`.

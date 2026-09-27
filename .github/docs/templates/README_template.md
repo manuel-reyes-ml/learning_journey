@@ -1,7 +1,8 @@
 <!--
 =====================================================================
  FLAGSHIP README STANDARD  (copy to <repo>/README.md and fill <...> tokens)
- Synced to roadmap v10.0 · Correction 18 (Production / Cost / Architecture).
+ Synced to roadmap v10.0 · Correction 18 (Production / Cost / Architecture)
+ · C28 (Python 3.14) · C42 (dual agent harness) — see CORRECTION 45.
  Design rules:
    • The header + demo carry the 40-second scan: what → why-different → outcome → demo.
    • The first three SECTIONS are, in order: ① Production · ② Cost · ③ Architecture.
@@ -26,7 +27,7 @@
 
 [![CI](https://img.shields.io/github/actions/workflow/status/manuel-reyes-ml/<repo>/ci.yml?style=flat-square&label=CI)](https://github.com/manuel-reyes-ml/<repo>/actions)
 [![Coverage](https://img.shields.io/codecov/c/github/manuel-reyes-ml/<repo>?style=flat-square)](https://codecov.io/gh/manuel-reyes-ml/<repo>)
-[![Python](https://img.shields.io/badge/python-3.12-blue?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![Python](https://img.shields.io/badge/python-3.14-blue?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
 [![Eval gate](https://img.shields.io/badge/faithfulness-%E2%89%A5<0.85>-success?style=flat-square)](#-evaluation)
 [![License](https://img.shields.io/badge/license-<MIT>-green?style=flat-square)](LICENSE)
 [![Roadmap stage](https://img.shields.io/badge/roadmap-stage_<N>-8A2BE2?style=flat-square)](#-context--roadmap)
@@ -153,7 +154,7 @@ docker build -t <repo> . && docker run --env-file .env <repo>
 
 | Layer | Tools |
 |-------|-------|
-| Language | Python 3.12 · SQL |
+| Language | Python 3.14 (standard GIL build) · SQL |
 | Env / packaging | uv (`uv.lock`) · pyproject.toml · `src/` layout · `py.typed` |
 | <Data / lakehouse> | <DuckDB · Parquet · dbt · Airflow> |
 | <Model / inference> | <local Ollama (privacy-first default) · Anthropic SDK (primary cloud)> |
@@ -170,8 +171,23 @@ docker build -t <repo> . && docker run --env-file .env <repo>
 
 ```
 <repo>/
-  AGENTS.md          # agent contract (Cursor + OpenCode + Claude Code)
-  architecture.dsl   # Structurizr C4 model — single source
+  AGENTS.md            # agent contract — single source (OpenCode · Cursor · Claude Code)
+  CLAUDE.md            # @AGENTS.md import + Claude-only addenda
+  opencode.jsonc       # OpenCode config (root, not .opencode/)
+  architecture.dsl     # Structurizr C4 model — single source
+  .opencode/           # agents/ · commands/ — writer harness (OpenCode in Cursor)
+  .claude/             # read-only reviewer harness (Claude Code)
+    settings.json      #   plan mode · deny list · PreToolUse hook
+    hooks/guard.py     #   blocks commits/pushes, .env and data/ access
+    skills/            #   thin stubs → shared prompts
+    agents/ rules/ output-styles/   # GENERATED — `make claude-gen`, never hand-edited
+  .cursor/             # rules/*.mdc (standards source) · commands/ · hooks/
+  .github/
+    workflows/ci.yml   # ruff · mypy · pytest · eval gate · pre-commit (incl. harness drift)
+    docs/prompts/      # shared prompt bodies — one body, many harness wrappers
+    docs/templates/    # README · MODEL_CARD · task brief
+    scripts/           # context scripts for commands/skills
+    plans/             # plan artifacts (the only path a planner may write)
   src/<package>/
     py.typed
     config/settings.py   # pydantic-settings — the only place env is read
@@ -181,15 +197,23 @@ docker build -t <repo> . && docker run --env-file .env <repo>
     schemas/             # Pydantic contracts
   tests/               # unit · integration · test_eval.py · eval_dataset.json
   docs/
-    adr/               # architecture decision records
+    adr/               # architecture decision records (0001-…)
     diagrams/          # generated Mermaid exports
     assets/demo.gif
-  pyproject.toml
-  uv.lock            # committed — exact pins + hashes
-  Dockerfile
+  scripts/             # build_claude_agents.py · build_claude_rules.py · one-offs
+  .pre-commit-config.yaml  # gitleaks · ruff · harness-drift checks
+  Makefile             # one spelling per task — hooks, CI and humans call the same target
+  pyproject.toml       # requires-python = ">=3.14" — the single Python declaration
+  uv.lock              # committed — exact pins + hashes
+  Dockerfile           # python:3.14-slim · ships none of the agent harness
   .env.example
 ```
-</details>
+
+🤖 **AI-assisted, human-reviewed.** Every change passes diff review before merge; the
+standards live in [`AGENTS.md`](AGENTS.md) and the harness design in [`docs/adr/`](docs/adr/).
+**Heads-up:** opening this repo in Claude Code runs `.claude/hooks/guard.py` — a local,
+read-only PreToolUse safety gate — once you accept workspace trust. Review it first, as you
+should for any repository's `.claude/` directory.</details>
 
 <!-- ===== CAPABILITY SECTIONS — keep ONLY the ones this project uses ===== -->
 
