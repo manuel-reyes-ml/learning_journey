@@ -34,7 +34,7 @@ BANNER: str = (
     "     Scoping: the `globs:` field in that file\n"
     "     Rebuild: make claude-rules\n"
     "\n"
-    "     `.claude/rules/` does not expand @path imports (ADR-0008), so this file\n"
+    "     `.claude/rules/` does not expand @path imports (ADR-0009), so this file\n"
     "     carries a full copy of the rule body rather than a pointer to it.\n"
     "-->\n"
 )

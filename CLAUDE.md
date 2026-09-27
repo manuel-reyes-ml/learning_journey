@@ -66,7 +66,7 @@ It normalises `git -C <path>` and `git -c k=v` first — the documented bypass.
 | Judgement | `sonnet` | reviews, audits, doc drift, issue and brief drafting |
 | Architecture | `opus` | pattern-scout only — research plus a standard-change recommendation |
 
-This ladder is a **decision with a rejected alternative** (flat `sonnet` everywhere)
-and is owed an ADR. The reasoning mirrors CORRECTION 39 §7: the output that every
+This ladder is a **decision with a rejected alternative** (flat `sonnet` everywhere),
+recorded in [ADR-002](docs/adr/0002-claude-code-model-ladder.md). The reasoning mirrors CORRECTION 39 §7: the output that every
 later step depends on gets the stronger model; volume is low enough that the cheaper
 tier buys nothing.

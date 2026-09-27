@@ -12,7 +12,7 @@ paths:
      Scoping: the `globs:` field in that file
      Rebuild: make claude-rules
 
-     `.claude/rules/` does not expand @path imports (ADR-0008), so this file
+     `.claude/rules/` does not expand @path imports (ADR-0009), so this file
      carries a full copy of the rule body rather than a pointer to it.
 -->
 
