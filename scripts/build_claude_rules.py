@@ -1,4 +1,38 @@
-""" """
+#!/usr/bin/env python3
+"""Build `.claude/rules/*.md` from the canonical `.cursor/rules/*.mdc` bodies.
+
+WHY THIS SCRIPT EXISTS
+----------------------
+`.claude/rules/*.md` files do **not** expand `@path` imports. Probed directly on
+2026-09-22 (ADR-0009): a stub whose only content was
+
+    Streamlit structure, masking at display boundaries.
+    @.cursor/rules/streamlit-patterns.mdc
+
+was injected into context verbatim after a matching Read — the import line arrived
+as literal text and the `.mdc` body never loaded. Rewriting the path as
+`@../../.cursor/rules/streamlit-patterns.mdc` produced the same literal line, so the
+cause is the mechanism, not the path. Claude Code documents `@path` imports for
+CLAUDE.md and AGENTS.md only; the `.claude/rules/` section never claims them.
+
+So rules cannot share a body by reference. They share it by **generation** instead —
+the same shape as `.claude/agents/` via `build_claude_agents.py`, and
+`architecture.dsl` -> Mermaid via `make diagrams`: one model source, rendered out to a
+committed artifact that is never hand-edited.
+
+  Rule body    ->  .cursor/rules/<name>.mdc        (edit this)
+  Scoping      ->  the `globs:` field in that file (edit this)
+  Output       ->  .claude/rules/<name>.md         (never edit)
+
+Cursor's `globs:` becomes Claude Code's `paths:`. Cursor's `alwaysApply: true` has no
+`paths:` counterpart — a Claude rule with no `paths` field loads unconditionally, which
+is the same semantics, so the field is simply omitted for those files.
+
+Usage:
+    python3 scripts/build_claude_rules.py            # write the files
+    python3 scripts/build_claude_rules.py --check    # fail if out of date (CI, pre-commit)
+    python3 scripts/build_claude_rules.py --list     # show the source -> output mapping
+"""
 
 # =============================================================================
 # IMPORTS
