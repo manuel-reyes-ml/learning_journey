@@ -55,6 +55,9 @@ experiments/scratch.py
 # Logs with sensitive info
 *.log
 
-# Claude
-.claude/settings.local.json
-CLAUDE.local.md
+# Claude Code — personal, never committed.
+# `**/` so nested .claude/ dirs are covered too; a bare `.claude/...` pattern
+# is anchored to the repo root and silently misses subdirectories.
+**/.claude/settings.local.json
+**/CLAUDE.local.md
+**/.claude/agent-memory-local/
