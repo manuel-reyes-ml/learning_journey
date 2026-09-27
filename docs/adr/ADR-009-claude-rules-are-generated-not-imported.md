@@ -3,9 +3,9 @@
 - **Status:** Proposed
 - **Date:** 2026-09-22
 - **Deciders:** Manuel Reyes
-- **Related:** ADR-0001 (command context loading), ADR-0006 (per-harness mechanisms)
+- **Related:** ADR-0003 (command context loading), ADR-0007 (per-harness mechanisms)
 
-> **Numbering note:** ADR-0004 is still contested between subagent routing and the
+> **Numbering note:** ADR-0007 is still contested between subagent routing and the
 > local-planner fitness record, and 0007 was issued against that unresolved chain.
 > Confirm with `ls docs/adr` before committing this as 0008.
 
