@@ -5,6 +5,7 @@
 # =============================================================================
 
 import ast
+import json
 import sys
 from pathlib import Path
 
@@ -45,3 +46,31 @@ def scan(source: str, origin: str) -> None:
             top = name.split(".")[0]
             if top not in sys.stdlib_module_names and top not in local:
                 found.setdefault(top, set()).add(origin)
+
+
+# =============================================================================
+# MAIN FUNCTION
+# =============================================================================
+
+
+def main(argv: list[str] | None = None) -> None:
+    for path in Path(".").rglob("*"):
+        if SKIP & set(path.parts):
+            continue
+        if path.suffix == ".py":
+            scan(path.read_text(errors="ignore"), str(path))
+        elif path.suffix == ".ipynb":
+            try:
+                cells = json.loads(path.read_text(errors="ignore")).get("cells", [])
+            except json.JSONDecodeError:
+                continue
+            code = "\n".join(
+                "".join(c.get("source", []) for c in cells if c.get("cell_type") == "code")
+            )
+            code = "\n".join(
+                ln for ln in code.splitlines() if not ln.lstrip().startswith(("%", "!"))
+            )
+            scan(code, str(path))
+
+    for mod in sorted(found):
+        print(f"{mod:<20} {len(found[mod]):>3} file(s)")
