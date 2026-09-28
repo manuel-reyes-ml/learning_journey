@@ -74,3 +74,12 @@ def main(argv: list[str] | None = None) -> None:
 
     for mod in sorted(found):
         print(f"{mod:<20} {len(found[mod]):>3} file(s)")
+
+
+# =============================================================================
+# MAIN GUARD
+# =============================================================================
+
+
+if __name__ == "__main__":
+    sys.exit(main())
