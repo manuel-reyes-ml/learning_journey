@@ -29,11 +29,18 @@ found: dict[str, set[str]] = {}
 
 
 def scan(source: str, origin: str) -> None:
+    # ast.parse() -> Characters become words, words become a tree
     try:
         tree = ast.parse(source)
     except SyntaxError:
         return
 
+    # ast.walk visits one row at a time, top to bottom: Module first, then both boxes
+    # on the second row, then all three on the third row, and so on. It finishes a
+    # whole generation of the family tree before moving to the next one.
+    #
+    # ast.walk doesn't find anything by itself. It just visits every box and hands
+    # each one to you. The finding is your question — isinstance(node, ast.Import)
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
             names = [a.name for a in node.names]
