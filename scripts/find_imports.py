@@ -17,6 +17,12 @@ from pathlib import Path
 # =====================================================
 
 SKIP: set[str] = {".venv", "venv", ".git", "node_modules", "build", "dist"}
+
+# iterdir() -> Everything directly inside — files and folders, one level, no filter
+#   > Open the top drawer and look at what's in it. Don't open anything inside.
+# glob("*.py") -> Pattern match, this level only
+#   > Open the top drawer, pick out only the things matching the pattern.
+# glob("*/*.py") -> Exactly one folder down
 local: set[str] = {p.name for p in Path(".").iterdir() if p.is_dir()} | {
     p.stem for p in Path(".").glob("*.py")
 }
@@ -61,6 +67,10 @@ def scan(source: str, origin: str) -> None:
 
 
 def main(argv: list[str] | None = None) -> int:
+    # rglob() -> Every level, all the way down
+    #   > open every drawer, and every box inside every drawer, and pull out
+    #     everything matching. The r means recursive — it keeps going deeper.
+    #     rglob("*.py") is exactly the same as glob("**/*.py").
     for path in Path(".").rglob("*"):
         if SKIP & set(path.parts):
             continue
