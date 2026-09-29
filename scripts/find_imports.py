@@ -57,6 +57,11 @@ def scan(source: str, origin: str) -> None:
 
         for name in names:
             top = name.split(".")[0]
+            # stdlib_module_names -> A frozenset, not a list. A set can't be changed,
+            # and checking "pandas" in it is instant no matter how big it is.
+            # A list would check all 300 names one at a time.
+            # Top-level names only. os is there; os.path isn't. That's why the script
+            # does name.split(".")[0] first — it turns os.path into os before asking.
             if top not in sys.stdlib_module_names and top not in local:
                 found.setdefault(top, set()).add(origin)
 
