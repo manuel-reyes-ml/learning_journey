@@ -53,7 +53,7 @@ def scan(source: str, origin: str) -> None:
 # =============================================================================
 
 
-def main(argv: list[str] | None = None) -> None:
+def main(argv: list[str] | None = None) -> int:
     for path in Path(".").rglob("*"):
         if SKIP & set(path.parts):
             continue
@@ -65,7 +65,7 @@ def main(argv: list[str] | None = None) -> None:
             except json.JSONDecodeError:
                 continue
             code = "\n".join(
-                "".join(c.get("source", []) for c in cells if c.get("cell_type") == "code")
+                "".join(c.get("source", [])) for c in cells if c.get("cell_type") == "code"
             )
             code = "\n".join(
                 ln for ln in code.splitlines() if not ln.lstrip().startswith(("%", "!"))
@@ -74,6 +74,8 @@ def main(argv: list[str] | None = None) -> None:
 
     for mod in sorted(found):
         print(f"{mod:<20} {len(found[mod]):>3} file(s)")
+
+    return 0
 
 
 # =============================================================================
