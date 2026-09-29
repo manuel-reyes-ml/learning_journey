@@ -82,6 +82,16 @@ def scan(source: str, origin: str) -> None:
                 found.setdefault(top, set()).add(origin)
 
 
+def find_project_root(start: Path | None = None) -> Path:
+    """Return the nearest ancestor directory containing ``pyproject.toml``."""
+    here = (start or Path.cwd()).resolve()
+
+    for folder in (here, *here.parents):
+        if (folder / "pyproject.toml").exists():
+            return folder
+    raise FileNotFoundError(f"No pyproject.toml found above {here}")
+
+
 # =============================================================================
 # MAIN FUNCTION
 # =============================================================================
@@ -92,7 +102,7 @@ def main(argv: list[str] | None = None) -> int:
     #   > open every drawer, and every box inside every drawer, and pull out
     #     everything matching. The r means recursive — it keeps going deeper.
     #     rglob("*.py") is exactly the same as glob("**/*.py").
-    for path in Path(".").rglob("*"):
+    for path in find_project_root().rglob("*"):
         if SKIP & set(path.parts):
             continue
         if path.suffix == ".py":
