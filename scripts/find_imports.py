@@ -18,6 +18,22 @@ from pathlib import Path
 
 SKIP: set[str] = {".venv", "venv", ".git", "node_modules", "build", "dist"}
 
+# The pieces of Path(__file__).resolve().parents[1]:
+#   > Path(__file__) — the path to this .py file.
+#   > .resolve() — make it absolute and follow any shortcuts (symlinks).
+#     Always do this before climbing, so .parent climbs the real folders.
+#   > .parents[1] — the same as .parent.parent, just tidier. parents[0] is
+#     the folder holding the file (scripts/); parents[1] is one above that (the repo).
+#
+# Note that Path(".") prints as just . — it's a relative path. You only see where it actually
+# points after .resolve() or Path.cwd(), which is exactly why this bug hides so well.
+
+# Path(".") means wherever your terminal is standing when you run the command —
+# the current working directory. It knows nothing about your project,
+# and nothing about where the script file lives.
+# Path(__file__) means wherever this file lives on disk. It's anchored to the file
+# itself, so it gives the same answer no matter where you run it from.
+#
 # iterdir() -> Everything directly inside — files and folders, one level, no filter
 #   > Open the top drawer and look at what's in it. Don't open anything inside.
 # glob("*.py") -> Pattern match, this level only
