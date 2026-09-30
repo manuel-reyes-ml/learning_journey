@@ -43,6 +43,9 @@ SKIP: set[str] = {".venv", "venv", ".git", "node_modules", "build", "dist"}
 local: set[str] = {p.name for p in Path(".").iterdir() if p.is_dir()} | {
     p.stem for p in Path(".").glob("*.py")
 }
+# '|' — what's in either circle (everything). Called union.
+# {"src", "tests"} | {"main"}   # -> {'main', 'tests', 'src'}   in EITHER
+
 found: dict[str, set[str]] = defaultdict(set)
 
 
