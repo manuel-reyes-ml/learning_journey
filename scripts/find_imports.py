@@ -88,6 +88,8 @@ def scan(source: str, origin: str) -> None:
                 # filename into it.
                 # found.setdefault(top, set()).add(origin)
                 #
+                # collections.defaultdict(set) does the same job and only builds a set
+                # when one is actually needed.
                 found[top].add(origin)
 
 
