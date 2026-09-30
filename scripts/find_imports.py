@@ -120,6 +120,9 @@ def main(argv: list[str] | None = None) -> int:
     #     rglob("*.py") is exactly the same as glob("**/*.py").
     for path in find_project_root().rglob("*"):
         # '&' — what's in both circles (the overlap). Called intersection.
+        # if SKIP & set(path.parts): continue reads as: "if any folder in
+        # this file's path is one I want to skip, skip it." One line,
+        # instead of a loop checking each folder name.
         if SKIP & set(path.parts):
             continue
         if path.suffix == ".py":
