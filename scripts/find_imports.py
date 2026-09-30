@@ -79,6 +79,12 @@ def scan(source: str, origin: str) -> None:
             # Top-level names only. os is there; os.path isn't. That's why the script
             # does name.split(".")[0] first — it turns os.path into os before asking.
             if top not in sys.stdlib_module_names and top not in local:
+                # setdefault(key, default) asks the dictionary one question:
+                # "Do you already have a box labeled key?"
+                #   Yes → hand me that box.
+                #   No → make one, fill it with default, put it in, then hand it to me.
+                # Either way, you always get a box back. Then .add(origin) drops the
+                # filename into it.
                 found.setdefault(top, set()).add(origin)
 
 
