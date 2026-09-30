@@ -123,6 +123,10 @@ def main(argv: list[str] | None = None) -> int:
         # if SKIP & set(path.parts): continue reads as: "if any folder in
         # this file's path is one I want to skip, skip it." One line,
         # instead of a loop checking each folder name.
+        #
+        # .parts breaks a path into its separate pieces — each folder, then the file — as a tuple:
+        # Path("src/engines/match_planid.py").parts
+        # -> ('src', 'engines', 'match_planid.py')
         if SKIP & set(path.parts):
             continue
         if path.suffix == ".py":
