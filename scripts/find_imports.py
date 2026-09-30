@@ -119,6 +119,7 @@ def main(argv: list[str] | None = None) -> int:
     #     everything matching. The r means recursive — it keeps going deeper.
     #     rglob("*.py") is exactly the same as glob("**/*.py").
     for path in find_project_root().rglob("*"):
+        # '&' — what's in both circles (the overlap). Called intersection.
         if SKIP & set(path.parts):
             continue
         if path.suffix == ".py":
