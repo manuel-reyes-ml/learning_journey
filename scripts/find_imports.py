@@ -82,6 +82,8 @@ def scan(source: str, origin: str) -> None:
                 found.setdefault(top, set()).add(origin)
 
 
+# Now that you're on uv, every repo has a pyproject.toml at its root, which makes it the
+# perfect landmark. This works in a notebook, in a script, and in a test, from any subfolder.
 def find_project_root(start: Path | None = None) -> Path:
     """Return the nearest ancestor directory containing ``pyproject.toml``."""
     here = (start or Path.cwd()).resolve()
