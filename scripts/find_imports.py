@@ -7,6 +7,7 @@
 import ast
 import json
 import sys
+from collections import defaultdict
 from pathlib import Path
 
 # =============================================================================
@@ -42,7 +43,7 @@ SKIP: set[str] = {".venv", "venv", ".git", "node_modules", "build", "dist"}
 local: set[str] = {p.name for p in Path(".").iterdir() if p.is_dir()} | {
     p.stem for p in Path(".").glob("*.py")
 }
-found: dict[str, set[str]] = {}
+found: dict[str, set[str]] = defaultdict(set)
 
 
 # =============================================================================
@@ -85,7 +86,9 @@ def scan(source: str, origin: str) -> None:
                 #   No → make one, fill it with default, put it in, then hand it to me.
                 # Either way, you always get a box back. Then .add(origin) drops the
                 # filename into it.
-                found.setdefault(top, set()).add(origin)
+                # found.setdefault(top, set()).add(origin)
+                #
+                found[top].add(origin)
 
 
 # Now that you're on uv, every repo has a pyproject.toml at its root, which makes it the
