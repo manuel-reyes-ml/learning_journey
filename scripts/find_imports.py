@@ -4,6 +4,8 @@
 # IMPORTS
 # =============================================================================
 
+from __future__ import annotations
+
 import ast
 import json
 import sys
