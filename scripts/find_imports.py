@@ -11,6 +11,7 @@ import json
 import sys
 from collections import defaultdict
 from pathlib import Path
+from typing import Final
 
 # =============================================================================
 # MODULE CONFIGURATION
@@ -19,7 +20,7 @@ from pathlib import Path
 # Constants
 # =====================================================
 
-SKIP: set[str] = {".venv", "venv", ".git", "node_modules", "build", "dist"}
+SKIP: Final[frozenset[str]] = frozenset({".venv", "venv", ".git", "node_modules", "build", "dist"})
 
 # The pieces of Path(__file__).resolve().parents[1]:
 #   > Path(__file__) — the path to this .py file.
