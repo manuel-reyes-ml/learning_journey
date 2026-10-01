@@ -1,4 +1,4 @@
-""" """
+"""List top-level third-party imports across .py files and notebooks."""
 
 # =============================================================================
 # IMPORTS
