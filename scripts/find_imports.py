@@ -20,6 +20,8 @@ from typing import Final
 # Constants
 # =====================================================
 
+# Final protects the name. It tells pyright "nobody reassigns SKIP".
+# frozenset protects the object. Nobody can change what's inside it.
 SKIP: Final[frozenset[str]] = frozenset({".venv", "venv", ".git", "node_modules", "build", "dist"})
 
 # The pieces of Path(__file__).resolve().parents[1]:
