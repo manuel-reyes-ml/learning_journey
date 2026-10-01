@@ -52,7 +52,7 @@ from typing import Final
 # Constants
 # =====================================================
 
-ROOT: Final[Path] = Path(__file__).resolve().parent.parent
+ROOT: Final[Path] = Path(__file__).resolve().parents[1]
 SOURCE_DIR: Final[Path] = ROOT / ".cursor" / "rules"
 OUTPUT_DIR: Final[Path] = ROOT / ".claude" / "rules"
 
