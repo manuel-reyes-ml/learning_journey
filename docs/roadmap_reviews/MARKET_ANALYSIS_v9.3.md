@@ -1,9 +1,10 @@
 # Market Analysis — Roadmap v9.3 Restructure
 
-**Companion to:** `roadmap.html` v9.3 (2026 Market Realignment)
+**Companion to:** `roadmap.html` v9.3 (2026 Market Realignment) — 🆕 now the evidence companion to roadmap **v10.0**
 **Prepared:** July 9, 2026
 **Subject:** Manuel Reyes — Plan Administrator (Daybright) → Applied AI Engineer
 **Purpose:** Evidence base for every structural change in the v9.3 changelog, with salary bands for each target role and an honest bias rating on every source.
+**🆕 Updated:** October 5, 2026 — aligned to roadmap v10.0 through CORRECTION 52 (see §14). The July 2026 analysis is preserved unchanged; every October addition is marked 🆕 and sits next to the text it updates.
 
 ---
 
@@ -176,6 +177,25 @@ Hiring managers in 2026 report: *"Lots of people are rebranding themselves as se
 
 **Note:** cloud-specific AI certifications do carry a documented **20–25% salary premium** — but for **professionals already working in the space**, not as a substitute for shipped systems.
 
+### 🆕 October 2026 status — what this table became under roadmap v10.0
+
+> The seven above were the July recommendation. The canon that grew from it in roadmap v10.0, plus the corrections since, stands as follows. Read the July table for the reasoning; read this one for the current plan.
+
+| Cert | Status (Oct 2026) | US list price | Stage | What changed since July |
+|---|---|---|---|---|
+| Azure AI Fundamentals (AI-901) | Committed | $99 | S1 | Now **self-funded** (v10.0: no employer reimbursement applies to any credential). AI-901 replaced AI-900 on 30 Jun 2026. |
+| Fabric Data Engineer (DP-700) | Committed | $165 | S2 | Promoted from optional — both DP-700 and AWS DEA approved (resolves §13 item 1). |
+| AWS Certified Data Engineer – Associate | Committed | $150 | S2 | Unchanged. |
+| NVIDIA NCA-GENL | Committed | $125 | S3 | **Restored** — dropping it in the July cut was ruled an error. |
+| Databricks Certified GenAI Engineer Associate | Committed | $200 | S3 | Unchanged. |
+| Neo4j Certified Professional | Committed | Free | S3 | Unchanged. |
+| AI-103 (Azure AI Apps & Agents Developer) | Committed | ~$165 | S3 | **Added** — the code-first Azure/Foundry counterpart to the Anthropic exam. |
+| AI Agent Builder Associate (AB-620) | ⏸️ Conditional | $165 | S1–S2 | Moved to conditional (CORRECTION 37) — low-code maker path. |
+| dbt Analytics Engineering | ⏸️ Conditional | ~$200 | S2 | Only if analytics-engineering applications stall. |
+| Claude exam line — **CCDV-F first, then CCA-F** | ⏸️ Conditional | $125 each | S3 | CCA-F rose from $99 to $125 on 30 Jun 2026, and **every Claude exam requires a Claude Partner Network work email**. Taken only if Manuel or his employer joins the network, or Anthropic opens public registration (CORRECTION 50). |
+
+**Canon:** 7 committed + 3 conditional, plus an optional lakehouse slot ($165–$200). **Budget:** committed ≈ $904; ceiling ≈ $1,594 with one Claude exam (≈ $1,719 with both). **Funding:** all self-funded — the July table's "Employer (reimbursed)" track column is superseded. Sources: §11 rows 19–20.
+
 ---
 
 ## 10. The Local-LLM Thesis Was Wrong
@@ -220,6 +240,9 @@ Trust ratings reflect whether the source has a commercial incentive to reach the
 | 16 | Cloud AI certs → 20–25% salary premium *for those already in the space*; AWS ~40% / Azure ~30% / GCP ~25% of AI postings | Nucamp, via HeroHunt | MEDIUM | Bootcamp-adjacent. |
 | 17 | RAGAS four-metric decomposition (faithfulness / answer relevancy / context precision / context recall) is the dominant 2026 RAG eval framework | Sthambh (April 2026) | MEDIUM | Consultancy. Technically verifiable. |
 | 18 | ~~1.6M open AI roles vs 518K candidates; 3.2:1 gap; 143% YoY growth~~ | ~~FutureProofing.dev~~ | **DISCARDED** | ❌ Staffing agency selling engineers at $13.5K/month. Numbers unverifiable and directly serve the sales pitch. **Excluded from all reasoning above.** |
+| 19 🆕 | Every Claude certification exam requires a Claude Partner Network work email; list prices Associate $99 · Developer $125 · Architect–Foundations $125 (raised from $99 on 30 Jun 2026) · Architect–Professional $175 | Udemy Blog *Claude certifications guide*; Tutorials Dojo CCA-F booking guide; CloudThat; practitioner write-ups (October 2026 check) | MEDIUM | Training sellers with an incentive to promote the exams — yet they report the access barrier, which cuts against that incentive. Consistent across independent sources. |
+| 20 🆕 | AI-901 is a Fundamentals exam at $99 in the US (varies by region); it replaced AI-900 on 30 Jun 2026 | Microsoft Learn certification page (pricing by region); exam-prep listings for the US figure | **HIGH** / MEDIUM | Microsoft is primary for the exam and the retirement date; the dollar figure comes via prep sites, so confirm at booking. |
+| 21 🆕 | DeepLearning.AI: course videos free; quizzes, labs and certificates require Pro | DeepLearning.AI official FAQ | **HIGH** | Vendor's own policy page. |
 
 ---
 
@@ -232,7 +255,9 @@ Stated up front, because a three-year plan deserves a falsification list:
 3. **The DE→FDE conversion evidence leans on sources selling FDE training.** The mechanism is plausible and partly corroborated; the specific 60% figure is not independently verified.
 4. **Agentic AI could compress the Applied AI Engineer role** the way it compressed the data analyst role. The hedge is the same one that protects Manuel today: domain depth plus the eval/verification layer, which is the part that does not automate.
 5. **Daybright may not grant the internal elevation.** If Months 1–8 produce no scope change, Stage 1's exit criterion fails and the plan should fall back to an external Data Engineer search at Month 12 — *not* to a Data Analyst search.
-6. **Salary data lags.** Every figure here is Q1–Q2 2026. Re-check bands before any negotiation.
+6. **Salary data lags.** Every figure here is Q1–Q2 2026. Re-check bands before any negotiation. 🆕 *The first quarterly re-check (July → October 2026) is now due — flagged in §13 item 5, not executed in this update.*
+7. 🆕 **AFC's AI-powered predictive layer could be read as an alpha claim.** Since roadmap CORRECTIONS 46–47, AFC keeps a read-only event-study backtest and an ML meta-labeling layer that predicts the probability each trigger event reaches +10%. Quant research hiring is PhD-weighted, so a reader who files AFC as "a quant project" measures it on a dimension it never claimed. *Hedge:* AFC reports hit-rate lift over a base rate with false-discovery control, walk-forward validation and a sealed holdout, and the model ships only if it beats the best rule-based combination — calibrated probability and lift, never returns. *Falsifier:* if the model cannot beat the best rule on the sealed holdout, the published verdict says so.
+8. 🆕 **A credential can be access-gated, not just priced.** Every Anthropic Claude exam requires a Claude Partner Network work email, so a plan can list a certification it cannot book. *Hedge:* the Claude line is conditional (CCDV-F first, CCA-F after), triggered by Partner Network access — including an employer joining, which is free for organizations bringing Claude to market — or by public registration; free Anthropic Academy course certificates carry the interim evidence. *Falsifier:* if Anthropic opens public registration, move the line back to committed.
 
 ---
 
@@ -244,6 +269,30 @@ Stated up front, because a three-year plan deserves a falsification list:
 | 2 | Georgia Tech OMSCS (previously mapped to Stages 2–4) | Not addressed in v9.3. A master's substitutes for the ML-literacy stage and hardens the Job #2 door — but adds 2–3 years. Needs a separate decision. |
 | 3 | Which flagship survives — AFC or Crucible? | v9.3 cuts the portfolio to 2 flagships + 3 supporting. Crucible is the chosen first build; AFC is read-only research. Both cannot stay flagship. |
 | 4 | Month numbering inside stage bodies | Stage headers, summary boxes, and the transformation table are updated to v9.3 offsets. Some month-by-month sections inside Stages 2–5 still carry v9.2 offsets. Flagged, not silently rewritten. |
+
+### 🆕 October 2026 status of these items
+
+| # | Status | Resolution |
+|---|---|---|
+| 1 | ✅ Resolved | Both kept and committed in the v10.0 canon (DP-700 $165 + AWS DEA-C01 $150), now self-funded. |
+| 2 | ✅ Resolved | OMSCS adopted as a parallel degree track (Computing Systems). |
+| 3 | ✅ Resolved | Crucible is a flagship; AFC is supporting — read-only research plus an AI-predictive event study (roadmap CORRECTIONS 46–47). |
+| 4 | ✅ Superseded | v10.0 replaced the 5-stage structure with 3 stages and archived the v9.2 stage bodies, so the old month offsets no longer govern the active plan. |
+| 5 | 🆕 ⚠️ Open | Quarterly salary re-verification (§12 item 6) is due for October 2026 — not executed in this update. |
+
+---
+
+## 14. 🆕 Update Log — October 2026
+
+| Roadmap correction | What it means for this analysis | Where |
+|---|---|---|
+| C46–C47 | AFC keeps a read-only event-study backtest and becomes AI-powered predictive (ML meta-labeling) — a new positioning risk | §12 item 7 |
+| C48, C51 | ML learning resources (Andrew Ng's ML Specialization; Jansen's *Machine Learning for Trading*, 3rd ed.) — no change to the market thesis | — |
+| C49 | Course-table verification; confirmed DeepLearning.AI's certificate policy | §11 row 21 |
+| C50 | Claude exams are Partner-Network-gated; the Claude line is conditional | §9 status block · §12 item 8 · §11 row 19 |
+| C52 | AI-901 price confirmed at $99 | §9 status block · §11 row 20 |
+
+**Unchanged:** the core findings in §2–§8 — proof over keywords, three real jobs, Data Engineer as the on-ramp, and the salary bands (pending the quarterly re-check in §13 item 5).
 
 ---
 
