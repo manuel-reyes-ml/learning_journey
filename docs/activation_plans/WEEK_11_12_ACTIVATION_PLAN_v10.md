@@ -1,15 +1,28 @@
 # 🚀 WEEKS 11–12 MASTER ACTIVATION PLAN (v10.0)
-## PolicyPulse Opens + The IBM Spine + Month-3 Retro | September 28 – October 11, 2026
+## PolicyPulse Opens + 🚦 Narrow Search + 🆕 Trading Lane (AFC) + Month-3 Retro | September 28 – October 11, 2026
 
-**Document Version:** 1.1 (realigned to roadmap Corrections 21–43 — **materially re-scoped**)
+**Document Version:** 3.0 — 🧭 **JOB-FIRST RE-CUT** (6 Oct 2026): fresh 12-week template from Mon 20 Jul 2026 · supersedes 1.1
 **Covers:** Monday, September 28 – Sunday, October 11, 2026 (Stage 1 · Month 3 · Weeks 11–12)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–43**
-**Prerequisite:** Weeks 9–10 metrics ≥80% (non-negotiables: harness v1 + documented improve cycle)
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–54** (+ proposed C55/C56) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
+**Prerequisite:** Weeks 9–10 metrics ≥80% (non-negotiables: harness v1 + documented improve cycle + 🆕 🚦 soft trigger green on Day 70)
 **Weekly Hours:** 25 · ⏰ **Pro month expires ~Oct 13 — empty it and cancel it this fortnight (hard deadline).**
 
 > 🤖 **Agent Policy:** Phase 3. PolicyPulse follows the DataVault pattern: requirements-first comment blocks, agents for scaffolding under diff review, retrieval logic + all eval gates + ADRs by hand. End-of-quarter checkpoint: Sunday Day 84's retro includes an honest agent-policy review — where did agents genuinely accelerate you, and where did you accept a line you couldn't fully explain? That answer calibrates Q2's policy.
 
 ---
+
+---
+
+## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
+Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–54. Full rationale: the v3.0 block in Weeks 1–2. **The soft trigger fired on Day 70, so this fortnight runs the narrow search while the quarter closes.**
+
+| Lane | This fortnight in v3.0 |
+|---|---|
+| L5 Job search 🚦 | **Narrow search live:** referral-first, tailored applications in small waves to Tier 1 (then Tiers 2–3); 2 warm conversations a week; every application logged against the **25-application falsifier** (C54 §5) |
+| L1 Foundations | ⏸️ **IBM GenAI PC moves to Q2.** Its mornings go to 🆕 **dbt Advanced Learning Paths** (Jinja/macros, incremental, snapshots), **AE interview reps** on your own marts, the MCP primer, and AFC preparation |
+| L3 Applied AI | PolicyPulse S1 v0 — same core, with the Triad gate · **public by Day 77** (fixes the profile's dead link) |
+| L4 Trading 🆕 | **Day 83 — AFC Phase-1 kickoff:** re-bootstrap the public repo on the full standard, replace the 2025 README, ADRs 0001–0002, dependency-spike checklist |
+| Exit | Automation win #1 **drafted Day 77**, finalized Day 82 · 🆕 PostCheck knowledge capture (Day 81 morning) · Track A before-metrics already captured on Day 68 |
 
 ---
 
@@ -27,7 +40,7 @@
 > - A **Day 82 exit checklist** has been added inline (irrecoverable before-metrics, data boundary, written ownership confirmation, contacts, transition log).
 
 **Also applied this fortnight:**
-- **🛑 IBM anti-stack warning** (Correction 43): enrol in the **16-course IBM GenAI Engineering PC only**. IBM's separately-marketed *Generative AI Engineering with LLMs* programme is **contained within it** — taking it standalone double-buys the hours for one Tier-4 line, not two. Verify the course count at enrolment (Credly says 13, a 2026 review says 16 — unresolved).
+- **🛑 IBM anti-stack warning** (Correction 43) — 🆕 v3.0: enrolment moves to Q2, and this warning still governs it — enrol in the **16-course IBM GenAI Engineering PC only**. IBM's separately-marketed *Generative AI Engineering with LLMs* programme is **contained within it** — taking it standalone double-buys the hours for one Tier-4 line, not two. Verify the course count at enrolment (Credly says 13, a 2026 review says 16 — unresolved).
 - **🏆 PostCheck is Flagship #4** (Correction 33), and it depends on ERISA distribution-workflow knowledge you are about to lose daily access to. **Capture the SOP surface before Day 82** — see What Comes Next.
 - **🐻‍❄️ Polars is the default engine** (Correction 35) for PolicyPulse's ingestion path; pandas only at the two named boundaries.
 - **🪝 pre-commit** (Correction 21) belongs in the `policypulse` scaffold on Day 71 — it is part of "the full standard, from memory" now.
@@ -39,13 +52,16 @@
 > 1. **Harness:** Correction 39 rules OpenCode the *sole* harness and Claude Code *evaluated and declined*. Reality is dual. Needs reversal + the `AGENTS.md` / generator-script standard recorded. *Falsifier: if maintaining two harnesses produces drift the generator cannot absorb, collapse to one.*
 > 2. **AB-620:** Correction 37 lists it conditional. You have committed it. Needs a status change + the extra-time-hours ruling. *Falsifier: if AE/DE applications never surface Azure-stack requirements, it does not get re-bought at renewal.*
 > 3. **Hours model:** frozen at 25/week pending the Correction 22 deferral. You have now authorised ~4 hrs/week of extra-time threads. Needs recording as an explicit exception with the cap and the pause rule, not left as an undocumented overrun. *Falsifier: actual > ~29 hrs/week or the 4:30 AM trend degrading → threads pause.*
+> 4. 🆕 **Proposed C55 — domain-bridge tier** in the narrow search (v3.0). *Falsifier: if bridge-tier applications don't produce screens at a higher rate than AE/DE applications within the same 25-application window, the tier is dropped.*
+> 5. 🆕 **Proposed C56 — Stage-1 schedule pull-forwards** from the v3.0 re-cut (dbt Fundamentals/Advanced into Stage 1, IBM start after the soft trigger, AFC kickoff Day 83, DataVault S1 logic in dbt). *Falsifier: if the soft trigger slips past Week 12, the pull-forwards are reviewed before Q2 adds anything.*
+> Draft text for C55 and C56: `PLAN_RECUT_v3_CHANGELOG.md`.
 
 > 🧭 **The honest reframe.** This plan's closing line called the Month-6 conversation "the deliverable every artifact this quarter was quietly building toward." That is no longer true, and the substitute is not a downgrade: the artifacts were always the point, and they now go to a market instead of a manager. Two eval-gated flagships, a CI habit with eleven weeks of commits, a cert, and a regulated-domain story is a **stronger** Q1 2027 position than an internal scope memo would have been. The work does not change. The audience does.
 
 ---
 
 ## 📊 WHERE YOU STAND
-You own an eval harness with dual graders, a CI-gated DE flagship running end-to-end, an AI-901 pass, SDK fluency, and ~11 weeks of daily commits. This fortnight completes the Quarter-1 promise: **both lead flagships alive, eval-gated, and public.**
+You own an eval harness with dual graders, a CI-gated DE flagship running end-to-end — 🆕 **public as a tested dbt slice (v0.1.0), which fired the soft trigger on Day 70** — an AI-901 pass, SDK fluency, and ~11 weeks of daily commits. This fortnight completes the Quarter-1 promise: **both lead flagships alive, eval-gated, and public.**
 
 ## 🧠 STRATEGIC CONTEXT
 
@@ -55,6 +71,8 @@ S1 core = **retrieval that can prove itself**: synthetic policy corpus → chunk
 **Data rule:** the corpus is synthetic policy/handbook text YOU write (or generate with Claude and then *edit* — you must know every claim in your corpus, because your golden questions test against it). Never real plan documents, never employer text.
 
 ### The IBM spine begins
+> ⏸️ **v3.0: deferred to Q2** — enrolment moves to after the soft trigger has produced its first market feedback. Everything below still governs the enrolment when it happens.
+
 The **IBM Generative AI Engineering Professional Certificate** (16 courses, Coursera Plus, ACE-recommended) is your roadmap's Months 3–6 structured spine.
 
 > 🛑 **Correction 43 — anti-stack warning, read before you enrol.** IBM markets a separate *Generative AI Engineering with LLMs* programme (a Specialization on Coursera, described as a Professional Certificate in IBM's promotional email). It is **superseded and contained** within the 16-course PC you are enrolling in — its component courses are flagged by Coursera as "part of multiple programs." **Taking it standalone would double-buy the same hours for zero credential gain** (one Tier-4 line, not two). Enrol in the 16-course PC only. ⚠️ Also verify the course count at enrolment: IBM's Credly badge says 13, a 2026 practitioner review says 16 — the roadmap flags this as unresolved. It starts Week 11 at a sustainable ~3 hrs/week morning-thread pace — a marathon lane next to the build lanes, not a sprint. Early courses will overlap what you've built; per the standing rule, move FAST through overlap (the marginal value early is structure + the credential; depth compounds mid-program).
@@ -104,7 +122,7 @@ This is the one that satisfies your ruling, because it is the only one you still
 ### And the evidence file gets its keystone
 **Internal automation win #1, documented** — the story you identified on Day 70, written with a quantified outcome. ~~Jen-readable framing~~ → **interviewer-readable framing**: this is no longer an exhibit for an internal scope conversation (Correction 22 closed that), it is a **STAR story for the Q1 2027 AE/DE interviews** and the anchor of your FDE discovery-and-decomposition round. Reframe accordingly — lead with the problem shape and the decomposition, not with the internal politics. The 450+-corrections pattern is still the template. Deposition test applies: mechanism and relative outcomes, no client identifiers, no absolute dollar figures.
 
-> ⏰ **Write this before Day 82, not on it.** Day 82 is your last day; you will not have access to the system to check a figure afterwards. **Move the drafting to Day 78–80 and use Day 82 only to finalize.**
+> ⏰ **Write this before Day 82, not on it.** Day 82 is your last day; you will not have access to the system to check a figure afterwards. ~~**Move the drafting to Day 78–80 and use Day 82 only to finalize.**~~ → 🆕 **v3.0: draft on Sunday Day 77; Day 82 only finalizes.**
 
 ### New concepts
 ```
@@ -112,6 +130,9 @@ RAG:    chunking strategies · embeddings at corpus scale · ChromaDB · retriev
         with citations · RAG Triad gates on YOUR system
 MCP:    protocol concepts — tools/resources/prompts, client-server (Academy primer)
 Arch:   Structurizr DSL → C4 Context · ProcessorFormatter + redaction processor
+Search: referral-first outreach · tailored applications · falsifier tracking (🆕)
+dbt:    Jinja + macros · incremental models · snapshots (dbt Advanced, 🆕)
+AFC:    repo re-bootstrap · EDGAR fair-access rules · dependency spike (🆕)
         (the full Correction 16 pattern, on the retro-migration)
 ```
 
@@ -124,19 +145,21 @@ Arch:   Structurizr DSL → C4 Context · ProcessorFormatter + redaction process
 □ policypulse repo: full production scaffold + CI (from memory — third time now)
 □ Synthetic corpus (12+ docs) + chunker with tests
 □ Embeddings + ChromaDB store + retrieval v0 returning cited chunks
-□ IBM GenAI PC: enrolled, Course 1 started      □ MCP primer (Academy) started
-□ Remaining S2 short labs done + downloaded     □ Post #11
+□ ~~IBM GenAI PC enrolled~~ ⏸️ Q2 · 🆕 dbt Advanced started   □ MCP primer (Academy) started
+□ Pro-month notebooks downloaded (S2 labs = flex)  □ Post #11
+□ 🚦 Narrow search: 3+ warm messages · 2 tailored, referral-first applications
+□ 🆕 `policypulse` repo PUBLIC by Sunday (the profile's 404 is gone)
 ```
 
 ### 📌 DAY 71 — Monday, September 28
-**Morning:** IBM GenAI PC — enroll; Course 1 first modules (fast through overlap). Then scope PolicyPulse: `docs/SCOPE_v0.1.md` (S1 boundary above, S1→S3 arc, corpus rule) — 30-min cap.
+**Morning:** 🆕 **dbt Advanced Learning Paths — start** (learn.getdbt.com, free; Jinja and macros first — the next thing an AE screen probes after the fundamentals). ~~IBM GenAI PC — enroll~~ ⏸️ Q2. Then scope PolicyPulse: `docs/SCOPE_v0.1.md` (S1 boundary above, S1→S3 arc, corpus rule) — 30-min cap.
 **Evening:**
 - [ ] 60 min — Scaffold `policypulse` (full standard, from memory: uv, src/ + py.typed, ruff+mypy+pytest, structlog, pydantic-settings, CI, docs/adr/, README P/C/A stubs). Target: under an hour — scaffolding speed is itself a skill metric now.
 - [ ] 40 min — **Corpus v1**: draft 4 of 12+ synthetic policy docs (`data/corpus/*.md` — e.g., eligibility, vesting, loans, hardship-withdrawal policies for the invented "Meridian Manufacturing 401(k) Plan"). Make claims SPECIFIC and internally consistent ("employees become eligible after 90 days and age 21") — specific claims are what retrieval evals can verify against.
 - [ ] 20 min — Journal + commit (`chore: scaffold policypulse + corpus v1 start`)
 
 ### 📌 DAY 72 — Tuesday, September 29
-**Morning:** IBM PC Course 1 continue.
+**Morning:** 🆕 dbt Advanced — incremental models and snapshots (snapshots are how DataVault's S2 will keep history). ~~IBM PC~~ ⏸️ Q2.
 **Evening:**
 - [ ] 70 min — **The chunker** ⭐ `src/policypulse/ingest/chunker.py`:
 
@@ -260,10 +283,10 @@ Index the corpus; run 5 hand-queries; eyeball whether the right chunks surface. 
 - [ ] 30 min — Journal + commit (`feat: chromadb indexing + retrieval v0`)
 
 ### 📌 DAY 74 — Thursday, October 1
-**Morning:** IBM PC · **Evening:** 70 min — **Answer with citations**: `src/policypulse/answer.py` — retrieve top-k → build a prompt embedding the chunks with their doc_id/heading labels → system prompt commands: *answer ONLY from provided context; cite [doc_id › heading] for each claim; if the context doesn't contain the answer, say exactly that* (the say-I-don't-know clause is the anti-hallucination pressure valve — your Improving-Accuracy course, applied) → pydantic-validated `CitedAnswer {answer, citations: list[str], answerable: bool}` · 30 min MCP primer finish → **official Academy cert → Tier-5 log** · journal + commit
+**Morning:** 🆕 **AE interview reps** — 45 min of SQL on your own DataVault marts (top-N per group, gaps-and-islands, dedupe with `ROW_NUMBER`) + 45 min explaining, out loud and then in writing, how DataVault's dbt project is structured and why (staging / intermediate / marts, the tests, the Python-ingests-dbt-decides split). Those are the two things AE loops test. ~~IBM PC~~ · **Evening:** 70 min — **Answer with citations**: `src/policypulse/answer.py` — retrieve top-k → build a prompt embedding the chunks with their doc_id/heading labels → system prompt commands: *answer ONLY from provided context; cite [doc_id › heading] for each claim; if the context doesn't contain the answer, say exactly that* (the say-I-don't-know clause is the anti-hallucination pressure valve — your Improving-Accuracy course, applied) → pydantic-validated `CitedAnswer {answer, citations: list[str], answerable: bool}` · 30 min MCP primer finish → **official Academy cert → Tier-5 log** · journal + commit
 
 ### 📌 DAY 75 — Friday, October 2
-**Morning:** DL.AI Pro — remaining S2 short labs (*Knowledge Graphs for RAG* if deferred, *RAG Production-Ready*); download everything.
+**Morning:** DL.AI Pro — **download every notebook you have** (inventory now; the closeout is Day 82). S2 short labs (*Knowledge Graphs for RAG*, *RAG Production-Ready*) only if half-done — 🆕 v3.0 flex. Remaining time: 🚦 **Job lane** — 2 warm messages, Tier 1 first (*"I just shipped a tested dbt project on synthetic retirement-distribution data — would you be open to a 15-minute look at how your team does it?"*).
 **Evening:** 60 min — corpus to 12+ docs; re-index; retrieval quality spot-check · 40 min — **golden questions v1**: 20+ Q&A cases against YOUR corpus (`evals/golden_policy.json`), including 4+ deliberately *unanswerable* questions (expected: `answerable: false` — refusing to invent is a first-class behavior to test) · journal + commit
 
 ### 📌 DAY 76 — Saturday, October 3 (5.5h)
@@ -292,10 +315,10 @@ Gates (starting policy, ADR 0003, ratchet-up-only):
 """
 ```
 Implement it (you have every piece: retrieval call, judge pattern, thresholds, structlog reporting, exit-code gating). Wire as a `workflow_dispatch` CI job like Day 61. Run the full gate; log the first real numbers in `docs/eval-log.md`.
-**Evening:** 60 min IBM PC · 45 min draft post #11 (artifact: the Triad numbers table — "my RAG system now has to pass an exam before it ships") · journal + commit
+**Evening:** 60 min 🚦 **Job lane — applications 1–2**: tailored and referral-first wherever a path exists (résumé v1 + a three-sentence note naming the posting's stack words you can *show* — dbt tests, CI, the reconciliation domain); log both in `tracker.md` (falsifier counter) · ~~60 min IBM PC~~ · 45 min draft post #11 (artifact: the Triad numbers table — "my RAG system now has to pass an exam before it ships") · journal + commit
 
 ### 📌 DAY 77 — Sunday, October 4 (2h)
-Week summary · publish post #11 · plan Week 12 · confirm Pro-month cancel date on calendar · journal 🎉
+Week summary · publish post #11 · 🆕 **make `policypulse` public** (gitleaks + nbstripout sweep first; synthetic corpus only) · 🆕 45 min **automation win #1 — draft** (v3.0 moves the draft here, so Day 82 only finalizes) · plan Week 12 · confirm Pro-month cancel date · journal 🎉
 
 ---
 
@@ -304,18 +327,20 @@ Week summary · publish post #11 · plan Week 12 · confirm Pro-month cancel dat
 ### Week 12 goals
 ```
 □ PolicyPulse: one improve cycle vs the Triad (documented before/after)
-□ Track A (internal): before-metrics captured + ADRs + C4 — BEFORE Day 82
+□ Track A (internal): ADRs + C4 — BEFORE Day 82 (before-metrics captured Day 68)
 □ Track B (public repo): started — uv migration + clone-slug fix (finishes in Q2)
-□ Automation win #1 documented (**evidence file** keystone) — ⏰ draft Day 78–80
+□ Automation win #1 documented (**evidence file** keystone) — ⏰ drafted Day 77, finalized Day 82
 □ Pro month: notebooks all downloaded → CANCELLED
-□ IBM PC Course 1 done or near · AB-620 ~50% · Post #12 · MONTH-3 RETRO
+□ 🆕 dbt Advanced ~50% · AB-620 ~50% (extra-time) · Post #12 · MONTH-3 RETRO
+□ 🚦 Job lane: 2+ more applications · 2 warm conversations · tracker at n/25
+□ 🆕 Trading lane: AFC Phase-1 kickoff (Day 83) — CI Tier 0 green, README replaced
 ```
 
 ### 📌 DAY 78 — Monday, October 5
-**Morning:** IBM PC. **Evening:** 70 min — Triad-driven improve cycle: worst metric → one change (chunk size? k? system prompt?) → re-run → eval-log before/after. One variable at a time — otherwise you learn nothing from the delta. · 30 min AB-620 · journal + commit
+**Morning:** 🆕 **AFC build-sheet read** — §0–§7 and §12–§15 of `ATTENTION_FLOW_CATALYST_SCOPE_v9_1_STAGE1.md`: the parts Day 83 executes (repo layout, CI tiers, the Week-1 gate). ~~IBM PC~~. **Evening:** 70 min — Triad-driven improve cycle: worst metric → one change (chunk size? k? system prompt?) → re-run → eval-log before/after. One variable at a time — otherwise you learn nothing from the delta. · 30 min AB-620 · journal + commit
 
 ### 📌 DAY 79 — Tuesday, October 6
-**Morning:** IBM PC. **Evening:** 🎪 meetup window (check calendar — monthly commitment). Else: 70 min **retro-migration pass, session 1** (work context): the 1099 pipeline gets `pyproject.toml` + `uv.lock` (pip→uv), verified running under `uv run`; notes for the build-in-public post (sanitized: mechanism only) · 30 min AB-620 · journal
+**Morning:** 🚦 **Job lane** — one tailored application, or two warm messages if no posting fits this week; update the tracker. ~~IBM PC~~. **Evening:** 🎪 meetup window (check calendar — monthly commitment). Else: 70 min **retro-migration pass, session 1** (work context): the 1099 pipeline gets `pyproject.toml` + `uv.lock` (pip→uv), verified running under `uv run`; notes for the build-in-public post (sanitized: mechanism only) · 30 min AB-620 · journal
 
 ### 📌 DAY 80 — Wednesday, October 7
 **Morning:** CS50P Week 5 (unit tests — meta-moment: the course teaches what you've practiced for 10 weeks; collect the vocabulary).
@@ -355,7 +380,7 @@ The full wiring (ProcessorFormatter config) comes from structlog's *Standard Lib
 - [ ] Journal + commit
 
 ### 📌 DAY 81 — Thursday, October 8
-**Morning:** IBM PC.
+**Morning:** 🆕 **PostCheck knowledge capture** (Correction 33 — before access ends): write, from your own head, the *shape* of the distribution QA workflow PostCheck will model — form families, the verification-surface checklist headings, IGO / NIGO outcomes, escalation rules. Your knowledge, not your employer's documents: no copied SOP text, no screenshots, no participant data. ~~IBM PC~~.
 **Evening:** 70 min — **retro-migration session 3: first C4 Context** via the roadmap's toolchain — `architecture.dsl` (Structurizr DSL):
 
 ```
@@ -379,7 +404,7 @@ Run **Structurizr Lite in Docker** (free, per Correction 14 — Docker's already
 - [ ] 30 min — AB-620 · journal + commit
 
 ### 📌 DAY 82 — Friday, October 9
-**Morning:** IBM PC Course 1 wrap (or near).
+**Morning:** 🆕 **Exit-checklist dry run** — list every figure you will ever cite (automation win #1, the Track A before-metrics) and where you'll verify each today. ~~IBM PC Course 1 wrap~~.
 ### 🔴 DAY 82 IS YOUR LAST DAY OF EMPLOYMENT (Correction 22)
 Treat this day as a boundary, not a workday. Before you log off for the last time:
 - [ ] **Final data check** — any figure you will ever cite about the internal 1099 pipeline or automation win #1 must be verified **today**. After today there is no system to check against, and a number you cannot source is a number you cannot say in an interview.
@@ -391,22 +416,32 @@ Treat this day as a boundary, not a workday. Before you log off for the last tim
 **Evening:** 70 min — **Automation win #1, FINALIZE** ⭐ (drafted Day 78–80): one page in the **evidence file** — situation → what you automated → mechanism (one paragraph, plain) → quantified outcome (relative/scale figures that pass the deposition test: "N hundred corrections caught pre-mailing," "X hours/cycle removed") → what it meant for the team. ~~Jen-readable: outcomes first, mechanism second~~ → **interviewer-readable**: problem shape and decomposition first, mechanism second, outcome third, zero jargon. ~~This page is the Month-6 conversation's opening exhibit.~~ → **This page is your FDE discovery-round opening story and a résumé bullet for Q1 2027.** · 30 min — **Pro-month closeout**: notebook inventory check → download stragglers → **CANCEL Pro** → log Accomplishments as Tier-5 evidence · journal + commit
 
 ### 📌 DAY 83 — Saturday, October 10 (5.5h)
-**Morning:** 120 min — flagship polish pass: both repos green (CI, mypy, ruff), READMEs honest in P/C/A order (PolicyPulse ②Cost now has REAL numbers: cost-per-query from the Triad runs — the roadmap's noted "best Cost story" begins), demo GIFs if time (15–30s terminal recordings — the README standard's next item) · 60 min IBM PC · 30 min CS50P
+**Morning:** 60 min — flagship polish pass: DataVault + PolicyPulse green (CI, mypy, ruff, `dbt build`), READMEs honest in P/C/A order (PolicyPulse ②Cost now has REAL numbers: cost-per-query from the Triad runs — the roadmap's noted "best Cost story" begins); 🆕 15 min of it is the **1099 repo quick fix** (Track B #2: clone slug → `1099_reconciliation_pipeline`, uv replaces the pip install steps) · 🆕 **120 min — TRADING LANE: AFC Phase-1 kickoff** ⭐ (spec below) · 30 min CS50P · ~~60 min IBM PC~~ · demo GIFs → Q2
 **Evening:** 60 min — draft post #12: **the Quarter-1 story** (Day 1 setup → two eval-gated flagships + a cert + a live CI habit; artifact-dense, zero job-seeking language) · 45 min pre-write the Month-3 retro data (hours, completions, gaps) · journal + commit
+
+> 🆕 **AFC Phase-1 kickoff — the build sheet's Week 1, first slice** (`ATTENTION_FLOW_CATALYST_SCOPE_v9_1_STAGE1.md` §12 and §15; decisions D-1, D-2):
+> 1. **Archive, don't delete.** In the existing public `attention-flow-catalyst` repo, move the 2025 SQLite-era code to `archive/2025-v8/` untouched (the same rule as the Weeks 1–2 Step-7 checkpoint), then bootstrap package `afc` at the root on the full standard: uv + `uv.lock`, `src/afc/` + `py.typed`, ruff / mypy / pytest, structlog, pydantic-settings, pre-commit (the C21 set, `rev:` pins refreshed today), CI Tier 0.
+> 2. **Replace the README** with the v9.1 positioning in P/C/A order and an honest status — *"Phase 1 in progress: eval-first core."* The public page stops advertising a project you no longer build.
+> 3. **ADRs 0001–0002** — single repo, package `afc` (D-1); the EDGAR retrieval adapter (D-2), including SEC fair-access rules (declared User-Agent, rate limit).
+> 4. **Dependency-spike checklist** — written, not run: every pin that must resolve on Python 3.14 (the sheet's §6.2 table is the list).
+>
+> **Gate to leave the session:** CI Tier 0 green on the new layout. The rest of the sheet's Week 1 (EDGAR adapter + cache + provenance) is Q2's first trading block.
+> ⚖️ Positioning stays exactly as the roadmap words it (C46): read-only research reporting lift over a base rate — no alpha, Sharpe or return claims, in the README or in any post.
+> 🔗 **Where dbt meets trading:** not here. AFC's S2 knowledge-time lakehouse (dbt models + contracts) reuses DataVault's S2 patterns and the Day-41 rehearsal's lookahead test — that's the payoff you asked about, scheduled in S2.
 
 ### 📌 DAY 84 — Sunday, October 11 (2h) — 🏁 **MONTH-3 RETRO**
 - [ ] 60 min — The retro, written in `weekly-summaries/QUARTER_1_RETRO.md`:
 ```
 1. NUMBERS: hours/week actual vs 25 · courses done vs plan · commits ·
    posts published vs 12 · meetups attended vs 3
-2. EVIDENCE INVENTORY: elevation file contents · both flagships' state vs
+2. EVIDENCE INVENTORY: evidence file contents · both flagships' state vs
    the Quarter Map's Week-12 targets · Tier-5 log
 3. GATE CHECK: which fortnights hit 80%? Where did the plan overreach or
    underreach? (Honest — the Q2 plans calibrate on THIS.)
 4. AGENT-POLICY REVIEW: acceleration vs comprehension debt — any line you
    accepted that you still can't explain? (If yes: schedule the study.)
 5. SUSTAINABILITY: 4:30 AM energy trend · family friction · what changes
-6. Q2 SHAPE: IBM spine cadence · AB-620 — GO or HOLD? (now conditional,
+6. Q2 SHAPE: IBM spine START (deferred in v3.0) · AB-620 — GO or HOLD? (now conditional,
    self-funded ~$165 — C37) · PolicyPulse S1 hardening · public
    1099_reconciliation_pipeline remediation · Google Git/GitHub course
    (row 3.5, ~8 hrs — unscheduled, needs a slot) · DataVault S2 path
@@ -418,6 +453,14 @@ Treat this day as a boundary, not a workday. Before you log off for the last tim
    — does the 25 hrs/week model change? Income runway? This is the
    biggest single input to the Q2 plan and it did not exist when this
    document was written.
+9. 🆕 JOB LANE (C54): soft-trigger date (actual vs Day 70) · applications
+   n/25 (falsifier) · screens · warm conversations · referrals · which
+   tier answered · what the screens asked about
+10. 🆕 TRADING LANE: rehearsal + AFC kickoff state · what weekly share
+   AFC Phase 1 gets in Q2, and what pauses to make room
+11. 🆕 C55 / C56: approve, amend or decline the proposed corrections
+12. 🆕 CU BOULDER BRIDGE (C44, Nov–Feb, inside the 25): which threads
+   pause — replace, not stack
 ```
 - [ ] 30 min — Publish post #12 · 30 min — Share the retro with Claude for the Q2 plan generation (propose→approve, as always) · journal + 🎉 **Quarter 1 complete.**
 
@@ -430,15 +473,25 @@ Treat this day as a boundary, not a workday. Before you log off for the last tim
 □ RAG Triad gate live + first improve cycle  □ Automation win #1 documented
 □ Unanswerable-question hard gate at 100%    □ Pro month emptied + CANCELLED
 □ MCP primer (Academy) cert — Tier-5 log     □ AB-620 ~50% · CS50P Wk 5
-□ IBM PC enrolled, Course 1 ~done            □ Posts #11–12 · meetup ✓
+□ 🆕 dbt Advanced ~50% (IBM PC ⏸️ Q2)        □ Posts #11–12 · meetup ✓
 □ Golden policy set: 20+ cases w/ rationale  □ MONTH-3 RETRO written & shared
+□ 🚦 4+ tailored applications · tracker live  □ 🆕 AFC kickoff: CI Tier 0 green,
+□ 🆕 policypulse public · no dead links         README replaced
 ```
-**Passing bar: 80%.** Non-negotiables: PolicyPulse's Triad gate, the automation-win doc, and the retro itself.
+**Passing bar: 80%.** Non-negotiables: PolicyPulse's Triad gate, the automation-win doc, the retro itself, and 🆕 the Day-82 exit checklist.
 
 ---
 
 ## 🔭 WHAT COMES NEXT (Quarter 2 preview — plans generated AFTER your retro)
-Months 4–6, per the roadmap: the IBM spine intensifies (its RAG/LangChain/watsonx middle) · PolicyPulse S1 hardening toward "shipped with eval gates" (the Stage 1 deliverable) · Streamlit enters (30 Days of AI — Correction 20's row 11.5) as the flagships' demo surface · CS50x/CS50P completion track.
+
+### 🆕 v3.0 — Q2 shape (input for the Month-3 retro, not a commitment yet)
+- **Job lane:** the narrow search continues in waves until the falsifier (25 targeted applications, zero screens) or an offer; the **broad search opens at the full DataVault S2 ship (~Q1 2027)**. Bridge-tier applications start only if you approve **C55**.
+- **DataVault S2 toward the gate:** a **Snowflake port** of the dbt project — the roadmap's AE-primary warehouse (C3) — on the 30-day / $400 trial, started only once the port is scheduled; then contracts, orchestration, Docker deploy and monitoring per the roadmap.
+- **Trading lane:** AFC Phase 1, build-sheet Weeks 1–6 → `v1.0.0` (EDGAR adapter, analyst, faithfulness evaluation). The **Andrew Ng ML Specialization** starts with AFC Phase 2 (C48: Course 1 at sheet week 7). **dbt in trading** arrives with AFC's S2 lakehouse and Crucible's market-data lakehouse, both after DataVault S2. **Crucible** stays third per the Build Progression.
+- **IBM GenAI PC** starts (deferred from Week 11).
+- **CU Boulder bridge (C44), Nov 2026–Feb 2027, inside the 25 hrs/week:** the Q2 plan must name which threads pause to make room (replace, not stack) — a candidate is the remaining CS50x / CS50P track, since the pathway is now the OMSCS admission evidence.
+
+**Original v2.x preview (still the roadmap baseline):** Months 4–6, per the roadmap: the IBM spine intensifies (its RAG/LangChain/watsonx middle) · PolicyPulse S1 hardening toward "shipped with eval gates" (the Stage 1 deliverable) · Streamlit enters (30 Days of AI — Correction 20's row 11.5) as the flagships' demo surface · CS50x/CS50P completion track.
 
 **🔄 Re-anchored by Corrections 22 / 32 / 33 / 37 — four items changed:**
 - ~~AB-620 exam~~ → ✅ **GO** (your ruling), **self-funded ~$165**, run as an **extra-time thread outside the 25 hrs/week**. ⭐ **Book the exam AFTER 9 Oct**, not before — post-employment is when the capacity actually exists.
@@ -453,4 +506,4 @@ Months 4–6, per the roadmap: the IBM spine intensifies (its RAG/LangChain/wats
 - **The reading layer** (Correction 34) is live: finish *Robust Python* and *AI Engineering* in Q2; *Python Testing with pytest 2e* is the secondary. Buy at stage entry, re-verify editions.
 
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–20). No roadmap edits made; propose→approve governance applies. Q2 plans will be generated from your actual Month-3 retro, not assumptions.*
+*Aligned to Career Roadmap v10.0 (Corrections 1–54) · v3.0 job-first re-cut, approved 6 Oct 2026. No roadmap edits made; propose→approve governance applies. Q2 plans will be generated from your actual Month-3 retro, not assumptions.*
