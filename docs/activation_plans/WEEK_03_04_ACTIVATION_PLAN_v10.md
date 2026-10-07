@@ -1,13 +1,26 @@
 # 🚀 WEEKS 3–4 MASTER ACTIVATION PLAN (v10.0)
 ## Internal AI Builder Track | August 3–16, 2026
 
-**Document Version:** 2.3 (realigned to roadmap Corrections 21–43 — see the Realignment Pass block below)
+**Document Version:** 3.0 — 🧭 **JOB-FIRST RE-CUT** (6 Oct 2026): fresh 12-week template from Mon 20 Jul 2026 · supersedes 2.3
 **Covers:** Monday, August 3 – Sunday, August 16, 2026 (Stage 1 · Month 1 → 2 · Weeks 3–4)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–43** · ⚠️ Corrections 21–43 post-date this plan; delta recorded below.
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–54** (+ proposed C55/C56) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
 **Prerequisite:** Weeks 1–2 metrics ≥80% (below that: close gaps in this fortnight's flex slots first)
 **Weekly Hours:** 25 (same block schedule)
 
 > **Same rule as Weeks 1–2:** TYPE every example, read every comment, run it, break it, fix it. Every line understood before it's committed.
+
+---
+
+## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
+Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–54. **The full rationale — lanes, milestone calendar, trading-lane and job-lane rules — is the v3.0 block in Weeks 1–2.** What changes here:
+
+| Lane | This fortnight in v3.0 |
+|---|---|
+| L1 Foundations | Unchanged — and Mode SQL Intermediate is now explicitly the **dbt on-ramp** (dbt starts Week 5) |
+| L2 AE/DE flagship | Unchanged — recon-toy rehearses DataVault's shape |
+| L3 Applied AI | Unchanged — AI Python videos; AI-901 kickoff (self-funded) |
+| L4 Trading | Nothing yet (Alpaca parked since Week 2) |
+| L5 Job search 🆕 | **Day 21:** target list v0 — 15 companies across three tiers · **Day 28:** first informational-conversation request (no job ask) |
 
 ---
 
@@ -25,7 +38,7 @@
 
 ## 🔄 REALIGNMENT PASS — ROADMAP CORRECTIONS 21–43 (applied 27 Aug 2026)
 
-Frozen against Corrections 1–20; the roadmap now stands at **Correction 43**. **Weeks 3–4 are already executed** — daily instructions stand as the record. The delta that matters for this fortnight:
+Standing rulings from Corrections 21–43, carried into the v3.0 template (Corrections 44–54 are applied in the v3.0 block above and in Weeks 1–2). The delta that matters for this fortnight:
 
 - **🔴 The reimbursement thread in this plan is void.** Corrections 22, 32 and 37 rule **every certification self-funded** — no employer reimbursement applies to any credential in the canon — and Correction 22 closes the Month-6 scope-change conversation entirely (**employment ends 9 Oct 2026**). Every "pre-approval," "claim filed" and "reimbursement" task in this fortnight is struck below. AI-901 is a **$99 self-funded purchase**.
 - **⚠️ AB-620 is now conditional** (Correction 37), not an automatic cert #2. It is committed only if the Microsoft-ecosystem specialization decision goes that way — at ~$165, self-funded.
@@ -45,7 +58,7 @@ You have: a 2026-standard environment (uv + Cursor/OpenCode + VS Code + ruff + p
 ### Three threads converge
 
 1. **Data structures (P4E Course 2)** — lists, dictionaries, tuples: 80% of working Python for data. Every DataVault concept later (canonical models, reconciliation keys) is "dictionaries with discipline."
-2. **SQL becomes real (Mode Intermediate)** — JOINs and aggregation, the ~79%-of-DE-postings skill, practiced against **your own SQLite database**, not just tutorial tables.
+2. **SQL becomes real (Mode Intermediate)** — JOINs and aggregation, the ~79%-of-DE-postings skill, practiced against **your own SQLite database**, not just tutorial tables. 🆕 **v3.0:** this SQL is also your **dbt on-ramp** — dbt (Weeks 5–6) is this same SQL, made modular, version-controlled and tested.
 3. **The AI bridge opens** — *AI Python for Beginners* (Andrew Ng) teaches Python in the context of prompting/API calls → on-ramp to *Building with the Claude API* in Weeks 5–6. ⚠️ **Correction 17 changes how you take it:** the DeepLearning.AI free tier is now videos-only (labs, quizzes, and the Accomplishment are Pro-gated). The ruling: **watch free, replicate every exercise yourself in your own Jupyter notebook** — which is better practice than the hosted lab anyway (no vibe coding, your scaffolding, your repo) — and defer the lab month + Accomplishment to the Sprint-1 Pro rental later this quarter (timed to the PolicyPulse eval-harness build; possibly $0 via the optional AMD free month). Do not subscribe to Pro now.
 
 ### 🤖 Agent policy — Phase 2 unlocks this fortnight
@@ -85,6 +98,7 @@ Certs:  AI-901 exam structure + Microsoft Learn path · RPF written-determinatio
   exercises replicated in own notebook)
 □ Dataset loaded into SQLite + recon queries    □ CS50x Week 4 lecture
 □ LinkedIn post #3 · meetup RSVP for the month
+□ 🆕 Job lane: target list v0 — 15 companies, three tiers (Sunday)
 ```
 
 ---
@@ -538,9 +552,10 @@ Run: `uv run python -m learning_journey.projects.recon_toy` — then open the re
 ---
 
 ### 📌 DAY 21 — Sunday, August 9 (2h)
-- [ ] 40 min — `weekly-summaries/week-03.md` + full test run
-- [ ] 30 min — Publish post #3
-- [ ] 30 min — Plan Week 4; check meetup calendar (Greenville Python ~2nd Tuesday → likely Aug 11 → RSVP)
+- [ ] 30 min — `weekly-summaries/week-03.md` + full test run
+- [ ] 25 min — Publish post #3
+- [ ] 25 min — Plan Week 4; check meetup calendar (Greenville Python ~2nd Tuesday → likely Aug 11 → RSVP)
+- [ ] 20 min — 🆕 **Job lane — target list v0** (private `targets.md`): 15 companies across the three tiers in the Weeks 1–2 v3.0 block, Tier 1 first (retirement recordkeeping / wealth-retirement fintech). Per company: why it fits, one data posting you found (title + the stack words it names — dbt? Snowflake? Airflow?), and the nearest warm path (HackGreenville member, alumni, former colleague). The stack words become your dbt study priorities; the warm paths become Week 4's first message.
 - [ ] 20 min — Journal + commit 🎉
 
 ---
@@ -557,7 +572,8 @@ Run: `uv run python -m learning_journey.projects.recon_toy` — then open the re
 □ RPF written-determination question    □ ADR pack read (Core Course #17,
   sent (Correction 15 open item)          ADR half) · Nygard template chosen
 □ Greenville Python meetup attended     □ structlog first touch in recon-toy
-□ LinkedIn post #4
+□ LinkedIn post #4                     □ 🆕 Job lane: 1 informational-conversation
+                                          request sent (Sunday)
 ```
 
 ---
@@ -883,9 +899,10 @@ Also: integrate the Day-24 matcher's mismatch bucket into the exceptions report;
 ---
 
 ### 📌 DAY 28 — Sunday, August 16 (2h)
-- [ ] 40 min — `weekly-summaries/week-04.md` + **Month-1 retro**: hours actual vs planned, 4:30 AM energy (honest), what to change in Month 2
-- [ ] 30 min — Publish post #4
-- [ ] 30 min — Read the Weeks 5–6 plan (generated after your Month-1 retro — so it fits reality, not assumptions)
+- [ ] 35 min — `weekly-summaries/week-04.md` + **Month-1 retro**: hours actual vs planned, 4:30 AM energy (honest), what to change in Month 2
+- [ ] 25 min — Publish post #4
+- [ ] 20 min — Read the Weeks 5–6 plan (generated after your Month-1 retro — so it fits reality, not assumptions)
+- [ ] 20 min — 🆕 **Job lane — first informational-conversation request.** One message to a Tier-1 or Charlotte-finance data person on your list: *"I'm moving from retirement-plan operations into analytics engineering. Could I ask you three questions about how your team models and tests its data?"* No job ask, no résumé attached — you're learning what their stack and screens look like. Log it in `tracker.md`.
 - [ ] 20 min — Journal + commit 🎉
 
 ---
@@ -903,8 +920,9 @@ Also: integrate the Day-24 matcher's mismatch bucket into the exceptions report;
 □ recon-toy README uses ①Production/   □ 1 meetup attended (or none scheduled)
   ③Architecture order (Cost omitted)   □ Posts #3 and #4 published · no DL.AI
                                           Pro purchased
+□ 🆕 Job lane: list v0 (15) · 1 conversation requested
 ```
-**Passing bar: 80%.** Non-negotiables: the recon-toy thread (feeds DataVault S1) and the AI-901 kickoff (feeds the **evidence file**).
+**Passing bar: 80%.** Non-negotiables: the recon-toy thread (feeds DataVault S1) and the AI-901 kickoff (feeds the **evidence file**). 🆕 v3.0 adds a light third: the **target list v0** (the Job lane's foundation).
 
 ---
 
@@ -912,5 +930,7 @@ Also: integrate the Day-24 matcher's mismatch bucket into the exceptions report;
 
 **Weeks 5–6 (Aug 17–30):** *Building with the Claude API* (Anthropic Academy — free, first-party, official certificate: the Correction 19 ladder's noted Tier-5 anomaly with better provenance than its tier implies) — your first real SDK work, using the key from setup: messages, structured outputs, tool use; *AI Prompting for Everyone* (videos only suffice — the roadmap explicitly says don't spend a lab slot here); Mode SQL Advanced (window functions); Docker completed and **recon-toy gets its first Dockerfile using `uv sync --frozen`** (first full production-checklist pass); AI-901 study intensifies toward a Month-2/3 exam date; and the PolicyPulse S1 scoping session lands on the calendar. Further out: the **Sprint-1 DL.AI Pro month** (all nine S1+S2 lab rows batched, every notebook downloaded before the month ends, possibly $0 via the optional AMD free month) stays timed to the PolicyPulse eval-harness build around Weeks 9–12 — not before.
 
+🆕 **v3.0 changes to Weeks 5–6:** **dbt Fundamentals** (dbt Labs, free, ~5 hrs, certificate — roadmap Stage 2 row 5️⃣ taken early under C54's "S2 work done first") takes the slots *AI Prompting for Everyone* held, which moves to flex. The Day-41 Python 3.14 retrofit disappears (the template starts on 3.14), and that Saturday **opens the trading lane** with a small market-data dbt rehearsal. The Job lane adds a résumé skeleton.
+
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–20). No roadmap edits made; propose→approve governance applies.*
+*Aligned to Career Roadmap v10.0 (Corrections 1–54) · v3.0 job-first re-cut, approved 6 Oct 2026. No roadmap edits made; propose→approve governance applies.*
