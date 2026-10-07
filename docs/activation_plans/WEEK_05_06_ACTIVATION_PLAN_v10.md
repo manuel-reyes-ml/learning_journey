@@ -1,9 +1,9 @@
 # 🚀 WEEKS 5–6 MASTER ACTIVATION PLAN (v10.0)
 ## The SDK Era Opens | August 17–30, 2026
 
-**Document Version:** 1.1 (realigned to roadmap Corrections 21–43)
+**Document Version:** 3.0 — 🧭 **JOB-FIRST RE-CUT** (6 Oct 2026): fresh 12-week template from Mon 20 Jul 2026 · supersedes 1.1
 **Covers:** Monday, August 17 – Sunday, August 30, 2026 (Stage 1 · Month 2 · Weeks 5–6)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–43** · ⚠️ delta recorded below — **you are inside this fortnight now (Day 39 = Thu 27 Aug)**, so read the block before Friday.
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–54** (+ proposed C55/C56) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
 **Prerequisite:** Weeks 3–4 metrics ≥80% (non-negotiables: recon-toy shipped + AI-901 kickoff)
 **Weekly Hours:** 25 (same block schedule)
 
@@ -15,13 +15,27 @@
 
 ---
 
+## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
+Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–54. Full rationale: the v3.0 block in Weeks 1–2. **This is the fortnight dbt arrives.**
+
+| Lane | This fortnight in v3.0 |
+|---|---|
+| L1 Foundations | 🆕 **dbt Fundamentals** (dbt Labs, free, ~5 hrs, certificate — roadmap S2 row 5️⃣ taken early under C54 §5) in the slots *AI Prompting for Everyone* held (→ flex/Q2). Mode SQL Advanced finishes — dbt is that SQL, modular and tested |
+| L2 AE/DE flagship | recon-toy's Dockerfile (unchanged) |
+| L3 Applied AI | Claude API course target trimmed to **~40%** (two lesson slots went to dbt); mini-project #3 unchanged |
+| L4 Trading 🆕 | **Day 41 — the trading lane opens:** a market-data dbt rehearsal that proves the knowledge-time rule in a test |
+| L5 Job search | Day 35: list 15 → 20 + résumé v0 skeleton · Day 42: tracker update |
+| Retired | The Day-41 Python 3.14 retrofit — the template starts on 3.14; its block stays as collapsed reference |
+
+---
+
 ## 🔄 REALIGNMENT PASS — ROADMAP CORRECTIONS 21–43 (applied 27 Aug 2026)
 
-⏰ **You are mid-fortnight** — today is Day 39 (Thu 27 Aug). Three items below change what you do **this week**, not next quarter.
+Standing rulings from Corrections 21–43 that land in this fortnight, in template form (Corrections 44–54 are applied in the v3.0 block above):
 
 1. **🔴 Day 33's exam booking is self-funded.** Corrections 22/32/37: **all certifications are self-funded**, no employer reimbursement applies, and the Month-6 scope conversation is closed (**employment ends 9 Oct 2026**). Book AI-901 and pay the **$99** yourself. Check for a voucher first (Correction 38 notes Cloud Skills Challenge / virtual training day vouchers recur).
 2. **🐍 The Day 34 Dockerfile now says `python:3.14-slim`** — Correction 28 pins **Python 3.14** as the floor, standard GIL build only (never `python3.14t`). If you already built the recon-toy image on 3.12, rebuild it on 3.14 when you do retrofit item **R2**; the two-stage pattern and the `--frozen` idiom are unchanged.
-3. **✅ Python 3.14 retrofit is APPROVED and scheduled Day 41 (Sat 29 Aug)** — both `learning-journey` and `recon-toy`, before DataVault scaffolds on 3.14 on Day 43. Full command block is inline at Day 41.
+3. ~~**✅ Python 3.14 retrofit is APPROVED and scheduled Day 41 (Sat 29 Aug)** — both `learning-journey` and `recon-toy`, before DataVault scaffolds on 3.14 on Day 43.~~ → ⏭️ **v3.0: not needed** — the template starts every repo on 3.14 at setup. Day 41's 30-minute slot now finishes dbt Fundamentals; the command block stays at Day 41, collapsed, as reference.
 4. **🪝 Add pre-commit to `recon-toy` before the Day 34 Docker block** — ~20 minutes, and it belongs in the same session as the Dockerfile because both are "the build is reproducible" claims. Tier A pinned set: `pre-commit-hooks` basics + `detect-private-key` · `ruff-check --fix` **ordered before** `ruff-format` (the linter's fixes can emit changes that then need reformatting; the hook id is `ruff-check`, not the retired bare `ruff`) · `uv-lock` (this is what turns your Correction 13 reproducibility claim from an assertion into an enforced invariant) · `gitleaks`. **The set must be a strict subset of CI** — never a local check that CI does not also run, because hooks and CI silently disagreeing is exactly the defect an interviewer finds.
 
 **Not urgent this fortnight, but now standing policy:** Polars is the default dataframe engine (C35) · Cursor moves to Hobby, OpenCode is the sole harness (C39/40) · the reading layer is live and you are in S1, so *Robust Python* and *AI Engineering* are buy-now (C34) · PostCheck is Flagship #4 (C33).
@@ -35,11 +49,12 @@ Environment complete, recon-toy shipped (pipeline + CLI + structlog + ADR 0001),
 ## 🧠 STRATEGIC CONTEXT
 
 Three threads:
-1. **Building with the Claude API** (Anthropic Academy — free, first-party, official completion certificate; the Correction 19 ladder's noted Tier-5 anomaly). This is the provider source-of-truth for the SDK that underwrites both flagships and the eventual CCA-F. Target ~40–50% of the 84 lessons this fortnight: messages, system prompts, parameters, streaming, error handling.
+1. **Building with the Claude API** (Anthropic Academy — free, first-party, official completion certificate; the Correction 19 ladder's noted Tier-5 anomaly). This is the provider source-of-truth for the SDK that underwrites both flagships and the eventual CCA-F. Target ~35–40% of the 84 lessons this fortnight (🆕 v3.0: two lesson slots went to dbt): messages, system prompts, parameters, streaming, error handling.
 2. **Config + validation discipline arrives with the SDK** — the moment secrets and JSON enter your code, Correction 16's `pydantic-settings` (typed config, `SecretStr`) and pydantic models (validating LLM output) stop being abstract standards and become the obvious tool. You'll learn both on real need.
 3. **Docker completes** → recon-toy ships its first Dockerfile using the roadmap's `uv sync --frozen` idiom (Correction 13) — your first full production-checklist pass on a project.
+4. 🆕 **dbt arrives (v3.0)** — *dbt Fundamentals* (dbt Labs Learn, free, ~5 hrs, certificate; roadmap Stage 2 core row 5️⃣, pulled forward under C54 §5's "S2 work done first"). It lands now because Mode SQL Advanced — window functions, CASE, subqueries — finishes this fortnight, and dbt is that SQL made modular, version-controlled and tested. Do the course's setup on **dbt Core 1.12 + DuckDB locally** (see the tooling note in the Weeks 1–2 v3.0 block). Then **the trading lane opens**: a small market-data dbt rehearsal on Day 41.
 
-Also: Mode SQL Advanced (window functions — the #1 DE interview SQL topic), *AI Prompting for Everyone* videos (no lab slot — the roadmap explicitly says videos suffice here), AI-901 to ~70% with the exam **scheduled** for Week 8.
+Also: Mode SQL Advanced (window functions — the #1 DE interview SQL topic), ~~*AI Prompting for Everyone* videos~~ (🆕 v3.0: moved to flex/Q2 — still videos-only when you take it), AI-901 to ~70% with the exam **scheduled** for Week 8.
 
 ### New concepts
 ```
@@ -49,6 +64,9 @@ Python:  pydantic BaseModel validation · pydantic-settings BaseSettings +
          SecretStr (Correction 16) · mocking external APIs in tests
 SQL:     window functions (ROW_NUMBER, RANK, LAG, SUM OVER), CASE, subqueries
 Docker:  writing a Dockerfile · uv sync --frozen · .dockerignore · compose basics
+dbt:     models · ref() · sources · seeds · staging → marts · generic +
+         singular tests · dbt build (🆕 v3.0)
+SQL:     window frames that exclude the current row · DuckDB ASOF JOIN (🆕)
 ```
 
 ---
@@ -61,6 +79,7 @@ Docker:  writing a Dockerfile · uv sync --frozen · .dockerignore · compose ba
 □ Mode SQL: window functions section      □ Docker for Beginners COMPLETE
 □ recon-toy Dockerfile builds & runs      □ AI-901 Learn modules 3–4
 □ pydantic-settings config in place       □ Post #5 · exam DATE booked
+□ 🆕 dbt Fundamentals started (Sat)
 ```
 
 ### 📌 DAY 29 — Monday, August 17
@@ -242,10 +261,10 @@ docker run --rm recon-toy --participants 200    # CMD overridden
 - [ ] 60 min — Write ADR 0002: `two-stage-docker-with-uv-sync-frozen` (Nygard; consequences: --no-dev means tests don't run *in* the image — they gate *before* the build, in CI, which is coming Week 7)
 - [ ] 30 min — Claude API course
 
-**Evening:** 60 min AI Prompting for Everyone (videos — start) · 45 min draft post #5 (artifact: the Dockerfile — "my toy pipeline now ships like production software") · 15 min journal + commit
+**Evening:** 60 min 🆕 **dbt Fundamentals — start** (learn.getdbt.com, free; set it up on dbt Core 1.12 + DuckDB locally rather than a cloud trial) · ~~AI Prompting for Everyone~~ (flex) · 45 min draft post #5 (artifact: the Dockerfile — "my toy pipeline now ships like production software") · 15 min journal + commit
 
 ### 📌 DAY 35 — Sunday, August 23 (2h)
-Week summary · publish post #5 · plan Week 6 · check meetup calendar · journal 🎉
+Week summary · publish post #5 · plan Week 6 · check meetup calendar · 🆕 20 min **Job lane:** targets 15 → 20; start a **résumé v0 skeleton** in the private workspace, built from `evidence.md` (sections only — content arrives as artifacts ship) · journal 🎉
 
 ---
 
@@ -253,10 +272,11 @@ Week summary · publish post #5 · plan Week 6 · check meetup calendar · journ
 
 ### Week 6 goals
 ```
-□ Claude API course ~50% total            □ Mini-project #3 shipped (see Day 41)
+□ Claude API course ~40% total (v3.0)     □ Mini-project #3 shipped (see Day 41)
 □ pydantic output validation mastered     □ Mode SQL Advanced COMPLETE
-□ Tests mock the API (no live calls)      □ AI Prompting videos COMPLETE
+□ Tests mock the API (no live calls)      □ 🆕 dbt Fundamentals COMPLETE (certificate)
 □ AI-901 module 5 + practice test #1      □ Post #6 · meetup attended if scheduled
+□ 🆕 Trading lane: market-data dbt rehearsal — `dbt build` green, lookahead test proven
 ```
 
 ### 📌 DAY 36 — Monday, August 24
@@ -399,12 +419,12 @@ def test_non_json_rejected(mock_cls):
 - [ ] 20 min — Journal + commit (`test: mocked api boundary tests`)
 
 ### 📌 DAY 39 — Thursday, August 27
-**Morning:** AI Prompting for Everyone — videos (finish or near).
+**Morning:** 🆕 **dbt Fundamentals** — models, sources and tests sections. ~~AI Prompting for Everyone~~ (flex/Q2).
 **Evening:** 60 min Claude API course · 40 min Mode SQL Advanced final sections → **COMPLETE** · 20 min journal + commit
 
 ### 📌 DAY 40 — Friday, August 28
 **Morning:** AI-901 practice test #1 — score it honestly; list weak areas in `notebooks/ai901-notes.md`.
-**Evening:** 60 min drill the weak areas on Microsoft Learn · 40 min Claude API course · 20 min journal + commit
+**Evening:** 60 min drill the weak areas on Microsoft Learn · 40 min 🆕 **dbt Fundamentals** (documentation + deployment sections) · 20 min journal + commit
 
 ### 📌 DAY 41 — Saturday, August 29 (5.5h)
 **Morning (5:00–8:30):**
@@ -414,7 +434,11 @@ def test_non_json_rejected(mock_cls):
   - structlog events per document (tokens in/out, validation pass/fail); settings via pydantic-settings; failures logged and skipped, never crashing the batch
   - Report written to `output/` · 6+ mocked tests · ruff clean · README section in ①Production/③Architecture order (Cost omitted honestly — or included if you note real token costs: your call, defend it in the ADR)
   - ADR 0003: one real decision you made and its trade-off
-- [ ] 30 min — ✅ **PYTHON 3.14 RETROFIT** (approved 27 Aug) ⭐ · 🆕 **Correction 28**. Do it today, before DataVault scaffolds on 3.14 on Day 43 — two repos on two interpreters is exactly the drift the single-source rule exists to prevent.
+- [ ] 30 min — 🆕 **dbt Fundamentals — finish → certificate into `evidence.md`.**
+
+<details><summary>⏭️ <b>Python 3.14 retrofit — reference only in the v3.0 template</b> (every repo starts on 3.14 at setup; keep this for any repo created on an older floor)</summary>
+
+~~✅ **PYTHON 3.14 RETROFIT** (approved 27 Aug) · Correction 28. Do it today, before DataVault scaffolds on 3.14 on Day 43.~~
 
 ```bash
 # Do this in BOTH repos: learning-journey and recon-toy
@@ -444,30 +468,74 @@ git commit -m "build: raise python floor 3.12 -> 3.14 (roadmap correction 28)"
 > **Why 3.14 and not 3.13 or 3.15:** 3.12 went security-only around Oct 2025 (no bug fixes — every non-security defect becomes yours to work around); 3.13's bug-fix window closes ~Oct 2026, two months out, so it is a dead end rather than a safe middle; 3.15 ships Oct 2026 and is **explicitly not adopted on release**. Falsifier: raise the floor only when a named dependency in a committed lockfile requires it, or when 3.14 leaves security support — never to chase a release.
 > ⚠️ **Banked for Stage 2:** Airflow's 3.14 constraint files are reported out of sync between the published Docker image and pip/uv. Documented workaround — fall back to `constraints-3.13.txt` **for the Airflow service only**. That is a constraint-file selection, not a second Python version; the interpreter stays 3.14.
 
-**Evening:** 60 min Claude API course · 45 min draft post #6 (finance→tech bridge: "I taught an AI to summarize plan documents — and taught my tests not to trust it") · 15 min journal + commit
+</details>
+
+**Evening (8:00–10:00):** 🆕 **TRADING LANE OPENS — market-data dbt rehearsal** ⭐ (105 min) · 15 min journal + commit. ~~60 min Claude API course · 45 min draft post #6~~ → post #6 moves to Sunday.
+
+> 🆕 **Why this rehearsal, and why trading data.** recon-toy rehearsed DataVault's *Python* shape; this rehearses its **dbt** shape before Day 43 — on the kind of data your trading projects run on. It also proves, in a test, the rule AFC's backtest lives or dies by (C46 §3): **an event may drive an entry only if it was known before that session's open.** The data is **synthetic** (a seeded generator), so a public repo raises no market-data licensing question. It lives in `learning_journey` (practice), not in AFC — AFC's Stage-1 sheet keeps dbt out of S1.
+
+```bash
+cd ~/dev/learning-journey
+uv add --group dbt "dbt-core>=1.12" dbt-duckdb        # dbt Core 1.12 = first line on Python 3.14
+mkdir -p dbt && cd dbt && uv run dbt init market_rehearsal --skip-profile-setup
+```
+`dbt/market_rehearsal/profiles.yml` — no secrets, because DuckDB is a local file (gitignore `*.duckdb` and `target/`):
+```yaml
+market_rehearsal:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: rehearsal.duckdb
+```
+**Build (75 min):**
+1. `scripts/gen_market_seed.py` — seeded generator → `seeds/bars_daily.csv` (5 invented tickers × 120 sessions: ticker, session_date, open, high, low, close, volume) and `seeds/insider_events.csv` (ticker, event_id, txn_code `P`, `filed_at` timestamp — plant some filings before the open, some during the session, some after the close). Times are naive America/New_York — note it as a deliberate simplification.
+2. Staging: `stg_bars.sql`, `stg_insider_events.sql` (cast, rename, one row per grain), and `stg_session_opens.sql` (each session's 09:30 open as a timestamp).
+3. `marts/fct_rvol.sql` — relative volume = today's volume ÷ the average of the **previous** 20 sessions: `avg(volume) over (partition by ticker order by session_date rows between 20 preceding and 1 preceding)`. Including today in its own baseline is the classic leak.
+4. `marts/fct_event_entries.sql` — each event joined to the first session it could legally trade:
+```sql
+-- DuckDB ASOF JOIN: for each filing, the nearest session open strictly AFTER it.
+select e.event_id, e.ticker, e.filed_at,
+       o.session_date as entry_session, o.session_open_at
+from {{ ref('stg_insider_events') }} e
+asof join {{ ref('stg_session_opens') }} o
+  on e.ticker = o.ticker
+ and e.filed_at < o.session_open_at
+```
+**Tests (30 min):**
+- `schema.yml`: `unique` + `not_null` on each model's grain key; `accepted_values` on `txn_code`.
+- `tests/assert_no_lookahead.sql` — a **singular test** that returns any entry whose session opened at or before its `filed_at`. Zero rows = pass.
+
+`uv run dbt build --project-dir dbt/market_rehearsal --profiles-dir dbt/market_rehearsal` → green. Then break it on purpose (`<` → `<=` in the join, or drop `1 preceding` from the window), watch a test fail, revert. **Know both colors.**
+> ⚠️ If `dbt-duckdb` won't resolve on 3.14 the day you run this, don't downgrade the repo's floor: log it in the journal, pin the newest dbt-duckdb that resolves, and record the outcome as an ADR — the same falsifier discipline as C28.
+
 
 ### 📌 DAY 42 — Sunday, August 30 (2h)
-Week summary · publish post #6 · **AI Prompting videos done → log as Tier-5 evidence** · plan Weeks 7–8 · journal 🎉
+Week summary · draft + publish post #6 — 🆕 artifact: the rehearsal's lineage graph (`dbt docs generate`): *"I wrote a test that fails if my data can see the future"* (or the original plan-doc-summarizer angle — pick the one with the stronger artifact) · ~~AI Prompting videos done~~ → **dbt Fundamentals certificate → `evidence.md`** · 10 min Job lane: tracker update · plan Weeks 7–8 · journal 🎉
 
 ---
 
 ## 📊 2-WEEK SUCCESS METRICS
 ```
-□ Claude API course ~50% (sections logged) □ Dockerfile builds; --frozen idiom used
+□ Claude API course ~40% (sections logged) □ Dockerfile builds; --frozen idiom used
 □ 5+ SDK scripts · streaming · errors      □ ADRs 0002–0003 written (yours)
 □ pydantic + pydantic-settings in use      □ Mode SQL Advanced complete
-□ SecretStr masking proven                 □ AI Prompting videos done (Tier 5 log)
+□ SecretStr masking proven                 □ 🆕 dbt Fundamentals done (certificate)
 □ 8+ mocked tests, zero live-API tests     □ AI-901 exam BOOKED + practice test #1
 □ Mini-project #3 shipped                  □ Posts #5–6 · 24+ commits · rules file
-□ ✅ Python 3.14 retrofit: both repos green  □ pre-commit on recon-toy
+□ ✅ all repos on 3.14 since setup          □ pre-commit on recon-toy
                                              at Phase 3 · Tab re-enabled
+□ 🆕 Market-data rehearsal: dbt build green · □ 🆕 Job lane: targets 20 ·
+  lookahead singular test fails when broken     résumé v0 skeleton
 ```
-**Passing bar: 80%.** Non-negotiables: mini-project #3 (the SDK-fluency proof) and the booked AI-901 exam.
+**Passing bar: 80%.** Non-negotiables: mini-project #3 (the SDK-fluency proof), the booked AI-901 exam, and 🆕 **dbt Fundamentals complete** — DataVault's dbt project opens on Day 43 on top of it.
 
 ---
 
 ## 🔭 WHAT COMES NEXT
 **Weeks 7–8 (Aug 31 – Sep 13): the flagship era opens.** DataVault S1 v0 gets its own production-scaffolded repo — synthetic Matrix/Relius-shaped generators, a pydantic canonical model, recon engine, Box-7 rules skeleton — plus your first **CI pipeline** (GitHub Actions running ruff + pytest as a blocking gate). Claude API course reaches tool use + prompt caching. CS50P starts. And Week 8 ends with the **AI-901 exam** — **evidence-file item #1** (self-funded, $99).
 
+> 🆕 **v3.0: DataVault opens dbt-first.** Python generates, ingests and validates rows (pydantic contract + quarantine, Polars → Parquet); **reconciliation and Box-7 checks are dbt models with tests**, not a Python engine (C35 §2 made literal). The rehearsal you just built is its template, and Weeks 7–8 are the first half of the Day-70 soft trigger.
+
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–20). No roadmap edits made; propose→approve governance applies.*
+*Aligned to Career Roadmap v10.0 (Corrections 1–54) · v3.0 job-first re-cut, approved 6 Oct 2026. No roadmap edits made; propose→approve governance applies.*
