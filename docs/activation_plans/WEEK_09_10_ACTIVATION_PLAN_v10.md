@@ -1,10 +1,10 @@
 # 🚀 WEEKS 9–10 MASTER ACTIVATION PLAN (v10.0)
 ## Eval-First Engineering — The Differentiator Fortnight | September 14–27, 2026
 
-**Document Version:** 1.1 (realigned to roadmap Corrections 21–43)
+**Document Version:** 3.0 — 🧭 **JOB-FIRST RE-CUT** (6 Oct 2026): fresh 12-week template from Mon 20 Jul 2026 · supersedes 1.1
 **Covers:** Monday, September 14 – Sunday, September 27, 2026 (Stage 1 · Month 3 · Weeks 9–10)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–43**
-**Prerequisite:** Weeks 7–8 metrics ≥80% (non-negotiables: AI-901 attempted + DataVault end-to-end)
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–54** (+ proposed C55/C56) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
+**Prerequisite:** Weeks 7–8 metrics ≥80% (non-negotiables: AI-901 attempted + DataVault end-to-end 🆕 through dbt)
 **Weekly Hours:** 25
 
 > **Why this is the most important fortnight of Stage 1:** your roadmap's Stage 1 skill plan calls evaluation literacy THE 2026 differentiator — 39.6% of AI-first roles explicitly require eval skills, yet only ~5.5% of candidates list them. This fortnight you stop being in the 94.5%. Everything the flagships become — PolicyPulse's RAGAS gates, Crucible's Tool Correctness = 1.0, DataVault S3's HITL layer — stands on what you build here.
@@ -15,9 +15,22 @@
 
 ---
 
+## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
+Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–54. Full rationale: the v3.0 block in Weeks 1–2. **This fortnight ships the 🚦 soft trigger (C54 §5).** The eval harness stays — it is still the Applied-AI differentiator — but DataVault finishes first.
+
+| Lane | This fortnight in v3.0 |
+|---|---|
+| L2 AE/DE flagship | **Soft trigger:** `dbt build` as a blocking CI step (Day 61) · corrections mart hardened (Day 65) · dbt docs on GitHub Pages (Day 66) · **v0.1.0 tagged public (Day 69)** · gate check (Day 70) |
+| L3 Applied AI | Sprint-1 Pro month · eval harness v0→v1 · DeepEval — unchanged. The four S2 short labs become **flex** (only from buffer) |
+| L5 Job search | Day 62: **résumé v1** for the AE door · Day 69: LinkedIn Featured + README honesty pass · Day 70: **narrow search opens** if the gate is green |
+| Work context | Day 68: **Track A session 0** — before-metrics on the live 1099 pipeline, during the work day (moved up from Week 12) |
+| Extra-time | AB-620 + Google Git, outside the 25 — the AB-620 blocks that sat inside evening blocks move to the extra-time slot, as your ruling intended |
+
+---
+
 ## 🔄 REALIGNMENT PASS — ROADMAP CORRECTIONS 21–43 (applied 27 Aug 2026)
 
-Three changes, one of which frees up hours:
+Standing rulings from Corrections 21–43 for this fortnight (Corrections 44–54 are applied in the v3.0 block above):
 
 1. **⏸️ AB-620 is no longer an automatic cert #2.** Correction 37 moved it to **conditional**; Corrections 22/32 made it **self-funded (~$165)** with the employer channel closed. Thread 6 below is re-marked **HOLD pending your ruling**, and the Day 58 pre-approval email is void. My recommendation: **hold**. Your Q1 2027 target is AE-first / DE-parallel, and AB-620 is a Copilot-ecosystem credential that neither door screens on. The freed hours are better spent on this fortnight's eval harness — which *is* the differentiator (39.6% of AI-first roles require evaluation skills against ~5.5% of candidates listing them).
 2. **🪝 The eval harness gets pre-commit too** (Correction 21). Your own eval harness lives in `learning_journey` and graduates into PolicyPulse next fortnight — it should carry the Tier A set plus **`nbstripout`** (Tier B), since this repo is notebook-bearing. `nbstripout` is the commit-time enforcement of synthetic-data-only: it extends the Correction 16 PII choke point from the logging boundary to the git boundary, so it no longer depends on you remembering to clear cell output.
@@ -58,7 +71,7 @@ DeepLearning.AI's free tier is videos-only; the labs carry the value for the eva
 ---
 
 ## 📊 WHERE YOU STAND
-AI-901 done (or retake booked — either way, momentum), DataVault runs end-to-end with CI, rules engine live. Now: the difference between **tests** (deterministic checks of YOUR logic — Week 6) and **evals** (statistical measurement of MODEL quality against YOUR standards). This fortnight builds the second kind.
+AI-901 done (or retake booked — either way, momentum), DataVault runs end-to-end with CI, 🆕 recon + Box-7 checks live as tested dbt models — half of the soft trigger is already built. Now: the difference between **tests** (deterministic checks of YOUR logic — Week 6) and **evals** (statistical measurement of MODEL quality against YOUR standards). This fortnight builds the second kind.
 
 ## 🧠 STRATEGIC CONTEXT
 
@@ -70,7 +83,7 @@ Week 6's mocked tests verify plumbing: given a fake model reply, does your code 
 2. **Building & Evaluating Advanced RAG** (labs, Pro) — the RAG Triad (Context Relevance / Groundedness / Answer Relevance) — the vocabulary PolicyPulse's gates use in two weeks.
 3. **Your OWN harness** — pointed at Week 6's Box-7 explainer: golden set, dual graders, pytest-gated thresholds, in the learning_journey repo (it graduates into PolicyPulse next fortnight).
 4. **DeepEval first contact** — the roadmap's named eval library (with RAGAS); GEval for judge-based metrics.
-5. **DataVault corrections analytics** matures (the 450+-pattern analytics, synthetic).
+5. ~~**DataVault corrections analytics** matures (the 450+-pattern analytics, synthetic).~~ → 🆕 **DataVault ships the soft trigger (v3.0):** `dbt build` becomes a blocking CI step, the corrections mart hardens, dbt docs publish to GitHub Pages, and **v0.1.0 is tagged public on Day 69** — the four artifacts C54 §5 names. Day 70 checks the gate; green opens the narrow search.
 6. **AB-620 study opens — ✅ GO, as an EXTRA-TIME thread** (your ruling, 27 Aug 2026). ~~(post-AI-901; employer-reimbursed cert #2 — file the pre-approval Day 58)~~ → **self-funded ~$165** (Corrections 22/32); Correction 37 lists it as **conditional** in the roadmap, and you have elected to commit it anyway. **Run it entirely outside the 25 hrs/week — it must not displace the eval harness, DataVault, or PolicyPulse**, which are the artifacts the Q1 2027 doors actually screen on. ⚠️ Two things to keep honest: (a) this is a **roadmap divergence** — the file says conditional, you are treating it as committed, so it needs a logged correction with a falsifier, not a silent change; (b) **AB-620 is a Copilot-ecosystem credential and neither the AE nor the DE door screens on it** — its value here is Azure-stack breadth and the AI-103 path in Stage 3, not the first door. Budget ~2 hrs/week extra, capped.
 
 ### New concepts
@@ -78,6 +91,8 @@ Week 6's mocked tests verify plumbing: given a fake model reply, does your code 
 Evals:  golden datasets · code-based vs LLM-as-judge graders · pass-rate
         thresholds as blocking gates · hallucination injection · RAG Triad
 Tools:  DeepEval (GEval) · DL.AI lab workflow (download discipline)
+dbt CI: dbt build on a fresh runner from seeded data · dbt docs → GitHub
+        Pages · exposures · release tagging + CHANGELOG (🆕 v3.0)
 ```
 
 ---
@@ -88,7 +103,8 @@ Tools:  DeepEval (GEval) · DL.AI lab workflow (download discipline)
 ```
 □ Sprint-1 activated (A or B) + reminder set   □ Improving Accuracy course+labs DONE
 □ Golden dataset v1: 25+ Box-7 cases           □ Harness v0: code-based grader runs
-□ AB-620 pre-approval filed                    □ CS50P Week 3 · Post #9
+□ ~~AB-620 pre-approval filed~~ ❌ void       □ CS50P Week 3 · Post #9
+□ 🆕 DataVault: `dbt build` blocking in CI     □ 🆕 Job lane: résumé v1 (AE door)
 ```
 
 ### 📌 DAY 57 — Monday, September 14
@@ -239,11 +255,11 @@ Run it. **Study every failure**: is the model wrong, or is your golden case wron
 
 ### 📌 DAY 61 — Friday, September 18
 **Morning:** Advanced RAG course begins (RAG Triad lessons + lab).
-**Evening:** 60 min — **eval gate into CI**: add a manual-trigger CI job (`workflow_dispatch`) running `python -m learning_journey.evals.harness` — evals cost API money, so they gate on demand + before releases, not every push; write ADR 0004 recording exactly that trade-off (cost vs coverage — a REAL production decision) · 40 min DataVault: corrections analytics — findings by type × week via window functions · journal + commit
+**Evening:** 60 min — **eval gate into CI**: add a manual-trigger CI job (`workflow_dispatch`) running `python -m learning_journey.evals.harness` — evals cost API money, so they gate on demand + before releases, not every push; write ADR 0004 recording exactly that trade-off (cost vs coverage — a REAL production decision) · 40 min 🆕 **DataVault: `dbt build` as a blocking CI step** — after pytest, the job runs the seeded generator → normalizers → `uv run dbt build --project-dir dbt --profiles-dir dbt`. DuckDB on the runner: no warehouse, no secrets. A failing dbt test now fails the push, exactly like a failing pytest · journal + commit
 
 ### 📌 DAY 62 — Saturday, September 19 (5.5h)
 **Morning:** 90 min Advanced RAG labs (Triad metrics hands-on; download) · 90 min **DeepEval first contact**: `uv add --dev deepeval`; rewrite two golden cases as DeepEval test cases with a GEval judge metric (e.g., "participant-appropriate clarity" — a judgment code can't check); compare its verdicts to your code grader's; note where you'd use each · 30 min CS50P pset
-**Evening:** 60 min AB-620 module 2 · 45 min draft post #9 (the eval-log before/after table — "I stopped asking if my AI is good and started measuring it") · journal + commit
+**Evening:** 60 min 🆕 **Job lane — résumé v1 for the AE door** (private): one page; top third = DataVault (*"Python ingestion + dbt models, N tests, CI-gated, synthetic regulated-domain data"*); the live 1099 pipeline as the production story in relative terms only; certifications last. Every line must point at something a stranger can open. ~~AB-620 module 2~~ → extra-time slot · 45 min draft post #9 (the eval-log before/after table — "I stopped asking if my AI is good and started measuring it") · journal + commit
 
 ### 📌 DAY 63 — Sunday, September 20 (2h)
 Week summary · publish post #9 · plan Week 10 · journal 🎉
@@ -255,8 +271,10 @@ Week summary · publish post #9 · plan Week 10 · journal 🎉
 ### Week 10 goals
 ```
 □ Advanced RAG course + labs DONE            □ Harness v1: judge grader added
-□ S2 short labs: 2 of 4 done + downloaded    □ DataVault corrections report ships
+□ S2 short labs: flex (buffer only — v3.0)   □ 🚦 **DataVault v0.1.0 public = SOFT TRIGGER**
 □ AB-620 ~30% · CS50P Week 4                 □ Post #10 · meetup this month ✓
+□ 🆕 dbt docs on GitHub Pages                 □ 🆕 Track A session 0: before-metrics
+□ 🆕 Featured section + README honesty pass     captured (work day)
 ```
 
 ### 📌 DAY 64 — Monday, September 21
@@ -265,11 +283,11 @@ Week summary · publish post #9 · plan Week 10 · journal 🎉
 
 ### 📌 DAY 65 — Tuesday, September 22
 **Morning:** DL.AI Pro: *Pre-processing Unstructured Data* labs (short; feeds PolicyPulse ingestion in two weeks).
-**Evening:** 🎪 Meetup window (Greenville Python ~2nd Tue was last week; Data Science ~2nd Thu — catch whichever this month offers; the monthly cadence is a roadmap Distribution commitment). Else: 60 min DataVault corrections analytics + 40 min CS50P · journal + commit
+**Evening:** 🎪 Meetup window (Greenville Python ~2nd Tue was last week; Data Science ~2nd Thu — catch whichever this month offers; the monthly cadence is a roadmap Distribution commitment). Else: 60 min 🆕 **DataVault: harden `fct_corrections_by_type_week`** (window functions in the mart; `not_null` / `accepted_values` on rule and week; a row-count test against the findings mart) + 40 min CS50P · journal + commit
 
 ### 📌 DAY 66 — Wednesday, September 23
 **Morning:** CS50P Week 4 (libraries).
-**Evening:** 70 min — **DataVault corrections report v1**: full pipeline output → `corrections_by_type_week.csv` + a plain-text executive summary written for a non-technical reader (Jen is the audience archetype — translating findings for operators is the FDE communication muscle, practiced small) · 30 min AB-620 · journal + commit
+**Evening:** 70 min — 🆕 **DataVault dbt docs, published** (55 min): a description on every mart and its key columns; an `exposures:` entry for the exceptions export; a GitHub Actions job that runs `dbt docs generate` and publishes `target/` to **GitHub Pages** (local docs hosting stays on dbt Core — Fusion doesn't host them yet). Then 15 min of the original task: a plain-text executive summary of the corrections mart for a non-technical reader — an operations manager is the audience archetype; translating findings for operators is the FDE communication muscle, practiced small · 30 min AB-620 · journal + commit
 
 ### 📌 DAY 67 — Thursday, September 24
 **Morning:** DL.AI Pro: *Vector Databases* labs (embeddings as infrastructure — direct PolicyPulse prep).
@@ -278,12 +296,15 @@ Week summary · publish post #9 · plan Week 10 · journal 🎉
 ### 📌 DAY 68 — Friday, September 25
 **Morning:** AB-620 modules.
 **Evening:** 60 min DataVault: mypy/ruff/CI polish + README ②Cost gets its first honest line ("eval runs cost ~$X.XX per full pass at current token counts" — you have real numbers now; use them) · 40 min CS50P pset · journal + commit
+- 🆕 **Track A session 0 — during your work day, not the evening** (it is work on the work system): capture the irrecoverable before-metrics on the live 1099 pipeline — runtime, memory, row counts, defect counts, manual-touch counts — into your work notes, relative figures only for anything that leaves. Moved up from Week 12 in v3.0 so the Day-82 cliff carries less.
 
 ### 📌 DAY 69 — Saturday, September 26 (5.5h)
-**Morning:** 120 min — **harness hardening**: judge-grader caching (don't re-judge unchanged outputs — cost discipline), `--subset` flag for cheap smoke evals, eval-log updated with the fortnight's full trajectory · 60 min DL.AI: *Knowledge Graphs for RAG* labs if pace allows (else defer to Week 11 — still inside the Pro month) · 30 min CS50P
-**Evening:** 60 min AB-620 · 45 min draft post #10 (finance→tech bridge: "code-graders vs AI judges — how I decide who checks the AI's homework") · journal + commit
+**Morning:** 90 min — **harness hardening**: judge-grader caching (don't re-judge unchanged outputs — cost discipline), `--subset` flag for cheap smoke evals, eval-log updated with the fortnight's full trajectory · 🆕 90 min **DataVault v0.1.0 release** ⭐ — README rewritten for a stranger (what it proves for an AE role, a lineage screenshot, the dbt docs link, model + test counts, CI badge, run it in three commands), `CHANGELOG.md`, tag `v0.1.0`, GitHub Release notes; then walk the soft-trigger gate below · 30 min CS50P · ~~KG for RAG labs~~ → flex
+**Evening:** ~~60 min AB-620~~ (extra-time slot) · 60 min 🆕 **Job lane:** LinkedIn **Featured** → the DataVault release + dbt docs; apply the **README honesty pass** to the profile and portfolio READMEs (every claim marked live / building / planned; **no link to a repo that isn't public**) · 45 min draft post #10 — 🆕 artifact: the release (*"my reconciliation rules now live in tested SQL, and CI refuses to merge when one breaks"*); the code-graders-vs-judges angle moves to post #11's slot if you prefer it · journal + commit
 
 ### 📌 DAY 70 — Sunday, September 27 (2h)
+🚦 **SOFT-TRIGGER GATE (C54 §5) — check first.** All four must be true, **and public**: (1) staging → marts on synthetic data · (2) generic tests + Box-7 unit/singular tests · (3) `dbt build` blocking in GitHub Actions · (4) dbt docs published. **All green → the narrow search opens tomorrow** (Weeks 11–12): set the falsifier counter in `tracker.md` to `0 / 25`. Any red → fix that first; the search waits for the evidence, not the calendar.
+
 Week summary + **Month-3-minus-one check**: **evidence file** inventory (AI-901 pass, ~~reimbursement proof~~, automation-win drafts?) — Weeks 11–12 must close automation win #1, so identify THIS WEEK which work automation story you'll document · publish post #10 · plan Weeks 11–12 · journal 🎉
 
 ---
@@ -293,17 +314,20 @@ Week summary + **Month-3-minus-one check**: **evidence file** inventory (AI-901 
 □ Sprint-1 active + cancel reminder set     □ Improving Accuracy + Advanced RAG:
 □ Golden set: 30+ cases w/ rationales         courses + labs DONE, notebooks saved
 □ Harness v1: code + judge graders          □ AI Python labs done (Accomplishment)
-□ Eval gate in CI (manual trigger) + ADRs   □ 2+ of 4 S2 short labs done
-  0004–0005                                 □ AB-620 ~30% + pre-approval filed
-□ One documented improve cycle in eval-log  □ DataVault corrections report ships
+□ Eval gate in CI (manual trigger) + ADRs   □ S2 short labs: flex (v3.0)
+  0004–0005                                 □ AB-620 ~30% (extra-time; pre-approval void)
+□ One documented improve cycle in eval-log  □ 🚦 DataVault v0.1.0 public — soft trigger
 □ DeepEval/GEval tried + compared           □ Posts #9–10 · CS50P Wk 3–4 · meetup ✓
+□ 🆕 `dbt build` blocking in CI · docs live  □ 🆕 Résumé v1 · Featured · honesty pass
 ```
-**Passing bar: 80%.** Non-negotiables: the harness with both grader types, and the documented improvement cycle — that pairing is the 5.5% club membership card.
+**Passing bar: 80%.** Non-negotiables: the harness with both grader types, and the documented improvement cycle — that pairing is the 5.5% club membership card — and 🆕 **the soft trigger**, which is what turns this quarter's work into interviews.
 
 ---
 
 ## 🔭 WHAT COMES NEXT
 **Weeks 11–12: PolicyPulse opens.** The Applied-AI flagship's S1 core — synthetic policy corpus → chunk → embed → retrieve (ChromaDB) — with the RAG Triad eval gate wired from day one, because you now own a harness. MCP primer via **Anthropic Academy** (free, first-party, official cert). The **IBM GenAI Engineering PC** (your Months 3–6 spine) begins. The 1099-pipeline retro-migration pass starts (pip→uv + structlog + first C4 via Structurizr — the Corrections 13/14/16 named pass, and a build-in-public artifact). Internal automation win #1 gets documented. The Pro month gets emptied and cancelled. And the Month-3 retro closes Quarter 1.
 
+> 🆕 **v3.0 changes to Weeks 11–12:** the **narrow search runs** (referral-first, tailored, tracked against the 25-application falsifier); the **IBM GenAI PC moves to Q2**, and its morning slots go to dbt Advanced, AE interview reps and AFC preparation; **PolicyPulse goes public by Day 77**; automation win #1 is drafted Day 77; and **Day 83 opens AFC Phase 1** — the trading lane's first real build.
+
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–20). No roadmap edits made; propose→approve governance applies.*
+*Aligned to Career Roadmap v10.0 (Corrections 1–54) · v3.0 job-first re-cut, approved 6 Oct 2026. No roadmap edits made; propose→approve governance applies.*
