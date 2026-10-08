@@ -3,7 +3,7 @@
 
 **Document Version:** 3.0 — 🧭 **JOB-FIRST RE-CUT** (6 Oct 2026): fresh 12-week template from Mon 20 Jul 2026 · supersedes 1.1
 **Covers:** Monday, August 17 – Sunday, August 30, 2026 (Stage 1 · Month 2 · Weeks 5–6)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–54** (+ proposed C55/C56) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–56** (C55/C56 applied 7 Oct 2026) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
 **Prerequisite:** Weeks 3–4 metrics ≥80% (non-negotiables: recon-toy shipped + AI-901 kickoff)
 **Weekly Hours:** 25 (same block schedule)
 
@@ -16,7 +16,7 @@
 ---
 
 ## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
-Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–54. Full rationale: the v3.0 block in Weeks 1–2. **This is the fortnight dbt arrives.**
+Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–56. Full rationale: the v3.0 block in Weeks 1–2. **This is the fortnight dbt arrives.**
 
 | Lane | This fortnight in v3.0 |
 |---|---|
@@ -538,4 +538,4 @@ Week summary · draft + publish post #6 — 🆕 artifact: the rehearsal's linea
 > 🆕 **v3.0: DataVault opens dbt-first.** Python generates, ingests and validates rows (pydantic contract + quarantine, Polars → Parquet); **reconciliation and Box-7 checks are dbt models with tests**, not a Python engine (C35 §2 made literal). The rehearsal you just built is its template, and Weeks 7–8 are the first half of the Day-70 soft trigger.
 
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–54) · v3.0 job-first re-cut, approved 6 Oct 2026. No roadmap edits made; propose→approve governance applies.*
+*Aligned to Career Roadmap v10.0 (Corrections 1–56) · v3.0 job-first re-cut, approved 6 Oct 2026 · C55/C56 applied to the roadmap 7 Oct 2026. No other roadmap edits made; propose→approve governance applies.*
