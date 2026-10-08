@@ -3,7 +3,7 @@
 
 **Document Version:** 3.0 — 🧭 **JOB-FIRST RE-CUT** (6 Oct 2026): fresh 12-week template from Mon 20 Jul 2026 · supersedes 2.3
 **Covers:** Monday, July 20 – Sunday, August 2, 2026 (Stage 1 · Month 1 · Weeks 1–2)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–54** (+ proposed C55/C56 — see the v3.0 block) — Stage 1: Internal AI Builder (Months 1–8) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–56** (C55/C56 applied 7 Oct 2026 — see the v3.0 block) — Stage 1: Internal AI Builder (Months 1–8) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
 **Weekly Hours:** 25 (Mon–Fri 4:30–6:00 AM + 8:00–10:00 PM · Sat 5:00–8:30 AM + 8:00–10:00 PM · Sun 7:30–9:30 PM)
 **Your Level:** Beginning the tech build from scratch — 15+ years business ops, 2 years ERISA-regulated financial operations, 5+ years trading
 
@@ -15,14 +15,14 @@
 
 ## 🧭 v3.0 JOB-FIRST RE-CUT — READ THIS FIRST (approved 6 Oct 2026)
 
-**What this is.** All six fortnight plans are re-cut as **one fresh 12-week template starting Monday 20 July 2026, at 25 hrs/week**, aligned to roadmap **Corrections 1–54**. The organising question changed from *"what does Stage 1 teach?"* to *"what gets me my first Analytics Engineer / Data Engineer job soonest, without breaking the roadmap?"* The target-role ruling (Corrections 22 §3 and 54) is the compass:
+**What this is.** All six fortnight plans are re-cut as **one fresh 12-week template starting Monday 20 July 2026, at 25 hrs/week**, aligned to roadmap **Corrections 1–56** (C55 and C56 came out of this re-cut and were applied 7 Oct 2026). The organising question changed from *"what does Stage 1 teach?"* to *"what gets me my first Analytics Engineer / Data Engineer job soonest, without breaking the roadmap?"* The target-role ruling (Corrections 22 §3 and 54) is the compass:
 
 | Priority | Role | When the search opens |
 |---|---|---|
 | 1 | **Analytics Engineer** — first door | 🚦 **Soft trigger** (public DataVault dbt slice, Day 70) → narrow, referral-led, domain-matched search |
 | 2 | **Data Engineer** — parallel | Same two triggers; same skill investment |
 | 3 | Applied AI Engineer → FDE | Stage 3 (~Month 30+) — evidence is built now, applications are not |
-| — | Data Analyst | Not under any circumstance (roadmap). The bridge tier below is a **proposal (C55)**, not an exception, until you approve it |
+| — | Data Analyst | Not under any circumstance (roadmap). **C55 (applied 7 Oct 2026)** clarifies it: generic analyst postings stay excluded; the in-domain **bridge tier** below is admitted |
 
 The broad search still opens at the **full DataVault S2 ship (~Q1 2027)**. Planning assumption, per C54 §3: a multi-month search, not weeks.
 
@@ -85,7 +85,7 @@ You're right that the trading projects carry dbt — **at Stage 2, not Stage 1.*
 ### The job lane — rules
 - **Private workspace.** A private repo (e.g. `career-search`) or a folder outside every public repo. Target lists, contacts and the application tracker never go in `learning_journey`.
 - **Three target tiers** (C54 §5 + the Stage 2 referral-geography block): **Tier 1** retirement recordkeeping / wealth-retirement fintech (domain match first — e.g. Vestwell, Ascensus, Empower, Principal, Voya, TIAA, Fidelity, Human Interest, Guideline); **Tier 2** Charlotte / Atlanta finance (start from Built In Charlotte); **Tier 3** 🆕 capital-markets and trading fintech, where the market-data work counts.
-- **Bridge tier — proposed Correction 55, not canon yet.** Technical data roles at Tier-1 recordkeepers whose titles may not say "engineer" (data conversion/migration, data operations, implementation data, operations automation / agentic operations) — only where the posting requires SQL + a warehouse or automation platform + retirement domain. They go on the list; **no applications until you approve C55** in the roadmap.
+- **Bridge tier — Correction 55 (applied 7 Oct 2026).** Technical data roles at Tier-1 recordkeepers whose titles may not say "engineer" (data conversion/migration, data operations, implementation data, operations automation / agentic operations) — only where the posting requires SQL + a warehouse or automation platform + retirement domain. They are eligible for applications under the same referral-first rules, **tracked separately** so the C55 falsifier can be read: if they don't screen at a higher rate than AE/DE applications within the same 25-application window, the tier is dropped.
 - **Before Day 70:** build the list, the profile, the résumé and relationships. Informational conversations only — no job asks.
 - **From Day 70:** referral-first, tailored applications to the list — small waves, not volume. **Falsifier (C54 §5):** 25 targeted or referred applications with zero recruiter / hiring-manager screens → pause the narrow search and return the hours to DataVault S2.
 - **No dead links.** Never link a repo from the profile or portfolio README until it is public, with a README and green CI. Mark planned work as planned.
@@ -93,10 +93,10 @@ You're right that the trading projects carry dbt — **at Stage 2, not Stage 1.*
 ### Tooling note (verified 6 Oct 2026)
 dbt Core **1.12** is the first line that supports Python **3.14** (your floor); 1.11 does not. Use `dbt-core>=1.12` + `dbt-duckdb` through uv, with DuckDB as the local warehouse. dbt v2 / Fusion (2.0.0, Sept 2026) ships a built-in DuckDB adapter, but DuckDB on Fusion is still beta and the official dbt VS Code extension requires Fusion — so the **dbt Core 1.12 CLI is the engine of record** and the v1-vs-v2 choice is recorded as a DataVault ADR. Snowflake (the roadmap's AE-primary warehouse, C3) arrives as a **Q2 port** on the 30-day / $400 trial, started only once the port is scheduled — the same discipline as the AMD credits.
 
-### Roadmap corrections this re-cut creates (owed — `roadmap.html` is not edited by these plans)
-- **Proposed C55** — the domain-bridge tier above.
-- **Proposed C56** — the Stage-1 schedule pull-forwards in the "what moved" table.
-- Draft text for both is in `PLAN_RECUT_v3_CHANGELOG.md`. Still owed from before: the harness reversal (C39), AB-620 status, and the hours-model exception.
+### Roadmap corrections this re-cut created — ✅ applied to `roadmap.html` on 7 Oct 2026
+- ✅ **C55** — the domain-bridge tier above.
+- ✅ **C56** — the Stage-1 schedule pull-forwards in the "what moved" table.
+- Full text: the roadmap's v10.0 changelog (also in `PLAN_RECUT_v3_CHANGELOG.md`). Still owed from before: the harness reversal (C39), AB-620 status, and the hours-model exception.
 
 ---
 
@@ -1186,4 +1186,4 @@ TECHNICAL                                  HABITS & DISTRIBUTION
 🆕 **v3.0 additions:** the Job lane's target list v0 (Day 21) and first informational-conversation request (Day 28). Further out: **dbt Fundamentals enters in Weeks 5–6**, the **trading lane opens on Day 41** with a market-data dbt rehearsal, and DataVault scaffolds with a dbt project on Day 43.
 
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–54) · v3.0 job-first re-cut, approved 6 Oct 2026. Propose→approve governance: this plan does not edit `roadmap.html`; owed corrections are listed in the v3.0 block. Items flagged for review are in Day 5 and the Step-7 checkpoint.*
+*Aligned to Career Roadmap v10.0 (Corrections 1–56) · v3.0 job-first re-cut, approved 6 Oct 2026 · C55/C56 applied to the roadmap 7 Oct 2026. Propose→approve governance: this plan does not edit `roadmap.html`; corrections still owed are listed in the v3.0 block. Items flagged for review are in Day 5 and the Step-7 checkpoint.*
