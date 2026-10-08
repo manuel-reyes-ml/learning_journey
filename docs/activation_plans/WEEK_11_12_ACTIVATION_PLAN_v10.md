@@ -3,7 +3,7 @@
 
 **Document Version:** 3.0 — 🧭 **JOB-FIRST RE-CUT** (6 Oct 2026): fresh 12-week template from Mon 20 Jul 2026 · supersedes 1.1
 **Covers:** Monday, September 28 – Sunday, October 11, 2026 (Stage 1 · Month 3 · Weeks 11–12)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–54** (+ proposed C55/C56) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–56** (C55/C56 applied 7 Oct 2026) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
 **Prerequisite:** Weeks 9–10 metrics ≥80% (non-negotiables: harness v1 + documented improve cycle + 🆕 🚦 soft trigger green on Day 70)
 **Weekly Hours:** 25 · ⏰ **Pro month expires ~Oct 13 — empty it and cancel it this fortnight (hard deadline).**
 
@@ -14,7 +14,7 @@
 ---
 
 ## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
-Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–54. Full rationale: the v3.0 block in Weeks 1–2. **The soft trigger fired on Day 70, so this fortnight runs the narrow search while the quarter closes.**
+Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–56. Full rationale: the v3.0 block in Weeks 1–2. **The soft trigger fired on Day 70, so this fortnight runs the narrow search while the quarter closes.**
 
 | Lane | This fortnight in v3.0 |
 |---|---|
@@ -52,9 +52,9 @@ Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to
 > 1. **Harness:** Correction 39 rules OpenCode the *sole* harness and Claude Code *evaluated and declined*. Reality is dual. Needs reversal + the `AGENTS.md` / generator-script standard recorded. *Falsifier: if maintaining two harnesses produces drift the generator cannot absorb, collapse to one.*
 > 2. **AB-620:** Correction 37 lists it conditional. You have committed it. Needs a status change + the extra-time-hours ruling. *Falsifier: if AE/DE applications never surface Azure-stack requirements, it does not get re-bought at renewal.*
 > 3. **Hours model:** frozen at 25/week pending the Correction 22 deferral. You have now authorised ~4 hrs/week of extra-time threads. Needs recording as an explicit exception with the cap and the pause rule, not left as an undocumented overrun. *Falsifier: actual > ~29 hrs/week or the 4:30 AM trend degrading → threads pause.*
-> 4. 🆕 **Proposed C55 — domain-bridge tier** in the narrow search (v3.0). *Falsifier: if bridge-tier applications don't produce screens at a higher rate than AE/DE applications within the same 25-application window, the tier is dropped.*
-> 5. 🆕 **Proposed C56 — Stage-1 schedule pull-forwards** from the v3.0 re-cut (dbt Fundamentals/Advanced into Stage 1, IBM start after the soft trigger, AFC kickoff Day 83, DataVault S1 logic in dbt). *Falsifier: if the soft trigger slips past Week 12, the pull-forwards are reviewed before Q2 adds anything.*
-> Draft text for C55 and C56: `PLAN_RECUT_v3_CHANGELOG.md`.
+> 4. ✅ **C55 — domain-bridge tier** in the narrow search — *applied 7 Oct 2026.* *Falsifier: if bridge-tier applications don't produce screens at a higher rate than AE/DE applications within the same 25-application window, the tier is dropped.*
+> 5. ✅ **C56 — Stage-1 schedule pull-forwards** from the v3.0 re-cut — *applied 7 Oct 2026* — (dbt Fundamentals/Advanced into Stage 1, IBM start after the soft trigger, AFC kickoff Day 83, DataVault S1 logic in dbt). *Falsifier: if the soft trigger slips past Week 12, the pull-forwards are reviewed before Q2 adds anything.*
+> C55 and C56 are now in the roadmap's v10.0 changelog. Items 1–3 above remain owed.
 
 > 🧭 **The honest reframe.** This plan's closing line called the Month-6 conversation "the deliverable every artifact this quarter was quietly building toward." That is no longer true, and the substitute is not a downgrade: the artifacts were always the point, and they now go to a market instead of a manager. Two eval-gated flagships, a CI habit with eleven weeks of commits, a cert, and a regulated-domain story is a **stronger** Q1 2027 position than an internal scope memo would have been. The work does not change. The audience does.
 
@@ -458,7 +458,8 @@ Treat this day as a boundary, not a workday. Before you log off for the last tim
    tier answered · what the screens asked about
 10. 🆕 TRADING LANE: rehearsal + AFC kickoff state · what weekly share
    AFC Phase 1 gets in Q2, and what pauses to make room
-11. 🆕 C55 / C56: approve, amend or decline the proposed corrections
+11. 🆕 C55 / C56 falsifiers: bridge-tier screen rate vs AE/DE in the
+   same window (C55) · did the soft trigger land by Week 12 (C56)?
 12. 🆕 CU BOULDER BRIDGE (C44, Nov–Feb, inside the 25): which threads
    pause — replace, not stack
 ```
@@ -485,7 +486,7 @@ Treat this day as a boundary, not a workday. Before you log off for the last tim
 ## 🔭 WHAT COMES NEXT (Quarter 2 preview — plans generated AFTER your retro)
 
 ### 🆕 v3.0 — Q2 shape (input for the Month-3 retro, not a commitment yet)
-- **Job lane:** the narrow search continues in waves until the falsifier (25 targeted applications, zero screens) or an offer; the **broad search opens at the full DataVault S2 ship (~Q1 2027)**. Bridge-tier applications start only if you approve **C55**.
+- **Job lane:** the narrow search continues in waves until the falsifier (25 targeted applications, zero screens) or an offer; the **broad search opens at the full DataVault S2 ship (~Q1 2027)**. Bridge-tier applications run under **C55** (applied), tracked separately for its falsifier.
 - **DataVault S2 toward the gate:** a **Snowflake port** of the dbt project — the roadmap's AE-primary warehouse (C3) — on the 30-day / $400 trial, started only once the port is scheduled; then contracts, orchestration, Docker deploy and monitoring per the roadmap.
 - **Trading lane:** AFC Phase 1, build-sheet Weeks 1–6 → `v1.0.0` (EDGAR adapter, analyst, faithfulness evaluation). The **Andrew Ng ML Specialization** starts with AFC Phase 2 (C48: Course 1 at sheet week 7). **dbt in trading** arrives with AFC's S2 lakehouse and Crucible's market-data lakehouse, both after DataVault S2. **Crucible** stays third per the Build Progression.
 - **IBM GenAI PC** starts (deferred from Week 11).
@@ -506,4 +507,4 @@ Treat this day as a boundary, not a workday. Before you log off for the last tim
 - **The reading layer** (Correction 34) is live: finish *Robust Python* and *AI Engineering* in Q2; *Python Testing with pytest 2e* is the secondary. Buy at stage entry, re-verify editions.
 
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–54) · v3.0 job-first re-cut, approved 6 Oct 2026. No roadmap edits made; propose→approve governance applies. Q2 plans will be generated from your actual Month-3 retro, not assumptions.*
+*Aligned to Career Roadmap v10.0 (Corrections 1–56) · v3.0 job-first re-cut, approved 6 Oct 2026 · C55/C56 applied to the roadmap 7 Oct 2026. No other roadmap edits made; propose→approve governance applies. Q2 plans will be generated from your actual Month-3 retro, not assumptions.*
