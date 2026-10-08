@@ -3,7 +3,7 @@
 
 **Document Version:** 3.0 — 🧭 **JOB-FIRST RE-CUT** (6 Oct 2026): fresh 12-week template from Mon 20 Jul 2026 · supersedes 1.1
 **Covers:** Monday, September 14 – Sunday, September 27, 2026 (Stage 1 · Month 3 · Weeks 9–10)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–54** (+ proposed C55/C56) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–56** (C55/C56 applied 7 Oct 2026) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
 **Prerequisite:** Weeks 7–8 metrics ≥80% (non-negotiables: AI-901 attempted + DataVault end-to-end 🆕 through dbt)
 **Weekly Hours:** 25
 
@@ -16,7 +16,7 @@
 ---
 
 ## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
-Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–54. Full rationale: the v3.0 block in Weeks 1–2. **This fortnight ships the 🚦 soft trigger (C54 §5).** The eval harness stays — it is still the Applied-AI differentiator — but DataVault finishes first.
+Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–56. Full rationale: the v3.0 block in Weeks 1–2. **This fortnight ships the 🚦 soft trigger (C54 §5).** The eval harness stays — it is still the Applied-AI differentiator — but DataVault finishes first.
 
 | Lane | This fortnight in v3.0 |
 |---|---|
@@ -330,4 +330,4 @@ Week summary + **Month-3-minus-one check**: **evidence file** inventory (AI-901 
 > 🆕 **v3.0 changes to Weeks 11–12:** the **narrow search runs** (referral-first, tailored, tracked against the 25-application falsifier); the **IBM GenAI PC moves to Q2**, and its morning slots go to dbt Advanced, AE interview reps and AFC preparation; **PolicyPulse goes public by Day 77**; automation win #1 is drafted Day 77; and **Day 83 opens AFC Phase 1** — the trading lane's first real build.
 
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–54) · v3.0 job-first re-cut, approved 6 Oct 2026. No roadmap edits made; propose→approve governance applies.*
+*Aligned to Career Roadmap v10.0 (Corrections 1–56) · v3.0 job-first re-cut, approved 6 Oct 2026 · C55/C56 applied to the roadmap 7 Oct 2026. No other roadmap edits made; propose→approve governance applies.*
