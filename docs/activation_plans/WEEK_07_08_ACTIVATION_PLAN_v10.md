@@ -3,7 +3,7 @@
 
 **Document Version:** 3.0 — 🧭 **JOB-FIRST RE-CUT** (6 Oct 2026): fresh 12-week template from Mon 20 Jul 2026 · supersedes 1.1
 **Covers:** Monday, August 31 – Sunday, September 13, 2026 (Stage 1 · Month 2 · Weeks 7–8)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–54** (+ proposed C55/C56) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–56** (C55/C56 applied 7 Oct 2026) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
 **Prerequisite:** Weeks 5–6 metrics ≥80% (non-negotiables: mini-project #3 + AI-901 exam booked + 🆕 dbt Fundamentals done)
 **Weekly Hours:** 25 · 🇺🇸 Labor Day (Mon Sep 7) is a day off work — an optional bonus deep-work block if family plans allow; never mandatory.
 
@@ -14,7 +14,7 @@
 ---
 
 ## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
-Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–54. Full rationale: the v3.0 block in Weeks 1–2. **This fortnight builds the first half of the Day-70 soft trigger.**
+Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–56. Full rationale: the v3.0 block in Weeks 1–2. **This fortnight builds the first half of the Day-70 soft trigger.**
 
 | Lane | This fortnight in v3.0 |
 |---|---|
@@ -437,4 +437,4 @@ Week summary + **Month-2 retro** (hours honest, exam outcome, DataVault v0 state
 > 🆕 **v3.0: Weeks 9–10 finish the soft trigger.** `dbt build` becomes a blocking CI step (Day 61), the corrections mart hardens, dbt docs publish to GitHub Pages, and DataVault **v0.1.0** is tagged public on Day 69 — C54's four artifacts. Day 70 checks the gate and, if green, opens the narrow search.
 
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–54) · v3.0 job-first re-cut, approved 6 Oct 2026. No roadmap edits made; propose→approve governance applies.*
+*Aligned to Career Roadmap v10.0 (Corrections 1–56) · v3.0 job-first re-cut, approved 6 Oct 2026 · C55/C56 applied to the roadmap 7 Oct 2026. No other roadmap edits made; propose→approve governance applies.*
