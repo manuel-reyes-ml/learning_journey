@@ -1,7 +1,7 @@
 # 🧭 Activation Plans v3.0 — Job-First Re-Cut · Changelog
 
-**Approved:** 6 Oct 2026 (Manuel) · **Scope:** the six bi-weekly plans `WEEK_01_02` … `WEEK_11_12` · **Template:** fresh 12 weeks from Mon 20 Jul 2026 · **Hours:** 25/week, unchanged · **Aligned to:** roadmap v10.0, Corrections 1–54
-**Not touched:** `roadmap.html`. The two corrections this re-cut creates (C55, C56) are drafted at the bottom for your approval.
+**Approved:** 6 Oct 2026 (Manuel) · **Scope:** the six bi-weekly plans `WEEK_01_02` … `WEEK_11_12` · **Template:** fresh 12 weeks from Mon 20 Jul 2026 · **Hours:** 25/week, unchanged · **Aligned to:** roadmap v10.0, Corrections 1–56
+**Roadmap:** the two corrections this re-cut created — **C55 and C56** — were approved and **applied to `roadmap.html` on 7 Oct 2026** (changelog entries + inline propagation; snapshot now 1–56; archive untouched). Their text is reproduced at the bottom.
 
 ---
 
@@ -38,7 +38,7 @@ Dates (20 Jul – 11 Oct 2026) · 25 hrs/week and the block schedule · Day 82 a
 
 1. **dbt on Python 3.14:** dbt Core 1.12 is the first line supporting 3.14. Confirm `dbt-duckdb` resolves under uv on the day (Day 34 setup). If not, pin the newest version that resolves and write an ADR — do not lower the repo floor.
 2. **Snowflake trial (Q2):** 30 days / $400, no card. Start it only once the port is scheduled.
-3. **C55 and C56** below need your approve / amend / decline before the bridge tier receives applications.
+3. ✅ **C55 and C56** — applied 7 Oct 2026. Bridge-tier applications are tracked separately so C55's falsifier can be read.
 4. Still owed from earlier sessions: harness reversal (C39), AB-620 status change, hours-model exception.
 
 ## 5. Research basis (checked 6 Oct 2026)
@@ -56,7 +56,7 @@ Dates (20 Jul – 11 Oct 2026) · 25 hrs/week and the block schedule · Day 82 a
 
 ---
 
-## 6. DRAFT — v10.0 CORRECTION 55 (proposed, not applied)
+## 6. v10.0 CORRECTION 55 — ✅ applied to roadmap.html, 7 Oct 2026
 
 **v10.0 CORRECTION 55 (October 2026 — domain-bridge tier admitted inside the C54 narrow search; same version):** triggered by the 6 Oct 2026 activation-plan review, which found live 2026 postings at retirement recordkeepers that read Manuel's operations experience as the requirement rather than a gap.
 **(1) Ruling proposed:** inside the soft-trigger search, a **bridge tier** joins the target list — technical data roles at Tier-1 recordkeepers / TPAs whose titles may not contain "engineer" (data conversion / migration, data operations, implementation data, operations automation / agentic operations) — **only** where the posting requires SQL plus a warehouse or automation platform plus retirement-plan domain.
@@ -65,7 +65,7 @@ Dates (20 Jul – 11 Oct 2026) · 25 hrs/week and the block schedule · Day 82 a
 **(4) Falsifier:** if bridge-tier applications do not produce screens at a higher rate than AE / DE applications within the same 25-application window, the tier is dropped.
 Propagation: Stage 1 exit criterion (soft-trigger note), Stage 2 referral-geography block. Cost: $0. No course, certification, book or hours figure changed; archive untouched; version stays v10.0.
 
-## 7. DRAFT — v10.0 CORRECTION 56 (proposed, not applied)
+## 7. v10.0 CORRECTION 56 — ✅ applied to roadmap.html, 7 Oct 2026
 
 **v10.0 CORRECTION 56 (October 2026 — Stage-1 schedule pull-forwards recorded from the v3.0 activation-plan re-cut; same version):** the six activation plans were re-cut as a job-first 12-week template (25 hrs/week, from 20 Jul 2026). Recorded here so the roadmap stays authoritative over the plans.
 **(1)** *dbt Fundamentals* (Stage 2 core row 5️⃣) is taken in Stage 1, Weeks 5–6, and *dbt Advanced Learning Paths* (row 6️⃣) starts Week 11 — Stage 2 learning done first, under C54 §5's "S2 work done first, not new scope".
