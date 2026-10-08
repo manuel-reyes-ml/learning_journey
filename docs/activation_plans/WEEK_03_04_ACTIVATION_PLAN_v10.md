@@ -3,7 +3,7 @@
 
 **Document Version:** 3.0 — 🧭 **JOB-FIRST RE-CUT** (6 Oct 2026): fresh 12-week template from Mon 20 Jul 2026 · supersedes 2.3
 **Covers:** Monday, August 3 – Sunday, August 16, 2026 (Stage 1 · Month 1 → 2 · Weeks 3–4)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–54** (+ proposed C55/C56) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–56** (C55/C56 applied 7 Oct 2026) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
 **Prerequisite:** Weeks 1–2 metrics ≥80% (below that: close gaps in this fortnight's flex slots first)
 **Weekly Hours:** 25 (same block schedule)
 
@@ -12,7 +12,7 @@
 ---
 
 ## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
-Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–54. **The full rationale — lanes, milestone calendar, trading-lane and job-lane rules — is the v3.0 block in Weeks 1–2.** What changes here:
+Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–56. **The full rationale — lanes, milestone calendar, trading-lane and job-lane rules — is the v3.0 block in Weeks 1–2.** What changes here:
 
 | Lane | This fortnight in v3.0 |
 |---|---|
@@ -933,4 +933,4 @@ Also: integrate the Day-24 matcher's mismatch bucket into the exceptions report;
 🆕 **v3.0 changes to Weeks 5–6:** **dbt Fundamentals** (dbt Labs, free, ~5 hrs, certificate — roadmap Stage 2 row 5️⃣ taken early under C54's "S2 work done first") takes the slots *AI Prompting for Everyone* held, which moves to flex. The Day-41 Python 3.14 retrofit disappears (the template starts on 3.14), and that Saturday **opens the trading lane** with a small market-data dbt rehearsal. The Job lane adds a résumé skeleton.
 
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–54) · v3.0 job-first re-cut, approved 6 Oct 2026. No roadmap edits made; propose→approve governance applies.*
+*Aligned to Career Roadmap v10.0 (Corrections 1–56) · v3.0 job-first re-cut, approved 6 Oct 2026 · C55/C56 applied to the roadmap 7 Oct 2026. No other roadmap edits made; propose→approve governance applies.*
