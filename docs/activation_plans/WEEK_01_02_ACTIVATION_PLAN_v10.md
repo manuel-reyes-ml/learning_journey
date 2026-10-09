@@ -1,9 +1,9 @@
 # 🚀 WEEKS 1–2 MASTER ACTIVATION PLAN (v10.0)
 ## Internal AI Builder Track | Starting Monday, July 20, 2026
 
-**Document Version:** 3.0 — 🧭 **JOB-FIRST RE-CUT** (6 Oct 2026): fresh 12-week template from Mon 20 Jul 2026 · supersedes 2.3
+**Document Version:** 3.1 — ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, roadmap C58) on top of the 3.0 **JOB-FIRST RE-CUT** (6 Oct 2026) · fresh 12-week template from Mon 20 Jul 2026
 **Covers:** Monday, July 20 – Sunday, August 2, 2026 (Stage 1 · Month 1 · Weeks 1–2)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–56** (C55/C56 applied 7 Oct 2026 — see the v3.0 block) — Stage 1: Internal AI Builder (Months 1–8) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–58** (C58 applied 8 Oct 2026 — see the v3.1 block) — Stage 1: Internal AI Builder (Months 1–8) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
 **Weekly Hours:** 25 (Mon–Fri 4:30–6:00 AM + 8:00–10:00 PM · Sat 5:00–8:30 AM + 8:00–10:00 PM · Sun 7:30–9:30 PM)
 **Your Level:** Beginning the tech build from scratch — 15+ years business ops, 2 years ERISA-regulated financial operations, 5+ years trading
 
@@ -13,13 +13,50 @@
 
 ---
 
-## 🧭 v3.0 JOB-FIRST RE-CUT — READ THIS FIRST (approved 6 Oct 2026)
+## ⚖️ v3.1 PRIORITY REBALANCE — READ THIS FIRST (approved 8 Oct 2026 · roadmap Correction 58)
 
-**What this is.** All six fortnight plans are re-cut as **one fresh 12-week template starting Monday 20 July 2026, at 25 hrs/week**, aligned to roadmap **Corrections 1–56** (C55 and C56 came out of this re-cut and were applied 7 Oct 2026). The organising question changed from *"what does Stage 1 teach?"* to *"what gets me my first Analytics Engineer / Data Engineer job soonest, without breaking the roadmap?"* The target-role ruling (Corrections 22 §3 and 54) is the compass:
+**Why.** An hour audit of all 84 days of v3.0 (300 h, every block priced from the schedule above) showed the **milestones** followed your priority — Analytics Engineer first door, Data Engineer parallel, Applied AI → FDE later — but the **hours** did not. From Week 5, Applied-AI work took roughly twice the AE/DE time, and the fortnight that ships the soft trigger gave DataVault ~6 h against ~27 h of AI work. v3.1 fixes the hours without deleting anything.
+
+| Fortnight | v3.0 AE/DE | v3.0 Applied AI | **v3.1 AE/DE** | **v3.1 Applied AI** | Guardrail |
+|---|---|---|---|---|---|
+| Weeks 1–2 | 3.5 h | 0 | **3.5 h** | **0** | ✅ |
+| Weeks 3–4 | 16.7 h | 6.9 h | **20.3 h** | **3.2 h** | ✅ |
+| Weeks 5–6 | 12.7 h | 25.1 h | **20.0 h** | **18.8 h** | ✅ |
+| Weeks 7–8 | 18.2 h | 13.5 h | **28.5 h** | **4.0 h** | ✅ |
+| Weeks 9–10 | 6.2 h | 26.8 h | **20.1 h** | **10.6 h** | ✅ |
+| Weeks 11–12 | 5.8 h | 17.8 h | **14.4 h** | **10.5 h** | ✅ |
+| **12 weeks** | **63 h (21%)** | **90 h (30%)** | **107 h (36%)** | **47 h (16%)** | |
+
+*Foundations (~65 h), job search (~29 h), trading (~6 h), the Day-82 exit work and weekly reviews make up the rest of the 300 h. Figures are ±2 h per fortnight: untimed items share their block's leftover minutes.*
+
+### ⚖️ The priority guardrail (C58) — a standing rule
+**Every fortnight, AE/DE build hours ≥ Applied-AI hours — until the narrow search produces its first recruiter or hiring-manager screen.** Foundations, job search, trading and admin count on neither side. Check it every Sunday from the journal's new *lane hours* line (Step 9). If a fortnight fails, the next week's first Applied-AI slot goes to DataVault. After the first screen, the balance may shift toward PolicyPulse. *Falsifier: if the soft trigger still slips past Day 70, or 25 targeted applications produce zero screens, hours were not the bottleneck — diagnose market fit instead of re-tuning the split.*
+
+### What moved — deferred, never deleted (every item stays inside Stage 1)
+| Item | v3.0 | v3.1 | Why |
+|---|---|---|---|
+| **AI-901** study + exam | Modules Weeks 4–6 · exam Day 54 | **Q2, Weeks 13–14** — one ~14 h Foundry-weighted sprint | An Applied-AI credential no AE/DE screen uses; one focused sprint beats modules spread eight weeks ahead of the exam |
+| **Sprint-1 Pro month** (all nine lab rows) | Weeks 9–10 | **Q2**, with PolicyPulse's RAG Triad build | Correction 17's own trigger: "timed to the PolicyPulse eval-harness build". *Improving Accuracy* **videos** stay in Week 9 (free tier) |
+| PolicyPulse **judge-graded** Triad gate · DeepEval · harness hardening · **MCP primer** | Weeks 9–12 | **Q2**, with the Pro labs | PolicyPulse still goes public **Day 77** with a **code-graded** gate (context relevance + the unanswerable hard gate) |
+| **AB-620** blocks inside the 25 (4.5 h) | Days 60–81 | **Extra-time slot** | Restores your 27 Aug ruling — the v3.0 pass missed these |
+| **Soft trigger** | Day 70 | **Day 63** (Day 70 fallback) | The freed hours finish its four artifacts a week earlier; the narrow search opens **Day 64** |
+| **Track B** (public 1099 repo) | Starts Week 12 | #1–#2 Day 54 · #3–#5 Day 68 · #7 Day 76 · #9 Day 81 | The repo your profile features stops failing a reviewer's first command before the search opens |
+
+### Where the freed hours go — roadmap sources only, and each one lands in a repo
+- **Kimball reading map** (C57 — the book you own), read against the build: Ch. 1 (Day 24) · Ch. 2–3 (Days 26, 31, 34) · Ch. 4 (Days 38, 40, 53) · Ch. 19 (Days 58, 66) · Ch. 7 + 10 (Day 62) · Ch. 5's SCD section (Day 65). Notes live in `docs/modeling-notes.md` → DataVault's `docs/modeling.md`.
+- **DataVault as a Kimball star**: grain + conformed dimensions + ADR 0003 (Day 47) → four dims and the fact with `relationships` tests (Days 50–51) → `dbt build` blocking in CI (Day 52) → docs on GitHub Pages (Day 58) → **v0.1.0 (Day 62)** → **soft trigger (Day 63)** → SCD Type 2 snapshot, a custom generic test and an idempotent incremental (Days 65–66) → **v0.2.0 (Day 69)** → **model contracts** (Days 72–74 — S2 work done first).
+- **AE interview reps**: Days 40, 54, 61, 74, 75, plus a timed take-home rehearsal on Day 76.
+- **dbt Advanced** from Day 67 (was Day 71).
+
+---
+
+## 🧭 v3.0 JOB-FIRST RE-CUT (approved 6 Oct 2026) — the base layer; v3.1 dates above win where they differ
+
+**What this is.** All six fortnight plans are re-cut as **one fresh 12-week template starting Monday 20 July 2026, at 25 hrs/week**, aligned to roadmap **Corrections 1–56** at the time (C55 and C56 came out of this re-cut and were applied 7 Oct 2026; ⚖️ v3.1 brings the template to **Corrections 1–58**). The organising question changed from *"what does Stage 1 teach?"* to *"what gets me my first Analytics Engineer / Data Engineer job soonest, without breaking the roadmap?"* The target-role ruling (Corrections 22 §3 and 54) is the compass:
 
 | Priority | Role | When the search opens |
 |---|---|---|
-| 1 | **Analytics Engineer** — first door | 🚦 **Soft trigger** (public DataVault dbt slice, Day 70) → narrow, referral-led, domain-matched search |
+| 1 | **Analytics Engineer** — first door | 🚦 **Soft trigger** (public DataVault dbt slice, ~~Day 70~~ **Day 63** in v3.1) → narrow, referral-led, domain-matched search |
 | 2 | **Data Engineer** — parallel | Same two triggers; same skill investment |
 | 3 | Applied AI Engineer → FDE | Stage 3 (~Month 30+) — evidence is built now, applications are not |
 | — | Data Analyst | Not under any circumstance (roadmap). **C55 (applied 7 Oct 2026)** clarifies it: generic analyst postings stay excluded; the in-domain **bridge tier** below is admitted |
@@ -37,12 +74,13 @@ The broad search still opens at the **full DataVault S2 ship (~Q1 2027)**. Plann
 
 | Lane | What | Where it sits in the week |
 |---|---|---|
-| **L1 Foundations** | P4E · CS50x/CS50P · Mode SQL · Docker · 🆕 dbt Fundamentals (W5–6) · 🆕 dbt Advanced (W11–12) | Weekday mornings |
-| **L2 AE/DE flagship** | recon-toy (rehearsal) → **DataVault: Python ingests, dbt decides** → 🚦 soft trigger Day 70 | Evenings + Saturdays |
-| **L3 Applied-AI evidence** | Claude API SDK · eval harness · PolicyPulse S1 v0 | Evenings + Saturdays |
+| **L1 Foundations** | P4E · CS50x/CS50P · Mode SQL · Docker · 🆕 dbt Fundamentals (W5–6) · 🆕 dbt Advanced (W10–12) · ⚖️ v3.1: Kimball reading map (W4–10) | Weekday mornings |
+| **L2 AE/DE flagship** | recon-toy (rehearsal) → **DataVault: Python ingests, dbt decides** → ⚖️ Kimball star → 🚦 soft trigger **Day 63** → v0.2.0 → contracts | Evenings + Saturdays |
+| **L3 Applied-AI evidence** | Claude API SDK · eval harness (W9–10) · PolicyPulse S1 v0 with a code-graded gate · ⚖️ v3.1: AI-901, Pro labs, Triad judge gate, DeepEval, MCP primer → Q2 | Evenings + Saturdays |
 | **L4 Trading** 🆕 | Market-data dbt rehearsal (Day 41) → AFC Phase-1 kickoff (Day 83) | Saturday blocks |
-| **L5 Job search** 🆕 | Evidence file · LinkedIn · target list · warm conversations · résumé · applications after Day 70 | Sundays; one weekday slot from Week 11 |
-| *Extra-time (outside the 25)* | AB-620 + Google Git — your earlier rulings, from Week 9, ~2 hrs/wk each, capped | Unchanged |
+| **L5 Job search** 🆕 | Evidence file · LinkedIn · target list · warm conversations · résumé · applications from **Day 64** (v3.1) | Sundays; one weekday slot from Week 11 |
+| *Extra-time (outside the 25)* | AB-620 + Google Git — your earlier rulings, from Week 9, ~2 hrs/wk each, capped | ⚖️ v3.1: AB-620 now **only** here |
+| ⚖️ **Priority guardrail** 🆕 | AE/DE build hours ≥ Applied-AI hours every fortnight until the first screen (C58) | Checked every Sunday |
 
 ### Milestone calendar
 
@@ -55,13 +93,17 @@ The broad search still opens at the **full DataVault S2 ship (~Q1 2027)**. Plann
 | 34–42 | 22–30 Aug | 🆕 dbt Fundamentals (dbt Labs, free, certificate) |
 | 41 | Sat 29 Aug | 🆕 **Trading lane opens** — market-data dbt rehearsal, `dbt build` green |
 | 43 | Mon 31 Aug | DataVault scaffolds with a dbt project from commit one |
-| 54 | Fri 11 Sep | AI-901 exam |
-| 61 | Fri 18 Sep | `dbt build` becomes a blocking CI step |
-| 69–70 | 26–27 Sep | 🚦 **SOFT TRIGGER** — DataVault v0.1.0 public → narrow search opens |
-| 77 | Sun 4 Oct | PolicyPulse S1 v0 public (the 404 is gone) |
+| 47–51 | 4–8 Sep | ⚖️ DataVault as a **Kimball star** — grain, four conformed dimensions, `relationships` tests (v3.1) |
+| 52 | Wed 9 Sep | `dbt build` becomes a blocking CI step (⚖️ v3.1 — was Day 61) |
+| 54 | Fri 11 Sep | ~~AI-901 exam~~ → ⏭️ Q2 · ⚖️ AE interview reps #1 + Track B #1–#2 on the public 1099 repo |
+| 58 | Tue 15 Sep | ⚖️ dbt docs on GitHub Pages (v3.1) |
+| 62–63 | 19–20 Sep | 🚦 **SOFT TRIGGER** — DataVault v0.1.0 public → narrow search opens **Day 64** (⚖️ v3.1 — was Days 69–70; Day 70 is the fallback) |
+| 69 | Sat 26 Sep | ⚖️ DataVault **v0.2.0** — SCD Type 2 snapshot + idempotent incremental (v3.1) |
+| 77 | Sun 4 Oct | PolicyPulse S1 v0 public with a code-graded gate (the 404 is gone) |
 | 82 | Fri 9 Oct | 🔴 Last day of employment — exit checklist |
 | 83 | Sat 10 Oct | 🆕 **AFC Phase-1 kickoff** (trading lane) |
-| 84 | Sun 11 Oct | Month-3 retro — now with job-lane and trading-lane sections |
+| 84 | Sun 11 Oct | Month-3 retro — now with job-lane, trading-lane and ⚖️ guardrail sections |
+| Q2 | Weeks 13–14 | ⏭️ AI-901 sprint + exam · Pro month + PolicyPulse Triad judge gate (C58) |
 
 ### What moved to make room (replace, not stack)
 
@@ -71,9 +113,9 @@ The broad search still opens at the **full DataVault S2 ship (~Q1 2027)**. Plann
 | AI Prompting for Everyone (videos) | Weeks 5–6 | Flex / Q2 | Videos-only row; its slots go to dbt Fundamentals |
 | DataVault recon + Box-7 rules engine | Weeks 7–8, in Python | Same weeks, **as dbt models with tests** | C35 §2 made literal: set-level logic belongs in dbt; Python keeps generation, ingestion and the row-level contract |
 | Python 3.14 retrofit (Day 41) | Week 6 | Not needed | The template starts on 3.14 at setup |
-| Four S2 short DL.AI labs | Weeks 10–11 | Flex inside the Pro month | Eval courses keep priority |
+| Four S2 short DL.AI labs | Weeks 10–11 | Flex inside the Pro month | Eval courses keep priority — ⚖️ v3.1: the whole Pro month moves to Q2 |
 | Track A before-metrics | Week 12 | Week 10 (work-day session) | Less weight on the Day-82 cliff |
-| PolicyPulse S1 | Weeks 11–12 | Week 11 core + Week 12 improve cycle | Keeps the roadmap order DataVault → PolicyPulse → Crucible |
+| PolicyPulse S1 | Weeks 11–12 | Week 11 core + Week 12 improve cycle | Keeps the roadmap order DataVault → PolicyPulse → Crucible — ⚖️ v3.1: code-graded gate now, judge-graded gate in Q2 |
 
 ### The trading lane — what the roadmap allows, and the honest answer on dbt
 You're right that the trading projects carry dbt — **at Stage 2, not Stage 1.** The AFC Stage-1 build sheet (v9.1) lists dbt under "Not in S1"; dbt arrives with AFC's S2 **knowledge-time lakehouse** and Crucible's **market-data lakehouse**, both built by reusing DataVault's S2 dbt patterns (Build Progression). So this template does two things now and books the dbt payoff for S2:
@@ -86,8 +128,8 @@ You're right that the trading projects carry dbt — **at Stage 2, not Stage 1.*
 - **Private workspace.** A private repo (e.g. `career-search`) or a folder outside every public repo. Target lists, contacts and the application tracker never go in `learning_journey`.
 - **Three target tiers** (C54 §5 + the Stage 2 referral-geography block): **Tier 1** retirement recordkeeping / wealth-retirement fintech (domain match first — e.g. Vestwell, Ascensus, Empower, Principal, Voya, TIAA, Fidelity, Human Interest, Guideline); **Tier 2** Charlotte / Atlanta finance (start from Built In Charlotte); **Tier 3** 🆕 capital-markets and trading fintech, where the market-data work counts.
 - **Bridge tier — Correction 55 (applied 7 Oct 2026).** Technical data roles at Tier-1 recordkeepers whose titles may not say "engineer" (data conversion/migration, data operations, implementation data, operations automation / agentic operations) — only where the posting requires SQL + a warehouse or automation platform + retirement domain. They are eligible for applications under the same referral-first rules, **tracked separately** so the C55 falsifier can be read: if they don't screen at a higher rate than AE/DE applications within the same 25-application window, the tier is dropped.
-- **Before Day 70:** build the list, the profile, the résumé and relationships. Informational conversations only — no job asks.
-- **From Day 70:** referral-first, tailored applications to the list — small waves, not volume. **Falsifier (C54 §5):** 25 targeted or referred applications with zero recruiter / hiring-manager screens → pause the narrow search and return the hours to DataVault S2.
+- **Before the soft trigger (Day 63 in v3.1; Day 70 fallback):** build the list, the profile, the résumé and relationships. Informational conversations only — no job asks.
+- **From Day 64 (v3.1):** referral-first, tailored applications to the list — small waves, not volume. **Falsifier (C54 §5):** 25 targeted or referred applications with zero recruiter / hiring-manager screens → pause the narrow search and return the hours to DataVault S2.
 - **No dead links.** Never link a repo from the profile or portfolio README until it is public, with a README and green CI. Mark planned work as planned.
 
 ### Tooling note (verified 6 Oct 2026)
@@ -96,6 +138,7 @@ dbt Core **1.12** is the first line that supports Python **3.14** (your floor); 
 ### Roadmap corrections this re-cut created — ✅ applied to `roadmap.html` on 7 Oct 2026
 - ✅ **C55** — the domain-bridge tier above.
 - ✅ **C56** — the Stage-1 schedule pull-forwards in the "what moved" table.
+- ✅ **C58** — the v3.1 priority rebalance and guardrail (applied 8 Oct 2026).
 - Full text: the roadmap's v10.0 changelog (also in `PLAN_RECUT_v3_CHANGELOG.md`). Still owed from before: the harness reversal (C39), AB-620 status, and the hours-model exception.
 
 ---
@@ -430,6 +473,7 @@ Create `journal/TEMPLATE.md`:
 ```markdown
 # Journal — YYYY-MM-DD (Day N)
 **Blocks completed:** Morning ☐ · Evening ☐ · Hours: X.X
+**Lane hours (C58):** AE/DE __ · Applied AI __ · Foundations __ · Job __ · Trading __ · Admin __
 **Today I learned:** (3 bullets max)
 **Today I built:** (link to commit/file)
 **Stuck on / question for tomorrow:**
@@ -441,7 +485,7 @@ Every day ends by copying it to `journal/2026-07-XX.md`, filling it, committing 
 1. **Create a private home for the search**, outside every public repo — a private GitHub repo (`gh repo create career-search --private`) or a local folder. It holds three files you'll grow all quarter:
    - `evidence.md` — the **evidence file** (retrofit R4's name, used from day one): every artifact, certificate, metric and STAR story, with links. It is your résumé's source of truth.
    - `targets.md` — the target list (starts Day 14; the three tiers are in the v3.0 block).
-   - `tracker.md` — conversations and, from Day 70, applications, with the C54 falsifier counter (`n / 25`).
+   - `tracker.md` — conversations and, from Day 64 (v3.1), applications, with the C54 falsifier counter (`n / 25`).
 2. Add one line to `evidence.md` now: the live 1099 reconciliation pipeline — **mechanism and relative outcomes only** (no client identifiers, no absolute figures; the deposition test applies to your notes too).
 > **Why on Day 1:** the roadmap plans for a multi-month search (C54 §3), and referrals dominate hiring. Relationships take longer to build than repos, so the slow lane starts first.
 
@@ -777,7 +821,7 @@ For each rule code you don't understand: look it up in the Ruff docs, understand
 ---
 
 ### 📌 DAY 7 — Sunday, July 26 (2h)
-- [ ] 35 min — Week review: run every script, re-read every note; write `weekly-summaries/week-01.md` (shipped / hours / hard parts / next focus)
+- [ ] 35 min — Week review: run every script, re-read every note; write `weekly-summaries/week-01.md` (shipped / hours **by lane** / hard parts / next focus) — ⚖️ total the journal's lane-hours lines; from Week 3 this total is the C58 priority check
 - [ ] 30 min — **Publish LinkedIn post #1** (pillar: frontline building). Formula: what I set up → one thing that surprised me → one artifact (repo screenshot). Never "I'm looking for a job."
 - [ ] 20 min — 🆕 **Job lane: LinkedIn headline + About** for the target, in honest present tense — e.g. *"Retirement-plan operations (ERISA) → analytics & data engineering · Python · SQL · building production data systems in public."* No title you don't hold; dbt goes in once you've shipped it.
 - [ ] 15 min — Plan Week 2; block calendar
@@ -1141,7 +1185,8 @@ Run: `uv run python -m learning_journey.projects.contribution_report`
 ### 📌 DAY 14 — Sunday, August 2 (2h)
 - [ ] 40 min — `weekly-summaries/week-02.md` + full `uv run pytest` + re-read all code
 - [ ] 30 min — Publish post #2
-- [ ] 20 min — Read the Weeks 3–4 plan
+- [ ] 15 min — Read the Weeks 3–4 plan
+- [ ] 5 min — ⚖️ **Priority check (C58)**: fortnight AE/DE vs Applied-AI hours. Trivially green this fortnight — building the habit is the point
 - [ ] 10 min — 🆕 **Job lane:** start `targets.md` — 5 Tier-1 companies (retirement recordkeeping / wealth-retirement fintech), one line each on why they fit
 - [ ] 20 min — Journal + commit 🎉
 
@@ -1186,4 +1231,4 @@ TECHNICAL                                  HABITS & DISTRIBUTION
 🆕 **v3.0 additions:** the Job lane's target list v0 (Day 21) and first informational-conversation request (Day 28). Further out: **dbt Fundamentals enters in Weeks 5–6**, the **trading lane opens on Day 41** with a market-data dbt rehearsal, and DataVault scaffolds with a dbt project on Day 43.
 
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–56) · v3.0 job-first re-cut, approved 6 Oct 2026 · C55/C56 applied to the roadmap 7 Oct 2026. Propose→approve governance: this plan does not edit `roadmap.html`; corrections still owed are listed in the v3.0 block. Items flagged for review are in Day 5 and the Step-7 checkpoint.*
+*Aligned to Career Roadmap v10.0 (Corrections 1–58) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026). Propose→approve governance: this plan does not edit `roadmap.html`; corrections still owed are listed in the v3.0 block. Items flagged for review are in Day 5 and the Step-7 checkpoint.*
