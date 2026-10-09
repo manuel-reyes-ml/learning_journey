@@ -1,6 +1,6 @@
 # 🧭 Activation Plans v3.0 — Job-First Re-Cut · Changelog
 
-**Approved:** 6 Oct 2026 (Manuel) · **Scope:** the six bi-weekly plans `WEEK_01_02` … `WEEK_11_12` · **Template:** fresh 12 weeks from Mon 20 Jul 2026 · **Hours:** 25/week, unchanged · **Aligned to:** roadmap v10.0, Corrections 1–56
+**Approved:** 6 Oct 2026 (Manuel) · **Scope:** the six bi-weekly plans `WEEK_01_02` … `WEEK_11_12` · **Template:** fresh 12 weeks from Mon 20 Jul 2026 · **Hours:** 25/week, unchanged · **Aligned to:** roadmap v10.0, Corrections 1–58 · 🆕 **v3.1 priority rebalance** (8 Oct 2026, C58) — see section 8
 **Roadmap:** the two corrections this re-cut created — **C55 and C56** — were approved and **applied to `roadmap.html` on 7 Oct 2026** (changelog entries + inline propagation; snapshot now 1–56; archive untouched). Their text is reproduced at the bottom.
 
 ---
@@ -74,3 +74,32 @@ Propagation: Stage 1 exit criterion (soft-trigger note), Stage 2 referral-geogra
 **(4)** AFC's Phase-1 kickoff lands on Day 83 under the AFC build sheet's early-artifact clause; a market-data dbt rehearsal runs in `learning_journey` (practice, not portfolio) on Day 41. AFC's own dbt work stays in S2, as the build sheet states.
 **(5)** *AI Prompting for Everyone* moves to flex; the four S2 short DL.AI labs become flex inside the Pro month.
 **Falsifier:** if the soft trigger slips past Week 12, the pull-forwards are reviewed before Q2 adds any new thread. Cost: $0. No course, certification or book added or removed; hours unchanged at 25/week; Crucible's position unchanged; archive untouched; version stays v10.0.
+
+---
+
+## 8. v3.1 — priority rebalance (approved 8 Oct 2026 · roadmap Correction 58, applied)
+
+**Question:** do the plans follow the role priority — Analytics Engineer first door, Data Engineer parallel, Applied AI → FDE later?
+**Finding:** the milestones did; the hours did not. An audit of all 84 days (300 h, every block priced from the 25 hrs/week schedule) gave AE/DE 63 h vs Applied AI 90 h, inverting to 43 h vs 83 h from Week 5, with ~6 h vs ~27 h in the soft-trigger fortnight. 4.5 h of AB-620 also sat inside the 25.
+
+| Fortnight | v3.0 AE/DE · AI | v3.1 AE/DE · AI | Guardrail |
+|---|---|---|---|
+| Weeks 1–2 | 3.5 · 0 | 3.5 · 0 | ✅ |
+| Weeks 3–4 | 16.7 · 6.9 | 20.3 · 3.2 | ✅ |
+| Weeks 5–6 | 12.7 · 25.1 | 20.0 · 18.8 | ✅ |
+| Weeks 7–8 | 18.2 · 13.5 | 28.5 · 4.0 | ✅ |
+| Weeks 9–10 | 6.2 · 26.8 | 20.1 · 10.6 | ✅ |
+| Weeks 11–12 | 5.8 · 17.8 | 14.4 · 10.5 | ✅ |
+| **12 weeks** | **63 · 90** | **107 · 47** | |
+
+Inside AE/DE: AE skills (SQL, dbt, modeling) 83 h · DE skills (ingestion, infra, CI, Track B) 24 h.
+
+**Rule adopted — the priority guardrail:** AE/DE build hours ≥ Applied-AI hours every fortnight until the narrow search's first screen; checked every Sunday from the journal's lane-hours line; a failed fortnight hands the next AI slot to DataVault.
+
+**Moved (deferred, never deleted — all inside Stage 1):** AI-901 study + exam → Q2 Weeks 13–14 · the Sprint-1 Pro month → Q2, with PolicyPulse's RAG Triad build (C17's own trigger) · PolicyPulse's judge-graded gate, DeepEval, harness hardening, MCP primer → Q2 · AB-620's in-budget blocks → extra time · soft trigger Day 70 → **Day 63** (Day 70 fallback).
+
+**Filled with (roadmap sources, each landing in a repo):** the Kimball reading map against the build · DataVault as a Kimball star · `dbt build` in CI (Day 52) · docs (Day 58) · v0.1.0 (Day 62) · SCD2 snapshot + custom generic test + idempotent incremental → v0.2.0 (Day 69) · model contracts (Week 11) · Track B #1–#5, #7, #9 on the public 1099 repo · AE interview reps from Week 6 and a timed take-home rehearsal · dbt Advanced from Day 67.
+
+**Falsifier:** if the soft trigger still slips past Day 70, or 25 targeted applications produce zero screens, hours were not the bottleneck — diagnose market fit instead of re-tuning the split.
+
+**Method note:** hours parsed from each day's timed items; untimed items share their block's leftover minutes; struck-through and collapsed reference items excluded. Figures are ±2 h per fortnight.
