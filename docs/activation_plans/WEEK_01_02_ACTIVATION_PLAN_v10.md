@@ -1,9 +1,9 @@
 # 🚀 WEEKS 1–2 MASTER ACTIVATION PLAN (v10.0)
 ## Internal AI Builder Track | Starting Monday, July 20, 2026
 
-**Document Version:** 3.1 — ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, roadmap C58) on top of the 3.0 **JOB-FIRST RE-CUT** (6 Oct 2026) · fresh 12-week template from Mon 20 Jul 2026
+**Document Version:** 3.2 — 🎯 **READINESS GATE** (9 Oct 2026, roadmap C59) on the 3.1 ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, C58) and the 3.0 **JOB-FIRST RE-CUT** (6 Oct 2026) · fresh 12-week template from Mon 20 Jul 2026
 **Covers:** Monday, July 20 – Sunday, August 2, 2026 (Stage 1 · Month 1 · Weeks 1–2)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–58** (C58 applied 8 Oct 2026 — see the v3.1 block) — Stage 1: Internal AI Builder (Months 1–8) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–59** (C58 applied 8 Oct 2026 — see the v3.1 block · C59 applied 9 Oct 2026 — see the v3.2 block) — Stage 1: Internal AI Builder (Months 1–8) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
 **Weekly Hours:** 25 (Mon–Fri 4:30–6:00 AM + 8:00–10:00 PM · Sat 5:00–8:30 AM + 8:00–10:00 PM · Sun 7:30–9:30 PM)
 **Your Level:** Beginning the tech build from scratch — 15+ years business ops, 2 years ERISA-regulated financial operations, 5+ years trading
 
@@ -13,7 +13,30 @@
 
 ---
 
-## ⚖️ v3.1 PRIORITY REBALANCE — READ THIS FIRST (approved 8 Oct 2026 · roadmap Correction 58)
+## 🎯 v3.2 READINESS GATE — READ THIS FIRST (approved 9 Oct 2026 · roadmap Correction 59)
+
+**What changed — one line of the C58 rule.** The guardrail now ends when you are **job-ready**, not when the market answers:
+
+> **Every fortnight, AE/DE build hours ≥ Applied-AI hours — until DataVault S2 hardening ships.** Then the rule flips: **Applied-AI hours ≥ AE/DE build hours, hired or not.**
+
+**The gate** is the roadmap's Stage 1 exit, unchanged: ingestion → dbt-tested models (CI-gated) → orchestration (Airflow) → data contracts → Docker/ECS deploy → monitoring, with ADRs, a C4 view and a written postmortem. The same ship opens the broad ~Q1 2027 search.
+
+| | C58 (v3.1) | **C59 (v3.2)** |
+|---|---|---|
+| AE/DE majority ends at | First recruiter / hiring-manager screen | **DataVault S2 hardening shipped** |
+| Failure it removes | — | A Week-10 screen flipping you to PolicyPulse with half a flagship · slow screens keeping Applied AI in the minority indefinitely |
+| After the switch | "may shift toward PolicyPulse" | **Applied AI ≥ AE/DE every fortnight, hired or not** · AE/DE keeps a maintenance share: DP-700 / AWS DEA on the Stage 2 schedule + fixes to shipped repos |
+| What screens do | Ended the rule | Feed the job lane and the C54 falsifier only |
+
+**Never squeezed:** interview prep, take-homes and applications count as job search — on neither side — before and after the gate. Target roles are unchanged: Analytics Engineer first door, Data Engineer parallel.
+
+**Effect on these 12 weeks: none on hours.** The gate lands after Week 12, so the v3.1 table below (107 h AE/DE vs 47 h Applied AI, every fortnight passing) stands; re-audited 9 Oct 2026. **Q2 changes:** the guardrail keeps running there, so AI-901 (Weeks 13–14) and the Sprint-1 Pro month go in different fortnights inside Applied AI's share, and the IBM GenAI PC shares that budget — expect it to finish after Month 6 (its window is set at the Month-3 retro, C56).
+
+**Falsifier:** if S2 hardening has not shipped by **31 March 2027**, the guardrail and S2's scope are reviewed together — Applied AI is not kept in the minority by default. After the gate, if AE/DE interview loops fail twice on the same technical skill, that skill gets AE/DE hours back until it is fixed (reviewed, not automatic). If an offer is accepted before the gate, the roadmap gets its own re-anchoring correction, as C22 did for the resignation.
+
+---
+
+## ⚖️ v3.1 PRIORITY REBALANCE — the hours (approved 8 Oct 2026 · roadmap Correction 58; v3.2 above sets when the rule ends)
 
 **Why.** An hour audit of all 84 days of v3.0 (300 h, every block priced from the schedule above) showed the **milestones** followed your priority — Analytics Engineer first door, Data Engineer parallel, Applied AI → FDE later — but the **hours** did not. From Week 5, Applied-AI work took roughly twice the AE/DE time, and the fortnight that ships the soft trigger gave DataVault ~6 h against ~27 h of AI work. v3.1 fixes the hours without deleting anything.
 
@@ -29,8 +52,8 @@
 
 *Foundations (~65 h), job search (~29 h), trading (~6 h), the Day-82 exit work and weekly reviews make up the rest of the 300 h. Figures are ±2 h per fortnight: untimed items share their block's leftover minutes.*
 
-### ⚖️ The priority guardrail (C58) — a standing rule
-**Every fortnight, AE/DE build hours ≥ Applied-AI hours — until the narrow search produces its first recruiter or hiring-manager screen.** Foundations, job search, trading and admin count on neither side. Check it every Sunday from the journal's new *lane hours* line (Step 9). If a fortnight fails, the next week's first Applied-AI slot goes to DataVault. After the first screen, the balance may shift toward PolicyPulse. *Falsifier: if the soft trigger still slips past Day 70, or 25 targeted applications produce zero screens, hours were not the bottleneck — diagnose market fit instead of re-tuning the split.*
+### ⚖️ The priority guardrail (C58 · end condition C59) — a standing rule
+**Every fortnight, AE/DE build hours ≥ Applied-AI hours — ~~until the narrow search produces its first recruiter or hiring-manager screen~~ until DataVault S2 hardening ships (🎯 v3.2, C59).** Foundations, job search, trading and admin count on neither side. Check it every Sunday from the journal's new *lane hours* line (Step 9). If a fortnight fails, the next week's first Applied-AI slot goes to DataVault. ~~After the first screen, the balance may shift toward PolicyPulse.~~ After the gate, the rule flips: Applied AI ≥ AE/DE, hired or not (C59). *Falsifier: if the soft trigger still slips past Day 70, or 25 targeted applications produce zero screens, hours were not the bottleneck — diagnose market fit instead of re-tuning the split.*
 
 ### What moved — deferred, never deleted (every item stays inside Stage 1)
 | Item | v3.0 | v3.1 | Why |
@@ -52,7 +75,7 @@
 
 ## 🧭 v3.0 JOB-FIRST RE-CUT (approved 6 Oct 2026) — the base layer; v3.1 dates above win where they differ
 
-**What this is.** All six fortnight plans are re-cut as **one fresh 12-week template starting Monday 20 July 2026, at 25 hrs/week**, aligned to roadmap **Corrections 1–56** at the time (C55 and C56 came out of this re-cut and were applied 7 Oct 2026; ⚖️ v3.1 brings the template to **Corrections 1–58**). The organising question changed from *"what does Stage 1 teach?"* to *"what gets me my first Analytics Engineer / Data Engineer job soonest, without breaking the roadmap?"* The target-role ruling (Corrections 22 §3 and 54) is the compass:
+**What this is.** All six fortnight plans are re-cut as **one fresh 12-week template starting Monday 20 July 2026, at 25 hrs/week**, aligned to roadmap **Corrections 1–56** at the time (C55 and C56 came out of this re-cut and were applied 7 Oct 2026; ⚖️ v3.1 brings the template to **Corrections 1–58**, 🎯 v3.2 to **1–59**). The organising question changed from *"what does Stage 1 teach?"* to *"what gets me my first Analytics Engineer / Data Engineer job soonest, without breaking the roadmap?"* The target-role ruling (Corrections 22 §3 and 54) is the compass:
 
 | Priority | Role | When the search opens |
 |---|---|---|
@@ -80,7 +103,7 @@ The broad search still opens at the **full DataVault S2 ship (~Q1 2027)**. Plann
 | **L4 Trading** 🆕 | Market-data dbt rehearsal (Day 41) → AFC Phase-1 kickoff (Day 83) | Saturday blocks |
 | **L5 Job search** 🆕 | Evidence file · LinkedIn · target list · warm conversations · résumé · applications from **Day 64** (v3.1) | Sundays; one weekday slot from Week 11 |
 | *Extra-time (outside the 25)* | AB-620 + Google Git — your earlier rulings, from Week 9, ~2 hrs/wk each, capped | ⚖️ v3.1: AB-620 now **only** here |
-| ⚖️ **Priority guardrail** 🆕 | AE/DE build hours ≥ Applied-AI hours every fortnight until the first screen (C58) | Checked every Sunday |
+| ⚖️ **Priority guardrail** 🆕 | AE/DE build hours ≥ Applied-AI hours every fortnight until **DataVault S2 hardening ships** (C58 · 🎯 C59 — was "until the first screen"), then Applied AI ≥ AE/DE, hired or not | Checked every Sunday |
 
 ### Milestone calendar
 
@@ -103,7 +126,8 @@ The broad search still opens at the **full DataVault S2 ship (~Q1 2027)**. Plann
 | 82 | Fri 9 Oct | 🔴 Last day of employment — exit checklist |
 | 83 | Sat 10 Oct | 🆕 **AFC Phase-1 kickoff** (trading lane) |
 | 84 | Sun 11 Oct | Month-3 retro — now with job-lane, trading-lane and ⚖️ guardrail sections |
-| Q2 | Weeks 13–14 | ⏭️ AI-901 sprint + exam · Pro month + PolicyPulse Triad judge gate (C58) |
+| Q2 | Weeks 13–14 | ⏭️ AI-901 sprint + exam (C58) · the Pro month + PolicyPulse Triad judge gate follow in a later Q2 fortnight, inside Applied AI's share (🎯 C59) |
+| Gate | target ~Q1 2027 (review if not by 31 Mar 2027) | 🎯 **DataVault S2 hardening ships** — the readiness gate: broad search opens · the guardrail flips to Applied AI ≥ AE/DE, hired or not (C59) |
 
 ### What moved to make room (replace, not stack)
 
@@ -139,6 +163,7 @@ dbt Core **1.12** is the first line that supports Python **3.14** (your floor); 
 - ✅ **C55** — the domain-bridge tier above.
 - ✅ **C56** — the Stage-1 schedule pull-forwards in the "what moved" table.
 - ✅ **C58** — the v3.1 priority rebalance and guardrail (applied 8 Oct 2026).
+- ✅ **C59** — the guardrail ends at job-readiness (DataVault S2 hardening shipped), not at the first screen; after it, Applied AI ≥ AE/DE, hired or not (applied 9 Oct 2026).
 - Full text: the roadmap's v10.0 changelog (also in `PLAN_RECUT_v3_CHANGELOG.md`). Still owed from before: the harness reversal (C39), AB-620 status, and the hours-model exception.
 
 ---
@@ -1231,4 +1256,4 @@ TECHNICAL                                  HABITS & DISTRIBUTION
 🆕 **v3.0 additions:** the Job lane's target list v0 (Day 21) and first informational-conversation request (Day 28). Further out: **dbt Fundamentals enters in Weeks 5–6**, the **trading lane opens on Day 41** with a market-data dbt rehearsal, and DataVault scaffolds with a dbt project on Day 43.
 
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–58) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026). Propose→approve governance: this plan does not edit `roadmap.html`; corrections still owed are listed in the v3.0 block. Items flagged for review are in Day 5 and the Step-7 checkpoint.*
+*Aligned to Career Roadmap v10.0 (Corrections 1–59) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026) · v3.2 readiness gate (C59, 9 Oct 2026). Propose→approve governance: this plan does not edit `roadmap.html`; corrections still owed are listed in the v3.0 block. Items flagged for review are in Day 5 and the Step-7 checkpoint.*
