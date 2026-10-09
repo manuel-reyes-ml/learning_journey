@@ -1,9 +1,9 @@
 # 🚀 WEEKS 3–4 MASTER ACTIVATION PLAN (v10.0)
 ## Internal AI Builder Track | August 3–16, 2026
 
-**Document Version:** 3.0 — 🧭 **JOB-FIRST RE-CUT** (6 Oct 2026): fresh 12-week template from Mon 20 Jul 2026 · supersedes 2.3
+**Document Version:** 3.1 — ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, roadmap C58) on top of the 3.0 job-first re-cut · fresh 12-week template from Mon 20 Jul 2026
 **Covers:** Monday, August 3 – Sunday, August 16, 2026 (Stage 1 · Month 1 → 2 · Weeks 3–4)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–56** (C55/C56 applied 7 Oct 2026) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–58** (C58 applied 8 Oct 2026) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
 **Prerequisite:** Weeks 1–2 metrics ≥80% (below that: close gaps in this fortnight's flex slots first)
 **Weekly Hours:** 25 (same block schedule)
 
@@ -12,13 +12,13 @@
 ---
 
 ## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
-Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–56. **The full rationale — lanes, milestone calendar, trading-lane and job-lane rules — is the v3.0 block in Weeks 1–2.** What changes here:
+Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–58. **The full rationale — lanes, milestone calendar, trading-lane and job-lane rules — is the v3.0 block in Weeks 1–2.** What changes here:
 
 | Lane | This fortnight in v3.0 |
 |---|---|
-| L1 Foundations | Unchanged — and Mode SQL Intermediate is now explicitly the **dbt on-ramp** (dbt starts Week 5) |
+| L1 Foundations | Unchanged — and Mode SQL Intermediate is now explicitly the **dbt on-ramp** (dbt starts Week 5) · ⚖️ **v3.1:** **Kimball Ch. 1–3** (the owned book, C57 reading map) and CTE practice take the freed AI-901 slots |
 | L2 AE/DE flagship | Unchanged — recon-toy rehearses DataVault's shape |
-| L3 Applied AI | Unchanged — AI Python videos; AI-901 kickoff (self-funded) |
+| L3 Applied AI | AI Python videos · ~~AI-901 kickoff~~ → ⏭️ **Q2, Weeks 13–14** (C58) |
 | L4 Trading | Nothing yet (Alpaca parked since Week 2) |
 | L5 Job search 🆕 | **Day 21:** target list v0 — 15 companies across three tiers · **Day 28:** first informational-conversation request (no job ask) |
 
@@ -28,7 +28,7 @@ Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to
 1. [Where You Stand](#-where-you-stand-after-week-2)
 2. [Strategic Context](#-strategic-context)
 3. [WEEK 3: Data Structures + SQL Joins + AI Python (Aug 3–9)](#-week-3-aug-39)
-4. [WEEK 4: Dictionaries, Docker + AI-901 Kickoff (Aug 10–16)](#-week-4-aug-1016)
+4. [WEEK 4: Dictionaries, Docker + 🆕 the Kimball Primer — ~~AI-901 Kickoff~~ → Q2 (Aug 10–16)](#-week-4-aug-1016)
 5. [2-Week Success Metrics](#-2-week-success-metrics)
 6. [What Comes Next](#-what-comes-next)
 
@@ -69,6 +69,9 @@ Per the Weeks 1–2 Agent Policy, you now graduate from tutor-mode-only to **boi
 
 ### AI-901 kickoff = the evidence engine starts
 
+> ⏭️ **v3.1 (C58): AI-901 moves to Q2 (Weeks 13–14)** as one Foundry-weighted prep sprint. Nothing in this section is scheduled this fortnight; it governs that sprint. The freed slots go to the **Kimball primer** — the modeling vocabulary DataVault is built in.
+
+
 Week 4 opens **Azure AI Fundamentals (AI-901)** study — **self-funded, $99** (Microsoft Fundamentals tier). ~~employer-reimbursed cert #1~~ · ~~every cert doubles as evidence for the Month-6 scope-change conversation with Jen~~ · ~~submit the reimbursement pre-approval through the Financial Industry Professional Education Program~~.
 
 > 🔄 **Corrections 22 / 32 / 37 — the funding premise is retired.** All certifications in the canon are **self-funded**; no employer reimbursement applies to any of them, and the Month-6 scope-change conversation **can no longer occur** (employment ends 9 Oct 2026). There is no pre-approval to file and no claim to submit. **Skip every reimbursement task in this fortnight.** The cert's job is unchanged — it is Tier-3 evidence for the **Q1 2027 external AE/DE applications** — but it is now a $99 purchase you make and expense to yourself. ⚠️ Note also that **AB-620 moved to conditional** (Correction 37): it is committed only if the Microsoft-ecosystem specialization decision goes that way, so do not treat it as an automatic next exam.
@@ -83,8 +86,10 @@ AI:     prompting an LLM from Python (Ng course — free-tier videos, exercises
         replicated locally per Correction 17)
 Docs:   your first ADR, written from the roadmap's ADR learning pack
         (Correction 14 — Core Course #17, ADR half; Nygard template)
-Certs:  AI-901 exam structure + Microsoft Learn path · RPF written-determination
+Certs:  ~~AI-901 exam structure~~ (Q2, C58) · RPF written-determination
         ask (Correction 15 open item)
+Model:  Kimball — business process · grain · facts vs dimensions · CTE-first
+        SQL (🆕 v3.1)
 ```
 
 ---
@@ -552,7 +557,7 @@ Run: `uv run python -m learning_journey.projects.recon_toy` — then open the re
 ---
 
 ### 📌 DAY 21 — Sunday, August 9 (2h)
-- [ ] 30 min — `weekly-summaries/week-03.md` + full test run
+- [ ] 30 min — `weekly-summaries/week-03.md` + full test run + 🆕 lane-hours total from the journal (C58 habit)
 - [ ] 25 min — Publish post #3
 - [ ] 25 min — Plan Week 4; check meetup calendar (Greenville Python ~2nd Tuesday → likely Aug 11 → RSVP)
 - [ ] 20 min — 🆕 **Job lane — target list v0** (private `targets.md`): 15 companies across the three tiers in the Weeks 1–2 v3.0 block, Tier 1 first (retirement recordkeeping / wealth-retirement fintech). Per company: why it fits, one data posting you found (title + the stack words it names — dbt? Snowflake? Airflow?), and the nearest warm path (HackGreenville member, alumni, former colleague). The stack words become your dbt study priorities; the warm paths become Week 4's first message.
@@ -567,7 +572,8 @@ Run: `uv run python -m learning_journey.projects.recon_toy` — then open the re
 □ P4E Ch.9–10 → Course 2 DONE          □ AI Python videos COMPLETE + exercises
                                           replicated locally (Accomplishment
                                           deferred to Sprint-1 — Correction 17)
-□ Docker for Beginners ~50%             □ AI-901 Learn path started (2 modules)
+□ Docker for Beginners ~50%             □ ~~AI-901 Learn path started~~ (Q2) ·
+                                          🆕 Kimball Ch. 1–2 + Ch. 3 started
 □ ~~Reimbursement pre-approval submitted~~ ❌ VOID (C22/32/37)  □ recon-toy v0.2 dict matcher + ADR 0001
 □ RPF written-determination question    □ ADR pack read (Core Course #17,
   sent (Correction 15 open item)          ADR half) · Nygard template chosen
@@ -629,7 +635,7 @@ sample_id = distributions[0]["participant_id"]
 print(f"{sample_id} belongs to {by_id[sample_id]['name']}, "
       f"total distributed ${total_by_participant[sample_id]:,.2f}")
 ```
-- [ ] 40 min — **AI-901 admin** ⭐ · 🔄 **REVISED (C22/32/37)**: open the official Microsoft Learn AI-901 path; skim the exam outline (know the map before studying). ~~then draft + send ONE email to the Financial Industry Professional Education Program administrator covering (1) AI-901 reimbursement pre-approval~~ — **void: all certs are self-funded and the employer channel is closed.** What survives is the second half only, and only if you still judge it worth an internal ask before 9 Oct: **the RPF written-determination question** (Correction 15's open item): the program schedule lists "RPF-1, RPF-2" — the superseded two-exam structure — while ASPPA's current course is a single six-module certificate, so ask in writing how the bonus maps onto the current structure *before* any enrollment. You are NOT enrolling in RPF now (it's a later, ~30–50 h item). ⚠️ The stated reason — *"while the pre-approval channel is open anyway"* — no longer holds; there is no pre-approval channel. Ask only if the written determination has standalone value to you. **BCC yourself — this email is evidence-file material.**
+- [ ] 40 min — 🆕 **SQL with CTEs** (v3.1): rewrite Day 18's recon queries as a `WITH` chain — one CTE per step (`participants`, `distributions`, `joined`, `missing`) — and save it as `sql/04_recon_ctes.sql`. That shape, one named step per CTE, is exactly a dbt model; you meet dbt in Week 5. ~~**AI-901 admin** ⭐ · 🔄 **REVISED (C22/32/37)**: open the official Microsoft Learn AI-901 path; skim the exam outline (know the map before studying).~~ → ⏭️ Q2 (C58). *The RPF note below still stands on its own — optional, 10 minutes, only if it has standalone value:* ~~then draft + send ONE email to the Financial Industry Professional Education Program administrator covering (1) AI-901 reimbursement pre-approval~~ — **void: all certs are self-funded and the employer channel is closed.** What survives is the second half only, and only if you still judge it worth an internal ask before 9 Oct: **the RPF written-determination question** (Correction 15's open item): the program schedule lists "RPF-1, RPF-2" — the superseded two-exam structure — while ASPPA's current course is a single six-module certificate, so ask in writing how the bonus maps onto the current structure *before* any enrollment. You are NOT enrolling in RPF now (it's a later, ~30–50 h item). ⚠️ The stated reason — *"while the pre-approval channel is open anyway"* — no longer holds; there is no pre-approval channel. Ask only if the written determination has standalone value to you. **BCC yourself — this email is evidence-file material.**
 - [ ] 20 min — Journal + commit (`feat: dict aggregation + index patterns`)
 
 ---
@@ -638,14 +644,14 @@ print(f"{sample_id} belongs to {by_id[sample_id]['name']}, "
 
 **Morning:** P4E Ch.9 assignments.
 
-**Evening:** 🎪 **Greenville Python Meetup** (if tonight — confirm via HackGreenville directory). Arrive early; the casual first 30 min is where referral relationships form. Intro line: "career-changer building AI-focused data engineering skills — 15 years in financial ops." *If no meetup:* AI Python for Beginners modules + 30 min AI-901 Learn path.
+**Evening:** 🎪 **Greenville Python Meetup** (if tonight — confirm via HackGreenville directory). Arrive early; the casual first 30 min is where referral relationships form. Intro line: "career-changer building AI-focused data engineering skills — 15 years in financial ops." *If no meetup:* AI Python for Beginners modules + 30 min 🆕 Kimball Ch. 1 (start) ~~+ AI-901 Learn path~~.
 - [ ] 15 min — Journal (note 2 names you met) + commit
 
 ---
 
 ### 📌 DAY 24 — Wednesday, August 12
 
-**Morning:** AI-901 Learn: Module 1 (AI workloads overview) — notes in `notebooks/ai901-notes.md`.
+**Morning:** ~~AI-901 Learn: Module 1~~ → ⏭️ Q2 (C58). 🆕 **Kimball, *The Data Warehouse Toolkit*, Ch. 1** — the DW/BI and dimensional-modeling primer. Notes in `notebooks/kimball-notes.md`: in your own words, what a **fact** and a **dimension** are, using recon-toy's two tables as the example (your Day-18 recon queries already join a fact to a dimension without naming them).
 
 **Evening:**
 - [ ] 70 min — **recon-toy v0.2: a dict-based matcher** — same business question as the SQL, answered in Python, so you can compare the two approaches honestly. Add `src/learning_journey/projects/matcher.py`:
@@ -780,7 +786,7 @@ Write 5 lines in your journal, own words: image vs container, and why a hiring m
 
 ### 📌 DAY 26 — Friday, August 14
 
-**Morning:** AI-901 Learn: Module 2 (ML fundamentals concepts).
+**Morning:** ~~AI-901 Learn: Module 2~~ → ⏭️ Q2 (C58). 🆕 **Kimball Ch. 2** (45 min — *skim*: it is the technique catalog, your lookup reference for everything DataVault models; tag the 10 techniques you expect to use) + **Ch. 3, first half** (45 min — the four-step design process: business process → grain → dimensions → facts).
 
 **Evening:**
 - [ ] 75 min — **Your first ADR** ⭐ (Corrections 8 + 14: docs/adr/ on every project — the artifact hiring managers can interrogate; now with an official learning row).
@@ -899,7 +905,7 @@ Also: integrate the Day-24 matcher's mismatch bucket into the exceptions report;
 ---
 
 ### 📌 DAY 28 — Sunday, August 16 (2h)
-- [ ] 35 min — `weekly-summaries/week-04.md` + **Month-1 retro**: hours actual vs planned, 4:30 AM energy (honest), what to change in Month 2
+- [ ] 35 min — `weekly-summaries/week-04.md` + **Month-1 retro**: hours actual vs planned, 4:30 AM energy (honest), what to change in Month 2 · ⚖️ **priority check (C58)**: this fortnight's AE/DE hours ≥ Applied-AI hours? If not, Week 5's first Applied-AI slot goes to DataVault prep
 - [ ] 25 min — Publish post #4
 - [ ] 20 min — Read the Weeks 5–6 plan (generated after your Month-1 retro — so it fits reality, not assumptions)
 - [ ] 20 min — 🆕 **Job lane — first informational-conversation request.** One message to a Tier-1 or Charlotte-finance data person on your list: *"I'm moving from retirement-plan operations into analytics engineering. Could I ask you three questions about how your team models and tests its data?"* No job ask, no résumé attached — you're learning what their stack and screens look like. Log it in `tracker.md`.
@@ -909,7 +915,7 @@ Also: integrate the Day-24 matcher's mismatch bucket into the exceptions report;
 
 ## 📊 2-WEEK SUCCESS METRICS
 ```
-□ P4E Course 2 complete                □ AI-901 started (self-funded — no claim to file)
+□ P4E Course 2 complete                □ ~~AI-901 started~~ (Q2) · 🆕 Kimball Ch. 1–2 read
 □ AI Python videos done + replicated   □ recon-toy v0.3: pipeline + CLI + 15+ tests
 □ Mode SQL joins/aggregation done      □ ADR 0001 written (Nygard) + ADR pack read
 □ Docker ~50% + containers run local   □ SQL ↔ Python cross-check test green
@@ -922,15 +928,17 @@ Also: integrate the Day-24 matcher's mismatch bucket into the exceptions report;
                                           Pro purchased
 □ 🆕 Job lane: list v0 (15) · 1 conversation requested
 ```
-**Passing bar: 80%.** Non-negotiables: the recon-toy thread (feeds DataVault S1) and the AI-901 kickoff (feeds the **evidence file**). 🆕 v3.0 adds a light third: the **target list v0** (the Job lane's foundation).
+**Passing bar: 80%.** Non-negotiables: the recon-toy thread (feeds DataVault S1) and ~~the AI-901 kickoff~~ → 🆕 **Kimball Ch. 1–2** (v3.1 — the modeling vocabulary DataVault is built in). 🆕 v3.0 adds a light third: the **target list v0** (the Job lane's foundation).
 
 ---
 
 ## 🔭 WHAT COMES NEXT
 
-**Weeks 5–6 (Aug 17–30):** *Building with the Claude API* (Anthropic Academy — free, first-party, official certificate: the Correction 19 ladder's noted Tier-5 anomaly with better provenance than its tier implies) — your first real SDK work, using the key from setup: messages, structured outputs, tool use; *AI Prompting for Everyone* (videos only suffice — the roadmap explicitly says don't spend a lab slot here); Mode SQL Advanced (window functions); Docker completed and **recon-toy gets its first Dockerfile using `uv sync --frozen`** (first full production-checklist pass); AI-901 study intensifies toward a Month-2/3 exam date; and the PolicyPulse S1 scoping session lands on the calendar. Further out: the **Sprint-1 DL.AI Pro month** (all nine S1+S2 lab rows batched, every notebook downloaded before the month ends, possibly $0 via the optional AMD free month) stays timed to the PolicyPulse eval-harness build around Weeks 9–12 — not before.
+**Weeks 5–6 (Aug 17–30):** *Building with the Claude API* (Anthropic Academy — free, first-party, official certificate: the Correction 19 ladder's noted Tier-5 anomaly with better provenance than its tier implies) — your first real SDK work, using the key from setup: messages, structured outputs, tool use; *AI Prompting for Everyone* (videos only suffice — the roadmap explicitly says don't spend a lab slot here); Mode SQL Advanced (window functions); Docker completed and **recon-toy gets its first Dockerfile using `uv sync --frozen`** (first full production-checklist pass); ~~AI-901 study intensifies toward a Month-2/3 exam date~~ (⏭️ v3.1: Q2); and the PolicyPulse S1 scoping session lands on the calendar. Further out: the **Sprint-1 DL.AI Pro month** (all nine S1+S2 lab rows batched, every notebook downloaded before the month ends, possibly $0 via the optional AMD free month) stays timed to the PolicyPulse eval-harness build ~~around Weeks 9–12~~ — ⏭️ **v3.1: Q2, with the RAG Triad build** — not before.
 
 🆕 **v3.0 changes to Weeks 5–6:** **dbt Fundamentals** (dbt Labs, free, ~5 hrs, certificate — roadmap Stage 2 row 5️⃣ taken early under C54's "S2 work done first") takes the slots *AI Prompting for Everyone* held, which moves to flex. The Day-41 Python 3.14 retrofit disappears (the template starts on 3.14), and that Saturday **opens the trading lane** with a small market-data dbt rehearsal. The Job lane adds a résumé skeleton.
 
+⚖️ **v3.1 changes to Weeks 5–6 (C58):** the AI-901 modules, practice test and booking leave the fortnight (Q2). Their slots go to **Kimball Ch. 3–4** (declare DataVault's grain before you build it), **dbt Fundamentals** starting a day earlier, and the first **AE interview reps**.
+
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–56) · v3.0 job-first re-cut, approved 6 Oct 2026 · C55/C56 applied to the roadmap 7 Oct 2026. No other roadmap edits made; propose→approve governance applies.*
+*Aligned to Career Roadmap v10.0 (Corrections 1–58) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026). No other roadmap edits made; propose→approve governance applies.*
