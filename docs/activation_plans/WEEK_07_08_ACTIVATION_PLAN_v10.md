@@ -1,11 +1,11 @@
 # 🚀 WEEKS 7–8 MASTER ACTIVATION PLAN (v10.0)
-## Flagship Era Opens — DataVault S1 v0 + AI-901 Exam | August 31 – September 13, 2026
+## Flagship Era Opens — DataVault S1 v0 + ⚖️ the Kimball Star | August 31 – September 13, 2026
 
-**Document Version:** 3.0 — 🧭 **JOB-FIRST RE-CUT** (6 Oct 2026): fresh 12-week template from Mon 20 Jul 2026 · supersedes 1.1
+**Document Version:** 3.1 — ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, roadmap C58) on top of the 3.0 job-first re-cut · fresh 12-week template from Mon 20 Jul 2026
 **Covers:** Monday, August 31 – Sunday, September 13, 2026 (Stage 1 · Month 2 · Weeks 7–8)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–56** (C55/C56 applied 7 Oct 2026) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
-**Prerequisite:** Weeks 5–6 metrics ≥80% (non-negotiables: mini-project #3 + AI-901 exam booked + 🆕 dbt Fundamentals done)
-**Weekly Hours:** 25 · 🇺🇸 Labor Day (Mon Sep 7) is a day off work — an optional bonus deep-work block if family plans allow; never mandatory.
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–58** (C58 applied 8 Oct 2026) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
+**Prerequisite:** Weeks 5–6 metrics ≥80% (non-negotiables: mini-project #3 + 🆕 dbt Fundamentals done + 🆕 grain declared — ~~AI-901 exam booked~~ moved to Q2, C58)
+**Weekly Hours:** 25 · ⚖️ v3.1: no exam this fortnight (AI-901 → Q2) · 🇺🇸 Labor Day (Mon Sep 7) is a day off work — an optional bonus deep-work block if family plans allow; never mandatory.
 
 > 🤖 **Agent Policy — Phase 3 continues.** Flagship rule stays: eval/test logic and ADRs human-authored through Q1. New rep this fortnight: before each DataVault build session, write the requirement as a comment block FIRST, then decide build-vs-delegate per function. Requirements-first is the decomposition habit FDE interviews test.
 
@@ -14,13 +14,13 @@
 ---
 
 ## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
-Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–56. Full rationale: the v3.0 block in Weeks 1–2. **This fortnight builds the first half of the Day-70 soft trigger.**
+Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–58. Full rationale: the v3.0 and v3.1 blocks in Weeks 1–2. **This fortnight builds most of the soft trigger — now due Day 63 (C58).**
 
 | Lane | This fortnight in v3.0 |
 |---|---|
-| L2 AE/DE flagship | DataVault scaffolds **with a dbt project from commit one**. **Python ingests** (generators → normalizers → pydantic row contract → quarantine → canonical Parquet); **dbt decides** (staging per source → union → recon buckets → Box-7 checks → findings), each rule with a dbt **unit test** |
+| L2 AE/DE flagship | DataVault scaffolds **with a dbt project from commit one**. **Python ingests** (generators → normalizers → pydantic row contract → quarantine → canonical Parquet); **dbt decides** (staging per source → union → recon buckets → Box-7 checks → findings), each rule with a dbt **unit test** · ⚖️ **v3.1:** modelled as a **Kimball star** (one fact + four conformed dimensions, `relationships` tests) in the freed exam hours; `dbt build` joins CI on **Day 52**; Track B #1–#2 on Day 54 |
 | L1 Foundations | CS50P starts · P4E C3 (unchanged) |
-| L3 Applied AI | Claude API course (tool use, caching) → ~65% · AI-901 exam Week 8 (unchanged) |
+| L3 Applied AI | Claude API course (tool use, caching) → ~55% · ~~AI-901 exam Week 8~~ → ⏭️ **Q2, Weeks 13–14** (C58) |
 | L4 Trading | Rest (exam fortnight) |
 | L5 Job search | Day 49: list → 30 + one request · Day 56: one conversation held · résumé v0 filled with DataVault's first lines |
 
@@ -42,7 +42,7 @@ Standing rulings from Corrections 21–43 for this fortnight (Corrections 44–5
 ---
 
 ## 📊 WHERE YOU STAND
-SDK fluency proven (mini-project #3: validated structured outputs, mocked tests, typed config), recon-toy fully production-checked (Docker + `uv sync --frozen`), SQL through window functions, AI-901 exam booked, 🆕 dbt Fundamentals certificate + a green market-data dbt rehearsal. **You are ready to open the DE flagship — dbt-first.**
+SDK fluency proven (mini-project #3: validated structured outputs, mocked tests, typed config), recon-toy fully production-checked (Docker + `uv sync --frozen`), SQL through window functions, 🆕 dbt Fundamentals certificate, a green market-data dbt rehearsal, and the grain declared in `modeling-notes.md` (Kimball Ch. 3–4). **You are ready to open the DE flagship — dbt-first.**
 
 ## 🧠 STRATEGIC CONTEXT
 
@@ -58,6 +58,9 @@ Per the Build Progression (Correction 6), DataVault leads when hours are scarce 
 > 🔄 **Note (27 Aug 2026):** you have confirmed the 1099 codebase is **not company-private**, which resolves the *ownership* question for that project. **It does not touch this rule.** Ownership and data are separate axes: code you are free to publish still cannot carry participant records. This data-boundary rule applies unchanged to DataVault, to the 1099 repo, and to every public repo in the portfolio — synthetic only, always.
 
 ### The fortnight's second thread: AI-901
+
+> ⏭️ **v3.1 (C58): AI-901 moves to Q2 (Weeks 13–14).** Nothing in this section is scheduled this fortnight — keep it, because its Foundry re-weighting note governs the Q2 prep sprint. **This fortnight's second thread is now the Kimball star** (Days 47–54): DataVault built the way an AE team would model it.
+
 Exam target **Fri Sep 11 / Sat Sep 12**. Weeks of Learn modules + practice test #1 are done; this fortnight is drilling + practice tests #2–3 + the exam. ~~A pass = the reimbursement path proven + elevation-file evidence #1 + AB-620 unlocked.~~ → **A pass = evidence-file item #1, self-funded, and a Tier-3 line for the Q1 2027 applications.** AB-620 is **conditional** in the roadmap (Correction 37); you have elected to commit it as a **self-funded (~$165) extra-time thread** opening Week 9 — exam booked **after 9 Oct**, not before.
 
 > ⚠️ **EXAM-CONTENT CORRECTION — verify before you drill (checked against Microsoft Learn, Aug 2026).** AI-901 replaced the retired AI-900 on 30 June 2026 and is **not** an AI-900 reskin. The current exam is split into two areas: identifying AI concepts and responsibilities (~40–45%) and **implementing AI solutions using Microsoft Foundry (~55–60%)**, passing score **700**. Weeks 3–6 scheduled your Learn modules with AI-900-era labels ("AI workloads overview," "ML fundamentals concepts") — those map to the *smaller* half of the exam. **Re-weight this fortnight's drilling toward Foundry**: deploying models, building with the Foundry SDK, creating agents, and information extraction with Azure Content Understanding. Practice tests #2–3 that are AI-900-derived will over-report your readiness — score them, but weight the Foundry gaps heavier than the raw number suggests. Price is **$99**, self-funded; the credential does not expire.
@@ -73,6 +76,8 @@ Python:      regex (P4E C3 — Day 15's pain, relieved) · CS50P test discipline
 dbt:         sources on Parquet (dbt-duckdb) · staging per source · intermediate
              union · vars for tolerances · seeds as catalogues · unit tests
              (given/expect) · singular tests (🆕 v3.0)
+Modeling:    conformed dimensions · surrogate keys · relationships tests ·
+             date spine · periodic snapshot (Kimball Ch. 3–4 applied, 🆕 v3.1)
 ```
 
 ---
@@ -86,6 +91,7 @@ dbt:         sources on Parquet (dbt-duckdb) · staging per source · intermedia
 □ Canonical model (pydantic) + normalizers for both sources, tested
 □ 🆕 dbt project in the repo: sources on canonical Parquet · 2 staging models · generic tests
 □ Scope doc v0.1 + ADRs 0001–0002 (DataVault's own docs/adr/)
+□ 🆕 `docs/modeling.md`: grain + conformed dimensions + ADR 0003 (Kimball Ch. 3 applied)
 □ Claude API course: tool use section · CS50P Week 0–1 · Post #7
 ```
 
@@ -206,7 +212,7 @@ Write 5+ tests: valid record round-trips; taxable>gross rejected; unknown code r
 - [ ] 30 min — Journal + commit (`feat: canonical distribution model with domain validators`)
 
 ### 📌 DAY 47 — Friday, September 4
-**Morning:** AI-901 practice test #2 → drill gaps.
+**Morning:** ~~AI-901 practice test #2~~ → ⏭️ Q2 (C58). 🆕 **DataVault dimensional design (Kimball Ch. 3 applied)** — `docs/modeling.md`: the distribution business process; the fact grain (*one row per distribution per source system*); four conformed dimensions (`dim_participant`, `dim_plan`, `dim_box7_code`, `dim_date`); and which recon / Box-7 outputs are facts versus derived marts. Then **ADR 0003** `kimball-star-for-the-distribution-process` — the star versus one wide table, the trade-off an AE interviewer will ask you to defend.
 **Evening:**
 - [ ] 70 min — **CI: your first blocking gate** ⭐ `.github/workflows/ci.yml`:
 
@@ -286,17 +292,18 @@ uv run pre-commit run --all-files    # first run is slow (it builds envs) — ex
 **Evening:** 60 min Claude API course (prompt caching) · 45 min draft post #7 (artifact: CI badge + canonical model — "two systems, one truth: I opened my data-engineering flagship this week") · 15 min journal + commit
 
 ### 📌 DAY 49 — Sunday, September 6 (2h)
-Week summary · publish post #7 · plan Week 8 (exam week — front-load DataVault, protect Thu–Sat for AI-901) · 🆕 20 min **Job lane:** targets → 30 across all three tiers; send one more informational-conversation request · journal 🎉
+Week summary + 🆕 lane-hours total (C58) · publish post #7 · plan Week 8 (~~exam week — protect Thu–Sat for AI-901~~ → **star week**, v3.1) · 🆕 20 min **Job lane:** targets → 30 across all three tiers; send one more informational-conversation request · journal 🎉
 
 ---
 
-## 🗓 WEEK 8 (Sep 7–13) — EXAM WEEK
+## 🗓 WEEK 8 (Sep 7–13) — ~~EXAM WEEK~~ → ⚖️ THE STAR WEEK (v3.1)
 
 ### Week 8 goals
 ```
 □ ~~Box-7 rules engine v0 (Python)~~ → 🆕 **recon + Box-7 checks as dbt models**, a unit test per rule
 □ Exceptions exported end-to-end with one command (`make run`: generate → normalize → dbt build → export)
-□ AI-901: practice test #3 ≥85% → EXAM TAKEN (Fri/Sat)
+□ ~~AI-901: practice test #3 ≥85% → EXAM TAKEN~~ → ⏭️ Q2 · 🆕 **the star in dbt**: `fct_distributions` + 4 dims, `relationships` tests
+□ 🆕 `dbt build` blocking in CI (Day 52) · Track B #1–#2 on the public 1099 repo (Day 54)
 □ ~~Reimbursement claim filed same day as pass~~ ❌ VOID (C22/32/37) · **evidence file** updated
 □ CS50P Week 2 · P4E C3 continues · Post #8
 □ 🆕 Job lane: targets at 30 · 1 informational conversation held
@@ -387,54 +394,67 @@ Tests: one per rule (triggering + non-triggering record each).
 
 </details>
 
-- [ ] Evening — AI-901 drill block + CS50P Week 2
+- [ ] Evening — 🆕 60 min **dimensions in dbt**: `dim_box7_code` (from the rules seed), `dim_plan`, and `dim_date` (a date spine) — `unique` + `not_null` on every key · 60 min CS50P Week 2 · ~~AI-901 drill block~~ (Q2)
 
 ### 📌 DAY 51 — Tuesday, September 8
-**Morning:** AI-901 practice test #3 — target ≥85%. Below it? Thursday evening becomes a drill block too.
-**Evening:** 70 min — 🆕 wire DataVault end-to-end with **one command**: a `Makefile` (or `justfile`) target `run` = generate → normalize (Python, structlog events) → `uv run dbt build --project-dir dbt --profiles-dir dbt` → export `fct_box7_findings` and the recon mart to `output/` (DuckDB `COPY ... TO 'output/....csv'`) · 30 min AI-901 flashcard review · journal + commit
+**Morning:** ~~AI-901 practice test #3~~ → ⏭️ Q2. 🆕 **`fct_distributions` + `dim_participant` — the star, built**: the fact at the grain declared in `docs/modeling.md`; surrogate keys (`dbt_utils.generate_surrogate_key`, or an md5 of the natural key); and a **`relationships` test from every foreign key to its dimension**. Recon and Box-7 models now read from the star.
+**Evening:** 70 min — 🆕 wire DataVault end-to-end with **one command**: a `Makefile` (or `justfile`) target `run` = generate → normalize (Python, structlog events) → `uv run dbt build --project-dir dbt --profiles-dir dbt` → export `fct_box7_findings` and the recon mart to `output/` (DuckDB `COPY ... TO 'output/....csv'`) · 30 min 🆕 `dbt build` green with the star + a lineage-graph screenshot for the README · journal + commit
 
 ### 📌 DAY 52 — Wednesday, September 9
 **Morning:** P4E C3 — JSON/APIs chapter.
-**Evening:** 60 min DataVault polish: mypy clean, CI green, README ①Production updated honestly ("runs end-to-end locally via one command; CI-gated; not yet deployed") · 🆕 README states the split in one line — *"Python ingests, dbt decides"* — with the model count and test count · 40 min AI-901 weak-area drill · journal + commit
+**Evening:** 60 min DataVault polish: mypy clean, CI green, README ①Production updated honestly ("runs end-to-end locally via one command; CI-gated; not yet deployed") · 🆕 README states the split in one line — *"Python ingests, dbt decides"* — with the model count and test count · 40 min 🆕 **`dbt build` as a blocking CI step** (moved up from Day 61): after pytest, the job runs the seeded generator → normalizers → `uv run dbt build --project-dir dbt --profiles-dir dbt` on DuckDB — no warehouse, no secrets. A failing dbt test now fails the push, exactly like a failing pytest · journal + commit
 
 ### 📌 DAY 53 — Thursday, September 10
-**Morning:** Light AI-901 review only (no cramming — sleep is the better prep).
-**Evening:** 45 min flashcards max · prep exam logistics (ID, quiet room if online-proctored, system check done TONIGHT not tomorrow) · early night.
+**Morning:** ~~Light AI-901 review~~ → 🆕 **Kimball Ch. 4 applied**: design `fct_corrections_by_type_week` as a **periodic snapshot** (grain: one row per rule × ISO week, with zero-filled weeks) in `docs/modeling.md`, before Saturday's build.
+**Evening:** 60 min 🆕 descriptions on every staging and mart model and their key columns — the groundwork for publishing dbt docs on Day 58 · 40 min CS50P pset · 20 min journal + commit · ~~flashcards · exam logistics · early night~~ (Q2)
 
-### 📌 DAY 54 — Friday, September 11 · 🎯 **AI-901 EXAM** (or Sat slot)
+### 📌 DAY 54 — Friday, September 11 · ~~🎯 AI-901 EXAM~~ → ⏭️ Q2 (C58)
+**Morning:** 🆕 **AE interview reps #1** — 45 min of timed SQL on your own DataVault models (top-N per group, dedupe with `ROW_NUMBER`, gaps-and-islands on distribution dates) + 45 min explaining the star out loud, then in writing: the grain, the conformed dimensions, and why the Box-7 rules live in a seed.
+**Evening:**
+- [ ] 70 min — 🆕 **Track B #1–#2, pulled forward** (from Week 12 / Day 83) on the public `1099_reconciliation_pipeline`: `requirements.txt` → `pyproject.toml` + committed `uv.lock` (`uv add -r requirements.txt`, then delete the pip/venv instructions); fix the clone-command slug to `1099_reconciliation_pipeline`; replace the install steps with `uv sync`. The repo your profile features stops failing a reviewer's first command — before the search opens, not after.
+- [ ] 30 min — CS50P pset
+- [ ] 20 min — Journal + commit (`build: migrate to uv + fix clone instructions`)
+
+<details><summary>Reference only — the v3.0 exam-day protocol. It applies on the Q2 exam day (Weeks 13–14), unchanged.</summary>
+
 - [ ] Take the exam. Pass → screenshot the score report, save the Credly badge link, and add both to the **evidence file**. ~~file the reimbursement claim the SAME DAY~~ · ~~tell Jen the good news in writing (one line — it plants the seed for the Month-6 conversation)~~ → ❌ **both void (C22/32/37): the cert is self-funded and the Month-6 conversation cannot occur.** Instead: **draft the résumé line and the LinkedIn post the same day**, while the detail is fresh — that is where this credential now does its work, pointed at the **Q1 2027** applications.
 - [ ] Evening: celebrate properly. No study. 🎉 (If the attempt misses: ~~the program covers two attempts~~ — **there is no program; a retake is another $99 out of pocket.** Book it within 48h anyway, log the gap areas, no spiral. The evidence layer doesn't care about attempt counts — your wallet does, so use the free Microsoft practice assessment before rebooking.)
 
+</details>
+
 ### 📌 DAY 55 — Saturday, September 12 (flex 5.5h)
-If exam was today: same protocol as Day 54. Otherwise:
-**Morning:** 120 min DataVault — corrections-analytics stub 🆕 **as a dbt mart** `fct_corrections_by_type_week` over `fct_box7_findings` (window functions in SQL — the Week 5 skill, deployed in the warehouse layer) · 60 min CS50P pset · 30 min buffer
-**Evening:** 60 min Claude API course · 45 min draft post #8 (~~"I passed my first cloud cert — here's how the employer-reimbursement play works"~~ ❌ that post is now false — use **the rules-engine artifact**, or "what a self-funded cert ladder actually costs and why I still bought this one") · journal + commit
+~~If exam was today: same protocol as Day 54. Otherwise:~~ (v3.1: no exam this fortnight)
+**Morning:** 120 min DataVault — corrections-analytics stub 🆕 **as a dbt mart** `fct_corrections_by_type_week` over `fct_box7_findings` — the **periodic snapshot** you designed Thursday, zero-filled weeks included (window functions in SQL — the Week 5 skill, deployed in the warehouse layer) · 60 min CS50P pset · 30 min buffer
+**Evening:** 60 min Claude API course · 45 min draft post #8 (~~"I passed my first cloud cert — here's how the employer-reimbursement play works"~~ ❌ that post is now false — use 🆕 **the star** — *"I declared the grain before I wrote a line of SQL"* — with the lineage graph as the artifact) · journal + commit
 
 ### 📌 DAY 56 — Sunday, September 13 (2h)
-Week summary + **Month-2 retro** (hours honest, exam outcome, DataVault v0 state) · 🆕 Job lane check: targets at 30? one conversation held? résumé v0 carries DataVault's first lines? · publish post #8 · read Weeks 9–10 plan **and make the Sprint-1 decision** (next section explains) · journal 🎉
+Week summary + **Month-2 retro** (hours honest **by lane**, ~~exam outcome~~, DataVault v0 state) · ⚖️ **priority check (C58)**: fortnight AE/DE vs Applied-AI hours · 🆕 Job lane check: targets at 30? one conversation held? résumé v0 carries DataVault's first lines? · publish post #8 · read Weeks 9–10 plan (~~and make the Sprint-1 decision~~ → the Pro month moves to Q2, C58) · journal 🎉
 
 ---
 
 ## 📊 2-WEEK SUCCESS METRICS
 ```
-□ datavault repo: scaffold + CI green      □ AI-901 TAKEN (pass or retake booked)
+□ datavault repo: scaffold + CI green      □ ~~AI-901 TAKEN~~ (Q2) → 🆕 the star: fact + 4 dims, relationships tests
 □ Both generators, seeded + defect-logged  □ pre-commit installed + uv-lock invariant proven
 □ Canonical model + validators tested      □ Evidence file: 3+ artifacts now
 □ Both normalizers + quarantine path       □ CS50P Weeks 0–2 · P4E C3 ~60%
-□ 🆕 dbt recon matches planted defects     □ Claude API course ~65%
+□ 🆕 dbt recon matches planted defects     □ Claude API course ~55%
   (singular test vs the defect manifest)
 □ 🆕 Box-7 checks in dbt, unit test/rule   □ Posts #7–8 · ADRs 0001–0002 (DV)
 □ End-to-end `make run` works (dbt inside)  □ 26+ commits
 □ 🆕 Job lane: targets 30 · 1 conversation held
+□ 🆕 `dbt build` blocking in CI · `docs/modeling.md` + ADR 0003 · Track B #1–#2 done
 ```
-**Passing bar: 80%.** Non-negotiables: the exam attempt and the end-to-end DataVault run — 🆕 **through dbt**.
+**Passing bar: 80%.** Non-negotiables: ~~the exam attempt~~ → 🆕 **the star schema**, and the end-to-end DataVault run — 🆕 **through dbt**.
 
 ---
 
 ## 🔭 WHAT COMES NEXT
-**Weeks 9–10: eval-first engineering** — the 2026 differentiator skill (39.6% of AI-first roles require it; ~5.5% of candidates list it). The **Sprint-1 DL.AI Pro month activates** (Correction 17: all nine S1+S2 lab rows batched, every notebook downloaded; optionally $0 via the AMD free month — decide Sunday). You build your first real eval harness — golden datasets, LLM-as-judge vs code-based checks, DeepEval — and point it at the Box-7 explainer. AB-620 study opens on the AI-901 pass. DataVault's corrections analytics matures.
+**Weeks 9–10: eval-first engineering** — the 2026 differentiator skill (39.6% of AI-first roles require it; ~5.5% of candidates list it). ~~The Sprint-1 DL.AI Pro month activates (Correction 17 …; decide Sunday).~~ (⏭️ Q2, C58) You build your first real eval harness — golden datasets, LLM-as-judge vs code-based checks ~~, DeepEval~~ — and point it at the Box-7 explainer. ~~AB-620 study opens on the AI-901 pass.~~ (AB-620: extra time only.) ~~DataVault's corrections analytics matures.~~ → DataVault ships the soft trigger.
 
-> 🆕 **v3.0: Weeks 9–10 finish the soft trigger.** `dbt build` becomes a blocking CI step (Day 61), the corrections mart hardens, dbt docs publish to GitHub Pages, and DataVault **v0.1.0** is tagged public on Day 69 — C54's four artifacts. Day 70 checks the gate and, if green, opens the narrow search.
+> ⚖️ **v3.1 (C58):** Weeks 9–10 keep the Box-7 eval harness (code + judge graders, one documented improve cycle) on the free *Improving Accuracy* videos; the **Pro month, DeepEval and harness hardening move to Q2** with PolicyPulse's RAG Triad build; AB-620 runs only in extra time; dbt docs publish **Day 58**, v0.1.0 ships **Day 62**, and the **soft trigger moves to Day 63** (Day 70 fallback), followed by **v0.2.0** on Day 69.
+
+> 🆕 **v3.0 (superseded dates in v3.1): Weeks 9–10 finish the soft trigger.** `dbt build` becomes a blocking CI step (Day 61), the corrections mart hardens, dbt docs publish to GitHub Pages, and DataVault **v0.1.0** is tagged public on Day 69 — C54's four artifacts. Day 70 checks the gate and, if green, opens the narrow search.
 
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–56) · v3.0 job-first re-cut, approved 6 Oct 2026 · C55/C56 applied to the roadmap 7 Oct 2026. No other roadmap edits made; propose→approve governance applies.*
+*Aligned to Career Roadmap v10.0 (Corrections 1–58) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026). No other roadmap edits made; propose→approve governance applies.*
