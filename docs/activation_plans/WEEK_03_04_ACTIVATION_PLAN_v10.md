@@ -1,9 +1,9 @@
 # 🚀 WEEKS 3–4 MASTER ACTIVATION PLAN (v10.0)
 ## Internal AI Builder Track | August 3–16, 2026
 
-**Document Version:** 3.1 — ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, roadmap C58) on top of the 3.0 job-first re-cut · fresh 12-week template from Mon 20 Jul 2026
+**Document Version:** 3.2 — 🎯 **READINESS GATE** (9 Oct 2026, roadmap C59) on the 3.1 ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, C58) and the 3.0 job-first re-cut · fresh 12-week template from Mon 20 Jul 2026
 **Covers:** Monday, August 3 – Sunday, August 16, 2026 (Stage 1 · Month 1 → 2 · Weeks 3–4)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–58** (C58 applied 8 Oct 2026) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–59** (C58 applied 8 Oct 2026 · C59 applied 9 Oct 2026) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
 **Prerequisite:** Weeks 1–2 metrics ≥80% (below that: close gaps in this fortnight's flex slots first)
 **Weekly Hours:** 25 (same block schedule)
 
@@ -12,7 +12,7 @@
 ---
 
 ## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
-Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–58. **The full rationale — lanes, milestone calendar, trading-lane and job-lane rules — is the v3.0 block in Weeks 1–2.** What changes here:
+Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–59. **The full rationale — lanes, milestone calendar, trading-lane and job-lane rules — is the v3.0 block in Weeks 1–2.** What changes here:
 
 | Lane | This fortnight in v3.0 |
 |---|---|
@@ -941,4 +941,4 @@ Also: integrate the Day-24 matcher's mismatch bucket into the exceptions report;
 ⚖️ **v3.1 changes to Weeks 5–6 (C58):** the AI-901 modules, practice test and booking leave the fortnight (Q2). Their slots go to **Kimball Ch. 3–4** (declare DataVault's grain before you build it), **dbt Fundamentals** starting a day earlier, and the first **AE interview reps**.
 
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–58) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026). No other roadmap edits made; propose→approve governance applies.*
+*Aligned to Career Roadmap v10.0 (Corrections 1–59) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026) · v3.2 readiness gate (C59, 9 Oct 2026). No other roadmap edits made; propose→approve governance applies.*
