@@ -1,9 +1,9 @@
 # 🚀 WEEKS 7–8 MASTER ACTIVATION PLAN (v10.0)
 ## Flagship Era Opens — DataVault S1 v0 + ⚖️ the Kimball Star | August 31 – September 13, 2026
 
-**Document Version:** 3.1 — ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, roadmap C58) on top of the 3.0 job-first re-cut · fresh 12-week template from Mon 20 Jul 2026
+**Document Version:** 3.2 — 🎯 **READINESS GATE** (9 Oct 2026, roadmap C59) on the 3.1 ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, C58) and the 3.0 job-first re-cut · fresh 12-week template from Mon 20 Jul 2026
 **Covers:** Monday, August 31 – Sunday, September 13, 2026 (Stage 1 · Month 2 · Weeks 7–8)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–58** (C58 applied 8 Oct 2026) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–59** (C58 applied 8 Oct 2026 · C59 applied 9 Oct 2026) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
 **Prerequisite:** Weeks 5–6 metrics ≥80% (non-negotiables: mini-project #3 + 🆕 dbt Fundamentals done + 🆕 grain declared — ~~AI-901 exam booked~~ moved to Q2, C58)
 **Weekly Hours:** 25 · ⚖️ v3.1: no exam this fortnight (AI-901 → Q2) · 🇺🇸 Labor Day (Mon Sep 7) is a day off work — an optional bonus deep-work block if family plans allow; never mandatory.
 
@@ -14,7 +14,7 @@
 ---
 
 ## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
-Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–58. Full rationale: the v3.0 and v3.1 blocks in Weeks 1–2. **This fortnight builds most of the soft trigger — now due Day 63 (C58).**
+Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–59. Full rationale: the v3.0, v3.1 and v3.2 blocks in Weeks 1–2. **This fortnight builds most of the soft trigger — now due Day 63 (C58).**
 
 | Lane | This fortnight in v3.0 |
 |---|---|
@@ -457,4 +457,4 @@ Week summary + **Month-2 retro** (hours honest **by lane**, ~~exam outcome~~, Da
 > 🆕 **v3.0 (superseded dates in v3.1): Weeks 9–10 finish the soft trigger.** `dbt build` becomes a blocking CI step (Day 61), the corrections mart hardens, dbt docs publish to GitHub Pages, and DataVault **v0.1.0** is tagged public on Day 69 — C54's four artifacts. Day 70 checks the gate and, if green, opens the narrow search.
 
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–58) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026). No other roadmap edits made; propose→approve governance applies.*
+*Aligned to Career Roadmap v10.0 (Corrections 1–59) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026) · v3.2 readiness gate (C59, 9 Oct 2026). No other roadmap edits made; propose→approve governance applies.*
