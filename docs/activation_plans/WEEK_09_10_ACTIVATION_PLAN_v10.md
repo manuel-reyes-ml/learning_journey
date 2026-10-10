@@ -1,9 +1,9 @@
 # 🚀 WEEKS 9–10 MASTER ACTIVATION PLAN (v10.0)
 ## 🚦 Soft Trigger (Day 63) + Narrow Search Opens + Eval-First Harness | September 14–27, 2026
 
-**Document Version:** 3.1 — ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, roadmap C58) on top of the 3.0 job-first re-cut · fresh 12-week template from Mon 20 Jul 2026
+**Document Version:** 3.2 — 🎯 **READINESS GATE** (9 Oct 2026, roadmap C59) on the 3.1 ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, C58) and the 3.0 job-first re-cut · fresh 12-week template from Mon 20 Jul 2026
 **Covers:** Monday, September 14 – Sunday, September 27, 2026 (Stage 1 · Month 3 · Weeks 9–10)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–58** (C58 applied 8 Oct 2026) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–59** (C58 applied 8 Oct 2026 · C59 applied 9 Oct 2026) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
 **Prerequisite:** Weeks 7–8 metrics ≥80% (non-negotiables: DataVault end-to-end through dbt + 🆕 the star + `dbt build` in CI — ~~AI-901 attempted~~ moved to Q2, C58)
 **Weekly Hours:** 25
 
@@ -18,7 +18,7 @@
 ---
 
 ## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
-Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–58. Full rationale: the v3.0 and v3.1 blocks in Weeks 1–2. **This fortnight ships the 🚦 soft trigger (C54 §5) — on Day 63 in v3.1.** The eval harness stays — it is still the Applied-AI differentiator — but DataVault finishes first.
+Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–59. Full rationale: the v3.0, v3.1 and v3.2 blocks in Weeks 1–2. **This fortnight ships the 🚦 soft trigger (C54 §5) — on Day 63 in v3.1.** The eval harness stays — it is still the Applied-AI differentiator — but DataVault finishes first.
 
 | Lane | This fortnight in v3.0 |
 |---|---|
@@ -346,4 +346,4 @@ Week summary + ⚖️ **priority check (C58)** + **Month-3-minus-one check**: **
 > ⚖️ **v3.1 changes to Weeks 11–12 (C58):** PolicyPulse ships its retrieval core public by Day 77 with a **code-graded gate** (context relevance + the unanswerable hard gate); the judge-graded RAG Triad gate, its improve cycle, the MCP primer and the Pro month move to Q2. DataVault S2 starts with **model contracts**. The narrow search is already in its second week, and AB-620 stays in extra time.
 
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–58) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026). No other roadmap edits made; propose→approve governance applies.*
+*Aligned to Career Roadmap v10.0 (Corrections 1–59) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026) · v3.2 readiness gate (C59, 9 Oct 2026). No other roadmap edits made; propose→approve governance applies.*
