@@ -1,9 +1,9 @@
 # 🚀 WEEKS 11–12 MASTER ACTIVATION PLAN (v10.0)
 ## PolicyPulse Opens + 🚦 Narrow Search + 🆕 Trading Lane (AFC) + Month-3 Retro | September 28 – October 11, 2026
 
-**Document Version:** 3.1 — ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, roadmap C58) on top of the 3.0 job-first re-cut · fresh 12-week template from Mon 20 Jul 2026
+**Document Version:** 3.2 — 🎯 **READINESS GATE** (9 Oct 2026, roadmap C59) on the 3.1 ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, C58) and the 3.0 job-first re-cut · fresh 12-week template from Mon 20 Jul 2026
 **Covers:** Monday, September 28 – Sunday, October 11, 2026 (Stage 1 · Month 3 · Weeks 11–12)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–58** (C58 applied 8 Oct 2026) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–59** (C58 applied 8 Oct 2026 · C59 applied 9 Oct 2026) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
 **Prerequisite:** Weeks 9–10 metrics ≥80% (non-negotiables: harness v1 + documented improve cycle + 🆕 🚦 soft trigger green by Day 63, Day 70 fallback)
 **Weekly Hours:** 25 · ~~⏰ Pro month expires ~Oct 13 — empty it and cancel it this fortnight~~ → ⏭️ the Pro month now runs in Q2 (C58) — nothing to cancel this fortnight.
 
@@ -14,7 +14,7 @@
 ---
 
 ## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
-Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–58. Full rationale: the v3.0 and v3.1 blocks in Weeks 1–2. **The soft trigger fired on Day 63 (C58; Day 70 fallback), so the narrow search is already in its second week while the quarter closes.**
+Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–59. Full rationale: the v3.0, v3.1 and v3.2 blocks in Weeks 1–2. **The soft trigger fired on Day 63 (C58; Day 70 fallback), so the narrow search is already in its second week while the quarter closes.**
 
 | Lane | This fortnight in v3.0 |
 |---|---|
@@ -56,7 +56,8 @@ Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to
 > 4. ✅ **C55 — domain-bridge tier** in the narrow search — *applied 7 Oct 2026.* *Falsifier: if bridge-tier applications don't produce screens at a higher rate than AE/DE applications within the same 25-application window, the tier is dropped.*
 > 5. ✅ **C56 — Stage-1 schedule pull-forwards** from the v3.0 re-cut — *applied 7 Oct 2026* — (dbt Fundamentals/Advanced into Stage 1, IBM start after the soft trigger, AFC kickoff Day 83, DataVault S1 logic in dbt). *Falsifier: if the soft trigger slips past Week 12, the pull-forwards are reviewed before Q2 adds anything.*
 > 6. ✅ **C58 — priority rebalance** (AE/DE ≥ Applied-AI guardrail; AI-901, the Pro month and PolicyPulse's judge gates after the soft trigger; soft trigger Day 63) — *applied 8 Oct 2026.* *Falsifier: if the soft trigger slips past Day 70 anyway, or 25 applications yield zero screens, hours were not the bottleneck.*
-> C55 and C56 are now in the roadmap's v10.0 changelog. Items 1–3 above remain owed.
+> 7. ✅ **C59 — readiness gate** (the guardrail ends when DataVault S2 hardening ships, not at the first screen; after it, Applied AI ≥ AE/DE, hired or not) — *applied 9 Oct 2026.* *Falsifier: S2 not shipped by 31 Mar 2027 → the guardrail and S2's scope are reviewed together.*
+> C55, C56, C58 and C59 are now in the roadmap's v10.0 changelog. Items 1–3 above remain owed.
 
 > 🧭 **The honest reframe.** This plan's closing line called the Month-6 conversation "the deliverable every artifact this quarter was quietly building toward." That is no longer true, and the substitute is not a downgrade: the artifacts were always the point, and they now go to a market instead of a manager. Two eval-gated flagships, a CI habit with eleven weeks of commits, a cert, and a regulated-domain story is a **stronger** Q1 2027 position than an internal scope memo would have been. The work does not change. The audience does.
 
@@ -476,9 +477,11 @@ Treat this day as a boundary, not a workday. Before you log off for the last tim
    same window (C55) · did the soft trigger land by Week 12 (C56)?
 12. 🆕 CU BOULDER BRIDGE (C44, Nov–Feb, inside the 25): which threads
    pause — replace, not stack
-13. ⚖️ PRIORITY GUARDRAIL (C58): AE/DE vs Applied-AI hours in each of the
-   six fortnights — held? First screen yet? (After the first screen the
-   balance may shift toward PolicyPulse in Q2.)
+13. ⚖️ PRIORITY GUARDRAIL (C58 · C59): AE/DE vs Applied-AI hours in each
+   of the six fortnights — held? Distance to the gate: which DataVault S2
+   pieces are still open (Airflow · contracts · Docker/ECS · monitoring ·
+   postmortem)? The rule runs through Q2 until S2 ships, then flips to
+   Applied AI ≥ AE/DE, hired or not. On track for 31 Mar 2027?
 ```
 - [ ] 30 min — Publish post #12 · 30 min — Share the retro with Claude for the Q2 plan generation (propose→approve, as always) · journal + 🎉 **Quarter 1 complete.**
 
@@ -505,9 +508,10 @@ Treat this day as a boundary, not a workday. Before you log off for the last tim
 ### 🆕 v3.0 — Q2 shape (input for the Month-3 retro, not a commitment yet)
 - **Job lane:** the narrow search continues in waves until the falsifier (25 targeted applications, zero screens) or an offer; the **broad search opens at the full DataVault S2 ship (~Q1 2027)**. Bridge-tier applications run under **C55** (applied), tracked separately for its falsifier.
 - **DataVault S2 toward the gate:** a **Snowflake port** of the dbt project — the roadmap's AE-primary warehouse (C3) — on the 30-day / $400 trial, started only once the port is scheduled; then contracts, orchestration, Docker deploy and monitoring per the roadmap.
+- 🎯 **The gate (C59):** when DataVault S2 hardening ships — target ~Q1 2027, reviewed if not by 31 Mar 2027 — the broad search opens and the guardrail flips to Applied AI ≥ AE/DE, hired or not. The plan generated then decides what fills the Applied-AI majority (PolicyPulse, PostCheck's agentic half, the Stage 3 rows), propose→approve.
 - **Trading lane:** AFC Phase 1, build-sheet Weeks 1–6 → `v1.0.0` (EDGAR adapter, analyst, faithfulness evaluation). The **Andrew Ng ML Specialization** starts with AFC Phase 2 (C48: Course 1 at sheet week 7). **dbt in trading** arrives with AFC's S2 lakehouse and Crucible's market-data lakehouse, both after DataVault S2. **Crucible** stays third per the Build Progression.
-- ⚖️ **Applied-AI block (C58):** the Sprint-1 Pro month (all nine lab rows) with PolicyPulse's **judge-graded RAG Triad gate** and its improve cycle, DeepEval, harness hardening and the MCP primer (Anthropic Academy) — the eval-harness build Correction 17 times the sprint to. **AI-901:** one Foundry-weighted prep sprint (~14 h) and the exam in **Weeks 13–14**, before the CU Boulder pathway opens in November. The priority guardrail still applies until the first screen.
-- **IBM GenAI PC** starts (deferred from Week 11).
+- ⚖️ **Applied-AI block (C58):** the Sprint-1 Pro month (all nine lab rows) with PolicyPulse's **judge-graded RAG Triad gate** and its improve cycle, DeepEval, harness hardening and the MCP primer (Anthropic Academy) — the eval-harness build Correction 17 times the sprint to. **AI-901:** one Foundry-weighted prep sprint (~14 h) and the exam in **Weeks 13–14**, before the CU Boulder pathway opens in November. 🎯 **C59:** the priority guardrail runs through Q2 until DataVault S2 hardening ships, so this whole block sits inside Applied AI's share, fortnight by fortnight — AI-901 in Weeks 13–14, the Pro month in a later fortnight (both in one fortnight would put ~30 h of Applied AI against the guardrail).
+- **IBM GenAI PC** starts (deferred from Week 11) — 🎯 inside Applied AI's share under C59, so expect it to finish after Month 6; set its window at this retro (C56).
 - **CU Boulder bridge (C44), Nov 2026–Feb 2027, inside the 25 hrs/week:** the Q2 plan must name which threads pause to make room (replace, not stack) — a candidate is the remaining CS50x / CS50P track, since the pathway is now the OMSCS admission evidence.
 
 **Original v2.x preview (still the roadmap baseline):** Months 4–6, per the roadmap: the IBM spine intensifies (its RAG/LangChain/watsonx middle) · PolicyPulse S1 hardening toward "shipped with eval gates" (the Stage 1 deliverable) · Streamlit enters (30 Days of AI — Correction 20's row 11.5) as the flagships' demo surface · CS50x/CS50P completion track.
@@ -525,4 +529,4 @@ Treat this day as a boundary, not a workday. Before you log off for the last tim
 - **The reading layer** (Correction 34) is live: finish *Robust Python* and *AI Engineering* in Q2; *Python Testing with pytest 2e* is the secondary. Buy at stage entry, re-verify editions.
 
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–58) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026). No other roadmap edits made; propose→approve governance applies. Q2 plans will be generated from your actual Month-3 retro, not assumptions.*
+*Aligned to Career Roadmap v10.0 (Corrections 1–59) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026) · v3.2 readiness gate (C59, 9 Oct 2026). No other roadmap edits made; propose→approve governance applies. Q2 plans will be generated from your actual Month-3 retro, not assumptions.*
