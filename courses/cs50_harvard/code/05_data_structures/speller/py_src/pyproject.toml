@@ -32,7 +32,7 @@ description = "Production-grade spell checker inspired by CS50, built as a Pytho
 readme = "README.md"
 license = "MIT"
 license-files = ["LICENSE"]
-requires-python = ">=3.12"
+requires-python = ">=3.14"
 
 # Author information — shown on PyPI if you ever publish
 authors = [
@@ -54,9 +54,6 @@ keywords = [
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Education",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.12",
-    "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
     "Topic :: Text Processing :: Linguistic",
     "Typing :: Typed",
@@ -193,7 +190,7 @@ markers = [
 # Run: mypy src/speller/dictionary.py   (specific file)
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.14"
 
 # strict = true enables ALL of these individually:
 strict = true
@@ -228,7 +225,7 @@ show_error_codes = true
 
 [tool.ruff]
 # Target Python version (affects which syntax is allowed)
-target-version = "py312"
+target-version = "py314"
 
 # Maximum line length (88 is black's default, widely adopted)
 line-length = 100

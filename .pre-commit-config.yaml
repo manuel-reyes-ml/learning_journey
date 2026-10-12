@@ -86,6 +86,23 @@ repos:
       - id: gitleaks
 
   # ---------------------------------------------------------------------------
+  # Tier B — notebook outputs (roadmap CORRECTION 16: PII choke point at the git
+  # boundary). Strips cell outputs and volatile metadata before commit.
+  #
+  # Configured here, not in pyproject.toml: nbstripout reads no pyproject/setup.cfg
+  # config (verified against 0.9.1) — this is the one tool that breaks the
+  # "config lives in pyproject.toml" rule, by necessity, not by choice.
+  #
+  # courses/ excluded: finished archive, same treatment as the whitespace hooks.
+  # A cell that must keep its output (a showcase chart) gets the `keep_output` tag.
+  # ---------------------------------------------------------------------------
+  - repo: https://github.com/kynan/nbstripout
+    rev: f5da19ce3b7b40e97c12ee9cd8ce97f48f97ddf7  # frozen: 0.9.1
+    hooks:
+      - id: nbstripout
+        exclude: ^courses/
+
+  # ---------------------------------------------------------------------------
   # Tier C — Conventional Commits, enforced rather than merely declared.
   # Runs on the commit-msg stage, so it sees the message, not the diff.
   # (Skipped automatically by `pre-commit run --all-files` in CI — there is no

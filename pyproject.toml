@@ -16,7 +16,7 @@ version = "0.1.0"
 # Must be <= the floor of every workspace member, and the CI matrix must be a
 # subset of this range. Members declare >=3.12; local dev runs 3.14 via
 # .python-version.
-requires-python = ">=3.12"
+requires-python = ">=3.14"
 dependencies = [
     "beautifulsoup4>=4.15.0",
     "ipywidgets>=8.1.9",
@@ -57,7 +57,7 @@ members = [
 # ---------------------------------------------------------------------------
 [tool.ruff]
 line-length = 100
-target-version = "py312"
+target-version = "py314"
 
 [tool.ruff.lint]
 select = [

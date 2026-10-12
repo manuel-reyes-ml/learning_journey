@@ -87,7 +87,7 @@ uv run deepeval test run tests/test_eval.py   # if the project has eval gates
 - [ ] Conventional Commits used on the branch
 
 ## 🔁 Reproducibility & environment
-- **Python / env:** <!-- 3.12, uv-managed, uv.lock committed and in sync -->
+- **Python / env:** <!-- 3.14, uv-managed, uv.lock committed and in sync -->
 - **Seed(s) set:** <!-- global seed for any stochastic step, or "N/A" -->
 - **Config pinned:** <!-- config file / env vars this run depends on -->
 - **Rerun is deterministic / idempotent:** [ ] yes  [ ] no (explain)

@@ -319,7 +319,7 @@ def timer(
     operation_name: str,
     *,
     input_file: str | Path | Traversable | None = None,
-) -> Generator[TimerContainer, None, None]:
+) -> Generator[TimerContainer]:
     """Context manager that times the enclosed code block.
 
     Yields an empty ``dict`` container before the block runs.  After

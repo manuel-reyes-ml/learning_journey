@@ -1,6 +1,6 @@
 # 🧭 Activation Plans v3.0 — Job-First Re-Cut · Changelog
 
-**Approved:** 6 Oct 2026 (Manuel) · **Scope:** the six bi-weekly plans `WEEK_01_02` … `WEEK_11_12` · **Template:** fresh 12 weeks from Mon 20 Jul 2026 · **Hours:** 25/week, unchanged · **Aligned to:** roadmap v10.0, Corrections 1–58 · 🆕 **v3.1 priority rebalance** (8 Oct 2026, C58) — see section 8
+**Approved:** 6 Oct 2026 (Manuel) · **Scope:** the six bi-weekly plans `WEEK_01_02` … `WEEK_11_12` · **Template:** fresh 12 weeks from Mon 20 Jul 2026 · **Hours:** 25/week, unchanged · **Aligned to:** roadmap v10.0, Corrections 1–59 · 🆕 **v3.1 priority rebalance** (8 Oct 2026, C58) — see section 8 · 🆕 **v3.2 readiness gate** (9 Oct 2026, C59) — see section 9
 **Roadmap:** the two corrections this re-cut created — **C55 and C56** — were approved and **applied to `roadmap.html` on 7 Oct 2026** (changelog entries + inline propagation; snapshot now 1–56; archive untouched). Their text is reproduced at the bottom.
 
 ---
@@ -94,7 +94,7 @@ Propagation: Stage 1 exit criterion (soft-trigger note), Stage 2 referral-geogra
 
 Inside AE/DE: AE skills (SQL, dbt, modeling) 83 h · DE skills (ingestion, infra, CI, Track B) 24 h.
 
-**Rule adopted — the priority guardrail:** AE/DE build hours ≥ Applied-AI hours every fortnight until the narrow search's first screen; checked every Sunday from the journal's lane-hours line; a failed fortnight hands the next AI slot to DataVault.
+**Rule adopted — the priority guardrail:** AE/DE build hours ≥ Applied-AI hours every fortnight ~~until the narrow search's first screen~~ → until DataVault S2 hardening ships (C59, section 9); checked every Sunday from the journal's lane-hours line; a failed fortnight hands the next AI slot to DataVault.
 
 **Moved (deferred, never deleted — all inside Stage 1):** AI-901 study + exam → Q2 Weeks 13–14 · the Sprint-1 Pro month → Q2, with PolicyPulse's RAG Triad build (C17's own trigger) · PolicyPulse's judge-graded gate, DeepEval, harness hardening, MCP primer → Q2 · AB-620's in-budget blocks → extra time · soft trigger Day 70 → **Day 63** (Day 70 fallback).
 
@@ -103,3 +103,23 @@ Inside AE/DE: AE skills (SQL, dbt, modeling) 83 h · DE skills (ingestion, infra
 **Falsifier:** if the soft trigger still slips past Day 70, or 25 targeted applications produce zero screens, hours were not the bottleneck — diagnose market fit instead of re-tuning the split.
 
 **Method note:** hours parsed from each day's timed items; untimed items share their block's leftover minutes; struck-through and collapsed reference items excluded. Figures are ±2 h per fortnight.
+
+---
+
+## 9. v3.2 — readiness gate (approved 9 Oct 2026 · roadmap Correction 59, applied)
+
+**Question:** do the plans keep the AE/DE priority until you get a job, or only until you are job-ready? **Your intent:** job-ready — cover the AE/DE content, don't wait on an employer.
+**Finding:** the hours were already content-first (107 h vs 47 h), but C58's end condition — "the first recruiter or hiring-manager screen" — was a market event. It could end **too early** (a Week-10 screen flipping the majority to PolicyPulse before Airflow, contracts, Docker/ECS, monitoring and the postmortem exist) or **never** (slow screens holding Applied AI in the minority indefinitely).
+
+| | C58 (v3.1) | C59 (v3.2) |
+|---|---|---|
+| AE/DE ≥ Applied AI ends at | First screen | **DataVault S2 hardening shipped** (the Stage 1 evidence gate) |
+| After that | "may shift toward PolicyPulse" | **Applied AI ≥ AE/DE every fortnight, hired or not** |
+| AE/DE after the switch | — | Maintenance: DP-700 / AWS DEA on the Stage 2 schedule + fixes to shipped repos |
+| Screens | End the rule | Job lane + C54 falsifier only |
+
+**Unchanged:** the Sunday check, the lane-hours line and the failed-fortnight rule; job search counts on neither side; target roles (AE first door, DE parallel).
+**12-week hours:** unchanged — the gate lands after Week 12; the re-audit gives the same split per fortnight.
+**Q2 consequences:** AI-901 (Weeks 13–14) and the Pro month in different fortnights; the IBM GenAI PC inside Applied AI's share, likely finishing after Month 6 (set at the Month-3 retro).
+**Falsifier:** S2 not shipped by 31 Mar 2027 → the guardrail and S2's scope are reviewed together. After the gate, two AE/DE interview loops failing on the same technical skill → that skill gets AE/DE hours back (reviewed, not automatic).
+**Edited:** roadmap (C59 entry; snapshot, Stage 1 exit, C58 note, falsification list — inline) · Weeks 1–2 (v3.2 block, guardrail rule, lanes row, milestone calendar, corrections list) · Weeks 11–12 (corrections list, retro item 13, Q2 shape) · all six headers and footers.
