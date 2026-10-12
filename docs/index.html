@@ -3,827 +3,427 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Learning Journey - Manuel Reyes | Production AI &amp; Data Systems · Analytics Engineering &amp; Data Engineering</title>
-    <meta name="description" content="~32-month evidence-first career transformation into data engineering and applied AI (FDE track). Production AI, RAG/GraphRAG, dbt/Airflow, eval-first, building in public.">
+    <title>Manuel Reyes — Analytics Engineer &amp; Data Engineer (AI-ready data platforms)</title>
+    <meta name="description" content="Analytics and data engineer building AI-ready data platforms for regulated finance: a 1099-R reconciliation pipeline in production, dbt-tested models and evaluation-gated AI. Open to Analytics Engineer and Data Engineer roles.">
+    <link rel="canonical" href="https://manuel-reyes-ml.github.io/learning_journey/">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://manuel-reyes-ml.github.io/learning_journey/">
+    <meta property="og:title" content="Manuel Reyes — Analytics Engineer & Data Engineer">
+    <meta property="og:description" content="AI-ready data platforms for regulated finance. A 1099-R reconciliation pipeline in production, dbt-tested models, evaluation-gated AI. Open to roles.">
+    <meta name="twitter:card" content="summary">
+    <meta name="color-scheme" content="light">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
+        :root {
+            --ink: #1f1d3a;          /* body text */
+            --muted: #4f5568;        /* secondary text */
+            --indigo: #4338ca;       /* links, accents */
+            --indigo-deep: #2b2770;  /* proof panel */
+            --violet: #6d28d9;       /* AI labels */
+            --red-ink: #b42318;      /* 1099 form-box motif */
+            --live: #067647;
+            --rule: #e4e4ee;
+            --wash: #f6f6fb;
+            --paper: #ffffff;
+            --radius: 20px;
         }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-        .container {
-            background: white;
-            border-radius: 20px;
-            padding: 60px 40px;
-            max-width: 900px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            text-align: center;
-        }
-        h1 {
-            font-size: 2.5em;
-            color: #333;
-            margin-bottom: 10px;
-        }
-        .ai-badge {
-            display: inline-block;
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            padding: 10px 25px;
-            border-radius: 25px;
-            font-size: 0.95em;
-            font-weight: 700;
-            margin-bottom: 10px;
-            box-shadow: 0 5px 15px rgba(240, 147, 251, 0.3);
-        }
-        .subtitle {
-            font-size: 1.1em;
-            color: #666;
-            margin-bottom: 30px;
-            line-height: 1.6;
-        }
-        .career-path {
-            font-weight: 600;
-            color: #667eea;
-            margin-top: 10px;
-        }
-
-        /* Status Badge */
-        .status-badge {
-            display: inline-block;
-            background: #10b981;
-            color: white;
-            padding: 10px 25px;
-            border-radius: 25px;
-            font-size: 0.95em;
-            font-weight: 700;
-            margin-bottom: 10px;
-        }
-        .status-badge:before {
-            content: "🟢 ";
-        }
-
-        /* Badge Container */
-        .badge-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        /* AI Differentiator Box */
-        .ai-box {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border-radius: 15px;
-            padding: 30px;
-            margin: 30px 0;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-        .ai-box h2 {
-            font-size: 1.5em;
-            margin-bottom: 15px;
-        }
-        .ai-box p {
-            font-size: 1.05em;
-            line-height: 1.6;
-            margin-bottom: 15px;
-            opacity: 0.95;
-        }
-        .ai-lead {
-            font-size: 1.12em;
+            font-family: 'Public Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-size: 16px;
             line-height: 1.55;
-            text-align: center;
-            max-width: 760px;
-            margin: 0 auto 22px auto;
-            opacity: 0.97;
+            color: var(--ink);
+            background: linear-gradient(135deg, #4f46e5 0%, #6d28d9 100%);
+            min-height: 100vh;
+            padding: 32px 16px;
         }
-        .proof-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 14px;
-            margin-bottom: 20px;
-            text-align: left;
+        a { color: var(--indigo); }
+        a:focus-visible, .btn:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; border-radius: 6px; }
+        code { font-size: 0.92em; background: rgba(67, 56, 202, 0.08); padding: 1px 5px; border-radius: 4px; }
+
+        .container {
+            background: var(--paper);
+            border-radius: var(--radius);
+            padding: 56px 48px 40px;
+            max-width: 880px;
+            margin: 0 auto;
+            box-shadow: 0 24px 60px rgba(31, 29, 58, 0.35);
         }
-        .proof-card {
-            background: rgba(255, 255, 255, 0.13);
-            border: 1px solid rgba(255, 255, 255, 0.22);
+        section { margin-top: 52px; }
+        h2 { font-size: 1.375rem; font-weight: 700; line-height: 1.3; margin-bottom: 8px; }
+        .lead { color: var(--muted); max-width: 68ch; margin-bottom: 20px; }
+
+        /* Hero */
+        h1 { font-size: 2.75rem; font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; }
+        .role { font-size: 1.25rem; font-weight: 600; color: var(--indigo); margin-top: 6px; }
+        .badges { display: flex; flex-wrap: wrap; gap: 10px; margin: 18px 0 16px; }
+        .badge {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 6px 14px; border-radius: 999px;
+            font-size: 0.9rem; font-weight: 600;
+        }
+        .badge.open { background: var(--live); color: #fff; }
+        .badge.open::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #a7f3d0; }
+        .badge.place { background: var(--wash); color: var(--muted); border: 1px solid var(--rule); }
+        .pitch { font-size: 1.0625rem; max-width: 66ch; }
+        .path { margin-top: 12px; font-size: 0.95rem; color: var(--muted); }
+        .path strong { color: var(--ink); }
+        .contact { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 16px; font-weight: 600; }
+
+        /* Proof panel */
+        .proof {
+            background: var(--indigo-deep);
+            color: #fff;
+            border-radius: 16px;
+            padding: 32px;
+        }
+        .proof .lead { color: #d9d8f5; }
+        .proof-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+        .proof-item {
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 10px;
-            padding: 14px 16px;
-            text-align: left;
+            padding: 16px 18px;
         }
-        .proof-card h4 {
-            font-size: 0.97em;
-            margin: 0 0 6px 0;
-            font-weight: 700;
-            letter-spacing: 0.2px;
-        }
-        .proof-card p {
-            font-size: 0.88em !important;
-            line-height: 1.5;
-            margin: 0 !important;
-            opacity: 0.93;
-            text-align: left;
-        }
-        .flagship-strip {
+        .proof-item h3 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+        .proof-item p { font-size: 0.9rem; color: #e4e3f8; }
+        .proof code { background: rgba(255, 255, 255, 0.14); color: #fff; }
+        .stack { margin-top: 22px; }
+        .stack-row { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px; margin-top: 8px; }
+        .stack-row .stack-label { font-size: 0.85rem; font-weight: 600; color: #c9c7f2; margin-right: 4px; }
+        .chip { font-size: 0.85rem; padding: 4px 11px; border-radius: 999px; background: rgba(255, 255, 255, 0.14); }
+        .chip.next { background: transparent; border: 1px dashed rgba(255, 255, 255, 0.45); }
+
+        /* Production highlight — 1099 form-box motif */
+        .form {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-            gap: 14px 28px;
-            padding-top: 18px;
-            border-top: 1px solid rgba(255, 255, 255, 0.25);
-            text-align: left;
-        }
-        .flagship-strip div { text-align: left; }
-        .flagship-strip .fs-name {
-            display: block;
-            font-weight: 700;
-            font-size: 0.95em;
-            margin-bottom: 3px;
-        }
-        .flagship-strip .fs-desc {
-            font-size: 0.84em;
-            line-height: 1.45;
-            opacity: 0.9;
-        }
-        .ai-tools {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 20px;
-            flex-wrap: wrap;
-        }
-        .ai-tool {
-            background: rgba(255, 255, 255, 0.2);
-            padding: 8px 18px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            font-weight: 600;
-            backdrop-filter: blur(10px);
-        }
-
-        /* Production Highlight */
-        .highlight-box {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            border-radius: 15px;
-            padding: 25px;
-            margin: 25px 0;
-            box-shadow: 0 10px 30px rgba(240, 147, 251, 0.3);
-        }
-        .highlight-box h2 {
-            font-size: 1.4em;
-            margin-bottom: 15px;
-        }
-        .highlight-box p {
-            font-size: 1.05em;
-            line-height: 1.6;
-            margin-bottom: 10px;
-        }
-        .highlight-metrics {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 20px;
-            flex-wrap: wrap;
-            gap: 15px;
-        }
-        .metric {
-            text-align: center;
-            min-width: 120px;
-        }
-        .metric-number {
-            font-size: 2em;
-            font-weight: bold;
-            display: block;
-        }
-        .metric-label {
-            font-size: 0.9em;
-            opacity: 0.9;
-        }
-
-        /* Current Stage Section */
-        .stage-section {
-            background: #f8f9ff;
-            border-radius: 15px;
-            padding: 30px;
-            margin: 30px 0;
-            text-align: left;
-        }
-        .stage-section h2 {
-            font-size: 1.5em;
-            color: #333;
-            margin-bottom: 20px;
-            text-align: center;
-        }
-        .stage-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 14px;
-            margin-top: 20px;
-        }
-        .stage-item {
-            display: grid;
-            grid-template-columns: 210px 1fr;
-            gap: 22px;
-            align-items: start;
-            padding: 18px 20px;
-            border-radius: 10px;
-            font-size: 0.95em;
-        }
-        .stage-head {
-            border-right: 2px solid rgba(0,0,0,0.08);
-            padding-right: 18px;
-        }
-        .stage-body p {
-            margin: 0 0 7px 0;
-        }
-        .stage-body p:last-child { margin-bottom: 0; }
-        .stage-item.current {
-            background: #dbeafe;
-            border: 2px solid #3b82f6;
-        }
-        .stage-item.upcoming {
-            background: #f3f4f6;
-            border: 2px solid #e5e7eb;
-            opacity: 0.7;
-        }
-        .stage-item h3 {
-            color: #1e40af;
-            font-size: 1.05em;
-            margin-bottom: 6px;
-            line-height: 1.3;
-        }
-        .stage-item.upcoming h3 {
-            color: #6b7280;
-        }
-        .stage-item p {
-            color: #4b5563;
-            font-size: 0.9em;
-            margin: 5px 0;
-        }
-
-        /* Projects Showcase */
-        .projects-section {
-            background: #fafafa;
-            border-radius: 15px;
-            padding: 30px;
-            margin: 25px 0;
-            text-align: left;
-        }
-        .projects-section h2 {
-            font-size: 1.4em;
-            color: #333;
-            margin-bottom: 5px;
-            text-align: center;
-        }
-        .projects-subtitle {
-            font-size: 0.9em;
-            color: #999;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-        .project-list {
-            list-style: none;
-        }
-        .project-item {
-            padding: 15px;
-            margin-bottom: 12px;
-            border-radius: 8px;
-            background: white;
-            border-left: 4px solid #667eea;
-        }
-        .project-item.flagship-border {
-            border-left: 4px solid #f5576c;
-        }
-        .project-item h3 {
-            color: #667eea;
-            font-size: 1.05em;
-            margin-bottom: 6px;
-        }
-        .project-item .status {
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 12px;
-            font-size: 0.8em;
-            font-weight: 600;
-            margin-bottom: 6px;
-        }
-        .status.live {
-            background: #d1fae5;
-            color: #065f46;
-        }
-        .status.building {
-            background: #fef3c7;
-            color: #92400e;
-        }
-        .status.planned {
-            background: #e0e7ff;
-            color: #3730a3;
-        }
-        .status.flagship {
-            background: #fce7f3;
-            color: #9d174d;
-        }
-        .project-item p {
-            color: #666;
-            font-size: 0.9em;
-            line-height: 1.5;
-        }
-        .project-impact {
-            color: #10b981 !important;
-            font-weight: 600;
-            margin-top: 6px;
-            font-size: 0.85em !important;
-        }
-        .pca-list {
-            list-style: none;
-            margin: 8px 0 4px 0;
-            padding: 10px 12px;
-            border-left: 3px solid #10b981;
-            background: #f0fdf4;
-            border-radius: 0 6px 6px 0;
-            text-align: left;
-        }
-        .pca-list li {
-            color: #047857;
-            font-size: 0.85em;
-            line-height: 1.5;
-            margin: 0 0 6px 0;
-            text-align: left;
-        }
-        .pca-list li:last-child { margin-bottom: 0; }
-        .pca-list .pca-label { color: #065f46; font-weight: 700; }
-        .pca-note {
-            color: #10b981 !important;
-            font-weight: 600;
-            font-size: 0.85em !important;
-            margin-top: 6px;
-        }
-        .project-tech {
-            color: #667eea !important;
-            font-weight: 600;
-            margin-top: 4px;
-            font-size: 0.8em !important;
-        }
-        .project-skill-tag {
-            display: inline-block;
-            background: #f0f4ff;
-            color: #4b5563;
-            padding: 2px 8px;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            border: 2px solid var(--red-ink);
             border-radius: 4px;
-            font-size: 0.75em;
-            margin-top: 4px;
+            margin: 18px 0 14px;
         }
+        .box { padding: 10px 14px 14px; border-right: 1px solid var(--red-ink); }
+        .box:last-child { border-right: none; }
+        .box-label { display: block; font-size: 0.78rem; font-weight: 600; color: var(--red-ink); }
+        .box-value { display: block; font-size: 1.9rem; font-weight: 800; line-height: 1.2; font-variant-numeric: tabular-nums; margin-top: 4px; }
+        .box-note { display: block; font-size: 0.82rem; color: var(--muted); margin-top: 2px; }
+        .now { max-width: 70ch; }
+        .fine { font-size: 0.85rem; color: var(--muted); margin-top: 8px; }
 
-        /* CTA Buttons */
-        .cta-section {
-            margin: 35px 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
+        /* Portfolio */
+        .projects { list-style: none; border-top: 1px solid var(--rule); }
+        .project { padding: 20px 0; border-bottom: 1px solid var(--rule); }
+        .project-head { display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 12px; }
+        .project-head h3 { font-size: 1.15rem; font-weight: 700; }
+        .project-head h3 a { text-decoration: none; }
+        .project-head h3 a:hover { text-decoration: underline; }
+        .ai-label { font-weight: 600; color: var(--violet); }
+        .pill { font-size: 0.78rem; font-weight: 600; padding: 2px 10px; border-radius: 999px; margin-left: auto; white-space: nowrap; }
+        .pill.live { background: #dcfae6; color: #05603a; }
+        .pill.build { background: #fef0c7; color: #93370d; }
+        .pill.designed { background: #e0e7ff; color: #3730a3; }
+        .pill.planned { background: #f2f4f7; color: #344054; }
+        .tier { font-size: 0.85rem; color: var(--muted); margin-top: 2px; }
+        .project p.desc { margin-top: 8px; max-width: 72ch; }
+        .pca { list-style: none; margin-top: 10px; display: grid; gap: 4px; font-size: 0.9rem; }
+        .pca li { display: grid; grid-template-columns: 104px 1fr; gap: 8px; }
+        .pca b { color: var(--live); }
+        .tech { font-size: 0.85rem; color: var(--muted); margin-top: 8px; }
+        .note { font-size: 0.85rem; color: var(--muted); margin-top: 6px; font-style: italic; }
+
+        /* Path */
+        .stages { list-style: none; display: grid; gap: 12px; }
+        .stage {
+            display: grid; grid-template-columns: 200px 1fr; gap: 20px;
+            padding: 16px 18px; border-left: 4px solid var(--rule); background: var(--wash); border-radius: 0 10px 10px 0;
         }
-        .primary-cta {
-            width: 100%;
-            max-width: 500px;
+        .stage.current { border-left-color: var(--indigo); background: #eef0ff; }
+        .stage h3 { font-size: 1rem; font-weight: 700; line-height: 1.3; }
+        .stage .when { font-size: 0.85rem; color: var(--muted); margin-top: 4px; }
+        .stage .when strong { color: var(--indigo); }
+        .stage p { font-size: 0.93rem; }
+        .stage p + p { margin-top: 6px; }
+        .degree { font-size: 0.9rem; color: var(--muted); margin-top: 14px; }
+
+        /* CTA */
+        .cta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 48px; }
+        .btn {
+            display: inline-block; padding: 11px 20px; border-radius: 999px; border: 2px solid var(--indigo);
+            font-size: 0.95rem; font-weight: 700; text-decoration: none; transition: background-color 0.15s;
         }
-        .secondary-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
-            justify-content: center;
-            width: 100%;
-        }
-        .cta-button {
-            display: inline-block;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 18px 40px;
-            border-radius: 50px;
-            text-decoration: none;
-            font-size: 1.1em;
-            font-weight: 600;
-            transition: transform 0.3s, box-shadow 0.3s;
-            white-space: nowrap;
-        }
-        .cta-button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
-        }
-        .secondary-button {
-            background: white;
-            color: #667eea;
-            border: 2px solid #667eea;
-            padding: 14px 30px;
-            font-size: 1em;
-        }
-        .secondary-button:hover {
-            background: #f8f9ff;
-        }
+        .btn.primary { background: var(--indigo); color: #fff; }
+        .btn.primary:hover { background: #3730a3; border-color: #3730a3; }
+        .btn.secondary { color: var(--indigo); }
+        .btn.secondary:hover { background: #eef0ff; }
 
         /* Stats */
         .stats {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 30px;
-            padding-top: 30px;
-            border-top: 1px solid #eee;
-            flex-wrap: wrap;
-            gap: 20px;
+            display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px;
+            margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--rule);
         }
-        .stat {
-            text-align: center;
-            min-width: 100px;
-        }
-        .stat-number {
-            font-size: 2.2em;
-            font-weight: bold;
-            color: #667eea;
-        }
-        .stat-label {
-            font-size: 0.95em;
-            color: #999;
-            margin-top: 5px;
-        }
+        .stat-number { font-size: 1.9rem; font-weight: 800; color: var(--indigo); line-height: 1.1; }
+        .stat-label { font-size: 0.88rem; color: var(--muted); margin-top: 4px; }
 
-        /* Footer */
-        .footer {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #eee;
-            color: #999;
-            font-size: 0.9em;
-        }
-        .footer a {
-            color: #667eea;
-            text-decoration: none;
-        }
-        .footer a:hover {
-            text-decoration: underline;
-        }
-        .build-status {
-            display: inline-block;
-            background: #10b981;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 15px;
-            font-size: 0.85em;
-            margin: 10px 0;
-        }
+        footer { margin-top: 32px; padding-top: 20px; border-top: 1px solid var(--rule); font-size: 0.9rem; color: var(--muted); display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }
+        footer nav { display: flex; gap: 16px; }
 
-        /* Mobile Responsive */
-        @media (max-width: 768px) {
-            .container {
-                padding: 40px 20px;
-            }
-            h1 {
-                font-size: 2em;
-            }
-            .badge-container {
-                flex-direction: column;
-                gap: 10px;
-            }
-            .ai-badge, .status-badge {
-                width: auto;
-                max-width: 90%;
-            }
-            .cta-button {
-                padding: 15px 30px;
-                font-size: 1em;
-            }
-            .secondary-button {
-                padding: 12px 25px;
-                font-size: 0.95em;
-            }
-            .stage-item {
-                grid-template-columns: 1fr;
-                gap: 12px;
-            }
-            .stage-head {
-                border-right: none;
-                border-bottom: 2px solid rgba(0,0,0,0.08);
-                padding-right: 0;
-                padding-bottom: 10px;
-            }
-            .highlight-metrics {
-                flex-direction: column;
-                gap: 10px;
-            }
-            .secondary-buttons {
-                flex-direction: column;
-                width: 100%;
-            }
-            .secondary-button {
-                width: 100%;
-                max-width: 300px;
-            }
-            .ai-tools {
-                justify-content: center;
-            }
-            .proof-grid, .flagship-strip {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 720px) {
+            body { padding: 16px 12px; }
+            .container { padding: 36px 20px 28px; border-radius: 16px; }
+            h1 { font-size: 2.2rem; }
+            .proof { padding: 22px 18px; }
+            .proof-grid { grid-template-columns: 1fr; }
+            .form { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .box:nth-child(2) { border-right: none; }
+            .box:nth-child(-n+2) { border-bottom: 1px solid var(--red-ink); }
+            .stage { grid-template-columns: 1fr; gap: 8px; }
+            .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .pill { margin-left: 0; }
+            .pca li { grid-template-columns: 1fr; gap: 0; }
+            .btn { width: 100%; text-align: center; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            * { transition: none !important; }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>📚 Learning Journey</h1>
+<main class="container">
 
-        <div class="badge-container">
-            <div class="ai-badge">🤖 PRODUCTION AI & DATA SYSTEMS · EVAL-FIRST</div>
-            <div class="status-badge">🟢 OPEN TO — AI-FOCUSED ANALYTICS ENGINEER &amp; DATA ENGINEER ROLES</div>
+    <!-- Hero -->
+    <header>
+        <h1>Manuel Reyes</h1>
+        <p class="role">Analytics Engineer and Data Engineer, building AI-ready data platforms</p>
+        <div class="badges">
+            <span class="badge open">Open to Analytics Engineer and Data Engineer roles, available now</span>
+            <span class="badge place">Greenville, SC (remote or hybrid)</span>
         </div>
-
-        <p class="subtitle">
-            ~32-Month Evidence-First Career Transformation
-            <br>
-            <span class="career-path">
-                Business Ops → Internal AI Builder → <strong>AI-Focused Analytics Engineer / Data Engineer</strong> → Applied AI Engineer → Forward-Deployed Engineer (FDE) Track
-            </span>
-        </p>
-
-        <!-- AI Differentiator -->
-        <div class="ai-box">
-            <h2>🚀 Evidence-First: Proof Over Keywords</h2>
-            <p class="ai-lead">The 2026 market is <strong>saturated at the keyword layer and starved at the evidence layer.</strong> Every claim below is backed by a system you can open, run and check.</p>
-
-            <div class="proof-grid">
-                <div class="proof-card">
-                    <h4>🧾 A live production system</h4>
-                    <p>Not a tutorial clone — a 1099 reconciliation pipeline running in an <strong>ERISA-regulated</strong> retirement-plan operations environment, with a validation gate that quarantines mismatches before distribution.</p>
-                </div>
-                <div class="proof-card">
-                    <h4>🧪 Eval gates that block merges</h4>
-                    <p>DeepEval / RAGAS / GEval thresholds are <strong>merge conditions, not reports</strong> — faithfulness ≥ 0.9 where the domain demands it. This is the line between a prototype and a production system.</p>
-                </div>
-                <div class="proof-card">
-                    <h4>⚡ Reproducible by construction</h4>
-                    <p><strong>uv</strong> with a committed <code>uv.lock</code>; images build via <code>uv sync --frozen</code>. A reviewer gets the exact dependency set I ran — enforced at the commit boundary, not asserted.</p>
-                </div>
-                <div class="proof-card">
-                    <h4>🔎 Observable &amp; PII-safe by design</h4>
-                    <p>One <code>structlog</code> chain renders my logs and my dependencies' alike, with a <strong>redaction processor inside it</strong> — so masking is structural, not something to remember at each call site.</p>
-                </div>
-            </div>
-
-            <div class="flagship-strip">
-                <div><span class="fs-name">🏁 PolicyPulse</span><span class="fs-desc">Applied AI — RAG → GraphRAG, FastMCP server, access-control-aware retrieval</span></div>
-                <div><span class="fs-name">🏁 DataVault / 1099 Platform</span><span class="fs-desc">Data Engineering — dbt, Airflow, data contracts, built on the live system above</span></div>
-                <div><span class="fs-name">🏁 Crucible</span><span class="fs-desc">Autonomous execution — HITL sign-off, kill-switch, "LLM behind the Wall"</span></div>
-                <div><span class="fs-name">🏁 PostCheck</span><span class="fs-desc">Dual-target — agentic QA review + event log → dbt NIGO quality mart</span></div>
-            </div>
-
-            <div class="ai-tools">
-                <span class="ai-tool">Anthropic SDK (primary)</span>
-                <span class="ai-tool">🦙 Local-First (Qwen3/Ollama + LM Studio)</span>
-                <span class="ai-tool">RAG + ChromaDB</span>
-                <span class="ai-tool">🕸️ GraphRAG + Neo4j</span>
-                <span class="ai-tool">FastMCP Server</span>
-                <span class="ai-tool">⚡ Polars (default engine)</span>
-                <span class="ai-tool">dbt + Airflow</span>
-                <span class="ai-tool">Snowflake / BigQuery</span>
-                <span class="ai-tool">Kafka + Terraform</span>
-                <span class="ai-tool">Pydantic</span>
-                <span class="ai-tool">DeepEval + RAGAS + GEval</span>
-                <span class="ai-tool">Docker + K8s + CI</span>
-                <span class="ai-tool">⚡ uv (Astral) + uv.lock</span>
-                <span class="ai-tool">structlog + stamina</span>
-                <span class="ai-tool">🪝 pre-commit (pinned hooks)</span>
-                <span class="ai-tool">🐍 Conda (conditional)</span>
-                <span class="ai-tool">Vercel AI SDK 7 (last mile)</span>
-                <span class="ai-tool">🐍 Python 3.14</span>
-                <span class="ai-tool">VS Code + Cursor AI + OpenCode</span>
-            </div>
-        </div>
-
-        <!-- Production Highlight -->
-        <div class="highlight-box">
-            <h2>🏆 Production Code, Not Just Tutorials</h2>
-            <p><strong>1099 Reconciliation ETL Pipeline:</strong> Live system in an <strong>ERISA-regulated retirement-plan operations environment</strong> — the seed of the Data Engineering flagship. A <strong>derived-vs-reported Box-7 validation gate</strong> quarantines mismatches before distribution. <em>Mechanism and non-identifying relative deltas only — no absolute cost figures, participant or plan data, client identifiers, or employer-identifying volumes.</em></p>
-            <div class="highlight-metrics">
-                <div class="metric">
-                    <span class="metric-number">95%</span>
-                    <span class="metric-label">Time Saved</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-number">SLA</span>
-                    <span class="metric-label">Freshness Held</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-number">Full</span>
-                    <span class="metric-label">Book, No Added Headcount</span>
-                </div>
-                <div class="metric">
-                    <span class="metric-number">Gated</span>
-                    <span class="metric-label">Derived vs Reported</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Current Stage -->
-        <div class="stage-section">
-            <h2>🎯 Career Progression: Stage 1 of 3</h2>
-            <div class="stage-grid">
-                <div class="stage-item current">
-                    <div class="stage-head">
-                        <h3>📊 Stage 1: Internal AI Builder</h3>
-                        <p><strong>Active</strong> · Months 1-8</p>
-                    </div>
-                    <div class="stage-body">
-                    <p><strong>Focus:</strong> Production Python (typed, <strong>uv + uv.lock</strong>, <strong>structlog</strong> + <code>pydantic-settings</code> + <code>stamina</code>, <strong>pre-commit</strong>) + SQL + Anthropic SDK + RAG + MCP + eval gates + Docker/CI. <strong>Python 3.14</strong> (standard GIL build), single-source pinned via <code>requires-python</code>. Last mile: <strong>Vercel AI SDK 7</strong> + TypeScript/Zod/React — <em>last mile only; Python owns the agentic loop</em>. Git team workflow: <strong>branch → PR → review → merge</strong>. Certs: <strong>AI-901</strong> ($99, self-funded) <em>— AB-620 moved to conditional: the low-code Copilot Studio path does not evidence production Python</em></p>
-                    <p><strong>Goal:</strong> PolicyPulse v1 shipping + <strong>DataVault S2 hardening</strong></p>
-                    <p><strong>Exit criterion:</strong> an <strong>evidence gate</strong> — DataVault S2 shipped — not an employment milestone. <em>&quot;Internal AI Builder&quot; labels the work, not a job title.</em></p>
-                    </div>
-                </div>
-                <div class="stage-item upcoming">
-                    <div class="stage-head">
-                        <h3>🔧 Stage 2: AI-Focused Analytics Engineer / Data Engineer</h3>
-                        <p>🎯 <strong>PRIMARY PATH</strong> · Months 9-20</p>
-                    </div>
-                    <div class="stage-body">
-                    <p><strong>Target:</strong> <strong>Analytics Engineer is the first door</strong>, Data Engineer in parallel</p>
-                    <p><strong>Focus:</strong> <strong>Polars</strong> (default engine — pandas retained deliberately at the openpyxl template write and plotting hand-off) + dbt + Airflow + Kafka + <strong>Snowflake (primary)</strong> + BigQuery/Fabric awareness + data contracts + Docker→ECS/Kubernetes + Terraform</p>
-                    <p><strong>"AI-focused" ≠ vanilla DE:</strong> data platforms built for AI workloads — embedding pipelines, vector retrieval as data infrastructure, and unstructured-data ETL feeding RAG</p>
-                    <p><strong>The depth behind the title:</strong> vector schemas and retrieval governance · <strong>PII-safe corpus preparation</strong> and citation-grade chunking · reproducible ML-ready datasets with <strong>point-in-time correctness</strong>, leakage detection and CI gates for schema/drift/bias</p>
-                    <p><strong>Certs (self-funded):</strong> DP-700 ($165) + AWS Data Engineer Associate ($150) <em>(+ conditional dbt Analytics Engineering ~$200 — the tested dbt project is the primary signal; + optional lakehouse cert — three co-equal options, take ONE, matched to target stack: DP-750 $165 / SnowPro Core $175 / Databricks DE $200)</em></p>
-                    </div>
-                </div>
-                <div class="stage-item upcoming">
-                    <div class="stage-head">
-                        <h3>🧠 Stage 3: Applied AI Engineer → FDE</h3>
-                        <p>Months 21-32</p>
-                    </div>
-                    <div class="stage-body">
-                    <p><strong>Focus:</strong> Production agentic systems (Building Effective Agents) + MCP servers + HITL gates + eval-as-engineering + ML-literacy module</p>
-                    <p><strong>🎯 FDE differentiator:</strong> Discovery &amp; decomposition — the customer-facing case-study round that filters most technically-strong candidates; ERISA client-facing background is the structural edge. Every flagship carries an ADR set + C4 diagram for architecture-defense.</p>
-                    <p><strong>Certs (self-funded):</strong> CCA-F (~$125) + AI-103 ($165, code-first Foundry) + Databricks GenAI ($200) + Neo4j (free) + NVIDIA NCA-GENL ($125)</p>
-                    </div>
-                </div>
-            </div>
-            <p style="text-align:center; margin-top:18px; font-style:italic; opacity:0.85;">🎓 Parallel degree track: Georgia Tech OMSCS (Computing Systems), mapped to Stages 2–3.<br>The external <strong>Analytics Engineer / Data Engineer</strong> search is the <strong>primary path</strong>, not a fallback — never a Data Analyst search, under any circumstance.<br>All certifications are <strong>self-funded</strong> — <strong>eight committed ≈ $1,029</strong> across three stages; ≈ <strong>$1,594</strong> if every conditional is taken (optional lakehouse slot, dbt AE, AB-620).</p>
-        </div>
-
-        <!-- Project Pipeline -->
-        <div class="projects-section">
-            <h2>💼 Portfolio — 4 Flagships + 2 Supporting</h2>
-            <p class="projects-subtitle">A deliberately focused portfolio — a few substantial systems, each targeting a different problem • Every repo ships with architecture diagram, ADR set + C4 diagram, Dockerfile, eval-metrics table, demo GIF, and "What I Learned" • <strong>uv-managed</strong> (<code>pyproject.toml</code> + committed <code>uv.lock</code>, no <code>requirements.txt</code>) • <strong>pinned <code>.pre-commit-config.yaml</code></strong> (hooks a strict subset of CI; <code>gitleaks</code> + <code>nbstripout</code> keep secrets and notebook output out of public repos by construction) • <strong>structured logging</strong> with a PII-redaction processor, typed config, capped retries</p>
-            <ul class="project-list">
-                <li class="project-item flagship-border">
-                    <span class="status flagship">🏁 FLAGSHIP 1 • APPLIED AI</span>
-                    <h3>PolicyPulse — RAG → GraphRAG + FastMCP</h3>
-                    <p><strong>Sensitive-document intelligence:</strong> answers retirement-plan policy questions with cited sources, auto-escalates when uncertain, and enforces <strong>per-document access control at retrieval time</strong>.</p>
-                    <p class="project-tech">🧠 Anthropic SDK (primary) + ChromaDB + GraphRAG (Neo4j) + FastMCP server + RAGAS/DeepEval blocking gates</p>
-                    <ul class="pca-list">
-                        <li><span class="pca-label">① Production:</span> containerised RAG + FastMCP service; RAGAS/DeepEval blocking gates are <em>merge conditions</em>, not reports; confidence-gated escalation path</li>
-                        <li><span class="pca-label">② Cost:</span> cost-per-query and p95 latency measured across inference substrates; local-vs-cloud routing policy; embedding/re-index cost</li>
-                        <li><span class="pca-label">③ Architecture:</span> GraphRAG (Neo4j + ChromaDB) · retrieval-strategy ADRs <em>with rejected alternatives</em> · C4 Context + Container · MCP read → approval-gated write boundary</li>
-                    </ul>
-                    <p class="pca-note">🔍 Multi-hop GraphRAG • 📎 Cited answers • 🔌 MCP tools • 🧪 Access-control-aware retrieval</p>
-                    <span class="project-skill-tag">RAG + GraphRAG + MCP + Eval Gates</span>
-                </li>
-                <li class="project-item flagship-border">
-                    <span class="status flagship">🏁 FLAGSHIP 2 • DATA ENGINEERING</span>
-                    <h3>DataVault / 1099 Data Platform</h3>
-                    <p><strong>Production financial data platform</strong> — the live 1099 reconciliation pipeline, hardened end-to-end: ingestion → dbt-tested models (CI-gated) → orchestrated (Airflow) → data-quality contracts → deployed (Docker/ECS) → monitored, with incident postmortems. Adds a semantic/metrics layer for the Analytics-Engineer story, plus an S3 DataVault Applied-AI layer (NL-to-SQL over the semantic layer, HITL on every write).</p>
-                    <p class="project-tech">🔧 Python + SQL + <strong>Polars</strong> + dbt + Airflow + Snowflake (primary)/BigQuery + Great Expectations + Docker→ECS + Terraform</p>
-                    <ul class="pca-list">
-                        <li><span class="pca-label">① Production:</span> live in a regulated environment — reconciliation success rate, freshness SLA, quarantine/retry, schema contracts, on-call</li>
-                        <li><span class="pca-label">② Cost:</span> <strong>95% time reduction</strong>; mechanism and non-identifying relative deltas only — no absolute figures or manual-hour counts</li>
-                        <li><span class="pca-label">③ Architecture:</span> ERISA-driven ADRs + C4 + dbt tests/contracts</li>
-                    </ul>
-                    <p class="pca-note">🎯 Retains scheduling priority — DataVault S2 hardening is the Stage 1 exit gate</p>
-                    <span class="project-skill-tag">dbt + Orchestration + Contracts + Deploy/Ops</span>
-                </li>
-                <li class="project-item flagship-border">
-                    <span class="status flagship">🏁 FLAGSHIP 3 • AUTONOMOUS EXECUTION</span>
-                    <h3>Crucible — Backtest → Paper → Live</h3>
-                    <p><strong>Autonomous multi-timeframe (swing → intraday) research platform</strong> with production-safety engineering for irreversible actions: <strong>mandatory human-in-the-loop sign-off + kill-switch</strong> on the live path, and an <strong>"LLM behind the Wall"</strong> barrier (aggregates only, never raw rows). A verifier agent sits before the human gate. Grounded in 5+ years of independent trading.</p>
-                    <p class="project-tech">🔥 Own harness → NautilusTrader + Local Qwen3/Ollama + LangGraph + Alpaca + Schwab/TOS + Sealed OOS Vault</p>
-                    <ul class="pca-list">
-                        <li><span class="pca-label">① Production:</span> paper→live with mandatory human sign-off + kill-switch; deterministic core owns every trade</li>
-                        <li><span class="pca-label">② Cost:</span> compute per backtest sweep; data-feed cost; sweep efficiency (results per compute-hour)</li>
-                        <li><span class="pca-label">③ Architecture:</span> overfitting-budget ledger · Tool Correctness = 1.0 / Task Completion &gt; 0.8 · execution/risk ADRs + C4 + <code>signalcore</code> boundary</li>
-                    </ul>
-                    <span class="project-skill-tag">Event-Driven Engine + Local LLM + HITL Safety + Broker APIs</span>
-                </li>
-                <li class="project-item flagship-border">
-                    <span class="status flagship">🏁 FLAGSHIP 4 • DUAL-TARGET (APPLIED AI + AE/DE)</span>
-                    <h3>PostCheck — Autonomous Post-Posting QA Review</h3>
-                    <p><strong>The only project whose single deliverable produces first-class evidence for both target doors.</strong> An autonomous review agent for regulated distribution operations: it claims each intake packet <strong>exactly once</strong>, parses the posted-transaction export deterministically, segments and extracts a scanned multi-document packet with a multimodal model, then adjudicates against a <strong>versioned SOP</strong> across a fixed 15-item verification surface → <strong>IGO / NIGO</strong>. Every adjudication appends to an event log feeding a <strong>dbt-modelled NIGO quality mart</strong> (first-pass IGO rate, reason Pareto, agent-vs-human agreement).</p>
-                    <p class="project-tech">🧾 Exactly-once ingestion (content-hash idempotency + lease TTL) + deterministic row-type dispatch + multimodal extraction + versioned SOP adjudication + dbt event log &amp; metrics layer + MCP + HITL</p>
-                    <ul class="pca-list">
-                        <li><span class="pca-label">① Production:</span> <strong>read-only and advisory — binding, tested safety invariant.</strong> Never keys, posts, reverses or corrects; never contacts a participant, advisor, TPA or sponsor; an IGO verdict is a recommendation to a human, never an authorization</li>
-                        <li><span class="pca-label">② Cost:</span> provider-agnostic across three named substrates (Anthropic · Azure OpenAI via Microsoft Foundry · local Ollama) — one eval suite, gates run per substrate</li>
-                        <li><span class="pca-label">③ Architecture:</span> the spreadsheet is a <em>rendered export</em>, never the source of truth · declared grain (one row per packet × review run) · ADRs + C4 Context + Container</li>
-                    </ul>
-                    <p class="pca-note">📏 <strong>Measured against a real incumbent</strong> — a prompt-only reviewer already in use — so the headline is a genuine before/after, not an unfalsifiable claim. Blocking gate is <strong>false-NIGO rate, not accuracy</strong> (precision blocks, recall reported). Synthetic corpus only; the controlled-NIGO-injection generator is itself a portfolio artifact.</p>
-                    <span class="project-skill-tag">Agentic Adjudication + Event Log + dbt Metrics Layer + HITL Boundary</span>
-                </li>
-                <li class="project-item">
-                    <span class="status planned">🧩 SUPPORTING • DOCUMENT AI</span>
-                    <h3>FormSense — Multimodal Agentic Workflow</h3>
-                    <p><strong>Agentic workflow</strong> (Anthropic taxonomy — <em>not</em> multi-agent) that extracts and validates synthetic ERISA distribution forms against a frozen Pydantic schema contract, with GEval schema-adherence gates and smart routing.</p>
-                    <p class="project-tech">👁️ Vision LLM + Pydantic (frozen contract) + Streamlit + DeepEval (GEval ≥ 0.85) + Docker + CI</p>
-                    <ul class="pca-list">
-                        <li><span class="pca-label">① Production:</span> deploy path (Docker + CI) with <strong>GEval schema-adherence gates as merge conditions</strong>; smart routing on low confidence</li>
-                        <li><span class="pca-label">② Cost:</span> ⚪ optional at supporting tier — <em>not manufactured where there is nothing to report</em></li>
-                        <li><span class="pca-label">③ Architecture:</span> frozen Pydantic schema contract · full ADR set + C4 Context · document → parse → validate → route boundary</li>
-                    </ul>
-                    <p class="pca-note">🔀 <strong>Not PostCheck:</strong> FormSense is <em>pre-index</em> — is this form complete and legible enough to file? It judges the form against itself. PostCheck is <em>post-posting</em> — does the posted transaction match the request? Different position in the workflow, different source of truth. Never merged.</p>
-                    <span class="project-skill-tag">Multimodal + Schema Adherence + Routing</span>
-                </li>
-                <li class="project-item">
-                    <span class="status planned">🧩 SUPPORTING • RESEARCH</span>
-                    <h3>Attention-Flow Catalyst (AFC)</h3>
-                    <p><strong>Read-only GraphRAG financial research</strong> over small-cap trigger signals, with a <strong>faithfulness ≥ 0.9</strong> evaluation showcase for financial-data sensitivity. Demonstrates bounded, unattended-safe agent design. <em>Eval-first faithfulness benchmark ships in S1 → S3.</em></p>
-                    <p class="project-tech">🔬 DuckDB + Parquet + edgartools + Neo4j + ChromaDB (GraphRAG) + Anthropic SDK + SelfCheckGPT + FActScore</p>
-                    <ul class="pca-list">
-                        <li><span class="pca-label">① Production:</span> read-only research loop; <strong>faithfulness ≥ 0.9 as a blocking gate</strong> — the eval-first premise <em>is</em> the deliverable</li>
-                        <li><span class="pca-label">② Cost:</span> ⚪ optional at supporting tier; where it applies — cost-per-screen-run and embedding/re-index cost</li>
-                        <li><span class="pca-label">③ Architecture:</span> GraphRAG (Neo4j + ChromaDB) · full ADR set + C4 Context · <code>signalcore</code> boundary (primitives in, thresholds out)</li>
-                    </ul>
-                    <span class="project-skill-tag">GraphRAG + Financial-Grade Eval + Bounded Agents</span>
-                </li>
-                <li class="project-item">
-                    <span class="status planned">📅 BACKLOG</span>
-                    <h3>Operations-Demand-Intelligence</h3>
-                    <p><strong>AI-powered workflow-demand analysis:</strong> enterprise OnBase data for data-driven staffing, with Distribution vs Loan segmentation and an AI chat interface.</p>
-                    <p class="project-tech">📊 pandas + Plotly + LLM SDK + PandasAI + privacy guardrails</p>
-                    <span class="project-skill-tag">Enterprise Analytics</span>
-                </li>
-                <li class="project-item">
-                    <span class="status planned">📅 BACKLOG</span>
-                    <h3>StreamSmart Optimizer</h3>
-                    <p><strong>Consumer AI app:</strong> optimizes household streaming spend through AI rotation planning, content search, and savings forecasting via live APIs.</p>
-                    <p class="project-tech">📺 Watchmode/TMDB APIs + httpx async + AI rotation planner + cost analytics</p>
-                    <span class="project-skill-tag">External APIs + Async + Optimization</span>
-                </li>
-            </ul>
-        </div>
-
-        <!-- CTA Buttons -->
-        <div class="cta-section">
-            <div class="primary-cta">
-                <a href="roadmap.html" target="_blank" class="cta-button">
-                    📋 View Complete Roadmap (v10.0)
-                </a>
-            </div>
-
-            <div class="secondary-buttons">
-                <a href="https://github.com/manuel-reyes-ml/data-portfolio" target="_blank" class="cta-button secondary-button">
-                    💼 Portfolio Hub
-                </a>
-
-                <a href="https://github.com/manuel-reyes-ml/learning_journey" target="_blank" class="cta-button secondary-button">
-                    📚 Learning Journey
-                </a>
-
-                <a href="https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline" target="_blank" class="cta-button secondary-button">
-                    🔧 Production Code
-                </a>
-            </div>
-        </div>
-
-        <!-- Stats -->
-        <div class="stats">
-            <div class="stat">
-                <div class="stat-number">~32</div>
-                <div class="stat-label">Months Total</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number">3</div>
-                <div class="stat-label">Evidence-First Stages</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number">25</div>
-                <div class="stat-label">Hours/Week</div>
-            </div>
-            <div class="stat">
-                <div class="stat-number">4+2</div>
-                <div class="stat-label">Flagships + Supporting</div>
-            </div>
-        </div>
-
-        <!-- Footer -->
-        <div class="footer">
-            <div class="build-status">🟢 Active • Evidence-First • Building in Public • Production Systems</div>
-            <br><br>
-            Production AI + RAG/GraphRAG + Data Engineering (dbt/Airflow) + Eval-First Gates + Reproducible Builds (uv) + Domain Depth
-            <br>
-            <a href="https://github.com/manuel-reyes-ml" target="_blank">GitHub</a> •
-            <a href="https://www.linkedin.com/in/mr410/" target="_blank">LinkedIn</a> •
+        <p class="pitch">I build data pipelines that have to be right, because a wrong number becomes a wrong tax form. My 1099-R reconciliation pipeline runs in production in an ERISA-regulated retirement-plan operation, and I'm rebuilding it in public as a dbt-tested data platform.</p>
+        <p class="path">Path: business operations → <strong>Analytics / Data Engineer (AI-ready data)</strong> → Applied AI Engineer → Forward-Deployed Engineer</p>
+        <nav class="contact" aria-label="Contact">
+            <a href="https://www.linkedin.com/in/mr410/">LinkedIn</a>
             <a href="mailto:manuelreyesv410@gmail.com">Email</a>
+            <a href="https://github.com/manuel-reyes-ml">GitHub</a>
+        </nav>
+    </header>
+
+    <!-- Proof over keywords -->
+    <section class="proof" aria-labelledby="proof-title">
+        <h2 id="proof-title">Proof over keywords</h2>
+        <p class="lead">Every project is held to one production standard, and every claim points to code you can open.</p>
+        <div class="proof-grid">
+            <div class="proof-item">
+                <h3>Business logic in tested dbt models</h3>
+                <p>A declared grain, a unit test per rule and data contracts at the boundaries. Polars handles ingestion; pandas stays only at the Excel and plotting edges, recorded as an ADR.</p>
+            </div>
+            <div class="proof-item">
+                <h3>Evaluation gates block merges</h3>
+                <p>RAGAS, DeepEval and GEval thresholds are CI conditions, and each metric matches the cost of being wrong. On PostCheck the gate is the false-alarm rate, not accuracy.</p>
+            </div>
+            <div class="proof-item">
+                <h3>Reproducible and enforced</h3>
+                <p>Python 3.14 pinned once, a committed <code>uv.lock</code>, and pre-commit hooks that are a strict subset of CI. Secret scanning and notebook stripping make synthetic-data-only mechanical.</p>
+            </div>
+            <div class="proof-item">
+                <h3>Observable and PII-safe</h3>
+                <p>One <code>structlog</code> chain renders my logs and my dependencies', with a redaction processor inside it, so masking never depends on remembering it.</p>
+            </div>
         </div>
+        <div class="stack">
+            <div class="stack-row">
+                <span class="stack-label">Shipped and in build</span>
+                <span class="chip">Python</span><span class="chip">SQL</span><span class="chip">dbt Core + DuckDB</span><span class="chip">Polars</span><span class="chip">pandas</span><span class="chip">pytest</span><span class="chip">GitHub Actions</span><span class="chip">Docker</span><span class="chip">uv</span><span class="chip">pre-commit</span><span class="chip">Anthropic SDK</span><span class="chip">RAG</span><span class="chip">FastMCP</span><span class="chip">DeepEval + RAGAS</span>
+            </div>
+            <div class="stack-row">
+                <span class="stack-label">Next</span>
+                <span class="chip next">Snowflake</span><span class="chip next">Airflow</span><span class="chip next">AWS (S3, ECS)</span><span class="chip next">Terraform</span><span class="chip next">Neo4j GraphRAG</span><span class="chip next">LangGraph</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Production highlight -->
+    <section aria-labelledby="prod-title">
+        <h2 id="prod-title">In production: the 1099-R reconciliation pipeline</h2>
+        <p class="lead">Reconciles retirement-plan distributions across two recordkeeping systems, derives the expected 1099-R Box 7 code, and produces correction files for human review.</p>
+        <div class="form" role="list">
+            <div class="box" role="listitem">
+                <span class="box-label">Weekly reconciliation effort</span>
+                <span class="box-value">−95%</span>
+            </div>
+            <div class="box" role="listitem">
+                <span class="box-label">Coverage</span>
+                <span class="box-value">Full book</span>
+                <span class="box-note">no added headcount</span>
+            </div>
+            <div class="box" role="listitem">
+                <span class="box-label">Box 7 check</span>
+                <span class="box-value">Gated</span>
+                <span class="box-note">mismatches quarantined before distribution</span>
+            </div>
+            <div class="box" role="listitem">
+                <span class="box-label">Freshness SLA</span>
+                <span class="box-value">Held</span>
+                <span class="box-note">reconciliation success rate tracked</span>
+            </div>
+        </div>
+        <p class="now"><strong>Now:</strong> the rules are being rebuilt as dbt models with a unit test per rule, and the shipped pandas version stays frozen as the baseline the rebuild is measured against. <a href="https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline">Read the code</a></p>
+        <p class="fine">Public repos use synthetic data only. Claims are limited to mechanism and relative change: no participant, plan, client or employer-identifying data.</p>
+    </section>
+
+    <!-- Portfolio -->
+    <section aria-labelledby="portfolio-title">
+        <h2 id="portfolio-title">Portfolio</h2>
+        <p class="lead">Four flagships and two supporting projects, ordered by the roles I'm targeting. AI is <em>powered</em> where the model does the core job and <em>assisted</em> where a deterministic core must make the decision.</p>
+        <ul class="projects">
+            <li class="project">
+                <div class="project-head">
+                    <h3><a href="https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline">DataVault</a></h3>
+                    <span class="ai-label">AI-assisted 1099 data platform</span>
+                    <span class="pill live">S1 live, S2 in build</span>
+                </div>
+                <p class="tier">Flagship for analytics and data engineering</p>
+                <p class="desc">The live reconciliation pipeline, hardened into a governed data platform: dbt-tested models with a declared grain, data contracts, Airflow, a Docker/ECS deploy, monitoring and a semantic layer. An LLM explains exceptions and, in Stage 3, proposes corrections; a human approves every write.</p>
+                <ul class="pca">
+                    <li><b>Production</b> live in a regulated operation; success rate held against a freshness SLA</li>
+                    <li><b>Cost</b> 95% less weekly effort; relative figures only</li>
+                    <li><b>Architecture</b> ERISA-driven ADRs, C4 context and container views, dbt tests and contracts</li>
+                </ul>
+                <p class="tech">Python, SQL, dbt, Polars, Airflow, Snowflake, Great Expectations, Docker, AWS ECS, Terraform</p>
+            </li>
+            <li class="project">
+                <div class="project-head">
+                    <h3><a href="https://github.com/manuel-reyes-ml/postcheck">PostCheck</a></h3>
+                    <span class="ai-label">AI-powered QA review agent</span>
+                    <span class="pill designed">Designed</span>
+                </div>
+                <p class="tier">Flagship for data engineering and applied AI</p>
+                <p class="desc">Reviews posted retirement-plan distributions against the request packet and a versioned SOP. Each packet is claimed exactly once, the posted export is parsed deterministically, and a multimodal model reads the scanned forms; rules run first and the LLM handles only what's left. Every verdict lands in an append-only event log that feeds a dbt quality mart.</p>
+                <ul class="pca">
+                    <li><b>Production</b> read-only by a tested invariant; a verdict is a recommendation, never an authorization</li>
+                    <li><b>Cost</b> one eval suite run on Anthropic, Azure OpenAI and local Ollama</li>
+                    <li><b>Architecture</b> declared grain (one row per packet per review run), ADRs, C4</li>
+                </ul>
+                <p class="note">Measured against a prompt-only reviewer already in use. The blocking gate is the false-NIGO rate, not accuracy.</p>
+                <p class="tech">Python, Anthropic SDK, Azure OpenAI, Ollama, Pydantic, dbt, DeepEval, FastMCP, Docker</p>
+            </li>
+            <li class="project">
+                <div class="project-head">
+                    <h3><a href="https://github.com/manuel-reyes-ml/policypulse">PolicyPulse</a></h3>
+                    <span class="ai-label">AI-powered policy assistant</span>
+                    <span class="pill build">In build</span>
+                </div>
+                <p class="tier">Flagship for applied AI</p>
+                <p class="desc">Answers policy questions with cited sources and escalates when it isn't sure. It starts as RAG over ChromaDB and grows into GraphRAG with Neo4j, with access control enforced at retrieval time.</p>
+                <ul class="pca">
+                    <li><b>Production</b> RAGAS and DeepEval gates are merge conditions; exposes a FastMCP server</li>
+                    <li><b>Cost</b> cost per query and p95 latency across local and cloud models</li>
+                    <li><b>Architecture</b> retrieval ADRs with rejected alternatives; C4 context and container</li>
+                </ul>
+                <p class="tech">Python, Anthropic SDK, ChromaDB, Neo4j, FastMCP, RAGAS, DeepEval, Streamlit, Docker</p>
+            </li>
+            <li class="project">
+                <div class="project-head">
+                    <h3><a href="https://github.com/manuel-reyes-ml/crucible">Crucible</a></h3>
+                    <span class="ai-label">AI-assisted trading research</span>
+                    <span class="pill build">In build</span>
+                </div>
+                <p class="tier">Flagship for applied AI and execution safety</p>
+                <p class="desc">Takes a trading strategy from backtest to paper to live. An LLM analyst reads aggregated backtest results and proposes hypotheses; a deterministic core owns every order, and the live path requires human sign-off and has a kill switch.</p>
+                <ul class="pca">
+                    <li><b>Production</b> sealed out-of-sample vault, walk-forward validation, intended-vs-filled reconciliation</li>
+                    <li><b>Cost</b> compute per backtest sweep and data-feed cost</li>
+                    <li><b>Architecture</b> execution and risk ADRs, C4, a shared point-in-time primitives library</li>
+                </ul>
+                <p class="note">Research project. Not investment advice, and no claim of positive returns.</p>
+                <p class="tech">Python, NautilusTrader, DuckDB, Parquet, Optuna, Ollama, LangGraph, Alpaca, DeepEval</p>
+            </li>
+            <li class="project">
+                <div class="project-head">
+                    <h3><a href="https://github.com/manuel-reyes-ml/attention-flow-catalyst">AFC</a></h3>
+                    <span class="ai-label">AI-powered predictive trigger analysis</span>
+                    <span class="pill build">In build</span>
+                </div>
+                <p class="tier">Supporting project, small-cap research</p>
+                <p class="desc">An LLM reads SEC filings under a faithfulness gate (≥ 0.9), and an ML model on a point-in-time event study predicts which trigger events follow through, reported as calibrated lift with false-discovery control, never as returns.</p>
+                <p class="tech">Python, edgartools, DuckDB, scikit-learn, LightGBM, Anthropic SDK, DeepEval</p>
+            </li>
+            <li class="project">
+                <div class="project-head">
+                    <h3><a href="https://github.com/manuel-reyes-ml/formsense">FormSense</a></h3>
+                    <span class="ai-label">AI-powered form validator</span>
+                    <span class="pill planned">Planned</span>
+                </div>
+                <p class="tier">Supporting project, document AI</p>
+                <p class="desc">Reads scanned distribution forms with a multimodal model, validates every field against a frozen Pydantic contract, and routes low-confidence forms to a person.</p>
+                <p class="tech">Python, vision LLM, Pydantic, DeepEval (GEval), Streamlit, Docker</p>
+            </li>
+        </ul>
+    </section>
+
+    <!-- Path -->
+    <section aria-labelledby="path-title">
+        <h2 id="path-title">Path: stage 1 of 3</h2>
+        <p class="lead">Stages end on evidence, not dates.</p>
+        <ol class="stages">
+            <li class="stage current">
+                <div>
+                    <h3>Stage 1: Internal AI Builder</h3>
+                    <p class="when"><strong>Active</strong>, months 1–8</p>
+                </div>
+                <div>
+                    <p>Production Python, SQL and dbt, and evaluation-first AI. The name describes the build work, not a job title.</p>
+                    <p>Ends when DataVault Stage 2 ships. Exam: Azure AI Fundamentals (AI-901).</p>
+                </div>
+            </li>
+            <li class="stage">
+                <div>
+                    <h3>Stage 2: Analytics / Data Engineer, AI-ready data</h3>
+                    <p class="when"><strong>Target role</strong>, months 9–20</p>
+                </div>
+                <div>
+                    <p>dbt on Snowflake, Airflow, data contracts and a Docker/ECS deploy, plus AI-ready data: embedding pipelines, PII-safe corpus preparation and point-in-time datasets.</p>
+                    <p>Exams: Fabric Data Engineer (DP-700), AWS Data Engineer Associate.</p>
+                </div>
+            </li>
+            <li class="stage">
+                <div>
+                    <h3>Stage 3: Applied AI Engineer to Forward-Deployed Engineer</h3>
+                    <p class="when">Months 21–32</p>
+                </div>
+                <div>
+                    <p>Production agentic systems, MCP, human-in-the-loop gates and evaluation as engineering, plus customer discovery and problem decomposition.</p>
+                    <p>Exams: Azure AI Apps &amp; Agents (AI-103), NVIDIA NCA-GENL, Databricks GenAI Engineer, Neo4j.</p>
+                </div>
+            </li>
+        </ol>
+        <p class="degree">Degree track: B.S. in Industrial &amp; Systems Engineering; CU Boulder graduate algorithms pathway from November 2026; Georgia Tech OMSCS (Computing Systems) next.</p>
+    </section>
+
+    <!-- CTA -->
+    <nav class="cta" aria-label="Explore">
+        <a class="btn primary" href="https://github.com/manuel-reyes-ml/data-portfolio">See the full portfolio</a>
+        <a class="btn secondary" href="https://github.com/manuel-reyes-ml/1099_reconciliation_pipeline">Read the production code</a>
+        <a class="btn secondary" href="roadmap.html">Open the roadmap</a>
+    </nav>
+
+    <!-- Stats -->
+    <div class="stats">
+        <div><div class="stat-number">15+</div><div class="stat-label">years in business operations</div></div>
+        <div><div class="stat-number">2</div><div class="stat-label">years in ERISA retirement-plan operations</div></div>
+        <div><div class="stat-number">5+</div><div class="stat-label">years of independent trading</div></div>
+        <div><div class="stat-number">4 + 2</div><div class="stat-label">flagship and supporting projects</div></div>
     </div>
+
+    <footer>
+        <span>Building in public. Roadmap v10.0.</span>
+        <nav aria-label="Footer">
+            <a href="https://github.com/manuel-reyes-ml/learning_journey">Learning journey</a>
+            <a href="https://github.com/manuel-reyes-ml">GitHub</a>
+            <a href="https://www.linkedin.com/in/mr410/">LinkedIn</a>
+            <a href="mailto:manuelreyesv410@gmail.com">Email</a>
+        </nav>
+    </footer>
+</main>
 </body>
 </html>
