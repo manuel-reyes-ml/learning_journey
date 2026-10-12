@@ -1,10 +1,10 @@
-# 📚 Learning Journey — Business Operations → Analytics & Data Engineering → Applied AI
+# 📚 Learning Journey — Business Operations → AI-Ready Analytics & Data Engineering → Applied AI
 
 The learning record behind my portfolio: what I'm studying, why, and in what order.
 **3 stages · ~32 months · 25 hrs/week · evidence over keywords.**
 
 > **Now:** Stage 1 of 3 — *Internal AI Builder* (the build work, not a job title)
-> **Targeting:** Analytics Engineer (first door) · Data Engineer (parallel) — 🟢 open to roles
+> **Targeting:** Analytics Engineer (first door) · Data Engineer (parallel) — on AI-ready data platforms · 🟢 open to roles
 > **Next gate:** DataVault S2 hardening shipped — the evidence that exits Stage 1
 > **Long term:** Applied AI Engineer → Forward-Deployed Engineer
 
@@ -29,7 +29,7 @@ The learning record behind my portfolio: what I'm studying, why, and in what ord
 | Stage | Months | Goal | Exit evidence | Exams |
 |---|---|---|---|---|
 | **1 · Internal AI Builder** 🟢 | 1–8 | Production Python, SQL + dbt, eval-first applied AI | **DataVault S2 hardening shipped** | AI-901 |
-| **2 · Analytics / Data Engineer** 🎯 | 9–20 | dbt + one warehouse deep, orchestration, contracts, deploy, AI-ready data | First AE/DE role; DataVault production-hardened | DP-700 · AWS DEA-C01 |
+| **2 · Analytics / Data Engineer (AI-ready data)** 🎯 | 9–20 | dbt + one warehouse deep, orchestration, contracts, deploy, AI-ready data | First AE/DE role; DataVault production-hardened | DP-700 · AWS DEA-C01 |
 | **3 · Applied AI → FDE** | 21–32 | Production agentic systems, eval-as-engineering, discovery & decomposition | Applied AI Engineer role; FDE apply list | AI-103 · NCA-GENL · Databricks GenAI · Neo4j |
 
 **The rules that govern it**
