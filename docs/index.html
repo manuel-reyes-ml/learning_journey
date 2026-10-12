@@ -15,6 +15,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/fontawesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/brands.min.css">
     <style>
         :root {
             --ink: #1f1d3a;          /* body text */
@@ -70,7 +72,37 @@
         .pitch { font-size: 1.0625rem; max-width: 66ch; }
         .path { margin-top: 12px; font-size: 0.95rem; color: var(--muted); }
         .path strong { color: var(--ink); }
-        .contact { display: flex; flex-wrap: wrap; gap: 18px; margin-top: 16px; font-weight: 600; }
+        .nowrap { white-space: nowrap; }
+        .contact { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+        .contact-link {
+            display: inline-flex; align-items: center; gap: 8px;
+            height: 40px; padding: 0 16px; border-radius: 999px;
+            border: 1.5px solid var(--rule); background: var(--paper);
+            color: var(--ink); font-size: 0.95rem; font-weight: 600; text-decoration: none;
+            transition: border-color 0.15s, background-color 0.15s;
+        }
+        .contact-link:hover { border-color: var(--indigo); background: #f4f4ff; }
+        .contact-link .fa-brands { font-size: 1.15rem; width: 1.15rem; text-align: center; }
+        .contact-link .fa-linkedin { color: #0a66c2; }
+        .contact-link .fa-github { color: var(--ink); }
+        .contact-link svg { width: 18px; height: 18px; flex: none; }
+        .email-group { display: inline-flex; }
+        .email-group .contact-link {
+            background: var(--indigo); border-color: var(--indigo); color: #fff;
+            border-radius: 999px 0 0 999px;
+        }
+        .email-group .contact-link:hover { background: #3730a3; border-color: #3730a3; }
+        .copy {
+            height: 40px; padding: 0 14px; cursor: pointer;
+            border: 1.5px solid var(--indigo); border-left: 1px solid rgba(255, 255, 255, 0.4);
+            border-radius: 0 999px 999px 0; background: var(--indigo); color: #fff;
+            font: inherit; font-size: 0.88rem; font-weight: 600;
+            transition: background-color 0.15s;
+        }
+        .copy:hover { background: #3730a3; }
+        .copy:focus-visible { outline: 3px solid #f59e0b; outline-offset: 2px; }
+        .addr-short { display: none; }
+        .sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 
         /* Proof panel */
         .proof {
@@ -180,6 +212,8 @@
             .stage { grid-template-columns: 1fr; gap: 8px; }
             .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
             .pill { margin-left: 0; }
+            .addr { display: none; }
+            .addr-short { display: inline; }
             .pca li { grid-template-columns: 1fr; gap: 0; }
             .btn { width: 100%; text-align: center; }
         }
@@ -200,12 +234,19 @@
             <span class="badge place">Greenville, SC (remote or hybrid)</span>
         </div>
         <p class="pitch">I build data pipelines that have to be right, because a wrong number becomes a wrong tax form. My 1099-R reconciliation pipeline runs in production in an ERISA-regulated retirement-plan operation, and I'm rebuilding it in public as a dbt-tested data platform.</p>
-        <p class="path">Path: business operations → <strong>Analytics / Data Engineer (AI-ready data)</strong> → Applied AI Engineer → Forward-Deployed Engineer</p>
+        <p class="path">Path: business operations → <strong>Analytics / Data Engineer (AI-ready data)</strong> → Applied AI Engineer → <span class="nowrap">Forward-Deployed Engineer</span></p>
         <nav class="contact" aria-label="Contact">
-            <a href="https://www.linkedin.com/in/mr410/">LinkedIn</a>
-            <a href="mailto:manuelreyesv410@gmail.com">Email</a>
-            <a href="https://github.com/manuel-reyes-ml">GitHub</a>
+            <span class="email-group">
+                <a class="contact-link" href="mailto:manuelreyesv410@gmail.com">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+                    <span class="addr">manuelreyesv410@gmail.com</span><span class="addr-short">Email</span>
+                </a>
+                <button class="copy" type="button" data-copy="manuelreyesv410@gmail.com" aria-label="Copy email address" hidden>Copy</button>
+            </span>
+            <a class="contact-link" href="https://www.linkedin.com/in/mr410/"><i class="fa-brands fa-linkedin" aria-hidden="true"></i>LinkedIn</a>
+            <a class="contact-link" href="https://github.com/manuel-reyes-ml"><i class="fa-brands fa-github" aria-hidden="true"></i>GitHub</a>
         </nav>
+        <span class="sr-only" aria-live="polite" id="copy-status"></span>
     </header>
 
     <!-- Proof over keywords -->
@@ -425,5 +466,21 @@
         </nav>
     </footer>
 </main>
+<script>
+    // Show the Copy button only where the Clipboard API exists; confirm the copy in place.
+    (function () {
+        var btn = document.querySelector('.copy');
+        if (!btn || !navigator.clipboard) return;
+        var status = document.getElementById('copy-status');
+        btn.hidden = false;
+        btn.addEventListener('click', function () {
+            navigator.clipboard.writeText(btn.dataset.copy).then(function () {
+                btn.textContent = 'Copied';
+                status.textContent = 'Email address copied';
+                setTimeout(function () { btn.textContent = 'Copy'; status.textContent = ''; }, 2000);
+            });
+        });
+    })();
+</script>
 </body>
 </html>
