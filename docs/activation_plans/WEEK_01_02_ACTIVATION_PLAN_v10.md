@@ -691,7 +691,7 @@ Course-load note: CS50x and P4E overlap on basics **by design** (Correction 11 �
 
 - [x] 10 min — Verify: `uv --version`, `git --version`, open Cursor (check Tab autocomplete is OFF, rules file present)
 - [x] 45 min — CS50x Week 0 lecture (1.25x speed; notes in `notebooks/cs50x-notes.md`)
-- [ ] 25 min — The Scratch problem (yes, really — it teaches **decomposition**, the exact skill FDE interviews test: breaking a big problem into small steps)
+- [x] 25 min — The Scratch problem (yes, really — it teaches **decomposition**, the exact skill FDE interviews test: breaking a big problem into small steps)
 - [ ] 10 min — Journal + commit (`docs: day 1 journal + cs50x week 0 notes`)
 
 **Evening (8:00–10:00):**
