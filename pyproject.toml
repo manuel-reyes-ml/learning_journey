@@ -14,7 +14,7 @@
 name = "learning-journey"
 version = "0.1.0"
 # Must be <= the floor of every workspace member, and the CI matrix must be a
-# subset of this range. Members declare >=3.12; local dev runs 3.14 via
+# subset of this range. Members declare >=3.14; local dev runs 3.14 via
 # .python-version.
 requires-python = ">=3.14"
 dependencies = [
@@ -37,6 +37,7 @@ dependencies = [
 # owns its own pytest pin; `uv sync --all-groups` brings them into the venv.
 [dependency-groups]
 dev = [
+    "pre-commit>=4.6.2",
     "ruff>=0.16.7",
 ]
 
