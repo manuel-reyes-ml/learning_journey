@@ -76,13 +76,17 @@ Model:   four-step design · declaring the grain · transaction / periodic /
 ## 🗓 WEEK 5 (Aug 17–23)
 
 ### Week 5 goals
-```
-□ Claude API course: first 3 sections     □ First 5+ SDK scripts committed
-□ Mode SQL: window functions section      □ Docker for Beginners COMPLETE
-□ recon-toy Dockerfile builds & runs      □ ~~AI-901 Learn modules 3–4~~ → 🆕 Kimball Ch. 3 + grain notes
-□ pydantic-settings config in place       □ Post #5 · ~~exam DATE booked~~ (Q2)
-□ 🆕 dbt Fundamentals started (Fri)
-```
+
+- [ ] Claude API course: first 3 sections
+- [ ] Mode SQL: window functions section
+- [ ] recon-toy Dockerfile builds & runs
+- [ ] pydantic-settings config in place
+- [ ] 🆕 dbt Fundamentals started (Fri)
+
+- [ ] First 5+ SDK scripts committed
+- [ ] Docker for Beginners COMPLETE
+- [ ] ~~AI-901 Learn modules 3–4~~ → 🆕 Kimball Ch. 3 + grain notes
+- [ ] Post #5 · ~~exam DATE booked~~ (Q2)
 
 ### 📌 DAY 29 — Monday, August 17
 **Morning:** Anthropic Academy — enroll in *Building with the Claude API*; complete the intro + first messages lessons.
@@ -273,13 +277,18 @@ Week summary + 🆕 lane-hours total (C58) · publish post #5 · plan Week 6 · 
 ## 🗓 WEEK 6 (Aug 24–30)
 
 ### Week 6 goals
-```
-□ Claude API course ~35% total (v3.1)     □ Mini-project #3 shipped (see Day 41)
-□ pydantic output validation mastered     □ Mode SQL Advanced COMPLETE
-□ Tests mock the API (no live calls)      □ 🆕 dbt Fundamentals COMPLETE (certificate)
-□ ~~AI-901 module 5 + practice test #1~~ → 🆕 Kimball Ch. 4 + AE reps #0   □ Post #6 · meetup attended if scheduled
-□ 🆕 Trading lane: market-data dbt rehearsal — `dbt build` green, lookahead test proven
-```
+
+- [ ] Claude API course ~35% total (v3.1)
+- [ ] pydantic output validation mastered
+- [ ] Tests mock the API (no live calls)
+- [ ] ~~AI-901 module 5 + practice test #1~~ → 🆕 Kimball Ch. 4 + AE reps #0
+- [ ] 🆕 Trading lane: market-data dbt rehearsal — `dbt build` green, lookahead test proven
+
+- [ ] Mini-project #3 shipped (see Day 41)
+- [ ] Mode SQL Advanced COMPLETE
+- [ ] 🆕 dbt Fundamentals COMPLETE (certificate)
+
+- [ ] Post #6 · meetup attended if scheduled
 
 ### 📌 DAY 36 — Monday, August 24
 **Morning:** Claude API course — structured output / JSON section.
@@ -518,19 +527,25 @@ Week summary + ⚖️ **priority check (C58)**: fortnight AE/DE vs Applied-AI ho
 ---
 
 ## 📊 2-WEEK SUCCESS METRICS
-```
-□ Claude API course ~35% (sections logged) □ Dockerfile builds; --frozen idiom used
-□ 5+ SDK scripts · streaming · errors      □ ADRs 0002–0003 written (yours)
-□ pydantic + pydantic-settings in use      □ Mode SQL Advanced complete
-□ SecretStr masking proven                 □ 🆕 dbt Fundamentals done (certificate)
-□ 8+ mocked tests, zero live-API tests     □ ~~AI-901 exam BOOKED~~ (Q2) → 🆕 grain declared
-                                             in `modeling-notes.md` (Kimball Ch. 3–4)
-□ Mini-project #3 shipped                  □ Posts #5–6 · 24+ commits · rules file
-□ ✅ all repos on 3.14 since setup          □ pre-commit on recon-toy
-                                             at Phase 3 · Tab re-enabled
-□ 🆕 Market-data rehearsal: dbt build green · □ 🆕 Job lane: targets 20 ·
-  lookahead singular test fails when broken     résumé v0 skeleton
-```
+
+- [ ] Claude API course ~35% (sections logged)
+- [ ] 5+ SDK scripts · streaming · errors
+- [ ] pydantic + pydantic-settings in use
+- [ ] SecretStr masking proven
+- [ ] 8+ mocked tests, zero live-API tests
+- [ ] Mini-project #3 shipped
+- [ ] ✅ all repos on 3.14 since setup
+- [ ] 🆕 Market-data rehearsal: dbt build green · lookahead singular test fails when broken
+
+- [ ] Dockerfile builds; --frozen idiom used
+- [ ] ADRs 0002–0003 written (yours)
+- [ ] Mode SQL Advanced complete
+- [ ] 🆕 dbt Fundamentals done (certificate)
+- [ ] ~~AI-901 exam BOOKED~~ (Q2) → 🆕 grain declared in `modeling-notes.md` (Kimball Ch. 3–4)
+- [ ] Posts #5–6 · 24+ commits · rules file at Phase 3 · Tab re-enabled
+- [ ] pre-commit on recon-toy
+- [ ] 🆕 Job lane: targets 20 · résumé v0 skeleton
+
 **Passing bar: 80%.** Non-negotiables: mini-project #3 (the SDK-fluency proof), ~~the booked AI-901 exam~~ → 🆕 **the grain declaration** (v3.1), and 🆕 **dbt Fundamentals complete** — DataVault's dbt project opens on Day 43 on top of it.
 
 ---
