@@ -1,4 +1,5 @@
 # 🚀 WEEKS 1–2 MASTER ACTIVATION PLAN (v10.0)
+
 ## Internal AI Builder Track | Starting Monday, July 20, 2026
 
 **Document Version:** 3.2 — 🎯 **READINESS GATE** (9 Oct 2026, roadmap C59) on the 3.1 ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, C58) and the 3.0 **JOB-FIRST RE-CUT** (6 Oct 2026) · fresh 12-week template from Mon 20 Jul 2026
@@ -13,6 +14,8 @@
 
 ---
 
+
+
 ## 🎯 v3.2 READINESS GATE — READ THIS FIRST (approved 9 Oct 2026 · roadmap Correction 59)
 
 **What changed — one line of the C58 rule.** The guardrail now ends when you are **job-ready**, not when the market answers:
@@ -21,12 +24,14 @@
 
 **The gate** is the roadmap's Stage 1 exit, unchanged: ingestion → dbt-tested models (CI-gated) → orchestration (Airflow) → data contracts → Docker/ECS deploy → monitoring, with ADRs, a C4 view and a written postmortem. The same ship opens the broad ~Q1 2027 search.
 
-| | C58 (v3.1) | **C59 (v3.2)** |
-|---|---|---|
-| AE/DE majority ends at | First recruiter / hiring-manager screen | **DataVault S2 hardening shipped** |
-| Failure it removes | — | A Week-10 screen flipping you to PolicyPulse with half a flagship · slow screens keeping Applied AI in the minority indefinitely |
-| After the switch | "may shift toward PolicyPulse" | **Applied AI ≥ AE/DE every fortnight, hired or not** · AE/DE keeps a maintenance share: DP-700 / AWS DEA on the Stage 2 schedule + fixes to shipped repos |
-| What screens do | Ended the rule | Feed the job lane and the C54 falsifier only |
+
+|                        | C58 (v3.1)                              | **C59 (v3.2)**                                                                                                                                            |
+| ---------------------- | --------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| AE/DE majority ends at | First recruiter / hiring-manager screen | **DataVault S2 hardening shipped**                                                                                                                        |
+| Failure it removes     | —                                       | A Week-10 screen flipping you to PolicyPulse with half a flagship · slow screens keeping Applied AI in the minority indefinitely                          |
+| After the switch       | "may shift toward PolicyPulse"          | **Applied AI ≥ AE/DE every fortnight, hired or not** · AE/DE keeps a maintenance share: DP-700 / AWS DEA on the Stage 2 schedule + fixes to shipped repos |
+| What screens do        | Ended the rule                          | Feed the job lane and the C54 falsifier only                                                                                                              |
+
 
 **Never squeezed:** interview prep, take-homes and applications count as job search — on neither side — before and after the gate. Target roles are unchanged: Analytics Engineer first door, Data Engineer parallel.
 
@@ -36,36 +41,47 @@
 
 ---
 
+
+
 ## ⚖️ v3.1 PRIORITY REBALANCE — the hours (approved 8 Oct 2026 · roadmap Correction 58; v3.2 above sets when the rule ends)
 
 **Why.** An hour audit of all 84 days of v3.0 (300 h, every block priced from the schedule above) showed the **milestones** followed your priority — Analytics Engineer first door, Data Engineer parallel, Applied AI → FDE later — but the **hours** did not. From Week 5, Applied-AI work took roughly twice the AE/DE time, and the fortnight that ships the soft trigger gave DataVault ~6 h against ~27 h of AI work. v3.1 fixes the hours without deleting anything.
 
-| Fortnight | v3.0 AE/DE | v3.0 Applied AI | **v3.1 AE/DE** | **v3.1 Applied AI** | Guardrail |
-|---|---|---|---|---|---|
-| Weeks 1–2 | 3.5 h | 0 | **3.5 h** | **0** | ✅ |
-| Weeks 3–4 | 16.7 h | 6.9 h | **20.3 h** | **3.2 h** | ✅ |
-| Weeks 5–6 | 12.7 h | 25.1 h | **20.0 h** | **18.8 h** | ✅ |
-| Weeks 7–8 | 18.2 h | 13.5 h | **28.5 h** | **4.0 h** | ✅ |
-| Weeks 9–10 | 6.2 h | 26.8 h | **20.1 h** | **10.6 h** | ✅ |
-| Weeks 11–12 | 5.8 h | 17.8 h | **14.4 h** | **10.5 h** | ✅ |
-| **12 weeks** | **63 h (21%)** | **90 h (30%)** | **107 h (36%)** | **47 h (16%)** | |
 
-*Foundations (~65 h), job search (~29 h), trading (~6 h), the Day-82 exit work and weekly reviews make up the rest of the 300 h. Figures are ±2 h per fortnight: untimed items share their block's leftover minutes.*
+| Fortnight    | v3.0 AE/DE     | v3.0 Applied AI | **v3.1 AE/DE**  | **v3.1 Applied AI** | Guardrail |
+| ------------ | -------------- | --------------- | --------------- | ------------------- | --------- |
+| Weeks 1–2    | 3.5 h          | 0               | **3.5 h**       | **0**               | ✅         |
+| Weeks 3–4    | 16.7 h         | 6.9 h           | **20.3 h**      | **3.2 h**           | ✅         |
+| Weeks 5–6    | 12.7 h         | 25.1 h          | **20.0 h**      | **18.8 h**          | ✅         |
+| Weeks 7–8    | 18.2 h         | 13.5 h          | **28.5 h**      | **4.0 h**           | ✅         |
+| Weeks 9–10   | 6.2 h          | 26.8 h          | **20.1 h**      | **10.6 h**          | ✅         |
+| Weeks 11–12  | 5.8 h          | 17.8 h          | **14.4 h**      | **10.5 h**          | ✅         |
+| **12 weeks** | **63 h (21%)** | **90 h (30%)**  | **107 h (36%)** | **47 h (16%)**      |           |
+
+
+*Foundations (~~65 h), job search (~~29 h), trading (~6 h), the Day-82 exit work and weekly reviews make up the rest of the 300 h. Figures are ±2 h per fortnight: untimed items share their block's leftover minutes.*
 
 ### ⚖️ The priority guardrail (C58 · end condition C59) — a standing rule
+
 **Every fortnight, AE/DE build hours ≥ Applied-AI hours — ~~until the narrow search produces its first recruiter or hiring-manager screen~~ until DataVault S2 hardening ships (🎯 v3.2, C59).** Foundations, job search, trading and admin count on neither side. Check it every Sunday from the journal's new *lane hours* line (Step 9). If a fortnight fails, the next week's first Applied-AI slot goes to DataVault. ~~After the first screen, the balance may shift toward PolicyPulse.~~ After the gate, the rule flips: Applied AI ≥ AE/DE, hired or not (C59). *Falsifier: if the soft trigger still slips past Day 70, or 25 targeted applications produce zero screens, hours were not the bottleneck — diagnose market fit instead of re-tuning the split.*
 
 ### What moved — deferred, never deleted (every item stays inside Stage 1)
-| Item | v3.0 | v3.1 | Why |
-|---|---|---|---|
-| **AI-901** study + exam | Modules Weeks 4–6 · exam Day 54 | **Q2, Weeks 13–14** — one ~14 h Foundry-weighted sprint | An Applied-AI credential no AE/DE screen uses; one focused sprint beats modules spread eight weeks ahead of the exam |
-| **Sprint-1 Pro month** (all nine lab rows) | Weeks 9–10 | **Q2**, with PolicyPulse's RAG Triad build | Correction 17's own trigger: "timed to the PolicyPulse eval-harness build". *Improving Accuracy* **videos** stay in Week 9 (free tier) |
-| PolicyPulse **judge-graded** Triad gate · DeepEval · harness hardening · **MCP primer** | Weeks 9–12 | **Q2**, with the Pro labs | PolicyPulse still goes public **Day 77** with a **code-graded** gate (context relevance + the unanswerable hard gate) |
-| **AB-620** blocks inside the 25 (4.5 h) | Days 60–81 | **Extra-time slot** | Restores your 27 Aug ruling — the v3.0 pass missed these |
-| **Soft trigger** | Day 70 | **Day 63** (Day 70 fallback) | The freed hours finish its four artifacts a week earlier; the narrow search opens **Day 64** |
-| **Track B** (public 1099 repo) | Starts Week 12 | #1–#2 Day 54 · #3–#5 Day 68 · #7 Day 76 · #9 Day 81 | The repo your profile features stops failing a reviewer's first command before the search opens |
+
+
+| Item                                                                                    | v3.0                            | v3.1                                                    | Why                                                                                                                                    |
+| --------------------------------------------------------------------------------------- | ------------------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **AI-901** study + exam                                                                 | Modules Weeks 4–6 · exam Day 54 | **Q2, Weeks 13–14** — one ~14 h Foundry-weighted sprint | An Applied-AI credential no AE/DE screen uses; one focused sprint beats modules spread eight weeks ahead of the exam                   |
+| **Sprint-1 Pro month** (all nine lab rows)                                              | Weeks 9–10                      | **Q2**, with PolicyPulse's RAG Triad build              | Correction 17's own trigger: "timed to the PolicyPulse eval-harness build". *Improving Accuracy* **videos** stay in Week 9 (free tier) |
+| PolicyPulse **judge-graded** Triad gate · DeepEval · harness hardening · **MCP primer** | Weeks 9–12                      | **Q2**, with the Pro labs                               | PolicyPulse still goes public **Day 77** with a **code-graded** gate (context relevance + the unanswerable hard gate)                  |
+| **AB-620** blocks inside the 25 (4.5 h)                                                 | Days 60–81                      | **Extra-time slot**                                     | Restores your 27 Aug ruling — the v3.0 pass missed these                                                                               |
+| **Soft trigger**                                                                        | Day 70                          | **Day 63** (Day 70 fallback)                            | The freed hours finish its four artifacts a week earlier; the narrow search opens **Day 64**                                           |
+| **Track B** (public 1099 repo)                                                          | Starts Week 12                  | #1–#2 Day 54 · #3–#5 Day 68 · #7 Day 76 · #9 Day 81     | The repo your profile features stops failing a reviewer's first command before the search opens                                        |
+
+
+
 
 ### Where the freed hours go — roadmap sources only, and each one lands in a repo
+
 - **Kimball reading map** (C57 — the book you own), read against the build: Ch. 1 (Day 24) · Ch. 2–3 (Days 26, 31, 34) · Ch. 4 (Days 38, 40, 53) · Ch. 19 (Days 58, 66) · Ch. 7 + 10 (Day 62) · Ch. 5's SCD section (Day 65). Notes live in `docs/modeling-notes.md` → DataVault's `docs/modeling.md`.
 - **DataVault as a Kimball star**: grain + conformed dimensions + ADR 0003 (Day 47) → four dims and the fact with `relationships` tests (Days 50–51) → `dbt build` blocking in CI (Day 52) → docs on GitHub Pages (Day 58) → **v0.1.0 (Day 62)** → **soft trigger (Day 63)** → SCD Type 2 snapshot, a custom generic test and an idempotent incremental (Days 65–66) → **v0.2.0 (Day 69)** → **model contracts** (Days 72–74 — S2 work done first).
 - **AE interview reps**: Days 40, 54, 61, 74, 75, plus a timed take-home rehearsal on Day 76.
@@ -73,82 +89,104 @@
 
 ---
 
+
+
 ## 🧭 v3.0 JOB-FIRST RE-CUT (approved 6 Oct 2026) — the base layer; v3.1 dates above win where they differ
 
 **What this is.** All six fortnight plans are re-cut as **one fresh 12-week template starting Monday 20 July 2026, at 25 hrs/week**, aligned to roadmap **Corrections 1–56** at the time (C55 and C56 came out of this re-cut and were applied 7 Oct 2026; ⚖️ v3.1 brings the template to **Corrections 1–58**, 🎯 v3.2 to **1–59**). The organising question changed from *"what does Stage 1 teach?"* to *"what gets me my first Analytics Engineer / Data Engineer job soonest, without breaking the roadmap?"* The target-role ruling (Corrections 22 §3 and 54) is the compass:
 
-| Priority | Role | When the search opens |
-|---|---|---|
-| 1 | **Analytics Engineer** — first door | 🚦 **Soft trigger** (public DataVault dbt slice, ~~Day 70~~ **Day 63** in v3.1) → narrow, referral-led, domain-matched search |
-| 2 | **Data Engineer** — parallel | Same two triggers; same skill investment |
-| 3 | Applied AI Engineer → FDE | Stage 3 (~Month 30+) — evidence is built now, applications are not |
-| — | Data Analyst | Not under any circumstance (roadmap). **C55 (applied 7 Oct 2026)** clarifies it: generic analyst postings stay excluded; the in-domain **bridge tier** below is admitted |
+
+| Priority | Role                                | When the search opens                                                                                                                                                    |
+| -------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1        | **Analytics Engineer** — first door | 🚦 **Soft trigger** (public DataVault dbt slice, ~~Day 70~~ **Day 63** in v3.1) → narrow, referral-led, domain-matched search                                            |
+| 2        | **Data Engineer** — parallel        | Same two triggers; same skill investment                                                                                                                                 |
+| 3        | Applied AI Engineer → FDE           | Stage 3 (~Month 30+) — evidence is built now, applications are not                                                                                                       |
+| —        | Data Analyst                        | Not under any circumstance (roadmap). **C55 (applied 7 Oct 2026)** clarifies it: generic analyst postings stay excluded; the in-domain **bridge tier** below is admitted |
+
 
 The broad search still opens at the **full DataVault S2 ship (~Q1 2027)**. Planning assumption, per C54 §3: a multi-month search, not weeks.
 
 **Why the re-cut was needed (review of 6 Oct 2026, checked against the live repos):**
+
 1. **The first door's screening skill was missing.** Across the v2.x plans, dbt appeared 3 times with no build session; Snowflake and DuckDB appeared zero times. AE screening keys on visible dbt (C54 §4). → **dbt enters in Week 5; the public dbt slice ships Week 10.**
 2. **There was no job-search pipeline** — no target list, no résumé session, no warm conversations. → **A Job lane runs from Week 1.**
 3. **The plans pre-dated Corrections 44–54** (headers said 1–43, footers 1–20). → realigned; the two-trigger search (C54) and the CU Boulder bridge (C44, Nov 2026–Feb 2027) now appear.
 4. **Public-evidence defects a recruiter would hit:** profile links to flagship repos that are not public (404 for visitors); the featured 1099 repo's README still says `pip install -r requirements.txt` and its clone command uses a slug that doesn't match the repo name. → a standing **no-dead-links rule** and scheduled fixes.
 5. 🆕 **Your ruling (6 Oct): start the trading projects this quarter.** → a **Trading lane**, placed where the roadmap's own rules allow it (below).
 
+
+
 ### The five lanes (inside the unchanged 25 hrs/week)
 
-| Lane | What | Where it sits in the week |
-|---|---|---|
-| **L1 Foundations** | P4E · CS50x/CS50P · Mode SQL · Docker · 🆕 dbt Fundamentals (W5–6) · 🆕 dbt Advanced (W10–12) · ⚖️ v3.1: Kimball reading map (W4–10) | Weekday mornings |
-| **L2 AE/DE flagship** | recon-toy (rehearsal) → **DataVault: Python ingests, dbt decides** → ⚖️ Kimball star → 🚦 soft trigger **Day 63** → v0.2.0 → contracts | Evenings + Saturdays |
-| **L3 Applied-AI evidence** | Claude API SDK · eval harness (W9–10) · PolicyPulse S1 v0 with a code-graded gate · ⚖️ v3.1: AI-901, Pro labs, Triad judge gate, DeepEval, MCP primer → Q2 | Evenings + Saturdays |
-| **L4 Trading** 🆕 | Market-data dbt rehearsal (Day 41) → AFC Phase-1 kickoff (Day 83) | Saturday blocks |
-| **L5 Job search** 🆕 | Evidence file · LinkedIn · target list · warm conversations · résumé · applications from **Day 64** (v3.1) | Sundays; one weekday slot from Week 11 |
-| *Extra-time (outside the 25)* | AB-620 + Google Git — your earlier rulings, from Week 9, ~2 hrs/wk each, capped | ⚖️ v3.1: AB-620 now **only** here |
-| ⚖️ **Priority guardrail** 🆕 | AE/DE build hours ≥ Applied-AI hours every fortnight until **DataVault S2 hardening ships** (C58 · 🎯 C59 — was "until the first screen"), then Applied AI ≥ AE/DE, hired or not | Checked every Sunday |
+
+| Lane                          | What                                                                                                                                                                             | Where it sits in the week              |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- |
+| **L1 Foundations**            | P4E · CS50x/CS50P · Mode SQL · Docker · 🆕 dbt Fundamentals (W5–6) · 🆕 dbt Advanced (W10–12) · ⚖️ v3.1: Kimball reading map (W4–10)                                             | Weekday mornings                       |
+| **L2 AE/DE flagship**         | recon-toy (rehearsal) → **DataVault: Python ingests, dbt decides** → ⚖️ Kimball star → 🚦 soft trigger **Day 63** → v0.2.0 → contracts                                           | Evenings + Saturdays                   |
+| **L3 Applied-AI evidence**    | Claude API SDK · eval harness (W9–10) · PolicyPulse S1 v0 with a code-graded gate · ⚖️ v3.1: AI-901, Pro labs, Triad judge gate, DeepEval, MCP primer → Q2                       | Evenings + Saturdays                   |
+| **L4 Trading** 🆕             | Market-data dbt rehearsal (Day 41) → AFC Phase-1 kickoff (Day 83)                                                                                                                | Saturday blocks                        |
+| **L5 Job search** 🆕          | Evidence file · LinkedIn · target list · warm conversations · résumé · applications from **Day 64** (v3.1)                                                                       | Sundays; one weekday slot from Week 11 |
+| *Extra-time (outside the 25)* | AB-620 + Google Git — your earlier rulings, from Week 9, ~2 hrs/wk each, capped                                                                                                  | ⚖️ v3.1: AB-620 now **only** here      |
+| ⚖️ **Priority guardrail** 🆕  | AE/DE build hours ≥ Applied-AI hours every fortnight until **DataVault S2 hardening ships** (C58 · 🎯 C59 — was "until the first screen"), then Applied AI ≥ AE/DE, hired or not | Checked every Sunday                   |
+
+
+
 
 ### Milestone calendar
 
-| Day | Date | Milestone |
-|---|---|---|
-| 1 | Mon 20 Jul | Setup on Python 3.14 + pre-commit from commit one; evidence file + private job-search workspace |
-| 7 | Sun 26 Jul | LinkedIn headline + About set to the AE/DE target |
-| 21 | Sun 9 Aug | Target list v0 — 15 companies across three tiers |
-| 28 | Sun 16 Aug | First informational-conversation request |
-| 34–42 | 22–30 Aug | 🆕 dbt Fundamentals (dbt Labs, free, certificate) |
-| 41 | Sat 29 Aug | 🆕 **Trading lane opens** — market-data dbt rehearsal, `dbt build` green |
-| 43 | Mon 31 Aug | DataVault scaffolds with a dbt project from commit one |
-| 47–51 | 4–8 Sep | ⚖️ DataVault as a **Kimball star** — grain, four conformed dimensions, `relationships` tests (v3.1) |
-| 52 | Wed 9 Sep | `dbt build` becomes a blocking CI step (⚖️ v3.1 — was Day 61) |
-| 54 | Fri 11 Sep | ~~AI-901 exam~~ → ⏭️ Q2 · ⚖️ AE interview reps #1 + Track B #1–#2 on the public 1099 repo |
-| 58 | Tue 15 Sep | ⚖️ dbt docs on GitHub Pages (v3.1) |
-| 62–63 | 19–20 Sep | 🚦 **SOFT TRIGGER** — DataVault v0.1.0 public → narrow search opens **Day 64** (⚖️ v3.1 — was Days 69–70; Day 70 is the fallback) |
-| 69 | Sat 26 Sep | ⚖️ DataVault **v0.2.0** — SCD Type 2 snapshot + idempotent incremental (v3.1) |
-| 77 | Sun 4 Oct | PolicyPulse S1 v0 public with a code-graded gate (the 404 is gone) |
-| 82 | Fri 9 Oct | 🔴 Last day of employment — exit checklist |
-| 83 | Sat 10 Oct | 🆕 **AFC Phase-1 kickoff** (trading lane) |
-| 84 | Sun 11 Oct | Month-3 retro — now with job-lane, trading-lane and ⚖️ guardrail sections |
-| Q2 | Weeks 13–14 | ⏭️ AI-901 sprint + exam (C58) · the Pro month + PolicyPulse Triad judge gate follow in a later Q2 fortnight, inside Applied AI's share (🎯 C59) |
-| Gate | target ~Q1 2027 (review if not by 31 Mar 2027) | 🎯 **DataVault S2 hardening ships** — the readiness gate: broad search opens · the guardrail flips to Applied AI ≥ AE/DE, hired or not (C59) |
+
+| Day   | Date                                           | Milestone                                                                                                                                       |
+| ----- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | Mon 20 Jul                                     | Setup on Python 3.14 + pre-commit from commit one; evidence file + private job-search workspace                                                 |
+| 7     | Sun 26 Jul                                     | LinkedIn headline + About set to the AE/DE target                                                                                               |
+| 21    | Sun 9 Aug                                      | Target list v0 — 15 companies across three tiers                                                                                                |
+| 28    | Sun 16 Aug                                     | First informational-conversation request                                                                                                        |
+| 34–42 | 22–30 Aug                                      | 🆕 dbt Fundamentals (dbt Labs, free, certificate)                                                                                               |
+| 41    | Sat 29 Aug                                     | 🆕 **Trading lane opens** — market-data dbt rehearsal, `dbt build` green                                                                        |
+| 43    | Mon 31 Aug                                     | DataVault scaffolds with a dbt project from commit one                                                                                          |
+| 47–51 | 4–8 Sep                                        | ⚖️ DataVault as a **Kimball star** — grain, four conformed dimensions, `relationships` tests (v3.1)                                             |
+| 52    | Wed 9 Sep                                      | `dbt build` becomes a blocking CI step (⚖️ v3.1 — was Day 61)                                                                                   |
+| 54    | Fri 11 Sep                                     | ~~AI-901 exam~~ → ⏭️ Q2 · ⚖️ AE interview reps #1 + Track B #1–#2 on the public 1099 repo                                                       |
+| 58    | Tue 15 Sep                                     | ⚖️ dbt docs on GitHub Pages (v3.1)                                                                                                              |
+| 62–63 | 19–20 Sep                                      | 🚦 **SOFT TRIGGER** — DataVault v0.1.0 public → narrow search opens **Day 64** (⚖️ v3.1 — was Days 69–70; Day 70 is the fallback)               |
+| 69    | Sat 26 Sep                                     | ⚖️ DataVault **v0.2.0** — SCD Type 2 snapshot + idempotent incremental (v3.1)                                                                   |
+| 77    | Sun 4 Oct                                      | PolicyPulse S1 v0 public with a code-graded gate (the 404 is gone)                                                                              |
+| 82    | Fri 9 Oct                                      | 🔴 Last day of employment — exit checklist                                                                                                      |
+| 83    | Sat 10 Oct                                     | 🆕 **AFC Phase-1 kickoff** (trading lane)                                                                                                       |
+| 84    | Sun 11 Oct                                     | Month-3 retro — now with job-lane, trading-lane and ⚖️ guardrail sections                                                                       |
+| Q2    | Weeks 13–14                                    | ⏭️ AI-901 sprint + exam (C58) · the Pro month + PolicyPulse Triad judge gate follow in a later Q2 fortnight, inside Applied AI's share (🎯 C59) |
+| Gate  | target ~Q1 2027 (review if not by 31 Mar 2027) | 🎯 **DataVault S2 hardening ships** — the readiness gate: broad search opens · the guardrail flips to Applied AI ≥ AE/DE, hired or not (C59)    |
+
+
+
 
 ### What moved to make room (replace, not stack)
 
-| Item | v2.x position | v3.0 position | Why |
-|---|---|---|---|
-| IBM GenAI Engineering PC | Starts Week 11 | Q2, after the soft trigger | Applied-AI spine (the Stage 3 door); still inside its Months 3–6 window |
-| AI Prompting for Everyone (videos) | Weeks 5–6 | Flex / Q2 | Videos-only row; its slots go to dbt Fundamentals |
-| DataVault recon + Box-7 rules engine | Weeks 7–8, in Python | Same weeks, **as dbt models with tests** | C35 §2 made literal: set-level logic belongs in dbt; Python keeps generation, ingestion and the row-level contract |
-| Python 3.14 retrofit (Day 41) | Week 6 | Not needed | The template starts on 3.14 at setup |
-| Four S2 short DL.AI labs | Weeks 10–11 | Flex inside the Pro month | Eval courses keep priority — ⚖️ v3.1: the whole Pro month moves to Q2 |
-| Track A before-metrics | Week 12 | Week 10 (work-day session) | Less weight on the Day-82 cliff |
-| PolicyPulse S1 | Weeks 11–12 | Week 11 core + Week 12 improve cycle | Keeps the roadmap order DataVault → PolicyPulse → Crucible — ⚖️ v3.1: code-graded gate now, judge-graded gate in Q2 |
+
+| Item                                 | v2.x position        | v3.0 position                            | Why                                                                                                                 |
+| ------------------------------------ | -------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| IBM GenAI Engineering PC             | Starts Week 11       | Q2, after the soft trigger               | Applied-AI spine (the Stage 3 door); still inside its Months 3–6 window                                             |
+| AI Prompting for Everyone (videos)   | Weeks 5–6            | Flex / Q2                                | Videos-only row; its slots go to dbt Fundamentals                                                                   |
+| DataVault recon + Box-7 rules engine | Weeks 7–8, in Python | Same weeks, **as dbt models with tests** | C35 §2 made literal: set-level logic belongs in dbt; Python keeps generation, ingestion and the row-level contract  |
+| Python 3.14 retrofit (Day 41)        | Week 6               | Not needed                               | The template starts on 3.14 at setup                                                                                |
+| Four S2 short DL.AI labs             | Weeks 10–11          | Flex inside the Pro month                | Eval courses keep priority — ⚖️ v3.1: the whole Pro month moves to Q2                                               |
+| Track A before-metrics               | Week 12              | Week 10 (work-day session)               | Less weight on the Day-82 cliff                                                                                     |
+| PolicyPulse S1                       | Weeks 11–12          | Week 11 core + Week 12 improve cycle     | Keeps the roadmap order DataVault → PolicyPulse → Crucible — ⚖️ v3.1: code-graded gate now, judge-graded gate in Q2 |
+
+
+
 
 ### The trading lane — what the roadmap allows, and the honest answer on dbt
+
 You're right that the trading projects carry dbt — **at Stage 2, not Stage 1.** The AFC Stage-1 build sheet (v9.1) lists dbt under "Not in S1"; dbt arrives with AFC's S2 **knowledge-time lakehouse** and Crucible's **market-data lakehouse**, both built by reusing DataVault's S2 dbt patterns (Build Progression). So this template does two things now and books the dbt payoff for S2:
+
 1. **Day 41 — market-data dbt rehearsal** (in `learning_journey`, synthetic data): your first dbt project runs on trading-shaped data and proves, with a dbt test, the **knowledge-time rule** AFC's backtest depends on (C46 §3), using DuckDB's `ASOF JOIN`. Public practitioner projects use exactly this dbt + DuckDB pattern for point-in-time SEC data.
 2. **Day 83 — AFC Phase-1 kickoff.** The build sheet lets AFC's eval-first core ship *early* as "the smallest high-signal artifact". The kickoff also replaces the public AFC README, which still shows the 2025 SQLite version.
 
 **Not this quarter:** Crucible build work. The roadmap ranks it third and builds its live path last; it stays at "Alpaca paper account created, parked" (Week 2). AFC's own sheet is a 16-week build at 25 hrs/week, so it runs into Q2–Q3.
 
 ### The job lane — rules
+
 - **Private workspace.** A private repo (e.g. `career-search`) or a folder outside every public repo. Target lists, contacts and the application tracker never go in `learning_journey`.
 - **Three target tiers** (C54 §5 + the Stage 2 referral-geography block): **Tier 1** retirement recordkeeping / wealth-retirement fintech (domain match first — e.g. Vestwell, Ascensus, Empower, Principal, Voya, TIAA, Fidelity, Human Interest, Guideline); **Tier 2** Charlotte / Atlanta finance (start from Built In Charlotte); **Tier 3** 🆕 capital-markets and trading fintech, where the market-data work counts.
 - **Bridge tier — Correction 55 (applied 7 Oct 2026).** Technical data roles at Tier-1 recordkeepers whose titles may not say "engineer" (data conversion/migration, data operations, implementation data, operations automation / agentic operations) — only where the posting requires SQL + a warehouse or automation platform + retirement domain. They are eligible for applications under the same referral-first rules, **tracked separately** so the C55 falsifier can be read: if they don't screen at a higher rate than AE/DE applications within the same 25-application window, the tier is dropped.
@@ -156,10 +194,14 @@ You're right that the trading projects carry dbt — **at Stage 2, not Stage 1.*
 - **From Day 64 (v3.1):** referral-first, tailored applications to the list — small waves, not volume. **Falsifier (C54 §5):** 25 targeted or referred applications with zero recruiter / hiring-manager screens → pause the narrow search and return the hours to DataVault S2.
 - **No dead links.** Never link a repo from the profile or portfolio README until it is public, with a README and green CI. Mark planned work as planned.
 
+
+
 ### Tooling note (verified 6 Oct 2026)
+
 dbt Core **1.12** is the first line that supports Python **3.14** (your floor); 1.11 does not. Use `dbt-core>=1.12` + `dbt-duckdb` through uv, with DuckDB as the local warehouse. dbt v2 / Fusion (2.0.0, Sept 2026) ships a built-in DuckDB adapter, but DuckDB on Fusion is still beta and the official dbt VS Code extension requires Fusion — so the **dbt Core 1.12 CLI is the engine of record** and the v1-vs-v2 choice is recorded as a DataVault ADR. Snowflake (the roadmap's AE-primary warehouse, C3) arrives as a **Q2 port** on the 30-day / $400 trial, started only once the port is scheduled — the same discipline as the AMD credits.
 
 ### Roadmap corrections this re-cut created — ✅ applied to `roadmap.html` on 7 Oct 2026
+
 - ✅ **C55** — the domain-bridge tier above.
 - ✅ **C56** — the Stage-1 schedule pull-forwards in the "what moved" table.
 - ✅ **C58** — the v3.1 priority rebalance and guardrail (applied 8 Oct 2026).
@@ -168,34 +210,40 @@ dbt Core **1.12** is the first line that supports Python **3.14** (your floor); 
 
 ---
 
+
+
 ## 🔄 REALIGNMENT PASS — ROADMAP CORRECTIONS 21–43 (applied 27 Aug 2026)
 
-Standing rulings from Corrections 21–43, carried into the v3.0 template (Corrections 44–54 are applied in the v3.0 block above). 🔄 **v3.0:** this is now a fresh template, so the retrofit items below are **done at setup**, not afterwards — see the status note under the table.
+Standing rulings from Corrections 21–43, carried into the v3.0 template (Corrections 44–54 are applied in the v3.0 block above). 🔄 **v3.0:** this is now a fresh template, so the retrofit items below are **done at setup**, not afterwards — see the status note under the checklist.
 
 **Superseded premises** (struck through in place below, per Correction 32's preserve-and-append pattern):
 
-| Was | Now | Correction |
-|---|---|---|
-| Stage 1 exit = internal elevation at the employer | Stage 1 exits on an **evidence gate** (DataVault S2 hardening). Employment ends **9 Oct 2026**; external **AE-first / DE-parallel** search is the primary path, apply window **Q1 2027** | 22, 32 |
-| Certifications employer-reimbursed | **All certifications self-funded.** No employer reimbursement applies to any credential in the canon | 22, 32, 37 |
-| Cursor Agents + OpenCode (dual agents) | ⚠️ **Roadmap C39 says "OpenCode sole harness." Your actual setup is a DUAL HARNESS: OpenCode inside Cursor + Claude Code inside VS Code.** These plans follow your setup; **the roadmap is the document that is now stale** and needs a correction — see the harness note below | 39 → **superseded in practice** |
-| Cursor Pro $20/mo | **Cursor Hobby ($0)**, provisional with a falsifier | 40 |
-| Python 3.12 | **Python 3.14**, standard GIL build only (never `python3.14t`) | 27→28 |
-| Dataframe engine unnamed | **Polars is the default** for new pipeline code; pandas retained at two named boundaries only | 35 |
-| pre-commit absent | **pre-commit is a named production-standard tool**, pinned, a strict subset of CI | 21 |
-| No reading layer | **Reading list is a governed layer.** S1: *Robust Python* (Viafore), *AI Engineering* (Huyen), *Python Testing with pytest 2e* (Okken), *Fluent Python 2e* (owned). Buy at stage entry, never upfront | 34 |
-| 3 flagships | **4 flagships** — PostCheck added as the dual-target artifact | 33 |
+
+| Was                                               | Now                                                                                                                                                                                                                                                                             | Correction                      |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------- |
+| Stage 1 exit = internal elevation at the employer | Stage 1 exits on an **evidence gate** (DataVault S2 hardening). Employment ends **9 Oct 2026**; external **AE-first / DE-parallel** search is the primary path, apply window **Q1 2027**                                                                                        | 22, 32                          |
+| Certifications employer-reimbursed                | **All certifications self-funded.** No employer reimbursement applies to any credential in the canon                                                                                                                                                                            | 22, 32, 37                      |
+| Cursor Agents + OpenCode (dual agents)            | ⚠️ **Roadmap C39 says "OpenCode sole harness." Your actual setup is a DUAL HARNESS: OpenCode inside Cursor + Claude Code inside VS Code.** These plans follow your setup; **the roadmap is the document that is now stale** and needs a correction — see the harness note below | 39 → **superseded in practice** |
+| Cursor Pro $20/mo                                 | **Cursor Hobby ($0)**, provisional with a falsifier                                                                                                                                                                                                                             | 40                              |
+| Python 3.12                                       | **Python 3.14**, standard GIL build only (never `python3.14t`)                                                                                                                                                                                                                  | 27→28                           |
+| Dataframe engine unnamed                          | **Polars is the default** for new pipeline code; pandas retained at two named boundaries only                                                                                                                                                                                   | 35                              |
+| pre-commit absent                                 | **pre-commit is a named production-standard tool**, pinned, a strict subset of CI                                                                                                                                                                                               | 21                              |
+| No reading layer                                  | **Reading list is a governed layer.** S1: *Robust Python* (Viafore), *AI Engineering* (Huyen), *Python Testing with pytest 2e* (Okken), *Fluent Python 2e* (owned). Buy at stage entry, never upfront                                                                           | 34                              |
+| 3 flagships                                       | **4 flagships** — PostCheck added as the dual-target artifact                                                                                                                                                                                                                   | 33                              |
+
+
+
 
 ### 🔧 RETROFIT BACKLOG → 🆕 v3.0: SETUP CHECKLIST (done before or during Week 1)
 
-| # | Item | Correction | Est. | Status |
-|---|---|---|---|---|
-| **R1** | `learning-journey`: add `.pre-commit-config.yaml` (Tier A: `pre-commit-hooks` basics + `detect-private-key` · `ruff-check --fix` **before** `ruff-format` · `uv-lock` · `gitleaks`; Tier B: `nbstripout` — it is a notebook-bearing repo), then `pre-commit install`. Governing rule: **the hook set is a strict subset of CI — no local check that does not also run in CI.** | 21 | ~40 min | ⬜ |
-| **R2** | Re-pin **3.12 → 3.14** in `learning-journey` and `recon-toy`: `requires-python = ">=3.14"` in `pyproject.toml` (the single source), then the four consumers — ruff `target-version = "py314"`, mypy `python_version = "3.14"`, Dockerfile base image, CI matrix. A mismatch is a **CI failure**, not a lint warning. | 28 | ~30 min | ✅ **APPROVED** — scheduled **Day 41 (Sat 29 Aug)**, Weeks 5–6 |
-| **R3** | Cursor: downgrade **Pro → Hobby**. Verify OpenCode still launches from the integrated terminal (detection is via terminal env vars — an external terminal will not work). | 40 | ~5 min | ⬜ |
-| **R4** | Rename `elevation file` → **`evidence file`** across your local notes. Its audience changed: it is no longer an exhibit for an internal scope conversation, it is the STAR-story and artifact bank for the **Q1 2027** external interviews. | 22, 32 | ~10 min | ⬜ |
-| **R5** | Buy the S1 books **now** (you are in S1): *Robust Python* + *AI Engineering*. *Python Testing with pytest 2e* is secondary; *Fluent Python 2e* you already own. Re-verify editions at purchase. | 34 | — | ⬜ |
-| **R6** | **Google — Introduction to Git and GitHub** (Stage 1 row 3️⃣.5, ~8 hrs committed) | 29→31 | ~8 hrs | ✅ **APPROVED for Stage 1**, run as an **extra-time thread** (outside the 25) from **Week 9**, ~2 hrs/wk · see Weeks 9–10 |
+*Each item: **ID** · Correction · Est. — then the task. A ✅ APPROVED note means approved and scheduled, not done; tick the box when the work is finished.*
+
+- [x] **R1** · C21 · ~40 min — `learning-journey`: add `.pre-commit-config.yaml` (Tier A: `pre-commit-hooks` basics + `detect-private-key` · `ruff-check --fix` **before** `ruff-format` · `uv-lock` · `gitleaks`; Tier B: `nbstripout` — it is a notebook-bearing repo), then `pre-commit install`. Governing rule: **the hook set is a strict subset of CI — no local check that does not also run in CI.**
+- [x] **R2** · C28 · ~30 min — Re-pin **3.12 → 3.14** in `learning-journey` and `recon-toy`: `requires-python = ">=3.14"` in `pyproject.toml` (the single source), then the four consumers — ruff `target-version = "py314"`, mypy `python_version = "3.14"`, Dockerfile base image, CI matrix. A mismatch is a **CI failure**, not a lint warning. *Status:* ✅ **APPROVED** — scheduled **Day 41 (Sat 29 Aug)**, Weeks 5–6
+- [x] **R3** · C40 · ~5 min — Cursor: downgrade **Pro → Hobby**. Verify OpenCode still launches from the integrated terminal (detection is via terminal env vars — an external terminal will not work).
+- [x] **R4** · C22, C32 · ~10 min — Rename `elevation file` → `evidence file` across your local notes. Its audience changed: it is no longer an exhibit for an internal scope conversation, it is the STAR-story and artifact bank for the **Q1 2027** external interviews.
+- [x] **R5** · C34 · — — Buy the S1 books **now** (you are in S1): *Robust Python* + *AI Engineering*. *Python Testing with pytest 2e* is secondary; *Fluent Python 2e* you already own. Re-verify editions at purchase.
+- [x] **R6** · C29→31 · ~8 hrs — **Google — Introduction to Git and GitHub** (Stage 1 row 3️⃣.5, ~8 hrs committed). *Status:* ✅ **APPROVED for Stage 1**, run as an **extra-time thread** (outside the 25) from **Week 9**, ~2 hrs/wk · see Weeks 9–10
 
 > 🆕 **v3.0 status:** R1 → Setup **Step 7b** · R2 → not needed (Steps 3 and 7 start on 3.14) · R3 → Step 4 (choose Hobby at install) · R4 → **Step 10** (the evidence file is created under that name) · R5 → buy in Week 1 · R6 → unchanged (extra-time from Week 9).
 
@@ -205,24 +253,30 @@ Standing rulings from Corrections 21–43, carried into the v3.0 template (Corre
 
 ---
 
+
+
 ## ⚠️ WHAT CHANGED FROM THE OLD (Nov 2025) PLANS — READ FIRST
 
 The previous activation plans were aligned to Roadmap **v8.3** (GenAI Data Analyst path). v10.0 **archived that path**. These plans replace them completely:
 
-| Old (v8.3 plans) | New (v10.0 plans) | Why |
-|---|---|---|
-| DataCamp daily exercises | ❌ Removed | Declined in Corrections 4 & 7 — redundant paid subscription, near-zero credential weight |
-| HackerRank badge grinding | ❌ Removed | Correction 7: badges ≠ credentials; <16% of hiring managers rank certs top-3 |
-| SQLZoo tutorials | ❌ Removed | Correction 7: redundant with Mode SQL Tutorial + daily project SQL |
-| Kaggle | ❌ Removed | Correction 7: competition portfolios read as academic — antithesis of the real-deployed-system thesis |
-| "Data Analyst" job tracker in Week 1 | ❌ Removed | v10.0: NO external *analyst* search, ever. ~~Stage 1 exit = internal elevation~~ → **Correction 22**: Stage 1 exits on an **evidence gate** (DataVault S2 hardening). The external **Analytics Engineer (first door) / Data Engineer (parallel)** search is now the primary path, apply window **Q1 2027**. |
-| Editor unspecified agent policy | **Dual harness: Cursor (Hobby) + OpenCode · VS Code + Claude Code**, both under one portable `AGENTS.md` — ~~Cursor Agents~~ retired; tier re-set to Hobby by **Correction 40** | Your stated workflow: build with agents while understanding every script and line — governed by the graduated agent policy below, which operationalizes the roadmap's no-vibe-coding + diff-review-before-merge rules |
-| pip + requirements.txt | **uv + pyproject.toml + committed uv.lock** | 🆕 Correction 13 makes uv the OFFICIAL default across every project (Stage 1 Core Course #15); uv.lock now sits in the non-negotiable production standard; requirements.txt banned everywhere |
-| 37-month / 5-stage framing | **32-month / 3-stage** | v10.0 structural restructure |
+
+| Old (v8.3 plans)                     | New (v10.0 plans)                                                                                                                                                               | Why                                                                                                                                                                                                                                                                                                         |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| DataCamp daily exercises             | ❌ Removed                                                                                                                                                                       | Declined in Corrections 4 & 7 — redundant paid subscription, near-zero credential weight                                                                                                                                                                                                                    |
+| HackerRank badge grinding            | ❌ Removed                                                                                                                                                                       | Correction 7: badges ≠ credentials; <16% of hiring managers rank certs top-3                                                                                                                                                                                                                                |
+| SQLZoo tutorials                     | ❌ Removed                                                                                                                                                                       | Correction 7: redundant with Mode SQL Tutorial + daily project SQL                                                                                                                                                                                                                                          |
+| Kaggle                               | ❌ Removed                                                                                                                                                                       | Correction 7: competition portfolios read as academic — antithesis of the real-deployed-system thesis                                                                                                                                                                                                       |
+| "Data Analyst" job tracker in Week 1 | ❌ Removed                                                                                                                                                                       | v10.0: NO external *analyst* search, ever. ~~Stage 1 exit = internal elevation~~ → **Correction 22**: Stage 1 exits on an **evidence gate** (DataVault S2 hardening). The external **Analytics Engineer (first door) / Data Engineer (parallel)** search is now the primary path, apply window **Q1 2027**. |
+| Editor unspecified agent policy      | **Dual harness: Cursor (Hobby) + OpenCode · VS Code + Claude Code**, both under one portable `AGENTS.md` — ~~Cursor Agents~~ retired; tier re-set to Hobby by **Correction 40** | Your stated workflow: build with agents while understanding every script and line — governed by the graduated agent policy below, which operationalizes the roadmap's no-vibe-coding + diff-review-before-merge rules                                                                                       |
+| pip + requirements.txt               | **uv + pyproject.toml + committed uv.lock**                                                                                                                                     | 🆕 Correction 13 makes uv the OFFICIAL default across every project (Stage 1 Core Course #15); uv.lock now sits in the non-negotiable production standard; requirements.txt banned everywhere                                                                                                               |
+| 37-month / 5-stage framing           | **32-month / 3-stage**                                                                                                                                                          | v10.0 structural restructure                                                                                                                                                                                                                                                                                |
+
 
 Carried forward: the 25 hrs/week schedule, morning-theory/evening-practice split, GitHub-first habit, learning journal, inline code examples, and production-grade discipline from Day 1.
 
 ---
+
+
 
 ## 📋 TABLE OF CONTENTS
 
@@ -238,7 +292,11 @@ Carried forward: the 25 hrs/week schedule, morning-theory/evening-practice split
 
 ---
 
+
+
 ## 🧠 CRITICAL CONTEXT
+
+
 
 ### Why these 2 weeks matter
 
@@ -248,6 +306,8 @@ You're building three things at once:
 2. **The habit engine** — morning theory + evening practice, journaled and committed daily.
 3. **First skills** — Python + SQL from the v10.0 course canon only: CS50x, Python for Everybody (P4E), Mode SQL. No filler platforms.
 
+
+
 ### The v10.0 mindset
 
 You are training an **Internal AI Builder → AI-Focused Data Engineer → Applied AI Engineer**, not a Data Analyst. Three rules from Day 1:
@@ -255,6 +315,8 @@ You are training an **Internal AI Builder → AI-Focused Data Engineer → Appli
 - **Evidence over credentials** — every study session ends with a commit; your GitHub is the resume.
 - **Production-grade from the start** — even Week 1 practice code lives in a `pyproject.toml` + `src/` repo with ruff and Conventional Commits.
 - **No vibe coding — with agents in the loop.** You build WITH OpenCode (in Cursor) and Claude Code (in VS Code), but the roadmap's rule is absolute: every line understood before merge, diff reviewed file-by-file. In Weeks 1–4 that means a *graduated* agent policy (see the Agent Policy section below): agents explain and review while YOU type the foundations — because the fundamentals you're installing this month are exactly what lets you supervise agents credibly for the next 32 months.
+
+
 
 ### Your moat
 
@@ -266,21 +328,26 @@ PolicyPulse, DataVault, and Crucible S1 cores start once foundations exist (~Wee
 
 ---
 
+
+
 ### 🤖 THE AGENT POLICY (Weeks 1–4) — how to use your harnesses without vibe coding
 
 > 🔄 **Harness update (your ruling, 27 Aug 2026):** where this section says "Cursor Agent," read **OpenCode (in Cursor) or Claude Code (in VS Code)**. Cursor's own agent is retired from the stack (Correction 40 → Hobby tier); the two harnesses you actually run are OpenCode and Claude Code. The policy below is unchanged in substance and applies **identically to both** — a dual harness doubles the surface the no-vibe-coding rule has to cover, it does not relax it.
 >
-> ⚠️ **Roadmap divergence, logged:** Correction 39 rules OpenCode the *sole* harness and Claude Code *evaluated and declined*. Your live setup contradicts it. Until the roadmap records a correction, **these plans are the accurate document and `roadmap.html` is the stale one** — which is the exact inversion the correction system exists to prevent. See the Q2 note in Weeks 11–12.
+> ⚠️ **Roadmap divergence, logged:** Correction 39 rules OpenCode the *sole* harness and Claude Code *evaluated and declined*. Your live setup contradicts it. Until the roadmap records a correction, **these plans are the accurate document and** `roadmap.html` **is the stale one** — which is the exact inversion the correction system exists to prevent. See the Q2 note in Weeks 11–12.
 
 Your workflow is agent-driven, and that's the right long-term call — your roadmap's own harness pattern (`.cursor/rules/`, OpenCode agents) assumes it. But there's a hard truth about Month 1: **you cannot review what you cannot write.** The roadmap's no-vibe-coding rule ("every line understood before merge") is only enforceable by someone whose fingers know the syntax. So the policy ramps:
 
-| Phase | You | Agents (OpenCode · Claude Code) |
-|---|---|---|
-| **Weeks 1–2 (foundations)** | TYPE every example and exercise yourself | **Tutor mode only**: explain concepts, explain YOUR code back to you, explain error messages, answer "why" questions. Never generate exercise solutions — if an agent writes your first for-loop, you didn't learn for-loops. |
+
+| Phase                          | You                                              | Agents (OpenCode · Claude Code)                                                                                                                                                                                                                                                                             |
+| ------------------------------ | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Weeks 1–2 (foundations)**    | TYPE every example and exercise yourself         | **Tutor mode only**: explain concepts, explain YOUR code back to you, explain error messages, answer "why" questions. Never generate exercise solutions — if an agent writes your first for-loop, you didn't learn for-loops.                                                                               |
 | **Weeks 3–4 (first pipeline)** | Type all core logic (matching rules, SQL, tests) | Tutor mode + **boilerplate under review**: agents may draft mechanical scaffolding (a CSV-writer block, an argparse skeleton) — then you read the diff line-by-line, ask the agent to explain anything unclear, and only accept when you could have written it yourself. Reject anything you can't explain. |
-| **Weeks 5+ (SDK era onward)** | Design, review, decide | Progressively more generation, always gated by file-by-file diff review — the roadmap's permanent standard. |
+| **Weeks 5+ (SDK era onward)**  | Design, review, decide                           | Progressively more generation, always gated by file-by-file diff review — the roadmap's permanent standard.                                                                                                                                                                                                 |
+
 
 **Three standing rules, all four weeks:**
+
 1. **The explain-back test:** before accepting ANY agent-written line, you must be able to explain it out loud without looking at the agent's explanation. If you can't, don't accept — ask, learn, then accept.
 2. **Tests and ADRs are always yours.** An agent-written test proving agent-written code is circular. Your tests encode YOUR understanding of the business rules — that's non-negotiable (it's also the eval-first muscle).
 3. **Daily reps stay manual.** The course exercises (P4E, CS50x, Mode SQL) are typed by hand, full stop. They're the gym; agents don't lift your weights.
@@ -289,65 +356,77 @@ You'll codify this policy as a `.cursor/rules` file in Step 4 below — your fir
 
 ---
 
+
+
 ## ✅ PRE-DAY-1 SETUP (do before Monday, July 20)
 
 Budget ~4–5 hours across July 18–19 (includes the ~2 h uv docs reading = Core Course #15). One-time work.
 
 ### Hardware check
-```
-□ Mac Mini M4 (16GB) — primary workstation, ready
-□ MacBook Air M2 (8GB) — secondary/mobile
-□ Stable internet, quiet workspace, desk cleared
-□ Phone alarms: 4:15 AM Mon–Fri, 4:45 AM Sat
-□ Family informed of the schedule (protect the blocks)
-```
+
+- [x] Mac Mini M4 (16GB) — primary workstation, ready
+- [x] MacBook Air M2 (8GB) — secondary/mobile
+- [x] Stable internet, quiet workspace, desk cleared
+- [x] Phone alarms: 4:15 AM Mon–Fri, 4:45 AM Sat
+- [x] Family informed of the schedule (protect the blocks)
+
+
 
 ### Accounts (~40 min, one consistent email)
-```
-□ GitHub — manuel-reyes-ml (verify access; enable 2FA)
-□ Coursera Plus — verify active (P4E, Docker/KodeKloud, IBM GenAI later)
-□ edX — free account (CS50x + CS50P; free CS50 cert via cs50.harvard.edu)
-□ DeepLearning.AI — FREE account only. ⚠️ Correction 17: the free tier is videos-only
-  (labs/quizzes/certificates are Pro-gated since Oct 2025). Do NOT buy Pro now — the
-  roadmap's ruling is Pro gets RENTED for one timeboxed lab-sprint month later
-  (timed to the PolicyPulse eval-harness build, possibly $0 via the optional AMD
-  free month). Never annual, never rolling.
-□ Anthropic Academy — anthropic.com/learn (Claude API course, Weeks 5+)
-□ Anthropic Console — console.anthropic.com (API key, created now, used Weeks 5+)
-□ Mode Analytics — free (SQL tutorial, Week 2+)
-□ LinkedIn — headline: "Plan Administrator | Building toward AI-Focused Data Engineering"
-□ Meetup.com — free (Distribution layer)
-□ HackGreenville Slack — hackgreenville.com → Join (~10 min)
-```
+
+- [x] GitHub — manuel-reyes-ml (verify access; enable 2FA)
+- [x] Coursera Plus — verify active (P4E, Docker/KodeKloud, IBM GenAI later)
+- [x] edX — free account (CS50x + CS50P; free CS50 cert via cs50.harvard.edu)
+- [x] DeepLearning.AI — FREE account only. ⚠️ Correction 17: the free tier is videos-only (labs/quizzes/certificates are Pro-gated since Oct 2025). Do NOT buy Pro now — the roadmap's ruling is Pro gets RENTED for one timeboxed lab-sprint month later (timed to the PolicyPulse eval-harness build, possibly $0 via the optional AMD free month). Never annual, never rolling.
+- [x] Anthropic Academy — anthropic.com/learn (Claude API course, Weeks 5+)
+- [x] Anthropic Console — console.anthropic.com (API key, created now, used Weeks 5+)
+- [x] Mode Analytics — free (SQL tutorial, Week 2+)
+- [x] LinkedIn — headline: "Plan Administrator | Building toward AI-Focused Data Engineering"
+- [x] Meetup.com — free (Distribution layer)
+- [x] HackGreenville Slack — hackgreenville.com → Join (~10 min)
 
 **Deliberately NOT created:** DataCamp, HackerRank, SQLZoo, Kaggle, LeetCode, StrataScratch — all evaluated and declined/deferred in Roadmap v10.0 (Corrections 4 & 7).
 
 ---
+
+
 
 ## 🛠️ COMPLETE SETUP (step-by-step)
 
 Do this Saturday/Sunday July 18–19. All commands go in **Terminal** (⌘+Space → type "Terminal" → Enter). The Terminal is just a text way of telling your Mac what to do — you'll live in it daily, so start now. Type everything yourself.
 
 ### Step 1 — Xcode Command Line Tools (~10 min)
+
 **What/why:** Apple's developer basics — includes `git`, the version-control tool that records every change you make (and powers GitHub).
+
 ```bash
 xcode-select --install
 # A popup appears → click "Install" → wait. Then verify:
 git --version        # "verify" = confirm it worked. Should print: git version 2.x
 ```
+
 > **Concept — what a command is:** `git --version` means "run the program named git, with the option --version." Options start with `-` or `--`. If Terminal prints the version, the install worked. If it prints "command not found," the program isn't installed or the Terminal needs restarting.
 
+
+
 ### Step 2 — Homebrew (~5 min)
+
 **What/why:** the app store for command-line tools on macOS. One installer command, then `brew install <thing>` forever after.
+
 ```bash
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 # When finished it prints "Next steps" with 2 commands — run those too (they add brew to your PATH).
 brew --version
 ```
+
 > **Concept — PATH:** the list of folders your Mac searches when you type a command name. "Adding to PATH" = telling the Mac where a new tool lives.
 
+
+
 ### Step 3 — uv: the Python toolchain (~5 min install + ~2 h reading) ⭐ ROADMAP-OFFICIAL (Correction 13 · Stage 1 Core Course #15)
+
 **What/why:** ONE tool that installs Python itself, creates isolated project environments, and manages dependencies via `pyproject.toml`. It replaces four older tools (pip, venv, pyenv, pip-tools). Correction 13 made uv the **official default across every project in your roadmap**, and added `uv.lock` to the non-negotiable production standard — so this isn't just the 2026 community default, it's *your* documented standard from Day 0. No `requirements.txt`, ever.
+
 ```bash
 curl -LsSf https://astral.sh/uv/install.sh | sh
 # Quit and reopen Terminal, then:
@@ -358,42 +437,58 @@ uv python list              # confirm 3.14 appears in the list
 #    rules it out: that is where the C-extension wheel breakage lives, and this
 #    portfolio has no CPU-bound multicore workload that would benefit.
 ```
+
 > **Concept — why "environments" matter:** two projects may need different library versions. uv gives each project its own private set (a "virtual environment" in `.venv/`), so projects never contaminate each other. You'll never think about this — `uv run` handles it — but you should know *why* it exists: reproducibility, the first production virtue.
 >
-> **Concept — the lockfile (`uv.lock`):** `pyproject.toml` says *what* you depend on ("pytest"); `uv.lock` records the *exact* version of everything, including dependencies-of-dependencies, that actually got installed. Committing it means anyone (including future-you, or a Docker build using the roadmap's `uv sync --frozen` idiom) reproduces your environment byte-for-byte. **`uv.lock` is always committed to git** — that's what makes the "reproducible build" claim real (Correction 13's exact point).
+> **Concept — the lockfile (**`uv.lock`**):** `pyproject.toml` says *what* you depend on ("pytest"); `uv.lock` records the *exact* version of everything, including dependencies-of-dependencies, that actually got installed. Committing it means anyone (including future-you, or a Docker build using the roadmap's `uv sync --frozen` idiom) reproduces your environment byte-for-byte. `uv.lock` **is always committed to git** — that's what makes the "reproducible build" claim real (Correction 13's exact point).
 >
 > 📖 **Core Course #15 (do this weekend, ~2 h total):** read Astral's official uv docs — the "Projects" guide especially — plus Al Sweigart's uv quickstart as the terse command reference. This is a formal course row in your roadmap's Stage 1 table (docs + one tutorial, no certificate — the vendor-official pattern). Log it complete in your README evidence list when done.
+
+
 
 ### Step 4 — Cursor (primary) + VS Code (secondary) + OpenCode (~30 min) ⭐ YOUR EDITOR + AGENT STACK
 
 **4a. Cursor — your primary editor.** Cursor is a fork of VS Code with AI agents built in, so everything VS Code does (extensions, settings, keybindings) works identically — you're not learning two editors.
-1. Download https://cursor.com → drag to Applications → open → sign in. **Stay on Hobby ($0)** — **Correction 40** re-tiers Cursor Pro → Hobby: the agentic capacity lives in OpenCode, and Pro exists to buy agent requests you are now buying twice. Hobby keeps the full editor, extensions, git integration and the integrated terminal that hosts OpenCode; what it throttles is inline Tab autocomplete — which is OFF for Weeks 1–2 anyway. ⚠️ Correction 40 also records that Pro was never a flat $20: it is ~$20 of metered agent usage, a floor rather than a ceiling. Falsifier for upgrading: Hobby Tab-throttling *measurably* blocks work, on recorded evidence, not discomfort.
+
+1. Download [https://cursor.com](https://cursor.com) → drag to Applications → open → sign in. **Stay on Hobby ($0)** — **Correction 40** re-tiers Cursor Pro → Hobby: the agentic capacity lives in OpenCode, and Pro exists to buy agent requests you are now buying twice. Hobby keeps the full editor, extensions, git integration and the integrated terminal that hosts OpenCode; what it throttles is inline Tab autocomplete — which is OFF for Weeks 1–2 anyway. ⚠️ Correction 40 also records that Pro was never a flat $20: it is ~$20 of metered agent usage, a floor rather than a ceiling. Falsifier for upgrading: Hobby Tab-throttling *measurably* blocks work, on recorded evidence, not discomfort.
 2. ⌘+Shift+P → "Shell Command: Install 'cursor' command" (lets you type `cursor .` in Terminal).
 3. Extensions (⌘+Shift+X — Cursor uses the same marketplace):
-```
-□ Python (Microsoft)        □ Pylance (Microsoft)     □ Jupyter (Microsoft)
-□ Ruff (Astral Software)    □ GitLens                 □ Docker (Microsoft)
-□ Even Better TOML          □ SQLite Viewer           □ Markdown All in One
-```
-4. Settings (⌘+,): "format on save" → ✅ enable; "default formatter" → **Ruff** for Python.
+
+- [ ] Python (Microsoft)
+- [ ] Ruff (Astral Software)
+- [ ] Even Better TOML
+
+- [ ] Pylance (Microsoft)
+- [ ] GitLens
+- [ ] SQLite Viewer
+
+- [ ] Jupyter (Microsoft)
+- [ ] Docker (Microsoft)
+- [ ] Markdown All in One
+
+1. Settings (⌘+,): "format on save" → ✅ enable; "default formatter" → **Ruff** for Python.
+
 > **Why Ruff + format-on-save:** ruff is the 2026-standard linter/formatter (same maker as uv). Format-on-save means professionally formatted code every ⌘+S — a senior habit installed on Day 0 for free.
 >
 > **Know your three Cursor modes** (⌘+L opens the panel): **Ask** = chat about code without changing it (your Weeks 1–2 tutor mode); **Agent** = it edits files and runs commands (gated by the policy above — Weeks 3–4 boilerplate only, under diff review); **Tab** = inline autocomplete — **turn Tab OFF for Weeks 1–2** (Settings → Cursor Tab → disable): autocomplete finishing your for-loops defeats the typing reps. Re-enable it Week 5.
 
-**4b. VS Code — second harness (NOT a fallback).** Install from https://code.visualstudio.com (same extensions auto-sync if you enable Settings Sync). ~~It's your agent-free fallback~~ → 🔄 **REVISED:** VS Code now hosts **Claude Code**, so it is a second *agentic* workstation, not an agent-free one.
+**4b. VS Code — second harness (NOT a fallback).** Install from [https://code.visualstudio.com](https://code.visualstudio.com) (same extensions auto-sync if you enable Settings Sync). ~~It's your agent-free fallback~~ → 🔄 **REVISED:** VS Code now hosts **Claude Code**, so it is a second *agentic* workstation, not an agent-free one.
 
 > ⚠️ **What this costs you, and how to get it back.** The original design gave VS Code a real job: *"can I still do this without the agent?"* — an honest, unfakeable check on comprehension debt. With Claude Code in VS Code, **no agent-free surface remains in your stack**, and the no-vibe-coding rule loses its only mechanical enforcement. Replace it deliberately: **one agent-free hour per week** (suggest the Sunday block — both harnesses closed, write something small from memory). Log it in the journal. If you can't, that *is* the comprehension-debt signal the check existed to catch.
 
-> 🗺️ **Harness division of labour (your ruling, 27 Aug 2026).** **OpenCode in Cursor** = the in-editor agent, buffer-local work, the `.cursor/rules/*.mdc` surface. **Claude Code in VS Code** = the second harness. Both read one portable **`AGENTS.md`** contract so the rules live once, not twice. ⚠️ Claude Code has **no native import for subagent files**, so its agent definitions must be *generated* from the shared source (`scripts/build_claude_agents.py`) rather than hand-maintained — otherwise the two harnesses drift, which is the same silent-disagreement defect Correction 21 forbids between hooks and CI. **Write the generator once, in Q2, and treat drift between harnesses as a build failure.**
+> 🗺️ **Harness division of labour (your ruling, 27 Aug 2026).** **OpenCode in Cursor** = the in-editor agent, buffer-local work, the `.cursor/rules/*.mdc` surface. **Claude Code in VS Code** = the second harness. Both read one portable `AGENTS.md` contract so the rules live once, not twice. ⚠️ Claude Code has **no native import for subagent files**, so its agent definitions must be *generated* from the shared source (`scripts/build_claude_agents.py`) rather than hand-maintained — otherwise the two harnesses drift, which is the same silent-disagreement defect Correction 21 forbids between hooks and CI. **Write the generator once, in Q2, and treat drift between harnesses as a build failure.**
 
 **4c. OpenCode — terminal agent harness.**
+
 ```bash
 brew install anomaly/tap/opencode 2>/dev/null || npm install -g opencode-ai   # use the current install method from opencode.ai docs
 opencode --version
 ```
+
 OpenCode runs agents from the terminal — the harness your roadmap's project scopes standardize on (`.opencode/agents/`, `.opencode/commands/`). For Weeks 1–4 you only need it installed and authenticated (it can use your Anthropic key from Step 8); its real workload starts with the flagship era. If the install method differs from the above, follow opencode.ai's current docs — and note in your journal what changed (that's a build-in-public artifact).
 
 **4d. Your first rules file — codify the agent policy.** In the learning-journey repo (after Step 7), create `.cursor/rules/learning-phase.mdc`:
+
 ```markdown
 ---
 description: Learning-phase agent policy (Weeks 1-4, Roadmap v10.0 Stage 1)
@@ -415,9 +510,13 @@ alwaysApply: true
   uv (never pip), no requirements.txt, Conventional Commits, no print()
   inside functions.
 ```
+
 > **Why this matters beyond Week 4:** rules files are how your roadmap governs agents across all 14 project scopes (`.cursor/rules/*.mdc` + shared OpenCode rules). Writing this one teaches the pattern on Day 0 — and it makes the agent itself enforce your learning discipline, which is exactly what a production guardrail is.
 
+
+
 ### Step 5 — Git identity + GitHub CLI (~10 min)
+
 ```bash
 git config --global user.name "Manuel Reyes"
 git config --global user.email "YOUR_GITHUB_EMAIL"     # same email as your GitHub account
@@ -427,17 +526,26 @@ brew install gh          # GitHub's official command-line tool
 gh auth login            # choose: GitHub.com → HTTPS → Login with a web browser
 gh auth status           # should show: Logged in to github.com as manuel-reyes-ml
 ```
+
 > **Concept — git vs GitHub:** git is the tool on YOUR machine that records snapshots ("commits") of your work. GitHub is the website where you publish those snapshots. Commit locally → push to GitHub.
 
+
+
 ### Step 6 — Docker Desktop (~15 min)
+
 **What/why:** Docker packages a program with everything it needs so it runs identically anywhere — the shipping-container of software. Needed from Week 3 (course) and required in every flagship repo per your README standard. Install now so it's ready.
-1. https://www.docker.com/products/docker-desktop → Mac (Apple Silicon) → install → open once → accept terms.
+
+1. [https://www.docker.com/products/docker-desktop](https://www.docker.com/products/docker-desktop) → Mac (Apple Silicon) → install → open once → accept terms.
 2. Verify, then quit Docker Desktop (it uses RAM; start it only when needed):
+
 ```bash
 docker --version
 ```
 
+
+
 ### Step 7 — Workspace + first repo (~30 min)
+
 ```bash
 mkdir -p ~/dev                       # mkdir = make directory; -p = create parents if needed; ~ = your home folder
 cd ~/dev                             # cd = change directory ("go into this folder")
@@ -445,9 +553,11 @@ uv init learning-journey --python 3.14   # scaffolds a project: pyproject.toml, 
 cd learning-journey
 mkdir -p src/learning_journey notebooks journal weekly-summaries sql tests
 ```
-> **What `uv init` just gave you:** `pyproject.toml` (the single config file describing your project + dependencies — the modern standard) and `.python-version` (pins Python 3.14 for this project, so it behaves the same on any machine). The `src/` folder is where real code lives — the professional layout your roadmap standard requires, from literally your first repo.
+
+> **What** `uv init` **just gave you:** `pyproject.toml` (the single config file describing your project + dependencies — the modern standard) and `.python-version` (pins Python 3.14 for this project, so it behaves the same on any machine). The `src/` folder is where real code lives — the professional layout your roadmap standard requires, from literally your first repo.
 
 Open it (`code .`), replace `README.md` contents:
+
 ```markdown
 # Learning Journey — AI-Focused Data Engineering
 
@@ -458,7 +568,9 @@ transition (Roadmap v10.0 · Stage 1: Internal AI Builder).
 - **Standard:** pyproject.toml + src/ layout · Conventional Commits · no vibe coding
 - **Cadence:** 25 hrs/week · started July 20, 2026
 ```
+
 Add dev tools and make your first commit:
+
 ```bash
 uv add --dev ruff pytest    # --dev = tools for developing, not part of the program itself
 # ^ this also creates/updates uv.lock — the exact-versions record. It gets
@@ -467,12 +579,17 @@ git add .                                    # stage everything (mark it "to be 
 git commit -m "chore: scaffold learning-journey with uv + src layout"
 gh repo create learning_journey --public --source=. --push
 ```
+
 > **Concept — the commit message format:** `chore: ...` is a **Conventional Commit** — a `type: description` convention (`feat`, `fix`, `docs`, `test`, `refactor`, `chore`). Your roadmap standard requires it; machines can parse it and humans can scan it. You'll formalize this Week 2; use it loosely from Day 1.
 >
 > ✅ **Checkpoint:** repo visible at github.com/manuel-reyes-ml/learning_journey. **If the repo already exists** from the 2025 era: don't delete anything — move old content to `archive/2025-analyst-era/` untouched and build the new structure at root. *Flag to Claude before executing if unsure.*
 
+
+
 ### Step 7b — pre-commit from commit one (🆕 v3.0 — retrofit R1 done at setup) (~20 min)
-In the template there is nothing to retrofit: hooks go in before history exists. Use Correction 21's Tier A set (the fully commented config is printed in Weeks 7–8, Day 47 — copy its structure, verify the `rev:` pins against current releases) plus **Tier B `nbstripout`**, because this repo carries notebooks:
+
+In the template there is nothing to retrofit: hooks go in before history exists. Use Correction 21's Tier A set (the fully commented config is printed in Weeks 7–8, Day 47 — copy its structure, verify the `rev:` pins against current releases) plus **Tier B** `nbstripout`, because this repo carries notebooks:
+
 ```bash
 uv add --dev pre-commit
 # write .pre-commit-config.yaml: pre-commit-hooks basics + detect-private-key ·
@@ -481,20 +598,29 @@ uv run pre-commit install
 uv run pre-commit run --all-files
 git commit -am "chore: pre-commit hooks from commit one (correction 21)"
 ```
+
 > The governing rule from day one: **the hook set is a strict subset of CI** — CI arrives in Week 7; until then the hooks are the only gate, so keep them lean.
 
+
+
 ### Step 8 — Anthropic API key (create now, use Weeks 5+) (~10 min)
+
 1. console.anthropic.com → API Keys → Create Key → name `learning-macmini` → buy $5 credit (lasts months at Stage 1 usage).
 2. Store the key in your **password manager**. NEVER in a repo file or notebook cell — leaked keys get abused within minutes.
 3. Make it available to future programs via an environment variable:
+
 ```bash
 echo 'export ANTHROPIC_API_KEY="PASTE_KEY_HERE"' >> ~/.zshrc
 # >> appends a line to ~/.zshrc, the file that runs every time Terminal opens.
 # An environment variable is a named value programs can read — keys live there, never in code.
 ```
 
+
+
 ### Step 9 — Journal template (~10 min)
+
 Create `journal/TEMPLATE.md`:
+
 ```markdown
 # Journal — YYYY-MM-DD (Day N)
 **Blocks completed:** Morning ☐ · Evening ☐ · Hours: X.X
@@ -504,53 +630,72 @@ Create `journal/TEMPLATE.md`:
 **Stuck on / question for tomorrow:**
 **One win:** 🎉
 ```
+
 Every day ends by copying it to `journal/2026-07-XX.md`, filling it, committing it. The journal is your future interview story bank — "tell me about a time you were stuck" gets answered from here.
 
 ### Step 10 — Evidence file + private job-search workspace (🆕 v3.0 — Job lane) (~20 min)
+
 1. **Create a private home for the search**, outside every public repo — a private GitHub repo (`gh repo create career-search --private`) or a local folder. It holds three files you'll grow all quarter:
-   - `evidence.md` — the **evidence file** (retrofit R4's name, used from day one): every artifact, certificate, metric and STAR story, with links. It is your résumé's source of truth.
-   - `targets.md` — the target list (starts Day 14; the three tiers are in the v3.0 block).
-   - `tracker.md` — conversations and, from Day 64 (v3.1), applications, with the C54 falsifier counter (`n / 25`).
+  - `evidence.md` — the **evidence file** (retrofit R4's name, used from day one): every artifact, certificate, metric and STAR story, with links. It is your résumé's source of truth.
+  - `targets.md` — the target list (starts Day 14; the three tiers are in the v3.0 block).
+  - `tracker.md` — conversations and, from Day 64 (v3.1), applications, with the C54 falsifier counter (`n / 25`).
 2. Add one line to `evidence.md` now: the live 1099 reconciliation pipeline — **mechanism and relative outcomes only** (no client identifiers, no absolute figures; the deposition test applies to your notes too).
+
 > **Why on Day 1:** the roadmap plans for a multi-month search (C54 §3), and referrals dominate hiring. Relationships take longer to build than repos, so the slow lane starts first.
 
 ---
 
+
+
 ## 📅 WEEKLY SCHEDULE TEMPLATE
 
-| Day | Morning | Evening | Hours | Focus |
-|---|---|---|---|---|
-| Mon–Fri | 4:30–6:00 AM | 8:00–10:00 PM | 3.5/day | AM: courses + notes · PM: hands-on + commit |
-| Saturday | 5:00–8:30 AM | 8:00–10:00 PM | 5.5 | Deep work |
-| Sunday | — | 7:30–9:30 PM | 2.0 | Review · LinkedIn post · plan |
-| **Total** | | | **25** | Consistency > intensity |
+
+| Day       | Morning      | Evening       | Hours   | Focus                                       |
+| --------- | ------------ | ------------- | ------- | ------------------------------------------- |
+| Mon–Fri   | 4:30–6:00 AM | 8:00–10:00 PM | 3.5/day | AM: courses + notes · PM: hands-on + commit |
+| Saturday  | 5:00–8:30 AM | 8:00–10:00 PM | 5.5     | Deep work                                   |
+| Sunday    | —            | 7:30–9:30 PM  | 2.0     | Review · LinkedIn post · plan               |
+| **Total** |              |               | **25**  | Consistency > intensity                     |
+
 
 Course-load note: CS50x and P4E overlap on basics **by design** (Correction 11 — move fast through overlap; the value is rigor + credential). Mornings alternate: CS50x M/W/F, P4E T/Th. If overloaded: **P4E is the priority thread**; CS50x can stretch.
 
 ---
 
+
+
 ## 🗓 WEEK 1: ENVIRONMENT + FIRST CODE (Jul 20–26)
 
+
+
 ### Week 1 goals
-```
-□ Setup 100% verified            □ CS50x Week 0 + Week 1 attempted
-□ P4E Course 1 Ch.1–3 complete   □ 10+ commits · 5 journal entries
-□ HackGreenville joined + intro  □ Both Greenville meetups joined
-□ LinkedIn post #1 (Sunday)       □ 🆕 Evidence file + private job workspace
-□ 🆕 LinkedIn headline + About set to the AE/DE target (Sunday)
-```
+
+- [ ] Setup 100% verified
+- [ ] P4E Course 1 Ch.1–3 complete
+- [ ] HackGreenville joined + intro
+- [ ] LinkedIn post #1 (Sunday)
+- [ ] 🆕 LinkedIn headline + About set to the AE/DE target (Sunday)
+
+- [ ] CS50x Week 0 + Week 1 attempted
+- [ ] 10+ commits · 5 journal entries
+- [ ] Both Greenville meetups joined
+- [ ] 🆕 Evidence file + private job workspace
 
 ---
+
+
 
 ### 📌 DAY 1 — Monday, July 20
 
 **Morning (4:30–6:00):**
+
 - [ ] 10 min — Verify: `uv --version`, `git --version`, open Cursor (check Tab autocomplete is OFF, rules file present)
 - [ ] 45 min — CS50x Week 0 lecture (1.25x speed; notes in `notebooks/cs50x-notes.md`)
 - [ ] 25 min — The Scratch problem (yes, really — it teaches **decomposition**, the exact skill FDE interviews test: breaking a big problem into small steps)
 - [ ] 10 min — Journal + commit (`docs: day 1 journal + cs50x week 0 notes`)
 
 **Evening (8:00–10:00):**
+
 - [ ] 60 min — Your first real program. Create `src/learning_journey/day01_hello.py` and TYPE this:
 
 ```python
@@ -600,10 +745,12 @@ print(f"At {deferral_rate:.0%}, that salary contributes ${user_contribution:,.2f
 ```
 
 Run it from the project root:
+
 ```bash
 uv run python src/learning_journey/day01_hello.py
 # "uv run" = run inside this project's private environment. Always run code this way.
 ```
+
 Then **break it on purpose**: type `abc` when asked for a salary. Read the error (`ValueError`). Errors are information, not failure — Thursday you'll learn to handle this one gracefully.
 
 - [ ] 30 min — P4E: enroll, watch Ch.1 videos
@@ -614,11 +761,14 @@ Then **break it on purpose**: type `abc` when asked for a salary. Read the error
 
 ---
 
+
+
 ### 📌 DAY 2 — Tuesday, July 21
 
 **Morning:** P4E Ch.2 (variables/expressions) videos; type every example from the lecture into `src/learning_journey/day02_variables.py` as you watch.
 
 **Evening:**
+
 - [ ] 60 min — P4E Ch.2 assignments, then extend the calculator. Create `day02_limits.py`:
 
 ```python
@@ -666,17 +816,22 @@ if requested > effective_limit:
     excess = requested - effective_limit
     print(f"⚠️  Deferral request exceeds limit by ${excess:,.2f} — capped.")
 ```
+
 Run it. Change `age` to 45 and run again — watch the limit change. That's the point: **code encodes business rules you already know.**
+
 - [ ] 40 min — CS50x Week 1 lecture, first half
 - [ ] 20 min — Journal + commit (`feat: deferral limit checker with catch-up rule`)
 
 ---
+
+
 
 ### 📌 DAY 3 — Wednesday, July 22
 
 **Morning:** CS50x Week 1 second half + start the problem set (in C — the struggle is the point; note what C forces you to see about types that Python hides).
 
 **Evening:**
+
 - [ ] 70 min — CS50x Week 1 pset (finish or timebox)
 - [ ] 40 min — Full if/elif/else. Create `day03_vesting.py`:
 
@@ -716,16 +871,21 @@ else:
 if vested_pct is not None:
     print(f"{schedule_type} schedule, {years_of_service} yrs → {vested_pct:.0%} vested")
 ```
+
 Test it against your real-world knowledge: does year 5 on graded print 80%? If your domain brain and the program disagree, one of them has a bug — find out which. **That instinct (verify code against domain truth) is your permanent edge.**
+
 - [ ] 10 min — Journal + commit (`feat: vesting schedule checker`)
 
 ---
+
+
 
 ### 📌 DAY 4 — Thursday, July 23
 
 **Morning:** P4E Ch.3 (conditional execution) videos + quiz.
 
 **Evening:**
+
 - [ ] 60 min — Error handling — fixing Day 1's crash. Create `day04_safe_input.py`:
 
 ```python
@@ -763,16 +923,20 @@ while True:                            # loop forever... until `break` exits it
 # if-checks for things that can be WRONG. Both, always, at every boundary
 # where data enters a system. (DataVault will live and die by this rule.)
 ```
+
 - [ ] 40 min — **Distribution setup** ⭐: HackGreenville Slack → join, one-line bio ("career-changer into AI-focused data engineering · Greenville"), hello in #introductions; Meetup → join *Greenville Data Science & Analytics* + *Greenville Python*; RSVP anything this month
 - [ ] 20 min — Journal + commit (`feat: input validation loop with try/except`)
 
 ---
+
+
 
 ### 📌 DAY 5 — Friday, July 24
 
 **Morning:** CS50x — finish anything open from Weeks 0–1; else start Week 2 lecture.
 
 **Evening:**
+
 - [ ] 60 min — Consolidation: everything so far in one program. Create `day05_box7.py`:
 
 ```python
@@ -814,38 +978,53 @@ while True:
     print(f"  Code {code}: {meaning}")
     print(f"  ⚠️  Check: {watch}")
 ```
+
 Your task after typing it: **add two more codes you know from work** (e.g., 4, H). Extending existing code is a distinct skill from writing new code — practice both.
+
 - [ ] 40 min — Read your `REPO_STRUCTURE_TEMPLATE.md` + `ACCEPTANCE_CRITERIA.md`; list gaps vs v10.0 (uv? ADRs? C4?) in `journal/` — **don't edit them; flag the list for Claude review**
 - [ ] 20 min — Journal + commit (`feat: box7 sanity checker v0.1`)
 
 ---
 
+
+
 ### 📌 DAY 6 — Saturday, July 25 (deep work, 5.5h)
 
 **Morning (5:00–8:30):**
+
 - [ ] 90 min — P4E Ch.1–3: all remaining assignments + quizzes (target 100%)
 - [ ] 60 min — CS50x Week 2 lecture
 - [ ] 60 min — **First Jupyter session:**
+
 ```bash
 uv add --dev jupyter        # notebooks are a dev tool → --dev group
 uv run jupyter lab          # opens in your browser; Ctrl+C in Terminal to stop
 ```
+
 Create `notebooks/week01_playground.ipynb`. Redo 2–3 of the week's exercises interactively. Then write this in a Markdown cell — it's the professional dividing line most self-taught people never learn:
-> **Notebooks are for exploring** (try things, see results instantly, keep notes beside code). **Scripts in `src/` are for keeping** (tested, linted, runnable by anyone). Explore in notebooks → graduate good code to `src/`. Never let a notebook be the only home of important logic.
+
+> **Notebooks are for exploring** (try things, see results instantly, keep notes beside code). **Scripts in** `src/` **are for keeping** (tested, linted, runnable by anyone). Explore in notebooks → graduate good code to `src/`. Never let a notebook be the only home of important logic.
 
 **Evening (8:00–10:00):**
+
 - [ ] 60 min — Repo polish: run the linter and fix everything it flags:
+
 ```bash
 uv run ruff check .        # lists problems with rule codes (F401, E501...)
 uv run ruff format .       # auto-formats every file
 ```
+
 For each rule code you don't understand: look it up in the Ruff docs, understand it, then fix. **Never silence a rule you can't explain.** Add a one-line comment ("docstring") at the top of each script saying what it does. Update README with a Week 1 section.
+
 - [ ] 45 min — Draft Sunday's LinkedIn post
 - [ ] 15 min — Journal + commit (`chore: week 1 lint pass + readme update`)
 
 ---
 
+
+
 ### 📌 DAY 7 — Sunday, July 26 (2h)
+
 - [ ] 35 min — Week review: run every script, re-read every note; write `weekly-summaries/week-01.md` (shipped / hours **by lane** / hard parts / next focus) — ⚖️ total the journal's lane-hours lines; from Week 3 this total is the C58 priority check
 - [ ] 30 min — **Publish LinkedIn post #1** (pillar: frontline building). Formula: what I set up → one thing that surprised me → one artifact (repo screenshot). Never "I'm looking for a job."
 - [ ] 20 min — 🆕 **Job lane: LinkedIn headline + About** for the target, in honest present tense — e.g. *"Retirement-plan operations (ERISA) → analytics & data engineering · Python · SQL · building production data systems in public."* No title you don't hold; dbt goes in once you've shipped it.
@@ -854,24 +1033,35 @@ For each rule code you don't understand: look it up in the Ruff docs, understand
 
 ---
 
+
+
 ## 🗓 WEEK 2: FUNCTIONS, TESTS & PRODUCTION HABITS (Jul 27 – Aug 2)
 
+
+
 ### Week 2 goals
-```
-□ P4E Ch.4–5 → Course 1 DONE        □ Mode SQL Basic section complete
-□ CS50x Week 2 done, Week 3 started  □ First pytest tests passing
-□ Conventional Commits formalized    □ Alpaca account created (parked)
-□ Mini-project #1 shipped            □ LinkedIn post #2
-□ 🆕 Job lane: 5 Tier-1 companies in targets.md
-```
+
+- [ ] P4E Ch.4–5 → Course 1 DONE
+- [ ] CS50x Week 2 done, Week 3 started
+- [ ] Conventional Commits formalized
+- [ ] Mini-project #1 shipped
+- [ ] 🆕 Job lane: 5 Tier-1 companies in targets.md
+
+- [ ] Mode SQL Basic section complete
+- [ ] First pytest tests passing
+- [ ] Alpaca account created (parked)
+- [ ] LinkedIn post #2
 
 ---
+
+
 
 ### 📌 DAY 8 — Monday, July 27
 
 **Morning:** P4E Ch.4 (functions) videos + notes.
 
 **Evening:**
+
 - [ ] 60 min — **The week's most important refactor.** Your scripts work, but their logic is trapped inside them — unusable elsewhere, untestable. Functions fix that. Create `src/learning_journey/retirement.py`:
 
 ```python
@@ -955,10 +1145,13 @@ if __name__ == "__main__":
     print(f"  $120k @ 25%, age 52 → ${annual_contribution(120_000, 0.25, 52):,.2f}")
     print(f"  4 yrs graded → {vested_percent(4):.0%} vested")
 ```
+
 - [ ] 40 min — **Conventional Commits, formalized:** read conventionalcommits.org (10 min). From tonight, every commit is `type: imperative description` (`feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `chore:`). Commit tonight's work: `refactor: extract retirement calcs into typed module`
 - [ ] 20 min — Journal + commit
 
 ---
+
+
 
 ### 📌 DAY 9 — Tuesday, July 28
 
@@ -982,18 +1175,23 @@ SELECT *
   FROM tutorial.us_housing_units
  WHERE south > 60;
 ```
+
 **Evening:**
+
 - [ ] 60 min — Mode SQL: ORDER BY, LIMIT, logical operators (AND/OR/NOT, BETWEEN, IN) — keep transcribing with your own comments
 - [ ] 40 min — CS50x Week 2 pset
 - [ ] 20 min — Journal + commit (`docs: mode sql basics transcript`)
 
 ---
 
+
+
 ### 📌 DAY 10 — Wednesday, July 29
 
 **Morning:** P4E Ch.5 (loops/iteration) videos.
 
 **Evening:**
+
 - [ ] 60 min — Loops on your domain. Add to `retirement.py`:
 
 ```python
@@ -1027,6 +1225,7 @@ if __name__ == "__main__":
     for year_num, bal in enumerate(projection, start=1):
         print(f"  Year {year_num:>2}: ${bal:,.2f}")   # :>2 right-aligns
 ```
+
 - [ ] 40 min — **First tests** ⭐ — the eval-first mindset starts here. Create `tests/test_retirement.py`:
 
 ```python
@@ -1068,21 +1267,27 @@ def test_graded_vesting_year_four():
     import pytest
     assert vested_percent(4, "graded") == pytest.approx(0.60)
 ```
+
 Run:
+
 ```bash
 uv run pytest -v        # -v (verbose) lists each test by name
 # Green dots = passing. Now break one on purpose (change 0.60 to 0.50),
 # run again, READ the failure output, fix it back. Know both colors.
 ```
+
 - [ ] 20 min — Journal + commit (`test: first pytest suite for retirement module`)
 
 ---
+
+
 
 ### 📌 DAY 11 — Thursday, July 30
 
 **Morning:** CS50x Week 3 (algorithms) — searching/sorting; write Big-O notes in plain English ("how much slower does it get as data grows?").
 
 **Evening:**
+
 - [ ] 60 min — Mode SQL: finish Basic section + self-test from memory
 - [ ] 30 min — Edge-case tests. Add to `tests/test_retirement.py`:
 
@@ -1106,36 +1311,46 @@ def test_unknown_schedule_rejected():
     with pytest.raises(ValueError):
         vested_percent(4, "immediate-maybe")
 ```
+
 - [ ] 20 min — **Crucible seed:** create the free Alpaca paper-trading account; keys → password manager; build nothing; park it
 - [ ] 10 min — Journal + commit (`test: edge cases for invalid inputs`)
 
 ---
+
+
 
 ### 📌 DAY 12 — Friday, July 31
 
 **Morning:** P4E Course 1 final assignments/quizzes → **Course 1 complete** 🎉
 
 **Evening:**
+
 - [ ] 60 min — CS50x Week 3 pset (timebox; spill to Saturday if needed)
 - [ ] 40 min — Repo hygiene: `uv run ruff check .` + `format` clean; docstring on every function; README Week 2 section
 - [ ] 20 min — Journal + commit (`chore: week 2 lint + docs pass`)
 
 ---
 
+
+
 ### 📌 DAY 13 — Saturday, August 1 (deep work, 5.5h)
 
 **Morning (5:00–8:30):**
+
 - [ ] 90 min — Finish anything open (CS50x pset, P4E)
 - [ ] 90 min — **Mini-project #1** ⭐ — first end-to-end program: file in → your functions → report out. Two files.
 
 `src/learning_journey/projects/participants.csv` (synthetic — invent 10 rows; **synthetic-data-only is the public-repo governance rule, practiced from project #1**):
+
 ```csv
 name,age,salary,deferral_pct,years_service
 Ana Torres,34,62000,0.06,3
 Luis Vega,51,98000,0.15,7
 Mia Chen,45,120000,0.22,1
 ```
+
 `src/learning_journey/projects/contribution_report.py`:
+
 ```python
 """Mini-project #1: contribution & vesting report from a participant CSV.
 
@@ -1196,18 +1411,24 @@ if __name__ == "__main__":
     for line in build_report(participants):
         print(line)
 ```
+
 Run: `uv run python -m learning_journey.projects.contribution_report`
 (`-m` runs it *as a module inside the package* — the professional invocation; it makes the imports resolve.)
+
 - [ ] 30 min — Two tests for `build_report` (row count matches input; a known row computes correctly)
 
 **Evening (8:00–10:00):**
+
 - [ ] 60 min — P4E Course 2 (Data Structures): enroll, Ch.6 (strings) videos
 - [ ] 45 min — Draft LinkedIn post #2 (pillar: finance→tech bridge — "I rebuilt a slice of my day job in 80 lines of Python; testing taught me more than the syntax did")
 - [ ] 15 min — Journal + commit (`feat: mini-project 1 contribution report with tests`)
 
 ---
 
+
+
 ### 📌 DAY 14 — Sunday, August 2 (2h)
+
 - [ ] 40 min — `weekly-summaries/week-02.md` + full `uv run pytest` + re-read all code
 - [ ] 30 min — Publish post #2
 - [ ] 15 min — Read the Weeks 3–4 plan
@@ -1217,30 +1438,45 @@ Run: `uv run python -m learning_journey.projects.contribution_report`
 
 ---
 
+
+
 ## 📊 2-WEEK SUCCESS METRICS
-```
-TECHNICAL                                  HABITS & DISTRIBUTION
-□ uv/Cursor/OpenCode/VS Code/git/gh/       □ 11+ journal entries (of 13 days)
-  Docker verified · Tab off · rules file
-□ uv Core Course #15 read + logged         □ 22+ commits, Conventional from Wk 2
-□ uv.lock committed alongside pyproject    □ 2 LinkedIn posts published
-□ P4E Course 1 complete                    □ HackGreenville joined + intro
-□ CS50x Weeks 0–2 done, Wk 3 started       □ 2 meetups joined, 1 RSVP
-□ Mode SQL Basic complete                  □ 80%+ of blocks completed
-□ 7+ pytest tests passing (incl. raises)   □ Alpaca created (parked)
-□ Mini-project #1 shipped (synthetic CSV)  □ No DL.AI Pro purchased (sprint
-□ ruff clean repo                            months come later — Correction 17)
-□ 🆕 Job lane: evidence file live · headline set · 5 companies listed
-```
+
+**TECHNICAL**
+
+- [ ] uv/Cursor/OpenCode/VS Code/git/gh/Docker verified · Tab off · rules file
+- [ ] uv Core Course #15 read + logged
+- [ ] uv.lock committed alongside pyproject
+- [ ] P4E Course 1 complete
+- [ ] CS50x Weeks 0–2 done, Wk 3 started
+- [ ] Mode SQL Basic complete
+- [ ] 7+ pytest tests passing (incl. raises)
+- [ ] Mini-project #1 shipped (synthetic CSV)
+- [ ] ruff clean repo
+- [ ] 🆕 Job lane: evidence file live · headline set · 5 companies listed
+
+**HABITS & DISTRIBUTION**
+
+- [ ] 11+ journal entries (of 13 days)
+- [ ] 22+ commits, Conventional from Wk 2
+- [ ] 2 LinkedIn posts published
+- [ ] HackGreenville joined + intro
+- [ ] 2 meetups joined, 1 RSVP
+- [ ] 80%+ of blocks completed
+- [ ] Alpaca created (parked)
+- [ ] No DL.AI Pro purchased (sprint months come later — Correction 17)
+
 **Passing bar: 80%.** Below it, the calendar pauses — gaps close in Week 3's flex slots first. Eval-first applies to you too.
 
 ---
 
+
+
 ## 🚨 TROUBLESHOOTING
 
-**`command not found` after installing:** restart Terminal first; then check `~/.zshrc` for the PATH lines the installer printed.
-**Import error in tests (`No module named learning_journey`):** run from the project root, always via `uv run pytest`; confirm `src/learning_journey/` contains your files and `pyproject.toml` is present.
-**`IndentationError`:** Python's indentation is structure. Select the block in the editor and check every line in a branch aligns at the same depth (4 spaces).
+`command not found` **after installing:** restart Terminal first; then check `~/.zshrc` for the PATH lines the installer printed.
+**Import error in tests (**`No module named learning_journey`**):** run from the project root, always via `uv run pytest`; confirm `src/learning_journey/` contains your files and `pyproject.toml` is present.
+`IndentationError`**:** Python's indentation is structure. Select the block in the editor and check every line in a branch aligns at the same depth (4 spaces).
 **CS50's C feels brutal:** normal and temporary. Timebox psets; understanding > completion; P4E is the priority thread.
 **Ruff flags something cryptic:** look up the rule code, understand, fix. Never blanket-disable a rule you can't explain.
 **Missed a block:** make up ≥1h same day or +time Saturday. Never let two days stack.
@@ -1249,6 +1485,8 @@ TECHNICAL                                  HABITS & DISTRIBUTION
 
 ---
 
+
+
 ## 🔭 WHAT COMES NEXT
 
 **Weeks 3–4 (Aug 3–16):** P4E Course 2 (data structures — the real workhorse), Mode SQL Intermediate (JOINs — the ~79%-of-DE-postings skill), *AI Python for Beginners* videos on the free tier with exercises replicated locally (labs are Pro-gated — Correction 17), Docker begins, your **first ADR** using the roadmap's new ADR learning pack (Correction 14), a first taste of **structlog** (Correction 16), and **AI-901 kickoff** (~~employer-reimbursed cert #1 + reimbursement paper trail~~ → **self-funded, $99** — C22/32/37 — = evidence-file item #1), plus mini-project #2: a two-system reconciliation toy that is deliberately DataVault's S1 pattern in miniature.
@@ -1256,4 +1494,5 @@ TECHNICAL                                  HABITS & DISTRIBUTION
 🆕 **v3.0 additions:** the Job lane's target list v0 (Day 21) and first informational-conversation request (Day 28). Further out: **dbt Fundamentals enters in Weeks 5–6**, the **trading lane opens on Day 41** with a market-data dbt rehearsal, and DataVault scaffolds with a dbt project on Day 43.
 
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–59) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026) · v3.2 readiness gate (C59, 9 Oct 2026). Propose→approve governance: this plan does not edit `roadmap.html`; corrections still owed are listed in the v3.0 block. Items flagged for review are in Day 5 and the Step-7 checkpoint.*
+
+*Aligned to Career Roadmap v10.0 (Corrections 1–59) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026) · v3.2 readiness gate (C59, 9 Oct 2026). Propose→approve governance: this plan does not edit* `roadmap.html`*; corrections still owed are listed in the v3.0 block. Items flagged for review are in Day 5 and the Step-7 checkpoint.*
