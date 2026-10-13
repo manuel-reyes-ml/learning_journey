@@ -57,7 +57,7 @@ repos:
   # PY4E files that were never written to this standard; they are archive.
   # ---------------------------------------------------------------------------
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: e8f7d69b957a30acb2c875078d5fd012de24b64c  # frozen: v0.16.7
+    rev: 44b5042edab9382aba712eed4f9c7bab7a3d6a3e  # frozen: v0.17.0
     hooks:
       - id: ruff-check
         args: [--fix]
@@ -73,7 +73,7 @@ repos:
   # generated agent file: invisible in review, wrong at runtime.
   # ---------------------------------------------------------------------------
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 4f783b6470be305483837130a5be2e21ed7ff52b  # frozen: 0.12.13
+    rev: 2e145a365871c9fef3715d38b9b7393ce4174c85  # frozen: 0.13.0
     hooks:
       - id: uv-lock
 
