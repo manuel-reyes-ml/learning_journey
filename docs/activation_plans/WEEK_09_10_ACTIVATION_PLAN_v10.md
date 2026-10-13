@@ -51,27 +51,12 @@ Standing rulings from Corrections 21–43 for this fortnight (Corrections 44–5
 DeepLearning.AI's free tier is videos-only; the labs carry the value for the eval courses. Your roadmap's ruling: **rent Pro for ONE month, now** — this is the exact trigger ("the month PolicyPulse's eval harness is being built" — the harness starts here, PolicyPulse lands Weeks 11–12; one month from today covers both).
 
 **Monday checklist:**
-```
-□ Option A ($0): join the AMD AI Developer Program (free tier) → claim the
-  complimentary DL.AI Pro month. Do NOT claim the $100 GPU credits (they
-  expire in 30 days and need a payment method — claim only against a
-  scheduled workload, which you don't have yet; the substrate benchmark
-  is a later PolicyPulse item).
-□ Option B (~$30): pay for one month of Pro directly. Re-verify the price
-  first (the roadmap flags it as unpublished). MONTHLY, never annual.
-□ Set a calendar reminder for Day 25 of the month: "DOWNLOAD ALL LAB
-  NOTEBOOKS + CANCEL PRO." Certificates and progress persist after
-  cancellation — that's what makes the sprint rational.
-□ The nine lab rows this month covers: S1 = Improving Accuracy · Advanced
-  RAG · MCP primer* · AI Python for Beginners (labs + the deferred
-  Accomplishment). S2 = Pre-processing Unstructured Data · Vector
-  Databases · Knowledge Graphs for RAG · RAG Production-Ready.
-  (*MCP primer will actually route through Anthropic Academy for free in
-  Weeks 11–12 — do its DL.AI labs only if time is spare.)
-□ Discipline: every lab notebook → File → Download → data/dlai-notebooks/
-  in learning_journey (private notes OK; never copied into flagship repos
-  without line-by-line rebuild, per the no-vibe-coding rule).
-```
+
+- [ ] Option A ($0): join the AMD AI Developer Program (free tier) → claim the complimentary DL.AI Pro month. Do NOT claim the $100 GPU credits (they expire in 30 days and need a payment method — claim only against a scheduled workload, which you don't have yet; the substrate benchmark is a later PolicyPulse item).
+- [ ] Option B (~$30): pay for one month of Pro directly. Re-verify the price first (the roadmap flags it as unpublished). MONTHLY, never annual.
+- [ ] Set a calendar reminder for Day 25 of the month: "DOWNLOAD ALL LAB NOTEBOOKS + CANCEL PRO." Certificates and progress persist after cancellation — that's what makes the sprint rational.
+- [ ] The nine lab rows this month covers: S1 = Improving Accuracy · Advanced RAG · MCP primer* · AI Python for Beginners (labs + the deferred Accomplishment). S2 = Pre-processing Unstructured Data · Vector Databases · Knowledge Graphs for RAG · RAG Production-Ready. (*MCP primer will actually route through Anthropic Academy for free in Weeks 11–12 — do its DL.AI labs only if time is spare.)
+- [ ] Discipline: every lab notebook → File → Download → data/dlai-notebooks/ in learning_journey (private notes OK; never copied into flagship repos without line-by-line rebuild, per the no-vibe-coding rule).
 
 ---
 
@@ -109,13 +94,17 @@ Model:  Kimball Ch. 5 (SCD) · Ch. 7 + 10 (accounting, financial services) ·
 ## 🗓 WEEK 9 (Sep 14–20)
 
 ### Week 9 goals
-```
-□ ~~Sprint-1 activated~~ (Q2)                    □ Improving Accuracy **videos** done (labs → Q2)
-□ Golden dataset v1: 25+ Box-7 cases           □ Harness v0: code-based grader runs
-□ ~~AB-620 pre-approval filed~~ ❌ void       □ CS50P Week 3 · Post #9
-□ 🆕 dbt docs public (Day 58) · v0.1.0 (Day 62) □ 🆕 Job lane: résumé v1 (AE door)
-□ 🚦 **SOFT-TRIGGER GATE — Day 63** → narrow search opens Day 64
-```
+
+- [ ] ~~Sprint-1 activated~~ (Q2)
+- [ ] Golden dataset v1: 25+ Box-7 cases
+- [ ] ~~AB-620 pre-approval filed~~ ❌ void
+- [ ] 🆕 dbt docs public (Day 58) · v0.1.0 (Day 62)
+- [ ] 🚦 **SOFT-TRIGGER GATE — Day 63** → narrow search opens Day 64
+
+- [ ] Improving Accuracy **videos** done (labs → Q2)
+- [ ] Harness v0: code-based grader runs
+- [ ] CS50P Week 3 · Post #9
+- [ ] 🆕 Job lane: résumé v1 (AE door)
 
 ### 📌 DAY 57 — Monday, September 14
 **Morning:** ~~Execute the Sprint-1 checklist~~ (Q2) → *Improving Accuracy of LLM Applications* — **videos only** (free tier; the labs come with the Q2 Pro month). Take notes on the eval-framework sections — you build the harness by hand tonight anyway.
@@ -281,14 +270,17 @@ Then: 60 min 🆕 **Job lane** — LinkedIn **Featured** → the release + dbt d
 ## 🗓 WEEK 10 (Sep 21–27)
 
 ### Week 10 goals
-```
-□ ~~Advanced RAG course + labs~~ (Q2)          □ Harness v1: judge grader added
-□ ~~S2 short labs~~ (Q2)                      □ 🆕 **DataVault v0.2.0**: SCD2 snapshot + idempotent
-                                               incremental + custom generic test
-□ AB-620 ~30% (extra time only) · CS50P Wk 4 □ Post #10 · meetup this month ✓
-□ 🆕 dbt Advanced started · Track B #3–#5    □ 🆕 Track A session 0: before-metrics
-□ 🚦 4+ tailored applications · tracker n/25    captured (work day)
-```
+
+- [ ] ~~Advanced RAG course + labs~~ (Q2)
+- [ ] ~~S2 short labs~~ (Q2)
+- [ ] AB-620 ~30% (extra time only) · CS50P Wk 4
+- [ ] 🆕 dbt Advanced started · Track B #3–#5
+- [ ] 🚦 4+ tailored applications · tracker n/25
+
+- [ ] Harness v1: judge grader added
+- [ ] 🆕 **DataVault v0.2.0**: SCD2 snapshot + idempotent incremental + custom generic test
+- [ ] Post #10 · meetup this month ✓
+- [ ] 🆕 Track A session 0: before-metrics captured (work day)
 
 ### 📌 DAY 64 — Monday, September 21
 **Morning:** 🚦 **Job lane — applications 1–2** (moved up from Day 76): tailored and referral-first wherever a path exists — résumé v1 + a three-sentence note naming the posting's stack words you can *show* (dbt tests, CI, the star schema, the reconciliation domain); log both in `tracker.md`. ~~Advanced RAG~~ (Q2).
@@ -323,17 +315,25 @@ Week summary + ⚖️ **priority check (C58)** + **Month-3-minus-one check**: **
 ---
 
 ## 📊 2-WEEK SUCCESS METRICS
-```
-□ ~~Sprint-1 active~~ (Q2)                     □ Improving Accuracy videos done
-□ Golden set: 30+ cases w/ rationales         (labs + Advanced RAG → Q2)
-□ Harness v1: code + judge graders          □ ~~AI Python labs~~ (Q2 Pro month)
-□ Eval gate in CI (manual trigger) + ADRs   □ 🆕 Kimball Ch. 5 (SCD) · 7 · 10 · 19 read
-  0004–0005                                 □ AB-620 ~30% (extra-time; pre-approval void)
-□ One documented improve cycle in eval-log  □ 🚦 v0.1.0 public — soft trigger **Day 63**
-□ ~~DeepEval/GEval~~ (Q2)                     □ Posts #9–10 · CS50P Wk 3–4 · meetup ✓
-□ 🆕 docs live · v0.2.0 (SCD2 + incremental)  □ 🆕 Résumé v1 · Featured · honesty pass
-□ 🚦 4+ tailored applications · tracker live  □ 🆕 Track B #3–#5 · dbt Advanced started
-```
+
+- [ ] ~~Sprint-1 active~~ (Q2)
+- [ ] Golden set: 30+ cases w/ rationales
+- [ ] Harness v1: code + judge graders
+- [ ] Eval gate in CI (manual trigger) + ADRs 0004–0005
+- [ ] One documented improve cycle in eval-log
+- [ ] ~~DeepEval/GEval~~ (Q2)
+- [ ] 🆕 docs live · v0.2.0 (SCD2 + incremental)
+- [ ] 🚦 4+ tailored applications · tracker live
+
+- [ ] Improving Accuracy videos done (labs + Advanced RAG → Q2)
+- [ ] ~~AI Python labs~~ (Q2 Pro month)
+- [ ] 🆕 Kimball Ch. 5 (SCD) · 7 · 10 · 19 read
+- [ ] AB-620 ~30% (extra-time; pre-approval void)
+- [ ] 🚦 v0.1.0 public — soft trigger **Day 63**
+- [ ] Posts #9–10 · CS50P Wk 3–4 · meetup ✓
+- [ ] 🆕 Résumé v1 · Featured · honesty pass
+- [ ] 🆕 Track B #3–#5 · dbt Advanced started
+
 **Passing bar: 80%.** Non-negotiables: the harness with both grader types, and the documented improvement cycle — that pairing is the 5.5% club membership card — and 🆕 **the soft trigger** (Day 63, Day 70 fallback), which is what turns this quarter's work into interviews.
 
 ---
