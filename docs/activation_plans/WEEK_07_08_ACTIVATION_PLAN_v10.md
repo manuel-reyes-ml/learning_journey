@@ -85,15 +85,14 @@ Modeling:    conformed dimensions · surrogate keys · relationships tests ·
 ## 🗓 WEEK 7 (Aug 31 – Sep 6)
 
 ### Week 7 goals
-```
-□ datavault repo live: full production scaffold + CI green
-□ Synthetic Matrix-shaped + Relius-shaped generators (seeded, defect-planted)
-□ Canonical model (pydantic) + normalizers for both sources, tested
-□ 🆕 dbt project in the repo: sources on canonical Parquet · 2 staging models · generic tests
-□ Scope doc v0.1 + ADRs 0001–0002 (DataVault's own docs/adr/)
-□ 🆕 `docs/modeling.md`: grain + conformed dimensions + ADR 0003 (Kimball Ch. 3 applied)
-□ Claude API course: tool use section · CS50P Week 0–1 · Post #7
-```
+
+- [ ] datavault repo live: full production scaffold + CI green
+- [ ] Synthetic Matrix-shaped + Relius-shaped generators (seeded, defect-planted)
+- [ ] Canonical model (pydantic) + normalizers for both sources, tested
+- [ ] 🆕 dbt project in the repo: sources on canonical Parquet · 2 staging models · generic tests
+- [ ] Scope doc v0.1 + ADRs 0001–0002 (DataVault's own docs/adr/)
+- [ ] 🆕 `docs/modeling.md`: grain + conformed dimensions + ADR 0003 (Kimball Ch. 3 applied)
+- [ ] Claude API course: tool use section · CS50P Week 0–1 · Post #7
 
 ### 📌 DAY 43 — Monday, August 31
 **Morning:** **DataVault scoping session** (no code): write `docs/SCOPE_v0.1.md` — S1 boundary (recon core only), the S1→S3 arc one-liner, data-boundary rule, and the S1 exit checklist. 30 min cap on prose; then read your roadmap's DataVault portfolio entry once more.
@@ -299,15 +298,14 @@ Week summary + 🆕 lane-hours total (C58) · publish post #7 · plan Week 8 (~~
 ## 🗓 WEEK 8 (Sep 7–13) — ~~EXAM WEEK~~ → ⚖️ THE STAR WEEK (v3.1)
 
 ### Week 8 goals
-```
-□ ~~Box-7 rules engine v0 (Python)~~ → 🆕 **recon + Box-7 checks as dbt models**, a unit test per rule
-□ Exceptions exported end-to-end with one command (`make run`: generate → normalize → dbt build → export)
-□ ~~AI-901: practice test #3 ≥85% → EXAM TAKEN~~ → ⏭️ Q2 · 🆕 **the star in dbt**: `fct_distributions` + 4 dims, `relationships` tests
-□ 🆕 `dbt build` blocking in CI (Day 52) · Track B #1–#2 on the public 1099 repo (Day 54)
-□ ~~Reimbursement claim filed same day as pass~~ ❌ VOID (C22/32/37) · **evidence file** updated
-□ CS50P Week 2 · P4E C3 continues · Post #8
-□ 🆕 Job lane: targets at 30 · 1 informational conversation held
-```
+
+- [ ] ~~Box-7 rules engine v0 (Python)~~ → 🆕 **recon + Box-7 checks as dbt models**, a unit test per rule
+- [ ] Exceptions exported end-to-end with one command (`make run`: generate → normalize → dbt build → export)
+- [ ] ~~AI-901: practice test #3 ≥85% → EXAM TAKEN~~ → ⏭️ Q2 · 🆕 **the star in dbt**: `fct_distributions` + 4 dims, `relationships` tests
+- [ ] 🆕 `dbt build` blocking in CI (Day 52) · Track B #1–#2 on the public 1099 repo (Day 54)
+- [ ] ~~Reimbursement claim filed same day as pass~~ ❌ VOID (C22/32/37) · **evidence file** updated
+- [ ] CS50P Week 2 · P4E C3 continues · Post #8
+- [ ] 🆕 Job lane: targets at 30 · 1 informational conversation held
 
 ### 📌 DAY 50 — Monday, September 7 (Labor Day)
 **Standard blocks; optional bonus block if the day allows.**
@@ -433,18 +431,25 @@ Week summary + **Month-2 retro** (hours honest **by lane**, ~~exam outcome~~, Da
 ---
 
 ## 📊 2-WEEK SUCCESS METRICS
-```
-□ datavault repo: scaffold + CI green      □ ~~AI-901 TAKEN~~ (Q2) → 🆕 the star: fact + 4 dims, relationships tests
-□ Both generators, seeded + defect-logged  □ pre-commit installed + uv-lock invariant proven
-□ Canonical model + validators tested      □ Evidence file: 3+ artifacts now
-□ Both normalizers + quarantine path       □ CS50P Weeks 0–2 · P4E C3 ~60%
-□ 🆕 dbt recon matches planted defects     □ Claude API course ~55%
-  (singular test vs the defect manifest)
-□ 🆕 Box-7 checks in dbt, unit test/rule   □ Posts #7–8 · ADRs 0001–0002 (DV)
-□ End-to-end `make run` works (dbt inside)  □ 26+ commits
-□ 🆕 Job lane: targets 30 · 1 conversation held
-□ 🆕 `dbt build` blocking in CI · `docs/modeling.md` + ADR 0003 · Track B #1–#2 done
-```
+
+- [ ] datavault repo: scaffold + CI green
+- [ ] Both generators, seeded + defect-logged
+- [ ] Canonical model + validators tested
+- [ ] Both normalizers + quarantine path
+- [ ] 🆕 dbt recon matches planted defects (singular test vs the defect manifest)
+- [ ] 🆕 Box-7 checks in dbt, unit test/rule
+- [ ] End-to-end `make run` works (dbt inside)
+- [ ] 🆕 Job lane: targets 30 · 1 conversation held
+- [ ] 🆕 `dbt build` blocking in CI · `docs/modeling.md` + ADR 0003 · Track B #1–#2 done
+
+- [ ] ~~AI-901 TAKEN~~ (Q2) → 🆕 the star: fact + 4 dims, relationships tests
+- [ ] pre-commit installed + uv-lock invariant proven
+- [ ] Evidence file: 3+ artifacts now
+- [ ] CS50P Weeks 0–2 · P4E C3 ~60%
+- [ ] Claude API course ~55%
+- [ ] Posts #7–8 · ADRs 0001–0002 (DV)
+- [ ] 26+ commits
+
 **Passing bar: 80%.** Non-negotiables: ~~the exam attempt~~ → 🆕 **the star schema**, and the end-to-end DataVault run — 🆕 **through dbt**.
 
 ---
