@@ -454,16 +454,16 @@ uv python list              # confirm 3.14 appears in the list
 2. ⌘+Shift+P → "Shell Command: Install 'cursor' command" (lets you type `cursor .` in Terminal).
 3. Extensions (⌘+Shift+X — Cursor uses the same marketplace):
 
-- [ ] Python (Microsoft)
-- [ ] Ruff (Astral Software)
-- [ ] Even Better TOML
+- [x] Python (Microsoft)
+- [x] Ruff (Astral Software)
+- [x] Even Better TOML
 
 - [ ] Pylance (Microsoft)
-- [ ] GitLens
-- [ ] SQLite Viewer
+- [x] GitLens
+- [x] SQLite Viewer
 
-- [ ] Jupyter (Microsoft)
-- [ ] Docker (Microsoft)
+- [x] Jupyter (Microsoft)
+- [x] Docker (Microsoft)
 - [ ] Markdown All in One
 
 1. Settings (⌘+,): "format on save" → ✅ enable; "default formatter" → **Ruff** for Python.
@@ -689,8 +689,8 @@ Course-load note: CS50x and P4E overlap on basics **by design** (Correction 11 �
 
 **Morning (4:30–6:00):**
 
-- [ ] 10 min — Verify: `uv --version`, `git --version`, open Cursor (check Tab autocomplete is OFF, rules file present)
-- [ ] 45 min — CS50x Week 0 lecture (1.25x speed; notes in `notebooks/cs50x-notes.md`)
+- [x] 10 min — Verify: `uv --version`, `git --version`, open Cursor (check Tab autocomplete is OFF, rules file present)
+- [x] 45 min — CS50x Week 0 lecture (1.25x speed; notes in `notebooks/cs50x-notes.md`)
 - [ ] 25 min — The Scratch problem (yes, really — it teaches **decomposition**, the exact skill FDE interviews test: breaking a big problem into small steps)
 - [ ] 10 min — Journal + commit (`docs: day 1 journal + cs50x week 0 notes`)
 
@@ -714,14 +714,14 @@ print("Day 1 — Manuel's 401(k) contribution calculator")
 # Naming rule (production habit #1): full descriptive words, lowercase_with_underscores.
 # BAD:  s = 85000        (what is s?)
 # GOOD:
-annual_salary = 85_000        # Python lets you write 85_000 for readability — same as 85000
-deferral_rate = 0.06          # 6% — rates are stored as decimals, not percents
+annual_salary = 85_000  # Python lets you write 85_000 for readability — same as 85000
+deferral_rate = 0.06  # 6% — rates are stored as decimals, not percents
 
 # --- TYPES: every value has a kind ---
 # 85_000 is an int (whole number). 0.06 is a float (decimal).
 # "Day 1..." is a str (text). Python tracks this for you, but YOU should know it too.
-print(type(annual_salary))    # <class 'int'>   — try it, then delete this line
-print(type(deferral_rate))    # <class 'float'>
+print(type(annual_salary))  # <class 'int'>   — try it, then delete this line
+print(type(deferral_rate))  # <class 'float'>
 
 # --- CALCULATION ---
 annual_contribution = annual_salary * deferral_rate
@@ -731,7 +731,7 @@ annual_contribution = annual_salary * deferral_rate
 # :,.2f  is a format spec: thousands separator, 2 decimal places.
 # This is THE way to print money in Python.
 print(f"Salary: ${annual_salary:,.2f}")
-print(f"Deferral rate: {deferral_rate:.1%}")          # .1% formats 0.06 as 6.0%
+print(f"Deferral rate: {deferral_rate:.1%}")  # .1% formats 0.06 as 6.0%
 print(f"Annual contribution: ${annual_contribution:,.2f}")
 
 # --- INPUT: making it interactive ---
@@ -778,19 +778,19 @@ Then **break it on purpose**: type `abc` when asked for a salary. Read the error
 # --- CONSTANTS: values that never change while the program runs ---
 # Convention: ALL_CAPS names. Production habit #2: no "magic numbers" buried
 # in calculations — name them at the top, once, where they're easy to verify.
-IRS_DEFERRAL_LIMIT = 23_500       # TODO: verify current-year IRS 402(g) limit
-CATCH_UP_LIMIT = 7_500            # TODO: verify current-year catch-up amount
+IRS_DEFERRAL_LIMIT = 23_500  # TODO: verify current-year IRS 402(g) limit
+CATCH_UP_LIMIT = 7_500  # TODO: verify current-year catch-up amount
 CATCH_UP_AGE = 50
 # Those TODOs are deliberate: honesty over guessing. In regulated finance,
 # an unverified number labeled as fact is a compliance problem. Same rule
 # as your roadmap: unverified figures get flagged, not stated.
 
 annual_salary = 120_000
-deferral_rate = 0.25              # aggressive saver — will they hit the cap?
+deferral_rate = 0.25  # aggressive saver — will they hit the cap?
 age = 52
 
 # --- COMPARISON OPERATORS produce True/False (a "bool" type) ---
-is_catch_up_eligible = age >= CATCH_UP_AGE     # >= means "greater than or equal"
+is_catch_up_eligible = age >= CATCH_UP_AGE  # >= means "greater than or equal"
 print(f"Age {age} → catch-up eligible: {is_catch_up_eligible}")
 
 # --- IF/ELSE: the program chooses a path ---
@@ -840,13 +840,13 @@ Run it. Change `age` to 45 and run again — watch the limit change. That's the 
 # New concepts: elif chains, comparison chaining, why branch ORDER matters
 
 years_of_service = 4
-schedule_type = "graded"     # "cliff" (3-yr) or "graded" (2–6 yr)
+schedule_type = "graded"  # "cliff" (3-yr) or "graded" (2–6 yr)
 
 # --- ELIF: check conditions top to bottom, take the FIRST true branch ---
 if schedule_type == "cliff":
     # == asks "equal?" (one = assigns, two == compares — classic beginner trap)
     if years_of_service >= 3:
-        vested_pct = 1.0     # 100% — cliff means all-or-nothing at 3 years
+        vested_pct = 1.0  # 100% — cliff means all-or-nothing at 3 years
     else:
         vested_pct = 0.0
 
@@ -865,7 +865,7 @@ elif schedule_type == "graded":
 else:
     # Defensive branch: if data is bad, SAY SO loudly instead of guessing.
     # Silent wrong answers are the cardinal sin of financial software.
-    print(f"❌ Unknown schedule type: {schedule_type!r}")   # !r shows quotes → reveals typos
+    print(f"❌ Unknown schedule type: {schedule_type!r}")  # !r shows quotes → reveals typos
     vested_pct = None
 
 if vested_pct is not None:
@@ -894,12 +894,12 @@ Test it against your real-world knowledge: does year 5 on graded print 80%? If y
 # Production code NEVER crashes on user input. It anticipates, catches, recovers.
 
 # --- WHILE LOOP + TRY/EXCEPT: ask until we get a valid answer ---
-while True:                            # loop forever... until `break` exits it
+while True:  # loop forever... until `break` exits it
     salary_text = input("Enter annual salary (or q to quit): ")
 
-    if salary_text.lower() == "q":     # .lower() → accepts q or Q
+    if salary_text.lower() == "q":  # .lower() → accepts q or Q
         print("Goodbye!")
-        break                          # break = leave the loop immediately
+        break  # break = leave the loop immediately
 
     try:
         # The RISKY line goes inside try:
@@ -908,7 +908,7 @@ while True:                            # loop forever... until `break` exits it
         # If float() fails, Python "raises" ValueError. Instead of crashing,
         # control jumps HERE. We explain, then the loop asks again.
         print(f"  '{salary_text}' is not a number — try again (e.g., 85000).")
-        continue                       # continue = skip to the next loop round
+        continue  # continue = skip to the next loop round
 
     # Catching the error is not enough — VALIDATE the business rule too.
     # -50000 is a valid float and an invalid salary.
@@ -945,7 +945,7 @@ while True:                            # loop forever... until `break` exits it
 # (Box 7 = the distribution code on Form 1099-R. You explain these codes
 # at work; today your program does.)
 
-print("=" * 50)                      # strings can be multiplied — instant divider
+print("=" * 50)  # strings can be multiplied — instant divider
 print("1099-R BOX 7 SANITY CHECKER — v0.1")
 print("=" * 50)
 
@@ -1073,8 +1073,8 @@ code. Every module and function gets one. `help(retirement)` will print it.
 """
 
 # --- Constants live at module level, named once ---
-IRS_DEFERRAL_LIMIT = 23_500   # TODO: verify current-year limit
-CATCH_UP_LIMIT = 7_500        # TODO: verify
+IRS_DEFERRAL_LIMIT = 23_500  # TODO: verify current-year limit
+CATCH_UP_LIMIT = 7_500  # TODO: verify
 CATCH_UP_AGE = 50
 
 
@@ -1105,7 +1105,7 @@ def annual_contribution(salary: float, deferral_rate: float, age: int) -> float:
 
     limit = IRS_DEFERRAL_LIMIT
     if age >= CATCH_UP_AGE:
-        limit += CATCH_UP_LIMIT          # += means limit = limit + CATCH_UP_LIMIT
+        limit += CATCH_UP_LIMIT  # += means limit = limit + CATCH_UP_LIMIT
 
     return min(salary * deferral_rate, limit)
     # `return` hands the result back to whoever called the function.
@@ -1207,14 +1207,14 @@ def project_balance(
     list[float] in the hint reads "a list of floats."
     Model (deliberately simple): contribute at year start, then grow.
     """
-    balances: list[float] = []           # start empty
+    balances: list[float] = []  # start empty
     balance = starting_balance
 
     for year in range(1, years + 1):
         # range(1, years+1) counts 1,2,...,years — the end is EXCLUSIVE,
         # which surprises everyone once. Now it's surprised you; done.
         balance = (balance + annual_contribution_amt) * (1 + annual_return)
-        balances.append(balance)         # .append() adds to the end of a list
+        balances.append(balance)  # .append() adds to the end of a list
 
     return balances
 
@@ -1223,7 +1223,7 @@ if __name__ == "__main__":
     projection = project_balance(50_000, 12_000, 0.07, 10)
     # enumerate() gives you position AND value while looping:
     for year_num, bal in enumerate(projection, start=1):
-        print(f"  Year {year_num:>2}: ${bal:,.2f}")   # :>2 right-aligns
+        print(f"  Year {year_num:>2}: ${bal:,.2f}")  # :>2 right-aligns
 ```
 
 - [ ] 40 min — **First tests** ⭐ — the eval-first mindset starts here. Create `tests/test_retirement.py`:
@@ -1265,6 +1265,7 @@ def test_graded_vesting_year_four():
     # Domain truth: 6-yr graded, year 4 → 60%.
     # pytest.approx handles float rounding fuzz — exact == on floats bites.
     import pytest
+
     assert vested_percent(4, "graded") == pytest.approx(0.60)
 ```
 
@@ -1304,7 +1305,7 @@ def test_negative_salary_rejected():
 
 def test_rate_above_one_rejected():
     with pytest.raises(ValueError):
-        annual_contribution(60_000, 1.5, age=40)     # 150% deferral = nonsense
+        annual_contribution(60_000, 1.5, age=40)  # 150% deferral = nonsense
 
 
 def test_unknown_schedule_rejected():
@@ -1393,14 +1394,14 @@ def build_report(participants: list[dict[str, str]]) -> list[str]:
     lines = []
     for p in participants:
         contribution = annual_contribution(
-            salary=float(p["salary"]),           # ← boundary conversions,
+            salary=float(p["salary"]),  # ← boundary conversions,
             deferral_rate=float(p["deferral_pct"]),  #   explicit and visible
             age=int(p["age"]),
         )
         vested = vested_percent(int(p["years_service"]))
         lines.append(
             f"{p['name']:<12} contributes ${contribution:>9,.2f}  |  {vested:>4.0%} vested"
-        )   # :<12 pads name to 12 chars → columns align like a real report
+        )  # :<12 pads name to 12 chars → columns align like a real report
     return lines
 
 
