@@ -145,15 +145,18 @@ AFC:    repo re-bootstrap · EDGAR fair-access rules · dependency spike (🆕)
 ## 🗓 WEEK 11 (Sep 28 – Oct 4)
 
 ### Week 11 goals
-```
-□ policypulse repo: full production scaffold + CI (from memory — third time now)
-□ Synthetic corpus (12+ docs) + chunker with tests
-□ Embeddings + ChromaDB store + retrieval v0 returning cited chunks
-□ ~~IBM GenAI PC enrolled~~ ⏸️ Q2 · 🆕 dbt Advanced continues  □ ~~MCP primer~~ (Q2) · 🆕 contracts on the marts
-□ ~~Pro-month notebooks~~ (Pro month → Q2)   □ Post #11
-□ 🚦 Narrow search: 3+ warm messages · 2 tailored, referral-first applications
-□ 🆕 `policypulse` repo PUBLIC by Sunday (the profile's 404 is gone)
-```
+
+- [ ] policypulse repo: full production scaffold + CI (from memory — third time now)
+- [ ] Synthetic corpus (12+ docs) + chunker with tests
+- [ ] Embeddings + ChromaDB store + retrieval v0 returning cited chunks
+- [ ] ~~IBM GenAI PC enrolled~~ ⏸️ Q2 · 🆕 dbt Advanced continues
+- [ ] ~~Pro-month notebooks~~ (Pro month → Q2)
+- [ ] 🚦 Narrow search: 3+ warm messages · 2 tailored, referral-first applications
+- [ ] 🆕 `policypulse` repo PUBLIC by Sunday (the profile's 404 is gone)
+
+- [ ] Post #11
+
+- [ ] ~~MCP primer~~ (Q2) · 🆕 contracts on the marts
 
 ### 📌 DAY 71 — Monday, September 28
 **Morning:** 🆕 **dbt Advanced Learning Paths — continue** (started Day 67): materializations and the testing chapters. ~~IBM GenAI PC — enroll~~ ⏸️ Q2. Then scope PolicyPulse: `docs/SCOPE_v0.1.md` (S1 boundary above, S1→S3 arc, corpus rule) — 30-min cap.
@@ -338,16 +341,15 @@ Week summary · publish post #11 · 🆕 **make `policypulse` public** (gitleaks
 ## 🗓 WEEK 12 (Oct 5–11) — QUARTER CLOSE
 
 ### Week 12 goals
-```
-□ PolicyPulse: one improve cycle vs the code-graded gate (one variable, before/after)
-□ Track A (internal): ADRs + C4 — BEFORE Day 82 (before-metrics captured Day 68)
-□ Track B (public repo): started — uv migration + clone-slug fix (finishes in Q2)
-□ Automation win #1 documented (**evidence file** keystone) — ⏰ drafted Day 77, finalized Day 82
-□ ~~Pro month cancelled~~ → the Pro month runs in Q2 (C58) · 🆕 DataVault contracts green
-□ 🆕 dbt Advanced ~75% · AB-620 ~50% (extra time only) · Post #12 · MONTH-3 RETRO
-□ 🚦 Job lane: 2+ more applications · 2 warm conversations · tracker at n/25
-□ 🆕 Trading lane: AFC Phase-1 kickoff (Day 83) — CI Tier 0 green, README replaced
-```
+
+- [ ] PolicyPulse: one improve cycle vs the code-graded gate (one variable, before/after)
+- [ ] Track A (internal): ADRs + C4 — BEFORE Day 82 (before-metrics captured Day 68)
+- [ ] Track B (public repo): started — uv migration + clone-slug fix (finishes in Q2)
+- [ ] Automation win #1 documented (**evidence file** keystone) — ⏰ drafted Day 77, finalized Day 82
+- [ ] ~~Pro month cancelled~~ → the Pro month runs in Q2 (C58) · 🆕 DataVault contracts green
+- [ ] 🆕 dbt Advanced ~75% · AB-620 ~50% (extra time only) · Post #12 · MONTH-3 RETRO
+- [ ] 🚦 Job lane: 2+ more applications · 2 warm conversations · tracker at n/25
+- [ ] 🆕 Trading lane: AFC Phase-1 kickoff (Day 83) — CI Tier 0 green, README replaced
 
 ### 📌 DAY 78 — Monday, October 5
 **Morning:** 🆕 **AFC build-sheet read** — §0–§7 and §12–§15 of `ATTENTION_FLOW_CATALYST_SCOPE_v9_1_STAGE1.md`: the parts Day 83 executes (repo layout, CI tiers, the Week-1 gate). ~~IBM PC~~. **Evening:** 70 min — gate-driven improve cycle: the worse of the two code-graded metrics → one change (chunk size? k?) → re-run → eval-log before/after. One variable at a time — otherwise you learn nothing from the delta. · 30 min 🆕 dbt Advanced (~~AB-620~~ → extra time) · journal + commit
@@ -488,17 +490,24 @@ Treat this day as a boundary, not a workday. Before you log off for the last tim
 ---
 
 ## 📊 2-WEEK SUCCESS METRICS
-```
-□ PolicyPulse S1 v0: corpus→chunk→embed→     □ Retro-migration: uv done · structlog
-  retrieve→cited answers, CI green             PF + redaction done · C4-L1 exists
-□ 🆕 code-graded gate live + improve cycle  □ Automation win #1 documented
-□ Unanswerable-question hard gate at 100%    □ ~~Pro month cancelled~~ (Q2) · 🆕 contracts green
-□ ~~MCP primer cert~~ (Q2) · 🆕 take-home rep □ AB-620 ~50% (extra time) · CS50P Wk 5
-□ 🆕 dbt Advanced ~75% (IBM PC ⏸️ Q2)        □ Posts #11–12 · meetup ✓
-□ Golden policy set: 20+ cases w/ rationale  □ MONTH-3 RETRO written & shared
-□ 🚦 4+ tailored applications · tracker live  □ 🆕 AFC kickoff: CI Tier 0 green,
-□ 🆕 policypulse public · no dead links         README replaced
-```
+
+- [ ] PolicyPulse S1 v0: corpus→chunk→embed→retrieve→cited answers, CI green
+- [ ] 🆕 code-graded gate live + improve cycle
+- [ ] Unanswerable-question hard gate at 100%
+- [ ] ~~MCP primer cert~~ (Q2) · 🆕 take-home rep
+- [ ] 🆕 dbt Advanced ~75% (IBM PC ⏸️ Q2)
+- [ ] Golden policy set: 20+ cases w/ rationale
+- [ ] 🚦 4+ tailored applications · tracker live
+- [ ] 🆕 policypulse public · no dead links
+
+- [ ] Retro-migration: uv done · structlog PF + redaction done · C4-L1 exists
+- [ ] Automation win #1 documented
+- [ ] ~~Pro month cancelled~~ (Q2) · 🆕 contracts green
+- [ ] AB-620 ~50% (extra time) · CS50P Wk 5
+- [ ] Posts #11–12 · meetup ✓
+- [ ] MONTH-3 RETRO written & shared
+- [ ] 🆕 AFC kickoff: CI Tier 0 green, README replaced
+
 **Passing bar: 80%.** Non-negotiables: PolicyPulse's code-graded gate, the automation-win doc, the retro itself, and 🆕 the Day-82 exit checklist.
 
 ---
