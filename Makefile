@@ -7,7 +7,8 @@
 # in the failure message of the claude-agents-check hook — this file is what
 # makes that instruction real.
 
-PYTHON ?= python3
+PYTHON ?= uv run python
+PRE_COMMIT ?= uv run pre-commit
 
 SPELLER := courses/cs50_harvard/code/05_data_structures/speller/py_src
 CODE_PATHS := scripts llm-api-smoke-test $(SPELLER)
@@ -29,13 +30,13 @@ sync:  ## Install every workspace member and every dependency group
 # --- git hooks ---------------------------------------------------------------
 
 hooks:  ## Install pre-commit into .git/hooks (pre-commit + commit-msg stages)
-	pre-commit install --install-hooks
+	$(PRE_COMMIT) install --install-hooks
 
 hooks-run:  ## Run every hook against every file
-	pre-commit run --all-files
+	$(PRE_COMMIT) run --all-files
 
 hooks-update:  ## Refresh hook pins and freeze them to SHAs
-	pre-commit autoupdate --freeze
+	$(PRE_COMMIT) autoupdate --freeze
 
 # --- Claude Code harness -----------------------------------------------------
 
@@ -46,13 +47,13 @@ claude-agents-check:  ## Fail if any generated agent file is stale
 	$(PYTHON) scripts/build_claude_agents.py --check
 
 claude-rules:  ## Rebuild .claude/rules/*.md from the canonical .cursor/rules/*.mdc bodies.
-	python3 scripts/build_claude_rules.py
+	$(PYTHON) scripts/build_claude_rules.py
 
 claude-rules-check:  ## Fail if a generated rule file is out of date or orphaned (CI / pre-commit).
-	python3 scripts/build_claude_rules.py --check
+	$(PYTHON) scripts/build_claude_rules.py --check
 
 claude-rules-list:  ## Show which .mdc maps to which rule, and whether it is path-scoped.
-	python3 scripts/build_claude_rules.py --list
+	$(PYTHON) scripts/build_claude_rules.py --list
 
 claude-gen: claude-agents claude-rules  ## Regenerate both harness artifacts in one step.
 
