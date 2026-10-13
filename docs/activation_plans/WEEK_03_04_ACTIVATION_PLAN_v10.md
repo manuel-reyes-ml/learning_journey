@@ -97,14 +97,16 @@ Model:  Kimball — business process · grain · facts vs dimensions · CTE-firs
 ## 🗓 WEEK 3 (Aug 3–9)
 
 ### Week 3 goals
-```
-□ P4E Ch.6–8 (strings, files, lists) complete   □ Mode SQL joins→GROUP BY done
-□ AI Python videos: Modules 1–2 (free tier;     □ Synthetic 2-system dataset built
-  exercises replicated in own notebook)
-□ Dataset loaded into SQLite + recon queries    □ CS50x Week 4 lecture
-□ LinkedIn post #3 · meetup RSVP for the month
-□ 🆕 Job lane: target list v0 — 15 companies, three tiers (Sunday)
-```
+
+- [ ] P4E Ch.6–8 (strings, files, lists) complete
+- [ ] AI Python videos: Modules 1–2 (free tier; exercises replicated in own notebook)
+- [ ] Dataset loaded into SQLite + recon queries
+- [ ] LinkedIn post #3 · meetup RSVP for the month
+- [ ] 🆕 Job lane: target list v0 — 15 companies, three tiers (Sunday)
+
+- [ ] Mode SQL joins→GROUP BY done
+- [ ] Synthetic 2-system dataset built
+- [ ] CS50x Week 4 lecture
 
 ---
 
@@ -568,19 +570,21 @@ Run: `uv run python -m learning_journey.projects.recon_toy` — then open the re
 ## 🗓 WEEK 4 (Aug 10–16)
 
 ### Week 4 goals
-```
-□ P4E Ch.9–10 → Course 2 DONE          □ AI Python videos COMPLETE + exercises
-                                          replicated locally (Accomplishment
-                                          deferred to Sprint-1 — Correction 17)
-□ Docker for Beginners ~50%             □ ~~AI-901 Learn path started~~ (Q2) ·
-                                          🆕 Kimball Ch. 1–2 + Ch. 3 started
-□ ~~Reimbursement pre-approval submitted~~ ❌ VOID (C22/32/37)  □ recon-toy v0.2 dict matcher + ADR 0001
-□ RPF written-determination question    □ ADR pack read (Core Course #17,
-  sent (Correction 15 open item)          ADR half) · Nygard template chosen
-□ Greenville Python meetup attended     □ structlog first touch in recon-toy
-□ LinkedIn post #4                     □ 🆕 Job lane: 1 informational-conversation
-                                          request sent (Sunday)
-```
+
+- [ ] P4E Ch.9–10 → Course 2 DONE
+- [ ] Docker for Beginners ~50%
+- [ ] ~~Reimbursement pre-approval submitted~~ ❌ VOID (C22/32/37)
+- [ ] RPF written-determination question sent (Correction 15 open item)
+- [ ] Greenville Python meetup attended
+- [ ] LinkedIn post #4
+
+- [ ] AI Python videos COMPLETE + exercises replicated locally (Accomplishment deferred to Sprint-1 — Correction 17)
+- [ ] ~~AI-901 Learn path started~~ (Q2) · 🆕 Kimball Ch. 1–2 + Ch. 3 started
+- [ ] ADR pack read (Core Course #17, ADR half) · Nygard template chosen
+- [ ] structlog first touch in recon-toy
+- [ ] 🆕 Job lane: 1 informational-conversation request sent (Sunday)
+
+- [ ] recon-toy v0.2 dict matcher + ADR 0001
 
 ---
 
@@ -914,20 +918,27 @@ Also: integrate the Day-24 matcher's mismatch bucket into the exceptions report;
 ---
 
 ## 📊 2-WEEK SUCCESS METRICS
-```
-□ P4E Course 2 complete                □ ~~AI-901 started~~ (Q2) · 🆕 Kimball Ch. 1–2 read
-□ AI Python videos done + replicated   □ recon-toy v0.3: pipeline + CLI + 15+ tests
-□ Mode SQL joins/aggregation done      □ ADR 0001 written (Nygard) + ADR pack read
-□ Docker ~50% + containers run local   □ SQL ↔ Python cross-check test green
-□ CS50x Week 4 in progress             □ structlog events replace pipeline prints
-□ 24+ commits · 11+ journal entries    □ RPF written-determination question sent
-□ rules file updated to Phase 2        □ agent diffs reviewed line-by-line (0
-                                          unexplained accepted lines)
-□ recon-toy README uses ①Production/   □ 1 meetup attended (or none scheduled)
-  ③Architecture order (Cost omitted)   □ Posts #3 and #4 published · no DL.AI
-                                          Pro purchased
-□ 🆕 Job lane: list v0 (15) · 1 conversation requested
-```
+
+- [ ] P4E Course 2 complete
+- [ ] AI Python videos done + replicated
+- [ ] Mode SQL joins/aggregation done
+- [ ] Docker ~50% + containers run local
+- [ ] CS50x Week 4 in progress
+- [ ] 24+ commits · 11+ journal entries
+- [ ] rules file updated to Phase 2
+- [ ] recon-toy README uses ①Production/③Architecture order (Cost omitted)
+- [ ] 🆕 Job lane: list v0 (15) · 1 conversation requested
+
+- [ ] ~~AI-901 started~~ (Q2) · 🆕 Kimball Ch. 1–2 read
+- [ ] recon-toy v0.3: pipeline + CLI + 15+ tests
+- [ ] ADR 0001 written (Nygard) + ADR pack read
+- [ ] SQL ↔ Python cross-check test green
+- [ ] structlog events replace pipeline prints
+- [ ] RPF written-determination question sent
+- [ ] agent diffs reviewed line-by-line (0 unexplained accepted lines)
+- [ ] 1 meetup attended (or none scheduled)
+- [ ] Posts #3 and #4 published · no DL.AI Pro purchased
+
 **Passing bar: 80%.** Non-negotiables: the recon-toy thread (feeds DataVault S1) and ~~the AI-901 kickoff~~ → 🆕 **Kimball Ch. 1–2** (v3.1 — the modeling vocabulary DataVault is built in). 🆕 v3.0 adds a light third: the **target list v0** (the Job lane's foundation).
 
 ---
