@@ -10,6 +10,10 @@ How pytest works: it finds files named test_*.py, runs functions named
 test_*, and `assert <claim>` passes silently or fails loudly.
 """
 
+from __future__ import annotations
+
+import pytest
+
 from learning_journey.retirement import annual_contribution, vested_percent
 # ^ imports work because of the src/ layout + pyproject.toml. This line IS
 # the payoff of Day-0 structure: your code is a real, importable package.
@@ -36,3 +40,20 @@ def test_graded_vesting_year_four() -> None:
     import pytest
 
     assert vested_percent(4, "graded") == pytest.approx(0.60)
+
+
+def test_negative_salary_rejected() -> None:
+    # Testing that bad input FAILS CORRECTLY is as important as testing
+    # that good input succeeds. pytest.raises asserts "this MUST raise".
+    with pytest.raises(ValueError):
+        annual_contribution(-50_000, 0.10, age=40)
+
+
+def test_rate_above_one_rejected() -> None:
+    with pytest.raises(ValueError):
+        annual_contribution(60_000, 1.5, age=40)  # 150% deferral = nonsense
+
+
+def test_unknown_schedule_rejected() -> None:
+    with pytest.raises(ValueError):
+        vested_percent(4, "immediate-maybe")
