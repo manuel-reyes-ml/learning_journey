@@ -45,6 +45,7 @@ dev = [
 members = [
     "llm-api-smoke-test",
     "courses/cs50_harvard/code/05_data_structures/speller/py_src",
+    "foundations",
 ]
 
 # ---------------------------------------------------------------------------
