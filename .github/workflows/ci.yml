@@ -89,3 +89,6 @@ jobs:
 
       - name: Tests — cs50-speller
         run: uv run pytest courses/cs50_harvard/code/05_data_structures/speller/py_src/tests
+
+      - name: Tests - foundations(activation plan code)
+        run: uv run pytest foundations/tests
