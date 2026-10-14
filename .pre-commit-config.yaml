@@ -61,9 +61,9 @@ repos:
     hooks:
       - id: ruff-check
         args: [--fix]
-        files: ^(scripts/|llm-api-smoke-test/|courses/cs50_harvard/code/05_data_structures/speller/py_src/)
+        files: ^(foundations/|scripts/|llm-api-smoke-test/|courses/cs50_harvard/code/05_data_structures/speller/py_src/)
       - id: ruff-format
-        files: ^(scripts/|llm-api-smoke-test/|courses/cs50_harvard/code/05_data_structures/speller/py_src/)
+        files: ^(foundations/|scripts/|llm-api-smoke-test/|courses/cs50_harvard/code/05_data_structures/speller/py_src/)
 
   # ---------------------------------------------------------------------------
   # Tier A — lockfile.
