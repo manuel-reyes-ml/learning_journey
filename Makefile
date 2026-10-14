@@ -11,7 +11,7 @@ PYTHON ?= uv run python
 PRE_COMMIT ?= uv run pre-commit
 
 SPELLER := courses/cs50_harvard/code/05_data_structures/speller/py_src
-CODE_PATHS := scripts llm-api-smoke-test $(SPELLER)
+CODE_PATHS := src scripts llm-api-smoke-test $(SPELLER)
 
 .DEFAULT_GOAL := help
 
