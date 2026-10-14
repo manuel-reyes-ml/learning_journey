@@ -1102,7 +1102,7 @@ SELECT *
 
 **Evening:**
 
-- [ ] 60 min — Loops on your domain. Add to `retirement.py`:
+- [x] 60 min — Loops on your domain. Add to `retirement.py`:
 
 ```python
 def project_balance(
@@ -1136,7 +1136,7 @@ if __name__ == "__main__":
         print(f"  Year {year_num:>2}: ${bal:,.2f}")  # :>2 right-aligns
 ```
 
-- [ ] 40 min — **First tests** ⭐ — the eval-first mindset starts here. Create `tests/test_retirement.py`:
+- [x] 40 min — **First tests** ⭐ — the eval-first mindset starts here. Create `tests/test_retirement.py`:
 
 ```python
 """First pytest suite.
@@ -1187,7 +1187,7 @@ uv run pytest -v        # -v (verbose) lists each test by name
 # run again, READ the failure output, fix it back. Know both colors.
 ```
 
-- [ ] 20 min — Journal + commit (`test: first pytest suite for retirement module`)
+- [x] 20 min — Journal + commit (`test: first pytest suite for retirement module`)
 
 ---
 
