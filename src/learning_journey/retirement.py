@@ -72,6 +72,30 @@ def vested_percent(years_of_service: int, schedule: str = "graded") -> float:
     raise ValueError(f"unknown schedule: {schedule!r}")
 
 
+def project_balance(
+    starting_balance: float,
+    annual_contribution_amt: float,
+    annual_return: float,
+    years: int,
+) -> list[float]:
+    """Project year-end balances for `years` years.
+
+    Returns a LIST — Python's ordered collection type: [year1, year2, ...].
+    list[float] in the hint reads "a list of floats."
+    Model (deliberately simple): contribute at year start, then grow.
+    """
+    balances: list[float] = []  # start empty
+    balance = starting_balance
+
+    for _ in range(1, years + 1):
+        # range(1, years+1) counts 1,2,...,years — the end is EXCLUSIVE,
+        # which surprises everyone once. Now it's surprised you; done.
+        balance = (balance + annual_contribution_amt) * (1 + annual_return)
+        balances.append(balance)  # .append() adds to the end of a list
+
+    return balances
+
+
 # --- The main guard: makes the file BOTH importable and runnable ---
 if __name__ == "__main__":
     # This block runs ONLY when you execute the file directly
@@ -80,3 +104,8 @@ if __name__ == "__main__":
     print("Demo:")
     print(f"     $120K @ 25%, age 52 → ${annual_contribution(120_000, 0.25, 52):,.2f}")
     print(f"     4 yrs graded → {vested_percent(4):.0%} vested")
+
+    projection = project_balance(50_000, 12_000, 0.07, 10)
+    # enumerate() gives you position AND value while looping:
+    for year_num, bal in enumerate(projection, start=1):
+        print(f"  Year {year_num:>2}: ${bal:,.2f}")  # :>2 right-aligns
