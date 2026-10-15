@@ -1,9 +1,9 @@
 # 🚀 WEEKS 5–6 MASTER ACTIVATION PLAN (v10.0)
 ## The SDK Era Opens | August 17–30, 2026
 
-**Document Version:** 3.2 — 🎯 **READINESS GATE** (9 Oct 2026, roadmap C59) on the 3.1 ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, C58) and the 3.0 job-first re-cut · fresh 12-week template from Mon 20 Jul 2026
+**Document Version:** 3.3 — 📈 **TRADING LANE EXPANSION** (13 Oct 2026, roadmap C63–C64) on the 3.2 🎯 **READINESS GATE** (9 Oct 2026, roadmap C59) on the 3.1 ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, C58) and the 3.0 job-first re-cut · fresh 12-week template from Mon 20 Jul 2026
 **Covers:** Monday, August 17 – Sunday, August 30, 2026 (Stage 1 · Month 2 · Weeks 5–6)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–59** (C58 applied 8 Oct 2026 · C59 applied 9 Oct 2026) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–64** (C58 applied 8 Oct 2026 · C59 applied 9 Oct 2026 · 📈 C63–C64 applied 13 Oct 2026; C60–C62 do not touch these weeks) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
 **Prerequisite:** Weeks 3–4 metrics ≥80% (non-negotiables: recon-toy shipped + ~~AI-901 kickoff~~ 🆕 Kimball Ch. 1–2)
 **Weekly Hours:** 25 (same block schedule)
 
@@ -16,14 +16,14 @@
 ---
 
 ## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
-Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–59. Full rationale: the v3.0, v3.1 and v3.2 blocks in Weeks 1–2. **This is the fortnight dbt arrives.**
+Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–64. Full rationale: the v3.0, v3.1 and v3.2 blocks in Weeks 1–2. **This is the fortnight dbt arrives.**
 
 | Lane | This fortnight in v3.0 |
 |---|---|
 | L1 Foundations | 🆕 **dbt Fundamentals** (dbt Labs, free, ~5 hrs, certificate — roadmap S2 row 5️⃣ taken early under C54 §5) in the slots *AI Prompting for Everyone* held (→ flex/Q2). Mode SQL Advanced finishes — dbt is that SQL, modular and tested · ⚖️ **v3.1:** **Kimball Ch. 3–4** + **AE interview reps #0** in the freed AI-901 slots; dbt Fundamentals starts Friday |
 | L2 AE/DE flagship | recon-toy's Dockerfile (unchanged) |
 | L3 Applied AI | Claude API course target **~35%** (slots went to dbt and Kimball); mini-project #3 unchanged · ~~AI-901 modules 3–5, practice test #1, booking~~ → ⏭️ **Q2, Weeks 13–14** (C58) |
-| L4 Trading 🆕 | **Day 41 — the trading lane opens:** a market-data dbt rehearsal that proves the knowledge-time rule in a test |
+| L4 Trading 🆕 | **Day 41 — the trading lane opens:** a market-data dbt rehearsal that proves the knowledge-time rule in a test · 📈 **v3.3:** Day 41 fixed in place (two clocks, `asof left join`, boundary events) + twins on Day 32 (bars + the generator, pulled forward) and Day 40 (volume dry-up islands) |
 | L5 Job search | Day 35: list 15 → 20 + résumé v0 skeleton · Day 42: tracker update |
 | Retired | The Day-41 Python 3.14 retrofit — the template starts on 3.14; its block stays as collapsed reference |
 
@@ -38,7 +38,7 @@ Standing rulings from Corrections 21–43 that land in this fortnight, in templa
 3. ~~**✅ Python 3.14 retrofit is APPROVED and scheduled Day 41 (Sat 29 Aug)** — both `learning-journey` and `recon-toy`, before DataVault scaffolds on 3.14 on Day 43.~~ → ⏭️ **v3.0: not needed** — the template starts every repo on 3.14 at setup. Day 41's 30-minute slot now finishes dbt Fundamentals; the command block stays at Day 41, collapsed, as reference.
 4. **🪝 Add pre-commit to `recon-toy` before the Day 34 Docker block** — ~20 minutes, and it belongs in the same session as the Dockerfile because both are "the build is reproducible" claims. Tier A pinned set: `pre-commit-hooks` basics + `detect-private-key` · `ruff-check --fix` **ordered before** `ruff-format` (the linter's fixes can emit changes that then need reformatting; the hook id is `ruff-check`, not the retired bare `ruff`) · `uv-lock` (this is what turns your Correction 13 reproducibility claim from an assertion into an enforced invariant) · `gitleaks`. **The set must be a strict subset of CI** — never a local check that CI does not also run, because hooks and CI silently disagreeing is exactly the defect an interviewer finds.
 
-**Not urgent this fortnight, but now standing policy:** Polars is the default dataframe engine (C35) · Cursor moves to Hobby, OpenCode is the sole harness (C39/40) · the reading layer is live and you are in S1, so *Robust Python* and *AI Engineering* are buy-now (C34) · PostCheck is Flagship #4 (C33).
+**Not urgent this fortnight, but now standing policy:** Polars is the default dataframe engine (C35) · Cursor moves to Hobby, ~~OpenCode is the sole harness (C39/40)~~ → 📈 v3.3 text fix: **dual harness** — OpenCode (in Cursor) writes, Claude Code (in VS Code) reviews read-only (C42 §1 superseded C39 §9) · the reading layer is live and you are in S1, so *Robust Python* and *AI Engineering* are buy-now (C34) · PostCheck is Flagship #4 (C33).
 
 ---
 
@@ -108,15 +108,15 @@ import anthropic
 client = anthropic.Anthropic()
 
 response = client.messages.create(
-    model="claude-sonnet-4-6",     # model id — check docs for current names
-    max_tokens=500,                # HARD CAP on response length. Always set it:
-                                   # it is your cost + runaway guard.
-    system=(                       # the SYSTEM prompt sets persistent behavior —
+    model="claude-sonnet-4-6",  # model id — check docs for current names
+    max_tokens=500,  # HARD CAP on response length. Always set it:
+    # it is your cost + runaway guard.
+    system=(  # the SYSTEM prompt sets persistent behavior —
         "You are a retirement-plan communications assistant. "
         "Explain concepts for plan participants: plain English, no jargon, "
         "4 sentences maximum."
     ),
-    messages=[                     # the conversation: a list of role+content turns
+    messages=[  # the conversation: a list of role+content turns
         {
             "role": "user",
             "content": "What does Box 7 code G on my 1099-R mean?",
@@ -191,12 +191,12 @@ class Settings(BaseSettings):
 
     model_config = SettingsConfigDict(env_prefix="", extra="forbid")
 
-    anthropic_api_key: SecretStr          # ← no default = REQUIRED
+    anthropic_api_key: SecretStr  # ← no default = REQUIRED
     claude_model: str = "claude-sonnet-4-6"
     default_max_tokens: int = 500
 
 
-settings = Settings()                      # import this everywhere; construct once
+settings = Settings()  # import this everywhere; construct once
 
 # Usage in a client module:
 #   from learning_journey.claude.settings import settings
@@ -212,6 +212,99 @@ Refactor Days 29–30 scripts to use it. Then prove the mask: `print(settings)` 
 **Evening:**
 - [ ] 60 min — Streaming + graceful errors: `day32_streaming.py` — stream a response chunk-by-chunk (`client.messages.stream(...)`), and wrap a call in try/except for `anthropic.APIStatusError` / `anthropic.APIConnectionError`, logging the failure with structlog instead of crashing. (Note the roadmap's full retry standard is `stamina` — it arrives with the flagship builds; today is just "never let a network blip kill a pipeline.")
 - [ ] 40 min — Mode SQL: LAG/LEAD + month-over-month deltas on your synthetic data
+- [ ] 📈 **Trading twin #6 (+40 min · v3.3, C64)** — the same window functions on market bars, and Day 41's generator written early so Saturday starts ahead. *(Day full? → `notes/trading/twin-queue.md`; Day 41 then writes the generator as originally planned.)*
+  1. `uv add duckdb`, then type `scripts/gen_market_seed.py` — the bars half of the generator (Day 41 adds the events):
+```python
+"""Seeded synthetic market data for practice — invented tickers, invented prices.
+
+Nothing here is vendor data, so a public repo raises no licence question.
+Run:  uv run python scripts/gen_market_seed.py --out data/market_seed
+"""
+
+import argparse
+import csv
+import random
+from datetime import date, timedelta
+from pathlib import Path
+
+SEED = 41  # same seed -> same files, every run
+TICKERS = ["ALFA", "BRVO", "CHRL", "DLTA", "ECHO"]
+N_SESSIONS = 120
+FIRST_DAY = date(2026, 1, 5)  # a Monday
+
+
+def trading_days(first: date, n: int) -> list[date]:
+    """Weekdays only. Holidays are ignored: a documented simplification."""
+    days, d = [], first
+    while len(days) < n:
+        if d.weekday() < 5:  # 0=Mon ... 4=Fri
+            days.append(d)
+        d += timedelta(days=1)
+    return days
+
+
+def make_bars(rng: random.Random, days: list[date]) -> list[dict]:
+    rows = []
+    for ticker in TICKERS:
+        close = rng.uniform(8, 60)
+        for i, d in enumerate(days):
+            open_ = round(close * (1 + rng.gauss(0, 0.01)), 2)  # overnight gap
+            close = round(open_ * (1 + rng.gauss(0, 0.02)), 2)
+            high = round(max(open_, close) * (1 + abs(rng.gauss(0, 0.01))), 2)
+            low = round(min(open_, close) * (1 - abs(rng.gauss(0, 0.01))), 2)
+            volume = int(rng.lognormvariate(13, 0.4))
+            if ticker == "DLTA" and 60 <= i < 65:  # PLANTED: a 5-session volume dry-up
+                volume = int(volume * 0.3)
+            rows.append(
+                {
+                    "ticker": ticker,
+                    "session_date": d.isoformat(),
+                    "open": open_,
+                    "high": high,
+                    "low": low,
+                    "close": close,
+                    "volume": volume,
+                }
+            )
+    return rows
+
+
+def write_csv(path: Path, rows: list[dict]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", newline="") as f:
+        writer = csv.DictWriter(f, fieldnames=list(rows[0]))
+        writer.writeheader()
+        writer.writerows(rows)
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--out", type=Path, default=Path("data/market_seed"))
+    args = parser.parse_args()
+    rng = random.Random(SEED)  # never the global random: reproducibility
+    days = trading_days(FIRST_DAY, N_SESSIONS)
+    write_csv(args.out / "bars_daily.csv", make_bars(rng, days))
+
+
+if __name__ == "__main__":
+    main()
+```
+  2. `sql/twins/day32_bar_windows.sql` — run it with `uv run python -c "import duckdb, pathlib; print(duckdb.sql(pathlib.Path('sql/twins/day32_bar_windows.sql').read_text()))"`:
+```sql
+-- Daily return, overnight gap, next open — and the RVOL leak, side by side
+select ticker, session_date, close,
+       close / lag(close) over w - 1  as daily_return,
+       open  / lag(close) over w - 1  as overnight_gap,   -- today's open vs yesterday's close
+       lead(open) over w              as next_open,       -- fine in a LABEL, a leak in a FEATURE
+       volume / avg(volume) over (partition by ticker order by session_date
+                rows between 20 preceding and 1 preceding) as rvol_clean,
+       volume / avg(volume) over (partition by ticker order by session_date
+                rows between 19 preceding and current row) as rvol_leaky
+from read_csv('data/market_seed/bars_daily.csv')
+window w as (partition by ticker order by session_date)
+order by ticker, session_date;
+```
+  > Same `LAG` as the month-over-month drill, different grain: one row per security per **session**, not per month. `rvol_leaky` puts today's volume inside its own baseline. On quiet days the two columns barely differ; on the highest-volume day of each ticker the leaky one reads lower, because the spike dilutes itself — and spikes are exactly what a trigger is built to catch. Sort by `rvol_clean desc` to see it, then read Day 41's step 3 again. Commit the CSVs? **No** — `data/market_seed/` goes in `.gitignore`; the seeded generator *is* the data.
 - [ ] 20 min — Journal + commit
 
 ### 📌 DAY 33 — Friday, August 21
@@ -320,11 +413,11 @@ class Box7Explanation(BaseModel):
     field, out-of-range value. The model doesn't get to be creative here.
     """
 
-    code: str = Field(pattern=r"^[1-9A-Z]$")        # exactly one code char
+    code: str = Field(pattern=r"^[1-9A-Z]$")  # exactly one code char
     meaning: str = Field(min_length=10, max_length=300)
     taxable_generally: bool
     participant_action_needed: bool
-    confidence: float = Field(ge=0.0, le=1.0)        # ge/le = bounds
+    confidence: float = Field(ge=0.0, le=1.0)  # ge/le = bounds
 
 
 SYSTEM = """You classify IRS 1099-R Box 7 codes. Respond with ONLY a JSON
@@ -334,9 +427,7 @@ object matching this schema, no prose, no markdown fences:
 
 
 def explain_box7(code: str) -> Box7Explanation:
-    client = anthropic.Anthropic(
-        api_key=settings.anthropic_api_key.get_secret_value()
-    )
+    client = anthropic.Anthropic(api_key=settings.anthropic_api_key.get_secret_value())
     response = client.messages.create(
         model=settings.claude_model,
         max_tokens=settings.default_max_tokens,
@@ -395,8 +486,10 @@ def _fake_response(payload: dict) -> MagicMock:
 
 
 VALID = {
-    "code": "G", "meaning": "Direct rollover to another qualified plan.",
-    "taxable_generally": False, "participant_action_needed": False,
+    "code": "G",
+    "meaning": "Direct rollover to another qualified plan.",
+    "taxable_generally": False,
+    "participant_action_needed": False,
     "confidence": 0.97,
 }
 
@@ -412,15 +505,16 @@ def test_valid_payload_parses(mock_cls):
 
 @patch("learning_journey.claude.day36_structured.anthropic.Anthropic")
 def test_invalid_confidence_rejected(mock_cls):
-    bad = VALID | {"confidence": 1.7}          # dict merge; 1.7 breaks le=1.0
+    bad = VALID | {"confidence": 1.7}  # dict merge; 1.7 breaks le=1.0
     mock_cls.return_value.messages.create.return_value = _fake_response(bad)
     with pytest.raises(ValueError):
-        explain_box7("G")                       # boundary must refuse it
+        explain_box7("G")  # boundary must refuse it
 
 
 @patch("learning_journey.claude.day36_structured.anthropic.Anthropic")
 def test_non_json_rejected(mock_cls):
-    fake = MagicMock(); fake.content = [MagicMock(text="Sure! Here's the JSON:")]
+    fake = MagicMock()
+    fake.content = [MagicMock(text="Sure! Here's the JSON:")]
     mock_cls.return_value.messages.create.return_value = fake
     with pytest.raises(ValueError):
         explain_box7("G")
@@ -436,6 +530,35 @@ def test_non_json_rejected(mock_cls):
 ### 📌 DAY 40 — Friday, August 28
 **Morning:** ~~AI-901 practice test #1~~ → ⏭️ Q2 (C58). 🆕 **dbt Fundamentals — documentation + deployment sections → finish.**
 **Evening:** 60 min 🆕 **Kimball Ch. 4, part 2** — periodic and accumulating snapshots; add to `docs/modeling-notes.md` which DataVault output is a **periodic snapshot** (the weekly corrections mart, Day 55) and which future fact is **accumulating** (a distribution's lifecycle: received → IGO/NIGO → processed → 1099 issued — PostCheck's core) · 40 min 🆕 **AE interview reps #0** on `recon.db` — the three screen staples: top-N per group, dedupe with `ROW_NUMBER`, gaps-and-islands · 20 min journal + commit ~~· 60 min AI-901 drill~~
+
+📈 **Trading twin #7 (+15 min · v3.3, C64)** — after the `recon.db` reps (top-N and dedupe stay there), one more gaps-and-islands on Day 32's bars: **the longest run of sessions with volume under 50% of its trailing 20-session average** — the volume dry-up AFC's T4e and Crucible's SW-B both read. *(Needs twin #6's generator; if #6 is queued, queue this too.)*
+```sql
+with flagged as (
+    select ticker, session_date,
+           row_number() over (partition by ticker order by session_date) as session_n,
+           volume < 0.5 * avg(volume) over (partition by ticker order by session_date
+                      rows between 20 preceding and 1 preceding)     as is_dry
+    from read_csv('data/market_seed/bars_daily.csv')
+),
+dry as (
+    -- consecutive dry sessions share one value of (session_n − row number among dry rows)
+    select ticker, session_date,
+           session_n - row_number() over (partition by ticker order by session_date) as island
+    from flagged
+    where is_dry
+),
+runs as (
+    select ticker, island, min(session_date) as run_start, max(session_date) as run_end,
+           count(*) as dry_sessions
+    from dry
+    group by ticker, island
+)
+select ticker, run_start, run_end, dry_sessions
+from runs
+qualify row_number() over (partition by ticker order by dry_sessions desc, run_start) = 1
+order by dry_sessions desc;
+```
+Expected: DLTA's planted 5-session run tops the list. Count sessions, not calendar days — `session_n` is why a weekend doesn't break a run. Then spot the trap: a 2-session ALFA run in early January, built on a baseline of one or two sessions. AFC requires a full 20-session window, so add `count(volume) over (… same frame …) = 20` to the dry flag and watch it disappear.
 
 ### 📌 DAY 41 — Saturday, August 29 (5.5h)
 **Morning (5:00–8:30):**
@@ -481,7 +604,7 @@ git commit -m "build: raise python floor 3.12 -> 3.14 (roadmap correction 28)"
 
 </details>
 
-**Evening (8:00–10:00):** 🆕 **TRADING LANE OPENS — market-data dbt rehearsal** ⭐ (105 min) · 15 min journal + commit. ~~60 min Claude API course · 45 min draft post #6~~ → post #6 moves to Sunday.
+**Evening (8:00–10:00):** 🆕 **TRADING LANE OPENS — market-data dbt rehearsal** ⭐ (105 min · 📈 **+15 min in v3.3** — the evening runs to ~10:15, or test 4 below moves to the twin queue) · 15 min journal + commit. ~~60 min Claude API course · 45 min draft post #6~~ → post #6 moves to Sunday.
 
 > 🆕 **Why this rehearsal, and why trading data.** recon-toy rehearsed DataVault's *Python* shape; this rehearses its **dbt** shape before Day 43 — on the kind of data your trading projects run on. It also proves, in a test, the rule AFC's backtest lives or dies by (C46 §3): **an event may drive an entry only if it was known before that session's open.** The data is **synthetic** (a seeded generator), so a public repo raises no market-data licensing question. It lives in `learning_journey` (practice), not in AFC — AFC's Stage-1 sheet keeps dbt out of S1.
 
@@ -500,24 +623,84 @@ market_rehearsal:
       path: rehearsal.duckdb
 ```
 **Build (75 min):**
-1. `scripts/gen_market_seed.py` — seeded generator → `seeds/bars_daily.csv` (5 invented tickers × 120 sessions: ticker, session_date, open, high, low, close, volume) and `seeds/insider_events.csv` (ticker, event_id, txn_code `P`, `filed_at` timestamp — plant some filings before the open, some during the session, some after the close). Times are naive America/New_York — note it as a deliberate simplification.
-2. Staging: `stg_bars.sql`, `stg_insider_events.sql` (cast, rename, one row per grain), and `stg_session_opens.sql` (each session's 09:30 open as a timestamp).
+1. `scripts/gen_market_seed.py` — seeded generator → `seeds/bars_daily.csv` (5 invented tickers × 120 sessions: ticker, session_date, open, high, low, close, volume) and `seeds/insider_events.csv` (ticker, event_id, txn_code `P`, ~~`filed_at` timestamp~~ 📈 **two clocks**: `filing_date` and `accepted_at` — plant some filings before the open, some during the session, some after the close). Times are naive America/New_York — note it as a deliberate simplification. *(Twin #6 already wrote the bars half? Add only the events below.)*
+
+   > 📈 **v3.3 fix (C64) — why two clocks.** AFC's knowledge time is the EDGAR **acceptance datetime**, not the filing date (AFC v9.1 §4.2, §5.3). They differ in exactly the case that leaks: Forms 3, 4 and 5 accepted between 5:30 and 10:00 p.m. ET keep **that day's** filing date, so a date-only join lets a filing accepted at 18:00 "trade" at that morning's open. The SEC's own quarterly *Insider Transactions Data Sets* carry `FILING_DATE` only — no acceptance time — so this is the trap real data sets for you.
+```python
+from datetime import datetime, time  # add to the imports
+
+
+def make_events(rng: random.Random, days: list[date]) -> tuple[list[dict], dict]:
+    """Form 4 purchases (code P). Two clocks per filing: filing_date and accepted_at."""
+    events = []
+
+    def add(event_id, ticker, d, t, boundary_case=""):
+        # Forms 3/4/5 accepted up to 10 p.m. ET keep that day's filing date;
+        # most other EDGAR forms accepted after 5:30 p.m. get the NEXT business day.
+        events.append(
+            {
+                "event_id": event_id,
+                "ticker": ticker,
+                "txn_code": "P",
+                "filing_date": d.isoformat(),
+                "accepted_at": datetime.combine(d, t).isoformat(sep=" "),
+                "boundary_case": boundary_case,
+            }
+        )
+
+    for n in range(30):  # random times from 6 a.m. to 9:59 p.m.
+        d = rng.choice(days[20:-3])
+        t = time(rng.randint(6, 21), rng.randint(0, 59), rng.randint(0, 59))
+        add(f"EVT-{n:03d}", rng.choice(TICKERS), d, t)
+
+    # PLANTED boundary cases: each must trade on the NEXT session, never the same day
+    add("EVT-B1", "ALFA", days[40], time(18, 0, 0), "after_close_1800")
+    add("EVT-B2", "CHRL", days[50], time(9, 30, 0), "at_open_0930")
+    # PLANTED: accepted after the LAST session's open -> no later session exists
+    add("EVT-U1", "BRVO", days[-1], time(16, 30, 0))
+    add("EVT-U2", "ECHO", days[-1], time(19, 5, 0))
+
+    manifest = {"seed": SEED, "n_events": len(events), "expected_unmatched": 2}
+    return events, manifest
+```
+   In `main()`, after the bars: `events, manifest = make_events(rng, days)`, then write `insider_events.csv` and `gen_manifest.csv` (one row) the same way. Call it **after** `make_bars` so the same seed still gives the same bars. Run `uv run python scripts/gen_market_seed.py --out dbt/market_rehearsal/seeds`.
+2. Staging: `stg_bars.sql`, `stg_insider_events.sql` (cast, rename, one row per grain), and `stg_session_opens.sql` (each session's 09:30 open as a timestamp). 📈 `stg_insider_events` keeps both clocks — `cast(filing_date as date)`, `cast(accepted_at as timestamp)` — and `nullif(boundary_case, '') as boundary_case`.
 3. `marts/fct_rvol.sql` — relative volume = today's volume ÷ the average of the **previous** 20 sessions: `avg(volume) over (partition by ticker order by session_date rows between 20 preceding and 1 preceding)`. Including today in its own baseline is the classic leak.
 4. `marts/fct_event_entries.sql` — each event joined to the first session it could legally trade:
 ```sql
--- DuckDB ASOF JOIN: for each filing, the nearest session open strictly AFTER it.
-select e.event_id, e.ticker, e.filed_at,
+-- DuckDB ASOF LEFT JOIN: for each filing, the nearest session open strictly AFTER
+-- its acceptance time. LEFT keeps filings that have no later session (entry = NULL);
+-- a plain ASOF JOIN is an INNER join and would drop them without a word.
+select e.event_id, e.ticker, e.filing_date, e.accepted_at, e.boundary_case,
        o.session_date as entry_session, o.session_open_at
 from {{ ref('stg_insider_events') }} e
-asof join {{ ref('stg_session_opens') }} o
+asof left join {{ ref('stg_session_opens') }} o
   on e.ticker = o.ticker
- and e.filed_at < o.session_open_at
+ and e.accepted_at < o.session_open_at
 ```
-**Tests (30 min):**
+> 📈 **v3.3 fix (C64):** v3.2 used `asof join` on one `filed_at`. DuckDB's plain `ASOF JOIN` is an inner join, so a filing accepted after the last session's open simply disappeared — and a test cannot catch a row that is no longer there. The two `EVT-U` filings exist to prove the fix.
+**Tests (30 min · 📈 +10 in v3.3):**
 - `schema.yml`: `unique` + `not_null` on each model's grain key; `accepted_values` on `txn_code`.
-- `tests/assert_no_lookahead.sql` — a **singular test** that returns any entry whose session opened at or before its `filed_at`. Zero rows = pass.
+- `tests/assert_no_lookahead.sql` — a **singular test** that returns any entry whose session opened at or before its ~~`filed_at`~~ 📈 `accepted_at`. Zero rows = pass.
+- 📈 `tests/assert_unmatched_equals_manifest.sql` — the generator knows how many filings have no later session; dbt must agree:
+```sql
+with unmatched as (
+    select count(*) as n from {{ ref('fct_event_entries') }} where entry_session is null
+)
+select u.n as unmatched, m.expected_unmatched
+from unmatched u
+cross join {{ ref('gen_manifest') }} m
+where u.n <> m.expected_unmatched
+```
+- 📈 `tests/assert_boundary_events_trade_next_session.sql` — test 4: the 18:00 acceptance and the one at exactly 09:30:00 must both trade on a **later** session:
+```sql
+select event_id, boundary_case, filing_date, accepted_at, entry_session
+from {{ ref('fct_event_entries') }}
+where boundary_case is not null
+  and (entry_session is null or entry_session <= filing_date)
+```
 
-`uv run dbt build --project-dir dbt/market_rehearsal --profiles-dir dbt/market_rehearsal` → green. Then break it on purpose (`<` → `<=` in the join, or drop `1 preceding` from the window), watch a test fail, revert. **Know both colors.**
+`uv run dbt build --project-dir dbt/market_rehearsal --profiles-dir dbt/market_rehearsal` → green. Then break it on purpose (`<` → `<=` in the join, or drop `1 preceding` from the window), watch a test fail, revert. 📈 Two more breaks: `asof left join` → `asof join` (the manifest test fails — two filings vanished), and `e.accepted_at < o.session_open_at` → `e.filing_date <= o.session_date` (the boundary and look-ahead tests fail — the 18:00 filing "trades" at that morning's open). **Know both colors.**
 > ⚠️ If `dbt-duckdb` won't resolve on 3.14 the day you run this, don't downgrade the repo's floor: log it in the journal, pin the newest dbt-duckdb that resolves, and record the outcome as an ADR — the same falsifier discipline as C28.
 
 
@@ -536,6 +719,8 @@ Week summary + ⚖️ **priority check (C58)**: fortnight AE/DE vs Applied-AI ho
 - [ ] Mini-project #3 shipped
 - [ ] ✅ all repos on 3.14 since setup
 - [ ] 🆕 Market-data rehearsal: dbt build green · lookahead singular test fails when broken
+- [ ] 📈 Rehearsal v3.3: two clocks · `asof left join` · manifest + boundary tests green, each seen failing
+- [ ] 📈 Twins #6–#7: bar windows + generator · volume dry-up islands (or queued)
 
 - [ ] Dockerfile builds; --frozen idiom used
 - [ ] ADRs 0002–0003 written (yours)
@@ -556,4 +741,4 @@ Week summary + ⚖️ **priority check (C58)**: fortnight AE/DE vs Applied-AI ho
 > 🆕 **v3.0: DataVault opens dbt-first.** Python generates, ingests and validates rows (pydantic contract + quarantine, Polars → Parquet); **reconciliation and Box-7 checks are dbt models with tests**, not a Python engine (C35 §2 made literal). The rehearsal you just built is its template, and Weeks 7–8 build most of the soft trigger — ⚖️ due **Day 63** in v3.1 (Day 70 fallback).
 
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–59) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026) · v3.2 readiness gate (C59, 9 Oct 2026). No other roadmap edits made; propose→approve governance applies.*
+*Aligned to Career Roadmap v10.0 (Corrections 1–64) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026) · v3.2 readiness gate (C59, 9 Oct 2026) · v3.3 trading lane expansion (C63–C64, 13 Oct 2026). No other roadmap edits made; propose→approve governance applies.*
