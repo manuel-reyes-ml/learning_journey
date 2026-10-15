@@ -10,8 +10,8 @@ from __future__ import annotations
 
 import csv
 from pathlib import Path
-# pathlib.Path = the modern way to handle file paths (portable, readable).
 
+# pathlib.Path = the modern way to handle file paths (portable, readable).
 from learning_journey.retirement import annual_contribution, vested_percent
 
 DATA_FILE: Path = Path(__file__).resolve().parent / "participants.csv"
