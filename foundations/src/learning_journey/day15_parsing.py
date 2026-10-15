@@ -27,7 +27,12 @@ for line in raw_lines:
     gross_text = gross_text.removeprefix("GROSS:")  # " $12,450.00"
     gross_text = gross_text.strip().removeprefix("$")  # "12,450.00"
     gross_text = gross_text.replace(",", "")  # "12450.00" — commas break float()
-    gross = float(gross_text)  # NOW it converts
+
+    try:
+        gross = float(gross_text)  # NOW it converts
+    except ValueError as exc:
+        print(f"ERROR: couldn't process '{account}'. Reason -> {exc}")
+        continue
 
     code = parts[2].split(":")[1].strip()  # split "CODE: 7" on ":", take part 1
 
