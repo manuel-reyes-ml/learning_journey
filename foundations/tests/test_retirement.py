@@ -15,6 +15,7 @@ from __future__ import annotations
 import pytest
 
 from learning_journey.retirement import annual_contribution, vested_percent
+
 # ^ imports work because of the src/ layout + pyproject.toml. This line IS
 # the payoff of Day-0 structure: your code is a real, importable package.
 
