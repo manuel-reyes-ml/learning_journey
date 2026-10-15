@@ -1,9 +1,9 @@
 # 🚀 WEEKS 9–10 MASTER ACTIVATION PLAN (v10.0)
 ## 🚦 Soft Trigger (Day 63) + Narrow Search Opens + Eval-First Harness | September 14–27, 2026
 
-**Document Version:** 3.2 — 🎯 **READINESS GATE** (9 Oct 2026, roadmap C59) on the 3.1 ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, C58) and the 3.0 job-first re-cut · fresh 12-week template from Mon 20 Jul 2026
+**Document Version:** 3.3 — 📈 **TRADING LANE EXPANSION** (13 Oct 2026, roadmap C63–C64) on the 3.2 🎯 **READINESS GATE** (9 Oct 2026, roadmap C59) on the 3.1 ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, C58) and the 3.0 job-first re-cut · fresh 12-week template from Mon 20 Jul 2026
 **Covers:** Monday, September 14 – Sunday, September 27, 2026 (Stage 1 · Month 3 · Weeks 9–10)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–59** (C58 applied 8 Oct 2026 · C59 applied 9 Oct 2026) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–64** (C58 applied 8 Oct 2026 · C59 applied 9 Oct 2026 · 📈 C63–C64 applied 13 Oct 2026; C60–C62 do not touch these weeks) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
 **Prerequisite:** Weeks 7–8 metrics ≥80% (non-negotiables: DataVault end-to-end through dbt + 🆕 the star + `dbt build` in CI — ~~AI-901 attempted~~ moved to Q2, C58)
 **Weekly Hours:** 25
 
@@ -18,7 +18,7 @@
 ---
 
 ## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
-Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–59. Full rationale: the v3.0, v3.1 and v3.2 blocks in Weeks 1–2. **This fortnight ships the 🚦 soft trigger (C54 §5) — on Day 63 in v3.1.** The eval harness stays — it is still the Applied-AI differentiator — but DataVault finishes first.
+Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–64. Full rationale: the v3.0, v3.1 and v3.2 blocks in Weeks 1–2. **This fortnight ships the 🚦 soft trigger (C54 §5) — on Day 63 in v3.1.** The eval harness stays — it is still the Applied-AI differentiator — but DataVault finishes first.
 
 | Lane | This fortnight in v3.0 |
 |---|---|
@@ -27,7 +27,8 @@ Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to
 | L1 Foundations | 🆕 **Kimball Ch. 19, 7, 10 and the Ch. 5 SCD section**, each read against the build · **dbt Advanced starts Day 67** · CS50P Weeks 3–4 |
 | L5 Job search | Day 62: **résumé v1** for the AE door · Day 63: Featured + README honesty pass + **gate** → **narrow search opens Day 64** · Days 64, 67, 69: first tailored applications + warm messages |
 | Work context | Day 68: **Track A session 0** — before-metrics on the live 1099 pipeline, during the work day (moved up from Week 12) |
-| Extra-time | AB-620 + Google Git, outside the 25 — ⚖️ v3.1: **all** AB-620 blocks now actually live there (v3.0 still had four inside the 25) |
+| Extra-time | ~~AB-620~~ → 📈 **trading thread** (v3.3, C64) + Google Git, outside the 25 — ⚖️ v3.1: **all** AB-620 blocks now actually live there (v3.0 still had four inside the 25) · AB-620 study resumes Week 15 |
+| L4 Trading 📈 | **v3.3:** twins on Day 58 (+5 min) and Day 62 (+20 min) · extra-time **trading thread** Week 9 (private snapshot job) and Week 10 (hardening + twin #12) |
 
 ---
 
@@ -35,9 +36,9 @@ Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to
 
 Standing rulings from Corrections 21–43 for this fortnight (Corrections 44–54 are applied in the v3.0 block above):
 
-1. **⏸️ AB-620 is no longer an automatic cert #2.** Correction 37 moved it to **conditional**; Corrections 22/32 made it **self-funded (~$165)** with the employer channel closed. Thread 6 below is re-marked **HOLD pending your ruling**, and the Day 58 pre-approval email is void. My recommendation: **hold**. Your Q1 2027 target is AE-first / DE-parallel, and AB-620 is a Copilot-ecosystem credential that neither door screens on. The freed hours are better spent on this fortnight's eval harness — which *is* the differentiator (39.6% of AI-first roles require evaluation skills against ~5.5% of candidates listing them).
+1. **⏸️ AB-620 is no longer an automatic cert #2.** Correction 37 moved it to **conditional**; Corrections 22/32 made it **self-funded (~$165)** with the employer channel closed. Thread 6 below is re-marked **HOLD pending your ruling**, and the Day 58 pre-approval email is void. My recommendation: **hold**. Your Q1 2027 target is AE-first / DE-parallel, and AB-620 is a Copilot-ecosystem credential that neither door screens on. The freed hours are better spent on this fortnight's eval harness — which *is* the differentiator (39.6% of AI-first roles require evaluation skills against ~5.5% of candidates listing them). → 📈 v3.3 text fix: **C42** (Aug 2026) then committed AB-620 against this recommendation; **C64** (13 Oct 2026) moves its extra-time study to Week 15, after AI-901.
 2. **🪝 The eval harness gets pre-commit too** (Correction 21). Your own eval harness lives in `learning_journey` and graduates into PolicyPulse next fortnight — it should carry the Tier A set plus **`nbstripout`** (Tier B), since this repo is notebook-bearing. `nbstripout` is the commit-time enforcement of synthetic-data-only: it extends the Correction 16 PII choke point from the logging boundary to the git boundary, so it no longer depends on you remembering to clear cell output.
-3. **✅ Two extra-time threads open here** (your rulings): **AB-620 study** (~$165 self-funded — exam targeted *after* 9 Oct) and the **Google Git/GitHub course** (Stage 1 row 3️⃣.5). Both ~2 hrs/week, outside the 25, capped, and both pause before any flagship does. Details at Day 58.
+3. **✅ Two extra-time threads open here** (your rulings): **AB-620 study** (~$165 self-funded — exam targeted *after* 9 Oct) and the **Google Git/GitHub course** (Stage 1 row 3️⃣.5). Both ~2 hrs/week, outside the 25, capped, and both pause before any flagship does. Details at Day 58. 📈 **v3.3 (C64):** the AB-620 slot now runs the **extra-time trading thread** (Weeks 9–14, spec at Day 57); AB-620 study resumes in Week 15, after the AI-901 exam.
 4. **📖 Read *AI Engineering* (Huyen) alongside this fortnight, not later.** Correction 34 moved it from the old Stage-4 slot **into Stage 1** on exactly this reasoning: a book that improves your eval gates in month 3 is worth more than the same book read in month 25. It is evaluation-first and framework-neutral. This is the fortnight it pays for itself.
 
 > 🎯 **Why this fortnight matters more under the new premise.** The Sprint-1 decision and the eval harness were always the plan's differentiator. Under Correction 22 they became the *load-bearing* one: with the internal path closed, "I built a blocking eval gate and ran a documented improve cycle against it" is the single hardest claim to fake in a Q1 2027 interview, and almost nobody applying will have it.
@@ -75,6 +76,7 @@ Week 6's mocked tests verify plumbing: given a fake model reply, does your code 
 4. ⏭️ **Q2 (C58):** **DeepEval first contact** — the roadmap's named eval library (with RAGAS); GEval for judge-based metrics.
 5. ~~**DataVault corrections analytics** matures (the 450+-pattern analytics, synthetic).~~ → 🆕 **DataVault ships the soft trigger (v3.0):** `dbt build` becomes a blocking CI step, the corrections mart hardens, dbt docs publish to GitHub Pages, and **v0.1.0 is tagged public** — the four artifacts C54 §5 names. ⚖️ **v3.1:** docs Day 58, v0.1.0 Day 62, gate **Day 63**, narrow search from **Day 64**, then **v0.2.0** on Day 69.
 6. **AB-620 study opens — ✅ GO, as an EXTRA-TIME thread** (your ruling, 27 Aug 2026). ~~(post-AI-901; employer-reimbursed cert #2 — file the pre-approval Day 58)~~ → **self-funded ~$165** (Corrections 22/32); Correction 37 lists it as **conditional** in the roadmap, and you have elected to commit it anyway. **Run it entirely outside the 25 hrs/week — it must not displace the eval harness, DataVault, or PolicyPulse**, which are the artifacts the Q1 2027 doors actually screen on. ⚠️ Two things to keep honest: (a) this is a **roadmap divergence** — the file says conditional, you are treating it as committed, so it needs a logged correction with a falsifier, not a silent change; (b) **AB-620 is a Copilot-ecosystem credential and neither the AE nor the DE door screens on it** — its value here is Azure-stack breadth and the AI-103 path in Stage 3, not the first door. Budget ~2 hrs/week extra, capped.
+   📈 **v3.3 (C64):** this slot now runs the **extra-time trading thread** in Weeks 9–14 (spec at Day 57); AB-620 study resumes in Week 15, after the AI-901 exam. Point (a) was settled by **C42** (Aug 2026).
 
 ### New concepts
 ```
@@ -105,6 +107,7 @@ Model:  Kimball Ch. 5 (SCD) · Ch. 7 + 10 (accounting, financial services) ·
 - [ ] Harness v0: code-based grader runs
 - [ ] CS50P Week 3 · Post #9
 - [ ] 🆕 Job lane: résumé v1 (AE door)
+- [ ] 📈 Extra time: private `market-snapshots` repo — first scheduled run green
 
 ### 📌 DAY 57 — Monday, September 14
 **Morning:** ~~Execute the Sprint-1 checklist~~ (Q2) → *Improving Accuracy of LLM Applications* — **videos only** (free tier; the labs come with the Q2 Pro month). Take notes on the eval-framework sections — you build the harness by hand tonight anyway.
@@ -143,9 +146,99 @@ Model:  Kimball Ch. 5 (SCD) · Ch. 7 + 10 (accounting, financial services) ·
 - [ ] 30 min — ~~**AB-620 pre-approval email** (the AI-901 template, reused; BCC self; elevation file)~~ ❌ **VOID (C22/32/37)** — no pre-approval channel exists. **Reallocate these 30 minutes to the golden-set rationales** (below); they are the higher-value artifact.
 
 > ⏱️ **EXTRA-TIME THREADS OPEN THIS FORTNIGHT (outside the 25 hrs/week — your ruling, 27 Aug 2026).** Two threads, ~2 hrs/week each, both capped:
-> - 📘 **AB-620 study** — self-funded ~$165. Open the Microsoft Learn path; do not book the exam yet. **Target the exam after 9 Oct**, when the job ends and real capacity appears — booking it into a fortnight that also carries PolicyPulse's opening and a last-day-of-work is how a 25-hour plan quietly becomes a 32-hour one.
+> - ~~📘 **AB-620 study** — self-funded ~$165. Open the Microsoft Learn path; do not book the exam yet. **Target the exam after 9 Oct**, when the job ends and real capacity appears — booking it into a fortnight that also carries PolicyPulse's opening and a last-day-of-work is how a 25-hour plan quietly becomes a 32-hour one.~~ → ⏭️ **Week 15** (v3.3, C64), after the AI-901 exam.
+> - 📈 **Trading thread** (v3.3, C64) — ~2 hrs/week in this slot, Weeks 9–14. Week 9's spec is below; the rest sits in Week 10, Weeks 11–12 and the Weeks 13–14 plan.
 > - 🐙 **Google — Introduction to Git and GitHub** (Stage 1 row 3️⃣.5, ~8 hrs committed · published as ~20 hrs / 4 weeks — the **~8 hrs is the commitment**, per Correction 31). Coursera Plus, shareable certificate → **Tier 4/5, never a Certifications line**. Move fast: nine weeks of daily commits already cover the basics. The material worth your attention is the part solo work never teaches — **the staging area vs HEAD distinction, rebasing, and conflict resolution**.
 > - ⚠️ **Cap discipline:** if a week runs over, the extra-time threads pause — never the flagships. If the Week-12 retro shows actual hours above ~29/week, both pause until after Day 82.
+
+📈 **Extra-time trading thread — Week 9 (~2 h, two sessions · v3.3, C64): a private daily snapshot job.**
+Crucible builds point-in-time sector membership from the 11 Select Sector SPDR funds' daily holdings (Crucible v3.1 §5.2), and AFC rebuilds its universe from listings (B4). Neither history can be bought back later for free: **it only exists from the day the job starts.** So the job starts now, small and private.
+- Create a **private** repo `market-snapshots` (`uv init --app`, `uv add httpx`). Private because State Street's pages say holdings content may not be reproduced or transmitted without consent; the job saves files for your own research and nothing here is ever published (C63).
+- `snapshot.py` — two clocks again: `fetched_at` is when *you* knew; the file's own "as of" date (parsed in Week 10) is when the *fund* knew:
+```python
+"""Daily PRIVATE snapshot: the 11 Select Sector SPDR holdings + the Nasdaq symbol directory.
+
+Knowledge time = fetched_at (UTC), written beside every file. Never published.
+"""
+
+import hashlib
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+
+import httpx
+
+FUNDS = ["xlb", "xlc", "xle", "xlf", "xli", "xlk", "xlp", "xlre", "xlu", "xlv", "xly"]
+SSGA = (
+    "https://www.ssga.com/library-content/products/fund-data/etfs/us/holdings-daily-us-en-{}.xlsx"
+)
+NASDAQ = "https://www.nasdaqtrader.com/dynamic/SymDir/{}"
+HEADERS = {"User-Agent": "market-snapshots personal research (you@example.com)"}
+
+
+def main() -> None:
+    fetched_at = datetime.now(timezone.utc)
+    out = Path("data") / fetched_at.date().isoformat()
+    out.mkdir(parents=True, exist_ok=True)
+
+    targets = {f"{fund}.xlsx": SSGA.format(fund) for fund in FUNDS}
+    targets |= {name: NASDAQ.format(name) for name in ("nasdaqlisted.txt", "otherlisted.txt")}
+
+    manifest = []
+    with httpx.Client(headers=HEADERS, timeout=30, follow_redirects=True) as client:
+        for name, url in targets.items():
+            response = client.get(url)
+            row = {
+                "file": name,
+                "url": url,
+                "status": response.status_code,
+                "fetched_at": fetched_at.isoformat(),
+            }
+            if response.status_code == 200:
+                (out / name).write_bytes(response.content)
+                row |= {
+                    "bytes": len(response.content),
+                    "sha256": hashlib.sha256(response.content).hexdigest(),
+                }
+            manifest.append(row)
+
+    (out / "manifest.json").write_text(json.dumps(manifest, indent=2))
+    failed = [row["file"] for row in manifest if row["status"] != 200]
+    if failed:
+        raise SystemExit(f"snapshot incomplete: {failed}")  # a red run is the alert
+
+
+if __name__ == "__main__":
+    main()
+```
+- `.github/workflows/snapshot.yml`:
+```yaml
+name: snapshot
+on:
+  schedule:
+    - cron: "17 11 * * 2-6"     # 11:17 UTC, Tue–Sat: after each US session's files refresh
+  workflow_dispatch:             # a manual "Run workflow" button for the first test
+permissions:
+  contents: write
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4        # same pins as DataVault CI (Day 47); bump both together
+      - uses: astral-sh/setup-uv@v5      # from v8 on, setup-uv has no floating major tags: pin e.g. v9.0.0
+      - run: uv run python snapshot.py
+      - if: always()                     # keep partial captures; the red run is the alert
+        run: |
+          git config user.name "snapshot-bot"
+          git config user.email "snapshot-bot@users.noreply.github.com"
+          git add data/
+          git diff --cached --quiet || git commit -m "data: snapshot $(date -u +%F)"
+          git push
+```
+- Run it once by hand (Actions → *Run workflow*), open `manifest.json`, then let the schedule take over. Private repos get 2,000 free Actions minutes a month; this job uses about 25. If the State Street download returns 403 from GitHub's runners, run the same script from a `launchd` job on your Mac and say so in the README — the evidence is the history, not where it ran.
+- Log both sessions as `extra-time` in the journal.
+
 - [ ] 20 min — Journal + commit (`feat: golden dataset v1 with rationales`)
 
 ### 📌 DAY 58 — Tuesday, September 15
@@ -178,7 +271,7 @@ GOLDEN = Path(__file__).parent / "golden_box7.json"
 class CaseResult:
     case_id: str
     passed: bool
-    failures: list[str]          # WHICH checks failed — diagnosis, not just score
+    failures: list[str]  # WHICH checks failed — diagnosis, not just score
 
 
 def grade_case(case: dict) -> CaseResult:
@@ -194,8 +287,8 @@ def grade_case(case: dict) -> CaseResult:
     exp = case["expected"]
 
     try:
-        result = explain_box7(case["input_code"])       # LIVE call — evals
-    except ValueError as err:                            # cost money; that's
+        result = explain_box7(case["input_code"])  # LIVE call — evals
+    except ValueError as err:  # cost money; that's
         return CaseResult(case["id"], False, [f"boundary_error: {err}"])  # the deal
 
     if result.taxable_generally != exp["taxable_generally"]:
@@ -231,17 +324,24 @@ def run(threshold: float = 0.85) -> bool:
     for r in results:
         if not r.passed:
             log.warning("eval_case_failed", case=r.case_id, failures=r.failures)
-    log.info("eval_run_complete", passed=passed, total=len(results),
-             pass_rate=round(rate, 3), threshold=threshold)
+    log.info(
+        "eval_run_complete",
+        passed=passed,
+        total=len(results),
+        pass_rate=round(rate, 3),
+        threshold=threshold,
+    )
     return rate >= threshold
 
 
 if __name__ == "__main__":
     import sys
-    sys.exit(0 if run() else 1)     # exit code 1 on failure → CI-gateable
+
+    sys.exit(0 if run() else 1)  # exit code 1 on failure → CI-gateable
 ```
 Run it. **Study every failure**: is the model wrong, or is your golden case wrong? Both happen; adjudicating them is the job.
 - [ ] 30 min — 🆕 **Kimball Ch. 19, part 1** — the 34 ETL subsystems: map the extract and cleaning ones (data profiling, error event schema, audit dimension) to DataVault's quarantine path and dbt tests in `docs/modeling.md`
+- [ ] 📈 **Trading twin #10 (+5 min · v3.3, C64)** — one market line under each of the same three subsystems in `notebooks/kimball-notes.md`: **data profiling** → OHLC integrity (high ≥ open and close, low ≤ both, volume ≥ 0); **error event schema** → twin #3's quarantined `N/A` bar; **audit dimension** → `source`, `fetched_at` and `accepted_at` on every row. *(Day full? → twin queue.)*
 - [ ] 20 min — Journal + commit (`feat: eval harness v0 with code-based grader`)
 
 ### 📌 DAY 59 — Wednesday, September 16
@@ -257,7 +357,7 @@ Run it. **Study every failure**: is the model wrong, or is your golden case wron
 **Evening:** 60 min — **eval gate into CI**: add a manual-trigger CI job (`workflow_dispatch`) running `python -m learning_journey.evals.harness` — evals cost API money, so they gate on demand + before releases, not every push; write ADR 0004 recording exactly that trade-off (cost vs coverage — a REAL production decision) · 40 min 🆕 DataVault: mypy/ruff/CI polish + README ②Cost's first honest line (moved up from Day 68; the `dbt build` CI step landed Day 52) · journal + commit
 
 ### 📌 DAY 62 — Saturday, September 19 (5.5h)
-**Morning:** 🆕 90 min **DataVault v0.1.0 release** ⭐ (moved up from Day 69) — README rewritten for a stranger (what it proves for an AE role, the lineage screenshot, the dbt docs link, model + test counts, CI badge, run it in three commands), `CHANGELOG.md`, tag `v0.1.0`, GitHub Release notes · 🆕 90 min **Kimball Ch. 7 + Ch. 10** (Accounting; Financial Services) — note three patterns that apply to recordkeeping (e.g., transaction fact vs account snapshot, multi-valued dimensions) in `docs/modeling.md` · 30 min CS50P pset · ~~Advanced RAG labs · DeepEval first contact~~ → ⏭️ Q2 with the Triad build
+**Morning:** 🆕 90 min **DataVault v0.1.0 release** ⭐ (moved up from Day 69) — README rewritten for a stranger (what it proves for an AE role, the lineage screenshot, the dbt docs link, model + test counts, CI badge, run it in three commands), `CHANGELOG.md`, tag `v0.1.0`, GitHub Release notes · 🆕 90 min **Kimball Ch. 7 + Ch. 10** (Accounting; Financial Services) — note three patterns that apply to recordkeeping (e.g., transaction fact vs account snapshot, multi-valued dimensions) in `docs/modeling.md` · 📈 **+20 min, trading twin #11 (v3.3, C64):** in `notebooks/kimball-notes.md`, two Ch. 10 patterns read for securities — **supertype/subtype schemas for heterogeneous products** (a stock, an ETF and a warrant share one core security dimension, with type-specific attributes kept apart) and the **account periodic snapshot read as a position snapshot** (one row per account × security × day) — plus one **bus-matrix row**: *daily bars* × date, security, exchange, source *(day full? → twin queue)* · 30 min CS50P pset · ~~Advanced RAG labs · DeepEval first contact~~ → ⏭️ Q2 with the Triad build
 **Evening:** 60 min 🆕 **Job lane — résumé v1 for the AE door** (private): one page; top third = DataVault (*"Python ingestion + dbt models, N tests, CI-gated, synthetic regulated-domain data"*); the live 1099 pipeline as the production story in relative terms only; certifications last. Every line must point at something a stranger can open. ~~AB-620 module 2~~ → extra-time slot · 45 min draft post #9 — 🆕 artifact: the v0.1.0 release (*"my reconciliation rules now live in tested SQL, and CI refuses to merge when one breaks"*) · journal + commit
 
 ### 📌 DAY 63 — Sunday, September 20 (2h)
@@ -273,7 +373,7 @@ Then: 60 min 🆕 **Job lane** — LinkedIn **Featured** → the release + dbt d
 
 - [ ] ~~Advanced RAG course + labs~~ (Q2)
 - [ ] ~~S2 short labs~~ (Q2)
-- [ ] AB-620 ~30% (extra time only) · CS50P Wk 4
+- [ ] ~~AB-620 ~30% (extra time only)~~ → 📈 trading thread: snapshot job hardened + twin #12 (extra time, v3.3) · CS50P Wk 4
 - [ ] 🆕 dbt Advanced started · Track B #3–#5
 - [ ] 🚦 4+ tailored applications · tracker n/25
 
@@ -281,6 +381,57 @@ Then: 60 min 🆕 **Job lane** — LinkedIn **Featured** → the release + dbt d
 - [ ] 🆕 **DataVault v0.2.0**: SCD2 snapshot + idempotent incremental + custom generic test
 - [ ] Post #10 · meetup this month ✓
 - [ ] 🆕 Track A session 0: before-metrics captured (work day)
+
+> 📈 **Extra-time trading thread — Week 10 (~2 h · v3.3, C64).**
+> 1. **Harden the snapshot job (~45 min):** wrap each download in `stamina` retries (the roadmap's retry standard); add `asof_date` to every manifest row, read from each holdings file's own header rows, so each file carries both clocks; and write `gap_report.py`, which lists every weekday since the first run without a complete manifest (13 files, all status 200). That report is the thread's falsifier counter.
+> 2. **Twin #12 (60 min) — "the options you didn't use"**, after Day 68's dbt Advanced chapters, in `market_rehearsal`. Full spec below.
+
+📈 **Twin #12 — a `timestamp` snapshot and a restated bar (60 min, extra time).** DataVault's `snap_plan` used the `check` strategy; vendors send an `updated_at`, so the security master uses `timestamp`. DataVault's incremental used the default merge-by-key; a corrected bar is the textbook case for `delete+insert`.
+1. `seeds/security_master_src.csv` and a staging model that casts `updated_at` to a timestamp. Load `security_id` as text (`+column_types: {security_id: varchar}` under this seed in `dbt_project.yml`), or its leading zeros vanish:
+```csv
+security_id,ticker,security_name,updated_at
+0000000101-A,ALFA,Alfa Holdings Inc,2026-01-05 06:00:00
+0000000404-A,CHRL,Charlie Systems Corp,2026-01-05 06:00:00
+```
+2. `snapshots/snap_security_master.yml` (the YAML form, dbt ≥ 1.9):
+```yaml
+snapshots:
+  - name: snap_security_master
+    relation: ref('stg_security_master')
+    config:
+      unique_key: security_id
+      strategy: timestamp        # DataVault's snap_plan used `check`
+      updated_at: updated_at
+```
+   Run `dbt build`. Then play the vendor: change the ALFA row to `0000000101-A,ALFX,Alfa Holdings Inc,2026-03-02 06:00:00` and build again. ALFA now has a closed row and ALFX an open one. Add `tests/assert_one_current_row_per_security.sql` (any `security_id` with a count of `dbt_valid_to is null` rows other than 1). Note what `dbt_valid_from` holds: the **vendor's** `updated_at`, not the moment you loaded it. That is the vendor's clock; your knowledge time is still `fetched_at`.
+3. `models/marts/fct_bars_daily.sql` — an incremental that absorbs a correction:
+```sql
+{{ config(materialized='incremental',
+          incremental_strategy='delete+insert',
+          unique_key=['ticker', 'session_date']) }}
+
+with feed as (
+    select ticker, session_date, open, high, low, close, volume,
+           timestamp '2026-06-30 18:00:00' as ingested_at      -- first load
+    from {{ ref('stg_bars') }}
+    {% if var('include_restatement', false) %}
+    union all
+    select ticker, session_date, open, high, low, close, volume, ingested_at
+    from {{ ref('stg_bar_restatements') }}                     -- the vendor's correction
+    {% endif %}
+),
+latest as (
+    select * from feed
+    qualify row_number() over (partition by ticker, session_date
+                               order by ingested_at desc) = 1
+)
+select * from latest
+{% if is_incremental() %}
+where ingested_at > (select max(ingested_at) from {{ this }})
+{% endif %}
+```
+   `seeds/bar_restatements.csv` holds one corrected bar (`ALFA,2026-03-02,27.10,27.95,26.80,27.40,701233,2026-07-01 07:00:00`, with the header `ticker,session_date,open,high,low,close,volume,ingested_at`) and `stg_bar_restatements` casts it. Build once, then build with `--vars '{include_restatement: true}'`: still 600 rows, ALFA's 2 March close is now 27.40, and a third build changes nothing. Add `tests/assert_one_row_per_ticker_session.sql`.
+4. One paragraph in the project README: the mart **replaces** a restated bar, while `signalcore.data` (Shared SignalCore Boundary Spec v1.5) **appends** restatements and never overwrites — because a backtest must be able to ask what the bar looked like *before* the vendor fixed it. Both are right, at different layers.
 
 ### 📌 DAY 64 — Monday, September 21
 **Morning:** 🚦 **Job lane — applications 1–2** (moved up from Day 76): tailored and referral-first wherever a path exists — résumé v1 + a three-sentence note naming the posting's stack words you can *show* (dbt tests, CI, the star schema, the reconciliation domain); log both in `tracker.md`. ~~Advanced RAG~~ (Q2).
@@ -300,12 +451,12 @@ Then: 60 min 🆕 **Job lane** — LinkedIn **Featured** → the release + dbt d
 
 ### 📌 DAY 68 — Friday, September 25
 **Morning:** 🆕 **Track B #3–#5** on the public `1099_reconciliation_pipeline`: `src/` layout + `py.typed` + ruff / mypy / pytest; the Python 3.14 floor with a single-source `requires-python`; pre-commit Tier A (a strict subset of CI). ~~AB-620 modules~~ → extra time.
-**Evening:** 60 min 🆕 **dbt Advanced** — the incremental-strategy and snapshot chapters (you built both this week; now learn the options you didn't use) · 40 min CS50P pset · journal + commit
+**Evening:** 60 min 🆕 **dbt Advanced** — the incremental-strategy and snapshot chapters (you built both this week; now learn the options you didn't use) · 40 min CS50P pset · journal + commit · 📈 the options you didn't use get built on market data as **twin #12** in this week's extra-time thread (above, before Day 64)
 - 🆕 **Track A session 0 — during your work day, not the evening** (it is work on the work system): capture the irrecoverable before-metrics on the live 1099 pipeline — runtime, memory, row counts, defect counts, manual-touch counts — into your work notes, relative figures only for anything that leaves. Moved up from Week 12 in v3.0 so the Day-82 cliff carries less.
 
 ### 📌 DAY 69 — Saturday, September 26 (5.5h)
-**Morning:** 🆕 90 min **dbt Advanced** — Jinja, macros and packages (`dbt_utils`, `dbt-expectations`) · 🆕 90 min **DataVault v0.2.0** ⭐ — the SCD2 snapshot, the idempotent incremental and the custom test merged; `CHANGELOG.md`; tag `v0.2.0`; release notes that say what changed and why (a moving project is the best answer to "what are you working on?") · 30 min CS50P · ~~harness hardening~~ → Q2 · ~~v0.1.0 release~~ → done Day 62 · ~~KG for RAG labs~~ → Q2
-**Evening:** ~~60 min AB-620~~ (extra-time slot) · 60 min 🚦 **Job lane** — applications 4–5 (tailored), Featured updated to v0.2.0, tracker · 45 min draft post #10 — artifact: the eval-log before/after table (*"I stopped asking if my AI is good and started measuring it"*) · journal + commit
+**Morning:** 🆕 90 min **dbt Advanced** — Jinja, macros and packages (`dbt_utils`, `dbt-expectations`) (📈 its trading twin, an OHLC generic test, runs in Week 11's extra-time thread) · 🆕 90 min **DataVault v0.2.0** ⭐ — the SCD2 snapshot, the idempotent incremental and the custom test merged; `CHANGELOG.md`; tag `v0.2.0`; release notes that say what changed and why (a moving project is the best answer to "what are you working on?") · 30 min CS50P · ~~harness hardening~~ → Q2 · ~~v0.1.0 release~~ → done Day 62 · ~~KG for RAG labs~~ → Q2
+**Evening:** ~~60 min AB-620~~ (extra-time slot → 📈 trading thread, v3.3) · 60 min 🚦 **Job lane** — applications 4–5 (tailored), Featured updated to v0.2.0, tracker · 45 min draft post #10 — artifact: the eval-log before/after table (*"I stopped asking if my AI is good and started measuring it"*) · journal + commit
 
 ### 📌 DAY 70 — Sunday, September 27 (2h)
 🚦 **Gate fallback (C58)** — only if Day 63's gate was red: walk the four checks again now; green → the narrow search opens tomorrow. If it opened on Day 64 (the plan), use this slot as the **week-1 search review**: applications n/25, replies, which tier answered, what changes in wave 2.
@@ -328,7 +479,8 @@ Week summary + ⚖️ **priority check (C58)** + **Month-3-minus-one check**: **
 - [ ] Improving Accuracy videos done (labs + Advanced RAG → Q2)
 - [ ] ~~AI Python labs~~ (Q2 Pro month)
 - [ ] 🆕 Kimball Ch. 5 (SCD) · 7 · 10 · 19 read
-- [ ] AB-620 ~30% (extra-time; pre-approval void)
+- [ ] ~~AB-620 ~30% (extra-time; pre-approval void)~~ → 📈 extra time: snapshot job running + hardened · twin #12 green
+- [ ] 📈 Twins #10–#11: Ch. 19 market lines · Ch. 10 securities patterns + bus-matrix row (or queued)
 - [ ] 🚦 v0.1.0 public — soft trigger **Day 63**
 - [ ] Posts #9–10 · CS50P Wk 3–4 · meetup ✓
 - [ ] 🆕 Résumé v1 · Featured · honesty pass
@@ -341,9 +493,11 @@ Week summary + ⚖️ **priority check (C58)** + **Month-3-minus-one check**: **
 ## 🔭 WHAT COMES NEXT
 **Weeks 11–12: PolicyPulse opens.** The Applied-AI flagship's S1 core — synthetic policy corpus → chunk → embed → retrieve (ChromaDB) — with ~~the RAG Triad eval gate~~ **a code-graded eval gate** wired from day one, because you now own a harness (⚖️ v3.1: the judge-graded Triad half lands in Q2). ~~MCP primer via Anthropic Academy~~ (⏭️ Q2, C58). The **IBM GenAI Engineering PC** (your Months 3–6 spine) begins. The 1099-pipeline retro-migration pass starts (pip→uv + structlog + first C4 via Structurizr — the Corrections 13/14/16 named pass, and a build-in-public artifact). Internal automation win #1 gets documented. ~~The Pro month gets emptied and cancelled.~~ (⏭️ the Pro month runs in Q2.) And the Month-3 retro closes Quarter 1.
 
+> 📈 **v3.3 changes to Weeks 11–12 (C64):** the extra-time trading thread carries twins #13–#14 (Week 11) and Crucible's data-spike part 1 (Week 12); Day 83's spike checklist gains a B1 data section; the retro asks which `market_rehearsal` pieces migrate.
+
 > 🆕 **v3.0 changes to Weeks 11–12:** the **narrow search runs** (referral-first, tailored, tracked against the 25-application falsifier); the **IBM GenAI PC moves to Q2**, and its morning slots go to dbt Advanced, AE interview reps and AFC preparation; **PolicyPulse goes public by Day 77**; automation win #1 is drafted Day 77; and **Day 83 opens AFC Phase 1** — the trading lane's first real build.
 
 > ⚖️ **v3.1 changes to Weeks 11–12 (C58):** PolicyPulse ships its retrieval core public by Day 77 with a **code-graded gate** (context relevance + the unanswerable hard gate); the judge-graded RAG Triad gate, its improve cycle, the MCP primer and the Pro month move to Q2. DataVault S2 starts with **model contracts**. The narrow search is already in its second week, and AB-620 stays in extra time.
 
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–59) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026) · v3.2 readiness gate (C59, 9 Oct 2026). No other roadmap edits made; propose→approve governance applies.*
+*Aligned to Career Roadmap v10.0 (Corrections 1–64) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026) · v3.2 readiness gate (C59, 9 Oct 2026) · v3.3 trading lane expansion (C63–C64, 13 Oct 2026). No other roadmap edits made; propose→approve governance applies.*
