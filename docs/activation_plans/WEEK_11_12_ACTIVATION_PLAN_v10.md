@@ -1,9 +1,9 @@
 # 🚀 WEEKS 11–12 MASTER ACTIVATION PLAN (v10.0)
 ## PolicyPulse Opens + 🚦 Narrow Search + 🆕 Trading Lane (AFC) + Month-3 Retro | September 28 – October 11, 2026
 
-**Document Version:** 3.2 — 🎯 **READINESS GATE** (9 Oct 2026, roadmap C59) on the 3.1 ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, C58) and the 3.0 job-first re-cut · fresh 12-week template from Mon 20 Jul 2026
+**Document Version:** 3.3 — 📈 **TRADING LANE EXPANSION** (13 Oct 2026, roadmap C63–C64) on the 3.2 🎯 **READINESS GATE** (9 Oct 2026, roadmap C59) on the 3.1 ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, C58) and the 3.0 job-first re-cut · fresh 12-week template from Mon 20 Jul 2026
 **Covers:** Monday, September 28 – Sunday, October 11, 2026 (Stage 1 · Month 3 · Weeks 11–12)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–59** (C58 applied 8 Oct 2026 · C59 applied 9 Oct 2026) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–64** (C58 applied 8 Oct 2026 · C59 applied 9 Oct 2026 · 📈 C63–C64 applied 13 Oct 2026; C60–C62 do not touch these weeks) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
 **Prerequisite:** Weeks 9–10 metrics ≥80% (non-negotiables: harness v1 + documented improve cycle + 🆕 🚦 soft trigger green by Day 63, Day 70 fallback)
 **Weekly Hours:** 25 · ~~⏰ Pro month expires ~Oct 13 — empty it and cancel it this fortnight~~ → ⏭️ the Pro month now runs in Q2 (C58) — nothing to cancel this fortnight.
 
@@ -14,15 +14,15 @@
 ---
 
 ## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
-Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–59. Full rationale: the v3.0, v3.1 and v3.2 blocks in Weeks 1–2. **The soft trigger fired on Day 63 (C58; Day 70 fallback), so the narrow search is already in its second week while the quarter closes.**
+Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–64. Full rationale: the v3.0, v3.1 and v3.2 blocks in Weeks 1–2. **The soft trigger fired on Day 63 (C58; Day 70 fallback), so the narrow search is already in its second week while the quarter closes.**
 
 | Lane | This fortnight in v3.0 |
 |---|---|
 | L5 Job search 🚦 | **Narrow search live:** referral-first, tailored applications in small waves to Tier 1 (then Tiers 2–3); 2 warm conversations a week; every application logged against the **25-application falsifier** (C54 §5) |
 | L1 Foundations | ⏸️ **IBM GenAI PC moves to Q2.** Its mornings go to 🆕 **dbt Advanced Learning Paths** (Jinja/macros, incremental, snapshots), **AE interview reps** on your own marts, 🆕 **DataVault model contracts** (S2 work done first), and AFC preparation · ~~the MCP primer~~ → Q2 (C58) |
 | L3 Applied AI | PolicyPulse S1 v0 — retrieval core with a 🆕 **code-graded gate** (context relevance + the unanswerable hard gate) · **public by Day 77** (fixes the profile's dead link) · the judge-graded Triad gate → Q2 with the Pro labs (C58) |
-| Extra-time | AB-620 only — ⚖️ v3.1 moves the three in-budget blocks (Days 78, 79, 81) out |
-| L4 Trading 🆕 | **Day 83 — AFC Phase-1 kickoff:** re-bootstrap the public repo on the full standard, replace the 2025 README, ADRs 0001–0002, dependency-spike checklist |
+| Extra-time | ~~AB-620 only~~ → 📈 **trading thread** (v3.3, C64) + Google Git — ⚖️ v3.1 moves the three in-budget blocks (Days 78, 79, 81) out · AB-620 study resumes Week 15 |
+| L4 Trading 🆕 | **Day 83 — AFC Phase-1 kickoff:** re-bootstrap the public repo on the full standard, replace the 2025 README, ADRs 0001–0002, dependency-spike checklist · 📈 **v3.3:** twin #15 (B1 data section in that checklist) and #16 (retro question) · extra-time thread: twins #13–#14 (Week 11), Crucible data spike part 1 (Week 12) |
 | Exit | Automation win #1 **drafted Day 77**, finalized Day 82 · 🆕 PostCheck knowledge capture (Day 81 morning) · Track A before-metrics already captured on Day 68 |
 
 ---
@@ -51,13 +51,14 @@ Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to
 
 > 📝 **ROADMAP CORRECTIONS OWED — three divergences these plans now carry that `roadmap.html` does not.** Under your own governance the file must record them, with falsifiers; otherwise the plans are ahead of the roadmap and the roadmap stops being authoritative. **Correction 42's number is reserved and unwritten** — these are candidates for it and the two following:
 > 1. **Harness:** Correction 39 rules OpenCode the *sole* harness and Claude Code *evaluated and declined*. Reality is dual. Needs reversal + the `AGENTS.md` / generator-script standard recorded. *Falsifier: if maintaining two harnesses produces drift the generator cannot absorb, collapse to one.*
-> 2. **AB-620:** Correction 37 lists it conditional. You have committed it. Needs a status change + the extra-time-hours ruling. *Falsifier: if AE/DE applications never surface Azure-stack requirements, it does not get re-bought at renewal.*
+> 2. **AB-620:** Correction 37 lists it conditional. You have committed it. Needs a status change + the extra-time-hours ruling. *Falsifier: if AE/DE applications never surface Azure-stack requirements, it does not get re-bought at renewal.* → ✅ written as **C42 §3(a)** (Aug 2026); 📈 **C64** (13 Oct 2026) moves the extra-time study to Week 15, after AI-901.
 > 3. **Hours model:** frozen at 25/week pending the Correction 22 deferral. You have now authorised ~4 hrs/week of extra-time threads. Needs recording as an explicit exception with the cap and the pause rule, not left as an undocumented overrun. *Falsifier: actual > ~29 hrs/week or the 4:30 AM trend degrading → threads pause.*
 > 4. ✅ **C55 — domain-bridge tier** in the narrow search — *applied 7 Oct 2026.* *Falsifier: if bridge-tier applications don't produce screens at a higher rate than AE/DE applications within the same 25-application window, the tier is dropped.*
 > 5. ✅ **C56 — Stage-1 schedule pull-forwards** from the v3.0 re-cut — *applied 7 Oct 2026* — (dbt Fundamentals/Advanced into Stage 1, IBM start after the soft trigger, AFC kickoff Day 83, DataVault S1 logic in dbt). *Falsifier: if the soft trigger slips past Week 12, the pull-forwards are reviewed before Q2 adds anything.*
 > 6. ✅ **C58 — priority rebalance** (AE/DE ≥ Applied-AI guardrail; AI-901, the Pro month and PolicyPulse's judge gates after the soft trigger; soft trigger Day 63) — *applied 8 Oct 2026.* *Falsifier: if the soft trigger slips past Day 70 anyway, or 25 applications yield zero screens, hours were not the bottleneck.*
 > 7. ✅ **C59 — readiness gate** (the guardrail ends when DataVault S2 hardening ships, not at the first screen; after it, Applied AI ≥ AE/DE, hired or not) — *applied 9 Oct 2026.* *Falsifier: S2 not shipped by 31 Mar 2027 → the guardrail and S2's scope are reviewed together.*
-> C55, C56, C58 and C59 are now in the roadmap's v10.0 changelog. Items 1–3 above remain owed.
+> 8. ✅ 📈 **C63 — Crucible free data sources** and **C64 — trading lane v3.3** — *applied 13 Oct 2026.* *Falsifier (C64): the snapshot job misses more than 5 sessions in Weeks 10–13, or a week runs above ~29 hrs → the trading thread stops and AB-620 takes the slot back.*
+> C55, C56, C58 and C59 are now in the roadmap's v10.0 changelog. ~~Items 1–3 above remain owed.~~ → 📈 v3.3 text fix: items 1–3 were written as **C42** (Aug 2026); C63 and C64 joined the changelog on 13 Oct 2026.
 
 > 🧭 **The honest reframe.** This plan's closing line called the Month-6 conversation "the deliverable every artifact this quarter was quietly building toward." That is no longer true, and the substitute is not a downgrade: the artifacts were always the point, and they now go to a market instead of a manager. Two eval-gated flagships, a CI habit with eleven weeks of commits, a cert, and a regulated-domain story is a **stronger** Q1 2027 position than an internal scope memo would have been. The work does not change. The audience does.
 
@@ -157,6 +158,66 @@ AFC:    repo re-bootstrap · EDGAR fair-access rules · dependency spike (🆕)
 - [ ] Post #11
 
 - [ ] ~~MCP primer~~ (Q2) · 🆕 contracts on the marts
+- [ ] 📈 Extra time: twins #13–#14 green in `market_rehearsal`
+
+> 📈 **Extra-time trading thread — Week 11 (~2 h · v3.3, C64): twins #13 and #14.** Both run in `learning_journey/dbt/market_rehearsal`, on synthetic data.
+
+📈 **Twin #13 — an OHLC-integrity generic test (20 min).** Day 69 taught packages; this is the hand-written macro you would otherwise reach for `dbt-expectations` to get. `tests/generic/ohlc_consistent.sql`:
+```sql
+{% test ohlc_consistent(model) %}
+-- A bar is impossible if the high is below the open or close, the low is above
+-- them, or volume is negative. Vendors do ship these; the pipeline must catch them.
+select *
+from {{ model }}
+where high < greatest(open, close)
+   or low  > least(open, close)
+   or volume < 0
+{% endtest %}
+```
+Attach it to `stg_bars` and `fct_bars_daily` in `schema.yml` (`data_tests: [ohlc_consistent]` at model level). Then edit the restated bar from twin #12 so its high sits below its close, rebuild with the restatement on, watch the test fail, and revert. This is AFC B2's data-quality check in miniature.
+
+📈 **Twin #14 — Day 75's timed reps on market data (45 min, two timers).**
+1. Sector closes: add to `gen_market_seed.py` a `make_sector_bars(days)` that writes `sector_bars.csv` (11 invented sector funds `S01`–`S11` × 120 sessions: `sector_code, session_date, close`). Give it **its own** `random.Random(SEED + 1)`, so the bars and events you already tested do not shift. Add a `stg_sector_bars` staging model that casts the three columns.
+2. ⏱️ **20 min — timed SQL** (`analyses/top3_sectors.sql`; `dbt compile`, then run the compiled file from `target/` in DuckDB): the top-3 sectors by 20-session return, per session.
+```sql
+-- A close-based rank is known only AFTER the close: it may gate tomorrow's entries, never today's.
+with r as (
+    select sector_code, session_date,
+           close / lag(close, 20) over (partition by sector_code order by session_date) - 1 as ret_20d
+    from {{ ref('stg_sector_bars') }}
+)
+select session_date, sector_code, ret_20d,
+       rank() over (partition by session_date order by ret_20d desc) as sector_rank
+from r
+where ret_20d is not null
+qualify sector_rank <= 3
+order by session_date, sector_rank
+```
+3. ⏱️ **25 min — timed dbt change** (`marts/fct_event_labels.sql`): AFC v9.1 §7B.4's primary label — HIT if the highest high over days 1–3 reaches the entry open × 1.115 (net +10% after the 1.5% round-trip cost). Day 1 is the entry session itself.
+```sql
+with bars as (
+    select ticker, session_date, open, high,
+           row_number() over (partition by ticker order by session_date) as n
+    from {{ ref('stg_bars') }}
+),
+entries as (
+    select e.event_id, e.ticker, e.entry_session, b.open as entry_open, b.n as entry_n
+    from {{ ref('fct_event_entries') }} e
+    join bars b on b.ticker = e.ticker and b.session_date = e.entry_session
+)
+select en.event_id, en.ticker, en.entry_session, en.entry_open,
+       max(b.high)  as max_high_d1_d3,
+       count(*)     as days_observed,
+       case when count(*) < 3 then null                       -- horizon not complete yet:
+            else max(b.high) >= en.entry_open * 1.115 end      -- unknown, never FALSE
+            as is_hit
+from entries en
+join bars b
+  on b.ticker = en.ticker
+ and b.n between en.entry_n and en.entry_n + 2
+group by en.event_id, en.ticker, en.entry_session, en.entry_open
+```
+Expect almost no HITs: the bars are a random walk with ~2% daily moves, so +11.5% in three sessions is rare. That rarity *is* the base rate AFC measures lift against. To see a TRUE once, hand-edit one high in the seed and rebuild.
 
 ### 📌 DAY 71 — Monday, September 28
 **Morning:** 🆕 **dbt Advanced Learning Paths — continue** (started Day 67): materializations and the testing chapters. ~~IBM GenAI PC — enroll~~ ⏸️ Q2. Then scope PolicyPulse: `docs/SCOPE_v0.1.md` (S1 boundary above, S1→S3 arc, corpus rule) — 30-min cap.
@@ -187,21 +248,21 @@ import structlog
 log = structlog.get_logger()
 
 
-@dataclass(frozen=True)          # frozen = immutable — chunks are facts, not state
+@dataclass(frozen=True)  # frozen = immutable — chunks are facts, not state
 class Chunk:
-    doc_id: str                  # provenance: which document...
-    chunk_index: int             # ...and where in it. Provenance is what
-    text: str                    # makes CITATIONS possible — and citations
-    heading: str | None          # are what make RAG auditable. Non-negotiable
-                                 # in a compliance-adjacent system.
+    doc_id: str  # provenance: which document...
+    chunk_index: int  # ...and where in it. Provenance is what
+    text: str  # makes CITATIONS possible — and citations
+    heading: str | None  # are what make RAG auditable. Non-negotiable
+    # in a compliance-adjacent system.
 
 
 def chunk_markdown(
     doc_id: str,
     text: str,
-    max_chars: int = 1200,       # starting policy — the eval harness will judge it
-    overlap: int = 150,          # overlap so a fact straddling a boundary
-) -> list[Chunk]:                # survives in at least one chunk whole
+    max_chars: int = 1200,  # starting policy — the eval harness will judge it
+    overlap: int = 150,  # overlap so a fact straddling a boundary
+) -> list[Chunk]:  # survives in at least one chunk whole
     """Heading-aware chunking: split on ## sections first (semantic units
     beat arbitrary character windows), then window any oversized section
     with overlap. Simple, inspectable, testable — v0 by design; fancier
@@ -224,7 +285,7 @@ def chunk_markdown(
             chunks.append(Chunk(doc_id, len(chunks), piece, current_heading))
             if start + max_chars >= len(body):
                 break
-            start += max_chars - overlap        # step back by overlap
+            start += max_chars - overlap  # step back by overlap
 
     log.info("doc_chunked", doc_id=doc_id, n_chunks=len(chunks))
     return chunks
@@ -260,15 +321,15 @@ client = chromadb.PersistentClient(path="data/chroma")
 def index_chunks(chunks: list[Chunk]) -> None:
     collection = client.get_or_create_collection(
         name="policies",
-        metadata={"hnsw:space": "cosine"},     # cosine similarity — Day 67's
-    )                                          # by-hand math, now infrastructure
-    collection.upsert(                          # upsert = insert-or-update:
-        ids=[f"{c.doc_id}:{c.chunk_index}" for c in chunks],   # re-runs are
-        documents=[c.text for c in chunks],                     # idempotent —
-        metadatas=[                                             # a pipeline
-            {"doc_id": c.doc_id, "heading": c.heading or ""}    # virtue you'll
-            for c in chunks                                     # formalize in
-        ],                                                      # Stage 2 Airflow
+        metadata={"hnsw:space": "cosine"},  # cosine similarity — Day 67's
+    )  # by-hand math, now infrastructure
+    collection.upsert(  # upsert = insert-or-update:
+        ids=[f"{c.doc_id}:{c.chunk_index}" for c in chunks],  # re-runs are
+        documents=[c.text for c in chunks],  # idempotent —
+        metadatas=[  # a pipeline
+            {"doc_id": c.doc_id, "heading": c.heading or ""}  # virtue you'll
+            for c in chunks  # formalize in
+        ],  # Stage 2 Airflow
     )
     # Chroma embeds automatically with its default model. GOOD ENOUGH for v0;
     # embedding-model choice is a later, eval-refereed decision. Ship first.
@@ -279,11 +340,8 @@ def retrieve(query: str, k: int = 4) -> list[dict]:
     collection = client.get_or_create_collection("policies")
     res = collection.query(query_texts=[query], n_results=k)
     return [
-        {"text": doc, "doc_id": meta["doc_id"], "heading": meta["heading"],
-         "distance": dist}
-        for doc, meta, dist in zip(
-            res["documents"][0], res["metadatas"][0], res["distances"][0]
-        )
+        {"text": doc, "doc_id": meta["doc_id"], "heading": meta["heading"], "distance": dist}
+        for doc, meta, dist in zip(res["documents"][0], res["metadatas"][0], res["distances"][0])
     ]
 ```
 Index the corpus; run 5 hand-queries; eyeball whether the right chunks surface. Your domain brain is the v0 eval.
@@ -293,7 +351,7 @@ Index the corpus; run 5 hand-queries; eyeball whether the right chunks surface. 
 **Morning:** 🆕 **AE interview reps** — 45 min of SQL on your own DataVault marts (top-N per group, gaps-and-islands, dedupe with `ROW_NUMBER`) + 45 min explaining, out loud and then in writing, how DataVault's dbt project is structured and why (staging / intermediate / marts, the tests, the Python-ingests-dbt-decides split). Those are the two things AE loops test. ~~IBM PC~~ · **Evening:** 70 min — **Answer with citations**: `src/policypulse/answer.py` — retrieve top-k → build a prompt embedding the chunks with their doc_id/heading labels → system prompt commands: *answer ONLY from provided context; cite [doc_id › heading] for each claim; if the context doesn't contain the answer, say exactly that* (the say-I-don't-know clause is the anti-hallucination pressure valve — your Improving-Accuracy course, applied) → pydantic-validated `CitedAnswer {answer, citations: list[str], answerable: bool}` · 30 min 🆕 DataVault: contracts on the remaining models + CI green (~~MCP primer~~ → Q2) · journal + commit
 
 ### 📌 DAY 75 — Friday, October 2
-**Morning:** ~~DL.AI Pro — download every notebook~~ (the Pro month moves to Q2, C58). 🆕 45 min **AE interview reps #3** — one timed SQL problem and one timed dbt change on your own repo · 45 min 🚦 **Job lane** — 2 warm messages, Tier 1 first (*"I just shipped a tested dbt project on synthetic retirement-distribution data — would you be open to a 15-minute look at how your team does it?"*).
+**Morning:** ~~DL.AI Pro — download every notebook~~ (the Pro month moves to Q2, C58). 🆕 45 min **AE interview reps #3** — one timed SQL problem and one timed dbt change on your own repo (📈 its market-data twin, #14, ran in this week's extra-time thread) · 45 min 🚦 **Job lane** — 2 warm messages, Tier 1 first (*"I just shipped a tested dbt project on synthetic retirement-distribution data — would you be open to a 15-minute look at how your team does it?"*).
 **Evening:** 60 min — corpus to 12+ docs; re-index; retrieval quality spot-check · 40 min — **golden questions v1**: 20+ Q&A cases against YOUR corpus (`evals/golden_policy.json`), including 4+ deliberately *unanswerable* questions (expected: `answerable: false` — refusing to invent is a first-class behavior to test) · journal + commit
 
 ### 📌 DAY 76 — Saturday, October 3 (5.5h)
@@ -347,9 +405,15 @@ Week summary · publish post #11 · 🆕 **make `policypulse` public** (gitleaks
 - [ ] Track B (public repo): started — uv migration + clone-slug fix (finishes in Q2)
 - [ ] Automation win #1 documented (**evidence file** keystone) — ⏰ drafted Day 77, finalized Day 82
 - [ ] ~~Pro month cancelled~~ → the Pro month runs in Q2 (C58) · 🆕 DataVault contracts green
-- [ ] 🆕 dbt Advanced ~75% · AB-620 ~50% (extra time only) · Post #12 · MONTH-3 RETRO
+- [ ] 🆕 dbt Advanced ~75% · ~~AB-620 ~50% (extra time only)~~ → 📈 Crucible data spike part 1 (extra time, v3.3) · Post #12 · MONTH-3 RETRO
 - [ ] 🚦 Job lane: 2+ more applications · 2 warm conversations · tracker at n/25
 - [ ] 🆕 Trading lane: AFC Phase-1 kickoff (Day 83) — CI Tier 0 green, README replaced
+
+> 📈 **Extra-time trading thread — Week 12 (~2 h · v3.3, C64): Crucible's data spike, part 1.** Crucible v3.1 §5.4 (C63) replaces the assumed free price stack with a measured one. This week fills half of the spike table; part 2 is in the Weeks 13–14 plan.
+> - **Where:** a private folder (or `market-snapshots/spike/`). Vendor rows never touch a public repo, and Tiingo's Starter licence is internal use only. The table you publish later — `notes/trading/crucible-data-spike.md` — holds counts, dates and yes/no answers, never prices.
+> - **Pull** SPY + the 11 sector funds (XLB, XLC, XLE, XLF, XLI, XLK, XLP, XLRE, XLU, XLV, XLY), daily, as far back as each source goes, from: **Stooq** (its daily CSV download), **Tiingo Starter** (free key; the daily-prices endpoint) and **Alpaca Basic** (your Week-2 key; the historical stock-bars endpoint, `timeframe=1Day`, `adjustment=all`).
+> - **Record per source:** rows returned and earliest date · adjusted, raw or both, and whether split/dividend actions come with it · how the 12-symbol pull met the rate limit · the licence line in one sentence. If Stooq returns empty files, that is a finding, not a failure: write it down.
+> - Columns 3 and 6 of the §5.4 table (delisted coverage, close-price agreement) and the earnings endpoints are part 2.
 
 ### 📌 DAY 78 — Monday, October 5
 **Morning:** 🆕 **AFC build-sheet read** — §0–§7 and §12–§15 of `ATTENTION_FLOW_CATALYST_SCOPE_v9_1_STAGE1.md`: the parts Day 83 executes (repo layout, CI tiers, the Week-1 gate). ~~IBM PC~~. **Evening:** 70 min — gate-driven improve cycle: the worse of the two code-graded metrics → one change (chunk size? k?) → re-run → eval-log before/after. One variable at a time — otherwise you learn nothing from the delta. · 30 min 🆕 dbt Advanced (~~AB-620~~ → extra time) · journal + commit
@@ -370,7 +434,7 @@ remember to call at each site. The choke-point pattern.
 
 import re
 
-SSN_RE = re.compile(r"\b\d{3}-?\d{2}-?\d{4}\b")     # P4E C3's regex, deployed
+SSN_RE = re.compile(r"\b\d{3}-?\d{2}-?\d{4}\b")  # P4E C3's regex, deployed
 
 REDACT_KEYS = {"ssn", "tin", "participant_name", "dob", "account_number"}
 
@@ -383,6 +447,7 @@ def redact_pii(logger, method_name, event_dict):
         elif isinstance(event_dict[key], str):
             event_dict[key] = SSN_RE.sub("***SSN***", event_dict[key])
     return event_dict
+
 
 # Wired into the processor chain BEFORE the renderer; ProcessorFormatter's
 # foreign_pre_chain gets it too, so even httpx/SDK logs pass through.
@@ -438,7 +503,7 @@ Treat this day as a boundary, not a workday. Before you log off for the last tim
 > 1. **Archive, don't delete.** In the existing public `attention-flow-catalyst` repo, move the 2025 SQLite-era code to `archive/2025-v8/` untouched (the same rule as the Weeks 1–2 Step-7 checkpoint), then bootstrap package `afc` at the root on the full standard: uv + `uv.lock`, `src/afc/` + `py.typed`, ruff / mypy / pytest, structlog, pydantic-settings, pre-commit (the C21 set, `rev:` pins refreshed today), CI Tier 0.
 > 2. **Replace the README** with the v9.1 positioning in P/C/A order and an honest status — *"Phase 1 in progress: eval-first core."* The public page stops advertising a project you no longer build.
 > 3. **ADRs 0001–0002** — single repo, package `afc` (D-1); the EDGAR retrieval adapter (D-2), including SEC fair-access rules (declared User-Agent, rate limit).
-> 4. **Dependency-spike checklist** — written, not run: every pin that must resolve on Python 3.14 (the sheet's §6.2 table is the list).
+> 4. **Dependency-spike checklist** — written, not run: every pin that must resolve on Python 3.14 (the sheet's §6.2 table is the list). 📈 **+10 min, twin #15 (v3.3, C64):** add a *B1 data spike (sheet Week 7)* section — yfinance has thrown rate-limit errors since April 2025 with only partial fixes (GitHub issue #2422); name **Tiingo Starter** (internal-use licence: the repo holds code and synthetic fixtures, never vendor rows) and **Alpaca Basic** (bars from 2016) as fallbacks; and carry over C63's findings (Alpha Vantage's daily-adjusted series is premium; Stooq retrievals reported empty since late March 2026).
 >
 > **Gate to leave the session:** CI Tier 0 green on the new layout. The rest of the sheet's Week 1 (EDGAR adapter + cache + provenance) is Q2's first trading block.
 > ⚖️ Positioning stays exactly as the roadmap words it (C46): read-only research reporting lift over a base rate — no alpha, Sharpe or return claims, in the README or in any post.
@@ -458,14 +523,16 @@ Treat this day as a boundary, not a workday. Before you log off for the last tim
 5. SUSTAINABILITY: 4:30 AM energy trend · family friction · what changes
 6. Q2 SHAPE: 🆕 the C58 Applied-AI block (Pro month + Triad judge gate
    + DeepEval + harness hardening + MCP primer) · AI-901 sprint (Weeks
-   13–14) · IBM spine START (deferred in v3.0) · AB-620 — GO or HOLD? (now conditional,
-   self-funded ~$165 — C37) · PolicyPulse S1 hardening · public
+   13–14) · IBM spine START (deferred in v3.0) · 📈 AB-620 — committed
+   (C42), extra-time study resumes Week 15 (C64), self-funded ~$165
+   · PolicyPulse S1 hardening · public
    1099_reconciliation_pipeline remediation · Google Git/GitHub course
    (row 3.5, ~8 hrs — unscheduled, needs a slot) · DataVault S2 path
    (the Stage 1 EVIDENCE GATE) · Q1 2027 application runway
-7. EXTRA-TIME THREADS: AB-620 + Google Git — did they hold at ~2 hrs/wk
-   each, or did they leak into the 25? (If actual > ~29 hrs/wk: PAUSE both.
-   Flagships never pause first.)
+7. EXTRA-TIME THREADS: 📈 trading thread (was AB-620) + Google Git — did
+   they hold at ~2 hrs/wk each, or did they leak into the 25? (If actual
+   > ~29 hrs/wk: PAUSE both. Flagships never pause first.) Snapshot job:
+   sessions missed so far (C64 falsifier: > 5 in Weeks 10–13 → stop)
 8. 🔴 POST-EMPLOYMENT SHAPE: hours available now that the job has ended
    — does the 25 hrs/week model change? Income runway? This is the
    biggest single input to the Q2 plan and it did not exist when this
@@ -474,7 +541,10 @@ Treat this day as a boundary, not a workday. Before you log off for the last tim
    n/25 (falsifier) · screens · warm conversations · referrals · which
    tier answered · what the screens asked about
 10. 🆕 TRADING LANE: rehearsal + AFC kickoff state · what weekly share
-   AFC Phase 1 gets in Q2, and what pauses to make room
+   AFC Phase 1 gets in Q2, and what pauses to make room · 📈 twins done
+   vs queued (twin-queue.md) · 📈 MIGRATION: which market_rehearsal
+   pieces move to afc.primitives, AFC B6 (test_knowledge_time), or
+   Crucible's S2 lakehouse — and which stay practice
 11. 🆕 C55 / C56 falsifiers: bridge-tier screen rate vs AE/DE in the
    same window (C55) · did the soft trigger land by Week 12 (C56)?
 12. 🆕 CU BOULDER BRIDGE (C44, Nov–Feb, inside the 25): which threads
@@ -503,7 +573,8 @@ Treat this day as a boundary, not a workday. Before you log off for the last tim
 - [ ] Retro-migration: uv done · structlog PF + redaction done · C4-L1 exists
 - [ ] Automation win #1 documented
 - [ ] ~~Pro month cancelled~~ (Q2) · 🆕 contracts green
-- [ ] AB-620 ~50% (extra time) · CS50P Wk 5
+- [ ] ~~AB-620 ~50% (extra time)~~ → 📈 extra time: twins #13–#14 · spike part 1 table half-filled · CS50P Wk 5
+- [ ] 📈 Twins #15–#16: B1 data section in the spike checklist · retro migration question answered
 - [ ] Posts #11–12 · meetup ✓
 - [ ] MONTH-3 RETRO written & shared
 - [ ] 🆕 AFC kickoff: CI Tier 0 green, README replaced
@@ -513,6 +584,8 @@ Treat this day as a boundary, not a workday. Before you log off for the last tim
 ---
 
 ## 🔭 WHAT COMES NEXT (Quarter 2 preview — plans generated AFTER your retro)
+
+> 📈 **v3.3 (13 Oct 2026, C64):** at your request, **Weeks 13–14 are already planned** (`WEEK_13_14_ACTIVATION_PLAN_v10.md`) — the AI-901 sprint, DataVault S2 orchestration start, AFC's first build-sheet slice, the twin catch-up block and the trading thread's last two weeks. The retro may recalibrate it; everything after Week 14 is still generated from the retro.
 
 ### 🆕 v3.0 — Q2 shape (input for the Month-3 retro, not a commitment yet)
 - **Job lane:** the narrow search continues in waves until the falsifier (25 targeted applications, zero screens) or an offer; the **broad search opens at the full DataVault S2 ship (~Q1 2027)**. Bridge-tier applications run under **C55** (applied), tracked separately for its falsifier.
@@ -526,7 +599,7 @@ Treat this day as a boundary, not a workday. Before you log off for the last tim
 **Original v2.x preview (still the roadmap baseline):** Months 4–6, per the roadmap: the IBM spine intensifies (its RAG/LangChain/watsonx middle) · PolicyPulse S1 hardening toward "shipped with eval gates" (the Stage 1 deliverable) · Streamlit enters (30 Days of AI — Correction 20's row 11.5) as the flagships' demo surface · CS50x/CS50P completion track.
 
 **🔄 Re-anchored by Corrections 22 / 32 / 33 / 37 — four items changed:**
-- ~~AB-620 exam~~ → ✅ **GO** (your ruling), **self-funded ~$165**, run as an **extra-time thread outside the 25 hrs/week**. ⭐ **Book the exam AFTER 9 Oct**, not before — post-employment is when the capacity actually exists.
+- ~~AB-620 exam~~ → ✅ **GO** (your ruling), **self-funded ~$165**, run as an **extra-time thread outside the 25 hrs/week**. ⭐ **Book the exam AFTER 9 Oct**, not before — post-employment is when the capacity actually exists. → 📈 **v3.3 (C64):** the extra-time study itself moves to **Week 15**, after the AI-901 exam; Weeks 9–14 of the slot run the trading thread.
 - ~~retro-migration pass completed (internal)~~ → ✅ **FULL retro-migration approved** (your ruling), split into **Track A (internal, hard stop Day 82)** and **Track B (public `1099_reconciliation_pipeline`, runs to completion in Q2)**. Track B is the complete production-grade project — all 11 items in the table above, finished, not started. **This is a named Q2 deliverable now, not a backlog item.**
 - ~~automation win #2~~ → there is no Month 4–6 employment in which to earn one. **Both wins must be captured before Day 82.**
 - ~~the Month-6 scope-change conversation with Jen — the deliverable every artifact this quarter was quietly building toward~~ → ❌ **retired**. The deliverable everything now builds toward is the **Q1 2027 external application package**: Analytics Engineer first door, Data Engineer parallel, exiting Stage 1 on the **evidence gate** (DataVault S2 hardening), not on an employment event.
@@ -538,4 +611,4 @@ Treat this day as a boundary, not a workday. Before you log off for the last tim
 - **The reading layer** (Correction 34) is live: finish *Robust Python* and *AI Engineering* in Q2; *Python Testing with pytest 2e* is the secondary. Buy at stage entry, re-verify editions.
 
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–59) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026) · v3.2 readiness gate (C59, 9 Oct 2026). No other roadmap edits made; propose→approve governance applies. Q2 plans will be generated from your actual Month-3 retro, not assumptions.*
+*Aligned to Career Roadmap v10.0 (Corrections 1–64) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026) · v3.2 readiness gate (C59, 9 Oct 2026) · v3.3 trading lane expansion (C63–C64, 13 Oct 2026). No other roadmap edits made; propose→approve governance applies. Q2 plans will be generated from your actual Month-3 retro, not assumptions.*
