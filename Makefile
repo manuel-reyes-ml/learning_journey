@@ -11,7 +11,7 @@ PYTHON ?= uv run python
 PRE_COMMIT ?= uv run pre-commit
 
 SPELLER := courses/cs50_harvard/code/05_data_structures/speller/py_src
-CODE_PATHS := src scripts llm-api-smoke-test $(SPELLER)
+CODE_PATHS := foundations scripts llm-api-smoke-test $(SPELLER)
 
 .DEFAULT_GOAL := help
 
@@ -75,3 +75,4 @@ format:  ## Format the real code paths
 test:  ## Run every workspace member's test suite
 	uv run pytest llm-api-smoke-test/tests
 	uv run pytest $(SPELLER)/tests
+	uv run pytest foundations/tests
