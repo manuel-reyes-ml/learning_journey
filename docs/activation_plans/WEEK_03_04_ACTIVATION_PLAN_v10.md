@@ -1,9 +1,10 @@
 # 🚀 WEEKS 3–4 MASTER ACTIVATION PLAN (v10.0)
+
 ## Internal AI Builder Track | August 3–16, 2026
 
-**Document Version:** 3.2 — 🎯 **READINESS GATE** (9 Oct 2026, roadmap C59) on the 3.1 ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, C58) and the 3.0 job-first re-cut · fresh 12-week template from Mon 20 Jul 2026
+**Document Version:** 3.3 — 📈 **TRADING LANE EXPANSION** (13 Oct 2026, roadmap C63–C64) on the 3.2 🎯 **READINESS GATE** (9 Oct 2026, roadmap C59) on the 3.1 ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, C58) and the 3.0 job-first re-cut · fresh 12-week template from Mon 20 Jul 2026
 **Covers:** Monday, August 3 – Sunday, August 16, 2026 (Stage 1 · Month 1 → 2 · Weeks 3–4)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–59** (C58 applied 8 Oct 2026 · C59 applied 9 Oct 2026) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–64** (C58 applied 8 Oct 2026 · C59 applied 9 Oct 2026 · 📈 C63–C64 applied 13 Oct 2026; C60–C62 do not touch these weeks) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
 **Prerequisite:** Weeks 1–2 metrics ≥80% (below that: close gaps in this fortnight's flex slots first)
 **Weekly Hours:** 25 (same block schedule)
 
@@ -11,20 +12,28 @@
 
 ---
 
-## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
-Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–59. **The full rationale — lanes, milestone calendar, trading-lane and job-lane rules — is the v3.0 block in Weeks 1–2.** What changes here:
 
-| Lane | This fortnight in v3.0 |
-|---|---|
-| L1 Foundations | Unchanged — and Mode SQL Intermediate is now explicitly the **dbt on-ramp** (dbt starts Week 5) · ⚖️ **v3.1:** **Kimball Ch. 1–3** (the owned book, C57 reading map) and CTE practice take the freed AI-901 slots |
-| L2 AE/DE flagship | Unchanged — recon-toy rehearses DataVault's shape |
-| L3 Applied AI | AI Python videos · ~~AI-901 kickoff~~ → ⏭️ **Q2, Weeks 13–14** (C58) |
-| L4 Trading | Nothing yet (Alpaca parked since Week 2) |
-| L5 Job search 🆕 | **Day 21:** target list v0 — 15 companies across three tiers · **Day 28:** first informational-conversation request (no job ask) |
+
+## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
+
+Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–64. **The full rationale — lanes, milestone calendar, trading-lane and job-lane rules — is the v3.0 block in Weeks 1–2.** What changes here:
+
+
+| Lane              | This fortnight in v3.0                                                                                                                                                                                            |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| L1 Foundations    | Unchanged — and Mode SQL Intermediate is now explicitly the **dbt on-ramp** (dbt starts Week 5) · ⚖️ **v3.1:** **Kimball Ch. 1–3** (the owned book, C57 reading map) and CTE practice take the freed AI-901 slots |
+| L2 AE/DE flagship | Unchanged — recon-toy rehearses DataVault's shape                                                                                                                                                                 |
+| L3 Applied AI     | AI Python videos · ~~AI-901 kickoff~~ → ⏭️ **Q2, Weeks 13–14** (C58)                                                                                                                                              |
+| L4 Trading        | Nothing yet (Alpaca parked since Week 2) · 📈 **v3.3:** three twins — Day 15 (market-export parsing), Day 21 (Tier-3 targets), Day 26 (a market column in the Kimball notes)                                      |
+| L5 Job search 🆕  | **Day 21:** target list v0 — 15 companies across three tiers · **Day 28:** first informational-conversation request (no job ask)                                                                                  |
+
 
 ---
 
+
+
 ## 📋 TABLE OF CONTENTS
+
 1. [Where You Stand](#-where-you-stand-after-week-2)
 2. [Strategic Context](#-strategic-context)
 3. [WEEK 3: Data Structures + SQL Joins + AI Python (Aug 3–9)](#-week-3-aug-39)
@@ -36,12 +45,14 @@ Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to
 
 ---
 
+
+
 ## 🔄 REALIGNMENT PASS — ROADMAP CORRECTIONS 21–43 (applied 27 Aug 2026)
 
 Standing rulings from Corrections 21–43, carried into the v3.0 template (Corrections 44–54 are applied in the v3.0 block above and in Weeks 1–2). The delta that matters for this fortnight:
 
 - **🔴 The reimbursement thread in this plan is void.** Corrections 22, 32 and 37 rule **every certification self-funded** — no employer reimbursement applies to any credential in the canon — and Correction 22 closes the Month-6 scope-change conversation entirely (**employment ends 9 Oct 2026**). Every "pre-approval," "claim filed" and "reimbursement" task in this fortnight is struck below. AI-901 is a **$99 self-funded purchase**.
-- **⚠️ AB-620 is now conditional** (Correction 37), not an automatic cert #2. It is committed only if the Microsoft-ecosystem specialization decision goes that way — at ~$165, self-funded.
+- **⚠️ AB-620 is now conditional** (Correction 37), not an automatic cert #2. It is committed only if the Microsoft-ecosystem specialization decision goes that way — at ~$165, self-funded. → 📈 v3.3 text fix: superseded. **C42** (Aug 2026) moved AB-620 to committed; **C64** (13 Oct 2026) moves its extra-time study to Week 15, after AI-901.
 - **🐍 Python 3.14** is the floor (Correction 28), standard GIL build only. The `python:3.12-slim` Docker examples below are corrected in place; see Weeks 1–2 retrofit item **R2** for the repo re-pin.
 - **🪝 pre-commit** is now a named production-standard tool (Correction 21) — it belongs on `recon-toy` too, not just `learning-journey`. Same Tier A set; `recon-toy` gets Tier B `nbstripout` only if it carries notebooks.
 - **📐 ADR 0001 stands.** Correction 14's C4 + ADR standard is unchanged by anything in 21–43; what this fortnight built is still correct.
@@ -49,17 +60,23 @@ Standing rulings from Corrections 21–43, carried into the v3.0 template (Corre
 
 ---
 
+
+
 ## 📊 WHERE YOU STAND AFTER WEEK 2
 
 You have: a 2026-standard environment (uv + Cursor/OpenCode + VS Code + ruff + pytest), P4E Course 1 done, CS50x Weeks 0–3 in motion, Mode SQL basics, a typed + tested `retirement.py` module, mini-project #1 shipped, 2 public posts, and a two-week commit streak. The engine works. This fortnight adds the payload.
 
 ## 🧠 STRATEGIC CONTEXT
 
+
+
 ### Three threads converge
 
 1. **Data structures (P4E Course 2)** — lists, dictionaries, tuples: 80% of working Python for data. Every DataVault concept later (canonical models, reconciliation keys) is "dictionaries with discipline."
 2. **SQL becomes real (Mode Intermediate)** — JOINs and aggregation, the ~79%-of-DE-postings skill, practiced against **your own SQLite database**, not just tutorial tables. 🆕 **v3.0:** this SQL is also your **dbt on-ramp** — dbt (Weeks 5–6) is this same SQL, made modular, version-controlled and tested.
 3. **The AI bridge opens** — *AI Python for Beginners* (Andrew Ng) teaches Python in the context of prompting/API calls → on-ramp to *Building with the Claude API* in Weeks 5–6. ⚠️ **Correction 17 changes how you take it:** the DeepLearning.AI free tier is now videos-only (labs, quizzes, and the Accomplishment are Pro-gated). The ruling: **watch free, replicate every exercise yourself in your own Jupyter notebook** — which is better practice than the hosted lab anyway (no vibe coding, your scaffolding, your repo) — and defer the lab month + Accomplishment to the Sprint-1 Pro rental later this quarter (timed to the PolicyPulse eval-harness build; possibly $0 via the optional AMD free month). Do not subscribe to Pro now.
+
+
 
 ### 🤖 Agent policy — Phase 2 unlocks this fortnight
 
@@ -71,12 +88,14 @@ Per the Weeks 1–2 Agent Policy, you now graduate from tutor-mode-only to **boi
 
 > ⏭️ **v3.1 (C58): AI-901 moves to Q2 (Weeks 13–14)** as one Foundry-weighted prep sprint. Nothing in this section is scheduled this fortnight; it governs that sprint. The freed slots go to the **Kimball primer** — the modeling vocabulary DataVault is built in.
 
-
 Week 4 opens **Azure AI Fundamentals (AI-901)** study — **self-funded, $99** (Microsoft Fundamentals tier). ~~employer-reimbursed cert #1~~ · ~~every cert doubles as evidence for the Month-6 scope-change conversation with Jen~~ · ~~submit the reimbursement pre-approval through the Financial Industry Professional Education Program~~.
 
 > 🔄 **Corrections 22 / 32 / 37 — the funding premise is retired.** All certifications in the canon are **self-funded**; no employer reimbursement applies to any of them, and the Month-6 scope-change conversation **can no longer occur** (employment ends 9 Oct 2026). There is no pre-approval to file and no claim to submit. **Skip every reimbursement task in this fortnight.** The cert's job is unchanged — it is Tier-3 evidence for the **Q1 2027 external AE/DE applications** — but it is now a $99 purchase you make and expense to yourself. ⚠️ Note also that **AB-620 moved to conditional** (Correction 37): it is committed only if the Microsoft-ecosystem specialization decision goes that way, so do not treat it as an automatic next exam.
 
+
+
 ### New concepts
+
 ```
 Python: string parsing, file I/O, lists, dictionaries, tuples, random with seeds
 SQL:    INNER/LEFT JOIN, GROUP BY, aggregates, HAVING — via sqlite3
@@ -94,7 +113,11 @@ Model:  Kimball — business process · grain · facts vs dimensions · CTE-firs
 
 ---
 
+
+
 ## 🗓 WEEK 3 (Aug 3–9)
+
+
 
 ### Week 3 goals
 
@@ -110,12 +133,15 @@ Model:  Kimball — business process · grain · facts vs dimensions · CTE-firs
 
 ---
 
+
+
 ### 📌 DAY 15 — Monday, August 3
 
 **Morning:** P4E Ch.6 (strings) wrap-up + assignments.
 
 **Evening:**
-- [ ] 60 min — String parsing on messy finance text — the daily reality of data work. Create `src/learning_journey/day15_parsing.py`:
+
+- [x] 60 min — String parsing on messy finance text — the daily reality of data work. Create `src/learning_journey/day15_parsing.py`:
 
 ```python
 """Day 15: parsing messy financial text with string methods.
@@ -135,20 +161,20 @@ raw_lines = [
 
 for line in raw_lines:
     # STEP 1 — split the line into parts on the delimiter:
-    parts = line.split("|")            # → ["ACCT-10023 ", " GROSS: $12,450.00 ", " CODE: 7"]
+    parts = line.split("|")  # → ["ACCT-10023 ", " GROSS: $12,450.00 ", " CODE: 7"]
 
     # STEP 2 — clean each part. Chaining methods reads left→right:
-    account = parts[0].strip()                         # kill stray spaces
+    account = parts[0].strip()  # kill stray spaces
     # [0] is INDEXING: Python counts from 0. parts[0] = first item.
 
     # STEP 3 — the amount needs surgery:
-    gross_text = parts[1].strip()                      # "GROSS: $12,450.00"
-    gross_text = gross_text.removeprefix("GROSS:")     # " $12,450.00"
+    gross_text = parts[1].strip()  # "GROSS: $12,450.00"
+    gross_text = gross_text.removeprefix("GROSS:")  # " $12,450.00"
     gross_text = gross_text.strip().removeprefix("$")  # "12,450.00"
-    gross_text = gross_text.replace(",", "")           # "12450.00" — commas break float()
-    gross = float(gross_text)                          # NOW it converts
+    gross_text = gross_text.replace(",", "")  # "12450.00" — commas break float()
+    gross = float(gross_text)  # NOW it converts
 
-    code = parts[2].split(":")[1].strip()              # split "CODE: 7" on ":", take part 1
+    code = parts[2].split(":")[1].strip()  # split "CODE: 7" on ":", take part 1
 
     print(f"{account}: ${gross:>10,.2f}  code={code}")
 
@@ -158,16 +184,54 @@ for line in raw_lines:
 # in a 1099 pipeline, a silently dropped row is a participant who doesn't
 # get a form. Boundary rule, always.
 ```
+
+- [ ] 📈 **Trading twin #3 (+15 min · v3.3, C64)** — same file, below the 1099 loop: a market-data export has the same disease. *(Day full? →* `notes/trading/twin-queue.md`*.)*
+
+```python
+# Trading twin: a market-data export has the same disease as the 1099 export.
+raw_bars = [
+    "ALFA | CLOSE: $4.12  | VOL: 1.2M",
+    "BRVO | CLOSE: $17.80 | VOL: 850K",
+    "CHRL | CLOSE: N/A    | VOL: 2.05M",  # a missing print: quarantine it, never zero it
+    "DLTA | CLOSE: $9.31  | VOL: 2.05M",
+]
+
+for line in raw_bars:
+    parts = line.split("|")
+    ticker = parts[0].strip()
+    close_text = parts[1].strip().removeprefix("CLOSE:").strip()  # "$4.12" or "N/A"
+    vol_text = parts[2].strip().removeprefix("VOL:").strip()  # "1.2M", "850K"
+
+    try:
+        close = float(close_text.removeprefix("$"))
+        if vol_text.endswith("M"):
+            volume = round(float(vol_text.removesuffix("M")) * 1_000_000)
+        elif vol_text.endswith("K"):
+            volume = round(float(vol_text.removesuffix("K")) * 1_000)
+        else:
+            volume = int(vol_text)
+    except ValueError:
+        print(f"  ⚠️  QUARANTINED {ticker}: cannot parse {line!r}")
+        continue
+
+    print(f"{ticker}: close={close:>8.2f}  volume={volume:>12,}")
+```
+
+> **Why** `round()` **and not** `int()`**:** in binary floating point, `2.05 * 1_000_000` is `2049999.9999999998`, and `int()` truncates it to **2,049,999**. Swap `round` for `int` and watch DLTA lose a share. A zero-filled price is the same sin as a silently dropped 1099 row: the bar must be **reported**, because a backtest that reads `N/A` as `0.0` books a 100% loss that never happened.
+
 - [ ] 40 min — Mode SQL: INNER JOIN section (transcribe to `sql/02_joins.sql` with your own comments)
 - [ ] 20 min — Journal + commit (`feat: messy-text parser with boundary handling`)
 
 ---
+
+
 
 ### 📌 DAY 16 — Tuesday, August 4
 
 **Morning:** Mode SQL: LEFT/RIGHT JOIN + join logic.
 
 **Evening:**
+
 - [ ] 60 min — **Build the synthetic two-system dataset** ⭐ — the DataVault reconciliation pattern in miniature. Create `src/learning_journey/projects/make_data.py`:
 
 ```python
@@ -199,12 +263,14 @@ def make_participants(n: int) -> list[dict]:
     """System A: the recordkeeper's participant file."""
     rows = []
     for i in range(n):
-        rows.append({
-            "participant_id": f"P{1000 + i}",
-            "name": f"{random.choice(FIRST)} {random.choice(LAST)}",
-            "salary": round(random.uniform(40_000, 180_000), 2),
-            "deferral_pct": round(random.uniform(0.03, 0.15), 3),
-        })
+        rows.append(
+            {
+                "participant_id": f"P{1000 + i}",
+                "name": f"{random.choice(FIRST)} {random.choice(LAST)}",
+                "salary": round(random.uniform(40_000, 180_000), 2),
+                "deferral_pct": round(random.uniform(0.03, 0.15), 3),
+            }
+        )
     return rows
 
 
@@ -219,26 +285,28 @@ def make_distributions(participants: list[dict]) -> list[dict]:
     rows = []
     for p in participants:
         if random.random() < 0.15:
-            continue                     # DEFECT 1: ~15% missing from System B
+            continue  # DEFECT 1: ~15% missing from System B
 
         gross = round(random.uniform(1_000, 50_000), 2)
         if random.random() < 0.10:
-            gross = round(gross + 0.10, 2)   # DEFECT 2: ~10% off-by-10-cents
+            gross = round(gross + 0.10, 2)  # DEFECT 2: ~10% off-by-10-cents
 
-        rows.append({
-            "participant_id": p["participant_id"],
-            "gross": gross,
-            "box7_code": random.choice(BOX7_CODES),
-            "dist_date": f"2026-{random.randint(1, 6):02d}-{random.randint(1, 28):02d}",
-            # :02d pads to 2 digits → "2026-03-07" not "2026-3-7".
-            # Consistent date formats: tiny habit, prevents entire bug species.
-        })
+        rows.append(
+            {
+                "participant_id": p["participant_id"],
+                "gross": gross,
+                "box7_code": random.choice(BOX7_CODES),
+                "dist_date": f"2026-{random.randint(1, 6):02d}-{random.randint(1, 28):02d}",
+                # :02d pads to 2 digits → "2026-03-07" not "2026-3-7".
+                # Consistent date formats: tiny habit, prevents entire bug species.
+            }
+        )
     return rows
 
 
 def write_csv(path: Path, rows: list[dict]) -> None:
     """-> None: this function performs an ACTION, returns nothing."""
-    path.parent.mkdir(parents=True, exist_ok=True)   # ensure folder exists
+    path.parent.mkdir(parents=True, exist_ok=True)  # ensure folder exists
     with path.open("w", newline="") as f:
         writer = csv.DictWriter(f, fieldnames=list(rows[0].keys()))
         writer.writeheader()
@@ -254,17 +322,22 @@ if __name__ == "__main__":
     print(f"System B: {len(distributions)} distributions")
     print(f"Planted gap: {len(participants) - len(distributions)} missing rows to find")
 ```
+
 Run it twice: `uv run python -m learning_journey.projects.make_data` — identical output both times. **That's the seed working.** Change 42 → 7, run, observe different data; change back to 42.
+
 - [ ] 40 min — AI Python for Beginners: Module 1 videos (free tier). ⚠️ Per Correction 17 the hosted labs are Pro-gated — so as you watch, **retype each exercise into your own notebook** `notebooks/ai-python-exercises.ipynb` and run it there. Your replication IS the lab; the Accomplishment waits for the Sprint-1 Pro month.
 - [ ] 20 min — Journal + commit (`feat: seeded synthetic two-system generator with planted defects`)
 
 ---
+
+
 
 ### 📌 DAY 17 — Wednesday, August 5
 
 **Morning:** P4E Ch.7 (files) videos + assignments.
 
 **Evening:**
+
 - [ ] 70 min — Load the CSVs into a real database. Create `src/learning_journey/projects/load_db.py`:
 
 ```python
@@ -285,14 +358,14 @@ DB_PATH = DATA_DIR / "recon.db"
 
 
 def load() -> None:
-    conn = sqlite3.connect(DB_PATH)      # opens (or creates) the DB file
+    conn = sqlite3.connect(DB_PATH)  # opens (or creates) the DB file
 
     # Schema = the table blueprint: column names + types.
     # SQL types here: TEXT (string), REAL (float).
     # PRIMARY KEY = unique identifier; the DB REFUSES duplicate ids.
     # The database enforcing rules itself (not trusting the app to behave)
     # is a core data-engineering idea — your first data contract.
-    conn.execute("DROP TABLE IF EXISTS participants")     # clean slate on rerun
+    conn.execute("DROP TABLE IF EXISTS participants")  # clean slate on rerun
     conn.execute("DROP TABLE IF EXISTS distributions")
     conn.execute("""
         CREATE TABLE participants (
@@ -318,7 +391,7 @@ def load() -> None:
         with (DATA_DIR / filename).open() as f:
             rows = list(csv.DictReader(f))
         cols = list(rows[0].keys())
-        placeholders = ", ".join("?" for _ in cols)   # "?, ?, ?, ?"
+        placeholders = ", ".join("?" for _ in cols)  # "?, ?, ?, ?"
         # The ?s are PARAMETERIZED values — sqlite fills them safely.
         # NEVER build SQL by pasting values into the string (f-strings here
         # = SQL injection, the classic security hole). ?s, always.
@@ -327,7 +400,7 @@ def load() -> None:
             [tuple(r.values()) for r in rows],
         )
 
-    conn.commit()          # commit = actually save the changes
+    conn.commit()  # commit = actually save the changes
     n_p = conn.execute("SELECT COUNT(*) FROM participants").fetchone()[0]
     n_d = conn.execute("SELECT COUNT(*) FROM distributions").fetchone()[0]
     print(f"Loaded {n_p} participants, {n_d} distributions → {DB_PATH.name}")
@@ -337,17 +410,22 @@ def load() -> None:
 if __name__ == "__main__":
     load()
 ```
+
 Run it, then open `recon.db` with the SQLite Viewer extension (works identically in Cursor) and browse both tables — seeing your data in a real DB is a milestone.
+
 - [ ] 30 min — Mode SQL: aggregation functions (COUNT/SUM/AVG/MIN/MAX)
 - [ ] 20 min — Journal + commit (`feat: sqlite loader with schema + parameterized inserts`)
 
 ---
+
+
 
 ### 📌 DAY 18 — Thursday, August 6
 
 **Morning:** CS50x Week 4 (memory) — notes on what Python hides from you.
 
 **Evening:**
+
 - [ ] 60 min — **First reconciliation queries** ⭐ — this is the job, in miniature. Create `sql/03_recon_v0.sql` and run each query via the SQLite viewer (or `sqlite3` CLI):
 
 ```sql
@@ -390,17 +468,22 @@ SELECT p.participant_id,
   FROM participants AS p
   JOIN distributions AS d USING (participant_id);
 ```
+
 **Verify against ground truth:** does Q1's row count match Day 16's "planted gap" printout? If yes — your recon logic is *proven*, not assumed. That verification loop is the whole discipline.
+
 - [ ] 40 min — AI Python for Beginners: Module 2 videos + replicate exercises in your notebook
 - [ ] 20 min — Journal + commit (`feat: recon queries v0 — missing rows + code aggregates`)
 
 ---
+
+
 
 ### 📌 DAY 19 — Friday, August 7
 
 **Morning:** P4E Ch.8 (lists) videos + assignments.
 
 **Evening:**
+
 - [ ] 60 min — Make the recon **testable from Python**. Add `src/learning_journey/projects/recon.py`:
 
 ```python
@@ -442,14 +525,16 @@ if __name__ == "__main__":
     conn = sqlite3.connect(DB_PATH)
     missing = missing_in_b(conn)
     print(f"⚠️  {len(missing)} participants missing from System B:")
-    for pid, name in missing:            # tuple UNPACKING: two names, one tuple
+    for pid, name in missing:  # tuple UNPACKING: two names, one tuple
         print(f"   {pid}  {name}")
     print("\nTotals by Box-7 code:")
     for code, n, total in totals_by_code(conn):
         print(f"   code {code}: {n:>3} rows   ${total:>12,.2f}")
     conn.close()
 ```
+
 And `tests/test_recon.py`:
+
 ```python
 """Prove the recon finds EXACTLY the planted defects — the golden-dataset test."""
 
@@ -460,7 +545,7 @@ from learning_journey.projects.recon import missing_in_b, totals_by_code
 
 
 def test_missing_count_matches_planted_gap():
-    load()                                   # rebuild DB fresh → deterministic (seed 42)
+    load()  # rebuild DB fresh → deterministic (seed 42)
     conn = sqlite3.connect(DB_PATH)
     n_participants = conn.execute("SELECT COUNT(*) FROM participants").fetchone()[0]
     n_distributions = conn.execute("SELECT COUNT(*) FROM distributions").fetchone()[0]
@@ -476,16 +561,21 @@ def test_every_code_total_positive():
         assert n > 0 and total > 0
     conn.close()
 ```
+
 `uv run pytest -v` → green.
+
 - [ ] 40 min — Mode SQL: GROUP BY + HAVING → finish Intermediate joins/aggregation
 - [ ] 20 min — Journal + commit (`test: recon proven against planted defects`)
 
 ---
 
+
+
 ### 📌 DAY 20 — Saturday, August 8 (5.5h)
 
 **Morning (5:00–8:30):**
-- [ ] 120 min — **Mini-project #2: `recon-toy` v0.1** ⭐ — wire it into ONE pipeline. Create `src/learning_journey/projects/recon_toy.py`:
+
+- [ ] 120 min — **Mini-project #2:** `recon-toy` **v0.1** ⭐ — wire it into ONE pipeline. Create `src/learning_journey/projects/recon_toy.py`:
 
 ```python
 """recon-toy v0.1 — end-to-end pipeline: generate → load → reconcile → report.
@@ -547,27 +637,38 @@ def run_pipeline() -> Path:
 if __name__ == "__main__":
     run_pipeline()
 ```
+
 Run: `uv run python -m learning_journey.projects.recon_toy` — then open the report file. **You just shipped your first pipeline.**
+
 - [ ] 60 min — Tests to 12+ total passing (add: report file exists + contains the missing count); ruff clean
 - [ ] 30 min — CS50x Week 4 pset start (timebox)
 
 **Evening:**
+
 - [ ] 60 min — AI Python for Beginners: continue videos + local replication
 - [ ] 45 min — Draft post #3 (artifact: the exceptions report screenshot — "I taught Python to catch the mismatches I used to catch by eye")
 - [ ] 15 min — Journal + commit (`feat: recon-toy v0.1 end-to-end pipeline`)
 
 ---
 
+
+
 ### 📌 DAY 21 — Sunday, August 9 (2h)
+
 - [ ] 30 min — `weekly-summaries/week-03.md` + full test run + 🆕 lane-hours total from the journal (C58 habit)
 - [ ] 25 min — Publish post #3
 - [ ] 25 min — Plan Week 4; check meetup calendar (Greenville Python ~2nd Tuesday → likely Aug 11 → RSVP)
 - [ ] 20 min — 🆕 **Job lane — target list v0** (private `targets.md`): 15 companies across the three tiers in the Weeks 1–2 v3.0 block, Tier 1 first (retirement recordkeeping / wealth-retirement fintech). Per company: why it fits, one data posting you found (title + the stack words it names — dbt? Snowflake? Airflow?), and the nearest warm path (HackGreenville member, alumni, former colleague). The stack words become your dbt study priorities; the warm paths become Week 4's first message.
+  - 📈 **Twin #4 (0 min · v3.3, C64):** at least **3 of the 15 are Tier 3** (capital-markets or trading fintech). For those, note whether the posting says *market data*, *reference data* or *security master* — the twins you show first follow those words.
 - [ ] 20 min — Journal + commit 🎉
 
 ---
 
+
+
 ## 🗓 WEEK 4 (Aug 10–16)
+
+
 
 ### Week 4 goals
 
@@ -588,11 +689,14 @@ Run: `uv run python -m learning_journey.projects.recon_toy` — then open the re
 
 ---
 
+
+
 ### 📌 DAY 22 — Monday, August 10
 
 **Morning:** P4E Ch.9 (dictionaries) videos.
 
 **Evening:**
+
 - [ ] 60 min — Dictionary drills on your own data. Create `day22_dicts.py`:
 
 ```python
@@ -636,28 +740,37 @@ by_id = {p["participant_id"]: p for p in participants}
 # a SQL JOIN does under the hood. Yesterday SQL; today you see the gears.
 
 sample_id = distributions[0]["participant_id"]
-print(f"{sample_id} belongs to {by_id[sample_id]['name']}, "
-      f"total distributed ${total_by_participant[sample_id]:,.2f}")
+print(
+    f"{sample_id} belongs to {by_id[sample_id]['name']}, "
+    f"total distributed ${total_by_participant[sample_id]:,.2f}"
+)
 ```
+
 - [ ] 40 min — 🆕 **SQL with CTEs** (v3.1): rewrite Day 18's recon queries as a `WITH` chain — one CTE per step (`participants`, `distributions`, `joined`, `missing`) — and save it as `sql/04_recon_ctes.sql`. That shape, one named step per CTE, is exactly a dbt model; you meet dbt in Week 5. ~~**AI-901 admin** ⭐ · 🔄 **REVISED (C22/32/37)**: open the official Microsoft Learn AI-901 path; skim the exam outline (know the map before studying).~~ → ⏭️ Q2 (C58). *The RPF note below still stands on its own — optional, 10 minutes, only if it has standalone value:* ~~then draft + send ONE email to the Financial Industry Professional Education Program administrator covering (1) AI-901 reimbursement pre-approval~~ — **void: all certs are self-funded and the employer channel is closed.** What survives is the second half only, and only if you still judge it worth an internal ask before 9 Oct: **the RPF written-determination question** (Correction 15's open item): the program schedule lists "RPF-1, RPF-2" — the superseded two-exam structure — while ASPPA's current course is a single six-module certificate, so ask in writing how the bonus maps onto the current structure *before* any enrollment. You are NOT enrolling in RPF now (it's a later, ~30–50 h item). ⚠️ The stated reason — *"while the pre-approval channel is open anyway"* — no longer holds; there is no pre-approval channel. Ask only if the written determination has standalone value to you. **BCC yourself — this email is evidence-file material.**
 - [ ] 20 min — Journal + commit (`feat: dict aggregation + index patterns`)
 
 ---
+
+
 
 ### 📌 DAY 23 — Tuesday, August 11
 
 **Morning:** P4E Ch.9 assignments.
 
 **Evening:** 🎪 **Greenville Python Meetup** (if tonight — confirm via HackGreenville directory). Arrive early; the casual first 30 min is where referral relationships form. Intro line: "career-changer building AI-focused data engineering skills — 15 years in financial ops." *If no meetup:* AI Python for Beginners modules + 30 min 🆕 Kimball Ch. 1 (start) ~~+ AI-901 Learn path~~.
+
 - [ ] 15 min — Journal (note 2 names you met) + commit
 
 ---
+
+
 
 ### 📌 DAY 24 — Wednesday, August 12
 
 **Morning:** ~~AI-901 Learn: Module 1~~ → ⏭️ Q2 (C58). 🆕 **Kimball, *The Data Warehouse Toolkit*, Ch. 1** — the DW/BI and dimensional-modeling primer. Notes in `notebooks/kimball-notes.md`: in your own words, what a **fact** and a **dimension** are, using recon-toy's two tables as the example (your Day-18 recon queries already join a fact to a dimension without naming them).
 
 **Evening:**
+
 - [ ] 70 min — **recon-toy v0.2: a dict-based matcher** — same business question as the SQL, answered in Python, so you can compare the two approaches honestly. Add `src/learning_journey/projects/matcher.py`:
 
 ```python
@@ -682,6 +795,7 @@ class MatchResult:
     that just holds data. First touch of classes — gentle on purpose;
     OOP proper arrives with CS50P.
     """
+
     matched: list[dict] = field(default_factory=list)
     missing_in_b: list[dict] = field(default_factory=list)
     amount_mismatch: list[dict] = field(default_factory=list)
@@ -707,7 +821,7 @@ def match_records(
 
     for p in participants:
         pid = p["participant_id"]
-        if pid not in dist_by_id:                 # `in` on a dict checks KEYS, fast
+        if pid not in dist_by_id:  # `in` on a dict checks KEYS, fast
             result.missing_in_b.append(p)
             continue
 
@@ -719,16 +833,20 @@ def match_records(
             # abs() = distance regardless of sign — the tolerance test.
             result.matched.append(p)
         else:
-            result.amount_mismatch.append({
-                "participant_id": pid,
-                "expected": expected,
-                "actual": actual,
-                "difference": round(actual - expected, 2),
-            })
+            result.amount_mismatch.append(
+                {
+                    "participant_id": pid,
+                    "expected": expected,
+                    "actual": actual,
+                    "difference": round(actual - expected, 2),
+                }
+            )
 
     return result
 ```
+
 Then a cross-check test in `tests/test_matcher.py`:
+
 ```python
 import csv
 import sqlite3
@@ -747,22 +865,25 @@ def _read(name):
 def test_python_and_sql_agree_on_missing():
     """Two independent implementations, one answer — or a bug exists."""
     load()
-    result = match_records(_read("system_a_participants.csv"),
-                           _read("system_b_distributions.csv"))
+    result = match_records(_read("system_a_participants.csv"), _read("system_b_distributions.csv"))
     conn = sqlite3.connect(DB_PATH)
     assert len(result.missing_in_b) == len(missing_in_b(conn))
     conn.close()
 ```
+
 - [ ] 30 min — AI Python for Beginners: continue videos + local replication
 - [ ] 20 min — Journal + commit (`feat: dict matcher with tolerance + sql cross-check test`)
 
 ---
+
+
 
 ### 📌 DAY 25 — Thursday, August 13
 
 **Morning:** Docker for Beginners (Coursera/KodeKloud): sections 1–2 with the in-browser labs.
 
 **Evening:**
+
 - [ ] 60 min — Docker hands-on locally (start Docker Desktop first):
 
 ```bash
@@ -782,17 +903,23 @@ docker run -it python:3.14-slim python
 docker ps -a       # list containers (running and exited)
 docker images      # list downloaded images
 ```
+
 Write 5 lines in your journal, own words: image vs container, and why a hiring manager cares that your repos ship one.
+
 - [ ] 40 min — P4E Ch.10 (tuples) videos + assignments
 - [ ] 20 min — Journal + commit (`docs: docker first-run notes`)
 
 ---
 
+
+
 ### 📌 DAY 26 — Friday, August 14
 
 **Morning:** ~~AI-901 Learn: Module 2~~ → ⏭️ Q2 (C58). 🆕 **Kimball Ch. 2** (45 min — *skim*: it is the technique catalog, your lookup reference for everything DataVault models; tag the 10 techniques you expect to use) + **Ch. 3, first half** (45 min — the four-step design process: business process → grain → dimensions → facts).
+📈 **Trading twin #5 (+10 min · v3.3, C64)** — add a *market* column to `notebooks/kimball-notes.md` beside the recon-toy one: a **daily bar** is a fact (grain: one security × one session) and the **security** is a dimension. Then tag three Ch. 2 techniques you will meet in trading data: **Type 2 SCD** (the security master — tickers get renamed and reused), **periodic snapshot** (end-of-day holdings or positions) and **accumulating snapshot** (an order: submitted → filled → settled — the same shape as a distribution's lifecycle). *(Day full? → twin queue.)*
 
 **Evening:**
+
 - [ ] 75 min — **Your first ADR** ⭐ (Corrections 8 + 14: docs/adr/ on every project — the artifact hiring managers can interrogate; now with an official learning row).
   **Step 1 — read the pack (~30 min, the ADR half of Core Course #17):** skim adr.github.io (template comparison), read Michael Nygard's original ADR article, and skim the intro of AWS's Prescriptive Guidance ADR guide (the AWS idiom doubles as DEA-C01 pre-fluency later). The C4 half of Course #17 waits for the 1099-pipeline retro-migration pass — one pass, per Correction 14's rollout rule.
   **Step 2 — pick ONE template and record it:** the roadmap's rule is MADR or Nygard, one only ("take ONE, never stack" applies to templates too). This plan uses **Nygard** — the simplest: Status / Context / Decision / Consequences — which is what the example below follows. Land 4–5 real records before ever considering a variant.
@@ -824,15 +951,20 @@ Keep both, permanently, with a test asserting they agree.
   real system this belongs in configuration, decided by the business.
   Flagged for the DataVault S1 design.
 ```
+
 > **Why ADRs matter (the 30-second version):** code shows *what* you built; ADRs show *why you chose it and what it cost* — precisely what FDE decomposition interviews probe. Ten honest lines per decision, immutable, numbered, stored in `docs/adr/` in the same repo as the code (ThoughtWorks' ADOPT-ring guidance, per Correction 14). Superseded ADRs get marked, never deleted — the same additive discipline as your roadmap. No certificate exists for this practice anywhere; the artifact in the repo IS the signal.
+
 - [ ] 25 min — Finish AI Python for Beginners videos → replicate the final exercises in `notebooks/ai-python-exercises.ipynb` → log the completion in your README's evidence list. Per the Correction 19 credential ladder this is **Tier 5 evidence** (skills/portfolio only, never a "Certifications" line) — and per Correction 17 the actual Accomplishment PDF arrives later, in the Sprint-1 Pro month, at zero extra study cost since progress persists on your account.
 - [ ] 20 min — Journal + commit (`docs: adr 0001 dual-matcher decision`)
 
 ---
 
+
+
 ### 📌 DAY 27 — Saturday, August 15 (5.5h)
 
 **Morning (5:00–8:30):**
+
 - [ ] 150 min — **recon-toy v0.3 hardening** — CLI + report integration + two production-standard upgrades:
 
 **Sanctioned agent rep (optional):** the argparse skeleton below is exactly the "mechanical boilerplate" Phase 2 allows. If you want the rep, ask OpenCode or Claude Code to draft it — then review the diff against the version printed here line-by-line, and make it match your standard. If you'd rather type it (also correct), do that. Either way, the `run_pipeline` refactor and its tests are yours alone.
@@ -848,11 +980,15 @@ if __name__ == "__main__":
         description="recon-toy: generate, load, reconcile, and report."
     )
     parser.add_argument(
-        "--participants", type=int, default=50,
+        "--participants",
+        type=int,
+        default=50,
         help="number of synthetic participants to generate (default: 50)",
     )
     parser.add_argument(
-        "--tolerance", type=float, default=0.01,
+        "--tolerance",
+        type=float,
+        default=0.01,
         help="amount tolerance in dollars for matching (default: 0.01)",
     )
     args = parser.parse_args()
@@ -862,17 +998,22 @@ if __name__ == "__main__":
     # changes; your tests tell you immediately if you broke anything.
     # THAT is why we wrote them.)
 ```
+
 Try it:
+
 ```bash
 uv run python -m learning_journey.projects.recon_toy --help          # free documentation!
 uv run python -m learning_journey.projects.recon_toy --participants 200
 ```
+
 Then two production-standard upgrades from the new roadmap corrections:
 
 **(a) structlog first touch (~30 min — Correction 16's named logging standard).** Your pipeline currently narrates itself with `print("[1/4] ...")`. Production systems emit *structured events* instead — data a machine can filter and query, not prose. Swap them:
+
 ```bash
 uv add structlog        # note: a runtime dependency, so no --dev this time
 ```
+
 ```python
 # At the top of recon_toy.py:
 import structlog
@@ -894,21 +1035,27 @@ log.info("recon_complete", missing=len(missing), mismatched=len(mismatch), match
 # processor as the choke point) arrives with the 1099-pipeline retro-migration
 # pass — today is just the mental model: events + key-values, never sentences.
 ```
+
 Replace all four stage prints with `log.info` events, run the pipeline, look at the output.
 
 **(b) README ordering practice (~15 min — Correction 18).** Rewrite recon-toy's README section with the roadmap's new flagship heading order: **① Production** (honest: "runs locally via one command, 15+ tests as blocking gates, structured logging" — no deployment claim, because none exists) then **③ Architecture** (the 4-stage pipeline, link to ADR 0001). **Deliberately omit ② Cost** — Correction 18's rule: never manufacture a Cost section where there's nothing to report. Practicing the frame honestly on a toy now means it's second nature when DataVault's README carries it for real.
 
 Also: integrate the Day-24 matcher's mismatch bucket into the exceptions report; 15+ tests passing; ruff + format clean; commit `pyproject.toml` + `uv.lock` together (the structlog add changed both).
+
 - [ ] 60 min — Docker for Beginners: sections 3–4 (Compose intro). Note for Weeks 5–6: when recon-toy gets its Dockerfile, it will use the roadmap's `uv sync --frozen` idiom (Correction 13) — install *exactly* what uv.lock records, byte-reproducible images. The lockfile you've been committing is what makes that possible.
 
 **Evening:**
+
 - [ ] 60 min — P4E Course 2 final wrap → **Course 2 complete** 🎉
 - [ ] 45 min — Draft post #4 (pillar: the ADR habit — "I started writing down my decisions like an engineering team of one")
 - [ ] 15 min — Journal + commit (`feat: recon-toy v0.3 — cli, mismatch report, hardened tests`)
 
 ---
 
+
+
 ### 📌 DAY 28 — Sunday, August 16 (2h)
+
 - [ ] 35 min — `weekly-summaries/week-04.md` + **Month-1 retro**: hours actual vs planned, 4:30 AM energy (honest), what to change in Month 2 · ⚖️ **priority check (C58)**: this fortnight's AE/DE hours ≥ Applied-AI hours? If not, Week 5's first Applied-AI slot goes to DataVault prep
 - [ ] 25 min — Publish post #4
 - [ ] 20 min — Read the Weeks 5–6 plan (generated after your Month-1 retro — so it fits reality, not assumptions)
@@ -916,6 +1063,8 @@ Also: integrate the Day-24 matcher's mismatch bucket into the exceptions report;
 - [ ] 20 min — Journal + commit 🎉
 
 ---
+
+
 
 ## 📊 2-WEEK SUCCESS METRICS
 
@@ -928,6 +1077,7 @@ Also: integrate the Day-24 matcher's mismatch bucket into the exceptions report;
 - [ ] rules file updated to Phase 2
 - [ ] recon-toy README uses ①Production/③Architecture order (Cost omitted)
 - [ ] 🆕 Job lane: list v0 (15) · 1 conversation requested
+- [ ] 📈 Twins #3–#5: market-export parser · 3+ Tier-3 targets · market column in Kimball notes (or queued)
 
 - [ ] ~~AI-901 started~~ (Q2) · 🆕 Kimball Ch. 1–2 read
 - [ ] recon-toy v0.3: pipeline + CLI + 15+ tests
@@ -943,13 +1093,16 @@ Also: integrate the Day-24 matcher's mismatch bucket into the exceptions report;
 
 ---
 
+
+
 ## 🔭 WHAT COMES NEXT
 
-**Weeks 5–6 (Aug 17–30):** *Building with the Claude API* (Anthropic Academy — free, first-party, official certificate: the Correction 19 ladder's noted Tier-5 anomaly with better provenance than its tier implies) — your first real SDK work, using the key from setup: messages, structured outputs, tool use; *AI Prompting for Everyone* (videos only suffice — the roadmap explicitly says don't spend a lab slot here); Mode SQL Advanced (window functions); Docker completed and **recon-toy gets its first Dockerfile using `uv sync --frozen`** (first full production-checklist pass); ~~AI-901 study intensifies toward a Month-2/3 exam date~~ (⏭️ v3.1: Q2); and the PolicyPulse S1 scoping session lands on the calendar. Further out: the **Sprint-1 DL.AI Pro month** (all nine S1+S2 lab rows batched, every notebook downloaded before the month ends, possibly $0 via the optional AMD free month) stays timed to the PolicyPulse eval-harness build ~~around Weeks 9–12~~ — ⏭️ **v3.1: Q2, with the RAG Triad build** — not before.
+**Weeks 5–6 (Aug 17–30):** *Building with the Claude API* (Anthropic Academy — free, first-party, official certificate: the Correction 19 ladder's noted Tier-5 anomaly with better provenance than its tier implies) — your first real SDK work, using the key from setup: messages, structured outputs, tool use; *AI Prompting for Everyone* (videos only suffice — the roadmap explicitly says don't spend a lab slot here); Mode SQL Advanced (window functions); Docker completed and **recon-toy gets its first Dockerfile using** `uv sync --frozen` (first full production-checklist pass); ~~AI-901 study intensifies toward a Month-2/3 exam date~~ (⏭️ v3.1: Q2); and the PolicyPulse S1 scoping session lands on the calendar. Further out: the **Sprint-1 DL.AI Pro month** (all nine S1+S2 lab rows batched, every notebook downloaded before the month ends, possibly $0 via the optional AMD free month) stays timed to the PolicyPulse eval-harness build ~~around Weeks 9–12~~ — ⏭️ **v3.1: Q2, with the RAG Triad build** — not before.
 
 🆕 **v3.0 changes to Weeks 5–6:** **dbt Fundamentals** (dbt Labs, free, ~5 hrs, certificate — roadmap Stage 2 row 5️⃣ taken early under C54's "S2 work done first") takes the slots *AI Prompting for Everyone* held, which moves to flex. The Day-41 Python 3.14 retrofit disappears (the template starts on 3.14), and that Saturday **opens the trading lane** with a small market-data dbt rehearsal. The Job lane adds a résumé skeleton.
 
 ⚖️ **v3.1 changes to Weeks 5–6 (C58):** the AI-901 modules, practice test and booking leave the fortnight (Q2). Their slots go to **Kimball Ch. 3–4** (declare DataVault's grain before you build it), **dbt Fundamentals** starting a day earlier, and the first **AE interview reps**.
 
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–59) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026) · v3.2 readiness gate (C59, 9 Oct 2026). No other roadmap edits made; propose→approve governance applies.*
+
+*Aligned to Career Roadmap v10.0 (Corrections 1–64) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026) · v3.2 readiness gate (C59, 9 Oct 2026) · v3.3 trading lane expansion (C63–C64, 13 Oct 2026). No other roadmap edits made; propose→approve governance applies.*
