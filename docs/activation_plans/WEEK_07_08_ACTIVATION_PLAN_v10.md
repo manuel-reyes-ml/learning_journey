@@ -1,9 +1,9 @@
 # 🚀 WEEKS 7–8 MASTER ACTIVATION PLAN (v10.0)
 ## Flagship Era Opens — DataVault S1 v0 + ⚖️ the Kimball Star | August 31 – September 13, 2026
 
-**Document Version:** 3.2 — 🎯 **READINESS GATE** (9 Oct 2026, roadmap C59) on the 3.1 ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, C58) and the 3.0 job-first re-cut · fresh 12-week template from Mon 20 Jul 2026
+**Document Version:** 3.3 — 📈 **TRADING LANE EXPANSION** (13 Oct 2026, roadmap C63–C64) on the 3.2 🎯 **READINESS GATE** (9 Oct 2026, roadmap C59) on the 3.1 ⚖️ **PRIORITY REBALANCE** (8 Oct 2026, C58) and the 3.0 job-first re-cut · fresh 12-week template from Mon 20 Jul 2026
 **Covers:** Monday, August 31 – Sunday, September 13, 2026 (Stage 1 · Month 2 · Weeks 7–8)
-**Aligned To:** Career Roadmap v10.0, **Corrections 1–59** (C58 applied 8 Oct 2026 · C59 applied 9 Oct 2026) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
+**Aligned To:** Career Roadmap v10.0, **Corrections 1–64** (C58 applied 8 Oct 2026 · C59 applied 9 Oct 2026 · 📈 C63–C64 applied 13 Oct 2026; C60–C62 do not touch these weeks) · Target: **Analytics Engineer first door · Data Engineer parallel** (C22 §3, C54)
 **Prerequisite:** Weeks 5–6 metrics ≥80% (non-negotiables: mini-project #3 + 🆕 dbt Fundamentals done + 🆕 grain declared — ~~AI-901 exam booked~~ moved to Q2, C58)
 **Weekly Hours:** 25 · ⚖️ v3.1: no exam this fortnight (AI-901 → Q2) · 🇺🇸 Labor Day (Mon Sep 7) is a day off work — an optional bonus deep-work block if family plans allow; never mandatory.
 
@@ -14,14 +14,14 @@
 ---
 
 ## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
-Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–59. Full rationale: the v3.0, v3.1 and v3.2 blocks in Weeks 1–2. **This fortnight builds most of the soft trigger — now due Day 63 (C58).**
+Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–64. Full rationale: the v3.0, v3.1 and v3.2 blocks in Weeks 1–2. **This fortnight builds most of the soft trigger — now due Day 63 (C58).**
 
 | Lane | This fortnight in v3.0 |
 |---|---|
 | L2 AE/DE flagship | DataVault scaffolds **with a dbt project from commit one**. **Python ingests** (generators → normalizers → pydantic row contract → quarantine → canonical Parquet); **dbt decides** (staging per source → union → recon buckets → Box-7 checks → findings), each rule with a dbt **unit test** · ⚖️ **v3.1:** modelled as a **Kimball star** (one fact + four conformed dimensions, `relationships` tests) in the freed exam hours; `dbt build` joins CI on **Day 52**; Track B #1–#2 on Day 54 |
 | L1 Foundations | CS50P starts · P4E C3 (unchanged) |
 | L3 Applied AI | Claude API course (tool use, caching) → ~55% · ~~AI-901 exam Week 8~~ → ⏭️ **Q2, Weeks 13–14** (C58) |
-| L4 Trading | Rest (exam fortnight) |
+| L4 Trading | ~~Rest (exam fortnight)~~ → 📈 v3.3 text fix: Rest — the **DataVault star fortnight** (the exam moved to Q2, C58) · one optional twin on the Labor Day bonus block (Day 50) |
 | L5 Job search | Day 49: list → 30 + one request · Day 56: one conversation held · résumé v0 filled with DataVault's first lines |
 
 ---
@@ -183,7 +183,7 @@ class CanonicalDistribution(BaseModel):
     ADR topic if ever revisited.
     """
 
-    source_system: str                       # "matrix" | "relius" — provenance
+    source_system: str  # "matrix" | "relius" — provenance
     participant_key: str = Field(min_length=1)
     plan_id: str
     gross_amount: Decimal = Field(gt=0)
@@ -367,7 +367,7 @@ RULES: dict[Box7Code, list[Rule]] = {
         (
             "early_dist_zero_withholding_flag",
             lambda d: d.fed_withholding == Decimal("0"),
-            "warning",       # not illegal — worth an operator's eyes
+            "warning",  # not illegal — worth an operator's eyes
         ),
     ],
     # Extend code-by-code, WITH a test per rule. Your day job is the
@@ -380,12 +380,14 @@ def validate(dist: CanonicalDistribution) -> list[dict]:
     findings = []
     for name, is_problem, severity in RULES.get(dist.box7_code, []):
         if is_problem(dist):
-            findings.append({
-                "rule": name,
-                "severity": severity,
-                "participant_key": dist.participant_key,
-                "code": dist.box7_code.value,
-            })
+            findings.append(
+                {
+                    "rule": name,
+                    "severity": severity,
+                    "participant_key": dist.participant_key,
+                    "code": dist.box7_code.value,
+                }
+            )
     return findings
 ```
 Tests: one per rule (triggering + non-triggering record each).
@@ -393,6 +395,38 @@ Tests: one per rule (triggering + non-triggering record each).
 </details>
 
 - [ ] Evening — 🆕 60 min **dimensions in dbt**: `dim_box7_code` (from the rules seed), `dim_plan`, and `dim_date` (a date spine) — `unique` + `not_null` on every key · 60 min CS50P Week 2 · ~~AI-901 drill block~~ (Q2)
+- [ ] 📈 **Optional — Labor Day bonus only (+60 min, not counted · twin #9, v3.3, C64).** Only if the day allows and the DataVault blocks above are done; otherwise skip it — it is **not** queued. In `learning_journey/dbt/market_rehearsal`: a hand-built **security master**, the trading twin of the dimensions you just built. You built `dim_plan` keyed on the plan; a security must be keyed on the **issuer (CIK) + share class**, never the ticker, because tickers get renamed and freed tickers get reused.
+  `seeds/dim_security_history.csv`:
+```csv
+security_id,cik,share_class,ticker,valid_from,valid_to
+0000000101-A,0000000101,A,ALFA,2026-01-05,2026-03-01
+0000000101-A,0000000101,A,ALFX,2026-03-02,9999-12-31
+0000000202-A,0000000202,A,BRVO,2026-01-05,2026-02-13
+0000000303-A,0000000303,A,BRVO,2026-04-01,9999-12-31
+0000000404-A,0000000404,A,CHRL,2026-01-05,9999-12-31
+```
+  In `dbt_project.yml`, load `cik` and `security_id` as text — load a CIK as a number and its leading zeros are gone:
+```yaml
+seeds:
+  market_rehearsal:
+    dim_security_history:
+      +column_types:
+        cik: varchar
+        security_id: varchar
+```
+  Then `models/marts/dim_security.sql` (cast the two dates) and one singular test:
+```sql
+-- tests/assert_no_overlapping_ticker_ranges.sql
+-- A ticker may point at two securities over time, but never on the same day.
+select a.ticker, a.security_id, b.security_id as other_security_id
+from {{ ref('dim_security') }} a
+join {{ ref('dim_security') }} b
+  on a.ticker = b.ticker
+ and a.security_id < b.security_id
+ and a.valid_from <= b.valid_to
+ and b.valid_from <= a.valid_to
+```
+  Then join `stg_bars` to `dim_security` on ticker **and** `session_date between valid_from and valid_to`: BRVO in February and BRVO in April are two different companies, and the synthetic BRVO bars between 16 Feb and 31 Mar match no security at all — in real data, that is a vendor still serving a dead ticker. Day 68's twin builds the same history with a dbt snapshot instead of by hand.
 
 ### 📌 DAY 51 — Tuesday, September 8
 **Morning:** ~~AI-901 practice test #3~~ → ⏭️ Q2. 🆕 **`fct_distributions` + `dim_participant` — the star, built**: the fact at the grain declared in `docs/modeling.md`; surrogate keys (`dbt_utils.generate_surrogate_key`, or an md5 of the natural key); and a **`relationships` test from every foreign key to its dimension**. Recon and Box-7 models now read from the star.
@@ -449,6 +483,7 @@ Week summary + **Month-2 retro** (hours honest **by lane**, ~~exam outcome~~, Da
 - [ ] Claude API course ~55%
 - [ ] Posts #7–8 · ADRs 0001–0002 (DV)
 - [ ] 26+ commits
+- [ ] 📈 *(optional)* Twin #9: `dim_security` + overlap test (Labor Day bonus only)
 
 **Passing bar: 80%.** Non-negotiables: ~~the exam attempt~~ → 🆕 **the star schema**, and the end-to-end DataVault run — 🆕 **through dbt**.
 
@@ -462,4 +497,4 @@ Week summary + **Month-2 retro** (hours honest **by lane**, ~~exam outcome~~, Da
 > 🆕 **v3.0 (superseded dates in v3.1): Weeks 9–10 finish the soft trigger.** `dbt build` becomes a blocking CI step (Day 61), the corrections mart hardens, dbt docs publish to GitHub Pages, and DataVault **v0.1.0** is tagged public on Day 69 — C54's four artifacts. Day 70 checks the gate and, if green, opens the narrow search.
 
 ---
-*Aligned to Career Roadmap v10.0 (Corrections 1–59) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026) · v3.2 readiness gate (C59, 9 Oct 2026). No other roadmap edits made; propose→approve governance applies.*
+*Aligned to Career Roadmap v10.0 (Corrections 1–64) · v3.0 job-first re-cut (6 Oct 2026) · v3.1 priority rebalance (C58, 8 Oct 2026) · v3.2 readiness gate (C59, 9 Oct 2026) · v3.3 trading lane expansion (C63–C64, 13 Oct 2026). No other roadmap edits made; propose→approve governance applies.*
