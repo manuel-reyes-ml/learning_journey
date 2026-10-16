@@ -185,7 +185,7 @@ for line in raw_lines:
 # get a form. Boundary rule, always.
 ```
 
-- [ ] 📈 **Trading twin #3 (+15 min · v3.3, C64)** — same file, below the 1099 loop: a market-data export has the same disease. *(Day full? →* `notes/trading/twin-queue.md`*.)*
+- [x] 📈 **Trading twin #3 (+15 min · v3.3, C64)** — same file, below the 1099 loop: a market-data export has the same disease. *(Day full? →* `notes/trading/twin-queue.md`*.)*
 
 ```python
 # Trading twin: a market-data export has the same disease as the 1099 export.
@@ -232,7 +232,7 @@ for line in raw_bars:
 
 **Evening:**
 
-- [ ] 60 min — **Build the synthetic two-system dataset** ⭐ — the DataVault reconciliation pattern in miniature. Create `src/learning_journey/projects/make_data.py`:
+- [x] 60 min — **Build the synthetic two-system dataset** ⭐ — the DataVault reconciliation pattern in miniature. Create `src/learning_journey/projects/make_data.py`:
 
 ```python
 """Generate synthetic data simulating TWO systems that should agree — but don't.
@@ -326,7 +326,7 @@ if __name__ == "__main__":
 Run it twice: `uv run python -m learning_journey.projects.make_data` — identical output both times. **That's the seed working.** Change 42 → 7, run, observe different data; change back to 42.
 
 - [ ] 40 min — AI Python for Beginners: Module 1 videos (free tier). ⚠️ Per Correction 17 the hosted labs are Pro-gated — so as you watch, **retype each exercise into your own notebook** `notebooks/ai-python-exercises.ipynb` and run it there. Your replication IS the lab; the Accomplishment waits for the Sprint-1 Pro month.
-- [ ] 20 min — Journal + commit (`feat: seeded synthetic two-system generator with planted defects`)
+- [x] 20 min — Journal + commit (`feat: seeded synthetic two-system generator with planted defects`)
 
 ---
 
@@ -338,7 +338,7 @@ Run it twice: `uv run python -m learning_journey.projects.make_data` — identic
 
 **Evening:**
 
-- [ ] 70 min — Load the CSVs into a real database. Create `src/learning_journey/projects/load_db.py`:
+- [x] 70 min — Load the CSVs into a real database. Create `src/learning_journey/projects/load_db.py`:
 
 ```python
 """Load the synthetic CSVs into SQLite.
@@ -413,8 +413,8 @@ if __name__ == "__main__":
 
 Run it, then open `recon.db` with the SQLite Viewer extension (works identically in Cursor) and browse both tables — seeing your data in a real DB is a milestone.
 
-- [ ] 30 min — Mode SQL: aggregation functions (COUNT/SUM/AVG/MIN/MAX)
-- [ ] 20 min — Journal + commit (`feat: sqlite loader with schema + parameterized inserts`)
+- [x] 30 min — Mode SQL: aggregation functions (COUNT/SUM/AVG/MIN/MAX)
+- [x] 20 min — Journal + commit (`feat: sqlite loader with schema + parameterized inserts`)
 
 ---
 
