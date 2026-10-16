@@ -1,0 +1,691 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How SQL Executes</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f8fa; --panel:#ffffff; --panel-2:#f1f3f6; --ink:#0f172a; --muted:#5b6475; --line:#e3e6ec;
+  --accent:#2563eb;
+  --from:#2563eb; --where:#dc2626; --case:#7c3aed; --group:#d97706; --having:#b45309; --agg:#059669; --select:#db2777; --order:#0891b2; --limit:#475569;
+  --kept:#e8f7ef; --dropped:#fdecec;
+  --code-bg:#0f172a; --code-ink:#e2e8f0; --code-dim:#94a3b8;
+  --shadow:0 1px 2px rgba(15,23,42,.04),0 4px 14px rgba(15,23,42,.06);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b1020; --panel:#121a2c; --panel-2:#18223a; --ink:#e6eaf2; --muted:#98a2b6; --line:#24304a;
+    --kept:#10291f; --dropped:#2e1518; --code-bg:#070b16; --shadow:0 4px 18px rgba(0,0,0,.35);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0b1020; --panel:#121a2c; --panel-2:#18223a; --ink:#e6eaf2; --muted:#98a2b6; --line:#24304a;
+  --kept:#10291f; --dropped:#2e1518; --code-bg:#070b16; --shadow:0 4px 18px rgba(0,0,0,.35);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Inter",system-ui,sans-serif;font-size:16px;line-height:1.65}
+.wrap{max-width:1080px;margin:0 auto;padding:36px 16px 90px}
+h1{font-size:clamp(30px,4.6vw,44px);font-weight:800;letter-spacing:-.02em;line-height:1.1;margin:0 0 10px}
+h2{font-size:clamp(22px,3vw,28px);font-weight:700;letter-spacing:-.01em;margin:56px 0 8px;padding-top:6px}
+h3{font-size:18px;font-weight:700;margin:0 0 6px}
+h4{font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);margin:14px 0 4px}
+p{margin:.35em 0 .85em}
+a{color:var(--accent)}
+code{font-family:"JetBrains Mono",monospace;font-size:.88em;background:var(--panel-2);border:1px solid var(--line);padding:1px 5px;border-radius:5px}
+pre{font-family:"JetBrains Mono",monospace;background:var(--code-bg);color:var(--code-ink);border-radius:12px;padding:16px 18px;overflow-x:auto;font-size:13.5px;line-height:1.65;margin:8px 0 12px}
+pre code{background:none;border:none;padding:0;font-size:inherit;color:inherit}
+.c{color:var(--code-dim)}
+.lede{font-size:18px;color:var(--muted);max-width:800px}
+.eyebrow{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+@media (max-width:820px){.grid2,.grid3{grid-template-columns:1fr}}
+.toc{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 6px}
+.toc a{font-size:13.5px;font-weight:600;text-decoration:none;color:var(--ink);background:var(--panel);border:1px solid var(--line);padding:5px 11px;border-radius:999px}
+.toc a:hover{border-color:var(--accent);color:var(--accent)}
+
+/* clause colors */
+.k-from{color:#93c5fd}.k-where{color:#fca5a5}.k-case{color:#c4b5fd}.k-group{color:#fcd34d}.k-agg{color:#6ee7b7}.k-select{color:#f9a8d4}.k-order{color:#67e8f9}
+.bar{border-left:4px solid}
+.b-from{border-color:var(--from)}.b-where{border-color:var(--where)}.b-case{border-color:var(--case)}.b-group{border-color:var(--group)}.b-having{border-color:var(--having)}.b-agg{border-color:var(--agg)}.b-select{border-color:var(--select)}.b-order{border-color:var(--order)}.b-limit{border-color:var(--limit)}
+.bg-from{background:var(--from)}.bg-where{background:var(--where)}.bg-case{background:var(--case)}.bg-group{background:var(--group)}.bg-having{background:var(--having)}.bg-agg{background:var(--agg)}.bg-select{background:var(--select)}.bg-order{background:var(--order)}.bg-limit{background:var(--limit)}
+
+/* plain / tech callouts */
+.plain,.tech,.warn,.good,.note{border-radius:10px;padding:12px 14px;margin:10px 0;border:1px solid var(--line);background:var(--panel)}
+.plain{border-left:4px solid var(--agg)}
+.tech{border-left:4px solid var(--accent)}
+.warn{border-left:4px solid var(--where)}
+.good{border-left:4px solid var(--agg)}
+.note{border-left:4px solid var(--group)}
+.lbl{display:inline-block;font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
+.plain .lbl{color:var(--agg)}.tech .lbl{color:var(--accent)}.warn .lbl{color:var(--where)}.good .lbl{color:var(--agg)}.note .lbl{color:var(--group)}
+
+/* order diagram */
+.orders{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+@media (max-width:720px){.orders{grid-template-columns:1fr}}
+.stack{display:flex;flex-direction:column;gap:7px}
+.row{display:flex;align-items:center;gap:10px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.num{flex:0 0 26px;height:26px;border-radius:7px;color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
+.row code{background:none;border:none;padding:0;font-weight:600}
+.row span.d{margin-left:auto;font-size:13px;color:var(--muted);text-align:right}
+
+/* stepper */
+.stepper{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0 12px}
+.stepper button{font:600 13.5px "Inter";border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:7px 12px;cursor:pointer}
+.stepper button.on{color:#fff;border-color:transparent}
+.nav{display:flex;gap:8px;justify-content:space-between;margin-top:14px;align-items:center}
+.nav button{font:600 14px "Inter";border:none;border-radius:8px;padding:9px 16px;background:var(--ink);color:var(--bg);cursor:pointer}
+.nav button:disabled{opacity:.3;cursor:default}
+.nav .pos{font-size:13px;color:var(--muted)}
+.stage{display:none}.stage.show{display:block;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.stage-head{display:flex;align-items:center;gap:10px;margin-bottom:6px;flex-wrap:wrap}
+.stage-head .clause{font-family:"JetBrains Mono";font-weight:600;font-size:15px}
+.scope{font-size:13.5px;color:var(--muted);background:var(--panel-2);border-radius:8px;padding:8px 12px;margin-top:8px}
+.scope b{color:var(--ink)}
+
+/* tables */
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px;margin:6px 0}
+th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{font-weight:700;color:var(--muted);font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
+td.mono,th.mono{font-family:"JetBrains Mono";font-size:13px}
+tr.drop td{background:var(--dropped);color:var(--muted);text-decoration:line-through}
+tr.keep td{background:var(--kept)}
+.tag{display:inline-block;border-radius:6px;padding:1px 8px;font-weight:700;font-size:12.5px;color:#fff;white-space:nowrap}
+.t-w{background:#0284c7}.t-t{background:#ea580c}.t-o{background:#64748b}
+.yes{color:var(--agg);font-weight:700}.no{color:var(--where);font-weight:700}.partial{color:var(--group);font-weight:700}
+
+/* groups */
+.groups{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px}
+@media (max-width:640px){.groups{grid-template-columns:1fr}}
+.grp{border:1px solid var(--line);border-top:5px solid;border-radius:10px;padding:12px;background:var(--panel)}
+.grp .k{font-weight:700}
+.grp .members{font-family:"JetBrains Mono";font-size:13px;color:var(--muted);margin-top:4px}
+.grp .agg{font-size:28px;font-weight:800;margin-top:4px}
+.g-w{border-top-color:#0284c7}.g-t{border-top-color:#ea580c}.g-o{border-top-color:#64748b}
+
+/* pipeline */
+.pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:12px 0}
+@media (max-width:860px){.pipe{grid-template-columns:1fr 1fr}}
+.pp{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:12px;position:relative}
+.pp .n{font-size:12px;font-weight:800;color:var(--accent);letter-spacing:.06em}
+.pp b{display:block;font-size:15px;margin:2px 0 4px}
+.pp p{font-size:13.5px;color:var(--muted);margin:0}
+.pp .err{font-size:12.5px;margin-top:6px;font-family:"JetBrains Mono";color:var(--where)}
+
+.mn{font-size:clamp(17px,2.4vw,21px);font-weight:600;text-align:center;padding:18px;border-radius:14px;background:var(--panel);border:1px solid var(--line)}
+.mn b{font-weight:800}
+footer{margin-top:50px;font-size:13.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+footer li{margin:3px 0}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="eyebrow">SQL internals · reference</div>
+<h1>How a SQL Query Actually Runs</h1>
+<p class="lede">The clauses you write, the order the engine evaluates them, what the database does internally to execute them, and how to write the same query to production standard. Every idea comes in two layers: a <b>plain-terms</b> explanation, then the <b>technical</b> detail.</p>
+
+<nav class="toc">
+  <a href="#query">1 · The query</a>
+  <a href="#order">2 · Written vs logical order</a>
+  <a href="#walk">3 · Step-by-step walkthrough</a>
+  <a href="#ref">4 · Full clause reference</a>
+  <a href="#engine">5 · Inside the engine</a>
+  <a href="#plans">6 · Reading the plan</a>
+  <a href="#edge">7 · Semantics &amp; edge cases</a>
+  <a href="#portable">8 · Dialect differences</a>
+  <a href="#prod">9 · Production version</a>
+  <a href="#run">10 · Run it yourself</a>
+  <a href="#recall">11 · Recall &amp; practice</a>
+</nav>
+
+<!-- ================= 1 QUERY ================= -->
+<h2 id="query">1 · The query</h2>
+<div class="grid2">
+  <div>
+<pre><span class="k-select">SELECT</span> <span class="k-case">CASE WHEN</span> state IN ('CA', 'OR', 'WA') <span class="k-case">THEN</span> 'West Coast'
+            <span class="k-case">WHEN</span> state = 'TX' <span class="k-case">THEN</span> 'Texas'
+            <span class="k-case">ELSE</span> 'Other' <span class="k-case">END</span> <span class="k-select">AS</span> arbitrary_regional_designation,
+       <span class="k-agg">COUNT(1)</span> <span class="k-select">AS</span> players
+  <span class="k-from">FROM</span> benn.college_football_players
+ <span class="k-where">WHERE</span> weight &gt;= 300
+ <span class="k-group">GROUP BY</span> 1</pre>
+  </div>
+  <div>
+    <div class="plain"><span class="lbl">Plain terms</span><br>“Take the football-players table. Keep only players who weigh 300 lb or more. Label each one by region based on his state. Then tell me how many players fall under each label.”</div>
+    <div class="tech"><span class="lbl">Technically</span><br>SQL is <b>declarative</b>: you describe the result you want, not the steps to get it. The engine turns your text into a <b>logical plan</b> (what the answer must be), then an optimizer picks a <b>physical plan</b> (the cheapest way to compute it). Those are two different things, and confusing them is the source of most SQL surprises.</div>
+  </div>
+</div>
+
+<!-- ================= 2 ORDER ================= -->
+<h2 id="order">2 · Written order vs logical order</h2>
+<p>You write SQL like an English sentence, starting with what you want. The engine evaluates it like a recipe, starting with the ingredients.</p>
+<div class="panel">
+  <div class="orders">
+    <div>
+      <h3>Order you write it</h3>
+      <div class="stack">
+        <div class="row bar b-select"><code>SELECT</code><span class="d">output list (CASE + COUNT live here)</span></div>
+        <div class="row bar b-from"><code>FROM</code><span class="d">source table</span></div>
+        <div class="row bar b-where"><code>WHERE</code><span class="d">row filter</span></div>
+        <div class="row bar b-group"><code>GROUP BY 1</code><span class="d">grouping key</span></div>
+      </div>
+    </div>
+    <div>
+      <h3>Order the engine evaluates it</h3>
+      <div class="stack">
+        <div class="row"><div class="num bg-from">1</div><code>FROM</code><span class="d">get the rows</span></div>
+        <div class="row"><div class="num bg-where">2</div><code>WHERE</code><span class="d">drop rows that fail</span></div>
+        <div class="row"><div class="num bg-case">3</div><code>CASE … END</code><span class="d">compute the group key</span></div>
+        <div class="row"><div class="num bg-group">4</div><code>GROUP BY</code><span class="d">collapse rows into groups</span></div>
+        <div class="row"><div class="num bg-agg">5</div><code>COUNT(1)</code><span class="d">aggregate per group</span></div>
+        <div class="row"><div class="num bg-select">6</div><code>SELECT … AS</code><span class="d">shape &amp; name the output</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="note"><span class="lbl">Why CASE is step 3, not step 6</span><br>
+<b>Plain terms:</b> you can't sort things into piles by a label until the label exists. <code>GROUP BY 1</code> says “group by the 1st item in my SELECT list,” and that item is the CASE label, so the engine has to compute it before grouping.<br>
+<b>Technically:</b> PostgreSQL's docs say output columns are nominally computed after grouping, but GROUP BY may still reference them by name or ordinal. The binder resolves <code>1</code> to the CASE expression and substitutes that expression into the grouping key. The <i>rest</i> of SELECT (column naming, final projection) still happens last.</div>
+
+<!-- ================= 3 WALKTHROUGH ================= -->
+<h2 id="walk">3 · Step-by-step walkthrough</h2>
+<p>A 12-row sample (made-up values, chosen so every rule fires at least once). Click a step or use ← → keys.</p>
+
+<div class="stepper" id="stepper">
+  <button data-i="0" data-c="var(--from)">1 · FROM</button>
+  <button data-i="1" data-c="var(--where)">2 · WHERE</button>
+  <button data-i="2" data-c="var(--case)">3 · CASE</button>
+  <button data-i="3" data-c="var(--group)">4 · GROUP BY</button>
+  <button data-i="4" data-c="var(--agg)">5 · COUNT</button>
+  <button data-i="5" data-c="var(--select)">6 · SELECT</button>
+</div>
+
+<div class="panel">
+
+<!-- 1 FROM -->
+<div class="stage" data-s="0">
+  <div class="stage-head"><div class="num bg-from">1</div><span class="clause">FROM benn.college_football_players</span></div>
+  <div class="plain"><span class="lbl">Plain terms</span><br>Before you can do anything, you need the data in front of you. FROM says which table to read. <code>benn</code> is the schema (think: folder) and <code>college_football_players</code> is the table (think: file in that folder).</div>
+  <div class="tech"><span class="lbl">Technically</span><br>FROM defines the <b>input relation</b>. With JOINs, this step builds the combined row set (logically a cross product filtered by <code>ON</code>, then outer rows added back for LEFT/RIGHT/FULL joins). The binder looks <code>benn.college_football_players</code> up in the <b>system catalog</b> to confirm it exists, that you have SELECT privilege, and what its columns and types are. A columnar engine (Snowflake, BigQuery, DuckDB, Redshift) will only read the columns the query touches: <code>state</code> and <code>weight</code>. This is called <b>projection pushdown</b>.</div>
+  <div class="tw"><table>
+    <tr><th>#</th><th>player_name</th><th>state</th><th>weight</th></tr>
+    <tr><td>1</td><td>Leo</td><td>CA</td><td>310</td></tr><tr><td>2</td><td>Mia</td><td>TX</td><td>295</td></tr>
+    <tr><td>3</td><td>Sam</td><td>WA</td><td>320</td></tr><tr><td>4</td><td>Ana</td><td>TX</td><td>305</td></tr>
+    <tr><td>5</td><td>Ben</td><td>FL</td><td>330</td></tr><tr><td>6</td><td>Kai</td><td>OR</td><td>302</td></tr>
+    <tr><td>7</td><td>Zoe</td><td>TX</td><td>315</td></tr><tr><td>8</td><td>Max</td><td>NY</td><td>300</td></tr>
+    <tr><td>9</td><td>Eli</td><td>CA</td><td>290</td></tr><tr><td>10</td><td>Ray</td><td>GA</td><td>340</td></tr>
+    <tr><td>11</td><td>Jo</td><td>TX</td><td>260</td></tr><tr><td>12</td><td>Tom</td><td>OH</td><td>312</td></tr>
+  </table></div>
+  <div class="scope"><b>Row count:</b> 12. <b>In scope:</b> every column of the table. <b>Not in scope yet:</b> aliases, aggregates, groups.</div>
+</div>
+
+<!-- 2 WHERE -->
+<div class="stage" data-s="1">
+  <div class="stage-head"><div class="num bg-where">2</div><span class="clause">WHERE weight &gt;= 300</span></div>
+  <div class="plain"><span class="lbl">Plain terms</span><br>A checkpoint that looks at <b>one row at a time</b> and asks a yes/no question. Yes → the row continues. No (or “unknown”) → the row is thrown away for good. Because it only sees single rows, it can't ask anything about groups or counts. Those don't exist yet.</div>
+  <div class="tech"><span class="lbl">Technically</span><br>WHERE is a <b>row-level predicate</b> evaluated with <b>three-valued logic</b> (TRUE / FALSE / UNKNOWN). Only TRUE survives. A row with <code>weight IS NULL</code> gives <code>NULL &gt;= 300 → UNKNOWN</code> and is silently dropped. The optimizer pushes this predicate as close to storage as it can (<b>predicate pushdown</b>). It may use a B-tree index on <code>weight</code>, or skip whole storage blocks whose min/max stats show <code>max(weight) &lt; 300</code> (zone maps / row-group pruning in Parquet, DuckDB, Snowflake micro-partitions).</div>
+  <div class="tw"><table>
+    <tr><th>#</th><th>player_name</th><th>state</th><th>weight</th><th>weight &gt;= 300</th></tr>
+    <tr class="keep"><td>1</td><td>Leo</td><td>CA</td><td>310</td><td>TRUE</td></tr>
+    <tr class="drop"><td>2</td><td>Mia</td><td>TX</td><td>295</td><td>FALSE</td></tr>
+    <tr class="keep"><td>3</td><td>Sam</td><td>WA</td><td>320</td><td>TRUE</td></tr>
+    <tr class="keep"><td>4</td><td>Ana</td><td>TX</td><td>305</td><td>TRUE</td></tr>
+    <tr class="keep"><td>5</td><td>Ben</td><td>FL</td><td>330</td><td>TRUE</td></tr>
+    <tr class="keep"><td>6</td><td>Kai</td><td>OR</td><td>302</td><td>TRUE</td></tr>
+    <tr class="keep"><td>7</td><td>Zoe</td><td>TX</td><td>315</td><td>TRUE</td></tr>
+    <tr class="keep"><td>8</td><td>Max</td><td>NY</td><td>300</td><td>TRUE (boundary: <code>&gt;=</code> includes 300)</td></tr>
+    <tr class="drop"><td>9</td><td>Eli</td><td>CA</td><td>290</td><td>FALSE</td></tr>
+    <tr class="keep"><td>10</td><td>Ray</td><td>GA</td><td>340</td><td>TRUE</td></tr>
+    <tr class="drop"><td>11</td><td>Jo</td><td>TX</td><td>260</td><td>FALSE</td></tr>
+    <tr class="keep"><td>12</td><td>Tom</td><td>OH</td><td>312</td><td>TRUE</td></tr>
+  </table></div>
+  <div class="scope"><b>Row count:</b> 12 → 9. <b>In scope:</b> table columns only. <code>WHERE players &gt; 2</code> or <code>WHERE COUNT(1) &gt; 2</code> would error here, because neither the alias nor the aggregate exists yet.</div>
+</div>
+
+<!-- 3 CASE -->
+<div class="stage" data-s="2">
+  <div class="stage-head"><div class="num bg-case">3</div><span class="clause">CASE WHEN … THEN … ELSE … END</span></div>
+  <div class="plain"><span class="lbl">Plain terms</span><br>An if / else-if / else chain that runs on each surviving row. It checks the conditions <b>top to bottom</b> and stops at the <b>first</b> one that's true. If nothing matches, ELSE is the fallback. The result is a brand-new column that doesn't exist in the table. The engine computes it on the fly.</div>
+  <div class="tech"><span class="lbl">Technically</span><br>This is a <b>searched CASE</b> expression. It's a scalar expression (one row in → one value out), not a clause. <code>state IN ('CA','OR','WA')</code> is shorthand for <code>state = 'CA' OR state = 'OR' OR state = 'WA'</code>; PostgreSQL rewrites it internally as <code>state = ANY('{CA,OR,WA}')</code>. Every THEN branch must resolve to a compatible type (all text here). Without an ELSE, unmatched rows get <code>NULL</code>.</div>
+<pre><span class="c">-- Equivalent Python, to make the evaluation order obvious</span>
+def region(state):
+    if state in ("CA", "OR", "WA"): return "West Coast"   <span class="c"># checked 1st</span>
+    elif state == "TX":            return "Texas"        <span class="c"># only if 1st was false</span>
+    else:                          return "Other"        <span class="c"># fallback (remove it → None/NULL)</span></pre>
+  <div class="tw"><table>
+    <tr><th>player_name</th><th>state</th><th>rule matched</th><th>arbitrary_regional_designation</th></tr>
+    <tr><td>Leo</td><td>CA</td><td>WHEN #1</td><td><span class="tag t-w">West Coast</span></td></tr>
+    <tr><td>Sam</td><td>WA</td><td>WHEN #1</td><td><span class="tag t-w">West Coast</span></td></tr>
+    <tr><td>Ana</td><td>TX</td><td>WHEN #2</td><td><span class="tag t-t">Texas</span></td></tr>
+    <tr><td>Ben</td><td>FL</td><td>ELSE</td><td><span class="tag t-o">Other</span></td></tr>
+    <tr><td>Kai</td><td>OR</td><td>WHEN #1</td><td><span class="tag t-w">West Coast</span></td></tr>
+    <tr><td>Zoe</td><td>TX</td><td>WHEN #2</td><td><span class="tag t-t">Texas</span></td></tr>
+    <tr><td>Max</td><td>NY</td><td>ELSE</td><td><span class="tag t-o">Other</span></td></tr>
+    <tr><td>Ray</td><td>GA</td><td>ELSE</td><td><span class="tag t-o">Other</span></td></tr>
+    <tr><td>Tom</td><td>OH</td><td>ELSE</td><td><span class="tag t-o">Other</span></td></tr>
+  </table></div>
+  <div class="scope"><b>Row count:</b> still 9. One derived column added. This is the classic “bucketing” or “derived dimension” pattern. Section 9 shows why production code usually replaces it with a mapping table.</div>
+</div>
+
+<!-- 4 GROUP BY -->
+<div class="stage" data-s="3">
+  <div class="stage-head"><div class="num bg-group">4</div><span class="clause">GROUP BY 1</span></div>
+  <div class="plain"><span class="lbl">Plain terms</span><br>Collect rows with the same label into one pile. 9 rows become 3 piles. From this point on, the engine thinks in <b>piles, not rows</b>. That's why, after grouping, you can only output the pile's label or a summary of the pile (count, sum, average). “The player's name” has no single answer for a pile of three players.</div>
+  <div class="tech"><span class="lbl">Technically</span><br>GROUP BY partitions the row set by the <b>grouping key</b> and changes the <b>grain</b> of the result: one output row per distinct key. The <b>single-value rule</b> applies from here on: every SELECT item must be a grouping key, an aggregate, or a constant. Engines implement this two ways. A <b>hash aggregate</b> builds a hash table keyed on the group value and updates each group's running state as rows stream in; it's best when the number of groups is small, as here. A <b>sort aggregate</b> (PostgreSQL's <code>GroupAggregate</code>) sorts by the key and emits a group each time the key changes; it's chosen when the input is already sorted or there are too many groups to fit in memory.</div>
+  <div class="groups">
+    <div class="grp g-w"><div class="k">West Coast</div><div class="members">Leo, Sam, Kai</div></div>
+    <div class="grp g-t"><div class="k">Texas</div><div class="members">Ana, Zoe</div></div>
+    <div class="grp g-o"><div class="k">Other</div><div class="members">Ben, Max, Ray, Tom</div></div>
+  </div>
+  <div class="scope"><b>Grain change:</b> 9 rows → 3 groups. If you had a <code>HAVING</code> clause, it would run right after this step and filter <b>groups</b>, the way WHERE filters rows.</div>
+</div>
+
+<!-- 5 COUNT -->
+<div class="stage" data-s="4">
+  <div class="stage-head"><div class="num bg-agg">5</div><span class="clause">COUNT(1)</span></div>
+  <div class="plain"><span class="lbl">Plain terms</span><br>For each pile, count the rows in it. <code>COUNT(1)</code> means “add 1 for every row,” so it gives exactly the same answer as <code>COUNT(*)</code>.</div>
+  <div class="tech"><span class="lbl">Technically</span><br>An aggregate keeps a small <b>state</b> per group (here a single integer). Each incoming row runs a <i>transition</i> step (<code>state += 1</code>), and once input ends a <i>finalize</i> step emits the value. That's why aggregation is memory-cheap: 9 rows or 9 billion, you still hold just 3 counters. In parallel engines, each worker builds <b>partial aggregates</b> on its share of the data, and the partials are then <b>combined</b> (summing three per-worker counts). <code>COUNT(1)</code> vs <code>COUNT(*)</code> makes no meaningful performance difference in modern engines; <code>COUNT(*)</code> is the conventional spelling.</div>
+  <div class="groups">
+    <div class="grp g-w"><div class="k">West Coast</div><div class="agg">3</div></div>
+    <div class="grp g-t"><div class="k">Texas</div><div class="agg">2</div></div>
+    <div class="grp g-o"><div class="k">Other</div><div class="agg">4</div></div>
+  </div>
+  <div class="scope"><b>Reconciliation check:</b> 3 + 2 + 4 = 9, the same number of rows that passed WHERE. Nothing lost, nothing double-counted. This is the same control you run on 1099 totals, and section 9 turns it into an automated test.</div>
+</div>
+
+<!-- 6 SELECT -->
+<div class="stage" data-s="5">
+  <div class="stage-head"><div class="num bg-select">6</div><span class="clause">SELECT … AS …</span></div>
+  <div class="plain"><span class="lbl">Plain terms</span><br>Lay out the final answer: which columns appear, in what order, and what they're called. <code>AS</code> is just a name tag on a column.</div>
+  <div class="tech"><span class="lbl">Technically</span><br>This is the <b>projection</b>: it evaluates output expressions per group and assigns <b>column aliases</b>. Aliases are born here, which is why WHERE, GROUP BY (in strict engines) and HAVING can't see them, but ORDER BY (step 7) can. With no ORDER BY, row order is <b>undefined</b>. A hash aggregate emits groups in hash-table order, which can change between runs, versions or data volumes.</div>
+  <div class="tw"><table>
+    <tr><th>arbitrary_regional_designation</th><th>players</th></tr>
+    <tr><td><span class="tag t-w">West Coast</span></td><td>3</td></tr>
+    <tr><td><span class="tag t-t">Texas</span></td><td>2</td></tr>
+    <tr><td><span class="tag t-o">Other</span></td><td>4</td></tr>
+  </table></div>
+  <div class="scope"><b>Final result:</b> 3 rows × 2 columns, in an unspecified order. Add <code>ORDER BY players DESC</code> if order matters to whoever consumes it (a dashboard, a test, a diff).</div>
+</div>
+
+<div class="nav">
+  <button id="prev">← Previous</button>
+  <span class="pos" id="pos">Step 1 of 6</span>
+  <button id="next">Next →</button>
+</div>
+</div>
+
+<!-- ================= 4 REFERENCE ================= -->
+<h2 id="ref">4 · Full logical order (every clause)</h2>
+<p>Your query uses 4 clauses. This is the full sequence, including the ones you'll use next (JOIN, HAVING, window functions, DISTINCT, ORDER BY, LIMIT). The last two columns explain most error messages you'll ever see.</p>
+<div class="panel tw">
+<table>
+<tr><th>#</th><th>Clause</th><th>Plain terms</th><th>Works on</th><th>Can see SELECT aliases?</th><th>Aggregates allowed?</th></tr>
+<tr><td><div class="num bg-from">1</div></td><td class="mono">FROM / JOIN … ON</td><td>Get and combine the tables</td><td>rows</td><td class="no">No</td><td class="no">No</td></tr>
+<tr><td><div class="num bg-where">2</div></td><td class="mono">WHERE</td><td>Keep only rows that pass</td><td>rows</td><td class="no">No</td><td class="no">No</td></tr>
+<tr><td><div class="num bg-group">3</div></td><td class="mono">GROUP BY</td><td>Collapse rows into groups</td><td>rows → groups</td><td class="partial">Dialect-dependent</td><td class="no">No</td></tr>
+<tr><td><div class="num bg-having">4</div></td><td class="mono">HAVING</td><td>Keep only groups that pass</td><td>groups</td><td class="partial">Mostly no</td><td class="yes">Yes</td></tr>
+<tr><td><div class="num bg-select">5</div></td><td class="mono">SELECT (+ window functions)</td><td>Compute and name output columns</td><td>groups or rows</td><td>defines them</td><td class="yes">Yes</td></tr>
+<tr><td><div class="num bg-select">6</div></td><td class="mono">DISTINCT</td><td>Remove duplicate output rows</td><td>output rows</td><td class="yes">Yes</td><td>—</td></tr>
+<tr><td><div class="num bg-order">7</div></td><td class="mono">ORDER BY</td><td>Sort the output</td><td>output rows</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+<tr><td><div class="num bg-limit">8</div></td><td class="mono">LIMIT / OFFSET / TOP</td><td>Keep the first N</td><td>output rows</td><td>—</td><td>—</td></tr>
+</table>
+</div>
+<div class="tech"><span class="lbl">Window functions — why you can't filter on them in WHERE</span><br>Window functions (<code>ROW_NUMBER() OVER (…)</code>, <code>SUM(x) OVER (…)</code>) are computed during step 5, after WHERE, GROUP BY and HAVING. So <code>WHERE ROW_NUMBER() OVER (…) = 1</code> is invalid. The fix is to compute it in a CTE and filter in the next one. Snowflake, BigQuery, DuckDB and Databricks also offer <code>QUALIFY</code>, a filter that runs after window functions.</div>
+
+<!-- ================= 5 ENGINE ================= -->
+<h2 id="engine">5 · Inside the engine: from text to result</h2>
+<div class="plain"><span class="lbl">Plain terms</span><br>Section 3 showed <b>what</b> the answer must be. Behind the scenes, a pipeline of components reads your text, checks it, finds the fastest way to compute it, and runs that plan. The optimizer is free to reorder, merge or skip work, but the result must always be identical to what the logical order would produce.</div>
+
+<div class="pipe">
+  <div class="pp"><div class="n">STAGE 1</div><b>Parser</b><p>Checks the grammar and turns the text into a syntax tree. It doesn't yet know whether the tables exist.</p><div class="err">syntax error at or near "FORM"</div></div>
+  <div class="pp"><div class="n">STAGE 2</div><b>Analyzer / Binder</b><p>Looks up names in the catalog, resolves types, resolves <code>GROUP BY 1</code> to the CASE expression, and enforces the single-value rule.</p><div class="err">column "wieght" does not exist</div></div>
+  <div class="pp"><div class="n">STAGE 3</div><b>Rewriter</b><p>Normalizes the tree: expands views, simplifies <code>IN</code> to <code>= ANY</code>, folds constants, flattens subqueries and CTEs.</p></div>
+  <div class="pp"><div class="n">STAGE 4</div><b>Optimizer / Planner</b><p>Generates candidate plans and estimates their cost from table statistics. Picks the scan type, join order and aggregate strategy.</p></div>
+  <div class="pp"><div class="n">STAGE 5</div><b>Executor</b><p>Runs the plan's operators and streams rows (or batches) from storage up through filter → project → aggregate.</p></div>
+</div>
+
+<div class="grid2">
+  <div class="panel">
+    <h3>How the optimizer decides</h3>
+    <p><b>Plain terms:</b> it estimates “how many rows will survive the filter?” and picks the cheapest route. If only a handful of players weigh 300+, jumping straight to them via an index beats reading every row. If half of them do, reading everything sequentially is faster.</p>
+    <p><b>Technically:</b> <b>cost-based optimization</b> uses column statistics (histograms, distinct counts, null fraction) collected by <code>ANALYZE</code> (PostgreSQL) or automatically (Snowflake, BigQuery, DuckDB) to estimate <b>selectivity</b>. Stale statistics give bad estimates, and bad estimates give bad plans. That's why <code>ANALYZE</code> after a large load is a production habit.</p>
+  </div>
+  <div class="panel">
+    <h3>Row-at-a-time vs vectorized</h3>
+    <p><b>Plain terms:</b> an old-style engine passes rows up the plan one at a time, like a single-file line. A modern analytical engine passes a tray of a couple thousand values at once, so the CPU does the same operation on many values in a tight loop.</p>
+    <p><b>Technically:</b> PostgreSQL uses the classic <b>Volcano / iterator</b> model, where each operator's <code>next()</code> pulls one tuple from its child. DuckDB uses <b>vectorized, push-based</b> execution: batches of 2,048 values per vector, organized in row groups of 122,880 rows that carry min/max metadata for skipping. Snowflake, BigQuery, ClickHouse and Polars use variants of the same idea.</p>
+  </div>
+</div>
+
+<div class="grid3" style="margin-top:14px">
+  <div class="panel bar b-from"><h3>Columnar storage</h3><p><b>Plain:</b> read only the columns you asked for.<br><b>Tech:</b> this query touches 2 columns. On a 10-column table, that's roughly 80% less I/O. This is why <code>SELECT *</code> is expensive in a warehouse.</p></div>
+  <div class="panel bar b-where"><h3>Pruning</h3><p><b>Plain:</b> skip whole chunks that can't contain a match.<br><b>Tech:</b> if a block's max weight is 280, the filter <code>weight &gt;= 300</code> can't match anything in it, so it's skipped without being read. Partitioning and clustering on common filter columns makes this work far better.</p></div>
+  <div class="panel bar b-agg"><h3>Parallelism &amp; spill</h3><p><b>Plain:</b> split the work across CPU cores, then merge the results.<br><b>Tech:</b> partial hash aggregates per thread are merged at the end. If the hash table outgrows memory (<code>work_mem</code> in PostgreSQL), the engine spills to disk and slows down. 3 groups will never come close.</p></div>
+</div>
+
+<!-- ================= 6 PLANS ================= -->
+<h2 id="plans">6 · Reading the execution plan</h2>
+<p><b>Plain terms:</b> <code>EXPLAIN</code> asks the database to show its plan without running the query. <code>EXPLAIN ANALYZE</code> runs it and shows real timings and row counts. Read plans <b>from the innermost / bottom node up</b>: that's where data enters.</p>
+<div class="grid2">
+  <div>
+    <h4>PostgreSQL (illustrative)</h4>
+<pre>HashAggregate                               <span class="c">← steps 4–5: group + count</span>
+  Group Key: CASE
+    WHEN (state = ANY ('{CA,OR,WA}'::text[]))  <span class="c">← step 3: IN rewritten to = ANY</span>
+      THEN 'West Coast'::text
+    WHEN (state = 'TX'::text) THEN 'Texas'::text
+    ELSE 'Other'::text END
+  ->  Seq Scan on college_football_players  <span class="c">← step 1: read table</span>
+        Filter: (weight >= 300)              <span class="c">← step 2: applied during the scan</span></pre>
+    <p style="font-size:13.5px;color:var(--muted)">With a selective filter and an index on <code>weight</code>, <code>Seq Scan</code> becomes <code>Index Scan</code> or <code>Bitmap Heap Scan</code>. With many groups or pre-sorted input, <code>HashAggregate</code> may become <code>Sort → GroupAggregate</code>.</p>
+  </div>
+  <div>
+    <h4>DuckDB (real output, trimmed)</h4>
+<pre>┌───────────────────────────┐
+│       HASH_GROUP_BY       │   <span class="c">← steps 4–5</span>
+│   Groups: #0              │
+│   Aggregates: count_star()│   <span class="c">← COUNT(1) rewritten to COUNT(*)</span>
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│        PROJECTION         │   <span class="c">← step 3: CASE</span>
+│   CASE WHEN … END         │
+└─────────────┬─────────────┘
+┌─────────────┴─────────────┐
+│         SEQ_SCAN          │   <span class="c">← steps 1–2</span>
+│   Projections: state      │   <span class="c">← only needed columns</span>
+│   Filters: weight>=300    │   <span class="c">← pushed into the scan</span>
+└───────────────────────────┘</pre>
+    <p style="font-size:13.5px;color:var(--muted)">Captured from DuckDB on the sample in section 10. The full output also includes internal string compress/decompress projections and the ORDER BY node, removed here for clarity. Note <code>Projections: state</code>: <code>weight</code> is used only inside the scan filter, so it never travels up the plan.</p>
+  </div>
+</div>
+<div class="note"><span class="lbl">What to look for in EXPLAIN ANALYZE</span><br>
+<b>Estimated vs actual rows</b> on each node. A 10× or bigger gap means stale statistics or a predicate the optimizer can't estimate. <b>Seq Scan on a huge table with a selective filter</b> often signals a missing index or a non-sargable predicate (see below). <b>“Disk” / “Batches &gt; 1”</b> on a hash node means it ran out of memory and spilled.</div>
+
+<!-- ================= 7 EDGE ================= -->
+<h2 id="edge">7 · Semantics &amp; edge cases (the ones that bite in production)</h2>
+
+<div class="warn"><span class="lbl">1 · NULLs take the ELSE branch silently</span><br>
+<b>Plain:</b> a player with a blank state isn't “West Coast,” isn't “Texas,” so he lands in “Other” and gets mixed in with real states.<br>
+<b>Tech:</b> <code>NULL IN ('CA','OR','WA')</code> → UNKNOWN, and <code>NULL = 'TX'</code> → UNKNOWN, so the row falls to ELSE. A NULL <i>weight</i> is excluded by WHERE. Either way, nothing errors. If missing data matters, make it explicit:
+<pre>CASE WHEN state IS NULL               THEN 'Unknown'   <span class="c">-- first, so it isn't hidden in Other</span>
+     WHEN state IN ('CA','OR','WA')   THEN 'West Coast'
+     WHEN state = 'TX'                THEN 'Texas'
+     ELSE 'Other' END</pre></div>
+
+<div class="warn"><span class="lbl">2 · Dirty values miss every branch</span><br>
+<b>Plain:</b> <code>'tx'</code>, <code>' TX'</code> and <code>'Tex.'</code> are not <code>'TX'</code>, so they all become “Other.”<br>
+<b>Tech:</b> string comparison is exact (case- and whitespace-sensitive in most engines and collations). Normalize once, upstream, in a staging model with <code>upper(trim(state))</code>. Don't patch it inside every query.</div>
+
+<div class="warn"><span class="lbl">3 · CASE is first-match-wins</span><br>
+Put a broad rule above a narrow one and the narrow one never fires. For example, <code>WHEN weight &gt;= 300 THEN 'Heavy'</code> placed first would label every row “Heavy,” and no row would ever reach “Texas.” Order rules from most specific to most general.</div>
+
+<div class="warn"><span class="lbl">4 · COUNT(*) vs COUNT(column) vs COUNT(DISTINCT column)</span>
+<div class="tw"><table>
+<tr><th>Expression</th><th>Counts</th><th>Plain terms</th></tr>
+<tr><td class="mono">COUNT(*) / COUNT(1)</td><td>every row in the group</td><td>“How many rows?”</td></tr>
+<tr><td class="mono">COUNT(weight)</td><td>rows where weight IS NOT NULL</td><td>“How many rows have a value here?”</td></tr>
+<tr><td class="mono">COUNT(DISTINCT player_name)</td><td>unique non-null values</td><td>“How many different players?” (protects against duplicate rows)</td></tr>
+</table></div></div>
+
+<div class="warn"><span class="lbl">5 · Non-sargable filters disable indexes and pruning</span><br>
+<b>Plain:</b> if you wrap the column in a function or calculation, the engine has to compute it for every row before it can compare, so it can't jump straight to the matches.<br>
+<b>Tech:</b> <code>WHERE weight &gt;= 300</code> is <b>sargable</b> (index- and pruning-friendly). <code>WHERE weight * 1.0 &gt;= 300</code> or <code>WHERE CAST(weight AS TEXT) …</code> is not. The same applies to dates: prefer <code>WHERE d &gt;= '2026-01-01' AND d &lt; '2027-01-01'</code> over <code>WHERE EXTRACT(YEAR FROM d) = 2026</code>.</div>
+
+<div class="warn"><span class="lbl">6 · Filter rows in WHERE, not HAVING</span><br>
+<code>HAVING state = 'TX'</code> is either invalid or wasteful. HAVING runs after grouping, so the engine aggregates rows it will then discard. Row conditions belong in WHERE (filter early). Conditions on aggregates (<code>HAVING COUNT(*) &gt;= 3</code>) belong in HAVING.</div>
+
+<div class="warn"><span class="lbl">7 · No ORDER BY = no guaranteed order</span><br>
+Results that “always came back sorted” in development can change when data grows, the engine upgrades or the plan switches to parallel. Tests and snapshot diffs that depend on row order become flaky. Always ORDER BY when order matters.</div>
+
+<!-- ================= 8 PORTABILITY ================= -->
+<h2 id="portable">8 · Dialect differences: <code>GROUP BY 1</code> and aliases</h2>
+<p><b>Plain terms:</b> the SQL standard doesn't actually allow <code>GROUP BY 1</code>. It's a convenience most engines added, and not all of them.</p>
+<div class="panel tw">
+<table>
+<tr><th>Engine</th><th>GROUP BY ordinal (<code>1</code>)</th><th>GROUP BY alias</th><th>GROUP BY ALL</th><th>Notes</th></tr>
+<tr><td>PostgreSQL</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="no">No</td><td>If a name matches both an input column and an output alias, the <b>input column wins</b>. That's a subtle bug source.</td></tr>
+<tr><td>DuckDB</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td>Also <code>QUALIFY</code>, and friendly SQL extensions.</td></tr>
+<tr><td>Snowflake</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td>Also <code>QUALIFY</code>.</td></tr>
+<tr><td>BigQuery</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="partial">Check docs</td><td>Also <code>QUALIFY</code>.</td></tr>
+<tr><td>MySQL</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="no">No</td><td></td></tr>
+<tr><td>SQL Server / Azure SQL</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td>You must repeat the full expression (or group in a subquery/CTE). ORDER BY can use ordinals and aliases.</td></tr>
+<tr><td>Oracle</td><td class="partial">23ai+, behind a setting</td><td class="partial">23ai+</td><td class="no">No</td><td>Older versions: repeat the expression.</td></tr>
+</table>
+</div>
+<div class="note"><span class="lbl">Style: it's a convention choice, so pick one and enforce it</span><br>
+The <b>dbt Labs style guide prefers <code>group by 1, 2</code></b> over listing names (it links a well-known blog post defending the practice) and recommends SQLFluff to enforce its rules automatically. Other teams, such as the Tuva Project's dbt guide, prefer column names. The production habit isn't “ordinals good / bad.” It's <b>one convention, enforced by a linter</b>. SQLFluff's <code>AM06</code> rule checks for consistent GROUP BY / ORDER BY references.</div>
+
+<!-- ================= 9 PRODUCTION ================= -->
+<h2 id="prod">9 · The production version</h2>
+<p><b>Plain terms:</b> the original query is fine for a one-off answer. In a pipeline that runs daily, other people read it, it feeds dashboards, and data changes underneath it. Production SQL is written so it's <b>readable, testable, reusable and safe to change</b>. Here's the same logic, rebuilt the way an Analytics Engineer would ship it in dbt.</p>
+
+<h3>Pattern A · Layered CTEs (import → logic → final)</h3>
+<p><b>Plain:</b> break the query into named steps that read top to bottom in the same order the engine evaluates them. To debug, change the last line to <code>select * from &lt;any step&gt;</code>.<br>
+<b>Tech:</b> dbt Labs' convention is import CTEs named after their source, logical CTEs with descriptive names, and a final <code>select * from final</code>. Modern optimizers inline CTEs (PostgreSQL ≥ 12 folds them by default), so this is readability with no runtime cost.</p>
+
+<h3>Pattern B · Replace hard-coded CASE with a mapping table</h3>
+<p><b>Plain:</b> instead of burying “CA, OR, WA = West Coast” inside one query, keep it in a small lookup table. When the business adds Nevada, you edit one row in one file, and every query that uses regions updates.<br>
+<b>Tech:</b> the mapping becomes a <b>dbt seed</b> (version-controlled CSV) joined with a LEFT JOIN plus <code>COALESCE</code> for the default. This gives you a <b>single source of truth</b> and makes the mapping itself testable. <b>Watch out:</b> a duplicate state in the seed makes the join <b>fan out</b> (one player matches two rows) and silently double-counts. That's why the seed gets a <code>unique</code> test.</p>
+
+<div class="grid2">
+<div>
+<h4>seeds/state_region_map.csv</h4>
+<pre>state,region
+CA,West Coast
+OR,West Coast
+WA,West Coast
+TX,Texas</pre>
+<h4>models/staging/stg_benn__college_football_players.sql</h4>
+<pre><span class="c">-- Staging: clean once, upstream. Every downstream model inherits it.</span>
+with source as (
+    select * from {{ source('benn', 'college_football_players') }}
+),
+
+renamed as (
+    select
+        player_name,
+        upper(trim(state)) as state_code,  <span class="c">-- fixes 'tx', ' TX'</span>
+        weight             as weight_lbs   <span class="c">-- unit in the name</span>
+    from source
+)
+
+select * from renamed</pre>
+</div>
+<div>
+<h4>models/marts/heavy_players_by_region.sql</h4>
+<pre><span class="c">{# threshold is a project var, not a magic number #}</span>
+{% set min_weight_lbs = var('heavy_player_min_weight_lbs', 300) %}
+
+with players as (
+    select * from {{ ref('stg_benn__college_football_players') }}
+),
+
+state_region_map as (
+    select * from {{ ref('state_region_map') }}
+),
+
+heavy_players as (                    <span class="c">-- step 2: filter early</span>
+    select state_code
+    from players
+    where weight_lbs >= {{ min_weight_lbs }}
+),
+
+labeled as (                          <span class="c">-- step 3: label via lookup</span>
+    select
+        case
+            when heavy_players.state_code is null then 'Unknown'
+            else coalesce(state_region_map.region, 'Other')
+        end as region
+    from heavy_players
+    left join state_region_map
+        on heavy_players.state_code = state_region_map.state
+),
+
+final as (                            <span class="c">-- steps 4–6</span>
+    select
+        region,
+        count(*) as player_count
+    from labeled
+    group by 1
+)
+
+select * from final</pre>
+</div>
+</div>
+
+<h3>Pattern C · Tests that prove the result is right</h3>
+<p><b>Plain:</b> automated checks that run on every build and fail loudly when something's off, instead of a stakeholder noticing a wrong number weeks later.<br>
+<b>Tech:</b> <b>generic tests</b> in YAML (not_null, unique, accepted_values) plus a <b>singular test</b> for reconciliation, the SQL version of the control total you already run on 1099 data.</p>
+<div class="grid2">
+<div>
+<h4>models/marts/_marts.yml</h4>
+<pre>models:
+  - name: heavy_players_by_region
+    description: Count of players at/above the weight threshold, by region.
+    columns:
+      - name: region
+        data_tests:
+          - not_null
+          - unique                   <span class="c"># grain = one row per region</span>
+          - accepted_values:
+              values: ['West Coast', 'Texas', 'Other', 'Unknown']
+      - name: player_count
+        data_tests: [not_null]
+
+seeds:
+  - name: state_region_map
+    columns:
+      - name: state
+        data_tests: [not_null, unique]  <span class="c"># prevents join fan-out</span></pre>
+<p style="font-size:13px;color:var(--muted)">Test-argument syntax has been evolving across recent dbt versions. Check the docs for the version pinned in your project.</p>
+</div>
+<div>
+<h4>tests/assert_heavy_players_reconcile.sql</h4>
+<pre><span class="c">-- Returns rows only when totals disagree → test fails.</span>
+with expected as (
+    select count(*) as n
+    from {{ ref('stg_benn__college_football_players') }}
+    where weight_lbs >= {{ var('heavy_player_min_weight_lbs', 300) }}
+),
+
+actual as (
+    select sum(player_count) as n
+    from {{ ref('heavy_players_by_region') }}
+)
+
+select
+    expected.n as expected_n,
+    actual.n   as actual_n
+from expected
+cross join actual
+where expected.n != actual.n</pre>
+</div>
+</div>
+
+<h3>Pattern D · Guardrails around the SQL</h3>
+<div class="tw panel">
+<table>
+<tr><th>Practice</th><th>Plain terms</th><th>How</th></tr>
+<tr><td>Lint &amp; format</td><td>A robot enforces the style rules so code reviews focus on logic</td><td>SQLFluff (dbt templater) in <code>pre-commit</code> and CI, with a committed <code>.sqlfluff</code> config</td></tr>
+<tr><td>No magic numbers</td><td>Name the threshold so it's obvious and changeable</td><td><code>var('heavy_player_min_weight_lbs', 300)</code> in <code>dbt_project.yml</code></td></tr>
+<tr><td>Explicit grain</td><td>Say what one row means, and test it</td><td>Model description + <code>unique</code> on the key</td></tr>
+<tr><td>Only needed columns</td><td>Don't haul data you won't use</td><td>Explicit column lists in staging; avoid <code>select *</code> against raw sources in warehouses</td></tr>
+<tr><td>Deterministic output</td><td>Same input, same result, same order</td><td><code>order by</code> wherever order is consumed (exports, snapshots, reports)</td></tr>
+<tr><td>Check the plan</td><td>Know what it costs before it ships</td><td><code>EXPLAIN ANALYZE</code> on representative data; partition/cluster on frequent filter columns</td></tr>
+<tr><td>Documentation</td><td>The next person (or you in 6 months) understands why</td><td>YAML descriptions + <code>dbt docs generate</code> lineage graph</td></tr>
+</table>
+</div>
+
+<!-- ================= 10 RUN ================= -->
+<h2 id="run">10 · Run it yourself (Jupyter + DuckDB in VS Code)</h2>
+<p>One notebook cell. It recreates the sample, runs the query, and prints the plan so you can map each operator to steps 1–6. Install with <code>uv add duckdb</code>.</p>
+<pre>import duckdb
+
+con = duckdb.connect()  <span class="c"># in-memory database</span>
+
+con.sql("""
+    CREATE TABLE college_football_players AS
+    SELECT * FROM (VALUES
+        ('Leo','CA',310), ('Mia','TX',295), ('Sam','WA',320), ('Ana','TX',305),
+        ('Ben','FL',330), ('Kai','OR',302), ('Zoe','TX',315), ('Max','NY',300),
+        ('Eli','CA',290), ('Ray','GA',340), ('Jo','TX',260),  ('Tom','OH',312),
+        ('Ned', NULL, 305),   <span class="c">-- edge case: NULL state  → which region?</span>
+        ('Gus','tx', 318)     <span class="c">-- edge case: dirty value → which region?</span>
+    ) AS t(player_name, state, weight)
+""")
+
+query = """
+    SELECT CASE WHEN state IN ('CA', 'OR', 'WA') THEN 'West Coast'
+                WHEN state = 'TX' THEN 'Texas'
+                ELSE 'Other' END AS arbitrary_regional_designation,
+           COUNT(1) AS players
+      FROM college_football_players
+     WHERE weight >= 300
+     GROUP BY 1
+     ORDER BY players DESC
+"""
+
+con.sql(query).show()                         <span class="c"># result</span>
+print(con.sql("EXPLAIN " + query).fetchall()[0][1])          <span class="c"># physical plan</span>
+print(con.sql("EXPLAIN ANALYZE " + query).fetchall()[0][1])  <span class="c"># with actual timings</span></pre>
+<div class="note"><span class="lbl">Predict before you run</span><br>With Ned (NULL) and Gus ('tx') added, “Other” becomes 6 instead of 4 (verified: Other 6 · West Coast 3 · Texas 2), so two players were silently mislabeled with no error. Then wrap <code>state</code> in <code>upper(trim(state))</code> and add a <code>WHEN state IS NULL</code> branch, and check that Gus moves to Texas and Ned to Unknown.</div>
+
+<!-- ================= 11 RECALL ================= -->
+<h2 id="recall">11 · Recall &amp; practice</h2>
+<div class="mn"><b>F</b>rom → <b>W</b>here → <b>G</b>roup by → <b>H</b>aving → <b>S</b>elect → <b>O</b>rder by → <b>L</b>imit<br>
+<span style="font-weight:500;color:var(--muted);font-size:15px">“<b>F</b>irst <b>W</b>e <b>G</b>ather, <b>H</b>andpick, <b>S</b>how, <b>O</b>rganize, <b>L</b>imit.” Filters before groups, groups before output, output before sorting.</span></div>
+
+<div class="grid3" style="margin-top:14px">
+  <div class="panel bar b-agg"><h3>Easy</h3><p>Add <code>ORDER BY players DESC</code>. Why can ORDER BY use the alias <code>players</code> when WHERE can't? Answer it using the logical order table.</p></div>
+  <div class="panel bar b-group"><h3>Medium</h3><p>Add a <code>'Florida'</code> region. Where in the CASE must it go? With the 12-row sample, what are the new counts? (West 3 · Texas 2 · Florida 1 · Other 3.)</p></div>
+  <div class="panel bar b-where"><h3>Hard</h3><p>Return <code>AVG(weight)</code> per region, only for regions with ≥ 3 heavy players, sorted descending. Predict which groups survive HAVING before you run it, then confirm with <code>EXPLAIN</code>.</p></div>
+</div>
+
+<footer>
+  <b>Sources</b>
+  <ul>
+    <li><a href="https://www.postgresql.org/docs/current/sql-select.html">PostgreSQL docs — SELECT (processing steps, GROUP BY by output name/ordinal)</a></li>
+    <li><a href="https://www.postgresql.org/docs/current/using-explain.html">PostgreSQL docs — Using EXPLAIN</a></li>
+    <li><a href="https://learn.microsoft.com/en-us/sql/t-sql/queries/select-transact-sql#logical-processing-order-of-the-select-statement">Microsoft Learn — Logical processing order of the SELECT statement</a></li>
+    <li><a href="https://oracle.readthedocs.io/en/latest/sql/basics/query-processing-order.html">Oracle SQL &amp; PL/SQL guide — Query processing order</a></li>
+    <li><a href="https://jvns.ca/blog/2019/10/03/sql-queries-don-t-start-with-select/">Julia Evans — SQL queries don't start with SELECT</a></li>
+    <li><a href="https://duckdb.org/2022/03/07/aggregate-hashtable.html">DuckDB — Parallel grouped aggregation</a> · <a href="https://motherduck.com/glossary/row-group/">MotherDuck — Row groups &amp; vectors</a></li>
+    <li><a href="https://docs.getdbt.com/best-practices/how-we-style/2-how-we-style-our-sql">dbt Labs — How we style our SQL</a> · <a href="https://thetuvaproject.com/contributing/style-guide">Tuva Project — dbt style guide</a></li>
+    <li><a href="https://www.mssqltips.com/sqlservertip/7860/sql-group-by-alias-in-sql-server-for-complex-code/">MSSQLTips — GROUP BY alias in SQL Server vs Oracle</a></li>
+    <li>Example query: <a href="https://mode.com/sql-tutorial/sql-case">Mode SQL Tutorial — CASE</a>. Sample rows in the walkthrough are made up for illustration; execution plans are illustrative shapes and vary by version and data.</li>
+  </ul>
+</footer>
+</div>
+
+<script>
+(function(){
+  const stages=[...document.querySelectorAll('.stage')];
+  const btns=[...document.querySelectorAll('#stepper button')];
+  const prev=document.getElementById('prev'), next=document.getElementById('next'), pos=document.getElementById('pos');
+  let i=0;
+  function show(n){
+    i=Math.max(0,Math.min(stages.length-1,n));
+    stages.forEach((s,k)=>s.classList.toggle('show',k===i));
+    btns.forEach((b,k)=>{const on=k===i;b.classList.toggle('on',on);b.style.background=on?b.dataset.c:'';});
+    prev.disabled=i===0; next.disabled=i===stages.length-1;
+    pos.textContent='Step '+(i+1)+' of '+stages.length;
+  }
+  btns.forEach(b=>b.addEventListener('click',()=>show(+b.dataset.i)));
+  prev.addEventListener('click',()=>show(i-1));
+  next.addEventListener('click',()=>show(i+1));
+  document.addEventListener('keydown',e=>{
+    if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName))return;
+    if(e.key==='ArrowRight')show(i+1); if(e.key==='ArrowLeft')show(i-1);
+  });
+  show(0);
+})();
+</script>
+</body>
+</html>
