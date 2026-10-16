@@ -28,3 +28,11 @@ SELECT box7_code, SUM(gross) AS total_gross
     FROM distributions
     GROUP BY box7_code
     HAVING SUM(gross) > 100000;
+
+-- Q4 (stretch): expected vs actual — join and compare per participant.
+SELECT p.participant_id,
+       p.name,
+       ROUND(p.salary * p.deferral_pct, 2) AS expected_annual_deferral,
+       d.gross                         AS actual_distribution
+    FROM participants  AS p
+    JOIN distributions AS d USING (participant_id);
