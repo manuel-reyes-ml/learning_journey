@@ -12,8 +12,6 @@
 
 ---
 
-
-
 ## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
 
 Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–64. **The full rationale — lanes, milestone calendar, trading-lane and job-lane rules — is the v3.0 block in Weeks 1–2.** What changes here:
@@ -30,8 +28,6 @@ Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to
 
 ---
 
-
-
 ## 📋 TABLE OF CONTENTS
 
 1. [Where You Stand](#-where-you-stand-after-week-2)
@@ -44,8 +40,6 @@ Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to
 ---
 
 ---
-
-
 
 ## 🔄 REALIGNMENT PASS — ROADMAP CORRECTIONS 21–43 (applied 27 Aug 2026)
 
@@ -60,23 +54,17 @@ Standing rulings from Corrections 21–43, carried into the v3.0 template (Corre
 
 ---
 
-
-
 ## 📊 WHERE YOU STAND AFTER WEEK 2
 
 You have: a 2026-standard environment (uv + Cursor/OpenCode + VS Code + ruff + pytest), P4E Course 1 done, CS50x Weeks 0–3 in motion, Mode SQL basics, a typed + tested `retirement.py` module, mini-project #1 shipped, 2 public posts, and a two-week commit streak. The engine works. This fortnight adds the payload.
 
 ## 🧠 STRATEGIC CONTEXT
 
-
-
 ### Three threads converge
 
 1. **Data structures (P4E Course 2)** — lists, dictionaries, tuples: 80% of working Python for data. Every DataVault concept later (canonical models, reconciliation keys) is "dictionaries with discipline."
 2. **SQL becomes real (Mode Intermediate)** — JOINs and aggregation, the ~79%-of-DE-postings skill, practiced against **your own SQLite database**, not just tutorial tables. 🆕 **v3.0:** this SQL is also your **dbt on-ramp** — dbt (Weeks 5–6) is this same SQL, made modular, version-controlled and tested.
 3. **The AI bridge opens** — *AI Python for Beginners* (Andrew Ng) teaches Python in the context of prompting/API calls → on-ramp to *Building with the Claude API* in Weeks 5–6. ⚠️ **Correction 17 changes how you take it:** the DeepLearning.AI free tier is now videos-only (labs, quizzes, and the Accomplishment are Pro-gated). The ruling: **watch free, replicate every exercise yourself in your own Jupyter notebook** — which is better practice than the hosted lab anyway (no vibe coding, your scaffolding, your repo) — and defer the lab month + Accomplishment to the Sprint-1 Pro rental later this quarter (timed to the PolicyPulse eval-harness build; possibly $0 via the optional AMD free month). Do not subscribe to Pro now.
-
-
 
 ### 🤖 Agent policy — Phase 2 unlocks this fortnight
 
@@ -91,8 +79,6 @@ Per the Weeks 1–2 Agent Policy, you now graduate from tutor-mode-only to **boi
 Week 4 opens **Azure AI Fundamentals (AI-901)** study — **self-funded, $99** (Microsoft Fundamentals tier). ~~employer-reimbursed cert #1~~ · ~~every cert doubles as evidence for the Month-6 scope-change conversation with Jen~~ · ~~submit the reimbursement pre-approval through the Financial Industry Professional Education Program~~.
 
 > 🔄 **Corrections 22 / 32 / 37 — the funding premise is retired.** All certifications in the canon are **self-funded**; no employer reimbursement applies to any of them, and the Month-6 scope-change conversation **can no longer occur** (employment ends 9 Oct 2026). There is no pre-approval to file and no claim to submit. **Skip every reimbursement task in this fortnight.** The cert's job is unchanged — it is Tier-3 evidence for the **Q1 2027 external AE/DE applications** — but it is now a $99 purchase you make and expense to yourself. ⚠️ Note also that **AB-620 moved to conditional** (Correction 37): it is committed only if the Microsoft-ecosystem specialization decision goes that way, so do not treat it as an automatic next exam.
-
-
 
 ### New concepts
 
@@ -113,11 +99,7 @@ Model:  Kimball — business process · grain · facts vs dimensions · CTE-firs
 
 ---
 
-
-
 ## 🗓 WEEK 3 (Aug 3–9)
-
-
 
 ### Week 3 goals
 
@@ -132,8 +114,6 @@ Model:  Kimball — business process · grain · facts vs dimensions · CTE-firs
 - [ ] CS50x Week 4 lecture
 
 ---
-
-
 
 ### 📌 DAY 15 — Monday, August 3
 
@@ -223,8 +203,6 @@ for line in raw_bars:
 - [ ] 20 min — Journal + commit (`feat: messy-text parser with boundary handling`)
 
 ---
-
-
 
 ### 📌 DAY 16 — Tuesday, August 4
 
@@ -330,8 +308,6 @@ Run it twice: `uv run python -m learning_journey.projects.make_data` — identic
 
 ---
 
-
-
 ### 📌 DAY 17 — Wednesday, August 5
 
 **Morning:** P4E Ch.7 (files) videos + assignments.
@@ -418,15 +394,13 @@ Run it, then open `recon.db` with the SQLite Viewer extension (works identically
 
 ---
 
-
-
 ### 📌 DAY 18 — Thursday, August 6
 
 **Morning:** CS50x Week 4 (memory) — notes on what Python hides from you.
 
 **Evening:**
 
-- [ ] 60 min — **First reconciliation queries** ⭐ — this is the job, in miniature. Create `sql/03_recon_v0.sql` and run each query via the SQLite viewer (or `sqlite3` CLI):
+- [x] 60 min — **First reconciliation queries** ⭐ — this is the job, in miniature. Create `sql/03_recon_v0.sql` and run each query via the SQLite viewer (or `sqlite3` CLI):
 
 ```sql
 -- Recon v0: find the defects we planted on Day 16.
@@ -472,11 +446,9 @@ SELECT p.participant_id,
 **Verify against ground truth:** does Q1's row count match Day 16's "planted gap" printout? If yes — your recon logic is *proven*, not assumed. That verification loop is the whole discipline.
 
 - [ ] 40 min — AI Python for Beginners: Module 2 videos + replicate exercises in your notebook
-- [ ] 20 min — Journal + commit (`feat: recon queries v0 — missing rows + code aggregates`)
+- [x] 20 min — Journal + commit (`feat: recon queries v0 — missing rows + code aggregates`)
 
 ---
-
-
 
 ### 📌 DAY 19 — Friday, August 7
 
@@ -564,12 +536,10 @@ def test_every_code_total_positive():
 
 `uv run pytest -v` → green.
 
-- [ ] 40 min — Mode SQL: GROUP BY + HAVING → finish Intermediate joins/aggregation
-- [ ] 20 min — Journal + commit (`test: recon proven against planted defects`)
+- [x] 40 min — Mode SQL: GROUP BY + HAVING → finish Intermediate joins/aggregation
+- [x] 20 min — Journal + commit (`test: recon proven against planted defects`)
 
 ---
-
-
 
 ### 📌 DAY 20 — Saturday, August 8 (5.5h)
 
@@ -651,8 +621,6 @@ Run: `uv run python -m learning_journey.projects.recon_toy` — then open the re
 
 ---
 
-
-
 ### 📌 DAY 21 — Sunday, August 9 (2h)
 
 - [ ] 30 min — `weekly-summaries/week-03.md` + full test run + 🆕 lane-hours total from the journal (C58 habit)
@@ -664,11 +632,7 @@ Run: `uv run python -m learning_journey.projects.recon_toy` — then open the re
 
 ---
 
-
-
 ## 🗓 WEEK 4 (Aug 10–16)
-
-
 
 ### Week 4 goals
 
@@ -688,8 +652,6 @@ Run: `uv run python -m learning_journey.projects.recon_toy` — then open the re
 - [ ] recon-toy v0.2 dict matcher + ADR 0001
 
 ---
-
-
 
 ### 📌 DAY 22 — Monday, August 10
 
@@ -751,8 +713,6 @@ print(
 
 ---
 
-
-
 ### 📌 DAY 23 — Tuesday, August 11
 
 **Morning:** P4E Ch.9 assignments.
@@ -762,8 +722,6 @@ print(
 - [ ] 15 min — Journal (note 2 names you met) + commit
 
 ---
-
-
 
 ### 📌 DAY 24 — Wednesday, August 12
 
@@ -876,8 +834,6 @@ def test_python_and_sql_agree_on_missing():
 
 ---
 
-
-
 ### 📌 DAY 25 — Thursday, August 13
 
 **Morning:** Docker for Beginners (Coursera/KodeKloud): sections 1–2 with the in-browser labs.
@@ -910,8 +866,6 @@ Write 5 lines in your journal, own words: image vs container, and why a hiring m
 - [ ] 20 min — Journal + commit (`docs: docker first-run notes`)
 
 ---
-
-
 
 ### 📌 DAY 26 — Friday, August 14
 
@@ -958,8 +912,6 @@ Keep both, permanently, with a test asserting they agree.
 - [ ] 20 min — Journal + commit (`docs: adr 0001 dual-matcher decision`)
 
 ---
-
-
 
 ### 📌 DAY 27 — Saturday, August 15 (5.5h)
 
@@ -1052,8 +1004,6 @@ Also: integrate the Day-24 matcher's mismatch bucket into the exceptions report;
 
 ---
 
-
-
 ### 📌 DAY 28 — Sunday, August 16 (2h)
 
 - [ ] 35 min — `weekly-summaries/week-04.md` + **Month-1 retro**: hours actual vs planned, 4:30 AM energy (honest), what to change in Month 2 · ⚖️ **priority check (C58)**: this fortnight's AE/DE hours ≥ Applied-AI hours? If not, Week 5's first Applied-AI slot goes to DataVault prep
@@ -1063,8 +1013,6 @@ Also: integrate the Day-24 matcher's mismatch bucket into the exceptions report;
 - [ ] 20 min — Journal + commit 🎉
 
 ---
-
-
 
 ## 📊 2-WEEK SUCCESS METRICS
 
@@ -1092,8 +1040,6 @@ Also: integrate the Day-24 matcher's mismatch bucket into the exceptions report;
 **Passing bar: 80%.** Non-negotiables: the recon-toy thread (feeds DataVault S1) and ~~the AI-901 kickoff~~ → 🆕 **Kimball Ch. 1–2** (v3.1 — the modeling vocabulary DataVault is built in). 🆕 v3.0 adds a light third: the **target list v0** (the Job lane's foundation).
 
 ---
-
-
 
 ## 🔭 WHAT COMES NEXT
 
