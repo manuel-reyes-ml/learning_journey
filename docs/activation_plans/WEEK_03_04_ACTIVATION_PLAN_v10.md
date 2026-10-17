@@ -545,7 +545,7 @@ def test_every_code_total_positive():
 
 **Morning (5:00–8:30):**
 
-- [ ] 120 min — **Mini-project #2:** `recon-toy` **v0.1** ⭐ — wire it into ONE pipeline. Create `src/learning_journey/projects/recon_toy.py`:
+- [x] 120 min — **Mini-project #2:** `recon-toy` **v0.1** ⭐ — wire it into ONE pipeline. Create `src/learning_journey/projects/recon_toy.py`:
 
 ```python
 """recon-toy v0.1 — end-to-end pipeline: generate → load → reconcile → report.
@@ -611,13 +611,13 @@ if __name__ == "__main__":
 Run: `uv run python -m learning_journey.projects.recon_toy` — then open the report file. **You just shipped your first pipeline.**
 
 - [ ] 60 min — Tests to 12+ total passing (add: report file exists + contains the missing count); ruff clean
-- [ ] 30 min — CS50x Week 4 pset start (timebox)
+- [x] 30 min — CS50x Week 4 pset start (timebox)
 
 **Evening:**
 
 - [ ] 60 min — AI Python for Beginners: continue videos + local replication
 - [ ] 45 min — Draft post #3 (artifact: the exceptions report screenshot — "I taught Python to catch the mismatches I used to catch by eye")
-- [ ] 15 min — Journal + commit (`feat: recon-toy v0.1 end-to-end pipeline`)
+- [x] 15 min — Journal + commit (`feat: recon-toy v0.1 end-to-end pipeline`)
 
 ---
 
@@ -659,7 +659,7 @@ Run: `uv run python -m learning_journey.projects.recon_toy` — then open the re
 
 **Evening:**
 
-- [ ] 60 min — Dictionary drills on your own data. Create `day22_dicts.py`:
+- [x] 60 min — Dictionary drills on your own data. Create `day22_dicts.py`:
 
 ```python
 """Day 22: dictionaries — THE data structure of data work.
@@ -709,7 +709,7 @@ print(
 ```
 
 - [ ] 40 min — 🆕 **SQL with CTEs** (v3.1): rewrite Day 18's recon queries as a `WITH` chain — one CTE per step (`participants`, `distributions`, `joined`, `missing`) — and save it as `sql/04_recon_ctes.sql`. That shape, one named step per CTE, is exactly a dbt model; you meet dbt in Week 5. ~~**AI-901 admin** ⭐ · 🔄 **REVISED (C22/32/37)**: open the official Microsoft Learn AI-901 path; skim the exam outline (know the map before studying).~~ → ⏭️ Q2 (C58). *The RPF note below still stands on its own — optional, 10 minutes, only if it has standalone value:* ~~then draft + send ONE email to the Financial Industry Professional Education Program administrator covering (1) AI-901 reimbursement pre-approval~~ — **void: all certs are self-funded and the employer channel is closed.** What survives is the second half only, and only if you still judge it worth an internal ask before 9 Oct: **the RPF written-determination question** (Correction 15's open item): the program schedule lists "RPF-1, RPF-2" — the superseded two-exam structure — while ASPPA's current course is a single six-module certificate, so ask in writing how the bonus maps onto the current structure *before* any enrollment. You are NOT enrolling in RPF now (it's a later, ~30–50 h item). ⚠️ The stated reason — *"while the pre-approval channel is open anyway"* — no longer holds; there is no pre-approval channel. Ask only if the written determination has standalone value to you. **BCC yourself — this email is evidence-file material.**
-- [ ] 20 min — Journal + commit (`feat: dict aggregation + index patterns`)
+- [x] 20 min — Journal + commit (`feat: dict aggregation + index patterns`)
 
 ---
 
