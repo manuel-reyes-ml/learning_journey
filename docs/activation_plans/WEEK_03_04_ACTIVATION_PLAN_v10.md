@@ -199,7 +199,7 @@ for line in raw_bars:
 
 > **Why** `round()` **and not** `int()`**:** in binary floating point, `2.05 * 1_000_000` is `2049999.9999999998`, and `int()` truncates it to **2,049,999**. Swap `round` for `int` and watch DLTA lose a share. A zero-filled price is the same sin as a silently dropped 1099 row: the bar must be **reported**, because a backtest that reads `N/A` as `0.0` books a 100% loss that never happened.
 
-- [ ] 40 min — Mode SQL: INNER JOIN section (transcribe to `sql/02_joins.sql` with your own comments)
+- [x] 40 min — Mode SQL: INNER JOIN section (transcribe to `sql/02_joins.sql` with your own comments)
 - [ ] 20 min — Journal + commit (`feat: messy-text parser with boundary handling`)
 
 ---
@@ -456,7 +456,7 @@ SELECT p.participant_id,
 
 **Evening:**
 
-- [ ] 60 min — Make the recon **testable from Python**. Add `src/learning_journey/projects/recon.py`:
+- [x] 60 min — Make the recon **testable from Python**. Add `src/learning_journey/projects/recon.py`:
 
 ```python
 """Reconciliation queries, callable (and therefore testable) from Python."""
