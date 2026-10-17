@@ -23,7 +23,7 @@ for row in distributions:
     # .get(key, default) reads a key OR returns the default if absent —
     # this line means "current count, or 0 if first sighting, plus one":
     count_by_code[code] = count_by_code.get(code, 0) + 1
-print("Distributions per code:", count_by_code)
+print(f"Distributions per code: {count_by_code}")
 
 # --- Pattern 2: SUM per key (same shape, different aggregate) ---
 total_by_participant: dict[str, float] = {}
