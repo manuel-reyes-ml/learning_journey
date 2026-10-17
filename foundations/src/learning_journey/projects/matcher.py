@@ -69,3 +69,28 @@ def match_records(
             )
 
     return result
+
+
+if __name__ == "__main__":
+    import csv
+    from pathlib import Path
+
+    DATA_DIR: Path = Path(__file__).resolve().parent / "data"
+    participants: list[dict] = []
+    distributions: list[dict] = []
+
+    for table, path in {
+        "participants": "system_a_participants.csv",
+        "distributions": "system_b_distributions.csv",
+    }.items():
+        with (DATA_DIR / path).open(encoding="utf-8") as f:
+            data = list(csv.DictReader(f))
+
+        match table:
+            case "participants":
+                participants = data
+            case "distributions":
+                distributions = data
+
+    result = match_records(participants, distributions)
+    print(result)
