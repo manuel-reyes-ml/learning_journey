@@ -172,3 +172,19 @@ def test_format_row_columns_align() -> None:
     b = format_row(ReportRow("Luis Vega", 23_500.0, 1.0))
     assert a.index("$") == b.index("$")
     assert a.index("|") == b.index("|")
+
+
+# --- 3. End to end: compute + format together, on a known input -----------
+
+
+def test_build_report_end_to_end() -> None:
+    participants = [
+        participant(),
+        participant(
+            name="Luis Vega", age="51", salary="98000", deferral_pct="0.15", years_service="7"
+        ),
+    ]
+    assert build_report(participants) == [
+        "Ana Torres   contributes $3,720.00  |  40% vested",
+        "Luis Vega    contributes $14,700.00 | 100% vested",
+    ]
