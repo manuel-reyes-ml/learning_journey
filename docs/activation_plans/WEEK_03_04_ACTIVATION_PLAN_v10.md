@@ -729,7 +729,7 @@ print(
 
 **Evening:**
 
-- [ ] 70 min — **recon-toy v0.2: a dict-based matcher** — same business question as the SQL, answered in Python, so you can compare the two approaches honestly. Add `src/learning_journey/projects/matcher.py`:
+- [x] 70 min — **recon-toy v0.2: a dict-based matcher** — same business question as the SQL, answered in Python, so you can compare the two approaches honestly. Add `src/learning_journey/projects/matcher.py`:
 
 ```python
 """Dict-based record matcher — the Python counterpart to the recon SQL.
@@ -830,7 +830,7 @@ def test_python_and_sql_agree_on_missing():
 ```
 
 - [ ] 30 min — AI Python for Beginners: continue videos + local replication
-- [ ] 20 min — Journal + commit (`feat: dict matcher with tolerance + sql cross-check test`)
+- [x] 20 min — Journal + commit (`feat: dict matcher with tolerance + sql cross-check test`)
 
 ---
 
