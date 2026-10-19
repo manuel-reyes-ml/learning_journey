@@ -9,9 +9,10 @@ will then be a convenience you understand, not magic you depend on.
 from __future__ import annotations
 
 import csv
-from pathlib import Path
 
 # pathlib.Path = the modern way to handle file paths (portable, readable).
+from pathlib import Path
+
 from learning_journey.retirement import annual_contribution, vested_percent
 
 DATA_FILE: Path = Path(__file__).resolve().parent / "participants.csv"
