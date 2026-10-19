@@ -117,7 +117,11 @@ def test_row_count_matches_input() -> None:
         pytest.param({"years_service": "6"}, 3_720.0, 1.0, id="graded-yr6-full"),
     ],
 )
-def test_compute_rows(overrides, expected_contribution, expected_vested) -> None:
+def test_compute_rows(
+    overrides: dict,
+    expected_contribution: float,
+    expected_vested: float,
+) -> None:
     [row] = compute_rows([participant(**overrides)])
     assert row.contribution == pytest.approx(expected_contribution)
     assert row.vested == pytest.approx(expected_vested)
