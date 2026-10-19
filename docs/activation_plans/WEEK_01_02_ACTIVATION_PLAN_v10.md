@@ -1416,7 +1416,7 @@ if __name__ == "__main__":
 Run: `uv run python -m learning_journey.projects.contribution_report`
 (`-m` runs it *as a module inside the package* — the professional invocation; it makes the imports resolve.)
 
-- [ ] 30 min — Two tests for `build_report` (row count matches input; a known row computes correctly)
+- [x] 30 min — Two tests for `build_report` (row count matches input; a known row computes correctly)
 
 **Evening (8:00–10:00):**
 
