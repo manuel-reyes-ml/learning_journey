@@ -9,6 +9,7 @@ will then be a convenience you understand, not magic you depend on.
 from __future__ import annotations
 
 import csv
+from dataclasses import dataclass
 
 # pathlib.Path = the modern way to handle file paths (portable, readable).
 from pathlib import Path
@@ -19,6 +20,15 @@ DATA_FILE: Path = Path(__file__).resolve().parent / "participants.csv"
 # __file__ = this script's own location; .parent = its folder; / joins paths.
 # Why not just "participants.csv"? Because that breaks when the program is
 # run from a different folder. Path-relative-to-file always works.
+
+
+@dataclass(frozen=True, slots=True)
+class ReportRow:
+    """One participant's computed numbers - data, not text."""
+
+    name: str
+    contribution: float
+    vested: float
 
 
 def load_participants(path: Path) -> list[dict[str, str]]:
@@ -34,23 +44,30 @@ def load_participants(path: Path) -> list[dict[str, str]]:
         return list(csv.DictReader(f))
 
 
-def build_report(participants: list[dict[str, str]]) -> list[str]:
-    """Compute one report line per participant. Returns lines, prints nothing.
-
-    (Separating computation from printing = testable computation.)
-    """
-    lines = []
-    for p in participants:
-        contribution = annual_contribution(
-            salary=float(p["salary"]),
-            deferral_rate=float(p["deferral_pct"]),
-            age=int(p["age"]),
+def compute_rows(participants: list[dict[str, str]]) -> list[ReportRow]:
+    """Convert at the boundary, then compute. No formatting here."""
+    return [
+        ReportRow(
+            name=p["name"],
+            contribution=annual_contribution(
+                salary=float(p["salary"]),
+                deferral_rate=float(p["deferral_pct"]),
+                age=int(p["age"]),
+            ),
+            vested=vested_percent(int(p["years_service"])),
         )
-        vested = vested_percent(int(p["years_service"]))
-        lines.append(
-            f"{p['name']:<12} contributes ${contribution:>9,.2f} | {vested:>4.0%} vested"
-        )  # :<12 pads name to 12 chars → columns align like a real report
-    return lines
+        for p in participants
+    ]
+
+
+def format_row(row: ReportRow) -> str:
+    """The report's layout contract, in one place."""
+    return f"{row.name:<12} contributes ${row.contribution:<9,.2f} | {row.vested:>4.0%} vested"
+
+
+def build_report(participants: list[dict[str, str]]) -> list[str]:
+    """Compute, then format. Two small pure functions, composed."""
+    return [format_row(row) for row in compute_rows(participants)]
 
 
 if __name__ == "__main__":
