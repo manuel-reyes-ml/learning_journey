@@ -23,6 +23,10 @@ def participant(**overrides: str) -> dict[str, str]:
         "deferral_pct": "0.06",
         "years_service": "3",
     }
+
+    unknown = overrides.keys() - row.keys()  # a typo like salry="1" must not pass silently
+    if unknown:
+        raise TypeError(f"participant() got unknown field(s): {sorted(unknown)}")
     return row | overrides
 
 
