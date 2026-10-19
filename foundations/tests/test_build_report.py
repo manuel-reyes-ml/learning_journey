@@ -14,8 +14,23 @@ from learning_journey.projects.contribution_report import (
 )
 
 
+# --- POSITIONAL vs KEYWORD ARGUMENTS ---
+#
+# Positional: matched by POSITION.  f("62000")        -> 1st value, 1st parameter
+# Keyword:    matched by NAME.      f(salary="62000") -> goes to the parameter named salary
+#
+# **overrides accepts keyword arguments ONLY and collects them into a dict:
+#   participant(salary="500000", age="50") -> overrides = {"salary": "500000", "age": "50"}
+#   participant("500000")                  -> TypeError: takes 0 positional arguments
+# No positional parameter on purpose: an override is useless unless it names
+# the field it replaces, so Python refuses to guess.
+#
+# In a test, participant(**case) does the reverse: ** spreads a dict back out
+# into keyword arguments, so {"age": "50"} arrives as if you typed age="50".
 def participant(**overrides: str) -> dict[str, str]:
     """A valid CSV row as DictReader returns it (all strings); override one field per test."""
+    # `: str` types each VALUE (every CSV field arrives as text), not the dict
+    # itself: inside the function, overrides is a dict[str, str].
     row = {
         "name": "Ana Torres",
         "age": "34",
@@ -23,10 +38,15 @@ def participant(**overrides: str) -> dict[str, str]:
         "deferral_pct": "0.06",
         "years_service": "3",
     }
-
-    unknown = overrides.keys() - row.keys()  # a typo like salry="1" must not pass silently
+    # Set difference: keys passed in that a real row doesn't have. Without this,
+    # a typo like salry="1" adds a new key and the real salary stays at 62000.
+    unknown = overrides.keys() - row.keys()
     if unknown:
         raise TypeError(f"participant() got unknown field(s): {sorted(unknown)}")
+    # | merges two dicts into a NEW dict (Python 3.9+, PEP 584):
+    #   every key from row, plus every key from overrides; on a shared key the
+    #   RIGHT side wins. Neither row nor overrides is changed.
+    #   {"age": "34", "salary": "62000"} | {"age": "50"} -> {"age": "50", "salary": "62000"}
     return row | overrides
 
 
