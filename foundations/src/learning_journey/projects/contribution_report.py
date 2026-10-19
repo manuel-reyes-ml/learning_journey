@@ -22,6 +22,10 @@ DATA_FILE: Path = Path(__file__).resolve().parent / "participants.csv"
 # run from a different folder. Path-relative-to-file always works.
 
 
+# frozen=True makes instances immutable.
+# slots=True prevents dynamic attribute creation and
+# reduces memory fooprint.
+# Together they create a truly locked-down data container.
 @dataclass(frozen=True, slots=True)
 class ReportRow:
     """One participant's computed numbers - data, not text."""
