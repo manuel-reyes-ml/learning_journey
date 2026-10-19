@@ -6,8 +6,10 @@ import pytest
 
 from learning_journey.projects.contribution_report import (
     DATA_FILE,
+    ReportRow,
     build_report,
     compute_rows,
+    format_row,
     load_participants,
 )
 
@@ -125,3 +127,48 @@ def test_compute_rows(
     [row] = compute_rows([participant(**overrides)])
     assert row.contribution == pytest.approx(expected_contribution)
     assert row.vested == pytest.approx(expected_vested)
+
+
+def test_one_row_per_participant_in_input_order() -> None:
+    rows = compute_rows([participant(name="A"), participant(name="B"), participant(name="C")])
+    assert [r.name for r in rows] == ["A", "B", "C"]
+
+
+def test_empty_input_gives_empty_report() -> None:
+    assert build_report([]) == []
+
+
+@pytest.mark.parametrize(
+    ("overrides", "error"),
+    [
+        pytest.param({"salary": "abc"}, ValueError, id="non-numeri-salary"),
+        pytest.param({"salary": "-5"}, ValueError, id="negative-salary"),
+        pytest.param({"age": "34.5"}, ValueError, id="age-not-an-integer"),
+    ],
+)
+def test_bad_input_fails_loudly(overrides, error) -> None:
+    with pytest.raises(error):
+        compute_rows([participant(**overrides)])
+
+
+def test_missing_column_fails_loudly() -> None:
+    row = participant()
+    del row["salary"]
+    with pytest.raises(KeyError, match="salary"):
+        compute_rows([row])
+
+
+# --- 2. The layout: a few exact strings are the contract ------------------
+
+
+def test_format_row_exact_layout() -> None:
+    assert format_row(ReportRow("Ana Torres", 3_720.0, 0.40)) == (
+        "Ana Torres   contributes $3,720.00  |  40% vested"
+    )
+
+
+def test_format_row_columns_align() -> None:
+    a = format_row(ReportRow("Ana Torres", 3_720.0, 0.40))
+    b = format_row(ReportRow("Luis Vega", 23_500.0, 1.0))
+    assert a.index("$") == b.index("$")
+    assert a.index("|") == b.index("|")
