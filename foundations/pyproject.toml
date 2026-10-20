@@ -93,6 +93,7 @@ select = [
     "UP",   # pyupgrade
     "SIM",  # simplify
     "RUF",  # ruff-specific
+    "PT",   # Tuple in parametrize's args.
 ]
 # `D` (docstrings) is left out while the dayNN scripts are being typed. Turn it on with
 # convention = "google" (the Args:/Raises: style the plan uses) once Week 2's
