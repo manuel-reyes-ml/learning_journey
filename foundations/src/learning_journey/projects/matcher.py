@@ -30,7 +30,8 @@ class MatchResult:
 def match_records(
     participants: list[dict],
     distributions: list[dict],
-    amount_tolerance: float = 0.01,
+    *,
+    amount_tolerance: float,
 ) -> MatchResult:
     """Bucket every participant: matched / missing-in-B / amount-mismatch.
 
@@ -92,5 +93,5 @@ if __name__ == "__main__":
             case "distributions":
                 distributions = data
 
-    result = match_records(participants, distributions)
+    result = match_records(participants, distributions, amount_tolerance=0.01)
     print(result)
