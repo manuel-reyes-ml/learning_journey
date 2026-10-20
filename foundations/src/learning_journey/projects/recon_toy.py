@@ -7,6 +7,7 @@ ever build, including DataVault's real one:
 
 from __future__ import annotations
 
+import argparse
 import sqlite3
 from pathlib import Path
 
@@ -15,14 +16,14 @@ from learning_journey.projects import load_db, make_data, recon
 OUTPUT_DIR: Path = Path(__file__).parent / "output"
 
 
-def run_pipeline() -> Path:
+def run_pipeline(n: int) -> Path:
     """Run all stages; write the exceptions report; return its path.
 
     Returning the path (instead of just printing) makes the pipeline
     TESTABLE — a test can open the file and check its contents.
     """
     print("[1/4] Generating synthetic data...")
-    participants = make_data.make_partipants(50)
+    participants = make_data.make_partipants(n)
     distributions = make_data.make_distributions(participants)
     make_data.write_csv(make_data.OUT_DIR / "system_a_participants.csv", participants)
     make_data.write_csv(make_data.OUT_DIR / "system_b_distributions.csv", distributions)
@@ -57,4 +58,23 @@ def run_pipeline() -> Path:
 
 
 if __name__ == "__main__":
-    run_pipeline()
+    parser = argparse.ArgumentParser(
+        description="recon-toy: generate, load, reconcile, and report."
+    )
+    parser.add_argument(
+        "--participants",
+        "-p",
+        type=int,
+        default=50,
+        help="number of synthetic participants to generate (default: 50)",
+    )
+    parser.add_argument(
+        "--tolerance",
+        "-t",
+        type=float,
+        default=0.01,
+        help="amount tolerance in dollars for matching (default: 0.01)",
+    )
+    args = parser.parse_args()
+
+    run_pipeline(args.participants)
