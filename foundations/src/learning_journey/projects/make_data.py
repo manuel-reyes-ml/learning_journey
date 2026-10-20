@@ -24,7 +24,7 @@ LAST: list[str] = ["Torres", "Vega", "Chen", "Ali", "Kim", "Ruiz", "Cole", "Diaz
 BOX7_CODES: list[str] = ["1", "2", "4", "7", "G"]
 
 
-def make_partipants(n: int) -> list[dict]:
+def make_participants(n: int) -> list[dict]:
     """System A: the recordkeeper's participant file."""
     rows = []
     for i in range(n):
@@ -79,7 +79,7 @@ def write_csv(path: Path, rows: list[dict]) -> None:
 
 
 if __name__ == "__main__":
-    participants = make_partipants(50)
+    participants = make_participants(50)
     distributions = make_distributions(participants)
 
     write_csv(OUT_DIR / "system_a_participants.csv", participants)
