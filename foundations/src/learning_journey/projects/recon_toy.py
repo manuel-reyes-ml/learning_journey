@@ -14,6 +14,7 @@ from pathlib import Path
 
 from learning_journey.projects import load_db, make_data, matcher, recon
 
+ROOT_DIR: Path = Path(__file__).resolve().parents[4]
 OUTPUT_DIR: Path = Path(__file__).parent / "output"
 
 
@@ -100,7 +101,7 @@ def run_pipeline(n: int, tol: float) -> Path:
     OUTPUT_DIR.mkdir(exist_ok=True)
     report_path = OUTPUT_DIR / "exceptions_report.txt"
     report_path.write_text(render_report(result, totals), encoding="utf-8")
-    print(f"✅ Report → {report_path}")
+    print(f"✅ Report → {report_path.relative_to(ROOT_DIR)}")
     return report_path
 
 
