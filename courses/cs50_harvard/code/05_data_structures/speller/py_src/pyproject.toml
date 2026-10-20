@@ -252,7 +252,8 @@ exclude = [
 #   B = flake8-bugbear (common bugs)
 #   SIM = flake8-simplify (simplifiable code)
 #   RUF = ruff-specific rules
-select = ["E", "W", "F", "I", "N", "UP", "B", "SIM", "RUF"]
+#   PT = Pytest format (Parametrize's args)
+select = ["E", "W", "F", "I", "N", "UP", "B", "SIM", "RUF", "PT"]
 
 # This is the production-grade move: declare your intent in config, don't bury it 
 # under per-line # noqas.
