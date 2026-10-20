@@ -81,6 +81,8 @@ def run_pipeline(n: int) -> Path:
     # now; --tolerance gets wired in a later step.
     result = matcher.match_records(participants, distributions)
 
+    # The current conn.close() would also be skipped if a query raised an error.
+    # 'closing' covers that case.
     with closing(sqlite3.connect(load_db.DB_PATH)) as conn:
         totals = recon.totals_by_code(conn)
         sql_missing = {pid for pid, _name in recon.missing_in_b(conn)}
