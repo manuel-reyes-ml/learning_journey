@@ -196,13 +196,13 @@ class TestCheck:
             empty_dictionary.check("hello")
 
     @pytest.mark.parametrize(
-        "word, expected",
+        ("word", "expected"),
         [
-            ("the", True),  # common word
-            ("cat", True),  # in test dictionary
-            ("xyz", False),  # not in dictionary
-            ("THE", True),  # uppercase version
-            ("", False),  # empty string
+            pytest.param("the", True, id="common_word"),  # common word
+            pytest.param("cat", True, id="in_dictionary"),  # in test dictionary
+            pytest.param("xyz", False, id="not_in_dictionary"),  # not in dictionary
+            pytest.param("THE", True, id="uppercase"),  # uppercase version
+            pytest.param("", False, id="empty"),  # empty string
         ],
         # --- HOW @pytest.mark.parametrize WORKS ---
         #
@@ -326,13 +326,13 @@ class TestWithLargeDictionary:
 
     @pytest.mark.integration
     @pytest.mark.parametrize(
-        "word, expected",
+        ("word", "expected"),
         [
-            ("hello", True),
-            ("python", True),
-            ("Bingley", False),  # proper noun - not in dictionary
-            ("xyz", False),
-            ("pneumonoultramicroscopicsilicovolcanoconiosis", True),  # longest word
+            pytest.param("hello", True),
+            pytest.param("python", True),
+            pytest.param("Bingley", False),  # proper noun - not in dictionary
+            pytest.param("xyz", False),
+            pytest.param("pneumonoultramicroscopicsilicovolcanoconiosis", True),  # longest word
         ],
     )
     def test_large_dict_check(
