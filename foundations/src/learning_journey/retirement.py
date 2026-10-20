@@ -35,7 +35,7 @@ def annual_contribution(salary: float, deferral_rate: float, age: int) -> float:
             LOUDLY at the boundary, not produce a quiet wrong number.
     """
     if salary <= 0:
-        raise ValueError(f"Salary must be positive, got {salary}")
+        raise ValueError(f"salary must be positive, got {salary}")
     if not 0 <= deferral_rate <= 1:
         raise ValueError(f"deferral_rate must be 0-1, got {deferral_rate}")
 
