@@ -99,47 +99,82 @@ class TestBasicExtraction:
     path_name is a logging label; "test.txt" is used as a placeholder.
     """
 
+    # --- HOW @pytest.mark.parametrize WORKS ---
+    #
+    # Instead of writing 5 separate test functions that do the same
+    # thing with different inputs, parametrize runs the SAME test
+    # function once per case. Each case is reported as its own test.
+    #
+    # Format:
+    #   @pytest.mark.parametrize(
+    #       ("name_1", "name_2"),       # argnames: a tuple of strings
+    #       [case_1, case_2, ...],      # argvalues: one entry per case
+    #   )
+    #   def test_something(name_1, name_2):     # (inside a class: self first)
+    #
+    # - argnames can also be one comma-separated string: "name_1, name_2".
+    #   Both work; the tuple is explicit, and ruff's PT006 rule expects it.
+    # - Every name in argnames must match a parameter of the test function.
+    # - Each case's values are unpacked IN ORDER into those names:
+    #   the 1st value goes to name_1, the 2nd to name_2, and so on.
+    # - A case can be a plain tuple (1, 2) or a pytest.param(1, 2, ...).
+    #   The two styles can be mixed in the same list.
+    #
+    # The text inside [brackets] is the test ID. Without an id, pytest
+    # builds one from the values:           test_eval[3+5-8]
+    # Show every ID:      uv run pytest --collect-only -q
+    # Run cases by ID:    uv run pytest -k "catch-up or capped"
+    #
+    # --- HOW pytest.param() WORKS ---
+    #
+    # pytest.param() wraps ONE case together with its name and marks
+    # (part of pytest since version 3.1):
+    #
+    #   pytest.param(*values, id="readable-name", marks=...)
+    #
+    # It returns a small container (a ParameterSet) with three fields:
+    #   pytest.param({}, 3720.0, 0.40, id="under-limit")
+    #   -> ParameterSet(values=({}, 3720.0, 0.4), marks=(), id='under-limit')
+    #
+    # - values: the case's arguments, in argnames order (same as a tuple)
+    # - id:     the name shown in [brackets]  -> test_compute_rows[under-limit]
+    # - marks:  a mark for THIS case only, e.g. a known bug:
+    #     pytest.param("6*9", 42, id="known-wrong",
+    #                  marks=pytest.mark.xfail(reason="bug #12", strict=True))
+    #   strict=True makes the run FAIL if that case unexpectedly passes,
+    #   so a fixed bug can't hide behind the mark.
+    #
+    # --- WHY pytest.param(id=...) INSTEAD OF A SEPARATE ids=[...] LIST ---
+    #
+    # A separate ids list matches names to cases by POSITION. Insert a case
+    # in the middle, add its id at the end, and every name after it shifts
+    # by one, so a failure report names the WRONG case. pytest catches a
+    # length mismatch ("3 parameter sets ... different number of ids: 2"),
+    # but not a shifted order. With pytest.param the name sits on the same
+    # line as its data, so it can't drift. If a case gets both, the
+    # pytest.param id wins.
     @pytest.mark.parametrize(
-        "content, expected",
+        ("content", "expected"),
         [
-            (
+            pytest.param(
                 "The cat sat on the mat",
                 ["The", "cat", "sat", "on", "the", "mat"],
-            ),  # simple sentence
-            (
+                id="simple_sentence",
+            ),
+            pytest.param(
                 "Hello WORLD Python",
                 ["Hello", "WORLD", "Python"],
-            ),  # preserves original case
-            ("", []),  # empty content
-            ("hello", ["hello"]),  # single word no space
-            ("hello     world", ["hello", "world"]),  # words with multiple spaces
-            (
+                id="original_case",
+            ),
+            pytest.param("", [], id="empty"),
+            pytest.param("hello", ["hello"], id="single_word"),
+            pytest.param("hello     world", ["hello", "world"], id="multi_spaces"),
+            pytest.param(
                 "hello\nworld\npython\n",
                 ["hello", "world", "python"],
-            ),  # words with delimiters
+                id="delimiters",
+            ),
         ],
-        ids=[
-            "simple_sentence",
-            "original_case",
-            "empty",
-            "single_word",
-            "multi_spaces",
-            "delimiters",
-        ],
-        # --- HOW @pytest.mark.parametrize WORKS ---
-        #
-        # Instead of writing 6 separate test functions that do the
-        # same thing with different inputs, parametrize runs the SAME
-        # test function multiple times with different arguments.
-        #
-        # The string after [brackets] is auto-generated from the args.
-        #
-        # Format:
-        #   @pytest.mark.parametrize("param_names", [list_of_tuples])
-        #   def test_something(self, param_names, ...):
-        #
-        # Each tuple in the list becomes one test invocation.
-        # The tuple values are unpacked into the parameter names.
     )
     def test_content_extraction(self, content: str, expected: list[str]) -> None:
         """Extract words from a simple sentence."""
@@ -185,22 +220,24 @@ class TestApostrophes:
     """
 
     @pytest.mark.parametrize(
-        "content, expected",
+        ("content", "expected"),
         [
-            (
+            pytest.param(
                 "it's don't can't",
                 ["it's", "don't", "can't"],
+                id="inside_word",
             ),  # apostrophe inside a word is included
-            (
+            pytest.param(
                 "'hello world",
                 ["hello", "world"],
+                id="start_word",
             ),  # apostrohpe at start of word is NOT included
-            (
+            pytest.param(
                 "cat's dog's",
                 ["cat's", "dog's"],
+                id="possesive",
             ),  # possesive forms are trated as single words
         ],
-        ids=["inside_word", "start_word", "possesive"],
     )
     def test_apostrophe_in_content(self, content: str, expected: list[str]) -> None:
         """ """
@@ -223,23 +260,31 @@ class TestDigitHandling:
     """
 
     @pytest.mark.parametrize(
-        "content, expected",
+        ("content", "expected"),
         [
-            ("123 hello 456 world", ["hello", "world"]),  # pure digit sequences
-            ("abc123def next", ["next"]),  # digit mid-word
-            ("123abc_next", ["next"]),  # digit at word start
-            ("hello word123 world", ["hello", "world"]),  # valid word before and after
-            (
+            pytest.param(
+                "123 hello 456 world", ["hello", "world"], id="sequences"
+            ),  # pure digit sequences
+            pytest.param(
+                "abc123def next",
+                ["next"],
+                id="midword",
+            ),  # digit mid-word
+            pytest.param(
+                "123abc_next",
+                ["next"],
+                id="word_start",
+            ),  # digit at word start
+            pytest.param(
+                "hello word123 world",
+                ["hello", "world"],
+                id="mid_sentence",
+            ),  # valid word before and after
+            pytest.param(
                 "Section 401k plan",
                 ["Section", "plan"],
+                id="section",
             ),  # section numbers mixed with text
-        ],
-        ids=[
-            "sequences",
-            "mid-word",
-            "word-start",
-            "mid-sentence",
-            "section",
         ],
     )
     def test_digits_in_content(self, content: str, expected: list[str]) -> None:
@@ -298,32 +343,21 @@ class TestPunctuation:
     """Test punctuation characters as word delimiters."""
 
     @pytest.mark.parametrize(
-        "content, expected",
+        ("content", "expected"),
         [
-            ("hello, world", ["hello", "world"]),
-            ("hello. world", ["hello", "world"]),
-            ("hello! world", ["hello", "world"]),
-            ("hello? world", ["hello", "world"]),
-            ("hello; world", ["hello", "world"]),
-            ("hello: world", ["hello", "world"]),
-            ("(hello) world", ["hello", "world"]),
-            ('"hello" world', ["hello", "world"]),
-            ("hello-world", ["hello", "world"]),
+            pytest.param("hello, world", ["hello", "world"], id="comma"),
+            pytest.param("hello. world", ["hello", "world"], id="period"),
+            pytest.param("hello! world", ["hello", "world"], id="exclamation"),
+            pytest.param("hello? world", ["hello", "world"], id="question"),
+            pytest.param("hello; world", ["hello", "world"], id="semicolon"),
+            pytest.param("hello: world", ["hello", "world"], id="colon"),
+            pytest.param("(hello) world", ["hello", "world"], id="parens"),
+            pytest.param('"hello" world', ["hello", "world"], id="quotes"),
+            pytest.param("hello-world", ["hello", "world"], id="hyphen"),
         ],
         # IDs make test output more readable:
         #   test_punctuation_as_delimiter[comma]       PASSED
         #   test_punctuation_as_delimiter[period]      PASSED
-        ids=[
-            "comma",
-            "period",
-            "exclamation",
-            "question",
-            "semicolon",
-            "colon",
-            "parens",
-            "quotes",
-            "hyphen",
-        ],
     )
     def test_punctuation_as_delimiter(self, content: str, expected: list[str]) -> None:
         """All punctuation characters act as word delimiters."""
@@ -454,12 +488,11 @@ class TestCS50Validation:
 
     @pytest.mark.integration
     @pytest.mark.parametrize(
-        "text_file, expected_word_count",
+        ("text_file", "expected_word_count"),
         [
-            ("cat.txt", 6),
-            ("constitution.txt", 7573),
+            pytest.param("cat.txt", 6, id="cat"),
+            pytest.param("constitution.txt", 7573, id="constitution"),
         ],
-        ids=["cat", "constitution"],
     )
     def test_word_count_matches_cs50(
         self,
