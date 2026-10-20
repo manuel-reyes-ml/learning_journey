@@ -152,6 +152,7 @@ select = [
     "SIM",  # simplify
     "D",    # pydocstyle — catches the empty docstrings you keep hitting
     "RUF",  # ruff-specific rules
+    "PT",   # test scripts formatting
 ]
 
 [tool.ruff.lint.pydocstyle]
