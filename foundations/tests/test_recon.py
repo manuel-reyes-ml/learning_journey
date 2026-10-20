@@ -22,5 +22,6 @@ def test_every_code_total_positive() -> None:
     conn = sqlite3.connect(DB_PATH)
     for _code, n, total in totals_by_code(conn):
         # _code: leading underscore = "unpacked but deliberately unused"
-        assert n > 0 and total > 0
+        assert n > 0
+        assert total > 0
     conn.close()
