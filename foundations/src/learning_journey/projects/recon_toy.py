@@ -61,7 +61,7 @@ def render_report(result: matcher.MatchResult, totals: list[tuple[str, int, floa
     return "\n".join(lines) + "\n"  # files end with a newline
 
 
-def run_pipeline(n: int) -> Path:
+def run_pipeline(n: int, tol: float) -> Path:
     """Run all stages; write the exceptions report; return its path.
 
     Returning the path (instead of just printing) makes the pipeline
@@ -79,7 +79,7 @@ def run_pipeline(n: int) -> Path:
     print("[3/4] Reconciling...")
     # Python matcher is the report's source of truth. Default tolerance for
     # now; --tolerance gets wired in a later step.
-    result = matcher.match_records(participants, distributions)
+    result = matcher.match_records(participants, distributions, amount_tolerance=tol)
 
     # The current conn.close() would also be skipped if a query raised an error.
     # 'closing' covers that case.
@@ -124,4 +124,4 @@ if __name__ == "__main__":
     )
     args = parser.parse_args()
 
-    run_pipeline(args.participants)
+    run_pipeline(args.participants, args.tolerance)
