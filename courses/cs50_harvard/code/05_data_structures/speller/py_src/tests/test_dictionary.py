@@ -195,6 +195,60 @@ class TestCheck:
         with pytest.raises(RuntimeError, match="not loaded"):
             empty_dictionary.check("hello")
 
+    # --- HOW @pytest.mark.parametrize WORKS ---
+    #
+    # Instead of writing 5 separate test functions that do the same
+    # thing with different inputs, parametrize runs the SAME test
+    # function once per case. Each case is reported as its own test.
+    #
+    # Format:
+    #   @pytest.mark.parametrize(
+    #       ("name_1", "name_2"),       # argnames: a tuple of strings
+    #       [case_1, case_2, ...],      # argvalues: one entry per case
+    #   )
+    #   def test_something(name_1, name_2):     # (inside a class: self first)
+    #
+    # - argnames can also be one comma-separated string: "name_1, name_2".
+    #   Both work; the tuple is explicit, and ruff's PT006 rule expects it.
+    # - Every name in argnames must match a parameter of the test function.
+    # - Each case's values are unpacked IN ORDER into those names:
+    #   the 1st value goes to name_1, the 2nd to name_2, and so on.
+    # - A case can be a plain tuple (1, 2) or a pytest.param(1, 2, ...).
+    #   The two styles can be mixed in the same list.
+    #
+    # The text inside [brackets] is the test ID. Without an id, pytest
+    # builds one from the values:           test_eval[3+5-8]
+    # Show every ID:      uv run pytest --collect-only -q
+    # Run cases by ID:    uv run pytest -k "catch-up or capped"
+    #
+    # --- HOW pytest.param() WORKS ---
+    #
+    # pytest.param() wraps ONE case together with its name and marks
+    # (part of pytest since version 3.1):
+    #
+    #   pytest.param(*values, id="readable-name", marks=...)
+    #
+    # It returns a small container (a ParameterSet) with three fields:
+    #   pytest.param({}, 3720.0, 0.40, id="under-limit")
+    #   -> ParameterSet(values=({}, 3720.0, 0.4), marks=(), id='under-limit')
+    #
+    # - values: the case's arguments, in argnames order (same as a tuple)
+    # - id:     the name shown in [brackets]  -> test_compute_rows[under-limit]
+    # - marks:  a mark for THIS case only, e.g. a known bug:
+    #     pytest.param("6*9", 42, id="known-wrong",
+    #                  marks=pytest.mark.xfail(reason="bug #12", strict=True))
+    #   strict=True makes the run FAIL if that case unexpectedly passes,
+    #   so a fixed bug can't hide behind the mark.
+    #
+    # --- WHY pytest.param(id=...) INSTEAD OF A SEPARATE ids=[...] LIST ---
+    #
+    # A separate ids list matches names to cases by POSITION. Insert a case
+    # in the middle, add its id at the end, and every name after it shifts
+    # by one, so a failure report names the WRONG case. pytest catches a
+    # length mismatch ("3 parameter sets ... different number of ids: 2"),
+    # but not a shifted order. With pytest.param the name sits on the same
+    # line as its data, so it can't drift. If a case gets both, the
+    # pytest.param id wins.
     @pytest.mark.parametrize(
         ("word", "expected"),
         [
@@ -204,27 +258,6 @@ class TestCheck:
             pytest.param("THE", True, id="uppercase"),  # uppercase version
             pytest.param("", False, id="empty"),  # empty string
         ],
-        # --- HOW @pytest.mark.parametrize WORKS ---
-        #
-        # Instead of writing 5 separate test functions that do the
-        # same thing with different inputs, parametrize runs the SAME
-        # test function multiple times with different arguments.
-        #
-        # pytest output shows each case separately:
-        #   test_check_parametrized[the-True]     PASSED
-        #   test_check_parametrized[cat-True]      PASSED
-        #   test_check_parametrized[xyz-False]     PASSED
-        #   test_check_parametrized[THE-True]      PASSED
-        #   test_check_parametrized[-False]        PASSED
-        #
-        # The string after [brackets] is auto-generated from the args.
-        #
-        # Format:
-        #   @pytest.mark.parametrize("param_names", [list_of_tuples])
-        #   def test_something(self, param_names, ...):
-        #
-        # Each tuple in the list becomes one test invocation.
-        # The tuple values are unpacked into the parameter names.
     )
     def test_check_parametrized(
         self,
