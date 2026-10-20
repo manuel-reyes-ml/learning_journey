@@ -46,15 +46,15 @@ def test_graded_vesting_year_four() -> None:
 def test_negative_salary_rejected() -> None:
     # Testing that bad input FAILS CORRECTLY is as important as testing
     # that good input succeeds. pytest.raises asserts "this MUST raise".
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="salary"):
         annual_contribution(-50_000, 0.10, age=40)
 
 
 def test_rate_above_one_rejected() -> None:
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="deferral_rate"):
         annual_contribution(60_000, 1.5, age=40)  # 150% deferral = nonsense
 
 
 def test_unknown_schedule_rejected() -> None:
-    with pytest.raises(ValueError):
+    with pytest.raises(ValueError, match="unknown schedule"):
         vested_percent(4, "immediate-maybe")
