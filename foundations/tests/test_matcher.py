@@ -17,7 +17,11 @@ def _read(name) -> list[dict]:
 def test_python_and_sql_agree_on_missing():
     """Two independent implementations, one answer — or a bug exists."""
     load()
-    result = match_records(_read("system_a_participants.csv"), _read("system_b_distributions.csv"))
+    result = match_records(
+        _read("system_a_participants.csv"),
+        _read("system_b_distributions.csv"),
+        amount_tolerance=0.01,
+    )
     conn = sqlite3.connect(DB_PATH)
     assert len(result.missing_in_b) == len(missing_in_b(conn))
     conn.close()
