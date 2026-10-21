@@ -1,3 +1,14 @@
+"""Report dependency specifiers with no upper bound, and suggest `uv add` fixes.
+
+Run from the workspace root:
+
+    uv run python scripts/check_bounds.py            # report + suggested commands
+    uv run python scripts/check_bounds.py -m   # also list major jumps a bulk upgrade would take
+
+Read-only: it never edits pyproject.toml or uv.lock. Copy the commands it prints
+after reviewing them.
+"""
+
 from __future__ import annotations
 
 import argparse
@@ -95,7 +106,9 @@ def majors() -> None:
 
 def main() -> int:
     """Entry point."""
-    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    parser = argparse.ArgumentParser(
+        description=__doc__.splitlines()[0] if __doc__ is not None else ""
+    )
     parser.add_argument(
         "--majors",
         "-m",
