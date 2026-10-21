@@ -3,10 +3,15 @@
 Run from the workspace root:
 
     uv run python scripts/check_bounds.py            # report + suggested commands
-    uv run python scripts/check_bounds.py -m   # also list major jumps a bulk upgrade would take
+    uv run python scripts/check_bounds.py --majors   # + major jumps a bulk upgrade would take
 
 Read-only: it never edits pyproject.toml or uv.lock. Copy the commands it prints
 after reviewing them.
+
+Running examples used in the comments below (real values from learning_journey):
+- EXAMPLE A  `requests>=2.34.2` in the root project (learning-journey), locked at 2.34.2.
+- EXAMPLE B  `ruff>=0.4` in cs50-speller's `dev` extra, locked at 0.16.7 (a 0.x package).
+- EXAMPLE C  `filelock 3.32.6 -> 4.2.4`, a transitive package a bulk upgrade would move.
 """
 
 from __future__ import annotations
