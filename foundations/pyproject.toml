@@ -28,7 +28,9 @@ authors = [{ name = "Manuel Reyes" }]
 
 # Stdlib only for now (csv, pathlib). Every third-party import added to src/ must be
 # declared here, with a range — never rely on a transitive dependency.
-dependencies = []
+dependencies = [
+    "structlog>=26.1,<27",
+]
 
 [dependency-groups]
 # Same split as llm-api-smoke-test: CI's test job needs only `test`; `dev` adds linting.
