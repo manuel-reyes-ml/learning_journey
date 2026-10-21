@@ -12,7 +12,13 @@ import sqlite3
 from contextlib import closing
 from pathlib import Path
 
+import structlog
+
 from learning_journey.projects import load_db, make_data, matcher, recon
+
+log = structlog.get_logger()
+# get_logger() gives you a logger. With structlog, you log EVENTS with
+# KEY-VALUE data, not sentences with numbers baked in.
 
 ROOT_DIR: Path = Path(__file__).resolve().parents[4]
 OUTPUT_DIR: Path = Path(__file__).parent / "output"
@@ -59,6 +65,13 @@ def render_report(result: matcher.MatchResult, totals: list[tuple[str, int, floa
     for code, n, total in totals:
         lines.append(f"  code {code}: {n:>3} rows   ${total:>12,.2f}")
 
+    log.info(
+        "report_rendered",
+        missing_b=len(result.missing_in_b),
+        mismatch=len(result.amount_mismatch),
+        matched=len(result.matched),
+    )
+
     return "\n".join(lines) + "\n"  # files end with a newline
 
 
@@ -68,19 +81,23 @@ def run_pipeline(n: int, tol: float) -> Path:
     Returning the path (instead of just printing) makes the pipeline
     TESTABLE — a test can open the file and check its contents.
     """
-    print("[1/4] Generating synthetic data...")
-    participants = make_data.make_partipants(n)
+    participants = make_data.make_participants(n)
     distributions = make_data.make_distributions(participants)
     make_data.write_csv(make_data.OUT_DIR / "system_a_participants.csv", participants)
     make_data.write_csv(make_data.OUT_DIR / "system_b_distributions.csv", distributions)
+    log.info(
+        "[1/5]_synthetic_data_generated",
+        participants=len(participants),
+        distributions=len(distributions),
+    )
 
-    print("[2/4] Loading SQLite...")
     load_db.load()
+    log.info("[2/4]_sqlite_loaded", db_path=load_db.DB_PATH)
 
-    print("[3/4] Reconciling...")
     # Python matcher is the report's source of truth. Default tolerance for
     # now; --tolerance gets wired in a later step.
     result = matcher.match_records(participants, distributions, amount_tolerance=tol)
+    log.info("[3/5]_recon_data_generated", data_container=str(type(result)))
 
     # The current conn.close() would also be skipped if a query raised an error.
     # 'closing' covers that case.
@@ -96,12 +113,15 @@ def run_pipeline(n: int, tol: float) -> Path:
             f"only SQL={sorted(sql_missing - py_missing)}, "
             f"only Python={sorted(py_missing - sql_missing)}"
         )
+    log.info("[4/5]_sql_python_reconciled", status=py_missing == sql_missing)
 
-    print("[4/4] Writing report...")
     OUTPUT_DIR.mkdir(exist_ok=True)
     report_path = OUTPUT_DIR / "exceptions_report.txt"
     report_path.write_text(render_report(result, totals), encoding="utf-8")
+    log.info("[5/5]_txt_file_written", file_path=report_path)
+
     print(f"✅ Report → {report_path.relative_to(ROOT_DIR)}")
+
     return report_path
 
 
