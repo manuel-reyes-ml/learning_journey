@@ -1553,6 +1553,9 @@ wheels = [
 name = "lj-foundations"
 version = "0.1.0"
 source = { editable = "foundations" }
+dependencies = [
+    { name = "structlog" },
+]
 
 [package.dev-dependencies]
 dev = [
@@ -1566,6 +1569,7 @@ test = [
 ]
 
 [package.metadata]
+requires-dist = [{ name = "structlog", specifier = ">=26.1,<27" }]
 
 [package.metadata.requires-dev]
 dev = [
