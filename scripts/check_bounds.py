@@ -109,6 +109,25 @@ def sections(data: dict) -> list[tuple[str, list]]:
     return out
 
 
+def lower_bound(req: Requirement) -> str | None:
+    """Return the version in the requirement's `>=` clause, if it has one.
+
+    Parameters
+    ----------
+    req : Requirement
+        A parsed dependency string.
+
+    Returns
+    -------
+    str | None
+        EXAMPLE A: Requirement("requests>=2.34.2") → "2.34.2". `requests` with no spec → None.
+    """
+    # A SpecifierSet is iterable: "pkg>=1.0,!=1.2" yields two Specifier objects, each with an
+    # .operator (">=", "!=") and a .version ("1.0", "1.2"). We want the one whose operator is ">=".
+    # next(generator, None) returns the first match, or None when there is none.
+    return next((s.version for s in req.specifier if s.operator == ">="), None)
+
+
 def report(locked: dict[str, Version]) -> int:
     """Print every requirement without a ceiling and the command that would add one."""
     found = 0
