@@ -65,7 +65,9 @@ Workspace facts that shape every command below:
 
 | Trigger | What to run |
 |---|---|
-| **Every fortnight** (start of each activation-plan block) | The full routine, §3–§8 |
+| **Every fortnight** (start of each activation-plan block) | The full routine, §3–§8 (packages) |
+| **Monthly**, i.e. every second fortnight | Add §7f (hook pins) to that fortnight's branch |
+| After `uv self update`, or whenever `ruff` moves in `uv.lock` | §7f |
 | `uv audit` or a security advisory names a package you use | §5–§8 for that one package, same day |
 | You need a feature from a newer release | §5–§8 for that one package |
 | Before tagging a release or a portfolio demo | §4 audit only, to know what you're shipping |
@@ -307,6 +309,65 @@ uv remove --package lj-foundations structlog
 uv remove --package lj-foundations --group dev ruff
 ```
 
+### 7f. Hooks — refresh pre-commit pins (same branch)
+
+Package updates and hook updates belong in the **same branch**, because two
+hooks run tools that also live in `uv.lock`:
+
+| Hook in `.pre-commit-config.yaml` | Must match | Why |
+|---|---|---|
+| `ruff-pre-commit` | `ruff` in `uv.lock` (what `make lint` and VS Code run) | Two ruff versions can format the same file differently |
+| `uv-pre-commit` | your local `uv --version` | Different uv versions can write different `uv.lock` files |
+
+**Where the versions are:** each `rev:` is a commit SHA, and the comment shows
+the release it points to:
+
+```yaml
+rev: 44b5042edab9382aba712eed4f9c7bab7a3d6a3e  # frozen: v0.17.0
+```
+
+`repo: local` hooks (the `claude-agents-check` / `claude-rules-check`
+generators) have no `rev:`; they run your own scripts and are never updated.
+
+**Run it after §7a–§7e and `uv self update`, so it can be compared against the
+new lock:**
+
+```bash
+make hooks-update                          # == pre-commit autoupdate --freeze
+git diff .pre-commit-config.yaml           # read every rev: change
+uv tree --package learning-journey --depth 1 | grep ruff   # venv ruff version
+grep -A1 "ruff-pre-commit" .pre-commit-config.yaml         # hook ruff version
+uv --version                               # vs. the uv-pre-commit "# frozen:" tag
+make hooks-run                             # every hook, every file, new versions
+```
+
+What it changes: **only `.pre-commit-config.yaml`**. Hooks install in their own
+environments under `~/.cache/pre-commit`, not in `.venv`, so nothing in
+`pyproject.toml` or `uv.lock` moves.
+
+Example run on 2026-10-21:
+
+```
+pre-commit-hooks         already up to date!
+ruff-pre-commit          v0.17.0 -> v0.17.1
+uv-pre-commit            0.13.0  -> 0.13.4
+gitleaks                 already up to date!
+nbstripout               already up to date!
+conventional-pre-commit  already up to date!
+```
+
+**If versions don't line up after the refresh:**
+
+- Hook ruff is newer than the venv ruff → `uv lock --upgrade-package ruff`, so
+  the venv catches up.
+- Venv ruff is newer than the hook → the hook's new release isn't out yet; edit
+  nothing and re-check at the next refresh.
+- `uv-pre-commit` is newer than your local uv → `uv self update`.
+
+**If `make hooks-run` rewrites files**, a newer ruff changed its formatting.
+Keep that out of the pin commit (see §8): commit the pin bump first, then the
+reformatted files on their own.
+
 ---
 
 <a id="8-commit"></a>
@@ -319,7 +380,7 @@ make sync
 make lint
 make test           # one pytest run per member
 make hooks-run      # every pre-commit hook, every file
-git diff --stat     # expect: uv.lock, plus pyproject.toml only for §7c/§7d/§7e
+git diff --stat     # expect: uv.lock · pyproject.toml (§7c–§7e) · .pre-commit-config.yaml (§7f)
 ```
 
 Commit `pyproject.toml` and `uv.lock` **together, in the same commit**. One
@@ -332,6 +393,20 @@ Commit messages (Conventional Commits; `build` is the type for dependencies):
 git commit -m "build(deps): refresh uv.lock within existing ranges"
 git commit -m "build(deps): bump anthropic floor to 1.17 in llm-api-smoke-test"
 git commit -m "build(deps): add structlog to lj-foundations"
+```
+
+One branch, **separate commits** in this order, so each commit has one reason to
+exist and can be reverted alone:
+
+```bash
+git add uv.lock '*pyproject.toml'                 # 1. packages (§7a–§7e); quoted glob = every member
+git commit -m "build(deps): refresh uv.lock within existing ranges"
+
+git add .pre-commit-config.yaml                   # 2. hook pins (§7f)
+git commit -m "build(hooks): refresh pinned hook revisions"
+
+git add -u                                        # 3. only if hooks-run reformatted files
+git commit -m "style(format): apply ruff 0.17.1"
 ```
 
 Then add one row to the [update log](#13-update-log), push the branch, and let
@@ -404,8 +479,8 @@ git commit -am "build(deps): add structlog to lj-foundations"
 
 Note on ruff: `.pre-commit-config.yaml` runs ruff **v0.17.0**, while the venv
 (`make lint`, VS Code) runs **0.16.7**. Two ruff versions can disagree on
-formatting. Keep the locked ruff and the `ruff-pre-commit` `rev:` on the same
-minor version.
+formatting. A bulk refresh (§7a) takes the venv to 0.17.1 and `make hooks-update`
+(§7f) takes the hook to v0.17.1, so running both in the same branch closes the gap.
 
 This table goes stale. Regenerate it with §4 rather than trusting it.
 
@@ -490,7 +565,11 @@ version, this is often why.
 | Install what the lock says | `make sync` |
 | Full verification | `make lint && make test && make hooks-run` |
 | Update uv itself | `uv self update` |
-| Update hook pins | `make hooks-update` |
+| Update hook pins (only edits `.pre-commit-config.yaml`) | `make hooks-update` |
+| Review hook pin changes | `git diff .pre-commit-config.yaml` |
+| Hook ruff vs. venv ruff | `grep -A1 ruff-pre-commit .pre-commit-config.yaml` · `uv tree --package learning-journey --depth 1 \| grep ruff` |
+| Run every hook with new pins | `make hooks-run` |
+| Commit hook pins | `git commit -m "build(hooks): refresh pinned hook revisions"` |
 
 ---
 
