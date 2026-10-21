@@ -41,6 +41,16 @@ dev = [
     "ruff>=0.16.7",
 ]
 
+# ---------------------------------------------------------------------------
+# uv — tool settings for the whole workspace.
+#
+# required-version: fail fast if someone runs an older uv that would write a
+# different uv.lock. Keep it in step with the uv-pre-commit rev in
+# .pre-commit-config.yaml and CI's setup-uv.
+# ---------------------------------------------------------------------------
+[tool.uv]
+required-version = ">=0.13"
+
 [tool.uv.workspace]
 members = [
     "llm-api-smoke-test",
