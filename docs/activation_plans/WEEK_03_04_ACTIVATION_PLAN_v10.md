@@ -1042,11 +1042,11 @@ Replace all four stage prints with `log.info` events, run the pipeline, look at 
 
 Also: integrate the Day-24 matcher's mismatch bucket into the exceptions report; 15+ tests passing; ruff + format clean; commit `pyproject.toml` + `uv.lock` together (the structlog add changed both).
 
-- [ ] 60 min — Docker for Beginners: sections 3–4 (Compose intro). Note for Weeks 5–6: when recon-toy gets its Dockerfile, it will use the roadmap's `uv sync --frozen` idiom (Correction 13) — install *exactly* what uv.lock records, byte-reproducible images. The lockfile you've been committing is what makes that possible.
+- [x] 60 min — Docker for Beginners: sections 3–4 (Compose intro). Note for Weeks 5–6: when recon-toy gets its Dockerfile, it will use the roadmap's `uv sync --frozen` idiom (Correction 13) — install *exactly* what uv.lock records, byte-reproducible images. The lockfile you've been committing is what makes that possible.
 
 **Evening:**
 
-- [ ] 60 min — P4E Course 2 final wrap → **Course 2 complete** 🎉
+- [x] 60 min — P4E Course 2 final wrap → **Course 2 complete** 🎉
 - [ ] 45 min — Draft post #4 (pillar: the ADR habit — "I started writing down my decisions like an engineering team of one")
 - [ ] 15 min — Journal + commit (`feat: recon-toy v0.3 — cli, mismatch report, hardened tests`)
 
