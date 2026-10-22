@@ -1556,6 +1556,7 @@ name = "lj-foundations"
 version = "0.1.0"
 source = { editable = "foundations" }
 dependencies = [
+    { name = "anthropic" },
     { name = "structlog" },
 ]
 
@@ -1571,7 +1572,10 @@ test = [
 ]
 
 [package.metadata]
-requires-dist = [{ name = "structlog", specifier = ">=26.1,<27" }]
+requires-dist = [
+    { name = "anthropic", specifier = ">=1.5.0,<2.0.0" },
+    { name = "structlog", specifier = ">=26.1,<27" },
+]
 
 [package.metadata.requires-dev]
 dev = [
