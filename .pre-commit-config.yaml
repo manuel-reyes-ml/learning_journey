@@ -11,6 +11,8 @@
 #
 # Maintenance:
 #   pre-commit autoupdate --freeze # resolve tags -> SHAs, mitigates version drift
+#   uv lock --upgrade-package "ruff==<hook version>"  # keep uv.lock on the hook's ruff;
+#                                  # hook-versions-check below fails until they match
 #
 # Config for the tools themselves lives in pyproject.toml, never in `args:`,
 # so hooks / CI / editor cannot disagree. Note that ruff resolves its config by
@@ -76,6 +78,28 @@ repos:
     rev: dd409d04a3fa4a50f918dddb3ad3c6d8f46ab2cd  # frozen: 0.13.4
     hooks:
       - id: uv-lock
+
+  # ---------------------------------------------------------------------------
+  # Tier A — hook ↔ uv.lock version drift (roadmap CORRECTION 21 item 6).
+  #
+  # ruff runs twice: as the ruff-pre-commit hook above and as the `ruff` package
+  # in uv.lock (make lint, VS Code). Two versions of one formatter disagree on
+  # output, so this fails when a hook's pinned version differs from the locked
+  # one, for every hook whose tool is also in uv.lock.
+  #
+  # Read-only on purpose. sync-with-uv was evaluated and rejected: it rewrites
+  # `rev:`, replacing the SHA that `autoupdate --freeze` wrote with a bare tag.
+  # Placed after uv-lock so it reads the freshly regenerated lock. Same shape
+  # as the claude-*-check hooks: stdlib-only, interpreter on PATH, no file args.
+  # ---------------------------------------------------------------------------
+  - repo: local
+    hooks:
+      - id: hook-versions-check
+        name: hook versions match uv.lock
+        entry: python3 scripts/check_hook_versions.py
+        language: system
+        pass_filenames: false
+        files: ^(uv\.lock|\.pre-commit-config\.yaml|scripts/check_hook_versions\.py)$
 
   # ---------------------------------------------------------------------------
   # Tier A — secret scanning.
