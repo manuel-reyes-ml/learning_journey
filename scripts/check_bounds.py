@@ -131,24 +131,46 @@ def lower_bound(req: Requirement) -> str | None:
 def report(locked: dict[str, Version]) -> int:
     """Print every requirement without a ceiling and the command that would add one."""
     found = 0
-    for path in member_files():
+    for path in member_files():  # root first, then each member's pyproject.toml
         data = tomllib.loads(path.read_text(encoding="utf-8"))
-        name = data["project"]["name"]
-        for flag, reqs in sections(data):
-            for raw in reqs:
-                req = Requirement(raw)
+        name = data["project"]["name"]  # e.g. "learning-journey", "cs50-speller"
+        for flag, reqs in sections(data):  # e.g. ("", [...]), ("--optional dev", [...])
+            for raw in reqs:  # EXAMPLE A: raw = "requests>=2.34.2"
+                req = Requirement(raw)  # → name "requests", specifier ">=2.34.2"
+
+                # Set of operators used. EXAMPLE A: {">="}. "anthropic>=1.0,<2.0" → {">=", "<"}.
                 ops = {s.operator for s in req.specifier}
+                # `&` is set intersection: is any capping operator present? If so, it already has
+                # a ceiling (or an exact pin), so skip it.
+                # EXAMPLE A: {">="} & {"<", ...} = empty set → falsy → we keep going.
                 if ops & {"<", "<=", "==", "-=", "==="}:
                     continue  # alreay bounded
+
+                # Normalise the name the way uv.lock stores it (PEP 503): lowercase, and runs of
+                # "-", "_" or "." become one "-". "Typing_Extensions" → "typing-extensions".
                 pkg = re.sub(r"[-_.]+", "-", req.name).lower()
-                v = locked.get(pkg)
-                if v is None:
+                v = locked.get(pkg)  # EXAMPLE A: Version("2.34.2")
+                if v is None:  # not in the lock (e.g. platform-specific); nothing to suggest
                     continue
                 found += 1
-                floor = str(req.specifier).lstrip(">=") or str(v)
+
+                # Floor: keep your existing `>=` if there is one, otherwise use the locked version.
+                # EXAMPLE A: "2.34.2". EXAMPLE B: "0.4" (kept, even though 0.16.7 is locked).
+                floor = lower_bound(req) or str(v)
+                # EXAMPLE A: "requests>=2.34.2,<3.0". EXAMPLE B: "ruff>=0.4,<0.17".
                 new = f"{req.name}>={floor},<{next_major(v)}"
-                pkg_flag = "" if path.parent == ROOT else f"--package {name}"
+
+                # The root project needs no --package flag (uv defaults to it); members do.
+                # EXAMPLE A: "" (root). EXAMPLE B: "--package cs50-speller ".
+                pkg_flag = "" if path.parent == ROOT else f"--package {name} "
+
+                # Readable comment line: f-string padding `:<20` left-aligns into 20 characters.
+                # EXAMPLE A → "# learning-journey     requests>=2.34.2             locked 2.34.2"
                 print(f"# {name:<20} {raw:<28} locked {v}")
+                # The command to copy. --no-sync edits pyproject.toml + uv.lock without
+                # reinstalling the venv each time; run `make sync` once at the end.
+                # EXAMPLE A → uv add "requests>=2.34.2,<3.0" --no-sync
+                # EXAMPLE B → uv add --package cs50-speller --optional dev "ruff>=0.4,<0.17" ...
                 print(f'uv add {pkg_flag}{flag + " " if flag else ""}"{new}" --no-sync\n')
     print(f"{found} requirement(s) without an upper bound.")
 
@@ -157,37 +179,53 @@ def report(locked: dict[str, Version]) -> int:
 
 def majors() -> None:
     """List major jumps (direct or transitive) a bulk `uv lock --upgrade` would take."""
+    # Runs: uv lock --upgrade --dry-run   (resolves the newest versions, writes nothing).
+    #   capture_output=True → keep the output in Python instead of printing it.
+    #   text=True           → give us str, not bytes.
+    #   check=True          → raise CalledProcessError if uv fails (e.g. unsatisfiable ranges).
+    # uv prints its "Update ..." lines to stderr, not stdout, so we read .stderr.
     out = subprocess.run(
         ["uv", "lock", "--upgrade", "--dry-run"], capture_output=True, text=True, check=True
     ).stderr
+
     hits = []
+    # Pattern for lines like "Update filelock v3.32.6 -> v4.2.4":
+    #   (\S+) = a run of non-space characters, captured as group 1, 2, 3.
+    # EXAMPLE C: group(1)="filelock", group(2)="3.32.6", group(3)="4.2.4".
     for m in re.finditer(r"Update (\S+) v(\S+) -> v(\S+)", out):
         pkg, old, new = m.group(1), Version(m.group(2)), Version(m.group(3))
-        if is_major_jump(old, new):
+        if is_major_jump(old, new):  # EXAMPLE C: 4.2.4 >= 4.0 → True → reported
             hits.append(f"   {pkg:<24} {old} -> {new}")
+
     print("\nMajor jumps in a bulk upgrade (uv lock --upgrade --dry-run:)")
+    # "\n".join(list) → one line per hit; the conditional prints "none" for an empty list.
     print("\n".join(hits) if hits else "    none")
 
 
 def main() -> int:
     """Entry point."""
+    # description = first line of this file's docstring, shown by `--help`.
     parser = argparse.ArgumentParser(
         description=__doc__.splitlines()[0] if __doc__ is not None else ""
     )
+    # store_true: the flag takes no value; present → True, absent → False.
     parser.add_argument(
         "--majors",
         "-m",
         action="store_true",
         help="also list major jumps",
     )
-    args = parser.parse_args()
+    args = parser.parse_args()  # reads sys.argv, e.g. ["--majors"] → args.majors = True
 
-    report(locked_versions())
+    report(locked_versions())  # always runs: the no-ceiling report
     if args.majors:
-        majors()
+        majors()  # only with --majors: it takes a few seconds (a full resolve)
 
     return 0
 
 
+# True only when the file is run directly (`python scripts/check_bounds.py`), not when imported
+# (e.g. by a test doing `from check_bounds import next_major`). sys.exit passes main()'s 0 back
+# to the shell, so `make` and CI see success.
 if __name__ == "__main__":
     sys.exit(main())
