@@ -51,6 +51,7 @@ dev = [
 # ---------------------------------------------------------------------------
 [tool.uv]
 required-version = ">=0.13"
+add-bounds = "major"
 
 [tool.uv.workspace]
 members = [
