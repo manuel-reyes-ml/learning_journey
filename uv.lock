@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 5
 requires-python = ">=3.14"
 resolution-markers = [
     "python_full_version >= '3.15' and sys_platform == 'win32'",
@@ -1445,6 +1445,7 @@ dependencies = [
     { name = "matplotlib" },
     { name = "notebook" },
     { name = "numpy" },
+    { name = "packaging" },
     { name = "pandas" },
     { name = "pydantic" },
     { name = "requests" },
@@ -1466,6 +1467,7 @@ requires-dist = [
     { name = "matplotlib", specifier = ">=3.11.1" },
     { name = "notebook", specifier = ">=7.6.2" },
     { name = "numpy", specifier = ">=2.5.3" },
+    { name = "packaging", specifier = ">=25,<27" },
     { name = "pandas", specifier = ">=3.0.5" },
     { name = "pydantic", specifier = ">=2.13.5" },
     { name = "requests", specifier = ">=2.34.2" },
