@@ -86,10 +86,17 @@ git branch -d feature/42-add-user-export  # Delete local
 | `refactor` | Code change (no behavior change) | `refactor(utils): extract validation logic` |
 | `docs` | Documentation only | `docs(readme): add installation steps` |
 | `test` | Adding/updating tests | `test(auth): add login edge cases` |
-| `chore` | Maintenance (deps, configs) | `chore(deps): upgrade polars to 1.24` |
+| `build` | Build system & dependencies — `pyproject.toml`, `uv.lock`, Dockerfile, hook pins | `build(deps): upgrade polars to 1.24` |
+| `chore` | Maintenance that fits no other type | `chore(templates): update issue template labels` |
 | `style` | Formatting (no code change) | `style(format): apply ruff format` |
 | `perf` | Performance improvement | `perf(query): add index for faster lookup` |
-| `ci` | CI/CD changes | `ci(actions): pin uv sync --frozen` |
+| `ci` | CI/CD changes | `ci(actions): install with uv sync --locked` |
+| `revert` | Reverting an earlier commit | `revert: feat(export): add CSV export endpoint` |
+
+> This list mirrors the `conventional-pre-commit` hook's defaults — a type outside it is
+> rejected at commit time (see [`PRE_COMMIT_GUIDE.md` §7](../../docs/guides/PRE_COMMIT_GUIDE.md#7-conventional-commits)).
+> Dependency changes are **`build(deps)`**, hook-pin refreshes **`build(hooks)`** — never
+> `chore(deps)`.
 
 > `style` means `ruff format` / `ruff check --fix`. **Black is retired** — never
 > reference it in a commit message, a hook, or a Makefile target.

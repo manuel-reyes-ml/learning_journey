@@ -11,6 +11,8 @@ alwaysApply: true
 > (ADR / C4 / Structurizr artifacts in the tree).
 > Synced to **Correction 28** (Python 3.14 floor, standard GIL build) and **Correction 42**
 > (dual harness: OpenCode writer + Claude Code read-only reviewer) — see CORRECTION 45.
+> Lockfile flags corrected Oct 2026: `--locked` is the staleness check (CI, final Docker
+> sync); `--frozen` skips it (Docker dependency layer only). See 📦 and 🐳 below.
 
 ---
 
@@ -155,11 +157,17 @@ uv add pandas openpyxl                    # retained boundaries only (templates,
 uv add --optional excel fastexcel         # Polars' calamine reader for .xlsx ingestion
 uv add --dev pytest ruff mypy deepeval   # dev-only → [dependency-groups]
 uv sync                     # reproduce the exact locked env on any machine
-uv sync --frozen            # CI/Docker: fail if the lock is stale, never re-resolve
+uv sync --locked            # CI: fail if uv.lock is stale instead of rewriting it
+uv sync --frozen            # Docker dependency layer only: install uv.lock as-is, no check
 uv run pytest               # run inside the env (no manual activate)
 ```
 
 - **Commit `uv.lock`** — it pins exact versions/hashes for reproducible installs.
+- **`--locked` vs `--frozen` — they are not interchangeable.** Both refuse to rewrite
+  `uv.lock`. Only `--locked` *checks* it against `pyproject.toml` and fails when it is
+  stale; `--frozen` installs whatever the lock says without looking, so a stale lock passes
+  silently. Use `--locked` wherever the check can run; `--frozen` only where it cannot
+  (a Docker layer built before every `pyproject.toml` is in the image).
 - **`requires-python = ">=3.14"` in `pyproject.toml` is THE single declaration** of the
   Python floor; ruff, mypy, the Docker base image and the CI interpreter are its consumers.
 - Dev tools go in `[dependency-groups]`, keeping runtime deps lean.
@@ -279,7 +287,7 @@ clean:               ## Remove build artifacts
 
 ## 🐳 Docker Patterns
 
-### Dockerfile Template — `uv sync --frozen` idiom
+### Dockerfile Template — `--frozen` dependency layer, `--locked` final sync
 ```dockerfile
 FROM python:3.14-slim        # CORRECTION 28 — standard GIL build
 
@@ -288,21 +296,27 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
 
 WORKDIR /app
 
-# Layer-cache dependencies separately from source
+# Layer-cache dependencies separately from source.
+# --frozen here: uv cannot check the lock until every pyproject.toml is in the image.
+# (Workspace repos: use --no-install-workspace instead of --no-install-project.)
 COPY pyproject.toml uv.lock ./
 RUN uv sync --frozen --no-install-project --no-dev
 
+# --locked here: everything is present now, so assert uv.lock matches pyproject.toml.
 COPY . .
-RUN uv sync --frozen --no-dev
+RUN uv sync --locked --no-dev
 
 ENV PATH="/app/.venv/bin:$PATH"
 EXPOSE 8501
 CMD ["streamlit", "run", "app/main.py", "--server.port=8501", "--server.address=0.0.0.0"]
 ```
 
-`--frozen` is the point: it **fails the build if `uv.lock` is out of sync with
-`pyproject.toml`** rather than silently re-resolving. That is what makes the image
-byte-reproducible and the "deterministic build" claim defensible in an interview.
+The final `--locked` is the point: it **fails the build if `uv.lock` is out of sync with
+`pyproject.toml`** rather than silently re-resolving. The first layer uses `--frozen`
+because the lock can't be checked yet; it still installs exactly the locked versions, and
+the `--locked` sync after `COPY . .` validates them. That split is the pattern in uv's own
+Docker guide (*Intermediate layers*), and it is what makes the image byte-reproducible and
+the "deterministic build" claim defensible in an interview.
 **Never `pip install` in a Dockerfile on this roadmap.**
 
 ### .dockerignore Template
@@ -382,7 +396,7 @@ jobs:
         run: uv python install 3.14      # CORRECTION 28 — matches requires-python
 
       - name: Install locked dependencies
-        run: uv sync --frozen          # fails if uv.lock is stale — never re-resolves
+        run: uv sync --locked          # fails if uv.lock is stale instead of rewriting it
 
       - name: Pre-commit hooks (gitleaks · ruff · harness drift)
         run: uvx pre-commit run --all-files --show-diff-on-failure
@@ -409,6 +423,9 @@ jobs:
 ```
 
 - **No `pip install ".[dev]"`** — that path predates the uv standard and bypasses the lock.
+- **`--locked`, never `--frozen`, in CI.** `--frozen` would install a stale lock without
+  complaint; `--locked` is what makes CI the staleness gate (the `uv-lock` hook is the
+  local one). Workspaces: `uv sync --all-packages --all-groups --locked`.
 - Cache uv, not pip.
 - Harness drift (`make claude-check`) runs through the pre-commit step — no separate job.
 - The eval job is a gate, not a report. See `testing-and-eval.mdc`.
