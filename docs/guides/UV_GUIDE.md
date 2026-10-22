@@ -7,6 +7,10 @@ actually happened) and applied to `1099_reconciliation_pipeline`.
 Companion: [`PRE_COMMIT_GUIDE.md`](PRE_COMMIT_GUIDE.md) — do this guide first;
 the hooks guide assumes a `pyproject.toml` and `uv.lock` already exist.
 
+Companion: [`DEPENDENCY_UPDATE_GUIDE.md`](DEPENDENCY_UPDATE_GUIDE.md) — once a
+repo is set up, the routine for keeping `uv.lock`, version ranges and hook pins
+current.
+
 ---
 
 ## Contents
@@ -61,6 +65,20 @@ version you don't control:
 ```toml
 dependencies = ["anthropic>=1.0,<2.0"]   # an open upper bound let 0.x → 1.x through silently
 ```
+
+To have uv write the ceiling for you, use `uv add --bounds major pandas`
+(→ `pandas>=3.0.5,<4.0.0`), or set it once for the repo:
+
+```toml
+[tool.uv]
+add-bounds = "major"
+```
+
+It only applies to packages added **afterwards** — existing ranges keep their
+open top until you rewrite them (see
+[`DEPENDENCY_UPDATE_GUIDE.md` §6](DEPENDENCY_UPDATE_GUIDE.md#6-step-3--triage-pick-the-version-and-the-range)).
+For 0.x packages `major` caps the next *minor* (`ruff 0.16.7` → `<0.17`), so
+choose those ceilings by hand.
 
 ---
 
@@ -249,9 +267,7 @@ for path in Path(".").rglob("*"):
         code = "\n".join(
             "".join(c.get("source", [])) for c in cells if c.get("cell_type") == "code"
         )
-        code = "\n".join(
-            ln for ln in code.splitlines() if not ln.lstrip().startswith(("%", "!"))
-        )
+        code = "\n".join(ln for ln in code.splitlines() if not ln.lstrip().startswith(("%", "!")))
         scan(code, str(path))
 
 for mod in sorted(found):
@@ -472,7 +488,9 @@ coursework named `test_*.py`, and collides identically-named `tests` packages.
 uv add --package llm-api-smoke-test --group test "httpx2>=2.0,<3.0"
 ```
 
-Without `--package`, uv writes to the **root** `pyproject.toml`.
+Without `--package`, uv writes to the **root** `pyproject.toml`. `--package`
+takes the member's `[project] name`, not its folder — `lj-foundations`, not
+`foundations`.
 
 ### Member test dependencies
 
@@ -553,6 +571,10 @@ For a workspace: `uv sync --all-packages --all-groups --locked`, and one
 - **`--locked`** fails if `uv.lock` is stale. Plain `uv sync` silently
   regenerates it — CI would then test a different dependency set than your
   machine.
+- **Not `--frozen`.** It also leaves `uv.lock` alone, but it installs it
+  *without checking* it against `pyproject.toml`, so a stale lock passes
+  silently. Its one place is a Docker dependency layer built before every
+  `pyproject.toml` is in the image (see the `project-scaffold` rule).
 - **No `actions/setup-python`.** `setup-uv` with `python-version` handles it.
 - **No `PYTHONPATH`.** Declared in `pyproject.toml` instead.
 - **SHA-pinned `setup-uv`.** Tags are movable pointers; SHAs aren't. Astral's
@@ -616,6 +638,9 @@ test:  ## Run the test suite
 | Install a workspace fully | `uv sync --all-packages --all-groups` |
 | Re-resolve after editing `pyproject.toml` | `uv lock` |
 | Upgrade one package | `uv lock --upgrade-package pandas` |
+| See what's outdated | `uv tree --outdated --depth 1` (add `--package <member>` in a workspace) |
+| Preview an upgrade, write nothing | `uv lock --upgrade --dry-run` |
+| Keep everything current (the routine) | [`DEPENDENCY_UPDATE_GUIDE.md`](DEPENDENCY_UPDATE_GUIDE.md) |
 | Run anything in the env | `uv run pytest`, `uv run python script.py` |
 | Run a tool without installing it | `uvx ruff check .` |
 | Install a global tool | `uv tool install pre-commit --with pre-commit-uv` |
@@ -727,6 +752,11 @@ Cursor fully afterward.
 An open upper bound let it through. Our case: `anthropic>=0.40` pulled 1.x,
 which swapped `httpx` for `httpx2`. Pin `>=X,<X+1` on anything you don't
 control.
+
+If the package that jumped is one you **don't** declare (it came in
+transitively), don't add it to `dependencies` — hold it with
+`[tool.uv] constraint-dependencies` instead. See
+[`DEPENDENCY_UPDATE_GUIDE.md` §11](DEPENDENCY_UPDATE_GUIDE.md#a-transitive-package-jumped-a-major-version).
 
 ---
 

@@ -8,6 +8,9 @@ CORRECTION 21). Written from the `learning_journey` rollout and applied to
 The `uv-lock` hook below has nothing to guard until `pyproject.toml` and
 `uv.lock` exist.
 
+**Companion:** [`DEPENDENCY_UPDATE_GUIDE.md` §7f](DEPENDENCY_UPDATE_GUIDE.md#7f-hooks--refresh-pre-commit-pins-same-branch)
+— refreshing hook pins in the same branch as package updates.
+
 ---
 
 ## Contents
@@ -410,6 +413,7 @@ Imperative, what the change **accomplishes**, no trailing period:
 ```
 test(providers): add anthropic adapter tests with respx-faked transport
 build(uv): migrate from pip requirements to uv
+build(deps): bump anthropic floor to 1.17 in llm-api-smoke-test
 test(pytest): load _alias_httpx plugin so respx patches httpx2
 ```
 
@@ -577,8 +581,17 @@ earning its place — fix or remove it. CI will still catch whatever you skipped
 
 ## 11. Maintenance
 
-- **`make hooks-update`** (`pre-commit autoupdate --freeze`) every month or
-  two. Commit as `build(hooks): refresh pinned hook revisions`.
+- **`make hooks-update`** (`pre-commit autoupdate --freeze`) monthly, **in the
+  same branch as a dependency update** — full procedure in
+  [`DEPENDENCY_UPDATE_GUIDE.md` §7f](DEPENDENCY_UPDATE_GUIDE.md#7f-hooks--refresh-pre-commit-pins-same-branch).
+  It only edits `.pre-commit-config.yaml`. Two hooks run tools that also live
+  in `uv.lock`, so keep them in step: `ruff-pre-commit`'s `rev:` on the same
+  version as the locked `ruff`, and `uv-pre-commit`'s on your local
+  `uv --version`. Then `make hooks-run`, and commit as
+  `build(hooks): refresh pinned hook revisions`.
+- **Reading a pin.** `rev: 44b5042e…  # frozen: v0.17.0` — the SHA is what
+  pre-commit runs; the comment is the release it points to. `repo: local`
+  hooks have no `rev:` and are never updated.
 - **After changing `.pre-commit-config.yaml`**, run
   `pre-commit run --all-files` before committing — new hooks apply to the
   whole tree, not just the next diff.
