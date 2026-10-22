@@ -73,9 +73,9 @@ classifiers = [
 #     "google-generativeai",  # Stage 1: DataVault Gemini SDK
 # ]
 dependencies = [
-    "rich>=13.0",
-    "structlog>=25.0",
-    "platformdirs>=4.0",
+    "rich>=13.0,<16.0",
+    "structlog>=25.0,<27.0",
+    "platformdirs>=4.0,<5.0",
 ]
 
 
@@ -92,14 +92,14 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
-    "mypy>=1.0",
-    "ruff>=0.4",
-    "build>=1.0",           # <- for 'python -m build'
-    "pre-commit>=3.0",      # <- when we add pre-commit next
+    "mypy>=1.0,<3.0",
+    "ruff>=0.4,<0.17",
+    "build>=1.0,<2.0",           # <- for 'python -m build'
+    "pre-commit>=3.0,<5.0",      # <- when we add pre-commit next
 ]
 test = [
-    "pytest>=8.0",
-    "pytest-cov>=5.0",
+    "pytest>=8.0,<10.0",
+    "pytest-cov>=5.0,<7.0",
 ]
 
 
