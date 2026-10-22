@@ -13,6 +13,11 @@ concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+# Every action is pinned to a full commit SHA, with its release in a trailing comment.
+# Tags are movable pointers; SHAs are not. astral-sh/setup-uv also publishes no floating
+# major tag — `@v10` does not resolve — so it can only be pinned by release or SHA.
+# Refresh pins deliberately (DEPENDENCY_UPDATE_GUIDE.md cadence), never by drift.
+
 jobs:
   # ---------------------------------------------------------------------------
   # Runs the SAME hook set as .pre-commit-config.yaml, so CI is a superset of the
@@ -29,7 +34,7 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803  # v6.1.0
 
       - name: Install uv
         uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4  # v10.1.0
@@ -37,7 +42,7 @@ jobs:
           enable-cache: true
 
       - name: Cache pre-commit environments
-        uses: actions/cache@v4
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830  # v4.3.0
         with:
           path: ~/.cache/pre-commit
           key: pre-commit-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}
@@ -70,10 +75,10 @@ jobs:
 
     steps:
       - name: Check out code
-        uses: actions/checkout@v6
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803  # v6.1.0
 
       - name: Install uv and set Python ${{ matrix.python-version }}
-        uses: astral-sh/setup-uv@v10
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4  # v10.1.0
         with:
           python-version: ${{ matrix.python-version }}
           enable-cache: true
