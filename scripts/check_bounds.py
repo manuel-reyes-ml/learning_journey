@@ -40,7 +40,18 @@ ROOT: Path = Path.cwd()
 
 
 def next_major(v: Version) -> str:
-    """Return the exclusive ceiling uv's `--bounds major` would write (Cargo-style for 0.x)."""
+    """Return the exclusive ceiling uv's `--bounds major` would write (Cargo-style for 0.x).
+
+    Parameters
+    ----------
+    v : Version
+        The locked version of a package.
+
+    Returns
+    -------
+    str
+        The first version that counts as a breaking ("major") change.
+    """
     # Normal packages (1.0 and up): the first number is the major. Bump it, reset the rest.
     # EXAMPLE A: Version("2.34.2").major = 2 → returns "3.0" → ceiling `<3.0`.
     if v.major > 0:
@@ -56,14 +67,33 @@ def next_major(v: Version) -> str:
 
 
 def is_major_jump(old: Version, new: Version) -> bool:
-    """True if `new` crosses the ceiling `next_major(old)` would set."""
+    """Return True if `new` crosses the ceiling `next_major(old)` would set.
+
+    Parameters
+    ----------
+    old : Version
+        Version currently in uv.lock.
+    new : Version
+        Version a bulk upgrade would move to.
+
+    Returns
+    -------
+    bool
+        True when the upgrade is a breaking ("major") jump.
+    """
     # EXAMPLE C: old 3.32.6 → next_major = "4.0"; new 4.2.4 >= 4.0 → True (major jump).
     #            old 3.32.6, new 3.32.7 → 3.32.7 >= 4.0 is False (safe patch update).
     return new >= Version(next_major(old))
 
 
 def locked_versions() -> dict[str, Version]:
-    """Map each package name in uv.lock to its locked version."""
+    """Map each package name in uv.lock to its locked version.
+
+    Returns
+    -------
+    dict[str, Version]
+        e.g. {"requests": Version("2.34.2"), "ruff": Version("0.16.7"), ...}
+    """
     # read_text() → the whole file as one string; tomllib.loads() → nested dict.
     # uv.lock stores every package as a [[package]] table, so lock["package"] is a list of dicts:
     #   [{"name": "requests", "version": "2.34.2", "source": {...}, ...}, ...]
@@ -76,7 +106,13 @@ def locked_versions() -> dict[str, Version]:
 
 
 def member_files() -> list[Path]:
-    """Return the root pyproject.toml plus every workspace member's."""
+    """Return the root pyproject.toml plus every workspace member's.
+
+    Returns
+    -------
+    list[Path]
+        Root first, then one path per entry in [tool.uv.workspace] members.
+    """
     # Chained .get(key, {}) walks root["tool"]["uv"]["workspace"]["members"] without crashing
     # if a level is missing (a non-workspace repo just gets an empty list).
     # Here: ["llm-api-smoke-test", "courses/.../speller/py_src", "foundations"]
@@ -89,7 +125,18 @@ def member_files() -> list[Path]:
 
 
 def sections(data: dict) -> list[tuple[str, list]]:
-    """Yield (uv add flag, requirement list) for every dependency section."""
+    """Return (uv add flag, requirement list) for every dependency section of one pyproject.
+
+    Parameters
+    ----------
+    data : dict
+        A parsed pyproject.toml.
+
+    Returns
+    -------
+    list[tuple[str, list]]
+        The flag tells `uv add` which section to write to.
+    """
     # 1) Runtime dependencies → [project] dependencies. `uv add` needs no extra flag.
     #    EXAMPLE A lands here: ("", ["beautifulsoup4>=4.15.0", ..., "requests>=2.34.2", ...])
     out: list[tuple[str, list]] = [("", data.get("project", {}).get("dependencies", []))]
@@ -129,7 +176,18 @@ def lower_bound(req: Requirement) -> str | None:
 
 
 def report(locked: dict[str, Version]) -> int:
-    """Print every requirement without a ceiling and the command that would add one."""
+    """Print every requirement without a ceiling and the `uv add` command that would add one.
+
+    Parameters
+    ----------
+    locked : dict[str, Version]
+        Output of `locked_versions()`.
+
+    Returns
+    -------
+    int
+        How many requirements lack an upper bound.
+    """
     found = 0
     for path in member_files():  # root first, then each member's pyproject.toml
         data = tomllib.loads(path.read_text(encoding="utf-8"))
@@ -203,7 +261,13 @@ def majors() -> None:
 
 
 def main() -> int:
-    """Entry point."""
+    """Parse flags, print the report, and optionally the major-jump list.
+
+    Returns
+    -------
+    int
+        Process exit code (0 = success).
+    """
     # description = first line of this file's docstring, shown by `--help`.
     parser = argparse.ArgumentParser(
         description=__doc__.splitlines()[0] if __doc__ is not None else ""
