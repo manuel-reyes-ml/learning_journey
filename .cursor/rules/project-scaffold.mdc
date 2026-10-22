@@ -59,7 +59,7 @@ project_name/
 │   ├── plans/                    # 🆕 plan artifacts — the only planner write path (ADR-0004/0007)
 │   ├── ISSUE_TEMPLATE/
 │   └── pull_request_template.md
-├── .pre-commit-config.yaml       # 🆕 gitleaks · ruff · claude-agents-check · claude-rules-check
+├── .pre-commit-config.yaml       # 🆕 gitleaks · ruff · uv-lock · hook-versions-check · claude-*-check
 ├── .python-version               # 🆕 3.14 — written by `uv python pin 3.14`
 ├── docs/
 │   └── adr/                      # 🆕 Architecture Decision Records (MADR or Nygard)
@@ -96,7 +96,8 @@ project_name/
 ├── app/                          # Streamlit pages (imports from src/)
 ├── scripts/                      # One-off scripts (synthetic data, migrations)
 │   ├── build_claude_agents.py    # 🆕 generator — Claude subagents have no import mechanism
-│   └── build_claude_rules.py     # 🆕 generator — .claude/rules/ does not expand @path
+│   ├── build_claude_rules.py     # 🆕 generator — .claude/rules/ does not expand @path
+│   └── check_hook_versions.py    # 🆕 read-only check — hook pins match uv.lock (C21 item 6)
 ├── data/
 │   ├── synthetic/                # ✅ In Git — demo data
 │   └── .gitkeep
@@ -378,30 +379,49 @@ a branch protection rule on `main`.
 
 ```yaml
 # .github/workflows/ci.yml
-name: CI Pipeline
-on: [push, pull_request]
+name: CI
 
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read                     # least privilege — CI only reads the repo
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true           # a new push cancels the superseded run
+
+# Every action is pinned to a full commit SHA, release in the trailing comment.
 jobs:
   quality:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out code
+        uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803  # v6.1.0
 
-      - name: Install uv
-        uses: astral-sh/setup-uv@v5
+      - name: Install uv and Python
+        uses: astral-sh/setup-uv@bec219d24cd3e171d82865faccec33120bb574f4  # v10.1.0
         with:
-          enable-cache: true
-
-      - name: Set up Python
-        run: uv python install 3.14      # CORRECTION 28 — matches requires-python
+          python-version: "3.14"       # CORRECTION 28 — matches requires-python
+          enable-cache: true           # caches uv's package cache, keyed on uv.lock
 
       - name: Install locked dependencies
         run: uv sync --locked          # fails if uv.lock is stale instead of rewriting it
 
-      - name: Pre-commit hooks (gitleaks · ruff · harness drift)
+      - name: Cache pre-commit environments
+        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830  # v4.3.0
+        with:
+          path: ~/.cache/pre-commit
+          key: pre-commit-${{ runner.os }}-${{ hashFiles('.pre-commit-config.yaml') }}
+
+      - name: Pre-commit hooks (gitleaks · ruff · lock + hook drift · harness drift)
         run: uvx pre-commit run --all-files --show-diff-on-failure
         # Superset of the local gate: anything a --no-verify commit slipped past lands
-        # here — including claude-agents-check / claude-rules-check drift.
+        # here — including hook-versions-check and claude-agents/rules-check drift.
 
       - name: Lint
         run: uv run ruff check src/ tests/
@@ -426,6 +446,15 @@ jobs:
 - **`--locked`, never `--frozen`, in CI.** `--frozen` would install a stale lock without
   complaint; `--locked` is what makes CI the staleness gate (the `uv-lock` hook is the
   local one). Workspaces: `uv sync --all-packages --all-groups --locked`.
+- **Pin every action to a full commit SHA** with its release in a comment
+  (`@d23441a…  # v6.1.0`). Tags are movable pointers; SHAs are not. `astral-sh/setup-uv`
+  publishes **no floating major tag** — `@v10` fails with *Unable to resolve action* — so
+  it can only be pinned by release or SHA. Resolve a release's commit SHA with
+  `git ls-remote https://github.com/<owner>/<repo> 'refs/tags/<tag>*'` — when a `^{}`
+  line appears (annotated tag), that line's SHA is the commit. Move pins on the
+  dependency-update cadence, never by drift.
+- **Python comes from `setup-uv`'s `python-version` input** — no `actions/setup-python`,
+  no separate `uv python install` step.
 - Cache uv, not pip.
 - Harness drift (`make claude-check`) runs through the pre-commit step — no separate job.
 - The eval job is a gate, not a report. See `testing-and-eval.mdc`.
