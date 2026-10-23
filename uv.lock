@@ -1626,6 +1626,7 @@ source = { editable = "foundations" }
 dependencies = [
     { name = "anthropic" },
     { name = "python-dotenv" },
+    { name = "rich" },
     { name = "structlog" },
 ]
 
@@ -1644,6 +1645,7 @@ test = [
 requires-dist = [
     { name = "anthropic", specifier = ">=1.5.0,<2.0.0" },
     { name = "python-dotenv", specifier = ">=1.2.4,<2.0.0" },
+    { name = "rich", specifier = ">=15.0.0,<16.0.0" },
     { name = "structlog", specifier = ">=26.1,<27" },
 ]
 
