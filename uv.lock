@@ -1625,6 +1625,7 @@ version = "0.1.0"
 source = { editable = "foundations" }
 dependencies = [
     { name = "anthropic" },
+    { name = "python-dotenv" },
     { name = "structlog" },
 ]
 
@@ -1642,6 +1643,7 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "anthropic", specifier = ">=1.5.0,<2.0.0" },
+    { name = "python-dotenv", specifier = ">=1.2.4,<2.0.0" },
     { name = "structlog", specifier = ">=26.1,<27" },
 ]
 

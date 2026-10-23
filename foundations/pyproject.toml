@@ -30,6 +30,7 @@ authors = [{ name = "Manuel Reyes" }]
 # declared here, with a range — never rely on a transitive dependency.
 dependencies = [
     "anthropic>=1.5.0,<2.0.0",
+    "python-dotenv>=1.2.4,<2.0.0",
     "structlog>=26.1,<27",
 ]
 
@@ -69,9 +70,10 @@ testpaths = ["tests"]
 # import works the way it will for any real user. A pythonpath shim would hide exactly
 # the packaging bug that produced "No module named 'learning_journey'".
 addopts = [
-    "-ra",                # summary of skips/failures at the end
-    "--strict-markers",   # typo in @pytest.mark.<name> fails instead of passing silently
-    "--strict-config",    # typo in this table fails instead of being ignored
+    "-ra",                      # summary of skips/failures at the end
+    "--strict-markers",         # typo in @pytest.mark.<name> fails instead of passing silently
+    "--strict-config",          # typo in this table fails instead of being ignored
+    "--import-mode=importlib",  # pytest's recommended mode for new projects; no unique-basename rule
 ]
 
 [tool.coverage.run]
