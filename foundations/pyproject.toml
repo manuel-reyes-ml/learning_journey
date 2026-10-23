@@ -30,6 +30,8 @@ authors = [{ name = "Manuel Reyes" }]
 # declared here, with a range — never rely on a transitive dependency.
 dependencies = [
     "anthropic>=1.5.0,<2.0.0",
+    "pydantic>=2.14.1,<3.0.0",
+    "pydantic-settings>=2.16.1,<3.0.0",
     "python-dotenv>=1.2.4,<2.0.0",
     "rich>=15.0.0,<16.0.0",
     "structlog>=26.1,<27",
