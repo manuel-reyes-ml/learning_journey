@@ -6,6 +6,12 @@ Install first:  uv add anthropic
 
 import anthropic
 from anthropic.types import TextBlock
+from dotenv import find_dotenv, load_dotenv
+
+env_path = find_dotenv(usecwd=True, raise_error_if_not_found=True)
+print(f".env file found: {env_path}")
+
+load_dotenv()
 
 # The client reads ANTHROPIC_API_KEY from your environment automatically —
 # which is WHY Step 8 put it in ~/.zshrc and never in code. If this line
