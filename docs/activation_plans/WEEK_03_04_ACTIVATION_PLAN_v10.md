@@ -965,7 +965,7 @@ Keep both, permanently, with a test asserting they agree.
 
 **Morning (5:00–8:30):**
 
-- [ ] 150 min — **recon-toy v0.3 hardening** — CLI + report integration + two production-standard upgrades:
+- [x] 150 min — **recon-toy v0.3 hardening** — CLI + report integration + two production-standard upgrades:
 
 **Sanctioned agent rep (optional):** the argparse skeleton below is exactly the "mechanical boilerplate" Phase 2 allows. If you want the rep, ask OpenCode or Claude Code to draft it — then review the diff against the version printed here line-by-line, and make it match your standard. If you'd rather type it (also correct), do that. Either way, the `run_pipeline` refactor and its tests are yours alone.
 
