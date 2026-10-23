@@ -5,6 +5,7 @@ Install first:  uv add anthropic
 """
 
 import anthropic
+from anthropic.types import TextBlock
 
 # The client reads ANTHROPIC_API_KEY from your environment automatically —
 # which is WHY Step 8 put it in ~/.zshrc and never in code. If this line
@@ -29,8 +30,17 @@ response = client.messages.create(
 )
 
 # response.content is a LIST of blocks (text, tool calls...). Text lives in .text:
-print(response.content[0].text)
+text = "".join(block.text for block in response.content if isinstance(block, TextBlock))
+if not text:
+    raise ValueError(
+        "No text block in response (current blocks: "
+        f"{', '.join([str(type(block)) for block in response.content])}\n"
+        f"Stop reason: {response.stop_reason}"
+    )
+
+print(text)
 
 # The response also carries USAGE — tokens in/out. Log it from day one;
 # cost-awareness is literally a heading in your README standard (Correction 18).
-print(f"\ntokens: in={response.usage.input_tokens} out={response.usage.output_tokens}")
+print(f"\ntokens: in={response.usage.input_tokens} out={response.usage.output_tokens}\n")
+print(f"Stop reason: {response.stop_reason}")
