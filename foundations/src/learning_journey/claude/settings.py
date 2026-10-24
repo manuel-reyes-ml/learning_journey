@@ -41,7 +41,8 @@ class Settings(BaseSettings):
 # import this everywhere; construct once
 settings = Settings()  # type: ignore[call-arg]
 
-print(settings)
+if __name__ == "__main__":
+    print(settings)
 
 # Usage in a client module:
 #   from learning_journey.claude.settings import settings
