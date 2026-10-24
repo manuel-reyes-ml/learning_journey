@@ -2,20 +2,21 @@
 
 from __future__ import annotations
 
-import os
 import sys
 from typing import Literal
 
 import structlog
 from anthropic import Anthropic
 from anthropic.types import Message, TextBlock
-from dotenv import dotenv_values, find_dotenv, load_dotenv
+from dotenv import dotenv_values, find_dotenv
 from rich.align import Align
 from rich.console import Console
 from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.text import Text
 from structlog.typing import FilteringBoundLogger
+
+from learning_journey.claude.settings import settings
 
 # structlog through Python's standard logging module, use structlog.stdlib.get_logger() instead.
 # That function is already properly typed, so it needs no annotation.
@@ -29,20 +30,24 @@ log.info(".env_found", file_path=env_path, values=list(dotenv_values(env_path)))
 # or other programs.
 #
 # Walks up parent folders and stops at the first .env it finds.
-load_dotenv()
-key = os.environ.get("ANTHROPIC_API_KEY", "")
-if not key.startswith("sk-ant-"):
-    log.error("bad_key", key_starts_with=key[:7])
-    raise ValueError(
-        f"ANTHROPIC_API_KEY looks malformed (starts with {key[:7]!r}, length {len(key)}). "
-        "Re-copy it from the Console with the copy button."
-    )
+# load_dotenv()
+
+# if not os.getenv("ANTHROPIC_API_KEY"):
+#    raise RuntimeError("ANTHROPIC_API-KEY not set - check your .env location")
+
+# key = os.environ.get("ANTHROPIC_API_KEY", "")
+# if not key.startswith("sk-ant-"):
+#     log.error("bad_key", key_starts_with=key[:7])
+#     raise ValueError(
+#         f"ANTHROPIC_API_KEY looks malformed (starts with {key[:7]!r}, length {len(key)}). "
+#         "Re-copy it from the Console with the copy button."
+#     )
 
 console = Console()
 MAX_BUBBLE: float = 0.6  # bubbles use at most 60% of terminal width
 
-client = Anthropic()
-log.info("key_accepted", api_key=key[-4:])
+client = Anthropic(api_key=settings.anthropic_api_key.get_secret_value())
+log.info("key_accepted", api_key=settings.anthropic_api_key.get_secret_value()[-4:])
 
 model: str = "claude-haiku-4-5"
 max_tokens: int = 500
