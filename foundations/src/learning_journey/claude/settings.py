@@ -36,6 +36,11 @@ class Settings(BaseSettings):
     anthropic_api_key: SecretStr  # <- no default = REQUIRED
     claude_model: str = "claude-haiku-4-5"
     default_max_tokens: int = 500
+    system_prompt: str = (
+        "You are chatting in a terminal. Reply conversationally in short plain-text "
+        "paragraphs, like a text message. No headings, bullet lists, bold, or tables "
+        "unless the user asks for them."
+    )
 
 
 # import this everywhere; construct once
