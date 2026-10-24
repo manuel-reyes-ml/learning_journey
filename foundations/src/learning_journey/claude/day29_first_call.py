@@ -6,7 +6,9 @@ Install first:  uv add anthropic
 
 import anthropic
 from anthropic.types import TextBlock
-from dotenv import find_dotenv, load_dotenv
+from dotenv import find_dotenv
+
+from learning_journey.claude.settings import settings
 
 env_path = find_dotenv(usecwd=True, raise_error_if_not_found=True)
 print(f".env file found: {env_path}")
@@ -16,12 +18,12 @@ print(f".env file found: {env_path}")
 # or other programs.
 #
 # Walks up parent folders and stops at the first .env it finds.
-load_dotenv()
+# load_dotenv()
 
 # The client reads ANTHROPIC_API_KEY from your environment automatically —
 # which is WHY Step 8 put it in ~/.zshrc and never in code. If this line
 # errors with "api_key not set", your env var isn't loaded (new terminal?).
-client = anthropic.Anthropic()
+client = anthropic.Anthropic(api_key=settings.anthropic_api_key.get_secret_value())
 
 response = client.messages.create(
     model="claude-sonnet-4-6",  # model id — check docs for current names
@@ -53,5 +55,5 @@ print(text)
 
 # The response also carries USAGE — tokens in/out. Log it from day one;
 # cost-awareness is literally a heading in your README standard (Correction 18).
-print(f"\ntokens: in={response.usage.input_tokens} out={response.usage.output_tokens}\n")
-print(f"Stop reason: {response.stop_reason}")
+print(f"\ntokens: in={response.usage.input_tokens} out={response.usage.output_tokens}")
+print(f"Stop reason: {response.stop_reason}\n")
