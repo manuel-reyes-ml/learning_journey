@@ -49,8 +49,6 @@ MAX_BUBBLE: float = 0.6  # bubbles use at most 60% of terminal width
 client = Anthropic(api_key=settings.anthropic_api_key.get_secret_value())
 log.info("key_accepted", api_key=settings.anthropic_api_key.get_secret_value()[-4:])
 
-model: str = "claude-haiku-4-5"
-max_tokens: int = 500
 system: str = (
     "You are a retirement-plan communications assistant. "
     "Explain concepts for plan participants: plain English, no jargon, "
@@ -75,7 +73,11 @@ def add_assistant_message(messages: list[dict[str, str]], text: str) -> None:
 
 def chat(messages: list[dict[str, str]], system: str | None = None) -> TextBlock:
     """ """
-    params = {"model": model, "max_tokens": max_tokens, "messages": messages}
+    params = {
+        "model": settings.claude_model,
+        "max_tokens": settings.default_max_tokens,
+        "messages": messages,
+    }
     if system:
         params["system"] = system
 
