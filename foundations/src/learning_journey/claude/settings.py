@@ -7,17 +7,18 @@ from __future__ import annotations
 
 from functools import lru_cache
 from pathlib import Path
+from typing import Final
 
 from pydantic import SecretStr, ValidationError, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 __all__ = [
     "ConfigError",
+    "Settings",
     "get_settings",
-    "settings",
 ]
 
-PROJECT_ROOT = Path(__file__).resolve().parents[4]  # /learning_journey
+PROJECT_ROOT: Final[Path] = Path(__file__).resolve().parents[4]  # /learning_journey
 
 
 class ConfigError(RuntimeError):
@@ -73,13 +74,8 @@ def get_settings() -> Settings:
         ) from None
 
 
-# import this everywhere; construct once
-settings = Settings()  # type: ignore[call-arg]
-
-if __name__ == "__main__":
-    print(settings)
-
 # Usage in a client module:
-#   from learning_journey.claude.settings import settings
+#   from learning_journey.claude.settings import Settings
+#   settings = Settings()
 #   client = anthropic.Anthropic(api_key=settings.anthropic_api_key.get_secret_value())
 # .get_secret_value() is the ONLY way to read it — leaks require intent.
