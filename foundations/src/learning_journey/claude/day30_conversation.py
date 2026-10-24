@@ -5,6 +5,7 @@ from __future__ import annotations
 import sys
 from typing import Literal
 
+import anthropic
 import structlog
 from anthropic import Anthropic
 from anthropic.types import Message, TextBlock
@@ -129,8 +130,25 @@ def main() -> int:
         show_message(user_message, "user")
         add_user_message(messages, user_message)
 
+        # Order matters here. AuthenticationError and RateLimitError are subclasses
+        # of APIStatusError, so they must come before it, or the general handler will
+        # catch them first. Don't catch TypeError broadly to handle the missing key.
+        # That would also hide real bugs in your code. The up-front check gives a
+        # clearer message for portfolio-grade code.
         try:
             answer = chat(messages, system=system)
+        except anthropic.AuthenticationError as e:  # 401: bad key
+            log.error("bad_key", exception=e)
+            return 1
+        except anthropic.RateLimitError as e:  # 429
+            log.error("rate_limit", exception=e)
+            return 1
+        except anthropic.APIStatusError as e:  # any other non-2xx
+            log.error("other_api_error", exception=e.response, code=e.status_code)
+            return 1
+        except anthropic.APIConnectionError as e:  # network
+            log.error("bad_network", exception=e)
+            return 1
         except ValueError as exc:
             log.error("chat_error", exception=exc)
             return 1
