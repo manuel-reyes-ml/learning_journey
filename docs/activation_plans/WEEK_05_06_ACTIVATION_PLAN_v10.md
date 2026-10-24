@@ -223,7 +223,7 @@ settings = Settings()  # import this everywhere; construct once
 
 Refactor Days 29–30 scripts to use it. Then prove the mask: `print(settings)` → key shows as `**********`. **That print is the lesson.**
 
-- [ ] 30 min — Claude API course: continue
+- [x] 30 min — Claude API course: continue
 - [ ] 20 min — Journal + commit (`feat: pydantic-settings config with SecretStr`)
 
 ### 📌 DAY 32 — Thursday, August 20
