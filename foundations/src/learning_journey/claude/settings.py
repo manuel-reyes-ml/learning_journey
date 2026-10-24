@@ -5,12 +5,23 @@ Install:  uv add pydantic-settings
 
 from __future__ import annotations
 
+from functools import lru_cache
 from pathlib import Path
 
-from pydantic import SecretStr
+from pydantic import SecretStr, ValidationError, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
+__all__ = [
+    "ConfigError",
+    "get_settings",
+    "settings",
+]
+
 PROJECT_ROOT = Path(__file__).resolve().parents[4]  # /learning_journey
+
+
+class ConfigError(RuntimeError):
+    """Raised when required configuration is missing or invalid."""
 
 
 class Settings(BaseSettings):
@@ -41,6 +52,25 @@ class Settings(BaseSettings):
         "paragraphs, like a text message. No headings, bullet lists, bold, or tables "
         "unless the user asks for them."
     )
+
+    @field_validator("anthropic_api_key")
+    @classmethod
+    def not_blank(cls, v: SecretStr) -> SecretStr:
+        if not v.get_secret_value().strip():
+            raise ValueError("must not be empty")
+        return v
+
+
+@lru_cache
+def get_settings() -> Settings:
+    try:
+        return Settings()  # type: ignore[call-arg]
+    except ValidationError as e:
+        fields = sorted({str(err["loc"][0]).upper() for err in e.errors()})
+        raise ConfigError(
+            f"Missing/invalid config: {', '.join(fields)}. "
+            f"Set them in the environment or {PROJECT_ROOT / '.env'}"
+        ) from None
 
 
 # import this everywhere; construct once
