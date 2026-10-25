@@ -111,21 +111,22 @@ def show_message(text: str, role: Literal["user", "assistant"]) -> None:
 
 def main() -> int:
     """ """
+    try:
+        client, settings = get_client()
+        log.info("key_accepted", api_key=settings.anthropic_api_key.get_secret_value()[-4:])
+    except ConfigError as e:
+        # log.exception(event="") produces the full traceback for deeper analysis
+        log.error("config_error", error=e)  # clean one-line exit, no traceback
+        return 1
+
     print("=" * 70)
     print("Chat with LLM Program -- type 'exit' or 'quit' to end the program.")
     print("=" * 70)
+
     messages: list[dict[str, str]] = []
+    system_prompt = sleep_trainer_prompt + settings.system_prompt
 
     while True:
-        try:
-            client, settings = get_client()
-        except ConfigError as e:
-            # log.exception(event="") produces the full traceback for deeper analysis
-            log.error("config_error", error=str(e))  # clean one-line exit, no traceback
-            return 1
-
-        system_prompt = sleep_trainer_prompt + settings.system_prompt
-
         user_message = console.input("[bold cyan]> [/]").strip()
         if user_message.lower() in {"exit", "quit"}:
             break
@@ -165,6 +166,7 @@ def main() -> int:
     print("=" * 30)
     print("Program finished. Thanks :)")
     print("=" * 30)
+
     return 0
 
 
