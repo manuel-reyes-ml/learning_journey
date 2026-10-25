@@ -70,7 +70,7 @@ def get_settings() -> Settings:
         fields = sorted({str(err["loc"][0]).upper() for err in e.errors()})
         raise ConfigError(
             f"Missing/invalid config: {', '.join(fields)}. "
-            f"Set them in the environment or {PROJECT_ROOT / '.env'}"
+            f"Set them in the environment or in {PROJECT_ROOT / '.env'}"
         ) from None
 
 
