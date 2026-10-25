@@ -141,23 +141,23 @@ def main() -> int:
         # clearer message for portfolio-grade code.
         try:
             answer = chat(messages, system_prompt, client=client, settings=settings)
-        except anthropic.AuthenticationError as e:  # 401: bad key
-            log.error("bad_key", error=e)
-            return 1
-        except anthropic.RateLimitError as e:  # 429
-            log.error("rate_limit", error=e)
-            return 1
         except anthropic.APIStatusError as e:  # any other non-2xx
-            log.error("other_api_error", error=e.response, code=e.status_code)
+            log.error(
+                "anthropic_api_error",  # 401, 429, 5xx, ...
+                error_type=type(e).__name__,  # "RateLimitError", "AuthenticationError", etc..
+                status_code=e.status_code,
+                request_id=e.request_id,  # include this in support tickets
+                message=e.message,
+            )
             return 1
-        except anthropic.APIConnectionError as e:  # network
-            log.error("bad_network", error=e)
+        except anthropic.APIConnectionError as e:  # network / timeout
+            log.error("anthropic_connection_error", error_type=type(e).__name__, message=e.message)
             return 1
-        except ValueError as exc:
-            log.error("chat_error", error=exc)
+        except ValueError as e:
+            log.error("chat_error", error=e)
             return 1
-        except Exception as exc:
-            log.error("other_error", error=exc)
+        except Exception as e:
+            log.error("other_error", error=e)
             return 1
 
         show_message(answer.text, "assistant")
