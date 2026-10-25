@@ -17,7 +17,7 @@ from rich.panel import Panel
 from rich.text import Text
 from structlog.typing import FilteringBoundLogger
 
-from learning_journey.claude.settings import settings
+from learning_journey.claude.settings import Settings
 
 # structlog through Python's standard logging module, use structlog.stdlib.get_logger() instead.
 # That function is already properly typed, so it needs no annotation.
@@ -47,6 +47,7 @@ log.info(".env_found", file_path=env_path, values=list(dotenv_values(env_path)))
 console = Console()
 MAX_BUBBLE: float = 0.6  # bubbles use at most 60% of terminal width
 
+settings = Settings()  # type: ignore[call-arg]
 client = Anthropic(api_key=settings.anthropic_api_key.get_secret_value())
 log.info("key_accepted", api_key=settings.anthropic_api_key.get_secret_value()[-4:])
 
