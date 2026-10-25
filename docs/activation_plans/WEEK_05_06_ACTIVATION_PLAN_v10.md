@@ -181,7 +181,7 @@ Run both against your recon.db.
 **Morning:** ~~AI-901 Learn module 3~~ → ⏭️ Q2 (C58). 🆕 **Kimball Ch. 3 — finish**, then write `docs/modeling-notes.md` in `learning_journey`: the **business process** (a plan distribution), the **grain** of its fact (*one row per distribution per source system*), its **dimensions** (participant, plan, Box-7 code, date) and its **facts** (gross, taxable, withholding). This page is DataVault's design input on Day 43.
 **Evening:**
 
-- [ ] 70 min — **Typed config — Correction 16 lands.** Your SDK scripts currently trust the raw environment. Production code validates config at startup. Create `src/learning_journey/claude/settings.py`:
+- [x] 70 min — **Typed config — Correction 16 lands.** Your SDK scripts currently trust the raw environment. Production code validates config at startup. Create `src/learning_journey/claude/settings.py`:
 
 ```python
 """Typed configuration via pydantic-settings — Correction 16's named standard.
