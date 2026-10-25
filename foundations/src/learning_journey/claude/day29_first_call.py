@@ -8,7 +8,7 @@ import anthropic
 from anthropic.types import TextBlock
 from dotenv import find_dotenv
 
-from learning_journey.claude.settings import settings
+from learning_journey.claude.settings import Settings
 
 env_path = find_dotenv(usecwd=True, raise_error_if_not_found=True)
 print(f".env file found: {env_path}")
@@ -23,6 +23,7 @@ print(f".env file found: {env_path}")
 # The client reads ANTHROPIC_API_KEY from your environment automatically —
 # which is WHY Step 8 put it in ~/.zshrc and never in code. If this line
 # errors with "api_key not set", your env var isn't loaded (new terminal?).
+settings = Settings()  # type: ignore[call-arg]
 client = anthropic.Anthropic(api_key=settings.anthropic_api_key.get_secret_value())
 
 response = client.messages.create(
