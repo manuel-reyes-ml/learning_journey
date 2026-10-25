@@ -42,6 +42,12 @@ rpc_prompt: str = (
     "2 sentences maximum."
 )
 
+sleep_trainer_prompt: str = (
+    "You are an expert baby sleep trainer. "
+    "Explain concepts for parents: plain English, no jargon, "
+    "2 sentences maximum."
+)
+
 
 def add_user_message(messages: list[dict[str, str]], text: str) -> None:
     """ """
@@ -118,7 +124,7 @@ def main() -> int:
             log.error("config_error", error=str(e))  # clean one-line exit, no traceback
             return 1
 
-        system_prompt = rpc_prompt + settings.system_prompt
+        system_prompt = sleep_trainer_prompt + settings.system_prompt
 
         user_message = console.input("[bold cyan]> [/]").strip()
         if user_message.lower() in {"exit", "quit"}:
@@ -135,22 +141,22 @@ def main() -> int:
         try:
             answer = chat(messages, system_prompt, client=client, settings=settings)
         except anthropic.AuthenticationError as e:  # 401: bad key
-            log.error("bad_key", exception=e)
+            log.error("bad_key", error=e)
             return 1
         except anthropic.RateLimitError as e:  # 429
-            log.error("rate_limit", exception=e)
+            log.error("rate_limit", error=e)
             return 1
         except anthropic.APIStatusError as e:  # any other non-2xx
-            log.error("other_api_error", exception=e.response, code=e.status_code)
+            log.error("other_api_error", error=e.response, code=e.status_code)
             return 1
         except anthropic.APIConnectionError as e:  # network
-            log.error("bad_network", exception=e)
+            log.error("bad_network", error=e)
             return 1
         except ValueError as exc:
-            log.error("chat_error", exception=exc)
+            log.error("chat_error", error=exc)
             return 1
         except Exception as exc:
-            log.error("other_error", exception=exc)
+            log.error("other_error", error=exc)
             return 1
 
         show_message(answer.text, "assistant")
