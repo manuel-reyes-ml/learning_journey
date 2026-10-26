@@ -3,24 +3,27 @@
 from __future__ import annotations
 
 import sys
+from collections.abc import Iterator
 from typing import TYPE_CHECKING
 
 import anthropic
 import structlog
-from anthropic.types import Message, TextBlock
 from dotenv import dotenv_values, find_dotenv
 from rich.align import Align
 from rich.console import Console
+from rich.live import Live
 from rich.markdown import Markdown
 from rich.panel import Panel
 from rich.text import Text
-from structlog.typing import FilteringBoundLogger
 
 from learning_journey.claude.client import get_client
 from learning_journey.claude.settings import ConfigError
 
 if TYPE_CHECKING:
     from typing import Literal
+
+    from anthropic.types import Message
+    from structlog.typing import FilteringBoundLogger
 
     from learning_journey.claude.settings import Settings
 
@@ -61,13 +64,15 @@ def add_assistant_message(messages: list[dict[str, str]], text: str) -> None:
     messages.append(assistant_message)
 
 
-def chat(
+# Becomes a generator that yields text deltas. It knows nothing about Rich,
+# so the API logic stays separate from the UI.
+def stream_chat(
     messages: list[dict[str, str]],
     system_prompt: str,
     *,
     client: anthropic.Anthropic,
     settings: Settings,
-) -> TextBlock:
+) -> Iterator[str]:
     """ """
     params = {
         "model": settings.claude_model,
@@ -76,37 +81,55 @@ def chat(
         "system": system_prompt,
     }
 
-    message: Message = client.messages.create(**params)
+    with client.messages.stream(**params) as stream:
+        yield from stream.text_stream
+        final: Message = stream.get_final_message()
     log.info(
         "messaged_received",
-        tokens_in=message.usage.input_tokens,
-        tokens_out=message.usage.output_tokens,
-        blocks=[*message.content],
+        tokens_in=final.usage.input_tokens,
+        tokens_out=final.usage.output_tokens,
+        stop_reason=final.stop_reason,
     )
 
-    for block in message.content:
-        if isinstance(block, TextBlock):
-            return block
-    raise ValueError("No text block was found in message object")
 
-
-def show_message(text: str, role: Literal["user", "assistant"]) -> None:
+def build_bubble(text: str, role: Literal["user", "assistant"]) -> Align:
     """ """
     is_user = role == "user"
     bubble = Panel(
-        Text(text) if is_user else Markdown(text),  # render LLM replies as markdown
-        title="You" if is_user else "Assitant",
+        Text(text) if is_user else Markdown(text or "..."),  # render LLM replies as markdown
+        title="You" if is_user else "Assistant",
         title_align="right" if is_user else "left",
         border_style="cyan" if is_user else "green",
         expand=False,  # shrink-wrap short messages
     )
-    console.print(
-        Align(
-            bubble,
-            align="right" if is_user else "left",
-            width=int(console.width * MAX_BUBBLE),
-        )
+
+    return Align(
+        bubble,
+        align="right" if is_user else "left",
+        width=int(console.width * MAX_BUBBLE),
     )
+
+
+def show_streaming_reply(chunks: Iterator[str]) -> str:
+    """ """
+    reply = ""
+    with Live(
+        build_bubble("", "assistant"),
+        console=console,
+        refresh_per_second=12,
+    ) as live:
+        for chunk in chunks:
+            reply += chunk
+            live.update(build_bubble(reply, "assistant"))
+
+    if not reply:
+        raise ValueError("Stream produced no text")
+    return reply
+
+
+def show_message(text: str, role: Literal["user", "assistant"]) -> None:
+    """ """
+    console.print(build_bubble(text, role))
 
 
 def main() -> int:
@@ -140,7 +163,9 @@ def main() -> int:
         # That would also hide real bugs in your code. The up-front check gives a
         # clearer message for portfolio-grade code.
         try:
-            answer = chat(messages, system_prompt, client=client, settings=settings)
+            answer = show_streaming_reply(
+                stream_chat(messages, system_prompt, client=client, settings=settings)
+            )
         except anthropic.APIStatusError as e:  # any other non-2xx
             log.error(
                 "anthropic_api_error",  # 401, 429, 5xx, ...
@@ -154,14 +179,13 @@ def main() -> int:
             log.error("anthropic_connection_error", error_type=type(e).__name__, message=e.message)
             return 1
         except ValueError as e:
-            log.error("chat_error", error=e)
+            log.error("stream_error", error=e)
             return 1
         except Exception as e:
             log.error("other_error", error=e)
             return 1
 
-        show_message(answer.text, "assistant")
-        add_assistant_message(messages, answer.text)
+        add_assistant_message(messages, answer)
 
     print("=" * 30)
     print("Program finished. Thanks :)")
