@@ -108,10 +108,6 @@ if TYPE_CHECKING:
 # That function is already properly typed, so it needs no annotation.
 log: FilteringBoundLogger = structlog.get_logger()
 
-# dotenv_values() only READS .env into a dict; it does NOT put values into os.environ.
-env_path = find_dotenv(usecwd=True, raise_error_if_not_found=True)
-log.info(".env_found", file_path=env_path, values=list(dotenv_values(env_path)))
-
 
 @unique
 class ExitCode(IntEnum):
@@ -178,6 +174,13 @@ sleep_trainer_prompt: str = (
     "Explain concepts for parents: plain English, no jargon, "
     "2 sentences maximum."
 )
+
+
+def _find_env() -> None:
+    """ """
+    # dotenv_values() only READS .env into a dict; it does NOT put values into os.environ.
+    env_path = find_dotenv(usecwd=True, raise_error_if_not_found=True)
+    log.info(".env_found", file_path=env_path, values=list(dotenv_values(env_path)))
 
 
 def build_agent(settings: Settings, system_prompt: str) -> Agent[None, str]:
@@ -371,6 +374,7 @@ async def main() -> ExitCode:
     ``ModelAPIError``. Pydantic AI wraps the Anthropic SDK's own errors
     (authentication, rate limit, server) into these provider-neutral types.
     """
+    _find_env()
     try:
         # TODO: also builds a sync anthropic client that is never used here.
         # A small get_settings() helper would avoid creating it.
