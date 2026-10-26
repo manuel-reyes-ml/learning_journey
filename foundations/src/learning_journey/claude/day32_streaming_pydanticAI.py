@@ -65,6 +65,7 @@ from __future__ import annotations
 
 import asyncio
 import sys
+from enum import IntEnum, unique
 from typing import TYPE_CHECKING
 
 import logfire
@@ -109,11 +110,50 @@ log: FilteringBoundLogger = structlog.get_logger()
 env_path = find_dotenv(usecwd=True, raise_error_if_not_found=True)
 log.info(".env_found", file_path=env_path, values=list(dotenv_values(env_path)))
 
-# Plain sync calls: they register config and hooks, no network I/O.
-# "if-token-present": export spans only when LOGFIRE_TOKEN is set; otherwise a no-op.
-logfire.configure(send_to_logfire="if-token-present")
-# Every Agent run becomes an "agent run" span with nested model-call spans.
-logfire.instrument_pydantic_ai()
+
+@unique
+class ExitCode(IntEnum):
+    """POSIX-aligned process exit codes for the Stream Claude CLI.
+
+    ``IntEnum`` values are passed directly to ``sys.exit()``.
+    ``@unique`` prevents accidental duplicate values at definition time.
+
+    Attributes
+    ----------
+    SUCCESS : int
+        ``0`` — normal completion; every provider returned a response.
+    CONFIG_ERROR : int
+        ``1`` — configuration failure.  Raised when
+        :class:`~llm_api_smoke_test.config.SmokeTestSettings` cannot
+        load required env vars or rejects a placeholder API key.
+    PROVIDER_ERROR : int
+        ``2`` — at least one provider's ``smoke_test()`` raised.
+        Returned even if other providers succeeded, so CI runs fail
+        loudly on any provider regression.
+    KEYBOARD_INTERRUPT : int
+        ``130`` — standard shell convention for Ctrl-C / SIGINT.
+
+    Examples
+    --------
+    >>> sys.exit(ExitCode.SUCCESS)
+    >>> ExitCode.SUCCESS == 0           # IntEnum compares to int
+    True
+
+    Notes
+    -----
+    Why fail on *any* provider error (not just all)?
+        This is a smoke test — its job is to surface broken keys
+        before downstream code burns time discovering them.  A
+        partial failure means at least one credential is wrong;
+        signal that to CI immediately rather than letting the user
+        deploy with a half-working config.
+    """
+
+    SUCCESS = 0
+    CONFIG_ERROR = 1
+    PROVIDER_ERROR = 2
+    KEYBOARD_INTERRUPT = 130
+
 
 MAX_BUBBLE: Final[float] = 0.6  # bubbles use at most 60% of terminal width
 
@@ -293,7 +333,7 @@ def show_message(text: str, role: Literal["user", "assistant"]) -> None:
     console.print(build_bubble(text, role))
 
 
-async def main() -> int:
+async def main() -> ExitCode:
     """Run the interactive chat loop.
 
     Returns
@@ -336,11 +376,17 @@ async def main() -> int:
     except ConfigError as e:
         # log.exception(event="") produces the full traceback for deeper analysis
         log.error("config_error", error=e)  # clean one-line exit, no traceback
-        return 1
+        return ExitCode.CONFIG_ERROR
 
     print("=" * 70)
     print("Chat with LLM Program -- type 'exit' or 'quit' to end the program.")
     print("=" * 70)
+
+    # Plain sync calls: they register config and hooks, no network I/O.
+    # "if-token-present": export spans only when LOGFIRE_TOKEN is set; otherwise a no-op.
+    logfire.configure(send_to_logfire="if-token-present")
+    # Every Agent run becomes an "agent run" span with nested model-call spans.
+    logfire.instrument_pydantic_ai()
 
     system_prompt = sleep_trainer_prompt + settings.system_prompt
     agent = build_agent(settings, system_prompt)
@@ -367,6 +413,7 @@ async def main() -> int:
                 await show_streaming_reply(run)
                 # Reassign, don't append: keeps history exactly what Pydantic AI saw.
                 history = run.all_messages()  # user turn + assistant turn now included
+
         except ModelHTTPError as e:  # 401, 429, 5xx... (subclass: catch first)
             log.error(
                 "model_http_error",
@@ -374,27 +421,31 @@ async def main() -> int:
                 model=e.model_name,
                 body=e.body,  # provider error body; look here for the request id
             )
-            return 1
+            return ExitCode.PROVIDER_ERROR
+
         except ModelAPIError as e:  # network and other non-HTTP provider failures
             log.error("model_api_error", model=e.model_name, error=str(e))
-            return 1
+            return ExitCode.PROVIDER_ERROR
+
         except UsageLimitExceeded as e:  # your guardrail tripped
             # `continue` keeps the chat alive; history is unchanged,
             # so the user can simply rephrase.
             log.warning("usage_limit_exceeded", error=str(e), correction="rephrase_prompt")
             continue
+
         except UnexpectedModelBehavior as e:  # malformed/empty model output
             log.error("unexpected_model_behavior", error=str(e))
-            return 1
+            return ExitCode.PROVIDER_ERROR
+
         except ValueError as e:
             log.error("stream_error", error=e)
-            return 1
+            return ExitCode.PROVIDER_ERROR
 
     print("=" * 30)
     print("Program finished. Thanks :)")
     print("=" * 30)
 
-    return 0
+    return ExitCode.SUCCESS
 
 
 if __name__ == "__main__":
