@@ -63,38 +63,42 @@ References
 # Python never evaluates them at runtime, only type checkers (mypy/pyright) read them.
 from __future__ import annotations
 
-import asyncio
 import sys
-from enum import IntEnum, unique
-from typing import TYPE_CHECKING
 
-import logfire
-import structlog
-from dotenv import dotenv_values, find_dotenv
-from prompt_toolkit import PromptSession
-from prompt_toolkit.formatted_text import HTML
-from pydantic_ai import Agent
-from pydantic_ai.exceptions import (
-    ModelAPIError,
-    ModelHTTPError,
-    UnexpectedModelBehavior,
-    UsageLimitExceeded,
-)
-from pydantic_ai.messages import ModelMessage
-from pydantic_ai.models.anthropic import AnthropicModel
-from pydantic_ai.providers.anthropic import AnthropicProvider
-from pydantic_ai.result import StreamedRunResult
-from pydantic_ai.settings import ModelSettings
-from pydantic_ai.usage import UsageLimits
-from rich.align import Align
-from rich.console import Console
-from rich.live import Live
-from rich.markdown import Markdown
-from rich.panel import Panel
-from rich.text import Text
+try:
+    import asyncio
+    from enum import IntEnum, unique
+    from typing import TYPE_CHECKING
 
-from learning_journey.claude.client import get_client
-from learning_journey.claude.settings import ConfigError
+    import logfire
+    import structlog
+    from dotenv import dotenv_values, find_dotenv
+    from prompt_toolkit import PromptSession
+    from prompt_toolkit.formatted_text import HTML
+    from pydantic_ai import Agent
+    from pydantic_ai.exceptions import (
+        ModelAPIError,
+        ModelHTTPError,
+        UnexpectedModelBehavior,
+        UsageLimitExceeded,
+    )
+    from pydantic_ai.messages import ModelMessage
+    from pydantic_ai.models.anthropic import AnthropicModel
+    from pydantic_ai.providers.anthropic import AnthropicProvider
+    from pydantic_ai.result import StreamedRunResult
+    from pydantic_ai.settings import ModelSettings
+    from pydantic_ai.usage import UsageLimits
+    from rich.align import Align
+    from rich.console import Console
+    from rich.live import Live
+    from rich.markdown import Markdown
+    from rich.panel import Panel
+    from rich.text import Text
+
+    from learning_journey.claude.client import get_client
+    from learning_journey.claude.settings import ConfigError
+except ImportError as e:
+    sys.exit(f"ERROR: missing module. Details: {e}")
 
 if TYPE_CHECKING:
     # Only imported while type-checking; zero runtime cost (see __future__ note above).
