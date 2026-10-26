@@ -6,6 +6,7 @@ import asyncio
 import sys
 from typing import TYPE_CHECKING
 
+import logfire
 import structlog
 from dotenv import dotenv_values, find_dotenv
 from pydantic_ai import Agent
@@ -45,6 +46,9 @@ log: FilteringBoundLogger = structlog.get_logger()
 env_path = find_dotenv(usecwd=True, raise_error_if_not_found=True)
 log.info(".env_found", file_path=env_path, values=list(dotenv_values(env_path)))
 
+logfire.configure(send_to_logfire="if-token-present")
+logfire.instrument_pydantic_ai()
+
 MAX_BUBBLE: Final[float] = 0.6  # bubbles use at most 60% of terminal width
 
 # Guardrail: cap tokens per run so a runaway reply can't burn budget.
@@ -81,6 +85,7 @@ def build_agent(settings: Settings, system_prompt: str) -> Agent[None, str]:
         output_type=str,  # plain-text chat; swap for a BaseModel later
         instructions=system_prompt,
         model_settings=ModelSettings(max_tokens=settings.default_max_tokens),
+        name="direct_chat",
     )
 
 
