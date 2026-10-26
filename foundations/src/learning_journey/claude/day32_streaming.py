@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import sys
-from collections.abc import Iterator
+from collections.abc import Generator
 from typing import TYPE_CHECKING
 
 import anthropic
@@ -66,13 +66,19 @@ def add_assistant_message(messages: list[dict[str, str]], text: str) -> None:
 
 # Becomes a generator that yields text deltas. It knows nothing about Rich,
 # so the API logic stays separate from the UI.
+# Before: stream_chat only yielded text, so -> Iterator[str] was the right, minimal type.
+#   Iterator is the protocol: any object with __iter__ and __next__. Generator is a function
+#   with yield that Python turns into an iterator automatically.
+# After: it also returns the final Message, so -> Generator[YieldType, SendType, ReturnType]
+#   is required. Here str is what it yields, None means you never .send() into it,
+#   and Message is what it returns.
 def stream_chat(
     messages: list[dict[str, str]],
     system_prompt: str,
     *,
     client: anthropic.Anthropic,
     settings: Settings,
-) -> Iterator[str]:
+) -> Generator[str, None, Message]:
     """ """
     params = {
         "model": settings.claude_model,
@@ -83,13 +89,7 @@ def stream_chat(
 
     with client.messages.stream(**params) as stream:
         yield from stream.text_stream
-        final: Message = stream.get_final_message()
-    log.info(
-        "messaged_received",
-        tokens_in=final.usage.input_tokens,
-        tokens_out=final.usage.output_tokens,
-        stop_reason=final.stop_reason,
-    )
+        return stream.get_final_message()  # becomes StopIteration.value
 
 
 def build_bubble(text: str, role: Literal["user", "assistant"]) -> Align:
@@ -110,7 +110,7 @@ def build_bubble(text: str, role: Literal["user", "assistant"]) -> Align:
     )
 
 
-def show_streaming_reply(chunks: Iterator[str]) -> str:
+def show_streaming_reply(chunks: Generator[str, None, Message]) -> str:
     """ """
     reply = ""
     with Live(
@@ -118,10 +118,22 @@ def show_streaming_reply(chunks: Iterator[str]) -> str:
         console=console,
         refresh_per_second=12,
     ) as live:
-        for chunk in chunks:
+        while True:
+            try:
+                chunk = next(chunks)
+            except StopIteration as stop:
+                final: Message = stop.value  # the returned Message
+                break
             reply += chunk
             live.update(build_bubble(reply, "assistant"))
 
+    # Live has exited -> this printsBELOW the bubble
+    log.info(
+        "message_received",
+        tokens_in=final.usage.input_tokens,
+        tokens_out=final.usage.output_tokens,
+        stop_reason=final.stop_reason,
+    )
     if not reply:
         raise ValueError("Stream produced no text")
     return reply
@@ -150,6 +162,7 @@ def main() -> int:
     system_prompt = sleep_trainer_prompt + settings.system_prompt
 
     while True:
+        print("\n")
         user_message = console.input("[bold cyan]> [/]").strip()
         if user_message.lower() in {"exit", "quit"}:
             break
