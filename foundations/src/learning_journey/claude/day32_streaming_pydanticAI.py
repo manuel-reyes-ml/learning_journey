@@ -71,6 +71,8 @@ from typing import TYPE_CHECKING
 import logfire
 import structlog
 from dotenv import dotenv_values, find_dotenv
+from prompt_toolkit import PromptSession
+from prompt_toolkit.formatted_text import HTML
 from pydantic_ai import Agent
 from pydantic_ai.exceptions import (
     ModelAPIError,
@@ -155,6 +157,7 @@ class ExitCode(IntEnum):
     KEYBOARD_INTERRUPT = 130
 
 
+PROMPT: Final[HTML] = HTML("<b><ansicyan>&gt; </ansicyan></b>")  # cyan bold "> "
 MAX_BUBBLE: Final[float] = 0.6  # bubbles use at most 60% of terminal width
 
 # Per-run guardrails; breaching one raises UsageLimitExceeded.
@@ -391,12 +394,20 @@ async def main() -> ExitCode:
     system_prompt = sleep_trainer_prompt + settings.system_prompt
     agent = build_agent(settings, system_prompt)
     history: list[ModelMessage] = []
+    session: PromptSession[str] = PromptSession()  # also gives ↑/↓ input history
 
     while True:
         print("\n")
-        # REVIEW: Ctrl+C here cancels main(), but the worker thread stays blocked in
-        # input(), so shutdown may wait until Enter is pressed. Harmless for a CLI.
-        user_message = (await asyncio.to_thread(console.input, "[bold cyan]> [/]")).strip()
+        try:
+            # REVIEW: Ctrl+C here cancels main(), but the worker thread stays blocked in
+            # input(), so shutdown may wait until Enter is pressed. Harmless for a CLI.
+            # user_message = (await asyncio.to_thread(console.input, "[bold cyan]> [/]")).strip()
+            #
+            # No worker thread: prompt_toolkit reads keys on the event loop itself.
+            user_message = (await session.prompt_async(PROMPT)).strip()
+        except EOFError:  # Ctrl+D -> treat as a normal exit
+            break
+
         if user_message.lower() in {"exit", "quit"}:
             break
 
@@ -448,6 +459,26 @@ async def main() -> ExitCode:
     return ExitCode.SUCCESS
 
 
+# Why one handler covers both cases:
+#
+# 1. Ctrl+C at the prompt:
+#    - prompt_toolkit puts the terminal in raw mode, so Ctrl+C arrives as a
+#      key press (not a SIGINT signal).
+#    - PromptSession.prompt_async() raises KeyboardInterrupt on Ctrl+C and
+#      EOFError on Ctrl+D.
+#    - The KeyboardInterrupt propagates out of main() and asyncio.run() to the
+#      edge handler below.
+#
+# 2. Ctrl+C while a reply streams:
+#    - asyncio's SIGINT handler cancels main() (CancelledError inside the task).
+#    - The stack unwinds, and Live, run_stream and the Logfire span all clean up
+#      through their context managers.
+#    - asyncio.Runner.run() then raises KeyboardInterrupt, which also ends up in
+#      the edge handler below.
 if __name__ == "__main__":
-    # asyncio.run returns main()'s int; sys.exit turns it into the exit code.
-    sys.exit(asyncio.run(main()))
+    try:
+        # asyncio.run returns main()'s int; sys.exit turns it into the exit code.
+        sys.exit(asyncio.run(main()))
+    except KeyboardInterrupt:  # Ctrl+C at the prompt OR while a reply is streaming
+        log.warning("interrupted_by_user")
+        sys.exit(ExitCode.KEYBOARD_INTERRUPT)
