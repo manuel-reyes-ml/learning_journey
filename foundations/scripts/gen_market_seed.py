@@ -1,4 +1,8 @@
-""" """
+"""Seeded synthetic market data for practice — invented tickers, invented prices.
+
+Nothing here is vendor data, so a public repo raises no licence question.
+Run:  uv run python scripts/gen_market_seed.py --out data/market_seed
+"""
 
 from __future__ import annotations
 
