@@ -231,7 +231,7 @@ Refactor Days 29–30 scripts to use it. Then prove the mask: `print(settings)` 
 **Morning:** Claude API course — parameters/streaming section.
 **Evening:**
 
-- [ ] 60 min — Streaming + graceful errors: `day32_streaming.py` — stream a response chunk-by-chunk (`client.messages.stream(...)`), and wrap a call in try/except for `anthropic.APIStatusError` / `anthropic.APIConnectionError`, logging the failure with structlog instead of crashing. (Note the roadmap's full retry standard is `stamina` — it arrives with the flagship builds; today is just "never let a network blip kill a pipeline.")
+- [x] 60 min — Streaming + graceful errors: `day32_streaming.py` — stream a response chunk-by-chunk (`client.messages.stream(...)`), and wrap a call in try/except for `anthropic.APIStatusError` / `anthropic.APIConnectionError`, logging the failure with structlog instead of crashing. (Note the roadmap's full retry standard is `stamina` — it arrives with the flagship builds; today is just "never let a network blip kill a pipeline.")
 - [ ] 40 min — Mode SQL: LAG/LEAD + month-over-month deltas on your synthetic data
 - [ ] 📈 **Trading twin #6 (+40 min · v3.3, C64)** — the same window functions on market bars, and Day 41's generator written early so Saturday starts ahead. *(Day full? →* `notes/trading/twin-queue.md`*; Day 41 then writes the generator as originally planned.)*
   1. `uv add duckdb`, then type `scripts/gen_market_seed.py` — the bars half of the generator (Day 41 adds the events):
