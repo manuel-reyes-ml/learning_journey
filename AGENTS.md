@@ -78,7 +78,8 @@ emphasis, never quality.
 
 **Packaging & environment**
 - **`uv`** is the package/env manager. `pyproject.toml` + committed **`uv.lock`**.
-- **No `requirements.txt` anywhere.** Dockerfiles use `uv sync --frozen`.
+- **No `requirements.txt` anywhere.** CI and the final Docker sync use `uv sync --locked`;
+  `--frozen` only for the Docker dependency layer (it skips the staleness check).
 - `src/` layout; `py.typed`; ruff + mypy; Docker; CI.
 
 **Architecture documentation** *(Correction 14 — required, not optional)*
