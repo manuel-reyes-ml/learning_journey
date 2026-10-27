@@ -62,12 +62,15 @@ class Settings(BaseSettings):
         return v
 
 
+# @lru_cache means settings are built once and every caller shares the same instance.
 @lru_cache
 def get_settings() -> Settings:
     try:
         return Settings()  # type: ignore[call-arg]
     except ValidationError as e:
         fields = sorted({str(err["loc"][0]).upper() for err in e.errors()})
+        # Pydantic errors can include the raw input value. With from None and only field
+        # names in the message, a secret can never end up in your logs.
         raise ConfigError(
             f"Missing/invalid config: {', '.join(fields)}. "
             f"Set them in the environment or in {PROJECT_ROOT / '.env'}"
