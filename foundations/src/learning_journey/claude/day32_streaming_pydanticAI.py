@@ -382,6 +382,8 @@ async def main() -> ExitCode:
     try:
         # TODO: also builds a sync anthropic client that is never used here.
         # A small get_settings() helper would avoid creating it.
+        # A module-level instance fails during import, so callers can't catch it,
+        # and it makes tests painful.
         _client, settings = get_client()
         log.info("key_accepted", api_key=settings.anthropic_api_key.get_secret_value()[-4:])
     except ConfigError as e:
