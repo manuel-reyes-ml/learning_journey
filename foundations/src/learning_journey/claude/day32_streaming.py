@@ -113,6 +113,10 @@ def build_bubble(text: str, role: Literal["user", "assistant"]) -> Align:
 def show_streaming_reply(chunks: Generator[str, None, Message]) -> str:
     """ """
     reply = ""
+
+    # The pattern: you construct a Live object with a renderable,
+    # use it as a context manager, and can swap the renderable
+    # on the fly by calling update()
     with Live(
         build_bubble("", "assistant"),
         console=console,
