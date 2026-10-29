@@ -5,7 +5,7 @@ Install:  uv add pydantic-settings
 
 from __future__ import annotations
 
-from functools import lru_cache
+from functools import cache
 from pathlib import Path
 from typing import Final
 
@@ -62,8 +62,14 @@ class Settings(BaseSettings):
         return v
 
 
-# @lru_cache means settings are built once and every caller shares the same instance.
-@lru_cache
+# @cache = @lru_cache(maxsize=None)
+# Both come from functools and do memoization: the first call with some arguments runs the
+# function and stores the result, keyed by those arguments. Later calls with the same
+# arguments return the stored result without running the function again.
+#
+# Prefer @cache on Python ≥ 3.9, and use lru_cache(maxsize=N) when arguments vary and
+# memory must be bounded.
+@cache
 def get_settings() -> Settings:
     try:
         return Settings()  # type: ignore[call-arg]
