@@ -22,3 +22,20 @@ SELECT box7_code,
        ) AS rank
   FROM distributions;       -- PARTITION BY = "restart per group"
 -- Interview-famous shape: "top N per group" = wrap this + WHERE rank <= N.
+
+
+-- Q3: Top 3 distributions within each Box-7 code:
+WITH ranked AS (
+    SELECT box7_code,
+           gross,
+           RANK() OVER (
+            PARTITION BY box7_code
+            ORDER BY gross DESC
+           ) AS rank
+      FROM distributions
+)
+SELECT box7_code
+       gross,
+       rank
+  FROM ranked
+  WHERE rank <= 3;          -- CTE = Common Table Expression
