@@ -22,7 +22,7 @@ from learning_journey.claude.settings import ConfigError
 if TYPE_CHECKING:
     from typing import Literal
 
-    from anthropic.types import Message
+    from anthropic.types import Message, MessageParam
     from structlog.typing import FilteringBoundLogger
 
     from learning_journey.claude.settings import Settings
@@ -52,15 +52,15 @@ sleep_trainer_prompt: str = (
 )
 
 
-def add_user_message(messages: list[dict[str, str]], text: str) -> None:
+def add_user_message(messages: list[MessageParam], text: str) -> None:
     """ """
-    user_message = {"role": "user", "content": text}
+    user_message: MessageParam = {"role": "user", "content": text}
     messages.append(user_message)
 
 
-def add_assistant_message(messages: list[dict[str, str]], text: str) -> None:
+def add_assistant_message(messages: list[MessageParam], text: str) -> None:
     """ """
-    assistant_message = {"role": "assistant", "content": text}
+    assistant_message: MessageParam = {"role": "assistant", "content": text}
     messages.append(assistant_message)
 
 
@@ -73,7 +73,7 @@ def add_assistant_message(messages: list[dict[str, str]], text: str) -> None:
 #   is required. Here str is what it yields, None means you never .send() into it,
 #   and Message is what it returns.
 def stream_chat(
-    messages: list[dict[str, str]],
+    messages: list[MessageParam],
     system_prompt: str,
     *,
     client: anthropic.Anthropic,
@@ -162,7 +162,7 @@ def main() -> int:
     print("Chat with LLM Program -- type 'exit' or 'quit' to end the program.")
     print("=" * 70)
 
-    messages: list[dict[str, str]] = []
+    messages: list[MessageParam] = []
     system_prompt = sleep_trainer_prompt + settings.system_prompt
 
     while True:
