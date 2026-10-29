@@ -8,7 +8,7 @@ from typing import Literal
 import anthropic
 import structlog
 from anthropic import Anthropic
-from anthropic.types import Message, TextBlock
+from anthropic.types import Message, MessageParam, TextBlock
 from dotenv import dotenv_values, find_dotenv
 from rich.align import Align
 from rich.console import Console
@@ -61,19 +61,19 @@ system: str = (
 )
 
 
-def add_user_message(messages: list[dict[str, str]], text: str) -> None:
+def add_user_message(messages: list[MessageParam], text: str) -> None:
     """ """
-    user_message = {"role": "user", "content": text}
+    user_message: MessageParam = {"role": "user", "content": text}
     messages.append(user_message)
 
 
-def add_assistant_message(messages: list[dict[str, str]], text: str) -> None:
+def add_assistant_message(messages: list[MessageParam], text: str) -> None:
     """ """
-    assistant_message = {"role": "assistant", "content": text}
+    assistant_message: MessageParam = {"role": "assistant", "content": text}
     messages.append(assistant_message)
 
 
-def chat(messages: list[dict[str, str]], system: str | None = None) -> TextBlock:
+def chat(messages: list[MessageParam], system: str | None = None) -> TextBlock:
     """ """
     params = {
         "model": settings.claude_model,
@@ -121,7 +121,7 @@ def main() -> int:
     print("=" * 70)
     print("Chat with LLM Program -- type 'exit' or 'quit' to end the program.")
     print("=" * 70)
-    messages: list[dict[str, str]] = []
+    messages: list[MessageParam] = []
 
     while True:
         user_message = console.input("[bold cyan]> [/]").strip()
