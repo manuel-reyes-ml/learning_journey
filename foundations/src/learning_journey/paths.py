@@ -19,9 +19,22 @@ __all__ = [
 _ROOT_MARKERS: Final[tuple[str, ...]] = ("uv.lock", ".git")
 
 
+# @cache = @lru_cache(maxsize=None)
+# Both come from functools and do memoization: the first call with some arguments runs the
+# function and stores the result, keyed by those arguments. Later calls with the same
+# arguments return the stored result without running the function again.
+#
+# Prefer @cache on Python ≥ 3.9, and use lru_cache(maxsize=N) when arguments vary and
+# memory must be bounded.
 @cache
 def project_root() -> Path:
     """Repo root: LJ_PROJECT_ROOT env var, else first parent containing a marker."""
+    # The 'walrus' operator := assigns a value and gives that value back in the same expression.
+    # A normal = is a statement, so it can't sit inside an if or a while.
+    # Our code below is the same as:
+    #   override = os.environ.get("LJ_PROJECT_ROOT")   # str, or None if not set
+    #   if override:                                   # None and "" are both falsy
+    #       return Path(override).resolve()
     if override := os.environ.get("LJ_PROJECT_ROOT"):
         return Path(override).resolve()
     for parent in Path(__file__).resolve().parents:
