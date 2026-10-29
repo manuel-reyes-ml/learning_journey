@@ -16,6 +16,8 @@
 
 ---
 
+
+
 ## 🧭 v3.0 JOB-FIRST RE-CUT — this fortnight (approved 6 Oct 2026)
 
 Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to Corrections 1–64. Full rationale: the v3.0, v3.1 and v3.2 blocks in Weeks 1–2. **This is the fortnight dbt arrives.**
@@ -33,6 +35,8 @@ Part of the fresh 12-week template from Mon 20 Jul 2026, 25 hrs/week, aligned to
 
 ---
 
+
+
 ## 🔄 REALIGNMENT PASS — ROADMAP CORRECTIONS 21–43 (applied 27 Aug 2026)
 
 Standing rulings from Corrections 21–43 that land in this fortnight, in template form (Corrections 44–54 are applied in the v3.0 block above):
@@ -45,6 +49,8 @@ Standing rulings from Corrections 21–43 that land in this fortnight, in templa
 **Not urgent this fortnight, but now standing policy:** Polars is the default dataframe engine (C35) · Cursor moves to Hobby, ~~OpenCode is the sole harness (C39/40)~~ → 📈 v3.3 text fix: **dual harness** — OpenCode (in Cursor) writes, Claude Code (in VS Code) reviews read-only (C42 §1 superseded C39 §9) · the reading layer is live and you are in S1, so *Robust Python* and *AI Engineering* are buy-now (C34) · PostCheck is Flagship #4 (C33).
 
 ---
+
+
 
 ## 📊 WHERE YOU STAND
 
@@ -79,7 +85,11 @@ Model:   four-step design · declaring the grain · transaction / periodic /
 
 ---
 
+
+
 ## 🗓 WEEK 5 (Aug 17–23)
+
+
 
 ### Week 5 goals
 
@@ -93,6 +103,8 @@ Model:   four-step design · declaring the grain · transaction / periodic /
 - [ ] Docker for Beginners COMPLETE
 - [ ] ~~AI-901 Learn modules 3–4~~ → 🆕 Kimball Ch. 3 + grain notes
 - [ ] Post #5 · ~~exam DATE booked~~ (Q2)
+
+
 
 ### 📌 DAY 29 — Monday, August 17
 
@@ -145,13 +157,15 @@ Run it. Then experiment deliberately: change `max_tokens` to 50 (watch truncatio
 - [x] 30 min — Claude API course: next lesson, replicating its examples in your own files
 - [ ] 20 min — Journal + commit (`feat: first anthropic sdk call with usage logging`)
 
+
+
 ### 📌 DAY 30 — Tuesday, August 18
 
 **Morning:** Claude API course — roles & multi-turn conversations section.
 **Evening:**
 
 - [x] 60 min — Multi-turn: build `day30_conversation.py` — a loop that keeps a `messages` list, appends each user turn and assistant reply, and lets you converse in the terminal. Key learning: **the API is stateless — YOU carry the history**, and history = tokens = cost (print running token totals each turn).
-- [ ] 40 min — Mode SQL Advanced: window functions intro. Transcribe with comments:
+- [x] 40 min — Mode SQL Advanced: window functions intro. Transcribe with comments:
 
 ```sql
 -- Window functions: aggregate WITHOUT collapsing rows.
@@ -175,6 +189,8 @@ SELECT box7_code,
 Run both against your recon.db.
 
 - [ ] 20 min — Journal + commit
+
+
 
 ### 📌 DAY 31 — Wednesday, August 19
 
@@ -226,13 +242,15 @@ Refactor Days 29–30 scripts to use it. Then prove the mask: `print(settings)` 
 - [x] 30 min — Claude API course: continue
 - [ ] 20 min — Journal + commit (`feat: pydantic-settings config with SecretStr`)
 
+
+
 ### 📌 DAY 32 — Thursday, August 20
 
 **Morning:** Claude API course — parameters/streaming section.
 **Evening:**
 
 - [x] 60 min — Streaming + graceful errors: `day32_streaming.py` — stream a response chunk-by-chunk (`client.messages.stream(...)`), and wrap a call in try/except for `anthropic.APIStatusError` / `anthropic.APIConnectionError`, logging the failure with structlog instead of crashing. (Note the roadmap's full retry standard is `stamina` — it arrives with the flagship builds; today is just "never let a network blip kill a pipeline.")
-- [ ] 40 min — Mode SQL: LAG/LEAD + month-over-month deltas on your synthetic data
+- [x] 40 min — Mode SQL: LAG/LEAD + month-over-month deltas on your synthetic data
 - [x] 📈 **Trading twin #6 (+40 min · v3.3, C64)** — the same window functions on market bars, and Day 41's generator written early so Saturday starts ahead. *(Day full? →* `notes/trading/twin-queue.md`*; Day 41 then writes the generator as originally planned.)*
   1. `uv add duckdb`, then type `scripts/gen_market_seed.py` — the bars half of the generator (Day 41 adds the events):
 
@@ -333,6 +351,8 @@ order by ticker, session_date;
 
 - [ ] 20 min — Journal + commit
 
+
+
 ### 📌 DAY 33 — Friday, August 21
 
 **Morning:** Docker for Beginners — final sections → **course COMPLETE**.
@@ -342,6 +362,8 @@ order by ticker, session_date;
 - [ ] ~~50 min — AI-901 Learn module 4~~ · ~~30 min — Book the AI-901 exam for Week 8~~ → ⏭️ **Q2 (C58)**: one calendar reminder for Week 13 to book it — the self-funded $99 and the voucher check (Correction 38) still apply then.
 - [ ] 20 min — Claude API course lesson
 - [ ] 20 min — Journal + commit
+
+
 
 ### 📌 DAY 34 — Saturday, August 22 (5.5h)
 
@@ -402,7 +424,11 @@ Week summary + 🆕 lane-hours total (C58) · publish post #5 · plan Week 6 · 
 
 ---
 
+
+
 ## 🗓 WEEK 6 (Aug 24–30)
+
+
 
 ### Week 6 goals
 
@@ -417,6 +443,8 @@ Week summary + 🆕 lane-hours total (C58) · publish post #5 · plan Week 6 · 
 - [ ] 🆕 dbt Fundamentals COMPLETE (certificate)
 
 - [ ] Post #6 · meetup attended if scheduled
+
+
 
 ### 📌 DAY 36 — Monday, August 24
 
@@ -489,6 +517,8 @@ if __name__ == "__main__":
 
 - [ ] 30 min — 🆕 **SQL rep** (v3.1): one CTE chain + one window function on `recon.db`, timed — the shape every dbt model and AE screen uses ~~· Claude API course continue~~
 - [ ] 20 min — Journal + commit (`feat: pydantic-validated structured llm output`)
+
+
 
 ### 📌 DAY 37 — Tuesday, August 25
 
@@ -565,6 +595,8 @@ def test_non_json_rejected(mock_cls):
 
 - [ ] 30 min — ~~AI-901 module 5~~ → 🆕 **Kimball Ch. 4, part 1** — the three fact-table types: transaction, periodic snapshot, accumulating snapshot
 - [ ] 20 min — Journal + commit (`test: mocked api boundary tests`)
+
+
 
 ### 📌 DAY 39 — Thursday, August 27
 
@@ -766,11 +798,15 @@ where boundary_case is not null
 
 > ⚠️ If `dbt-duckdb` won't resolve on 3.14 the day you run this, don't downgrade the repo's floor: log it in the journal, pin the newest dbt-duckdb that resolves, and record the outcome as an ADR — the same falsifier discipline as C28.
 
+
+
 ### 📌 DAY 42 — Sunday, August 30 (2h)
 
 Week summary + ⚖️ **priority check (C58)**: fortnight AE/DE vs Applied-AI hours from the journal · draft + publish post #6 — 🆕 artifact: the rehearsal's lineage graph (`dbt docs generate`): *"I wrote a test that fails if my data can see the future"* (or the original plan-doc-summarizer angle — pick the one with the stronger artifact) · ~~AI Prompting videos done~~ → **dbt Fundamentals certificate →** `evidence.md` · 10 min Job lane: tracker update · plan Weeks 7–8 · journal 🎉
 
 ---
+
+
 
 ## 📊 2-WEEK SUCCESS METRICS
 
@@ -797,6 +833,8 @@ Week summary + ⚖️ **priority check (C58)**: fortnight AE/DE vs Applied-AI ho
 **Passing bar: 80%.** Non-negotiables: mini-project #3 (the SDK-fluency proof), ~~the booked AI-901 exam~~ → 🆕 **the grain declaration** (v3.1), and 🆕 **dbt Fundamentals complete** — DataVault's dbt project opens on Day 43 on top of it.
 
 ---
+
+
 
 ## 🔭 WHAT COMES NEXT
 
