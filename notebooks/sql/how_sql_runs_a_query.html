@@ -120,6 +120,24 @@ tr.keep td{background:var(--kept)}
 
 .mn{font-size:clamp(17px,2.4vw,21px);font-weight:600;text-align:center;padding:18px;border-radius:14px;background:var(--panel);border:1px solid var(--line)}
 .mn b{font-weight:800}
+/* mobile: let grid/flex children shrink so wide <pre> blocks scroll instead of stretching the page */
+.grid2>*,.grid3>*,.copies>*,.orders>*,.pipe>*,.groups>*{min-width:0}
+@media (max-width:820px){.grid2,.grid3{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:720px){.copies,.orders{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.groups{grid-template-columns:minmax(0,1fr)}}
+p code,li code,td code,.plain code,.tech code,.warn code,.note code{overflow-wrap:anywhere}
+.row{min-width:0;flex-wrap:wrap}
+h4{overflow-wrap:anywhere}
+/* self join */
+.copies{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:720px){.copies{grid-template-columns:1fr}}
+.copy{border:1px solid var(--line);border-radius:12px;background:var(--panel);padding:14px;border-top:5px solid}
+.copy.jp{border-top-color:#be123c}.copy.gb{border-top-color:#1d4ed8}
+.copy h3 code{font-size:15px}
+.alias{display:inline-block;font-family:"JetBrains Mono";font-weight:600;font-size:12.5px;padding:1px 8px;border-radius:6px;color:#fff}
+.a-jp{background:#be123c}.a-gb{background:#1d4ed8}
+.ok{color:var(--agg);font-weight:700}.bad{color:var(--where);font-weight:700}
+.cmp td:first-child{font-weight:600}
 footer{margin-top:50px;font-size:13.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
 footer li{margin:3px 0}
 </style>
@@ -143,6 +161,7 @@ footer li{margin:3px 0}
   <a href="#prod">9 · Production version</a>
   <a href="#run">10 · Run it yourself</a>
   <a href="#recall">11 · Recall &amp; practice</a>
+  <a href="#selfjoin">12 · Self joins</a>
 </nav>
 
 <!-- ================= 1 QUERY ================= -->
@@ -648,6 +667,230 @@ print(con.sql("EXPLAIN ANALYZE " + query).fetchall()[0][1])  <span class="c"># w
   <div class="panel bar b-where"><h3>Hard</h3><p>Return <code>AVG(weight)</code> per region, only for regions with ≥ 3 heavy players, sorted descending. Predict which groups survive HAVING before you run it, then confirm with <code>EXPLAIN</code>.</p></div>
 </div>
 
+<!-- ================= 12 SELF JOIN ================= -->
+<h2 id="selfjoin">12 · Self joins: comparing a table with itself</h2>
+<p>Question: <i>which companies received a Japanese investment and then, later, a British investment?</i> Both events live in the <b>same</b> table, so the query joins the table to itself.</p>
+
+<div class="grid2">
+  <div>
+<pre><span class="k-select">SELECT DISTINCT</span> japan_i.company_name,
+                japan_i.company_permalink
+<span class="k-from">FROM</span> tutorial.crunchbase_investments_part1 <span class="k-from">AS</span> japan_i
+<span class="k-from">JOIN</span> tutorial.crunchbase_investments_part1 <span class="k-from">AS</span> gb_i
+  <span class="k-from">ON</span> japan_i.company_name = gb_i.company_name
+  <span class="k-from">AND</span> gb_i.investor_country_code = 'GBR'
+  <span class="k-from">AND</span> gb_i.funded_at &gt; japan_i.funded_at
+<span class="k-where">WHERE</span> japan_i.investor_country_code = 'JPN'
+<span class="k-order">ORDER BY</span> 1;</pre>
+  </div>
+  <div>
+    <div class="plain"><span class="lbl">Plain terms</span><br>A single row only knows about itself. It can't say “this same company got British money later.” So you photocopy the list, label one copy <span class="alias a-jp">japan_i</span> and the other <span class="alias a-gb">gb_i</span>, lay them side by side, and look for pairs of rows that fit your rules. Each surviving pair is one piece of evidence: “this Japanese round, followed by that British round.”</div>
+    <div class="tech"><span class="lbl">Technically</span><br>Nothing is copied. The aliases are two <b>range variables</b> over the same relation, and the planner gives each one its own scan. Aliases are mandatory here: without them every column (<code>company_name</code>, <code>funded_at</code>) is ambiguous. Logically, a join starts from the <b>cartesian product</b> (11 × 11 = 121 pairs on the sample) and keeps the pairs where <code>ON</code> is TRUE. Physically, the engine never builds those 121 pairs (see the plan below).</div>
+  </div>
+</div>
+
+<h3 style="margin-top:22px">The sample data (11 rows, verified in DuckDB)</h3>
+<div class="panel tw">
+<table>
+<tr><th>row</th><th>company_name</th><th>investor_country_code</th><th>funded_at</th></tr>
+<tr><td>1</td><td>Acme</td><td>JPN</td><td>2012-01-10</td></tr><tr><td>2</td><td>Acme</td><td>GBR</td><td>2013-05-01</td></tr>
+<tr><td>3</td><td>Acme</td><td>GBR</td><td>2011-03-15</td></tr><tr><td>4</td><td>Acme</td><td>JPN</td><td>2012-08-20</td></tr>
+<tr><td>5</td><td>Beta</td><td>JPN</td><td>2014-02-01</td></tr><tr><td>6</td><td>Beta</td><td>GBR</td><td>2013-01-01</td></tr>
+<tr><td>7</td><td>Cora</td><td>GBR</td><td>2015-06-01</td></tr><tr><td>8</td><td>Dyno</td><td>JPN</td><td>2010-01-01</td></tr>
+<tr><td>9</td><td>Dyno</td><td>USA</td><td>2011-01-01</td></tr><tr><td>10</td><td>Echo</td><td>JPN</td><td>2016-01-01</td></tr>
+<tr><td>11</td><td>Echo</td><td>GBR</td><td>2016-09-01</td></tr>
+</table>
+</div>
+
+<h3 style="margin-top:22px">Step 1 · Two views of the same table</h3>
+<p><b>Plain:</b> each copy is narrowed to the rows it cares about. The left copy keeps only Japanese rounds, the right copy only British rounds.<br>
+<b>Tech:</b> the optimizer pushes <code>WHERE japan_i.investor_country_code = 'JPN'</code> into the left scan and the <code>ON … gb_i.investor_country_code = 'GBR'</code> condition into the right scan (<b>predicate pushdown</b>). Both sides are small before any pairing happens.</p>
+<div class="copies">
+  <div class="copy jp"><h3><span class="alias a-jp">japan_i</span> · JPN rows</h3>
+    <div class="tw"><table><tr><th>row</th><th>company</th><th>funded_at</th></tr>
+    <tr><td>1</td><td>Acme</td><td>2012-01-10</td></tr><tr><td>4</td><td>Acme</td><td>2012-08-20</td></tr>
+    <tr><td>5</td><td>Beta</td><td>2014-02-01</td></tr><tr><td>8</td><td>Dyno</td><td>2010-01-01</td></tr>
+    <tr><td>10</td><td>Echo</td><td>2016-01-01</td></tr></table></div></div>
+  <div class="copy gb"><h3><span class="alias a-gb">gb_i</span> · GBR rows</h3>
+    <div class="tw"><table><tr><th>row</th><th>company</th><th>funded_at</th></tr>
+    <tr><td>2</td><td>Acme</td><td>2013-05-01</td></tr><tr><td>3</td><td>Acme</td><td>2011-03-15</td></tr>
+    <tr><td>6</td><td>Beta</td><td>2013-01-01</td></tr><tr><td>7</td><td>Cora</td><td>2015-06-01</td></tr>
+    <tr><td>11</td><td>Echo</td><td>2016-09-01</td></tr></table></div></div>
+</div>
+<p style="font-size:13.5px;color:var(--muted)">Row 9 (Dyno, USA) is in neither view, so it can never take part in a pair.</p>
+
+<h3 style="margin-top:22px">Step 2 · Pair rows with the ON rules</h3>
+<p><b>Plain:</b> for each Japanese round, find British rounds of the <b>same company</b>, then keep the pair only if the British date is <b>later</b>.<br>
+<b>Tech:</b> <code>japan_i.company_name = gb_i.company_name</code> is the <b>equi-join key</b>, the condition a hash join can look up. <code>gb_i.funded_at &gt; japan_i.funded_at</code> is a <b>non-equi (inequality) condition</b>. It can't be hashed, so the engine checks it on each key match as a <b>residual predicate</b>.</p>
+<div class="panel tw">
+<table>
+<tr><th><span class="alias a-jp">japan_i</span> row</th><th><span class="alias a-gb">gb_i</span> row</th><th>company</th><th>JPN date</th><th>GBR date</th><th>GBR later?</th><th>pair kept?</th></tr>
+<tr class="keep"><td>1</td><td>2</td><td>Acme</td><td>2012-01-10</td><td>2013-05-01</td><td class="ok">yes</td><td class="ok">✓ kept</td></tr>
+<tr class="drop"><td>1</td><td>3</td><td>Acme</td><td>2012-01-10</td><td>2011-03-15</td><td>no</td><td>dropped</td></tr>
+<tr class="keep"><td>4</td><td>2</td><td>Acme</td><td>2012-08-20</td><td>2013-05-01</td><td class="ok">yes</td><td class="ok">✓ kept</td></tr>
+<tr class="drop"><td>4</td><td>3</td><td>Acme</td><td>2012-08-20</td><td>2011-03-15</td><td>no</td><td>dropped</td></tr>
+<tr class="drop"><td>5</td><td>6</td><td>Beta</td><td>2014-02-01</td><td>2013-01-01</td><td>no</td><td>dropped</td></tr>
+<tr class="drop"><td>8</td><td>—</td><td>Dyno</td><td>2010-01-01</td><td>no GBR row</td><td>—</td><td>no partner</td></tr>
+<tr class="drop"><td>—</td><td>7</td><td>Cora</td><td>no JPN row</td><td>2015-06-01</td><td>—</td><td>no partner</td></tr>
+<tr class="keep"><td>10</td><td>11</td><td>Echo</td><td>2016-01-01</td><td>2016-09-01</td><td class="ok">yes</td><td class="ok">✓ kept</td></tr>
+</table>
+</div>
+<div class="scope"><b>Result of the join:</b> 3 pairs (1–2, 4–2, 10–11). Notice that <b>Acme appears twice</b>: it had two Japanese rounds, and both came before the same British round. That's <b>join fan-out</b>, where one company becomes several rows.</div>
+
+<h3 style="margin-top:22px">Step 3 · Logical order for this query</h3>
+<div class="panel">
+  <div class="stack">
+    <div class="row"><div class="num bg-from">1</div><code>FROM … AS japan_i JOIN … AS gb_i</code><span class="d">two range variables over one table</span></div>
+    <div class="row"><div class="num bg-from">2</div><code>ON</code><span class="d">same company + GBR side + later date → 3 pairs</span></div>
+    <div class="row"><div class="num bg-where">3</div><code>WHERE japan_i… = 'JPN'</code><span class="d">left side must be Japanese</span></div>
+    <div class="row"><div class="num bg-select">4</div><code>SELECT</code><span class="d">Acme, Acme, Echo</span></div>
+    <div class="row"><div class="num bg-select">5</div><code>DISTINCT</code><span class="d">removes the duplicate Acme → Acme, Echo</span></div>
+    <div class="row"><div class="num bg-order">6</div><code>ORDER BY 1</code><span class="d">sort by company_name</span></div>
+  </div>
+</div>
+
+<h3 style="margin-top:22px">Step 4 · What the engine actually ran</h3>
+<p><b>Plain:</b> instead of comparing every row with every row, the engine files the British rounds in a lookup index by company. Each Japanese round looks up its company, checks the dates, and moves on.<br>
+<b>Tech:</b> a <b>hash join</b>. Read bottom-up:</p>
+<pre>HASH_GROUP_BY   Groups: company_name, company_permalink   <span class="c">← DISTINCT (same machinery as GROUP BY)</span>
+  HASH_JOIN  INNER
+    Conditions: company_name = company_name              <span class="c">← hashed equi-join key</span>
+                funded_at &lt; funded_at                      <span class="c">← residual check on each key match</span>
+    SEQ_SCAN  Filters: investor_country_code='JPN'        <span class="c">← japan_i (pushed-down WHERE)</span>
+              Projections: company_name, funded_at, company_permalink
+    SEQ_SCAN  Filters: investor_country_code='GBR'        <span class="c">← gb_i (pushed-down ON)</span>
+              Projections: company_name, funded_at</pre>
+<p style="font-size:13.5px;color:var(--muted)">Real DuckDB output on the sample, trimmed of internal string-compression projections. DuckDB writes the date check as <code>&lt;</code> because it puts the sides in the opposite order; the meaning is the same. Note the GBR side reads only two columns, since the permalink is needed only from the Japan side.</p>
+<div class="tech"><span class="lbl">Join algorithms you'll see in plans</span>
+<div class="tw"><table>
+<tr><th>Algorithm</th><th>Plain terms</th><th>Chosen when</th></tr>
+<tr><td class="mono">Hash Join</td><td>Build a lookup table from one side, probe it with the other</td><td>Equality key, larger inputs (the default in analytical engines)</td></tr>
+<tr><td class="mono">Merge Join</td><td>Sort both sides by the key, walk them together like a zipper</td><td>Inputs already sorted or indexed on the key</td></tr>
+<tr><td class="mono">Nested Loop</td><td>For each row on one side, scan the other</td><td>Tiny inputs, an index on the inner side, or <b>no equality condition at all</b></td></tr>
+<tr><td class="mono">IE / Range Join</td><td>Specialized handling of inequality-only joins</td><td>DuckDB and others, when the only conditions are <code>&lt;</code> / <code>&gt;</code></td></tr>
+</table></div>
+Rule of thumb: <b>always give a self join an equality key</b>. Without <code>company_name = company_name</code>, the date condition alone would compare every JPN row with every GBR row in the table.</div>
+
+<h3 style="margin-top:22px">ON vs WHERE: why it doesn't matter here, and when it does</h3>
+<div class="warn"><span class="lbl">INNER JOIN: interchangeable · LEFT JOIN: not</span><br>
+<b>Plain:</b> with an inner join, a pair must pass every rule anyway, so it doesn't matter which box a rule sits in. With a left join, the left row is promised a seat even if it has no partner. A rule in <code>ON</code> just means “no partner found,” but the same rule in <code>WHERE</code> throws the row out entirely.<br>
+<b>Tech:</b> for <code>LEFT JOIN</code>, <code>ON</code> conditions control <b>matching</b> and <code>WHERE</code> conditions control <b>which rows survive</b> after NULL-padding. Putting <code>gb_i.investor_country_code = 'GBR'</code> in WHERE removes every unmatched row (its <code>gb_i</code> columns are NULL), which silently turns the LEFT JOIN back into an INNER JOIN.
+<pre><span class="c">-- "Every Japan-backed company, plus its first later British round if any"</span>
+select japan_i.company_permalink, min(gb_i.funded_at) as first_gbr_after_jpn
+from tutorial.crunchbase_investments_part1 as japan_i
+left join tutorial.crunchbase_investments_part1 as gb_i
+    on  gb_i.company_permalink     = japan_i.company_permalink
+    and gb_i.investor_country_code = 'GBR'                 <span class="c">-- must stay in ON</span>
+    and gb_i.funded_at             &gt; japan_i.funded_at      <span class="c">-- must stay in ON</span>
+where japan_i.investor_country_code = 'JPN'                <span class="c">-- left-side filter: WHERE is correct</span>
+group by 1</pre></div>
+
+<h3 style="margin-top:22px">The production version</h3>
+<div class="warn"><span class="lbl">Why DISTINCT here is a code smell</span><br>
+<b>Plain:</b> the join produced extra copies of Acme, and DISTINCT throws them away afterwards. You did the work, then threw it away. With real Crunchbase data (dozens of rounds per company), that's a lot of wasted work, and DISTINCT can also hide a join bug that's producing the wrong rows.<br>
+<b>Tech:</b> the business question is <b>existential</b> (“does a later GBR round exist?”), not “list every JPN→GBR pair.” Express existence directly with a <b>semi-join</b> (<code>EXISTS</code>), which stops at the first match per left row and never multiplies rows.</div>
+
+<div class="grid2">
+<div>
+<h4>Pattern A · EXISTS (semi-join)</h4>
+<pre>select
+    japan_i.company_name,
+    japan_i.company_permalink
+from tutorial.crunchbase_investments_part1 as japan_i
+where japan_i.investor_country_code = 'JPN'
+  and exists (
+      select 1
+      from tutorial.crunchbase_investments_part1 as gb_i
+      where gb_i.company_permalink     = japan_i.company_permalink
+        and gb_i.investor_country_code = 'GBR'
+        and gb_i.funded_at             &gt; japan_i.funded_at
+  )
+group by 1, 2      <span class="c">-- one row per company (Acme had 2 JPN rounds)</span>
+order by 1</pre>
+<p style="font-size:13.5px;color:var(--muted)">Best when you need the per-round logic, or later want to switch to <code>NOT EXISTS</code> (“Japan-backed, never British-backed after”), which is the safe anti-join. <code>NOT IN</code> breaks when the subquery returns a NULL.</p>
+</div>
+<div>
+<h4>Pattern B · Conditional aggregation (no join at all)</h4>
+<pre>select
+    company_name,
+    company_permalink
+from tutorial.crunchbase_investments_part1
+group by 1, 2
+having
+    max(case when investor_country_code = 'GBR' then funded_at end)
+  &gt; min(case when investor_country_code = 'JPN' then funded_at end)
+order by 1</pre>
+<p style="font-size:13.5px;color:var(--muted)"><b>Plain:</b> for each company, find its earliest Japanese date and its latest British date. If the latest British date is after the earliest Japanese one, a qualifying pair must exist.<br><b>Tech:</b> one scan and one hash aggregate, no join and no fan-out. Companies missing either side get a NULL, the comparison is UNKNOWN, and HAVING drops them. Verified: returns Acme and Echo on the sample.</p>
+</div>
+</div>
+
+<div class="panel tw" style="margin-top:10px">
+<table class="cmp">
+<tr><th>Approach</th><th>Scans</th><th>Fan-out?</th><th>Needs DISTINCT?</th><th>Use it when</th></tr>
+<tr><td>Self join + DISTINCT</td><td>2</td><td class="no">Yes</td><td class="no">Yes</td><td>Learning; or when you actually need the pair rows (both dates side by side)</td></tr>
+<tr><td>EXISTS (semi-join)</td><td>2</td><td class="yes">No</td><td>Only for the left-side duplicates</td><td>Existence questions; easy to flip to NOT EXISTS</td></tr>
+<tr><td>Conditional aggregation</td><td class="yes">1</td><td class="yes">No</td><td class="yes">No</td><td>“Did A happen before B” per entity; usually fastest on big tables</td></tr>
+<tr><td>Window functions (<code>LAG</code>/<code>LEAD</code>)</td><td class="yes">1</td><td class="yes">No</td><td class="yes">No</td><td>“Compared with the <b>previous / next</b> row” (e.g., time since last round)</td></tr>
+</table>
+</div>
+
+<h3 style="margin-top:22px">Self-join gotchas</h3>
+<div class="warn"><span class="lbl">1 · Join on a key, not a label</span><br>
+<code>company_name</code> isn't unique: two different companies can share a name, and they'd be paired with each other. Join on the stable identifier (<code>company_permalink</code>). It's the same rule as joining participants on SSN/participant ID, never on name.</div>
+<div class="warn"><span class="lbl">2 · A row can match itself</span><br>
+In self joins that compare rows of the <i>same kind</i> (duplicates, same-day events), add <code>a.row_id &lt;&gt; b.row_id</code>. For unordered pairs, use <code>a.row_id &lt; b.row_id</code>, which also stops each pair from appearing twice (A–B and B–A). This query avoids the problem only because the two sides are different countries.</div>
+<div class="warn"><span class="lbl">3 · Dates stored as text</span><br>
+If <code>funded_at</code> is a string, <code>&gt;</code> compares alphabetically. That's correct only for ISO <code>YYYY-MM-DD</code>; <code>'1/5/2013' &gt; '12/1/2012'</code> gives the wrong answer. Cast to <code>date</code> in the staging model. Rows with a NULL date silently fail the comparison.</div>
+<div class="warn"><span class="lbl">4 · Row explosion</span><br>
+Fan-out grows with JPN rounds × GBR rounds per company. A company with 20 of each makes up to 400 pairs before DISTINCT. Check with <code>EXPLAIN ANALYZE</code>: if the join node's actual row count is far larger than the final result, switch to Pattern A or B.</div>
+
+<h3 style="margin-top:22px">Classic self-join use cases</h3>
+<div class="grid3">
+  <div class="panel bar b-from"><h3>Hierarchies</h3><p>Employee → manager in one <code>employees</code> table: <code>e.manager_id = m.employee_id</code>. Use a LEFT JOIN so the CEO (no manager) isn't lost.</p></div>
+  <div class="panel bar b-where"><h3>Duplicate detection</h3><p>Same participant, same amount, same date, different record: <code>a.participant_id = b.participant_id AND a.amount = b.amount AND a.row_id &lt; b.row_id</code>. This is a natural QA check for distribution data.</p></div>
+  <div class="panel bar b-agg"><h3>Sequences of events</h3><p>“A then B” (this query), or “rollover requested then distribution paid within N days.” Consider Pattern B or <code>LAG</code> first.</p></div>
+</div>
+
+<h3 style="margin-top:22px">Run it yourself</h3>
+<pre>import duckdb
+
+con = duckdb.connect()
+con.sql("CREATE SCHEMA tutorial")
+con.sql("""
+    CREATE TABLE tutorial.crunchbase_investments_part1 AS
+    SELECT * FROM (VALUES
+        (1,'Acme','/c/acme','JPN',DATE '2012-01-10'), (2,'Acme','/c/acme','GBR',DATE '2013-05-01'),
+        (3,'Acme','/c/acme','GBR',DATE '2011-03-15'), (4,'Acme','/c/acme','JPN',DATE '2012-08-20'),
+        (5,'Beta','/c/beta','JPN',DATE '2014-02-01'), (6,'Beta','/c/beta','GBR',DATE '2013-01-01'),
+        (7,'Cora','/c/cora','GBR',DATE '2015-06-01'), (8,'Dyno','/c/dyno','JPN',DATE '2010-01-01'),
+        (9,'Dyno','/c/dyno','USA',DATE '2011-01-01'), (10,'Echo','/c/echo','JPN',DATE '2016-01-01'),
+        (11,'Echo','/c/echo','GBR',DATE '2016-09-01')
+    ) AS t(row_id, company_name, company_permalink, investor_country_code, funded_at)
+""")
+
+<span class="c"># 1) See the pairs BEFORE DISTINCT: this is how you debug any join</span>
+con.sql("""
+    SELECT japan_i.row_id AS jp_row, gb_i.row_id AS gb_row, japan_i.company_name,
+           japan_i.funded_at AS jp_date, gb_i.funded_at AS gb_date
+    FROM tutorial.crunchbase_investments_part1 AS japan_i
+    JOIN tutorial.crunchbase_investments_part1 AS gb_i
+      ON japan_i.company_name = gb_i.company_name
+     AND gb_i.investor_country_code = 'GBR'
+     AND gb_i.funded_at > japan_i.funded_at
+    WHERE japan_i.investor_country_code = 'JPN'
+    ORDER BY 1, 2
+""").show()   <span class="c"># expect 3 pairs: 1–2, 4–2, 10–11</span>
+
+<span class="c"># 2) Then run the original query, Pattern A and Pattern B: all return Acme, Echo</span></pre>
+<div class="note"><span class="lbl">Debugging habit</span><br>When a join result looks wrong, select <b>both sides' keys and the compared columns</b> without DISTINCT or GROUP BY, the way query 1 above does. Seeing the raw pairs shows fan-out, self-matches and wrong keys immediately.</div>
+
+<h3 style="margin-top:22px">Practice</h3>
+<div class="grid3">
+  <div class="panel bar b-agg"><h3>Easy</h3><p>Flip it: companies backed by GBR first and JPN later. Which sample companies qualify? (Answer: Acme via row 3 → rows 1 and 4, and Beta via row 6 → row 5.)</p></div>
+  <div class="panel bar b-group"><h3>Medium</h3><p>Rewrite with <code>NOT EXISTS</code>: Japan-backed companies that <b>never</b> got British money afterwards. (Answer: Beta, Dyno.)</p></div>
+  <div class="panel bar b-where"><h3>Hard</h3><p>Return each qualifying company with its first JPN date and the first GBR date after it, as one row per company. Try it with a self join + <code>MIN</code>, then with Pattern B, and compare plans.</p></div>
+</div>
+
 <footer>
   <b>Sources</b>
   <ul>
@@ -659,7 +902,8 @@ print(con.sql("EXPLAIN ANALYZE " + query).fetchall()[0][1])  <span class="c"># w
     <li><a href="https://duckdb.org/2022/03/07/aggregate-hashtable.html">DuckDB — Parallel grouped aggregation</a> · <a href="https://motherduck.com/glossary/row-group/">MotherDuck — Row groups &amp; vectors</a></li>
     <li><a href="https://docs.getdbt.com/best-practices/how-we-style/2-how-we-style-our-sql">dbt Labs — How we style our SQL</a> · <a href="https://thetuvaproject.com/contributing/style-guide">Tuva Project — dbt style guide</a></li>
     <li><a href="https://www.mssqltips.com/sqlservertip/7860/sql-group-by-alias-in-sql-server-for-complex-code/">MSSQLTips — GROUP BY alias in SQL Server vs Oracle</a></li>
-    <li>Example query: <a href="https://mode.com/sql-tutorial/sql-case">Mode SQL Tutorial — CASE</a>. Sample rows in the walkthrough are made up for illustration; execution plans are illustrative shapes and vary by version and data.</li>
+    <li><a href="https://mode.com/sql-tutorial/sql-self-joins">Mode SQL Tutorial — Self joins</a> · <a href="https://mode.com/sql-tutorial/sql-joins-where-vs-on">Mode — Joins: WHERE vs ON</a> · <a href="https://www.thoughtspot.com/sql-tutorial/sql-self-joins">ThoughtSpot — SQL self join</a> · <a href="https://www.baeldung.com/sql/join-same-table-twice">Baeldung — Joining the same table twice</a></li>
+    <li>Example queries: <a href="https://mode.com/sql-tutorial/sql-case">Mode SQL Tutorial — CASE</a> and <a href="https://mode.com/sql-tutorial/sql-self-joins">Self joins</a>. Sample rows in the walkthrough are made up for illustration; execution plans are illustrative shapes and vary by version and data.</li>
   </ul>
 </footer>
 </div>
