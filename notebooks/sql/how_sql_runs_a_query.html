@@ -9,20 +9,21 @@
 :root{
   --bg:#f7f8fa; --panel:#ffffff; --panel-2:#f1f3f6; --ink:#0f172a; --muted:#5b6475; --line:#e3e6ec;
   --accent:#2563eb;
-  --from:#2563eb; --where:#dc2626; --case:#7c3aed; --group:#d97706; --having:#b45309; --agg:#059669; --select:#db2777; --order:#0891b2; --limit:#475569;
-  --kept:#e8f7ef; --dropped:#fdecec;
+  --from:#2563eb; --join:#4338ca; --where:#dc2626; --case:#7c3aed; --group:#d97706; --agg:#059669; --having:#92400e;
+  --window:#0d9488; --select:#db2777; --distinct:#65a30d; --order:#0891b2; --limit:#475569;
+  --kept:#e8f7ef; --dropped:#fdecec; --new:#eef2ff;
   --code-bg:#0f172a; --code-ink:#e2e8f0; --code-dim:#94a3b8;
   --shadow:0 1px 2px rgba(15,23,42,.04),0 4px 14px rgba(15,23,42,.06);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
     --bg:#0b1020; --panel:#121a2c; --panel-2:#18223a; --ink:#e6eaf2; --muted:#98a2b6; --line:#24304a;
-    --kept:#10291f; --dropped:#2e1518; --code-bg:#070b16; --shadow:0 4px 18px rgba(0,0,0,.35);
+    --kept:#10291f; --dropped:#2e1518; --new:#1b2147; --code-bg:#070b16; --shadow:0 4px 18px rgba(0,0,0,.35);
   }
 }
 :root[data-theme="dark"]{
   --bg:#0b1020; --panel:#121a2c; --panel-2:#18223a; --ink:#e6eaf2; --muted:#98a2b6; --line:#24304a;
-  --kept:#10291f; --dropped:#2e1518; --code-bg:#070b16; --shadow:0 4px 18px rgba(0,0,0,.35);
+  --kept:#10291f; --dropped:#2e1518; --new:#1b2147; --code-bg:#070b16; --shadow:0 4px 18px rgba(0,0,0,.35);
 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -38,7 +39,7 @@ code{font-family:"JetBrains Mono",monospace;font-size:.88em;background:var(--pan
 pre{font-family:"JetBrains Mono",monospace;background:var(--code-bg);color:var(--code-ink);border-radius:12px;padding:16px 18px;overflow-x:auto;font-size:13.5px;line-height:1.65;margin:8px 0 12px}
 pre code{background:none;border:none;padding:0;font-size:inherit;color:inherit}
 .c{color:var(--code-dim)}
-.lede{font-size:18px;color:var(--muted);max-width:800px}
+.lede{font-size:18px;color:var(--muted);max-width:820px}
 .eyebrow{font-size:13px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}
 .panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:20px;box-shadow:var(--shadow)}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
@@ -48,34 +49,37 @@ pre code{background:none;border:none;padding:0;font-size:inherit;color:inherit}
 .toc a{font-size:13.5px;font-weight:600;text-decoration:none;color:var(--ink);background:var(--panel);border:1px solid var(--line);padding:5px 11px;border-radius:999px}
 .toc a:hover{border-color:var(--accent);color:var(--accent)}
 
-/* clause colors */
-.k-from{color:#93c5fd}.k-where{color:#fca5a5}.k-case{color:#c4b5fd}.k-group{color:#fcd34d}.k-agg{color:#6ee7b7}.k-select{color:#f9a8d4}.k-order{color:#67e8f9}
+/* clause colors in dark code blocks */
+.k-from{color:#93c5fd}.k-join{color:#a5b4fc}.k-where{color:#fca5a5}.k-case{color:#c4b5fd}.k-group{color:#fcd34d}.k-agg{color:#6ee7b7}
+.k-having{color:#fdba74}.k-win{color:#5eead4}.k-select{color:#f9a8d4}.k-order{color:#67e8f9}.k-limit{color:#cbd5e1}
 .bar{border-left:4px solid}
-.b-from{border-color:var(--from)}.b-where{border-color:var(--where)}.b-case{border-color:var(--case)}.b-group{border-color:var(--group)}.b-having{border-color:var(--having)}.b-agg{border-color:var(--agg)}.b-select{border-color:var(--select)}.b-order{border-color:var(--order)}.b-limit{border-color:var(--limit)}
-.bg-from{background:var(--from)}.bg-where{background:var(--where)}.bg-case{background:var(--case)}.bg-group{background:var(--group)}.bg-having{background:var(--having)}.bg-agg{background:var(--agg)}.bg-select{background:var(--select)}.bg-order{background:var(--order)}.bg-limit{background:var(--limit)}
+.b-from{border-color:var(--from)}.b-join{border-color:var(--join)}.b-where{border-color:var(--where)}.b-case{border-color:var(--case)}.b-group{border-color:var(--group)}.b-having{border-color:var(--having)}.b-agg{border-color:var(--agg)}.b-window{border-color:var(--window)}.b-select{border-color:var(--select)}.b-distinct{border-color:var(--distinct)}.b-order{border-color:var(--order)}.b-limit{border-color:var(--limit)}
+.bg-from{background:var(--from)}.bg-join{background:var(--join)}.bg-where{background:var(--where)}.bg-case{background:var(--case)}.bg-group{background:var(--group)}.bg-having{background:var(--having)}.bg-agg{background:var(--agg)}.bg-window{background:var(--window)}.bg-select{background:var(--select)}.bg-distinct{background:var(--distinct)}.bg-order{background:var(--order)}.bg-limit{background:var(--limit)}
 
-/* plain / tech callouts */
-.plain,.tech,.warn,.good,.note{border-radius:10px;padding:12px 14px;margin:10px 0;border:1px solid var(--line);background:var(--panel)}
+/* callouts */
+.plain,.tech,.warn,.good,.note,.prod{border-radius:10px;padding:12px 14px;margin:10px 0;border:1px solid var(--line);background:var(--panel)}
 .plain{border-left:4px solid var(--agg)}
 .tech{border-left:4px solid var(--accent)}
 .warn{border-left:4px solid var(--where)}
 .good{border-left:4px solid var(--agg)}
 .note{border-left:4px solid var(--group)}
+.prod{border-left:4px solid var(--join)}
 .lbl{display:inline-block;font-size:11.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-bottom:2px}
-.plain .lbl{color:var(--agg)}.tech .lbl{color:var(--accent)}.warn .lbl{color:var(--where)}.good .lbl{color:var(--agg)}.note .lbl{color:var(--group)}
+.plain .lbl{color:var(--agg)}.tech .lbl{color:var(--accent)}.warn .lbl{color:var(--where)}.good .lbl{color:var(--agg)}.note .lbl{color:var(--group)}.prod .lbl{color:var(--join)}
 
 /* order diagram */
-.orders{display:grid;grid-template-columns:1fr 1fr;gap:28px}
+.orders{display:grid;grid-template-columns:1fr 1.25fr;gap:28px}
 @media (max-width:720px){.orders{grid-template-columns:1fr}}
 .stack{display:flex;flex-direction:column;gap:7px}
 .row{display:flex;align-items:center;gap:10px;background:var(--panel-2);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
 .num{flex:0 0 26px;height:26px;border-radius:7px;color:#fff;font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
 .row code{background:none;border:none;padding:0;font-weight:600}
 .row span.d{margin-left:auto;font-size:13px;color:var(--muted);text-align:right}
+.cnt{font-family:"JetBrains Mono";font-size:12.5px;font-weight:600;background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:0 7px;white-space:nowrap}
 
 /* stepper */
 .stepper{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0 12px}
-.stepper button{font:600 13.5px "Inter";border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:7px 12px;cursor:pointer}
+.stepper button{font:600 13px "Inter";border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:8px;padding:6px 10px;cursor:pointer}
 .stepper button.on{color:#fff;border-color:transparent}
 .nav{display:flex;gap:8px;justify-content:space-between;margin-top:14px;align-items:center}
 .nav button{font:600 14px "Inter";border:none;border-radius:8px;padding:9px 16px;background:var(--ink);color:var(--bg);cursor:pointer}
@@ -94,20 +98,25 @@ table{border-collapse:collapse;width:100%;font-size:14px;margin:6px 0}
 th,td{padding:7px 10px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
 th{font-weight:700;color:var(--muted);font-size:12.5px;text-transform:uppercase;letter-spacing:.05em;white-space:nowrap}
 td.mono,th.mono{font-family:"JetBrains Mono";font-size:13px}
+td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
 tr.drop td{background:var(--dropped);color:var(--muted);text-decoration:line-through}
+tr.drop td.why{text-decoration:none}
 tr.keep td{background:var(--kept)}
+td.newcol,th.newcol{background:var(--new)}
 .tag{display:inline-block;border-radius:6px;padding:1px 8px;font-weight:700;font-size:12.5px;color:#fff;white-space:nowrap}
-.t-w{background:#0284c7}.t-t{background:#ea580c}.t-o{background:#64748b}
+.t-e{background:#7c3aed}.t-n{background:#0284c7}.t-r{background:#059669}.t-o{background:#64748b}
 .yes{color:var(--agg);font-weight:700}.no{color:var(--where);font-weight:700}.partial{color:var(--group);font-weight:700}
 
 /* groups */
-.groups{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:8px}
-@media (max-width:640px){.groups{grid-template-columns:1fr}}
-.grp{border:1px solid var(--line);border-top:5px solid;border-radius:10px;padding:12px;background:var(--panel)}
-.grp .k{font-weight:700}
-.grp .members{font-family:"JetBrains Mono";font-size:13px;color:var(--muted);margin-top:4px}
-.grp .agg{font-size:28px;font-weight:800;margin-top:4px}
-.g-w{border-top-color:#0284c7}.g-t{border-top-color:#ea580c}.g-o{border-top-color:#64748b}
+.groups{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:8px}
+@media (max-width:820px){.groups{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.grp{border:1px solid var(--line);border-top:5px solid;border-radius:10px;padding:10px 12px;background:var(--panel)}
+.grp .k{font-weight:700;font-size:14.5px}
+.grp .k small{font-weight:500;color:var(--muted)}
+.grp .members{font-family:"JetBrains Mono";font-size:12.5px;color:var(--muted);margin-top:4px}
+.grp .agg{font-size:15px;font-weight:700;margin-top:4px;font-variant-numeric:tabular-nums}
+.grp.out{opacity:.45;text-decoration:line-through}
+.g-e{border-top-color:#7c3aed}.g-n{border-top-color:#0284c7}.g-r{border-top-color:#059669}.g-o{border-top-color:#64748b}
 
 /* pipeline */
 .pipe{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin:12px 0}
@@ -120,14 +129,7 @@ tr.keep td{background:var(--kept)}
 
 .mn{font-size:clamp(17px,2.4vw,21px);font-weight:600;text-align:center;padding:18px;border-radius:14px;background:var(--panel);border:1px solid var(--line)}
 .mn b{font-weight:800}
-/* mobile: let grid/flex children shrink so wide <pre> blocks scroll instead of stretching the page */
-.grid2>*,.grid3>*,.copies>*,.orders>*,.pipe>*,.groups>*{min-width:0}
-@media (max-width:820px){.grid2,.grid3{grid-template-columns:minmax(0,1fr)}}
-@media (max-width:720px){.copies,.orders{grid-template-columns:minmax(0,1fr)}}
-@media (max-width:640px){.groups{grid-template-columns:minmax(0,1fr)}}
-p code,li code,td code,.plain code,.tech code,.warn code,.note code{overflow-wrap:anywhere}
-.row{min-width:0;flex-wrap:wrap}
-h4{overflow-wrap:anywhere}
+
 /* self join */
 .copies{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 @media (max-width:720px){.copies{grid-template-columns:1fr}}
@@ -138,6 +140,15 @@ h4{overflow-wrap:anywhere}
 .a-jp{background:#be123c}.a-gb{background:#1d4ed8}
 .ok{color:var(--agg);font-weight:700}.bad{color:var(--where);font-weight:700}
 .cmp td:first-child{font-weight:600}
+
+/* mobile: let grid/flex children shrink so wide <pre> blocks scroll instead of stretching the page */
+.grid2>*,.grid3>*,.copies>*,.orders>*,.pipe>*,.groups>*{min-width:0}
+@media (max-width:820px){.grid2,.grid3{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:720px){.copies,.orders{grid-template-columns:minmax(0,1fr)}}
+p code,li code,td code,.plain code,.tech code,.warn code,.note code,.prod code{overflow-wrap:anywhere}
+.row{min-width:0;flex-wrap:wrap}
+h4{overflow-wrap:anywhere}
+ul.tight{margin:4px 0 8px;padding-left:20px}ul.tight li{margin:2px 0}
 footer{margin-top:50px;font-size:13.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
 footer li{margin:3px 0}
 </style>
@@ -147,528 +158,909 @@ footer li{margin:3px 0}
 
 <div class="eyebrow">SQL internals · reference</div>
 <h1>How a SQL Query Actually Runs</h1>
-<p class="lede">The clauses you write, the order the engine evaluates them, what the database does internally to execute them, and how to write the same query to production standard. Every idea comes in two layers: a <b>plain-terms</b> explanation, then the <b>technical</b> detail.</p>
+<p class="lede">One query that uses every clause — <code>FROM</code>, <code>JOIN</code>, <code>WHERE</code>, <code>CASE</code>, <code>GROUP BY</code>, aggregates, <code>HAVING</code>, window functions, <code>SELECT</code>, <code>DISTINCT</code>, <code>ORDER BY</code>, <code>LIMIT</code> — traced step by step on a small dataset, so you can watch the rows change at every stage. Every idea comes in two layers: a <b>plain-terms</b> explanation, then the <b>technical</b> detail, plus notes on how the same logic ships in production.</p>
 
 <nav class="toc">
-  <a href="#query">1 · The query</a>
+  <a href="#query">1 · The scenario</a>
   <a href="#order">2 · Written vs logical order</a>
   <a href="#walk">3 · Step-by-step walkthrough</a>
   <a href="#ref">4 · Full clause reference</a>
-  <a href="#engine">5 · Inside the engine</a>
-  <a href="#plans">6 · Reading the plan</a>
-  <a href="#edge">7 · Semantics &amp; edge cases</a>
-  <a href="#portable">8 · Dialect differences</a>
-  <a href="#prod">9 · Production version</a>
-  <a href="#run">10 · Run it yourself</a>
-  <a href="#recall">11 · Recall &amp; practice</a>
-  <a href="#selfjoin">12 · Self joins</a>
+  <a href="#syntax">5 · Syntax notes</a>
+  <a href="#engine">6 · Inside the engine</a>
+  <a href="#plans">7 · Reading the plan</a>
+  <a href="#edge">8 · Edge cases</a>
+  <a href="#portable">9 · Dialect differences</a>
+  <a href="#prod">10 · Production version</a>
+  <a href="#run">11 · Run it yourself</a>
+  <a href="#recall">12 · Recall &amp; practice</a>
+  <a href="#selfjoin">13 · Self joins</a>
 </nav>
 
-<!-- ================= 1 QUERY ================= -->
-<h2 id="query">1 · The query</h2>
+<!-- ================= 1 SCENARIO ================= -->
+<h2 id="query">1 · The scenario: distribution mix by category and plan type</h2>
+<p><b>Business question:</b> “For distributions <b>paid</b> in 2026, how many and how much did we pay in each distribution category, by plan type? Keep only combinations with at least $10,000 paid, show each one's share of the distribution count and its rank by dollars, and give me the top 3.”</p>
+
 <div class="grid2">
   <div>
-<pre><span class="k-select">SELECT</span> <span class="k-case">CASE WHEN</span> state IN ('CA', 'OR', 'WA') <span class="k-case">THEN</span> 'West Coast'
-            <span class="k-case">WHEN</span> state = 'TX' <span class="k-case">THEN</span> 'Texas'
-            <span class="k-case">ELSE</span> 'Other' <span class="k-case">END</span> <span class="k-select">AS</span> arbitrary_regional_designation,
-       <span class="k-agg">COUNT(1)</span> <span class="k-select">AS</span> players
-  <span class="k-from">FROM</span> benn.college_football_players
- <span class="k-where">WHERE</span> weight &gt;= 300
- <span class="k-group">GROUP BY</span> 1</pre>
+    <h4>The query</h4>
+<pre><span class="k-select">SELECT</span>
+    <span class="k-case">CASE WHEN</span> d.dist_code IN ('1', '2') <span class="k-case">THEN</span> 'Early'
+         <span class="k-case">WHEN</span> d.dist_code = '7'        <span class="k-case">THEN</span> 'Normal'
+         <span class="k-case">WHEN</span> d.dist_code = 'G'        <span class="k-case">THEN</span> 'Rollover'
+         <span class="k-case">ELSE</span> 'Other' <span class="k-case">END</span>                    <span class="k-select">AS</span> dist_category,
+    p.plan_type,
+    <span class="k-agg">COUNT(*)</span>                                     <span class="k-select">AS</span> n_dists,
+    <span class="k-agg">SUM(d.gross_amount)</span>                          <span class="k-select">AS</span> total_gross,
+    ROUND(100.0 * <span class="k-agg">COUNT(*)</span> / <span class="k-win">SUM(COUNT(*)) OVER ()</span>, 1)
+                                                 <span class="k-select">AS</span> pct_of_dists,
+    <span class="k-win">RANK() OVER (ORDER BY SUM(d.gross_amount) DESC)</span>
+                                                 <span class="k-select">AS</span> gross_rank
+  <span class="k-from">FROM</span> distributions <span class="k-from">AS</span> d
+  <span class="k-join">JOIN</span> plans <span class="k-join">AS</span> p
+    <span class="k-join">ON</span> p.plan_id = d.plan_id
+ <span class="k-where">WHERE</span> d.status = 'PAID'
+   <span class="k-where">AND</span> d.paid_date &gt;= DATE '2026-01-01'
+ <span class="k-group">GROUP BY</span> 1, 2
+<span class="k-having">HAVING</span> <span class="k-agg">SUM(d.gross_amount)</span> &gt;= 10000
+ <span class="k-order">ORDER BY</span> gross_rank, dist_category
+ <span class="k-limit">LIMIT</span> 3;</pre>
   </div>
   <div>
-    <div class="plain"><span class="lbl">Plain terms</span><br>“Take the football-players table. Keep only players who weigh 300 lb or more. Label each one by region based on his state. Then tell me how many players fall under each label.”</div>
-    <div class="tech"><span class="lbl">Technically</span><br>SQL is <b>declarative</b>: you describe the result you want, not the steps to get it. The engine turns your text into a <b>logical plan</b> (what the answer must be), then an optimizer picks a <b>physical plan</b> (the cheapest way to compute it). Those are two different things, and confusing them is the source of most SQL surprises.</div>
+    <div class="plain"><span class="lbl">Plain terms</span><br>“Match each distribution to its plan. Keep only the ones paid this year. Label each by type using its 1099-R code. Make one pile per label and plan type, count and total each pile, drop piles under $10K, then work out each pile's share and rank, sort, and show me the top 3.”</div>
+    <div class="tech"><span class="lbl">Technically</span><br>SQL is <b>declarative</b>: you describe the result, not the steps. The engine turns the text into a <b>logical plan</b> (what the answer must be, in the order in section 2) and an optimizer picks a <b>physical plan</b> (the cheapest way to compute it, section 7). They often run in a different order — the optimizer is allowed to reorder anything as long as the <b>result</b> is identical to the logical order.</div>
+    <div class="note"><span class="lbl">Data note</span><br>All data here is synthetic. The codes follow IRS Form 1099-R box 7: <code>1</code> early (no known exception), <code>2</code> early (exception applies), <code>7</code> normal, <code>G</code> direct rollover, <code>4</code> death. Mapping 1 and 2 to “Early” is a simplification for the example.</div>
+  </div>
+</div>
+
+<h3 style="margin-top:18px">The two input tables</h3>
+<div class="grid2">
+  <div class="panel tw">
+    <h4 style="margin-top:0">plans (3 rows)</h4>
+    <table>
+      <tr><th>plan_id</th><th>plan_name</th><th>plan_type</th></tr>
+      <tr><td>P1</td><td>Riverside Schools</td><td>403(b)</td></tr>
+      <tr><td>P2</td><td>County Employees</td><td>457(b)</td></tr>
+      <tr><td>P3</td><td>Lakeside Clinic</td><td>403(b)</td></tr>
+    </table>
+    <p style="font-size:13.5px;color:var(--muted);margin-top:8px">There is <b>no P4</b>. Distribution D10 points at P4, which is the orphan-key case every join eventually meets.</p>
+  </div>
+  <div class="panel tw">
+    <h4 style="margin-top:0">distributions (16 rows)</h4>
+    <table>
+      <tr><th>dist_id</th><th>plan_id</th><th>dist_code</th><th class="r">gross_amount</th><th>status</th><th>paid_date</th></tr>
+      <tr><td>D01</td><td>P1</td><td>7</td><td class="r">12,000</td><td>PAID</td><td>2026-02-10</td></tr>
+      <tr><td>D02</td><td>P1</td><td>1</td><td class="r">3,000</td><td>PAID</td><td>2026-03-05</td></tr>
+      <tr><td>D03</td><td>P2</td><td>7</td><td class="r">8,000</td><td>PAID</td><td>2026-03-18</td></tr>
+      <tr><td>D04</td><td>P2</td><td>G</td><td class="r">25,000</td><td>PAID</td><td>2026-04-02</td></tr>
+      <tr><td>D05</td><td>P1</td><td>7</td><td class="r">15,000</td><td>PAID</td><td>2026-04-20</td></tr>
+      <tr><td>D06</td><td>P3</td><td>2</td><td class="r">4,000</td><td>PAID</td><td>2026-05-11</td></tr>
+      <tr><td>D07</td><td>P2</td><td>7</td><td class="r">9,500</td><td>PENDING</td><td>NULL</td></tr>
+      <tr><td>D08</td><td>P1</td><td>G</td><td class="r">30,000</td><td>PAID</td><td>2026-05-30</td></tr>
+      <tr><td>D09</td><td>P1</td><td>1</td><td class="r">2,500</td><td>PAID</td><td>2025-12-15</td></tr>
+      <tr><td>D10</td><td>P4</td><td>7</td><td class="r">7,000</td><td>PAID</td><td>2026-06-03</td></tr>
+      <tr><td>D11</td><td>P2</td><td>4</td><td class="r">18,000</td><td>PAID</td><td>2026-06-14</td></tr>
+      <tr><td>D12</td><td>P3</td><td>7</td><td class="r">6,000</td><td>PAID</td><td>2026-07-01</td></tr>
+      <tr><td>D13</td><td>P1</td><td>NULL</td><td class="r">5,000</td><td>PAID</td><td>2026-07-09</td></tr>
+      <tr><td>D14</td><td>P2</td><td>G</td><td class="r">20,000</td><td>PAID</td><td>2026-07-22</td></tr>
+      <tr><td>D15</td><td>P3</td><td>1</td><td class="r">3,500</td><td>REJECTED</td><td>2026-08-01</td></tr>
+      <tr><td>D16</td><td>P2</td><td>1</td><td class="r">4,500</td><td>PAID</td><td>2026-08-15</td></tr>
+    </table>
+    <p style="font-size:13.5px;color:var(--muted);margin-top:8px"><code>participant_id</code> (A101–A116) is omitted from the display. Every row was chosen so at least one rule fires: an orphan key, a NULL date, a prior-year date, a NULL code, an unmapped code, and groups on both sides of the HAVING threshold.</p>
   </div>
 </div>
 
 <!-- ================= 2 ORDER ================= -->
 <h2 id="order">2 · Written order vs logical order</h2>
-<p>You write SQL like an English sentence, starting with what you want. The engine evaluates it like a recipe, starting with the ingredients.</p>
+<p>You write SQL like a sentence, starting with what you want. The engine evaluates it like a recipe, starting with the ingredients. The counts on the right are the rows (or groups) alive after each step in this example.</p>
 <div class="panel">
   <div class="orders">
     <div>
       <h3>Order you write it</h3>
       <div class="stack">
-        <div class="row bar b-select"><code>SELECT</code><span class="d">output list (CASE + COUNT live here)</span></div>
-        <div class="row bar b-from"><code>FROM</code><span class="d">source table</span></div>
+        <div class="row bar b-select"><code>SELECT</code><span class="d">CASE, aggregates, windows, aliases</span></div>
+        <div class="row bar b-distinct"><code>DISTINCT</code><span class="d">optional, written as SELECT DISTINCT</span></div>
+        <div class="row bar b-from"><code>FROM</code><span class="d">first table</span></div>
+        <div class="row bar b-join"><code>JOIN … ON</code><span class="d">second table + match rule</span></div>
         <div class="row bar b-where"><code>WHERE</code><span class="d">row filter</span></div>
-        <div class="row bar b-group"><code>GROUP BY 1</code><span class="d">grouping key</span></div>
+        <div class="row bar b-group"><code>GROUP BY</code><span class="d">grouping keys</span></div>
+        <div class="row bar b-having"><code>HAVING</code><span class="d">group filter</span></div>
+        <div class="row bar b-order"><code>ORDER BY</code><span class="d">sort</span></div>
+        <div class="row bar b-limit"><code>LIMIT</code><span class="d">keep first N</span></div>
       </div>
     </div>
     <div>
       <h3>Order the engine evaluates it</h3>
       <div class="stack">
-        <div class="row"><div class="num bg-from">1</div><code>FROM</code><span class="d">get the rows</span></div>
-        <div class="row"><div class="num bg-where">2</div><code>WHERE</code><span class="d">drop rows that fail</span></div>
-        <div class="row"><div class="num bg-case">3</div><code>CASE … END</code><span class="d">compute the group key</span></div>
-        <div class="row"><div class="num bg-group">4</div><code>GROUP BY</code><span class="d">collapse rows into groups</span></div>
-        <div class="row"><div class="num bg-agg">5</div><code>COUNT(1)</code><span class="d">aggregate per group</span></div>
-        <div class="row"><div class="num bg-select">6</div><code>SELECT … AS</code><span class="d">shape &amp; name the output</span></div>
+        <div class="row"><div class="num bg-from">1</div><code>FROM … JOIN … ON</code><span class="d">build the matched row set</span><span class="cnt">16 → 15 rows</span></div>
+        <div class="row"><div class="num bg-where">2</div><code>WHERE</code><span class="d">drop rows that fail</span><span class="cnt">15 → 12 rows</span></div>
+        <div class="row"><div class="num bg-case">3</div><code>CASE … END</code><span class="d">compute the group key</span><span class="cnt">12 rows</span></div>
+        <div class="row"><div class="num bg-group">4</div><code>GROUP BY 1, 2</code><span class="d">collapse rows into groups</span><span class="cnt">12 → 8 groups</span></div>
+        <div class="row"><div class="num bg-agg">5</div><code>COUNT · SUM</code><span class="d">aggregate per group</span><span class="cnt">8 groups</span></div>
+        <div class="row"><div class="num bg-having">6</div><code>HAVING</code><span class="d">drop groups that fail</span><span class="cnt">8 → 4 groups</span></div>
+        <div class="row"><div class="num bg-window">7</div><code>… OVER (…)</code><span class="d">window functions</span><span class="cnt">4 rows</span></div>
+        <div class="row"><div class="num bg-select">8</div><code>SELECT … AS</code><span class="d">shape &amp; name output</span><span class="cnt">4 rows</span></div>
+        <div class="row"><div class="num bg-distinct">9</div><code>DISTINCT</code><span class="d">not used here</span><span class="cnt">4 rows</span></div>
+        <div class="row"><div class="num bg-order">10</div><code>ORDER BY</code><span class="d">sort the output</span><span class="cnt">4 rows</span></div>
+        <div class="row"><div class="num bg-limit">11</div><code>LIMIT 3</code><span class="d">keep the first 3</span><span class="cnt">4 → 3 rows</span></div>
       </div>
     </div>
   </div>
 </div>
-<div class="note"><span class="lbl">Why CASE is step 3, not step 6</span><br>
-<b>Plain terms:</b> you can't sort things into piles by a label until the label exists. <code>GROUP BY 1</code> says “group by the 1st item in my SELECT list,” and that item is the CASE label, so the engine has to compute it before grouping.<br>
-<b>Technically:</b> PostgreSQL's docs say output columns are nominally computed after grouping, but GROUP BY may still reference them by name or ordinal. The binder resolves <code>1</code> to the CASE expression and substitutes that expression into the grouping key. The <i>rest</i> of SELECT (column naming, final projection) still happens last.</div>
+<div class="note"><span class="lbl">Why CASE is step 3, and windows are step 7</span><br>
+<b>Plain terms:</b> you can't sort things into piles by a label until the label exists, so the CASE label is computed before grouping. And a window function like “share of the total” needs the piles already counted and filtered, so it comes after HAVING.<br>
+<b>Technically:</b> <code>GROUP BY 1</code> resolves to the CASE expression, and the binder substitutes that expression into the grouping key, so it is evaluated per input row before grouping. Window functions are evaluated after grouping, aggregation and HAVING in their query block, which is why they can wrap an aggregate (<code>SUM(COUNT(*)) OVER ()</code>) and why they can only appear in <code>SELECT</code> and <code>ORDER BY</code>. Microsoft's docs and Itzik Ben-Gan fold windows into the SELECT phase (“evaluate expressions”); Snowflake and most tutorials list them as a separate step between HAVING and SELECT. Same meaning, different bookkeeping.</div>
 
 <!-- ================= 3 WALKTHROUGH ================= -->
 <h2 id="walk">3 · Step-by-step walkthrough</h2>
-<p>A 12-row sample (made-up values, chosen so every rule fires at least once). Click a step or use ← → keys.</p>
+<p>Click a step or use the ← → keys. Green rows survive, red rows are removed, and blue-tinted columns are new at that step. Every table below was produced by running the query in DuckDB 2.0.</p>
 
 <div class="stepper" id="stepper">
-  <button data-i="0" data-c="var(--from)">1 · FROM</button>
+  <button data-i="0" data-c="var(--from)">1 · FROM/JOIN</button>
   <button data-i="1" data-c="var(--where)">2 · WHERE</button>
   <button data-i="2" data-c="var(--case)">3 · CASE</button>
   <button data-i="3" data-c="var(--group)">4 · GROUP BY</button>
-  <button data-i="4" data-c="var(--agg)">5 · COUNT</button>
-  <button data-i="5" data-c="var(--select)">6 · SELECT</button>
+  <button data-i="4" data-c="var(--agg)">5 · Aggregates</button>
+  <button data-i="5" data-c="var(--having)">6 · HAVING</button>
+  <button data-i="6" data-c="var(--window)">7 · Windows</button>
+  <button data-i="7" data-c="var(--select)">8 · SELECT</button>
+  <button data-i="8" data-c="var(--distinct)">9 · DISTINCT</button>
+  <button data-i="9" data-c="var(--order)">10 · ORDER BY</button>
+  <button data-i="10" data-c="var(--limit)">11 · LIMIT</button>
 </div>
 
 <div class="panel">
 
-<!-- 1 FROM -->
+<!-- 1 FROM + JOIN -->
 <div class="stage" data-s="0">
-  <div class="stage-head"><div class="num bg-from">1</div><span class="clause">FROM benn.college_football_players</span></div>
-  <div class="plain"><span class="lbl">Plain terms</span><br>Before you can do anything, you need the data in front of you. FROM says which table to read. <code>benn</code> is the schema (think: folder) and <code>college_football_players</code> is the table (think: file in that folder).</div>
-  <div class="tech"><span class="lbl">Technically</span><br>FROM defines the <b>input relation</b>. With JOINs, this step builds the combined row set (logically a cross product filtered by <code>ON</code>, then outer rows added back for LEFT/RIGHT/FULL joins). The binder looks <code>benn.college_football_players</code> up in the <b>system catalog</b> to confirm it exists, that you have SELECT privilege, and what its columns and types are. A columnar engine (Snowflake, BigQuery, DuckDB, Redshift) will only read the columns the query touches: <code>state</code> and <code>weight</code>. This is called <b>projection pushdown</b>.</div>
+  <div class="stage-head"><div class="num bg-from">1</div><span class="clause">FROM distributions AS d JOIN plans AS p ON p.plan_id = d.plan_id</span></div>
+  <div class="plain"><span class="lbl">Plain terms</span><br>Put the two tables side by side and staple each distribution to its plan, so every row also knows its plan type. An <b>inner</b> join only keeps rows that found a partner. D10 says its plan is P4, there is no P4, so D10 is silently left out. No error, no warning.</div>
+  <div class="tech"><span class="lbl">Technically</span><br>FROM defines the <b>input relation</b>. Logically, a join starts from the <b>cartesian product</b> (16 × 3 = 48 pairs) and keeps the pairs where <code>ON</code> is TRUE. Physically, no engine builds those 48 pairs: it uses a <b>hash join</b>, building a lookup table on the smaller side (<code>plans</code>) and probing it with each distribution. The binder also checks the catalog here: the tables exist, you have SELECT privilege, and every column reference is unambiguous. The aliases <code>d</code> and <code>p</code> are <b>range variables</b>; they exist from this step on, which is why every later clause can say <code>d.status</code>.</div>
   <div class="tw"><table>
-    <tr><th>#</th><th>player_name</th><th>state</th><th>weight</th></tr>
-    <tr><td>1</td><td>Leo</td><td>CA</td><td>310</td></tr><tr><td>2</td><td>Mia</td><td>TX</td><td>295</td></tr>
-    <tr><td>3</td><td>Sam</td><td>WA</td><td>320</td></tr><tr><td>4</td><td>Ana</td><td>TX</td><td>305</td></tr>
-    <tr><td>5</td><td>Ben</td><td>FL</td><td>330</td></tr><tr><td>6</td><td>Kai</td><td>OR</td><td>302</td></tr>
-    <tr><td>7</td><td>Zoe</td><td>TX</td><td>315</td></tr><tr><td>8</td><td>Max</td><td>NY</td><td>300</td></tr>
-    <tr><td>9</td><td>Eli</td><td>CA</td><td>290</td></tr><tr><td>10</td><td>Ray</td><td>GA</td><td>340</td></tr>
-    <tr><td>11</td><td>Jo</td><td>TX</td><td>260</td></tr><tr><td>12</td><td>Tom</td><td>OH</td><td>312</td></tr>
+    <tr><th>dist_id</th><th>plan_id</th><th class="newcol">plan_type</th><th>dist_code</th><th class="r">gross</th><th>status</th><th>paid_date</th><th>join result</th></tr>
+    <tr class="keep"><td>D01</td><td>P1</td><td class="newcol">403(b)</td><td>7</td><td class="r">12,000</td><td>PAID</td><td>2026-02-10</td><td>matched</td></tr>
+    <tr class="keep"><td>D02</td><td>P1</td><td class="newcol">403(b)</td><td>1</td><td class="r">3,000</td><td>PAID</td><td>2026-03-05</td><td>matched</td></tr>
+    <tr class="keep"><td>D03</td><td>P2</td><td class="newcol">457(b)</td><td>7</td><td class="r">8,000</td><td>PAID</td><td>2026-03-18</td><td>matched</td></tr>
+    <tr class="keep"><td>D04</td><td>P2</td><td class="newcol">457(b)</td><td>G</td><td class="r">25,000</td><td>PAID</td><td>2026-04-02</td><td>matched</td></tr>
+    <tr class="keep"><td>D05</td><td>P1</td><td class="newcol">403(b)</td><td>7</td><td class="r">15,000</td><td>PAID</td><td>2026-04-20</td><td>matched</td></tr>
+    <tr class="keep"><td>D06</td><td>P3</td><td class="newcol">403(b)</td><td>2</td><td class="r">4,000</td><td>PAID</td><td>2026-05-11</td><td>matched</td></tr>
+    <tr class="keep"><td>D07</td><td>P2</td><td class="newcol">457(b)</td><td>7</td><td class="r">9,500</td><td>PENDING</td><td>NULL</td><td>matched</td></tr>
+    <tr class="keep"><td>D08</td><td>P1</td><td class="newcol">403(b)</td><td>G</td><td class="r">30,000</td><td>PAID</td><td>2026-05-30</td><td>matched</td></tr>
+    <tr class="keep"><td>D09</td><td>P1</td><td class="newcol">403(b)</td><td>1</td><td class="r">2,500</td><td>PAID</td><td>2025-12-15</td><td>matched</td></tr>
+    <tr class="drop"><td>D10</td><td>P4</td><td class="newcol">—</td><td>7</td><td class="r">7,000</td><td>PAID</td><td>2026-06-03</td><td class="why">no plan P4 → dropped</td></tr>
+    <tr class="keep"><td>D11</td><td>P2</td><td class="newcol">457(b)</td><td>4</td><td class="r">18,000</td><td>PAID</td><td>2026-06-14</td><td>matched</td></tr>
+    <tr class="keep"><td>D12</td><td>P3</td><td class="newcol">403(b)</td><td>7</td><td class="r">6,000</td><td>PAID</td><td>2026-07-01</td><td>matched</td></tr>
+    <tr class="keep"><td>D13</td><td>P1</td><td class="newcol">403(b)</td><td>NULL</td><td class="r">5,000</td><td>PAID</td><td>2026-07-09</td><td>matched</td></tr>
+    <tr class="keep"><td>D14</td><td>P2</td><td class="newcol">457(b)</td><td>G</td><td class="r">20,000</td><td>PAID</td><td>2026-07-22</td><td>matched</td></tr>
+    <tr class="keep"><td>D15</td><td>P3</td><td class="newcol">403(b)</td><td>1</td><td class="r">3,500</td><td>REJECTED</td><td>2026-08-01</td><td>matched</td></tr>
+    <tr class="keep"><td>D16</td><td>P2</td><td class="newcol">457(b)</td><td>1</td><td class="r">4,500</td><td>PAID</td><td>2026-08-15</td><td>matched</td></tr>
   </table></div>
-  <div class="scope"><b>Row count:</b> 12. <b>In scope:</b> every column of the table. <b>Not in scope yet:</b> aliases, aggregates, groups.</div>
+  <div class="scope"><b>Row count:</b> 16 → 15. <b>In scope:</b> every column of both tables, through the aliases <code>d.</code> and <code>p.</code>. <b>Not in scope yet:</b> output aliases, aggregates, groups.</div>
+  <div class="prod"><span class="lbl">Production note</span><br>A silent drop like D10 is the most common way a total ends up quietly wrong. Production models guard it twice: a <b>relationships test</b> (every <code>distributions.plan_id</code> must exist in <code>plans</code>), and a deliberate choice between <code>INNER</code> (drop orphans) and <code>LEFT</code> (keep them with a NULL plan type and report them). Section 10 shows both.</div>
 </div>
 
 <!-- 2 WHERE -->
 <div class="stage" data-s="1">
-  <div class="stage-head"><div class="num bg-where">2</div><span class="clause">WHERE weight &gt;= 300</span></div>
-  <div class="plain"><span class="lbl">Plain terms</span><br>A checkpoint that looks at <b>one row at a time</b> and asks a yes/no question. Yes → the row continues. No (or “unknown”) → the row is thrown away for good. Because it only sees single rows, it can't ask anything about groups or counts. Those don't exist yet.</div>
-  <div class="tech"><span class="lbl">Technically</span><br>WHERE is a <b>row-level predicate</b> evaluated with <b>three-valued logic</b> (TRUE / FALSE / UNKNOWN). Only TRUE survives. A row with <code>weight IS NULL</code> gives <code>NULL &gt;= 300 → UNKNOWN</code> and is silently dropped. The optimizer pushes this predicate as close to storage as it can (<b>predicate pushdown</b>). It may use a B-tree index on <code>weight</code>, or skip whole storage blocks whose min/max stats show <code>max(weight) &lt; 300</code> (zone maps / row-group pruning in Parquet, DuckDB, Snowflake micro-partitions).</div>
+  <div class="stage-head"><div class="num bg-where">2</div><span class="clause">WHERE d.status = 'PAID' AND d.paid_date &gt;= DATE '2026-01-01'</span></div>
+  <div class="plain"><span class="lbl">Plain terms</span><br>A checkpoint that looks at <b>one row at a time</b> and asks a yes/no question. Yes → the row continues. No, or “can't tell” → the row is gone for good. It only sees single rows, so it can't ask about counts or totals; those don't exist yet.</div>
+  <div class="tech"><span class="lbl">Technically</span><br>WHERE is a <b>row-level predicate</b> evaluated with <b>three-valued logic</b> (TRUE / FALSE / UNKNOWN). Only TRUE survives. D07's <code>paid_date</code> is NULL, so <code>NULL &gt;= DATE '2026-01-01'</code> is UNKNOWN; even if its status were PAID, it would still be dropped. <code>FALSE AND UNKNOWN</code> is FALSE, so D07 fails on two counts. Optimizers push WHERE as close to storage as possible (<b>predicate pushdown</b>); section 7 shows DuckDB applying this filter inside the table scan, before the join.</div>
   <div class="tw"><table>
-    <tr><th>#</th><th>player_name</th><th>state</th><th>weight</th><th>weight &gt;= 300</th></tr>
-    <tr class="keep"><td>1</td><td>Leo</td><td>CA</td><td>310</td><td>TRUE</td></tr>
-    <tr class="drop"><td>2</td><td>Mia</td><td>TX</td><td>295</td><td>FALSE</td></tr>
-    <tr class="keep"><td>3</td><td>Sam</td><td>WA</td><td>320</td><td>TRUE</td></tr>
-    <tr class="keep"><td>4</td><td>Ana</td><td>TX</td><td>305</td><td>TRUE</td></tr>
-    <tr class="keep"><td>5</td><td>Ben</td><td>FL</td><td>330</td><td>TRUE</td></tr>
-    <tr class="keep"><td>6</td><td>Kai</td><td>OR</td><td>302</td><td>TRUE</td></tr>
-    <tr class="keep"><td>7</td><td>Zoe</td><td>TX</td><td>315</td><td>TRUE</td></tr>
-    <tr class="keep"><td>8</td><td>Max</td><td>NY</td><td>300</td><td>TRUE (boundary: <code>&gt;=</code> includes 300)</td></tr>
-    <tr class="drop"><td>9</td><td>Eli</td><td>CA</td><td>290</td><td>FALSE</td></tr>
-    <tr class="keep"><td>10</td><td>Ray</td><td>GA</td><td>340</td><td>TRUE</td></tr>
-    <tr class="drop"><td>11</td><td>Jo</td><td>TX</td><td>260</td><td>FALSE</td></tr>
-    <tr class="keep"><td>12</td><td>Tom</td><td>OH</td><td>312</td><td>TRUE</td></tr>
+    <tr><th>dist_id</th><th>plan_type</th><th>status</th><th>paid_date</th><th>status = 'PAID'</th><th>date &gt;= 2026-01-01</th><th>result</th></tr>
+    <tr class="keep"><td>D01</td><td>403(b)</td><td>PAID</td><td>2026-02-10</td><td>TRUE</td><td>TRUE</td><td>TRUE</td></tr>
+    <tr class="keep"><td>D02</td><td>403(b)</td><td>PAID</td><td>2026-03-05</td><td>TRUE</td><td>TRUE</td><td>TRUE</td></tr>
+    <tr class="keep"><td>D03</td><td>457(b)</td><td>PAID</td><td>2026-03-18</td><td>TRUE</td><td>TRUE</td><td>TRUE</td></tr>
+    <tr class="keep"><td>D04</td><td>457(b)</td><td>PAID</td><td>2026-04-02</td><td>TRUE</td><td>TRUE</td><td>TRUE</td></tr>
+    <tr class="keep"><td>D05</td><td>403(b)</td><td>PAID</td><td>2026-04-20</td><td>TRUE</td><td>TRUE</td><td>TRUE</td></tr>
+    <tr class="keep"><td>D06</td><td>403(b)</td><td>PAID</td><td>2026-05-11</td><td>TRUE</td><td>TRUE</td><td>TRUE</td></tr>
+    <tr class="drop"><td>D07</td><td>457(b)</td><td>PENDING</td><td>NULL</td><td class="why">FALSE</td><td class="why">UNKNOWN</td><td class="why">FALSE → dropped</td></tr>
+    <tr class="keep"><td>D08</td><td>403(b)</td><td>PAID</td><td>2026-05-30</td><td>TRUE</td><td>TRUE</td><td>TRUE</td></tr>
+    <tr class="drop"><td>D09</td><td>403(b)</td><td>PAID</td><td>2025-12-15</td><td class="why">TRUE</td><td class="why">FALSE</td><td class="why">FALSE → dropped (prior year)</td></tr>
+    <tr class="keep"><td>D11</td><td>457(b)</td><td>PAID</td><td>2026-06-14</td><td>TRUE</td><td>TRUE</td><td>TRUE</td></tr>
+    <tr class="keep"><td>D12</td><td>403(b)</td><td>PAID</td><td>2026-07-01</td><td>TRUE</td><td>TRUE</td><td>TRUE</td></tr>
+    <tr class="keep"><td>D13</td><td>403(b)</td><td>PAID</td><td>2026-07-09</td><td>TRUE</td><td>TRUE</td><td>TRUE</td></tr>
+    <tr class="keep"><td>D14</td><td>457(b)</td><td>PAID</td><td>2026-07-22</td><td>TRUE</td><td>TRUE</td><td>TRUE</td></tr>
+    <tr class="drop"><td>D15</td><td>403(b)</td><td>REJECTED</td><td>2026-08-01</td><td class="why">FALSE</td><td class="why">TRUE</td><td class="why">FALSE → dropped</td></tr>
+    <tr class="keep"><td>D16</td><td>457(b)</td><td>PAID</td><td>2026-08-15</td><td>TRUE</td><td>TRUE</td><td>TRUE</td></tr>
   </table></div>
-  <div class="scope"><b>Row count:</b> 12 → 9. <b>In scope:</b> table columns only. <code>WHERE players &gt; 2</code> or <code>WHERE COUNT(1) &gt; 2</code> would error here, because neither the alias nor the aggregate exists yet.</div>
+  <div class="scope"><b>Row count:</b> 15 → 12. <b>In scope:</b> table columns only. <code>WHERE total_gross &gt; 0</code> or <code>WHERE SUM(d.gross_amount) &gt; 0</code> fails in standard SQL: neither the alias nor the aggregate exists yet.</div>
+  <div class="prod"><span class="lbl">Production note</span><br>The filter is <b>sargable</b>: <code>paid_date</code> is compared directly to a constant, so an index or partition pruning can be used. <code>WHERE EXTRACT(YEAR FROM paid_date) = 2026</code> gives the same rows but forces a calculation on every row. In a pipeline, the start date becomes a variable rather than a literal (section 10).</div>
 </div>
 
 <!-- 3 CASE -->
 <div class="stage" data-s="2">
-  <div class="stage-head"><div class="num bg-case">3</div><span class="clause">CASE WHEN … THEN … ELSE … END</span></div>
-  <div class="plain"><span class="lbl">Plain terms</span><br>An if / else-if / else chain that runs on each surviving row. It checks the conditions <b>top to bottom</b> and stops at the <b>first</b> one that's true. If nothing matches, ELSE is the fallback. The result is a brand-new column that doesn't exist in the table. The engine computes it on the fly.</div>
-  <div class="tech"><span class="lbl">Technically</span><br>This is a <b>searched CASE</b> expression. It's a scalar expression (one row in → one value out), not a clause. <code>state IN ('CA','OR','WA')</code> is shorthand for <code>state = 'CA' OR state = 'OR' OR state = 'WA'</code>; PostgreSQL rewrites it internally as <code>state = ANY('{CA,OR,WA}')</code>. Every THEN branch must resolve to a compatible type (all text here). Without an ELSE, unmatched rows get <code>NULL</code>.</div>
-<pre><span class="c">-- Equivalent Python, to make the evaluation order obvious</span>
-def region(state):
-    if state in ("CA", "OR", "WA"): return "West Coast"   <span class="c"># checked 1st</span>
-    elif state == "TX":            return "Texas"        <span class="c"># only if 1st was false</span>
-    else:                          return "Other"        <span class="c"># fallback (remove it → None/NULL)</span></pre>
+  <div class="stage-head"><div class="num bg-case">3</div><span class="clause">CASE WHEN … THEN … ELSE … END AS dist_category</span></div>
+  <div class="plain"><span class="lbl">Plain terms</span><br>An if / else-if / else chain that runs on each surviving row. It checks conditions <b>top to bottom</b>, stops at the <b>first</b> true one, and uses ELSE if nothing matched. The result is a brand-new column that doesn't exist in the table.</div>
+  <div class="tech"><span class="lbl">Technically</span><br>A <b>searched CASE</b> is a scalar expression (one row in, one value out), not a clause. <code>d.dist_code IN ('1','2')</code> is shorthand for <code>d.dist_code = '1' OR d.dist_code = '2'</code>. For D13, <code>NULL IN ('1','2')</code>, <code>NULL = '7'</code> and <code>NULL = 'G'</code> are all UNKNOWN, so no WHEN fires and the row falls to ELSE. That lumps a missing code in with a real, unmapped one (D11, code 4). Every THEN branch must return a compatible type; without an ELSE, unmatched rows get NULL.</div>
+<pre><span class="c"># The same logic in Python, to make the evaluation order obvious</span>
+def dist_category(code):
+    if code in ("1", "2"): return "Early"      <span class="c"># checked 1st</span>
+    elif code == "7":      return "Normal"     <span class="c"># only if the 1st was false</span>
+    elif code == "G":      return "Rollover"
+    else:                  return "Other"      <span class="c"># fallback, catches None and "4"</span></pre>
   <div class="tw"><table>
-    <tr><th>player_name</th><th>state</th><th>rule matched</th><th>arbitrary_regional_designation</th></tr>
-    <tr><td>Leo</td><td>CA</td><td>WHEN #1</td><td><span class="tag t-w">West Coast</span></td></tr>
-    <tr><td>Sam</td><td>WA</td><td>WHEN #1</td><td><span class="tag t-w">West Coast</span></td></tr>
-    <tr><td>Ana</td><td>TX</td><td>WHEN #2</td><td><span class="tag t-t">Texas</span></td></tr>
-    <tr><td>Ben</td><td>FL</td><td>ELSE</td><td><span class="tag t-o">Other</span></td></tr>
-    <tr><td>Kai</td><td>OR</td><td>WHEN #1</td><td><span class="tag t-w">West Coast</span></td></tr>
-    <tr><td>Zoe</td><td>TX</td><td>WHEN #2</td><td><span class="tag t-t">Texas</span></td></tr>
-    <tr><td>Max</td><td>NY</td><td>ELSE</td><td><span class="tag t-o">Other</span></td></tr>
-    <tr><td>Ray</td><td>GA</td><td>ELSE</td><td><span class="tag t-o">Other</span></td></tr>
-    <tr><td>Tom</td><td>OH</td><td>ELSE</td><td><span class="tag t-o">Other</span></td></tr>
+    <tr><th>dist_id</th><th>plan_type</th><th>dist_code</th><th class="r">gross</th><th>rule matched</th><th class="newcol">dist_category</th></tr>
+    <tr><td>D01</td><td>403(b)</td><td>7</td><td class="r">12,000</td><td>WHEN #2</td><td class="newcol"><span class="tag t-n">Normal</span></td></tr>
+    <tr><td>D02</td><td>403(b)</td><td>1</td><td class="r">3,000</td><td>WHEN #1</td><td class="newcol"><span class="tag t-e">Early</span></td></tr>
+    <tr><td>D03</td><td>457(b)</td><td>7</td><td class="r">8,000</td><td>WHEN #2</td><td class="newcol"><span class="tag t-n">Normal</span></td></tr>
+    <tr><td>D04</td><td>457(b)</td><td>G</td><td class="r">25,000</td><td>WHEN #3</td><td class="newcol"><span class="tag t-r">Rollover</span></td></tr>
+    <tr><td>D05</td><td>403(b)</td><td>7</td><td class="r">15,000</td><td>WHEN #2</td><td class="newcol"><span class="tag t-n">Normal</span></td></tr>
+    <tr><td>D06</td><td>403(b)</td><td>2</td><td class="r">4,000</td><td>WHEN #1</td><td class="newcol"><span class="tag t-e">Early</span></td></tr>
+    <tr><td>D08</td><td>403(b)</td><td>G</td><td class="r">30,000</td><td>WHEN #3</td><td class="newcol"><span class="tag t-r">Rollover</span></td></tr>
+    <tr><td>D11</td><td>457(b)</td><td>4</td><td class="r">18,000</td><td>ELSE (code not mapped)</td><td class="newcol"><span class="tag t-o">Other</span></td></tr>
+    <tr><td>D12</td><td>403(b)</td><td>7</td><td class="r">6,000</td><td>WHEN #2</td><td class="newcol"><span class="tag t-n">Normal</span></td></tr>
+    <tr><td>D13</td><td>403(b)</td><td>NULL</td><td class="r">5,000</td><td>ELSE (NULL → every WHEN is UNKNOWN)</td><td class="newcol"><span class="tag t-o">Other</span></td></tr>
+    <tr><td>D14</td><td>457(b)</td><td>G</td><td class="r">20,000</td><td>WHEN #3</td><td class="newcol"><span class="tag t-r">Rollover</span></td></tr>
+    <tr><td>D16</td><td>457(b)</td><td>1</td><td class="r">4,500</td><td>WHEN #1</td><td class="newcol"><span class="tag t-e">Early</span></td></tr>
   </table></div>
-  <div class="scope"><b>Row count:</b> still 9. One derived column added. This is the classic “bucketing” or “derived dimension” pattern. Section 9 shows why production code usually replaces it with a mapping table.</div>
+  <div class="scope"><b>Row count:</b> still 12. One derived column added. This is the classic “bucketing” or “derived dimension” pattern.</div>
+  <div class="prod"><span class="lbl">Production note</span><br>A hard-coded CASE is business logic hidden inside one query. When the business adds a code, every query that copied the CASE must change. Production code moves the mapping into a version-controlled lookup table (a dbt <b>seed</b>) and makes NULL an explicit <code>'Unknown'</code> instead of letting it hide in <code>'Other'</code> (section 10).</div>
 </div>
 
 <!-- 4 GROUP BY -->
 <div class="stage" data-s="3">
-  <div class="stage-head"><div class="num bg-group">4</div><span class="clause">GROUP BY 1</span></div>
-  <div class="plain"><span class="lbl">Plain terms</span><br>Collect rows with the same label into one pile. 9 rows become 3 piles. From this point on, the engine thinks in <b>piles, not rows</b>. That's why, after grouping, you can only output the pile's label or a summary of the pile (count, sum, average). “The player's name” has no single answer for a pile of three players.</div>
-  <div class="tech"><span class="lbl">Technically</span><br>GROUP BY partitions the row set by the <b>grouping key</b> and changes the <b>grain</b> of the result: one output row per distinct key. The <b>single-value rule</b> applies from here on: every SELECT item must be a grouping key, an aggregate, or a constant. Engines implement this two ways. A <b>hash aggregate</b> builds a hash table keyed on the group value and updates each group's running state as rows stream in; it's best when the number of groups is small, as here. A <b>sort aggregate</b> (PostgreSQL's <code>GroupAggregate</code>) sorts by the key and emits a group each time the key changes; it's chosen when the input is already sorted or there are too many groups to fit in memory.</div>
+  <div class="stage-head"><div class="num bg-group">4</div><span class="clause">GROUP BY 1, 2</span></div>
+  <div class="plain"><span class="lbl">Plain terms</span><br>Collect rows with the same <b>category and plan type</b> into one pile. 12 rows become 8 piles. From here on, the engine thinks in <b>piles, not rows</b>: you can only output a pile's label or a summary of it. “The pile's dist_id” has no single answer when the pile holds three distributions.</div>
+  <div class="tech"><span class="lbl">Technically</span><br>GROUP BY partitions the rows by the <b>grouping key</b> <code>(dist_category, plan_type)</code> and changes the <b>grain</b> of the result to one row per distinct key. <code>1, 2</code> are <b>ordinals</b> pointing at the 1st and 2nd SELECT items. From here the <b>single-value rule</b> applies: every SELECT item must be a grouping key, an aggregate, a constant, or a window function over those. Engines use a <b>hash aggregate</b> (a hash table keyed on the group, updated as rows stream in; best for few groups) or a <b>sort aggregate</b> (sort by key, emit a group when the key changes; chosen for pre-sorted input or too many groups for memory).</div>
   <div class="groups">
-    <div class="grp g-w"><div class="k">West Coast</div><div class="members">Leo, Sam, Kai</div></div>
-    <div class="grp g-t"><div class="k">Texas</div><div class="members">Ana, Zoe</div></div>
-    <div class="grp g-o"><div class="k">Other</div><div class="members">Ben, Max, Ray, Tom</div></div>
+    <div class="grp g-n"><div class="k">Normal <small>· 403(b)</small></div><div class="members">D01, D05, D12</div></div>
+    <div class="grp g-e"><div class="k">Early <small>· 403(b)</small></div><div class="members">D02, D06</div></div>
+    <div class="grp g-r"><div class="k">Rollover <small>· 403(b)</small></div><div class="members">D08</div></div>
+    <div class="grp g-o"><div class="k">Other <small>· 403(b)</small></div><div class="members">D13</div></div>
+    <div class="grp g-n"><div class="k">Normal <small>· 457(b)</small></div><div class="members">D03</div></div>
+    <div class="grp g-e"><div class="k">Early <small>· 457(b)</small></div><div class="members">D16</div></div>
+    <div class="grp g-r"><div class="k">Rollover <small>· 457(b)</small></div><div class="members">D04, D14</div></div>
+    <div class="grp g-o"><div class="k">Other <small>· 457(b)</small></div><div class="members">D11</div></div>
   </div>
-  <div class="scope"><b>Grain change:</b> 9 rows → 3 groups. If you had a <code>HAVING</code> clause, it would run right after this step and filter <b>groups</b>, the way WHERE filters rows.</div>
+  <div class="scope"><b>Grain change:</b> 12 rows → 8 groups. Note that P1 and P3 are different plans but both are 403(b), so their rows share piles: grouping is by the <b>value</b> of <code>plan_type</code>, not by plan.</div>
 </div>
 
-<!-- 5 COUNT -->
+<!-- 5 AGGREGATES -->
 <div class="stage" data-s="4">
-  <div class="stage-head"><div class="num bg-agg">5</div><span class="clause">COUNT(1)</span></div>
-  <div class="plain"><span class="lbl">Plain terms</span><br>For each pile, count the rows in it. <code>COUNT(1)</code> means “add 1 for every row,” so it gives exactly the same answer as <code>COUNT(*)</code>.</div>
-  <div class="tech"><span class="lbl">Technically</span><br>An aggregate keeps a small <b>state</b> per group (here a single integer). Each incoming row runs a <i>transition</i> step (<code>state += 1</code>), and once input ends a <i>finalize</i> step emits the value. That's why aggregation is memory-cheap: 9 rows or 9 billion, you still hold just 3 counters. In parallel engines, each worker builds <b>partial aggregates</b> on its share of the data, and the partials are then <b>combined</b> (summing three per-worker counts). <code>COUNT(1)</code> vs <code>COUNT(*)</code> makes no meaningful performance difference in modern engines; <code>COUNT(*)</code> is the conventional spelling.</div>
-  <div class="groups">
-    <div class="grp g-w"><div class="k">West Coast</div><div class="agg">3</div></div>
-    <div class="grp g-t"><div class="k">Texas</div><div class="agg">2</div></div>
-    <div class="grp g-o"><div class="k">Other</div><div class="agg">4</div></div>
-  </div>
-  <div class="scope"><b>Reconciliation check:</b> 3 + 2 + 4 = 9, the same number of rows that passed WHERE. Nothing lost, nothing double-counted. This is the same control you run on 1099 totals, and section 9 turns it into an automated test.</div>
+  <div class="stage-head"><div class="num bg-agg">5</div><span class="clause">COUNT(*) AS n_dists · SUM(d.gross_amount) AS total_gross</span></div>
+  <div class="plain"><span class="lbl">Plain terms</span><br>For each pile, count the rows and add up the dollars. Each pile now carries two numbers.</div>
+  <div class="tech"><span class="lbl">Technically</span><br>An aggregate keeps a small <b>state</b> per group (a counter, a running sum). Each incoming row runs a <i>transition</i> step, and when input ends a <i>finalize</i> step emits the value. Memory stays tiny: 12 rows or 12 billion, you still hold 8 counters and 8 sums. In parallel engines each worker builds <b>partial aggregates</b> that are <b>combined</b> at the end. <code>COUNT(*)</code> counts rows; <code>SUM</code> ignores NULLs, and returns NULL (not 0) for a group whose values are all NULL.</div>
+  <div class="tw"><table>
+    <tr><th>dist_category</th><th>plan_type</th><th>members</th><th class="r newcol">n_dists</th><th class="r newcol">total_gross</th></tr>
+    <tr><td><span class="tag t-n">Normal</span></td><td>403(b)</td><td class="mono">D01, D05, D12</td><td class="r newcol">3</td><td class="r newcol">33,000</td></tr>
+    <tr><td><span class="tag t-e">Early</span></td><td>403(b)</td><td class="mono">D02, D06</td><td class="r newcol">2</td><td class="r newcol">7,000</td></tr>
+    <tr><td><span class="tag t-r">Rollover</span></td><td>403(b)</td><td class="mono">D08</td><td class="r newcol">1</td><td class="r newcol">30,000</td></tr>
+    <tr><td><span class="tag t-o">Other</span></td><td>403(b)</td><td class="mono">D13</td><td class="r newcol">1</td><td class="r newcol">5,000</td></tr>
+    <tr><td><span class="tag t-n">Normal</span></td><td>457(b)</td><td class="mono">D03</td><td class="r newcol">1</td><td class="r newcol">8,000</td></tr>
+    <tr><td><span class="tag t-e">Early</span></td><td>457(b)</td><td class="mono">D16</td><td class="r newcol">1</td><td class="r newcol">4,500</td></tr>
+    <tr><td><span class="tag t-r">Rollover</span></td><td>457(b)</td><td class="mono">D04, D14</td><td class="r newcol">2</td><td class="r newcol">45,000</td></tr>
+    <tr><td><span class="tag t-o">Other</span></td><td>457(b)</td><td class="mono">D11</td><td class="r newcol">1</td><td class="r newcol">18,000</td></tr>
+    <tr><td colspan="3"><b>Total</b></td><td class="r"><b>12</b></td><td class="r"><b>150,500</b></td></tr>
+  </table></div>
+  <div class="scope"><b>Reconciliation check:</b> 12 distributions and $150,500, exactly what passed WHERE. Nothing lost, nothing double-counted. This is the same control total you run on 1099 data, and section 10 turns it into an automated test.</div>
 </div>
 
-<!-- 6 SELECT -->
+<!-- 6 HAVING -->
 <div class="stage" data-s="5">
-  <div class="stage-head"><div class="num bg-select">6</div><span class="clause">SELECT … AS …</span></div>
-  <div class="plain"><span class="lbl">Plain terms</span><br>Lay out the final answer: which columns appear, in what order, and what they're called. <code>AS</code> is just a name tag on a column.</div>
-  <div class="tech"><span class="lbl">Technically</span><br>This is the <b>projection</b>: it evaluates output expressions per group and assigns <b>column aliases</b>. Aliases are born here, which is why WHERE, GROUP BY (in strict engines) and HAVING can't see them, but ORDER BY (step 7) can. With no ORDER BY, row order is <b>undefined</b>. A hash aggregate emits groups in hash-table order, which can change between runs, versions or data volumes.</div>
+  <div class="stage-head"><div class="num bg-having">6</div><span class="clause">HAVING SUM(d.gross_amount) &gt;= 10000</span></div>
+  <div class="plain"><span class="lbl">Plain terms</span><br>WHERE's twin for piles. It looks at each <b>pile</b>, now that the totals exist, and throws out the piles under $10,000. Four piles survive.</div>
+  <div class="tech"><span class="lbl">Technically</span><br>HAVING is a <b>group-level predicate</b>: it runs after aggregation and can reference aggregates, including ones not in the SELECT list. Standard SQL doesn't let it reference the SELECT alias <code>total_gross</code> (that's born later, in step 8), so the aggregate is repeated. PostgreSQL and SQL Server reject the alias; DuckDB, Snowflake, BigQuery and MySQL accept it as an extension.</div>
   <div class="tw"><table>
-    <tr><th>arbitrary_regional_designation</th><th>players</th></tr>
-    <tr><td><span class="tag t-w">West Coast</span></td><td>3</td></tr>
-    <tr><td><span class="tag t-t">Texas</span></td><td>2</td></tr>
-    <tr><td><span class="tag t-o">Other</span></td><td>4</td></tr>
+    <tr><th>dist_category</th><th>plan_type</th><th class="r">n_dists</th><th class="r">total_gross</th><th>&gt;= 10,000?</th></tr>
+    <tr class="keep"><td>Normal</td><td>403(b)</td><td class="r">3</td><td class="r">33,000</td><td>TRUE</td></tr>
+    <tr class="drop"><td>Early</td><td>403(b)</td><td class="r">2</td><td class="r">7,000</td><td class="why">FALSE → dropped</td></tr>
+    <tr class="keep"><td>Rollover</td><td>403(b)</td><td class="r">1</td><td class="r">30,000</td><td>TRUE</td></tr>
+    <tr class="drop"><td>Other</td><td>403(b)</td><td class="r">1</td><td class="r">5,000</td><td class="why">FALSE → dropped</td></tr>
+    <tr class="drop"><td>Normal</td><td>457(b)</td><td class="r">1</td><td class="r">8,000</td><td class="why">FALSE → dropped</td></tr>
+    <tr class="drop"><td>Early</td><td>457(b)</td><td class="r">1</td><td class="r">4,500</td><td class="why">FALSE → dropped</td></tr>
+    <tr class="keep"><td>Rollover</td><td>457(b)</td><td class="r">2</td><td class="r">45,000</td><td>TRUE</td></tr>
+    <tr class="keep"><td>Other</td><td>457(b)</td><td class="r">1</td><td class="r">18,000</td><td>TRUE</td></tr>
   </table></div>
-  <div class="scope"><b>Final result:</b> 3 rows × 2 columns, in an unspecified order. Add <code>ORDER BY players DESC</code> if order matters to whoever consumes it (a dashboard, a test, a diff).</div>
+  <div class="scope"><b>Group count:</b> 8 → 4. The 4 survivors hold <b>7</b> of the 12 distributions and $126,000 of the $150,500. That 7 matters in the next step.</div>
+  <div class="prod"><span class="lbl">Production note</span><br>Row conditions belong in WHERE (filter early, before the expensive grouping). Only conditions on aggregates belong in HAVING. <code>HAVING d.status = 'PAID'</code> is either invalid or wasteful, because the engine would aggregate rows only to discard them.</div>
+</div>
+
+<!-- 7 WINDOWS -->
+<div class="stage" data-s="6">
+  <div class="stage-head"><div class="num bg-window">7</div><span class="clause">SUM(COUNT(*)) OVER () · RANK() OVER (ORDER BY SUM(d.gross_amount) DESC)</span></div>
+  <div class="plain"><span class="lbl">Plain terms</span><br>Now that the 4 surviving piles exist, look <b>across</b> them without merging them. <code>SUM(COUNT(*)) OVER ()</code> adds up the piles' counts (3 + 1 + 1 + 2 = 7) and writes that grand total next to every pile, so each pile can work out its share. <code>RANK()</code> lines the piles up by dollars and numbers them 1, 2, 3, 4.</div>
+  <div class="tech"><span class="lbl">Technically</span><br>A <b>window function</b> computes over a set of rows related to the current row and, unlike GROUP BY, <b>does not collapse rows</b>: 4 rows in, 4 rows out. Here it runs on the <b>grouped, HAVING-filtered</b> result, so its inputs are the aggregates. In <code>SUM(COUNT(*)) OVER ()</code> the inner <code>COUNT(*)</code> is the step-5 aggregate (one value per group) and the outer <code>SUM … OVER ()</code> is the window. An empty <code>OVER ()</code> means one window holding every row, with no ordering. In <code>RANK() OVER (ORDER BY SUM(d.gross_amount) DESC)</code>, the window's own <code>ORDER BY</code> only decides the ranking; it does <b>not</b> sort the output (that's step 10).</div>
+  <div class="tw"><table>
+    <tr><th>dist_category</th><th>plan_type</th><th class="r">n_dists</th><th class="r">total_gross</th><th class="r newcol">SUM(COUNT(*)) OVER ()</th><th class="r newcol">100.0 × n / total</th><th class="r newcol">pct_of_dists</th><th class="r newcol">gross_rank</th></tr>
+    <tr><td>Normal</td><td>403(b)</td><td class="r">3</td><td class="r">33,000</td><td class="r newcol">7</td><td class="r newcol">42.857…</td><td class="r newcol">42.9</td><td class="r newcol">2</td></tr>
+    <tr><td>Rollover</td><td>403(b)</td><td class="r">1</td><td class="r">30,000</td><td class="r newcol">7</td><td class="r newcol">14.285…</td><td class="r newcol">14.3</td><td class="r newcol">3</td></tr>
+    <tr><td>Rollover</td><td>457(b)</td><td class="r">2</td><td class="r">45,000</td><td class="r newcol">7</td><td class="r newcol">28.571…</td><td class="r newcol">28.6</td><td class="r newcol">1</td></tr>
+    <tr><td>Other</td><td>457(b)</td><td class="r">1</td><td class="r">18,000</td><td class="r newcol">7</td><td class="r newcol">14.285…</td><td class="r newcol">14.3</td><td class="r newcol">4</td></tr>
+  </table></div>
+  <div class="scope"><b>Row count:</b> still 4. <b>Key insight:</b> the denominator is <b>7, not 12</b>. HAVING already removed 5 distributions, so this is “share of the distributions in groups of $10K or more,” not “share of all 2026 paid distributions.” Without the HAVING, Normal · 403(b) would show 25.0% instead of 42.9% (verified).</div>
+  <div class="warn"><span class="lbl">Why you can't filter on a window in WHERE or HAVING</span><br>Both run before step 7, so the window value doesn't exist yet. <code>WHERE gross_rank &lt;= 3</code> or <code>HAVING RANK() OVER (…) = 1</code> are errors. Compute the window in a CTE and filter in the next one (portable), or use <code>QUALIFY</code> in DuckDB, Snowflake, BigQuery and Databricks, a filter that runs right after the windows.</div>
+</div>
+
+<!-- 8 SELECT -->
+<div class="stage" data-s="7">
+  <div class="stage-head"><div class="num bg-select">8</div><span class="clause">SELECT … AS dist_category, plan_type, n_dists, total_gross, pct_of_dists, gross_rank</span></div>
+  <div class="plain"><span class="lbl">Plain terms</span><br>Lay out the answer: which columns appear, in what order, and what they're called. <code>AS</code> is just a name tag. Helper values (the 7) are used inside an expression but don't get their own column unless you ask for one.</div>
+  <div class="tech"><span class="lbl">Technically</span><br>This is the <b>projection</b>: evaluate the output expressions per row and assign <b>column aliases</b>. Aliases are born here, which is why WHERE, HAVING and (in strict engines) GROUP BY can't see them, while ORDER BY can. <code>ROUND(…, 1)</code> is applied here too. Order is still <b>undefined</b>: a hash aggregate emits groups in hash-table order, which can change between runs, versions and data sizes.</div>
+  <div class="tw"><table>
+    <tr><th>dist_category</th><th>plan_type</th><th class="r">n_dists</th><th class="r">total_gross</th><th class="r">pct_of_dists</th><th class="r">gross_rank</th></tr>
+    <tr><td><span class="tag t-n">Normal</span></td><td>403(b)</td><td class="r">3</td><td class="r">33,000.00</td><td class="r">42.9</td><td class="r">2</td></tr>
+    <tr><td><span class="tag t-r">Rollover</span></td><td>403(b)</td><td class="r">1</td><td class="r">30,000.00</td><td class="r">14.3</td><td class="r">3</td></tr>
+    <tr><td><span class="tag t-r">Rollover</span></td><td>457(b)</td><td class="r">2</td><td class="r">45,000.00</td><td class="r">28.6</td><td class="r">1</td></tr>
+    <tr><td><span class="tag t-o">Other</span></td><td>457(b)</td><td class="r">1</td><td class="r">18,000.00</td><td class="r">14.3</td><td class="r">4</td></tr>
+  </table></div>
+  <div class="scope"><b>Row count:</b> 4. <b>Rounding check:</b> 42.9 + 14.3 + 28.6 + 14.3 = <b>100.1</b>. Rounded shares don't always add up to exactly 100, which is normal and worth a footnote in any report.</div>
+</div>
+
+<!-- 9 DISTINCT -->
+<div class="stage" data-s="8">
+  <div class="stage-head"><div class="num bg-distinct">9</div><span class="clause">DISTINCT (not in this query)</span></div>
+  <div class="plain"><span class="lbl">Plain terms</span><br>DISTINCT removes duplicate output rows. This query doesn't need it: GROUP BY already guarantees one row per category and plan type, so no two output rows can be identical.</div>
+  <div class="tech"><span class="lbl">Technically</span><br>DISTINCT runs on the <b>projected</b> rows, after SELECT and before ORDER BY. It's implemented with the same machinery as GROUP BY (a hash aggregate on every output column). When it does run, ORDER BY can only use columns that are in the SELECT list (PostgreSQL enforces this), because after duplicates collapse, a hidden column no longer has a single value per row.</div>
+  <div class="warn"><span class="lbl">Code smell</span><br><code>SELECT DISTINCT</code> on top of a join or GROUP BY often hides a bug: the join fanned out (one row matched several) and DISTINCT throws the copies away after the engine did the work. If you need DISTINCT to make the numbers look right, find out why the duplicates exist. Section 13 shows a self join where <code>EXISTS</code> replaces DISTINCT.</div>
+  <div class="scope"><b>Row count:</b> 4, unchanged.</div>
+</div>
+
+<!-- 10 ORDER BY -->
+<div class="stage" data-s="9">
+  <div class="stage-head"><div class="num bg-order">10</div><span class="clause">ORDER BY gross_rank, dist_category</span></div>
+  <div class="plain"><span class="lbl">Plain terms</span><br>Sort the final rows by rank. If two rows ever tie on rank, sort those by category name so the order is always the same.</div>
+  <div class="tech"><span class="lbl">Technically</span><br>ORDER BY runs after SELECT, so it <b>can</b> use aliases (<code>gross_rank</code>) and window results. The second key is a <b>tie-breaker</b>: <code>RANK()</code> gives tied rows the same number, and without a deterministic tie-breaker their order can change from run to run. That makes snapshot tests and diffs flaky. It's the only clause that guarantees row order.</div>
+  <div class="tw"><table>
+    <tr><th>#</th><th>dist_category</th><th>plan_type</th><th class="r">n_dists</th><th class="r">total_gross</th><th class="r">pct_of_dists</th><th class="r">gross_rank ↑</th></tr>
+    <tr><td>1</td><td><span class="tag t-r">Rollover</span></td><td>457(b)</td><td class="r">2</td><td class="r">45,000.00</td><td class="r">28.6</td><td class="r">1</td></tr>
+    <tr><td>2</td><td><span class="tag t-n">Normal</span></td><td>403(b)</td><td class="r">3</td><td class="r">33,000.00</td><td class="r">42.9</td><td class="r">2</td></tr>
+    <tr><td>3</td><td><span class="tag t-r">Rollover</span></td><td>403(b)</td><td class="r">1</td><td class="r">30,000.00</td><td class="r">14.3</td><td class="r">3</td></tr>
+    <tr><td>4</td><td><span class="tag t-o">Other</span></td><td>457(b)</td><td class="r">1</td><td class="r">18,000.00</td><td class="r">14.3</td><td class="r">4</td></tr>
+  </table></div>
+  <div class="scope"><b>Row count:</b> 4. Notice the <b>window's</b> ORDER BY (by dollars) and the <b>query's</b> ORDER BY (by rank) are different clauses. Here they agree; if you sorted by <code>pct_of_dists</code> instead, rank 2 would come first.</div>
+</div>
+
+<!-- 11 LIMIT -->
+<div class="stage" data-s="10">
+  <div class="stage-head"><div class="num bg-limit">11</div><span class="clause">LIMIT 3</span></div>
+  <div class="plain"><span class="lbl">Plain terms</span><br>Keep the first 3 rows of the sorted list and throw away the rest. This is the very last thing that happens.</div>
+  <div class="tech"><span class="lbl">Technically</span><br>LIMIT (SQL Server: <code>TOP</code>; standard: <code>FETCH FIRST n ROWS ONLY</code>) only trims the output. Everything earlier, <b>including the window functions</b>, already saw all 4 rows. Without ORDER BY, LIMIT returns an arbitrary 3. Engines usually fuse ORDER BY + LIMIT into a single <b>top-N</b> operator that keeps only the best N in memory instead of sorting everything (DuckDB's plan shows <code>Top N</code>).</div>
+  <div class="tw"><table>
+    <tr><th>dist_category</th><th>plan_type</th><th class="r">n_dists</th><th class="r">total_gross</th><th class="r">pct_of_dists</th><th class="r">gross_rank</th></tr>
+    <tr class="keep"><td><span class="tag t-r">Rollover</span></td><td>457(b)</td><td class="r">2</td><td class="r">45,000.00</td><td class="r">28.6</td><td class="r">1</td></tr>
+    <tr class="keep"><td><span class="tag t-n">Normal</span></td><td>403(b)</td><td class="r">3</td><td class="r">33,000.00</td><td class="r">42.9</td><td class="r">2</td></tr>
+    <tr class="keep"><td><span class="tag t-r">Rollover</span></td><td>403(b)</td><td class="r">1</td><td class="r">30,000.00</td><td class="r">14.3</td><td class="r">3</td></tr>
+    <tr class="drop"><td>Other</td><td>457(b)</td><td class="r">1</td><td class="r">18,000.00</td><td class="r">14.3</td><td class="r why">4 → cut by LIMIT</td></tr>
+  </table></div>
+  <div class="scope"><b>Final result:</b> 3 rows × 6 columns. The shares shown add up to <b>85.8%</b>, not 100%, because the denominator (7) still includes the row LIMIT removed. That's correct behavior, but a reader will ask about it, so label the column clearly (“share of distributions in groups ≥ $10K”).</div>
+  <div class="prod"><span class="lbl">Production note</span><br>Top-N belongs in the <b>consumer</b> (a dashboard, an export, an ad-hoc query), not in a modeled table. A dbt model should keep every group at a declared grain, so other people can filter it their own way and so tests can reconcile it against the source.</div>
 </div>
 
 <div class="nav">
   <button id="prev">← Previous</button>
-  <span class="pos" id="pos">Step 1 of 6</span>
+  <span class="pos" id="pos">Step 1 of 11</span>
   <button id="next">Next →</button>
 </div>
 </div>
 
 <!-- ================= 4 REFERENCE ================= -->
 <h2 id="ref">4 · Full logical order (every clause)</h2>
-<p>Your query uses 4 clauses. This is the full sequence, including the ones you'll use next (JOIN, HAVING, window functions, DISTINCT, ORDER BY, LIMIT). The last two columns explain most error messages you'll ever see.</p>
+<p>The last two columns explain most error messages you'll ever see.</p>
 <div class="panel tw">
 <table>
-<tr><th>#</th><th>Clause</th><th>Plain terms</th><th>Works on</th><th>Can see SELECT aliases?</th><th>Aggregates allowed?</th></tr>
-<tr><td><div class="num bg-from">1</div></td><td class="mono">FROM / JOIN … ON</td><td>Get and combine the tables</td><td>rows</td><td class="no">No</td><td class="no">No</td></tr>
-<tr><td><div class="num bg-where">2</div></td><td class="mono">WHERE</td><td>Keep only rows that pass</td><td>rows</td><td class="no">No</td><td class="no">No</td></tr>
-<tr><td><div class="num bg-group">3</div></td><td class="mono">GROUP BY</td><td>Collapse rows into groups</td><td>rows → groups</td><td class="partial">Dialect-dependent</td><td class="no">No</td></tr>
-<tr><td><div class="num bg-having">4</div></td><td class="mono">HAVING</td><td>Keep only groups that pass</td><td>groups</td><td class="partial">Mostly no</td><td class="yes">Yes</td></tr>
-<tr><td><div class="num bg-select">5</div></td><td class="mono">SELECT (+ window functions)</td><td>Compute and name output columns</td><td>groups or rows</td><td>defines them</td><td class="yes">Yes</td></tr>
-<tr><td><div class="num bg-select">6</div></td><td class="mono">DISTINCT</td><td>Remove duplicate output rows</td><td>output rows</td><td class="yes">Yes</td><td>—</td></tr>
-<tr><td><div class="num bg-order">7</div></td><td class="mono">ORDER BY</td><td>Sort the output</td><td>output rows</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
-<tr><td><div class="num bg-limit">8</div></td><td class="mono">LIMIT / OFFSET / TOP</td><td>Keep the first N</td><td>output rows</td><td>—</td><td>—</td></tr>
+<tr><th>#</th><th>Clause</th><th>Plain terms</th><th>Works on</th><th>Can see SELECT aliases?</th><th>Aggregates?</th><th>Windows?</th></tr>
+<tr><td><div class="num bg-from">1</div></td><td class="mono">FROM / JOIN … ON</td><td>Get and combine the tables</td><td>rows</td><td class="no">No</td><td class="no">No</td><td class="no">No</td></tr>
+<tr><td><div class="num bg-where">2</div></td><td class="mono">WHERE</td><td>Keep only rows that pass</td><td>rows</td><td class="partial">Mostly no (DuckDB, Snowflake: yes)</td><td class="no">No</td><td class="no">No</td></tr>
+<tr><td><div class="num bg-group">3</div></td><td class="mono">GROUP BY</td><td>Collapse rows into groups</td><td>rows → groups</td><td class="partial">Dialect-dependent</td><td class="no">No</td><td class="no">No</td></tr>
+<tr><td><div class="num bg-agg">4</div></td><td class="mono">aggregates</td><td>Count / sum each group</td><td>groups</td><td>—</td><td>defines them</td><td class="no">No</td></tr>
+<tr><td><div class="num bg-having">5</div></td><td class="mono">HAVING</td><td>Keep only groups that pass</td><td>groups</td><td class="partial">Dialect-dependent</td><td class="yes">Yes</td><td class="no">No</td></tr>
+<tr><td><div class="num bg-window">6</div></td><td class="mono">window functions · OVER</td><td>Look across rows without merging them</td><td>rows or groups</td><td class="no">No</td><td class="yes">Yes (can wrap them)</td><td>defines them</td></tr>
+<tr><td><div class="num bg-window">6b</div></td><td class="mono">QUALIFY</td><td>Keep only rows whose window result passes</td><td>rows or groups</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+<tr><td><div class="num bg-select">7</div></td><td class="mono">SELECT</td><td>Compute and name output columns</td><td>rows or groups</td><td>defines them</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+<tr><td><div class="num bg-distinct">8</div></td><td class="mono">DISTINCT</td><td>Remove duplicate output rows</td><td>output rows</td><td class="yes">Yes</td><td>—</td><td>—</td></tr>
+<tr><td><div class="num bg-order">9</div></td><td class="mono">ORDER BY</td><td>Sort the output</td><td>output rows</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td></tr>
+<tr><td><div class="num bg-limit">10</div></td><td class="mono">LIMIT / OFFSET / TOP / FETCH</td><td>Keep the first N</td><td>output rows</td><td>—</td><td>—</td><td>—</td></tr>
 </table>
 </div>
-<div class="tech"><span class="lbl">Window functions — why you can't filter on them in WHERE</span><br>Window functions (<code>ROW_NUMBER() OVER (…)</code>, <code>SUM(x) OVER (…)</code>) are computed during step 5, after WHERE, GROUP BY and HAVING. So <code>WHERE ROW_NUMBER() OVER (…) = 1</code> is invalid. The fix is to compute it in a CTE and filter in the next one. Snowflake, BigQuery, DuckDB and Databricks also offer <code>QUALIFY</code>, a filter that runs after window functions.</div>
+<p style="font-size:13.5px;color:var(--muted)">QUALIFY is not ANSI SQL; it exists in DuckDB, Snowflake, BigQuery, Databricks and Teradata. Set operations (<code>UNION</code>, <code>INTERSECT</code>, <code>EXCEPT</code>) combine whole query blocks after each block's DISTINCT and before the final ORDER BY / LIMIT.</p>
 
-<!-- ================= 5 ENGINE ================= -->
-<h2 id="engine">5 · Inside the engine: from text to result</h2>
-<div class="plain"><span class="lbl">Plain terms</span><br>Section 3 showed <b>what</b> the answer must be. Behind the scenes, a pipeline of components reads your text, checks it, finds the fastest way to compute it, and runs that plan. The optimizer is free to reorder, merge or skip work, but the result must always be identical to what the logical order would produce.</div>
+<!-- ================= 5 SYNTAX ================= -->
+<h2 id="syntax">5 · Syntax notes</h2>
+
+<div class="grid2">
+<div class="panel">
+  <h3>CASE: two forms</h3>
+<pre><span class="c">-- Searched CASE: any condition per branch (used here)</span>
+CASE WHEN dist_code IN ('1','2') THEN 'Early'
+     WHEN gross_amount &gt;= 50000  THEN 'Large'
+     ELSE 'Other' END
+
+<span class="c">-- Simple CASE: one expression compared with =</span>
+CASE dist_code WHEN '7' THEN 'Normal'
+               WHEN 'G' THEN 'Rollover'
+               ELSE 'Other' END</pre>
+  <p style="font-size:14px"><b>Simple CASE can't match NULL</b>: it compares with <code>=</code>, and <code>NULL = NULL</code> is UNKNOWN. Use the searched form with <code>WHEN dist_code IS NULL</code>. CASE also works inside aggregates (<b>conditional aggregation</b>): <code>SUM(CASE WHEN dist_code = 'G' THEN gross_amount END)</code> gives rollover dollars in the same pass. Many engines also support the cleaner <code>COUNT(*) FILTER (WHERE …)</code> (PostgreSQL, DuckDB).</p>
+</div>
+<div class="panel">
+  <h3>Aggregate vs window: same function, different shape</h3>
+  <div class="tw"><table>
+    <tr><th>Expression</th><th>Rows out</th><th>Plain terms</th></tr>
+    <tr><td class="mono">SUM(x) + GROUP BY</td><td>one per group</td><td>“Total per pile”</td></tr>
+    <tr><td class="mono">SUM(x) OVER ()</td><td>one per input row</td><td>“Grand total next to every row”</td></tr>
+    <tr><td class="mono">SUM(x) OVER (PARTITION BY k)</td><td>one per input row</td><td>“Subtotal of my pile, next to me”</td></tr>
+    <tr><td class="mono">SUM(x) OVER (ORDER BY t)</td><td>one per input row</td><td>“Running total up to me”</td></tr>
+    <tr><td class="mono">SUM(COUNT(*)) OVER ()</td><td>one per group</td><td>“Total of all piles' counts, next to every pile”</td></tr>
+  </table></div>
+  <p style="font-size:14px">Nesting rule: a window may wrap an aggregate (<code>SUM(COUNT(*)) OVER ()</code>), but an aggregate may never wrap a window (<code>SUM(RANK() OVER …)</code> is an error), and aggregates can't nest directly (<code>SUM(COUNT(*))</code> without OVER is an error).</p>
+</div>
+</div>
+
+<div class="panel" style="margin-top:14px">
+  <h3>Anatomy of OVER (…)</h3>
+<pre>function(args) OVER (
+    PARTITION BY plan_type                              <span class="c">-- 1. split rows into independent windows (omit = one window)</span>
+    ORDER BY SUM(gross_amount) DESC                     <span class="c">-- 2. order rows inside each window (needed by RANK, LAG, running totals)</span>
+    ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW    <span class="c">-- 3. frame: which ordered rows the function sees</span>
+)</pre>
+  <div class="grid2">
+    <div>
+      <p style="font-size:14px"><b>Plain terms:</b> PARTITION BY decides “who's in my group,” ORDER BY decides “who comes before me,” and the frame decides “how far back (or forward) I look.”</p>
+      <p style="font-size:14px"><b>Default frame trap:</b> with <code>ORDER BY</code> and no frame, the default is <code>RANGE BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW</code>. Rows that tie on the ORDER BY value are <b>peers</b> and get the same running total. Write <code>ROWS …</code> explicitly when you want strictly row-by-row behavior.</p>
+    </div>
+    <div class="tw"><table>
+      <tr><th>Ranking function</th><th>Ties</th><th>Example on 100, 90, 90, 80</th></tr>
+      <tr><td class="mono">ROW_NUMBER()</td><td>broken arbitrarily</td><td class="mono">1, 2, 3, 4</td></tr>
+      <tr><td class="mono">RANK()</td><td>same rank, then a gap</td><td class="mono">1, 2, 2, 4</td></tr>
+      <tr><td class="mono">DENSE_RANK()</td><td>same rank, no gap</td><td class="mono">1, 2, 2, 3</td></tr>
+    </table>
+    <p style="font-size:13px;color:var(--muted)">Use <code>ROW_NUMBER()</code> for deduplication (“latest record per participant”) with a full tie-breaker, so exactly one row wins.</p></div>
+  </div>
+</div>
+
+<div class="panel" style="margin-top:14px">
+  <h3>Alias scope: who can see <code>total_gross</code>?</h3>
+  <p style="font-size:14px">Follow the logical order. The alias is created at step 8, so only steps after it can see it in standard SQL: <code>ORDER BY total_gross</code> works everywhere; <code>WHERE</code>, <code>HAVING</code> and <code>GROUP BY</code> are dialect-dependent (section 9). The table aliases <code>d</code> and <code>p</code> are created in FROM, so every clause can see them. For portable code, either repeat the expression or compute it in a CTE and reference the column in the next CTE.</p>
+</div>
+
+<!-- ================= 6 ENGINE ================= -->
+<h2 id="engine">6 · Inside the engine: from text to result</h2>
+<div class="plain"><span class="lbl">Plain terms</span><br>Section 3 showed <b>what</b> the answer must be. Behind the scenes a pipeline reads your text, checks it, finds the fastest way to compute it, and runs that plan. The optimizer may reorder, merge or skip work, but the result must match the logical order exactly.</div>
 
 <div class="pipe">
-  <div class="pp"><div class="n">STAGE 1</div><b>Parser</b><p>Checks the grammar and turns the text into a syntax tree. It doesn't yet know whether the tables exist.</p><div class="err">syntax error at or near "FORM"</div></div>
-  <div class="pp"><div class="n">STAGE 2</div><b>Analyzer / Binder</b><p>Looks up names in the catalog, resolves types, resolves <code>GROUP BY 1</code> to the CASE expression, and enforces the single-value rule.</p><div class="err">column "wieght" does not exist</div></div>
-  <div class="pp"><div class="n">STAGE 3</div><b>Rewriter</b><p>Normalizes the tree: expands views, simplifies <code>IN</code> to <code>= ANY</code>, folds constants, flattens subqueries and CTEs.</p></div>
-  <div class="pp"><div class="n">STAGE 4</div><b>Optimizer / Planner</b><p>Generates candidate plans and estimates their cost from table statistics. Picks the scan type, join order and aggregate strategy.</p></div>
-  <div class="pp"><div class="n">STAGE 5</div><b>Executor</b><p>Runs the plan's operators and streams rows (or batches) from storage up through filter → project → aggregate.</p></div>
+  <div class="pp"><div class="n">STAGE 1</div><b>Parser</b><p>Checks grammar and builds a syntax tree. Doesn't yet know whether tables exist.</p><div class="err">syntax error at or near "FORM"</div></div>
+  <div class="pp"><div class="n">STAGE 2</div><b>Analyzer / Binder</b><p>Resolves names and types against the catalog, maps <code>GROUP BY 1, 2</code> to expressions, enforces the single-value rule and where windows may appear.</p><div class="err">column "d.gross" does not exist</div></div>
+  <div class="pp"><div class="n">STAGE 3</div><b>Rewriter</b><p>Normalizes the tree: expands views, rewrites <code>IN</code>, folds constants, inlines CTEs and subqueries.</p></div>
+  <div class="pp"><div class="n">STAGE 4</div><b>Optimizer / Planner</b><p>Estimates costs from statistics and picks join order, join algorithm, scan type, aggregate and sort strategy.</p></div>
+  <div class="pp"><div class="n">STAGE 5</div><b>Executor</b><p>Runs the operators and streams rows or batches up through scan → join → aggregate → filter → window → sort/limit.</p></div>
 </div>
 
 <div class="grid2">
   <div class="panel">
     <h3>How the optimizer decides</h3>
-    <p><b>Plain terms:</b> it estimates “how many rows will survive the filter?” and picks the cheapest route. If only a handful of players weigh 300+, jumping straight to them via an index beats reading every row. If half of them do, reading everything sequentially is faster.</p>
-    <p><b>Technically:</b> <b>cost-based optimization</b> uses column statistics (histograms, distinct counts, null fraction) collected by <code>ANALYZE</code> (PostgreSQL) or automatically (Snowflake, BigQuery, DuckDB) to estimate <b>selectivity</b>. Stale statistics give bad estimates, and bad estimates give bad plans. That's why <code>ANALYZE</code> after a large load is a production habit.</p>
+    <p><b>Plain terms:</b> it estimates “how many rows survive each step?” and picks the cheapest route. Filtering 1,000 paid distributions before joining is cheaper than joining 1,000,000 and filtering afterwards, so it moves WHERE below the join.</p>
+    <p><b>Technically:</b> <b>cost-based optimization</b> uses column statistics (histograms, distinct counts, null fraction) collected by <code>ANALYZE</code> (PostgreSQL) or automatically (Snowflake, BigQuery, DuckDB) to estimate <b>selectivity</b>. It chooses the <b>build side</b> of a hash join (the smaller input), pushes predicates down, and prunes unused columns. Stale statistics give bad estimates, and bad estimates give bad plans.</p>
   </div>
   <div class="panel">
-    <h3>Row-at-a-time vs vectorized</h3>
-    <p><b>Plain terms:</b> an old-style engine passes rows up the plan one at a time, like a single-file line. A modern analytical engine passes a tray of a couple thousand values at once, so the CPU does the same operation on many values in a tight loop.</p>
-    <p><b>Technically:</b> PostgreSQL uses the classic <b>Volcano / iterator</b> model, where each operator's <code>next()</code> pulls one tuple from its child. DuckDB uses <b>vectorized, push-based</b> execution: batches of 2,048 values per vector, organized in row groups of 122,880 rows that carry min/max metadata for skipping. Snowflake, BigQuery, ClickHouse and Polars use variants of the same idea.</p>
+    <h3>How windows are executed</h3>
+    <p><b>Plain terms:</b> to rank piles, the engine has to line them up first. To compute a grand total, it reads every pile once and broadcasts the sum back.</p>
+    <p><b>Technically:</b> the <b>Window</b> operator (PostgreSQL <code>WindowAgg</code>) needs its input <b>sorted by PARTITION BY, then ORDER BY</b>. Windows with the same <code>OVER (…)</code> share one sort, so reuse identical window definitions (or a named <code>WINDOW w AS (…)</code>). An empty <code>OVER ()</code> needs no sort, just one pass. Large partitions are the window equivalent of a hash spill: memory-hungry and slow.</p>
   </div>
 </div>
 
 <div class="grid3" style="margin-top:14px">
-  <div class="panel bar b-from"><h3>Columnar storage</h3><p><b>Plain:</b> read only the columns you asked for.<br><b>Tech:</b> this query touches 2 columns. On a 10-column table, that's roughly 80% less I/O. This is why <code>SELECT *</code> is expensive in a warehouse.</p></div>
-  <div class="panel bar b-where"><h3>Pruning</h3><p><b>Plain:</b> skip whole chunks that can't contain a match.<br><b>Tech:</b> if a block's max weight is 280, the filter <code>weight &gt;= 300</code> can't match anything in it, so it's skipped without being read. Partitioning and clustering on common filter columns makes this work far better.</p></div>
-  <div class="panel bar b-agg"><h3>Parallelism &amp; spill</h3><p><b>Plain:</b> split the work across CPU cores, then merge the results.<br><b>Tech:</b> partial hash aggregates per thread are merged at the end. If the hash table outgrows memory (<code>work_mem</code> in PostgreSQL), the engine spills to disk and slows down. 3 groups will never come close.</p></div>
+  <div class="panel bar b-from"><h3>Columnar storage</h3><p><b>Plain:</b> read only the columns you asked for.<br><b>Tech:</b> this query reads 5 of 7 distribution columns and 2 of 3 plan columns. On wide warehouse tables, that's why <code>SELECT *</code> is expensive.</p></div>
+  <div class="panel bar b-where"><h3>Pruning</h3><p><b>Plain:</b> skip whole chunks that can't contain a match.<br><b>Tech:</b> if a block's max <code>paid_date</code> is in 2025, <code>paid_date &gt;= '2026-01-01'</code> can't match anything in it, so it's skipped unread. Partitioning or clustering on <code>paid_date</code> makes this very effective.</p></div>
+  <div class="panel bar b-agg"><h3>Parallelism &amp; spill</h3><p><b>Plain:</b> split work across CPU cores, then merge.<br><b>Tech:</b> partial hash aggregates per thread are combined at the end. If a hash table or sort outgrows memory (<code>work_mem</code> in PostgreSQL), it spills to disk and slows down.</p></div>
 </div>
+<div class="tech" style="margin-top:14px"><span class="lbl">Row-at-a-time vs vectorized</span><br>PostgreSQL uses the classic <b>Volcano / iterator</b> model, where each operator pulls one tuple from its child. DuckDB uses <b>vectorized, push-based</b> execution on batches of 2,048 values, organized in row groups of 122,880 rows that carry min/max metadata for skipping. Snowflake, BigQuery, ClickHouse and Polars use variants of the same idea.</div>
 
-<!-- ================= 6 PLANS ================= -->
-<h2 id="plans">6 · Reading the execution plan</h2>
-<p><b>Plain terms:</b> <code>EXPLAIN</code> asks the database to show its plan without running the query. <code>EXPLAIN ANALYZE</code> runs it and shows real timings and row counts. Read plans <b>from the innermost / bottom node up</b>: that's where data enters.</p>
+<!-- ================= 7 PLANS ================= -->
+<h2 id="plans">7 · Reading the execution plan</h2>
+<p><b>Plain terms:</b> <code>EXPLAIN</code> asks the database for its plan without running the query; <code>EXPLAIN ANALYZE</code> runs it and reports real row counts and timings. Read plans <b>from the bottom up</b>: that's where data enters.</p>
 <div class="grid2">
   <div>
-    <h4>PostgreSQL (illustrative)</h4>
-<pre>HashAggregate                               <span class="c">← steps 4–5: group + count</span>
-  Group Key: CASE
-    WHEN (state = ANY ('{CA,OR,WA}'::text[]))  <span class="c">← step 3: IN rewritten to = ANY</span>
-      THEN 'West Coast'::text
-    WHEN (state = 'TX'::text) THEN 'Texas'::text
-    ELSE 'Other'::text END
-  ->  Seq Scan on college_football_players  <span class="c">← step 1: read table</span>
-        Filter: (weight >= 300)              <span class="c">← step 2: applied during the scan</span></pre>
-    <p style="font-size:13.5px;color:var(--muted)">With a selective filter and an index on <code>weight</code>, <code>Seq Scan</code> becomes <code>Index Scan</code> or <code>Bitmap Heap Scan</code>. With many groups or pre-sorted input, <code>HashAggregate</code> may become <code>Sort → GroupAggregate</code>.</p>
+    <h4>DuckDB 2.0 (real output, trimmed)</h4>
+<pre>Top N            Top: 3                         <span class="c">← 10–11: ORDER BY + LIMIT fused</span>
+  Order By: gross_rank ASC, dist_category ASC
+Projection                                      <span class="c">← 8: SELECT list, aliases</span>
+Window                                          <span class="c">← 7: both windows, one operator</span>
+  sum(count_star()) OVER ()
+  rank() OVER (ORDER BY sum(gross_amount) DESC)
+Filter   sum(gross_amount) &gt;= 10000.00         <span class="c">← 6: HAVING</span>
+Hash Group By   Groups: #0, #1                  <span class="c">← 4–5: GROUP BY + aggregates</span>
+  Aggregates: sum(#2), count_star()
+Projection   CASE WHEN (dist_code IN ('1','2'))…<span class="c">← 3: CASE computed per row</span>
+Hash Join   INNER   plan_id = plan_id           <span class="c">← 1: the JOIN</span>
+├─ Seq Scan distributions                       <span class="c">← probe side</span>
+│    Projections: plan_id, dist_code, gross_amount
+│    Filters: status = 'PAID',                  <span class="c">← 2: WHERE, pushed INTO the scan</span>
+│             paid_date &gt;= '2026-01-01'::DATE
+└─ Seq Scan plans                               <span class="c">← build side (smaller table)</span>
+     Projections: plan_id, plan_type</pre>
+    <p style="font-size:13.5px;color:var(--muted)">Captured from the section 11 notebook; internal string compress/decompress projections and cardinality estimates removed for clarity.</p>
   </div>
   <div>
-    <h4>DuckDB (real output, trimmed)</h4>
-<pre>┌───────────────────────────┐
-│       HASH_GROUP_BY       │   <span class="c">← steps 4–5</span>
-│   Groups: #0              │
-│   Aggregates: count_star()│   <span class="c">← COUNT(1) rewritten to COUNT(*)</span>
-└─────────────┬─────────────┘
-┌─────────────┴─────────────┐
-│        PROJECTION         │   <span class="c">← step 3: CASE</span>
-│   CASE WHEN … END         │
-└─────────────┬─────────────┘
-┌─────────────┴─────────────┐
-│         SEQ_SCAN          │   <span class="c">← steps 1–2</span>
-│   Projections: state      │   <span class="c">← only needed columns</span>
-│   Filters: weight>=300    │   <span class="c">← pushed into the scan</span>
-└───────────────────────────┘</pre>
-    <p style="font-size:13.5px;color:var(--muted)">Captured from DuckDB on the sample in section 10. The full output also includes internal string compress/decompress projections and the ORDER BY node, removed here for clarity. Note <code>Projections: state</code>: <code>weight</code> is used only inside the scan filter, so it never travels up the plan.</p>
+    <div class="note"><span class="lbl">Logical vs physical, side by side</span><br>
+    <b>WHERE runs before the JOIN.</b> Logically the join comes first (step 1). Physically, the optimizer pushed the WHERE filter into the scan of <code>distributions</code>, so only paid 2026 rows are ever joined. Same result, less work.<br><br>
+    <b>Only needed columns travel.</b> <code>status</code> and <code>paid_date</code> are used inside the scan filter and then dropped; <code>dist_id</code> and <code>participant_id</code> are never read at all.<br><br>
+    <b>ORDER BY and LIMIT become one operator.</b> “Top N” keeps the best 3 rows in a small heap instead of sorting all of them.<br><br>
+    <b>Everything else matches the logical order exactly:</b> CASE before grouping, HAVING as a filter on aggregates, windows after HAVING.</div>
+    <div class="note"><span class="lbl">What to look for in EXPLAIN ANALYZE</span><br>
+    <b>Estimated vs actual rows</b> on each node: a 10× gap means stale statistics or a predicate the optimizer can't estimate. A <b>join whose output is much larger than its inputs</b> means fan-out. <b>A sequential scan of a huge table with a selective filter</b> suggests a missing index, poor partitioning, or a non-sargable predicate. <b>Spill / “Disk” / Batches &gt; 1</b> on a hash or sort node means it ran out of memory.</div>
   </div>
 </div>
-<div class="note"><span class="lbl">What to look for in EXPLAIN ANALYZE</span><br>
-<b>Estimated vs actual rows</b> on each node. A 10× or bigger gap means stale statistics or a predicate the optimizer can't estimate. <b>Seq Scan on a huge table with a selective filter</b> often signals a missing index or a non-sargable predicate (see below). <b>“Disk” / “Batches &gt; 1”</b> on a hash node means it ran out of memory and spilled.</div>
 
-<!-- ================= 7 EDGE ================= -->
-<h2 id="edge">7 · Semantics &amp; edge cases (the ones that bite in production)</h2>
+<!-- ================= 8 EDGE ================= -->
+<h2 id="edge">8 · Semantics &amp; edge cases (the ones that bite in production)</h2>
 
-<div class="warn"><span class="lbl">1 · NULLs take the ELSE branch silently</span><br>
-<b>Plain:</b> a player with a blank state isn't “West Coast,” isn't “Texas,” so he lands in “Other” and gets mixed in with real states.<br>
-<b>Tech:</b> <code>NULL IN ('CA','OR','WA')</code> → UNKNOWN, and <code>NULL = 'TX'</code> → UNKNOWN, so the row falls to ELSE. A NULL <i>weight</i> is excluded by WHERE. Either way, nothing errors. If missing data matters, make it explicit:
-<pre>CASE WHEN state IS NULL               THEN 'Unknown'   <span class="c">-- first, so it isn't hidden in Other</span>
-     WHEN state IN ('CA','OR','WA')   THEN 'West Coast'
-     WHEN state = 'TX'                THEN 'Texas'
-     ELSE 'Other' END</pre></div>
+<div class="warn"><span class="lbl">1 · Inner joins drop orphans silently</span><br>
+D10 (plan P4) disappeared at step 1 with no error: 16 source rows became 15. Decide on purpose. Use <code>INNER JOIN</code> when an orphan is genuinely out of scope, and <code>LEFT JOIN</code> plus a <code>COALESCE(p.plan_type, 'Unknown plan')</code> when it must still be counted. Either way, add a relationships test so orphans are reported, not hidden. (Verified: the LEFT JOIN returns all 16 rows, with D10's plan_type NULL.)</div>
 
-<div class="warn"><span class="lbl">2 · Dirty values miss every branch</span><br>
-<b>Plain:</b> <code>'tx'</code>, <code>' TX'</code> and <code>'Tex.'</code> are not <code>'TX'</code>, so they all become “Other.”<br>
-<b>Tech:</b> string comparison is exact (case- and whitespace-sensitive in most engines and collations). Normalize once, upstream, in a staging model with <code>upper(trim(state))</code>. Don't patch it inside every query.</div>
+<div class="warn"><span class="lbl">2 · NULL means “unknown”, and unknown fails every filter</span><br>
+D07's NULL <code>paid_date</code> makes <code>paid_date &gt;= …</code> UNKNOWN, and WHERE keeps only TRUE. In CASE, D13's NULL code made every WHEN UNKNOWN, so it landed in ELSE next to a real code (D11, code 4). Put <code>WHEN dist_code IS NULL THEN 'Unknown'</code> <b>first</b>, so missing data is visible instead of blended into “Other”.</div>
 
-<div class="warn"><span class="lbl">3 · CASE is first-match-wins</span><br>
-Put a broad rule above a narrow one and the narrow one never fires. For example, <code>WHEN weight &gt;= 300 THEN 'Heavy'</code> placed first would label every row “Heavy,” and no row would ever reach “Texas.” Order rules from most specific to most general.</div>
+<div class="warn"><span class="lbl">3 · Dirty values miss every branch</span><br>
+<code>'g'</code> is not <code>'G'</code>, and <code>' 7'</code> is not <code>'7'</code>. Verified on this dataset: adding one <code>'g'</code> row ($11,000) and one <code>' 7'</code> row ($9,000) sends both to “Other” with no error. After <code>upper(trim(dist_code))</code> they move to Rollover · 403(b) and Normal · 457(b). Normalize once in a staging model, not inside every query.</div>
 
-<div class="warn"><span class="lbl">4 · COUNT(*) vs COUNT(column) vs COUNT(DISTINCT column)</span>
+<div class="warn"><span class="lbl">4 · CASE is first-match-wins</span><br>
+A broad rule above a narrow one starves it: put <code>WHEN gross_amount &gt;= 10000 THEN 'Large'</code> first and no large rollover is ever labeled “Rollover”. Order branches from most specific to most general.</div>
+
+<div class="warn"><span class="lbl">5 · COUNT(*) vs COUNT(column) vs COUNT(DISTINCT column)</span>
 <div class="tw"><table>
 <tr><th>Expression</th><th>Counts</th><th>Plain terms</th></tr>
 <tr><td class="mono">COUNT(*) / COUNT(1)</td><td>every row in the group</td><td>“How many rows?”</td></tr>
-<tr><td class="mono">COUNT(weight)</td><td>rows where weight IS NOT NULL</td><td>“How many rows have a value here?”</td></tr>
-<tr><td class="mono">COUNT(DISTINCT player_name)</td><td>unique non-null values</td><td>“How many different players?” (protects against duplicate rows)</td></tr>
+<tr><td class="mono">COUNT(dist_code)</td><td>rows where dist_code IS NOT NULL</td><td>“How many rows have a value here?” (D13 wouldn't count)</td></tr>
+<tr><td class="mono">COUNT(DISTINCT participant_id)</td><td>unique non-null values</td><td>“How many different participants?”</td></tr>
 </table></div></div>
 
-<div class="warn"><span class="lbl">5 · Non-sargable filters disable indexes and pruning</span><br>
-<b>Plain:</b> if you wrap the column in a function or calculation, the engine has to compute it for every row before it can compare, so it can't jump straight to the matches.<br>
-<b>Tech:</b> <code>WHERE weight &gt;= 300</code> is <b>sargable</b> (index- and pruning-friendly). <code>WHERE weight * 1.0 &gt;= 300</code> or <code>WHERE CAST(weight AS TEXT) …</code> is not. The same applies to dates: prefer <code>WHERE d &gt;= '2026-01-01' AND d &lt; '2027-01-01'</code> over <code>WHERE EXTRACT(YEAR FROM d) = 2026</code>.</div>
+<div class="warn"><span class="lbl">6 · HAVING shrinks the window's denominator; LIMIT doesn't</span><br>
+Because windows run <b>after HAVING</b>, <code>SUM(COUNT(*)) OVER ()</code> was 7, not 12. Because they run <b>before LIMIT</b>, the shares shown in the final 3 rows add up to 85.8%, not 100%. Decide which denominator the business means (“share of all paid distributions” vs “share of material groups”) and make the query express that, usually by computing the share in one CTE and filtering in the next.</div>
 
-<div class="warn"><span class="lbl">6 · Filter rows in WHERE, not HAVING</span><br>
-<code>HAVING state = 'TX'</code> is either invalid or wasteful. HAVING runs after grouping, so the engine aggregates rows it will then discard. Row conditions belong in WHERE (filter early). Conditions on aggregates (<code>HAVING COUNT(*) &gt;= 3</code>) belong in HAVING.</div>
+<div class="warn"><span class="lbl">7 · Integer division depends on the engine</span><br>
+<code>COUNT(*) / SUM(COUNT(*)) OVER ()</code> returns different things by dialect. <b>SQL Server</b>: both sides are <code>int</code>, so it truncates to 0. <b>PostgreSQL</b>: <code>sum(bigint)</code> returns <code>numeric</code>, so this specific expression is safe, but <code>COUNT(*) / COUNT(*)</code>-style integer math truncates. <b>DuckDB</b>: <code>/</code> always returns a decimal fraction and <code>//</code> is integer division (verified: 0.1667 vs 0). Habit: write <code>100.0 * …</code> or cast explicitly, so the result never depends on the engine.</div>
 
-<div class="warn"><span class="lbl">7 · No ORDER BY = no guaranteed order</span><br>
-Results that “always came back sorted” in development can change when data grows, the engine upgrades or the plan switches to parallel. Tests and snapshot diffs that depend on row order become flaky. Always ORDER BY when order matters.</div>
+<div class="warn"><span class="lbl">8 · Ties make output non-deterministic</span><br>
+If two groups had the same total, <code>RANK()</code> would give both the same number and their order would be up to the engine. Always end ORDER BY with a unique tie-breaker, and use <code>ROW_NUMBER()</code> with a full ORDER BY when exactly one row must win.</div>
 
-<!-- ================= 8 PORTABILITY ================= -->
-<h2 id="portable">8 · Dialect differences: <code>GROUP BY 1</code> and aliases</h2>
-<p><b>Plain terms:</b> the SQL standard doesn't actually allow <code>GROUP BY 1</code>. It's a convenience most engines added, and not all of them.</p>
+<div class="warn"><span class="lbl">9 · Non-sargable filters disable indexes and pruning</span><br>
+<code>WHERE paid_date &gt;= '2026-01-01' AND paid_date &lt; '2027-01-01'</code> is index- and pruning-friendly. <code>WHERE EXTRACT(YEAR FROM paid_date) = 2026</code> and <code>WHERE CAST(paid_date AS TEXT) LIKE '2026%'</code> force a calculation on every row first.</div>
+
+<div class="warn"><span class="lbl">10 · No ORDER BY = no guaranteed order</span><br>
+Results that “always came back sorted” in development can change when data grows, the engine upgrades, or the plan goes parallel. Any test, export or diff that depends on row order needs an explicit ORDER BY.</div>
+
+<!-- ================= 9 PORTABILITY ================= -->
+<h2 id="portable">9 · Dialect differences</h2>
+<p><b>Plain terms:</b> the SQL standard is the common core; every engine adds conveniences. The ones below are exactly the features this query and its variations lean on.</p>
 <div class="panel tw">
 <table>
-<tr><th>Engine</th><th>GROUP BY ordinal (<code>1</code>)</th><th>GROUP BY alias</th><th>GROUP BY ALL</th><th>Notes</th></tr>
-<tr><td>PostgreSQL</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="no">No</td><td>If a name matches both an input column and an output alias, the <b>input column wins</b>. That's a subtle bug source.</td></tr>
-<tr><td>DuckDB</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td>Also <code>QUALIFY</code>, and friendly SQL extensions.</td></tr>
-<tr><td>Snowflake</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td>Also <code>QUALIFY</code>.</td></tr>
-<tr><td>BigQuery</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="partial">Check docs</td><td>Also <code>QUALIFY</code>.</td></tr>
-<tr><td>MySQL</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="no">No</td><td></td></tr>
-<tr><td>SQL Server / Azure SQL</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td>You must repeat the full expression (or group in a subquery/CTE). ORDER BY can use ordinals and aliases.</td></tr>
-<tr><td>Oracle</td><td class="partial">23ai+, behind a setting</td><td class="partial">23ai+</td><td class="no">No</td><td>Older versions: repeat the expression.</td></tr>
+<tr><th>Engine</th><th>GROUP BY 1</th><th>GROUP BY alias</th><th>GROUP BY ALL</th><th>Alias in WHERE / HAVING</th><th>QUALIFY</th><th><code>int / int</code></th></tr>
+<tr><td>PostgreSQL</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="no">No</td><td class="no">No / No</td><td class="no">No</td><td>truncates</td></tr>
+<tr><td>DuckDB</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes / Yes</td><td class="yes">Yes</td><td>fraction (<code>//</code> truncates)</td></tr>
+<tr><td>Snowflake</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="yes">Yes / Yes</td><td class="yes">Yes</td><td>fraction</td></tr>
+<tr><td>BigQuery</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="partial">Check docs</td><td class="partial">Opt-in / Yes</td><td class="yes">Yes</td><td>fraction (FLOAT64)</td></tr>
+<tr><td>MySQL 8</td><td class="yes">Yes</td><td class="yes">Yes</td><td class="no">No</td><td class="partial">No / Yes</td><td class="no">No</td><td>fraction (<code>DIV</code> truncates)</td></tr>
+<tr><td>SQL Server / Azure SQL / Fabric</td><td class="no">No</td><td class="no">No</td><td class="no">No</td><td class="no">No / No</td><td class="no">No</td><td>truncates</td></tr>
+<tr><td>Oracle</td><td class="partial">23ai+, behind a setting</td><td class="partial">23ai+</td><td class="no">No</td><td class="no">No / No</td><td class="no">No</td><td>fraction</td></tr>
 </table>
 </div>
-<div class="note"><span class="lbl">Style: it's a convention choice, so pick one and enforce it</span><br>
-The <b>dbt Labs style guide prefers <code>group by 1, 2</code></b> over listing names (it links a well-known blog post defending the practice) and recommends SQLFluff to enforce its rules automatically. Other teams, such as the Tuva Project's dbt guide, prefer column names. The production habit isn't “ordinals good / bad.” It's <b>one convention, enforced by a linter</b>. SQLFluff's <code>AM06</code> rule checks for consistent GROUP BY / ORDER BY references.</div>
+<p style="font-size:13.5px;color:var(--muted)">DuckDB's alias behavior was verified on DuckDB 2.0. BigQuery's WHERE aliases need an admin to enable “reusable column aliases” (off by default); Snowflake doesn't allow a reused alias inside a window function; check the other engines against the version you run, since several of these features were added recently. In PostgreSQL, if a GROUP BY name matches both an input column and an output alias, the <b>input column wins</b>, which is a subtle bug source.</p>
+<div class="note"><span class="lbl">Style: pick one convention and enforce it with a linter</span><br>
+The <b>dbt Labs style guide prefers <code>group by 1, 2</code></b>; other teams (for example the Tuva Project) prefer column names. The production habit isn't “ordinals good / bad.” It's <b>one convention, enforced automatically</b>: SQLFluff's <code>AM06</code> rule checks consistent GROUP BY / ORDER BY references, run in <code>pre-commit</code> and CI. If the code must also run on SQL Server, use names.</div>
 
-<!-- ================= 9 PRODUCTION ================= -->
-<h2 id="prod">9 · The production version</h2>
-<p><b>Plain terms:</b> the original query is fine for a one-off answer. In a pipeline that runs daily, other people read it, it feeds dashboards, and data changes underneath it. Production SQL is written so it's <b>readable, testable, reusable and safe to change</b>. Here's the same logic, rebuilt the way an Analytics Engineer would ship it in dbt.</p>
+<!-- ================= 10 PRODUCTION ================= -->
+<h2 id="prod">10 · The production version</h2>
+<p><b>Plain terms:</b> the query in section 1 is fine for a one-off answer. A pipeline that runs every day, feeds a report, and is read by other people needs to be <b>readable, testable, reusable and safe to change</b>. Here is the same logic as a dbt project on DuckDB, with the fixes from section 8 applied.</p>
 
-<h3>Pattern A · Layered CTEs (import → logic → final)</h3>
-<p><b>Plain:</b> break the query into named steps that read top to bottom in the same order the engine evaluates them. To debug, change the last line to <code>select * from &lt;any step&gt;</code>.<br>
-<b>Tech:</b> dbt Labs' convention is import CTEs named after their source, logical CTEs with descriptive names, and a final <code>select * from final</code>. Modern optimizers inline CTEs (PostgreSQL ≥ 12 folds them by default), so this is readability with no runtime cost.</p>
+<h3>What changes and why</h3>
+<div class="panel tw">
+<table>
+<tr><th>Ad-hoc query</th><th>Production version</th><th>Why</th></tr>
+<tr><td>CASE hard-coded in the query</td><td>Mapping in a version-controlled seed, joined in</td><td>One source of truth; adding a code is a one-line change; the mapping itself is tested</td></tr>
+<tr><td>NULL and dirty codes fall into “Other”</td><td>Codes normalized in staging; NULL → “Unknown”</td><td>Data-quality problems become visible instead of silently mislabeled</td></tr>
+<tr><td>Orphan plan dropped by INNER JOIN</td><td>Relationships test on <code>plan_id</code></td><td>The build fails (or warns) instead of the total being quietly short</td></tr>
+<tr><td>Magic numbers <code>2026-01-01</code>, <code>10000</code></td><td>Project variables</td><td>Named, documented, changeable without editing SQL</td></tr>
+<tr><td>Share computed after HAVING</td><td>Share computed over all groups; materiality flagged, not filtered</td><td>The denominator is explicit, and consumers can filter without breaking the math</td></tr>
+<tr><td><code>ORDER BY … LIMIT 3</code></td><td>No LIMIT in the model; top-N in the dashboard</td><td>Models keep a declared grain so they can be reconciled and reused</td></tr>
+<tr><td>Correct today, unverified tomorrow</td><td>Generic tests, a unit test for the mapping, and a reconciliation test</td><td>Every build proves the numbers still tie out</td></tr>
+</table>
+</div>
 
-<h3>Pattern B · Replace hard-coded CASE with a mapping table</h3>
-<p><b>Plain:</b> instead of burying “CA, OR, WA = West Coast” inside one query, keep it in a small lookup table. When the business adds Nevada, you edit one row in one file, and every query that uses regions updates.<br>
-<b>Tech:</b> the mapping becomes a <b>dbt seed</b> (version-controlled CSV) joined with a LEFT JOIN plus <code>COALESCE</code> for the default. This gives you a <b>single source of truth</b> and makes the mapping itself testable. <b>Watch out:</b> a duplicate state in the seed makes the join <b>fan out</b> (one player matches two rows) and silently double-counts. That's why the seed gets a <code>unique</code> test.</p>
-
+<h3 style="margin-top:18px">Pattern A · Seed + staging: clean once, upstream</h3>
 <div class="grid2">
 <div>
-<h4>seeds/state_region_map.csv</h4>
-<pre>state,region
-CA,West Coast
-OR,West Coast
-WA,West Coast
-TX,Texas</pre>
-<h4>models/staging/stg_benn__college_football_players.sql</h4>
-<pre><span class="c">-- Staging: clean once, upstream. Every downstream model inherits it.</span>
-with source as (
-    select * from {{ source('benn', 'college_football_players') }}
+<h4>seeds/dist_code_category_map.csv</h4>
+<pre>dist_code,dist_category,irs_description
+1,Early,Early distribution - no known exception
+2,Early,Early distribution - exception applies
+7,Normal,Normal distribution
+G,Rollover,Direct rollover
+4,Death,Death</pre>
+<p style="font-size:13.5px;color:var(--muted)">Code 4 now gets its own category instead of hiding in “Other”. Anything not in the seed still becomes “Other”, and an <code>accepted_values</code> test can warn when a new code appears.</p>
+</div>
+<div>
+<h4>models/staging/stg_recordkeeper__distributions.sql</h4>
+<pre>with source as (
+    select * from {{ source('recordkeeper', 'distributions') }}
 ),
 
 renamed as (
     select
-        player_name,
-        upper(trim(state)) as state_code,  <span class="c">-- fixes 'tx', ' TX'</span>
-        weight             as weight_lbs   <span class="c">-- unit in the name</span>
+        dist_id,
+        participant_id,
+        plan_id,
+        nullif(upper(trim(dist_code)), '') as dist_code,  <span class="c">-- 'g', ' 7', '' fixed</span>
+        upper(trim(status))                as dist_status,
+        cast(gross_amount as decimal(18, 2)) as gross_amount_usd,
+        cast(paid_date as date)            as paid_date
     from source
 )
 
 select * from renamed</pre>
 </div>
-<div>
-<h4>models/marts/heavy_players_by_region.sql</h4>
-<pre><span class="c">{# threshold is a project var, not a magic number #}</span>
-{% set min_weight_lbs = var('heavy_player_min_weight_lbs', 300) %}
+</div>
 
-with players as (
-    select * from {{ ref('stg_benn__college_football_players') }}
+<h3 style="margin-top:18px">Pattern B · Layered CTEs that read in logical order</h3>
+<p><b>Plain:</b> each CTE is one logical step from section 3, with a name. To debug, change the last line to <code>select * from &lt;any step&gt;</code> and look at the rows at that point.<br>
+<b>Tech:</b> dbt Labs' convention is import CTEs, then logical CTEs, then <code>select * from final</code>. Modern optimizers inline CTEs (PostgreSQL ≥ 12 by default, DuckDB too), so this costs nothing at runtime.</p>
+<h4>models/marts/distribution_mix_by_category.sql</h4>
+<pre>{% set start_date = var('dist_mix_start_date', '2026-01-01') %}
+{% set materiality_usd = var('dist_mix_materiality_usd', 10000) %}
+
+with distributions as (                                   <span class="c">-- import CTEs</span>
+    select * from {{ ref('stg_recordkeeper__distributions') }}
 ),
 
-state_region_map as (
-    select * from {{ ref('state_region_map') }}
+plans as (
+    select * from {{ ref('stg_recordkeeper__plans') }}
 ),
 
-heavy_players as (                    <span class="c">-- step 2: filter early</span>
-    select state_code
-    from players
-    where weight_lbs >= {{ min_weight_lbs }}
+code_map as (
+    select * from {{ ref('dist_code_category_map') }}
 ),
 
-labeled as (                          <span class="c">-- step 3: label via lookup</span>
+paid as (                                                 <span class="c">-- step 2: WHERE, filter early</span>
+    select *
+    from distributions
+    where dist_status = 'PAID'
+      and paid_date &gt;= cast('{{ start_date }}' as date)
+),
+
+classified as (                                           <span class="c">-- steps 1 + 3: JOIN + label</span>
     select
+        paid.dist_id,
+        paid.gross_amount_usd,
+        coalesce(plans.plan_type, 'Unknown plan') as plan_type,   <span class="c">-- LEFT JOIN keeps orphans</span>
         case
-            when heavy_players.state_code is null then 'Unknown'
-            else coalesce(state_region_map.region, 'Other')
-        end as region
-    from heavy_players
-    left join state_region_map
-        on heavy_players.state_code = state_region_map.state
+            when paid.dist_code is null then 'Unknown'
+            else coalesce(code_map.dist_category, 'Other')
+        end as dist_category
+    from paid
+    left join plans    on paid.plan_id   = plans.plan_id
+    left join code_map on paid.dist_code = code_map.dist_code
 ),
 
-final as (                            <span class="c">-- steps 4–6</span>
+grouped as (                                              <span class="c">-- steps 4-5: GROUP BY + aggregates</span>
     select
-        region,
-        count(*) as player_count
-    from labeled
-    group by 1
+        dist_category,
+        plan_type,
+        count(*)              as n_dists,
+        sum(gross_amount_usd) as total_gross_usd
+    from classified
+    group by 1, 2
+),
+
+final as (                                                <span class="c">-- step 7: windows over ALL groups</span>
+    select
+        dist_category,
+        plan_type,
+        n_dists,
+        total_gross_usd,
+        round(100.0 * n_dists / sum(n_dists) over (), 1)            as pct_of_paid_dists,
+        rank() over (order by total_gross_usd desc, dist_category, plan_type) as gross_rank,
+        total_gross_usd &gt;= {{ materiality_usd }}                    as is_material
+    from grouped
 )
 
 select * from final</pre>
-</div>
+<div class="prod"><span class="lbl">Three deliberate differences from the ad-hoc query</span><br>
+<b>1.</b> The aggregate and the window live in separate CTEs, so <code>sum(n_dists) over ()</code> replaces the nested <code>SUM(COUNT(*)) OVER ()</code>: same result, easier to read. <b>2.</b> The share is computed over <b>all</b> groups, so its name (<code>pct_of_paid_dists</code>) is true, and the HAVING became an <code>is_material</code> flag the dashboard can filter on. <b>3.</b> The rank's ORDER BY includes tie-breakers, so it's deterministic.</div>
+
+<h4>Verified output on the same 16 rows (DuckDB 2.0)</h4>
+<div class="panel tw">
+<table>
+<tr><th>dist_category</th><th>plan_type</th><th class="r">n_dists</th><th class="r">total_gross_usd</th><th class="r">pct_of_paid_dists</th><th class="r">gross_rank</th><th>is_material</th></tr>
+<tr><td>Rollover</td><td>457(b)</td><td class="r">2</td><td class="r">45,000.00</td><td class="r">15.4</td><td class="r">1</td><td>true</td></tr>
+<tr><td>Normal</td><td>403(b)</td><td class="r">3</td><td class="r">33,000.00</td><td class="r">23.1</td><td class="r">2</td><td>true</td></tr>
+<tr><td>Rollover</td><td>403(b)</td><td class="r">1</td><td class="r">30,000.00</td><td class="r">7.7</td><td class="r">3</td><td>true</td></tr>
+<tr><td>Death</td><td>457(b)</td><td class="r">1</td><td class="r">18,000.00</td><td class="r">7.7</td><td class="r">4</td><td>true</td></tr>
+<tr><td>Normal</td><td>457(b)</td><td class="r">1</td><td class="r">8,000.00</td><td class="r">7.7</td><td class="r">5</td><td>false</td></tr>
+<tr><td>Early</td><td>403(b)</td><td class="r">2</td><td class="r">7,000.00</td><td class="r">15.4</td><td class="r">6</td><td>false</td></tr>
+<tr class="keep"><td>Normal</td><td><b>Unknown plan</b></td><td class="r">1</td><td class="r">7,000.00</td><td class="r">7.7</td><td class="r">7</td><td>false</td></tr>
+<tr class="keep"><td><b>Unknown</b></td><td>403(b)</td><td class="r">1</td><td class="r">5,000.00</td><td class="r">7.7</td><td class="r">8</td><td>false</td></tr>
+<tr><td>Early</td><td>457(b)</td><td class="r">1</td><td class="r">4,500.00</td><td class="r">7.7</td><td class="r">9</td><td>false</td></tr>
+</table>
+<p style="font-size:13.5px;color:var(--muted);margin:8px 0 0">13 distributions and $157,500, not 12 and $150,500: the LEFT JOIN keeps D10 as <b>Unknown plan</b> instead of dropping it, D13's NULL code is now <b>Unknown</b>, and D11 (code 4) has its own <b>Death</b> category. The reconciliation test below returns zero rows (passes), and the shares add up to 100.1 because of rounding.</p>
 </div>
 
-<h3>Pattern C · Tests that prove the result is right</h3>
-<p><b>Plain:</b> automated checks that run on every build and fail loudly when something's off, instead of a stakeholder noticing a wrong number weeks later.<br>
-<b>Tech:</b> <b>generic tests</b> in YAML (not_null, unique, accepted_values) plus a <b>singular test</b> for reconciliation, the SQL version of the control total you already run on 1099 data.</p>
+<h3 style="margin-top:18px">Pattern C · Tests that prove the numbers</h3>
 <div class="grid2">
 <div>
 <h4>models/marts/_marts.yml</h4>
 <pre>models:
-  - name: heavy_players_by_region
-    description: Count of players at/above the weight threshold, by region.
+  - name: distribution_mix_by_category
+    description: &gt;
+      Paid distributions since dist_mix_start_date,
+      one row per dist_category x plan_type.
+    data_tests:
+      - dbt_utils.unique_combination_of_columns:
+          arguments:
+            combination_of_columns: [dist_category, plan_type]
     columns:
-      - name: region
+      - name: dist_category
         data_tests:
           - not_null
-          - unique                   <span class="c"># grain = one row per region</span>
           - accepted_values:
-              values: ['West Coast', 'Texas', 'Other', 'Unknown']
-      - name: player_count
+              arguments:
+                values: [Early, Normal, Rollover, Death, Other, Unknown]
+      - name: n_dists
         data_tests: [not_null]
 
 seeds:
-  - name: state_region_map
+  - name: dist_code_category_map
     columns:
-      - name: state
-        data_tests: [not_null, unique]  <span class="c"># prevents join fan-out</span></pre>
-<p style="font-size:13px;color:var(--muted)">Test-argument syntax has been evolving across recent dbt versions. Check the docs for the version pinned in your project.</p>
+      - name: dist_code
+        data_tests: [not_null, unique]       <span class="c"># prevents join fan-out</span>
+
+sources:
+  - name: recordkeeper
+    tables:
+      - name: distributions
+        columns:
+          - name: plan_id
+            data_tests:
+              - relationships:               <span class="c"># catches D10 (plan P4)</span>
+                  arguments:
+                    to: ref('stg_recordkeeper__plans')
+                    field: plan_id
+                  config:
+                    severity: warn</pre>
+<p style="font-size:13px;color:var(--muted)">Recent dbt versions nest generic-test arguments under <code>arguments:</code>; older versions put them directly under the test name. Check the docs for the version pinned in your project. <code>unique_combination_of_columns</code> needs the <code>dbt_utils</code> package.</p>
 </div>
 <div>
-<h4>tests/assert_heavy_players_reconcile.sql</h4>
-<pre><span class="c">-- Returns rows only when totals disagree → test fails.</span>
+<h4>tests/assert_dist_mix_reconciles.sql</h4>
+<pre><span class="c">-- Returns a row (= test fails) when the mart doesn't tie out to staging.</span>
 with expected as (
-    select count(*) as n
-    from {{ ref('stg_benn__college_football_players') }}
-    where weight_lbs >= {{ var('heavy_player_min_weight_lbs', 300) }}
+    select count(*) as n, sum(gross_amount_usd) as usd
+    from {{ ref('stg_recordkeeper__distributions') }}
+    where dist_status = 'PAID'
+      and paid_date &gt;= cast('{{ var("dist_mix_start_date", "2026-01-01") }}' as date)
 ),
 
 actual as (
-    select sum(player_count) as n
-    from {{ ref('heavy_players_by_region') }}
+    select sum(n_dists) as n, sum(total_gross_usd) as usd
+    from {{ ref('distribution_mix_by_category') }}
 )
 
-select
-    expected.n as expected_n,
-    actual.n   as actual_n
+select expected.*, actual.n as actual_n, actual.usd as actual_usd
 from expected
 cross join actual
-where expected.n != actual.n</pre>
+where expected.n != actual.n
+   or expected.usd != actual.usd</pre>
+<h4>Unit test for the mapping logic (dbt ≥ 1.8)</h4>
+<pre>unit_tests:
+  - name: classifies_null_dirty_and_unmapped_codes
+    model: distribution_mix_by_category
+    given:
+      - input: ref('stg_recordkeeper__distributions')
+        rows:
+          - {dist_id: X1, plan_id: P1, dist_code: null, dist_status: PAID, gross_amount_usd: 100, paid_date: 2026-03-01}
+          - {dist_id: X2, plan_id: P1, dist_code: 'Z',  dist_status: PAID, gross_amount_usd: 100, paid_date: 2026-03-01}
+      - input: ref('stg_recordkeeper__plans')
+        rows:
+          - {plan_id: P1, plan_type: 403(b)}
+      - input: ref('dist_code_category_map')
+        rows:
+          - {dist_code: '7', dist_category: Normal}
+    expect:
+      rows:
+        - {dist_category: Unknown, plan_type: 403(b), n_dists: 1}
+        - {dist_category: Other,   plan_type: 403(b), n_dists: 1}</pre>
+<p style="font-size:13px;color:var(--muted)">Unit tests check the <b>logic</b> on tiny hand-made inputs; data tests check the <b>data</b> on every build. A unit test per business rule is the pattern to aim for.</p>
 </div>
 </div>
 
-<h3>Pattern D · Guardrails around the SQL</h3>
+<h3 style="margin-top:18px">Pattern D · Guardrails around the SQL</h3>
 <div class="tw panel">
 <table>
 <tr><th>Practice</th><th>Plain terms</th><th>How</th></tr>
-<tr><td>Lint &amp; format</td><td>A robot enforces the style rules so code reviews focus on logic</td><td>SQLFluff (dbt templater) in <code>pre-commit</code> and CI, with a committed <code>.sqlfluff</code> config</td></tr>
-<tr><td>No magic numbers</td><td>Name the threshold so it's obvious and changeable</td><td><code>var('heavy_player_min_weight_lbs', 300)</code> in <code>dbt_project.yml</code></td></tr>
-<tr><td>Explicit grain</td><td>Say what one row means, and test it</td><td>Model description + <code>unique</code> on the key</td></tr>
-<tr><td>Only needed columns</td><td>Don't haul data you won't use</td><td>Explicit column lists in staging; avoid <code>select *</code> against raw sources in warehouses</td></tr>
-<tr><td>Deterministic output</td><td>Same input, same result, same order</td><td><code>order by</code> wherever order is consumed (exports, snapshots, reports)</td></tr>
-<tr><td>Check the plan</td><td>Know what it costs before it ships</td><td><code>EXPLAIN ANALYZE</code> on representative data; partition/cluster on frequent filter columns</td></tr>
-<tr><td>Documentation</td><td>The next person (or you in 6 months) understands why</td><td>YAML descriptions + <code>dbt docs generate</code> lineage graph</td></tr>
+<tr><td>Lint &amp; format</td><td>A robot enforces style so reviews focus on logic</td><td>SQLFluff (dbt templater) in <code>pre-commit</code> and CI, with a committed <code>.sqlfluff</code></td></tr>
+<tr><td>Explicit grain</td><td>Say what one row means, and test it</td><td>Model description + unique-combination test on the key</td></tr>
+<tr><td>Explicit denominators</td><td>A percentage says what it's a percentage of</td><td>Column names like <code>pct_of_paid_dists</code>; share computed before any filtering</td></tr>
+<tr><td>Deterministic output</td><td>Same input, same result, same order</td><td>Tie-breakers in every window ORDER BY and every consumer ORDER BY</td></tr>
+<tr><td>Only needed columns</td><td>Don't haul data you won't use</td><td>Explicit column lists in staging; no <code>select *</code> against raw sources in a warehouse</td></tr>
+<tr><td>Check the plan</td><td>Know what it costs before it ships</td><td><code>EXPLAIN ANALYZE</code> on representative volume; partition / cluster on <code>paid_date</code></td></tr>
+<tr><td>Documentation</td><td>The next reader understands why</td><td>YAML descriptions + <code>dbt docs generate</code> lineage graph</td></tr>
 </table>
 </div>
 
-<!-- ================= 10 RUN ================= -->
-<h2 id="run">10 · Run it yourself (Jupyter + DuckDB in VS Code)</h2>
-<p>One notebook cell. It recreates the sample, runs the query, and prints the plan so you can map each operator to steps 1–6. Install with <code>uv add duckdb</code>.</p>
+<!-- ================= 11 RUN ================= -->
+<h2 id="run">11 · Run it yourself (Jupyter + DuckDB in VS Code)</h2>
+<p>Paste into one notebook cell. It recreates both tables, prints the rows at each key step, runs the full query, and shows the plan so you can map each operator to steps 1–11. Install with <code>uv add duckdb</code>. Tested on DuckDB 2.0.</p>
 <pre>import duckdb
 
 con = duckdb.connect()  <span class="c"># in-memory database</span>
 
 con.sql("""
-    CREATE TABLE college_football_players AS
-    SELECT * FROM (VALUES
-        ('Leo','CA',310), ('Mia','TX',295), ('Sam','WA',320), ('Ana','TX',305),
-        ('Ben','FL',330), ('Kai','OR',302), ('Zoe','TX',315), ('Max','NY',300),
-        ('Eli','CA',290), ('Ray','GA',340), ('Jo','TX',260),  ('Tom','OH',312),
-        ('Ned', NULL, 305),   <span class="c">-- edge case: NULL state  → which region?</span>
-        ('Gus','tx', 318)     <span class="c">-- edge case: dirty value → which region?</span>
-    ) AS t(player_name, state, weight)
+    CREATE TABLE plans AS SELECT * FROM (VALUES
+        ('P1', 'Riverside Schools', '403(b)'),
+        ('P2', 'County Employees',  '457(b)'),
+        ('P3', 'Lakeside Clinic',   '403(b)')
+    ) AS t(plan_id, plan_name, plan_type)
 """)
 
-query = """
-    SELECT CASE WHEN state IN ('CA', 'OR', 'WA') THEN 'West Coast'
-                WHEN state = 'TX' THEN 'Texas'
-                ELSE 'Other' END AS arbitrary_regional_designation,
-           COUNT(1) AS players
-      FROM college_football_players
-     WHERE weight >= 300
-     GROUP BY 1
-     ORDER BY players DESC
+con.sql("""
+    CREATE TABLE distributions AS SELECT * FROM (VALUES
+        ('D01','A101','P1','7',  12000.00,'PAID',     DATE '2026-02-10'),
+        ('D02','A102','P1','1',   3000.00,'PAID',     DATE '2026-03-05'),
+        ('D03','A103','P2','7',   8000.00,'PAID',     DATE '2026-03-18'),
+        ('D04','A104','P2','G',  25000.00,'PAID',     DATE '2026-04-02'),
+        ('D05','A105','P1','7',  15000.00,'PAID',     DATE '2026-04-20'),
+        ('D06','A106','P3','2',   4000.00,'PAID',     DATE '2026-05-11'),
+        ('D07','A107','P2','7',   9500.00,'PENDING',  NULL),
+        ('D08','A108','P1','G',  30000.00,'PAID',     DATE '2026-05-30'),
+        ('D09','A109','P1','1',   2500.00,'PAID',     DATE '2025-12-15'),
+        ('D10','A110','P4','7',   7000.00,'PAID',     DATE '2026-06-03'),
+        ('D11','A111','P2','4',  18000.00,'PAID',     DATE '2026-06-14'),
+        ('D12','A112','P3','7',   6000.00,'PAID',     DATE '2026-07-01'),
+        ('D13','A113','P1',NULL,  5000.00,'PAID',     DATE '2026-07-09'),
+        ('D14','A114','P2','G',  20000.00,'PAID',     DATE '2026-07-22'),
+        ('D15','A115','P3','1',   3500.00,'REJECTED', DATE '2026-08-01'),
+        ('D16','A116','P2','1',   4500.00,'PAID',     DATE '2026-08-15')
+    ) AS t(dist_id, participant_id, plan_id, dist_code, gross_amount, status, paid_date)
+""")
+
+<span class="c"># --- Watch the rows change: steps 1-2 and 4-5 -----------------------</span>
+joined = "FROM distributions AS d JOIN plans AS p ON p.plan_id = d.plan_id"
+con.sql(f"SELECT d.dist_id, p.plan_type, d.status, d.paid_date {joined} ORDER BY 1").show()   <span class="c"># 15 rows</span>
+paid = joined + " WHERE d.status = 'PAID' AND d.paid_date &gt;= DATE '2026-01-01'"
+con.sql(f"SELECT d.dist_id, p.plan_type, d.dist_code {paid} ORDER BY 1").show()               <span class="c"># 12 rows</span>
+
+category = """CASE WHEN d.dist_code IN ('1', '2') THEN 'Early'
+                   WHEN d.dist_code = '7'        THEN 'Normal'
+                   WHEN d.dist_code = 'G'        THEN 'Rollover'
+                   ELSE 'Other' END"""
+con.sql(f"""SELECT {category} AS dist_category, p.plan_type,
+                   COUNT(*) AS n_dists, SUM(d.gross_amount) AS total_gross,
+                   string_agg(d.dist_id, ', ' ORDER BY d.dist_id) AS members
+            {paid} GROUP BY 1, 2 ORDER BY 2, 1""").show()                                      <span class="c"># 8 groups</span>
+
+<span class="c"># --- The full query ------------------------------------------------</span>
+query = f"""
+    SELECT {category} AS dist_category,
+           p.plan_type,
+           COUNT(*)                                           AS n_dists,
+           SUM(d.gross_amount)                                AS total_gross,
+           ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 1) AS pct_of_dists,
+           RANK() OVER (ORDER BY SUM(d.gross_amount) DESC)    AS gross_rank
+    {paid}
+    GROUP BY 1, 2
+    HAVING SUM(d.gross_amount) &gt;= 10000
+    ORDER BY gross_rank, dist_category
+    LIMIT 3
 """
+con.sql(query).show()                                                   <span class="c"># 3 rows</span>
+print(con.sql("EXPLAIN " + query).fetchall()[0][1])                      <span class="c"># physical plan</span>
+print(con.sql("EXPLAIN ANALYZE " + query).fetchall()[0][1])              <span class="c"># actual rows + timings</span></pre>
+<div class="note"><span class="lbl">Experiments to run next</span>
+<ul class="tight">
+<li><b>Remove the HAVING</b> and watch <code>pct_of_dists</code> for Normal · 403(b) drop from 42.9 to 25.0, because the denominator becomes 12.</li>
+<li><b>Remove the LIMIT</b> and confirm the 4 shares add up to 100.1 (rounding), while the top 3 add up to 85.8.</li>
+<li><b>Change JOIN to LEFT JOIN</b> and find D10 with a NULL plan_type. (Note it then fails the HAVING, so check it in the step-1 query.)</li>
+<li><b>Insert dirty rows:</b> <code>con.sql("INSERT INTO distributions VALUES ('D17','A117','P1','g',11000,'PAID',DATE '2026-09-01'), ('D18','A118','P2',' 7',9000,'PAID',DATE '2026-09-10')")</code>. Predict where they land, then fix with <code>upper(trim(d.dist_code))</code>.</li>
+</ul>
+DuckDB 2.0 note: relations no longer have <code>.fetchone()</code>; use <code>.fetchall()</code> or <code>.show()</code>.</div>
 
-con.sql(query).show()                         <span class="c"># result</span>
-print(con.sql("EXPLAIN " + query).fetchall()[0][1])          <span class="c"># physical plan</span>
-print(con.sql("EXPLAIN ANALYZE " + query).fetchall()[0][1])  <span class="c"># with actual timings</span></pre>
-<div class="note"><span class="lbl">Predict before you run</span><br>With Ned (NULL) and Gus ('tx') added, “Other” becomes 6 instead of 4 (verified: Other 6 · West Coast 3 · Texas 2), so two players were silently mislabeled with no error. Then wrap <code>state</code> in <code>upper(trim(state))</code> and add a <code>WHEN state IS NULL</code> branch, and check that Gus moves to Texas and Ned to Unknown.</div>
-
-<!-- ================= 11 RECALL ================= -->
-<h2 id="recall">11 · Recall &amp; practice</h2>
-<div class="mn"><b>F</b>rom → <b>W</b>here → <b>G</b>roup by → <b>H</b>aving → <b>S</b>elect → <b>O</b>rder by → <b>L</b>imit<br>
-<span style="font-weight:500;color:var(--muted);font-size:15px">“<b>F</b>irst <b>W</b>e <b>G</b>ather, <b>H</b>andpick, <b>S</b>how, <b>O</b>rganize, <b>L</b>imit.” Filters before groups, groups before output, output before sorting.</span></div>
+<!-- ================= 12 RECALL ================= -->
+<h2 id="recall">12 · Recall &amp; practice</h2>
+<div class="mn"><b>F</b>rom/<b>J</b>oin → <b>W</b>here → <b>G</b>roup by → <b>H</b>aving → <b>W</b>indow → <b>S</b>elect → <b>D</b>istinct → <b>O</b>rder by → <b>L</b>imit<br>
+<span style="font-weight:500;color:var(--muted);font-size:15px">“<b>F</b>riendly <b>J</b>oins <b>W</b>ait; <b>G</b>roups <b>H</b>ave <b>W</b>indows; <b>S</b>elect <b>D</b>istinct <b>O</b>rders <b>L</b>ast.” Rows are filtered before groups, groups before windows, windows before output, output before sorting and limiting.</span></div>
 
 <div class="grid3" style="margin-top:14px">
-  <div class="panel bar b-agg"><h3>Easy</h3><p>Add <code>ORDER BY players DESC</code>. Why can ORDER BY use the alias <code>players</code> when WHERE can't? Answer it using the logical order table.</p></div>
-  <div class="panel bar b-group"><h3>Medium</h3><p>Add a <code>'Florida'</code> region. Where in the CASE must it go? With the 12-row sample, what are the new counts? (West 3 · Texas 2 · Florida 1 · Other 3.)</p></div>
-  <div class="panel bar b-where"><h3>Hard</h3><p>Return <code>AVG(weight)</code> per region, only for regions with ≥ 3 heavy players, sorted descending. Predict which groups survive HAVING before you run it, then confirm with <code>EXPLAIN</code>.</p></div>
+  <div class="panel bar b-agg"><h3>Easy</h3><p>Why does <code>ORDER BY gross_rank</code> work in every engine, while <code>HAVING total_gross &gt;= 10000</code> fails in PostgreSQL? Answer with the logical order table.</p><p style="font-size:13.5px;color:var(--muted)">Answer: the alias is born at SELECT (step 8). ORDER BY runs after it; HAVING runs before it.</p></div>
+  <div class="panel bar b-group"><h3>Medium</h3><p>Change the HAVING to <code>COUNT(*) &gt;= 2</code>. Predict which groups survive, the new denominator, and the final 3 rows before you run it.</p><p style="font-size:13.5px;color:var(--muted)">Answer (verified): denominator 7 · Rollover 457(b) 2 · 28.6 · rank 1 · Normal 403(b) 3 · 42.9 · rank 2 · Early 403(b) 2 · 28.6 · rank 3.</p></div>
+  <div class="panel bar b-where"><h3>Hard</h3><p>Return the <b>top category per plan type</b> by dollars, one row per plan type. Write it twice: with a CTE + <code>WHERE rnk = 1</code> (portable) and with <code>QUALIFY</code> (DuckDB). Compare the plans.</p><p style="font-size:13.5px;color:var(--muted)">Answer (verified): Normal · 403(b) · 33,000 and Rollover · 457(b) · 45,000. Hint: <code>RANK() OVER (PARTITION BY p.plan_type ORDER BY SUM(d.gross_amount) DESC)</code>.</p></div>
 </div>
 
-<!-- ================= 12 SELF JOIN ================= -->
-<h2 id="selfjoin">12 · Self joins: comparing a table with itself</h2>
+
+<h2 id="selfjoin">13 · Self joins: comparing a table with itself</h2>
 <p>Question: <i>which companies received a Japanese investment and then, later, a British investment?</i> Both events live in the <b>same</b> table, so the query joins the table to itself.</p>
 
 <div class="grid2">
@@ -891,19 +1283,21 @@ con.sql("""
   <div class="panel bar b-where"><h3>Hard</h3><p>Return each qualifying company with its first JPN date and the first GBR date after it, as one row per company. Try it with a self join + <code>MIN</code>, then with Pattern B, and compare plans.</p></div>
 </div>
 
+
 <footer>
   <b>Sources</b>
   <ul>
-    <li><a href="https://www.postgresql.org/docs/current/sql-select.html">PostgreSQL docs — SELECT (processing steps, GROUP BY by output name/ordinal)</a></li>
-    <li><a href="https://www.postgresql.org/docs/current/using-explain.html">PostgreSQL docs — Using EXPLAIN</a></li>
-    <li><a href="https://learn.microsoft.com/en-us/sql/t-sql/queries/select-transact-sql#logical-processing-order-of-the-select-statement">Microsoft Learn — Logical processing order of the SELECT statement</a></li>
-    <li><a href="https://oracle.readthedocs.io/en/latest/sql/basics/query-processing-order.html">Oracle SQL &amp; PL/SQL guide — Query processing order</a></li>
-    <li><a href="https://jvns.ca/blog/2019/10/03/sql-queries-don-t-start-with-select/">Julia Evans — SQL queries don't start with SELECT</a></li>
+    <li><a href="https://www.postgresql.org/docs/current/sql-select.html">PostgreSQL docs — SELECT (processing steps, GROUP BY by output name/ordinal, window evaluation)</a> · <a href="https://www.postgresql.org/docs/current/using-explain.html">Using EXPLAIN</a> · <a href="https://www.postgresql.org/docs/current/tutorial-window.html">Window functions tutorial</a></li>
+    <li><a href="https://learn.microsoft.com/en-us/sql/t-sql/queries/select-transact-sql#logical-processing-order-of-the-select-statement">Microsoft Learn — Logical processing order of the SELECT statement</a> · <a href="https://www.microsoftpressstore.com/articles/article.aspx?p=2992602&amp;seqNum=5">Itzik Ben-Gan — SQL windowing and logical query processing</a></li>
+    <li><a href="https://www.mssqltips.com/tutorial/sql-server-window-function-syntax/">MSSQLTips — Window function syntax and processing order</a> · <a href="https://www.mssqltips.com/sqlservertip/7860/sql-group-by-alias-in-sql-server-for-complex-code/">GROUP BY alias in SQL Server vs Oracle</a> · <a href="https://www.mssqltips.com/tutorial/snowflake-regular-expression-alias-and-ilike/">Snowflake alias reuse</a></li>
+    <li><a href="https://docs.snowflake.com/en/sql-reference/constructs/qualify">Snowflake docs — QUALIFY (evaluation order)</a> · <a href="https://motherduck.com/glossary/qualify/">MotherDuck — QUALIFY</a> · <a href="https://docs.cloud.google.com/bigquery/docs/column-aliases">BigQuery — Reusable column aliases</a> · <a href="https://getbruin.com/blog/column-aliases-in-having-clause/">Bruin — Column aliases in HAVING across engines</a></li>
+    <li><a href="https://til.hashrocket.com/posts/5731ca38f1-compute-group-proportions-of-a-whole-in-sql">Hashrocket TIL — Group proportions with SUM(COUNT(*)) OVER ()</a> · <a href="https://prachub.com/resources/sql-order-of-operations">PracHub — SQL order of operations (post-HAVING windows)</a></li>
+    <li><a href="https://jvns.ca/blog/2019/10/03/sql-queries-don-t-start-with-select/">Julia Evans — SQL queries don't start with SELECT</a> · <a href="https://oracle.readthedocs.io/en/latest/sql/basics/query-processing-order.html">Oracle SQL &amp; PL/SQL guide — Query processing order</a></li>
     <li><a href="https://duckdb.org/2022/03/07/aggregate-hashtable.html">DuckDB — Parallel grouped aggregation</a> · <a href="https://motherduck.com/glossary/row-group/">MotherDuck — Row groups &amp; vectors</a></li>
-    <li><a href="https://docs.getdbt.com/best-practices/how-we-style/2-how-we-style-our-sql">dbt Labs — How we style our SQL</a> · <a href="https://thetuvaproject.com/contributing/style-guide">Tuva Project — dbt style guide</a></li>
-    <li><a href="https://www.mssqltips.com/sqlservertip/7860/sql-group-by-alias-in-sql-server-for-complex-code/">MSSQLTips — GROUP BY alias in SQL Server vs Oracle</a></li>
+    <li><a href="https://docs.getdbt.com/best-practices/how-we-style/2-how-we-style-our-sql">dbt Labs — How we style our SQL</a> · <a href="https://docs.getdbt.com/docs/build/unit-tests">dbt — Unit tests</a> · <a href="https://docs.getdbt.com/docs/build/data-tests">dbt — Data tests</a> · <a href="https://thetuvaproject.com/contributing/style-guide">Tuva Project — dbt style guide</a></li>
+    <li><a href="https://www.irs.gov/instructions/i1099r">IRS — Instructions for Forms 1099-R and 5498 (box 7 distribution codes)</a></li>
     <li><a href="https://mode.com/sql-tutorial/sql-self-joins">Mode SQL Tutorial — Self joins</a> · <a href="https://mode.com/sql-tutorial/sql-joins-where-vs-on">Mode — Joins: WHERE vs ON</a> · <a href="https://www.thoughtspot.com/sql-tutorial/sql-self-joins">ThoughtSpot — SQL self join</a> · <a href="https://www.baeldung.com/sql/join-same-table-twice">Baeldung — Joining the same table twice</a></li>
-    <li>Example queries: <a href="https://mode.com/sql-tutorial/sql-case">Mode SQL Tutorial — CASE</a> and <a href="https://mode.com/sql-tutorial/sql-self-joins">Self joins</a>. Sample rows in the walkthrough are made up for illustration; execution plans are illustrative shapes and vary by version and data.</li>
+    <li>All data is synthetic. Walkthrough tables, edge-case results, practice answers and the execution plan were produced with DuckDB 2.0 in a Python notebook; plans and dialect behavior vary by engine and version.</li>
   </ul>
 </footer>
 </div>
