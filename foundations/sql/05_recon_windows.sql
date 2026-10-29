@@ -34,7 +34,7 @@ WITH ranked AS (
            ) AS rank
       FROM distributions
 )
-SELECT box7_code
+SELECT box7_code,
        gross,
        rank
   FROM ranked
