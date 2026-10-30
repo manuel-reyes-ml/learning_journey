@@ -5,7 +5,9 @@ from __future__ import annotations
 import sqlite3
 from pathlib import Path
 
-DB_PATH: Path = Path(__file__).parent / "data" / "recon.db"
+from learning_journey.paths import DATA_DIR
+
+DB_PATH: Path = DATA_DIR / "recon.db"
 
 
 def missing_in_b(conn: sqlite3.Connection) -> list[tuple[str, str]]:
