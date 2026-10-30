@@ -74,9 +74,9 @@ def match_records(
 
 if __name__ == "__main__":
     import csv
-    from pathlib import Path
 
-    DATA_DIR: Path = Path(__file__).resolve().parent / "data"
+    from learning_journey.paths import DATA_DIR
+
     participants: list[dict] = []
     distributions: list[dict] = []
 
