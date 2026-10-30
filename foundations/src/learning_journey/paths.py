@@ -45,6 +45,7 @@ def project_root() -> Path:
     )
 
 
+# This is the same “define paths once in a module, import everywhere” pattern
 PROJECT_ROOT: Final[Path] = project_root()
 FOUNDATIONS_DIR: Final[Path] = PROJECT_ROOT / "foundations"
 DATA_DIR: Final[Path] = FOUNDATIONS_DIR / "data"
