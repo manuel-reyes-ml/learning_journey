@@ -360,7 +360,7 @@ order by ticker, session_date;
 
 - [ ] 80 min — 🆕 **dbt Fundamentals — start** (moved up a day, C58): learn.getdbt.com, free; set it up on **dbt Core 1.12 + DuckDB locally** rather than a cloud trial; intro + models sections.
 - [ ] ~~50 min — AI-901 Learn module 4~~ · ~~30 min — Book the AI-901 exam for Week 8~~ → ⏭️ **Q2 (C58)**: one calendar reminder for Week 13 to book it — the self-funded $99 and the voucher check (Correction 38) still apply then.
-- [ ] 20 min — Claude API course lesson
+- [x] 20 min — Claude API course lesson
 - [ ] 20 min — Journal + commit
 
 
