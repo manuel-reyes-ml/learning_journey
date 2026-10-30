@@ -47,6 +47,7 @@ Thumbs.db
 !*.gitkeep
 
 # Data files (too large or sensitive)
+**/data/*/*.csv
 **/data/*.csv
 !**/data/mbox*.txt  # Keep sample files
 
