@@ -7,8 +7,9 @@
 # in the failure message of the claude-agents-check hook — this file is what
 # makes that instruction real.
 
-PYTHON ?= uv run python
-PRE_COMMIT ?= uv run pre-commit
+UV ?= uv run
+PYTHON ?= $(UV) python
+PRE_COMMIT ?= $(UV) pre-commit
 
 SPELLER := courses/cs50_harvard/code/05_data_structures/speller/py_src
 CODE_PATHS := foundations scripts llm-api-smoke-test $(SPELLER)
@@ -62,10 +63,10 @@ claude-gen: claude-agents claude-rules  ## Regenerate both harness artifacts in 
 # If one changes, change the other.
 
 lint:  ## Lint the real code paths
-	uv run ruff check $(CODE_PATHS)
+	$(UV) ruff check $(CODE_PATHS)
 
 format:  ## Format the real code paths
-	uv run ruff format $(CODE_PATHS)
+	$(UV) ruff format $(CODE_PATHS)
 
 # --- tests -------------------------------------------------------------------
 # One invocation per workspace member, on purpose. pytest reads exactly ONE
@@ -73,6 +74,6 @@ format:  ## Format the real code paths
 # [tool.pytest.ini_options] and collide their identically-named `tests` packages.
 
 test:  ## Run every workspace member's test suite
-	uv run pytest llm-api-smoke-test/tests
-	uv run pytest $(SPELLER)/tests
-	uv run pytest foundations/tests
+	$(UV) pytest llm-api-smoke-test/tests
+	$(UV) pytest $(SPELLER)/tests
+	$(UV) pytest foundations/tests
