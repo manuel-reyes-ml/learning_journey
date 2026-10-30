@@ -11,13 +11,13 @@ import csv
 import random
 from pathlib import Path
 
+from learning_journey.paths import DATA_DIR
+
 # --- SEEDING: the reproducibility habit ---
 # random normally differs every run. seed(42) makes the "random" sequence
 # IDENTICAL every run → teammates (and tests!) see exactly your data.
 # Reproducibility is a pillar of production data work; it starts here.
 random.seed(42)
-
-OUT_DIR: Path = Path(__file__).resolve().parent / "data"
 
 FIRST: list[str] = ["Ana", "Luis", "Mia", "Omar", "Sara", "Ken", "Rita", "Jon", "Eva", "Max"]
 LAST: list[str] = ["Torres", "Vega", "Chen", "Ali", "Kim", "Ruiz", "Cole", "Diaz", "Wu", "Ford"]
@@ -82,8 +82,8 @@ if __name__ == "__main__":
     participants = make_participants(50)
     distributions = make_distributions(participants)
 
-    write_csv(OUT_DIR / "system_a_participants.csv", participants)
-    write_csv(OUT_DIR / "system_b_distributions.csv", distributions)
+    write_csv(DATA_DIR / "system_a_participants.csv", participants)
+    write_csv(DATA_DIR / "system_b_distributions.csv", distributions)
 
     print(f"System A: {len(participants)} participants")
     print(f"System B: {len(distributions)} distributions")
