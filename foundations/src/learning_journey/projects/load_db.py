@@ -12,7 +12,8 @@ import csv
 import sqlite3
 from pathlib import Path
 
-DATA_DIR: Path = Path(__file__).resolve().parent / "data"
+from learning_journey.paths import DATA_DIR
+
 DB_PATH: Path = DATA_DIR / "recon.db"
 
 
