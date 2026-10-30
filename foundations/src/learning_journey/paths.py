@@ -10,6 +10,7 @@ from typing import Final
 __all__ = [
     "DATA_DIR",
     "FOUNDATIONS_DIR",
+    "OUTPUT_DIR",
     "PROJECT_ROOT",
     "SQL_DIR",
 ]
@@ -50,3 +51,4 @@ PROJECT_ROOT: Final[Path] = project_root()
 FOUNDATIONS_DIR: Final[Path] = PROJECT_ROOT / "foundations"
 DATA_DIR: Final[Path] = FOUNDATIONS_DIR / "data"
 SQL_DIR: Final[Path] = FOUNDATIONS_DIR / "sql"
+OUTPUT_DIR: Final[Path] = FOUNDATIONS_DIR / "outputs"
