@@ -14,14 +14,12 @@ from pathlib import Path
 
 import structlog
 
+from learning_journey.paths import DATA_DIR, OUTPUT_DIR, PROJECT_ROOT
 from learning_journey.projects import load_db, make_data, matcher, recon
 
 log = structlog.get_logger()
 # get_logger() gives you a logger. With structlog, you log EVENTS with
 # KEY-VALUE data, not sentences with numbers baked in.
-
-ROOT_DIR: Path = Path(__file__).resolve().parents[4]
-OUTPUT_DIR: Path = Path(__file__).parent / "output"
 
 
 def render_report(result: matcher.MatchResult, totals: list[tuple[str, int, float]]) -> str:
@@ -83,8 +81,8 @@ def run_pipeline(n: int, tol: float) -> Path:
     """
     participants = make_data.make_participants(n)
     distributions = make_data.make_distributions(participants)
-    make_data.write_csv(make_data.OUT_DIR / "system_a_participants.csv", participants)
-    make_data.write_csv(make_data.OUT_DIR / "system_b_distributions.csv", distributions)
+    make_data.write_csv(DATA_DIR / "system_a_participants.csv", participants)
+    make_data.write_csv(DATA_DIR / "system_b_distributions.csv", distributions)
     log.info(
         "[1/5]_synthetic_data_generated",
         participants=len(participants),
@@ -120,7 +118,7 @@ def run_pipeline(n: int, tol: float) -> Path:
     report_path.write_text(render_report(result, totals), encoding="utf-8")
     log.info("[5/5]_txt_file_written", file_path=report_path)
 
-    print(f"✅ Report → {report_path.relative_to(ROOT_DIR)}")
+    print(f"✅ Report → {report_path.relative_to(PROJECT_ROOT)}")
 
     return report_path
 
