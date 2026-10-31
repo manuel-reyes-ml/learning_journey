@@ -10,16 +10,29 @@
 #                                root — not to this file's folder. It has to be the root
 #                                because uv.lock and the workspace pyproject.toml live there.
 #
-# RUN:    docker run --rm recon-toy             → runs with the default args (CMD: --help)
-#         docker run --rm recon-toy <args...>   → <args> replace CMD
-#   --rm   deletes the stopped container afterwards (the image stays).
-#         docker run --rm -v "$PWD/foundations/data:/data" recon-toy --participants 50
+# RUN:    docker run --rm recon-toy                  → default args (CMD: --help)
+#         docker run --rm recon-toy <args...>        → <args> replace CMD
+#   --rm  deletes the stopped container afterwards (the image stays).
+#
+#   Keep the results — mount something at /data, the only writable folder:
+#     docker run --rm -v recon-data:/data recon-toy --participants 50
+#       NAMED VOLUME: Docker-managed storage that outlives the container. On first use,
+#       Docker copies the image's /data (outputs/, owned by "app") into the empty volume,
+#       so "app" can write to it. List with `docker volume ls`.
+#     docker run --rm -v "$PWD/data_test_recontoy:/data" recon-toy --participants 50
+#       BIND MOUNT: a host folder ($PWD = the folder your terminal is in; run from the
+#       repo root). Files appear on your machine. Nothing is copied in from the image.
+#       Docker Desktop's file sharing handles ownership, which is why this works on a Mac;
+#       on a Linux host the folder must be writable by the container user's UID
+#       (e.g. add --user "$(id -u):$(id -g)").
 #
 # HOW A BUILD WORKS
-#   Each instruction (FROM, COPY, RUN, ...) produces one LAYER: a read-only snapshot of
-#   the filesystem changes it made. The image is the stack of layers. Docker caches each
-#   layer and reuses it on the next build if that instruction AND its inputs (the copied
-#   files) are unchanged. Once one layer changes, every layer below it is rebuilt.
+#   RUN, COPY and ADD each produce a LAYER: a read-only snapshot of the files they
+#   changed. FROM picks the starting layers; ENV, WORKDIR, USER, ENTRYPOINT and CMD only
+#   record settings (metadata). The image is the stack of layers plus that metadata.
+#   Docker caches every step and reuses it on the next build if the instruction AND its
+#   inputs (the copied files) are unchanged. Once one step changes, every LATER step is
+#   rebuilt.
 #   → So the order is: things that rarely change (Python, uv, dependencies) first,
 #     things that change often (your source code) last.
 #
@@ -29,8 +42,14 @@
 #   Anyone who pulls this image gets them with it. uv is needed only to BUILD;
 #   at runtime the container calls python directly (see ENTRYPOINT).
 #
+# CODE vs STATE
+#   /app  = code + venv, owned by root → read-only for the "app" user at runtime.
+#   /data = runtime state (CSVs, recon.db, outputs/), owned by "app" → the only writable
+#           folder. paths.py finds it through LJ_DATA_DIR / LJ_OUTPUT_DIR (set below).
+#
 # Single-stage for now (roadmap: multi-stage is a Stage-2 optimisation). A second stage
-# would copy only /app/.venv + source into a fresh python:3.14-slim, leaving uv behind.
+# would copy only /app/.venv + the source into a fresh python:3.14-slim, leaving uv
+# behind (the source too, because the project is installed editable — see layer 2).
 # =============================================================================
 
 # FROM: the base image this one starts from. python:3.14-slim = Debian "slim" (minimal
@@ -43,13 +62,16 @@ FROM python:3.14-slim AS base
 # Docker pulls Astral's uv image and takes only the two static binaries (uv, uvx) into
 # /bin/ — no installer script, no curl, no extra OS packages.
 # Pinned to an exact version (never :latest) so every build uses the same uv; keep it in
-# step with [tool.uv] required-version and the uv version CI runs.
+# step with [tool.uv] required-version (>=0.13) and the uv version CI runs.
 COPY --from=ghcr.io/astral-sh/uv:0.13.6 /uv /uvx /bin/
 
 # ENV: sets environment variables for every later build step AND for running containers.
-#   UV_COMPILE_BYTECODE=1  → compile .py → .pyc during the build, so the container doesn't
-#                            do it at startup (faster start; the non-root user couldn't
-#                            write them anyway).
+#   UV_COMPILE_BYTECODE=1  → compile .py → .pyc for the packages installed in .venv
+#                            during the build, so containers don't recompile them on every
+#                            start. Not your own code: lj-foundations is installed
+#                            editable (it stays in foundations/src), so its modules are
+#                            compiled in memory at each start — "app" can't write
+#                            __pycache__ there, and Python silently skips it.
 #   UV_LINK_MODE=copy      → uv normally hard-links files from its cache; the cache mount
 #                            below is a separate filesystem where that fails, so copy
 #                            instead and silence the warning.
@@ -58,9 +80,10 @@ COPY --from=ghcr.io/astral-sh/uv:0.13.6 /uv /uvx /bin/
 #                            must use this same base image.
 ENV UV_COMPILE_BYTECODE=1 UV_LINK_MODE=copy UV_PYTHON_DOWNLOADS=0
 
-# WORKDIR: creates /app (if missing) and makes it the current directory for every later
-# instruction and for the running container. /app mirrors the repo root, so paths.py
-# finds its uv.lock marker here (/app/uv.lock) and FOUNDATIONS_DIR = /app/foundations.
+# WORKDIR: creates /app (root-owned, if missing) and makes it the current directory for
+# every later instruction and for the running container. /app mirrors the repo root, so
+# paths.py finds its uv.lock marker here: PROJECT_ROOT = /app,
+# FOUNDATIONS_DIR = /app/foundations. (DATA_DIR / OUTPUT_DIR come from the ENV below.)
 WORKDIR /app
 
 # ---------------------------------------------------------------------------
@@ -69,15 +92,18 @@ WORKDIR /app
 # COPY <src...> <dest>: copy from the build context into the image. Only the dependency
 # manifests are copied here, not the code, so editing your .py files does NOT invalidate
 # this layer and the next RUN — dependencies are reinstalled only when these change.
+# .python-version tells uv which Python to use (3.14), found in the image because of
+# UV_PYTHON_DOWNLOADS=0.
 COPY pyproject.toml uv.lock .python-version ./
 COPY foundations/pyproject.toml foundations/
 
-# RUN: executes a command inside the image during the build; its file changes become a layer.
+# RUN: executes a command inside the image during the build; its file changes become a
+# layer. Build steps run as root until the USER instruction below.
 # --mount=type=cache,target=/root/.cache/uv
 #   BuildKit feature (the default builder since Docker Engine 23). Gives uv a download
 #   cache that persists on the BUILD machine between builds, so packages aren't
 #   re-downloaded. The cache is mounted only while this command runs and is NOT saved
-#   into the image.
+#   into the image. (/root/.cache/uv = uv's cache folder for the root user.)
 # uv sync = make .venv match uv.lock. Creates /app/.venv here.
 #   --frozen                 → install from uv.lock as written WITHOUT checking it against
 #                              pyproject.toml. It can't be checked yet: the other workspace
@@ -87,12 +113,13 @@ COPY foundations/pyproject.toml foundations/
 #                              install only third-party packages.
 #   --package lj-foundations → only this member's dependencies; the root project's
 #                              notebook stack (jupyterlab, matplotlib, ...) stays out.
-#   --no-dev                 → skip dependency groups like dev/test (pytest, ruff).
+#   --no-dev                 → skip the `dev` group, the only group uv installs by default.
+#                              foundations' dev includes `test`, so pytest and ruff stay out.
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --frozen --no-install-workspace --package lj-foundations --no-dev
 
 # ---------------------------------------------------------------------------
-# Layer 2 — every member manifest, a runtime user, then the source
+# Layer 2 — member manifests, runtime user + state folder, source, final sync
 # ---------------------------------------------------------------------------
 # The other members' pyproject.toml files (manifests only — their code never ships).
 # uv.lock describes the WHOLE workspace, so --locked below can only verify it when every
@@ -102,29 +129,40 @@ COPY llm-api-smoke-test/pyproject.toml llm-api-smoke-test/
 COPY courses/cs50_harvard/code/05_data_structures/speller/py_src/pyproject.toml \
      courses/cs50_harvard/code/05_data_structures/speller/py_src/
 
-# Create an unprivileged system user + group named "app" (no password, no login).
-# The container will run as this user instead of root (see USER below): if the process
-# is ever compromised, it cannot change the root-owned .venv or system files.
+# Create an unprivileged system user + group named "app": a UID in the system range,
+# a locked password, and no home directory. The container runs as this user instead of
+# root (see USER below): if the process is ever compromised, it cannot change the code,
+# the .venv or system files — all root-owned.
 RUN groupadd --system app && useradd --system --gid app app
 
-# Runtime state lives outside the code tree; this is the ONLY folder "app" can write to.
+# Runtime state lives OUTSIDE the code tree; /data is the ONLY folder "app" can write to.
+#   mkdir -p          → create /data and /data/outputs (-p: parents too, no error if present).
+#   chown -R app:app  → hand the whole /data tree to "app" (this RUN still runs as root).
 RUN mkdir -p /data/outputs && chown -R app:app /data
+
+# Point paths.py at the state folder. _env_dir() reads these when the module is imported;
+# they are absolute paths, so resolve() keeps them as-is (a relative value would be
+# resolved against the working directory, /app). Without them, local runs keep the repo
+# defaults (foundations/data, foundations/outputs).
+# Override per run: docker run -e LJ_OUTPUT_DIR=/data/reports ...
 ENV LJ_DATA_DIR=/data LJ_OUTPUT_DIR=/data/outputs
 
-# Copy the member's source. --chown=app:app makes the "app" user the owner, so the
-# toy can write its SQLite file under projects/data/ at runtime. Everything else in the
-# image stays root-owned (readable, not writable, by "app").
-# What gets copied is filtered by foundations/Dockerfile.dockerignore.
-#
-# No --chown: code stays root-owned and read-only for "app" at runtime.
+# Copy the member's source (src/, sql/, README.md, ...).
+# No --chown: the code stays root-owned and read-only for "app" at runtime. Scanners
+# flag `COPY --chown` because it leaves code writable by the runtime user.
+# With -f foundations/Dockerfile, Docker filters the context through
+# foundations/Dockerfile.dockerignore if that file exists (it takes precedence over a
+# root .dockerignore). Without one, this COPY also brings in local-only folders such as
+# foundations/data/, outputs/, tests/ and notebooks/.
 COPY foundations/ foundations/
 
 # Second sync, now that every manifest and the source are present:
 #   --locked → FAIL the build if uv.lock is out of date with any pyproject.toml
 #              (the reproducibility guarantee — CORRECTION 65).
 #   Installs lj-foundations itself (the `learning_journey` import package), as an
-#   editable install: .venv links to /app/foundations/src, so the source must stay in
-#   the image. Third-party packages are already there from layer 1, so this is quick.
+#   editable install: a .pth file in .venv points to /app/foundations/src, so the source
+#   must stay in the image. Third-party packages are already there from layer 1, so this
+#   is quick.
 RUN --mount=type=cache,target=/root/.cache/uv \
     uv sync --locked --package lj-foundations --no-dev
 
@@ -138,9 +176,14 @@ USER app
 
 # ENTRYPOINT = the program the container always runs. CMD = its default arguments.
 # Both use exec form (a JSON list): no shell wraps the command, so python is PID 1 and
-# receives `docker stop`'s SIGTERM directly.
+# receives signals itself.
 #   docker run --rm recon-toy           → python -m learning_journey.projects.recon_toy --help
 #   docker run --rm recon-toy <args>    → python -m learning_journey.projects.recon_toy <args>
 # (Change the program itself with: docker run --entrypoint <cmd> recon-toy ...)
+# PID 1 caveat: Linux ignores a signal sent to PID 1 unless the process installed a
+# handler for it. Python handles SIGINT (Ctrl-C) but not SIGTERM, so `docker stop` waits
+# 10 s and then SIGKILLs it. Harmless for a seconds-long batch job; for long runs, add
+# `docker run --init` (a tiny init process becomes PID 1 and forwards signals) or a
+# SIGTERM handler in the code.
 ENTRYPOINT ["python", "-m", "learning_journey.projects.recon_toy"]
 CMD ["--help"]
