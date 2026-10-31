@@ -1,0 +1,15 @@
+# Docker gives an ignore file named after its Dockerfile, placed in the same folder,
+# priority over the root .dockerignore.
+#
+# This one uses an allowlist: exclude everything, then admit only what the image needs.
+*
+!pyproject.toml
+!uv.lock
+!.python-version
+!llm-api-smoke-test/pyproject.toml
+!courses/cs50_harvard/code/05_data_structures/speller/py_src/pyproject.toml
+!foundations/pyproject.toml
+!foundations/README.md
+!foundations/src/
+!foundations/sql/
+**/__pycache__
