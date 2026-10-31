@@ -113,12 +113,17 @@ def run_pipeline(n: int, tol: float) -> Path:
         )
     log.info("[4/5]_sql_python_reconciled", status=py_missing == sql_missing)
 
-    OUTPUT_DIR.mkdir(exist_ok=True)
+    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     report_path = OUTPUT_DIR / "exceptions_report.txt"
     report_path.write_text(render_report(result, totals), encoding="utf-8")
     log.info("[5/5]_txt_file_written", file_path=report_path)
 
-    print(f"✅ Report → {report_path.relative_to(PROJECT_ROOT)}")
+    shown = (
+        report_path.relative_to(PROJECT_ROOT)
+        if report_path.is_relative_to(PROJECT_ROOT)
+        else report_path
+    )
+    print(f"✅ Report → {shown}")
 
     return report_path
 
