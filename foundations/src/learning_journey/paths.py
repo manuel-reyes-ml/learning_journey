@@ -20,6 +20,14 @@ __all__ = [
 _ROOT_MARKERS: Final[tuple[str, ...]] = ("uv.lock", ".git")
 
 
+# Let the writable folders be overridden by environment variables.
+#   - Local development keeps today's defaults,
+#   - and the docker container points them elsewhere.
+def _env_dir(var: str, default: Path) -> Path:
+    """Writable dir: env-var override (containers), else the repo default (local dev)."""
+    return Path(value).resolve() if (value := os.environ.get(var)) else default
+
+
 # @cache = @lru_cache(maxsize=None)
 # Both come from functools and do memoization: the first call with some arguments runs the
 # function and stores the result, keyed by those arguments. Later calls with the same
@@ -49,6 +57,6 @@ def project_root() -> Path:
 # This is the same “define paths once in a module, import everywhere” pattern
 PROJECT_ROOT: Final[Path] = project_root()
 FOUNDATIONS_DIR: Final[Path] = PROJECT_ROOT / "foundations"
-DATA_DIR: Final[Path] = FOUNDATIONS_DIR / "data"
 SQL_DIR: Final[Path] = FOUNDATIONS_DIR / "sql"
-OUTPUT_DIR: Final[Path] = FOUNDATIONS_DIR / "outputs"
+DATA_DIR: Final[Path] = _env_dir("LJ_DATA_DIR", FOUNDATIONS_DIR / "data")
+OUTPUT_DIR: Final[Path] = _env_dir("LJ_OUTPUT_DIR", FOUNDATIONS_DIR / "outputs")
