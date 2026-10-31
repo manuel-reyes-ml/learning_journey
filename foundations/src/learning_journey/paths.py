@@ -13,6 +13,7 @@ __all__ = [
     "OUTPUT_DIR",
     "PROJECT_ROOT",
     "SQL_DIR",
+    "display_path",
 ]
 
 # uv.lock lives only at the workspace root (members share it), and it is
@@ -60,3 +61,10 @@ FOUNDATIONS_DIR: Final[Path] = PROJECT_ROOT / "foundations"
 SQL_DIR: Final[Path] = FOUNDATIONS_DIR / "sql"
 DATA_DIR: Final[Path] = _env_dir("LJ_DATA_DIR", FOUNDATIONS_DIR / "data")
 OUTPUT_DIR: Final[Path] = _env_dir("LJ_OUTPUT_DIR", FOUNDATIONS_DIR / "outputs")
+
+
+def display_path(path: Path) -> Path:
+    """Confirm is file path is relative to Root, if not give same Path"""
+    shown = path.relative_to(PROJECT_ROOT) if path.is_relative_to(PROJECT_ROOT) else path
+
+    return shown
