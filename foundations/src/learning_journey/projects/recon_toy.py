@@ -14,7 +14,7 @@ from pathlib import Path
 
 import structlog
 
-from learning_journey.paths import DATA_DIR, OUTPUT_DIR, PROJECT_ROOT
+from learning_journey.paths import DATA_DIR, OUTPUT_DIR, display_path
 from learning_journey.projects import load_db, make_data, matcher, recon
 
 log = structlog.get_logger()
@@ -118,13 +118,7 @@ def run_pipeline(n: int, tol: float) -> Path:
     report_path.write_text(render_report(result, totals), encoding="utf-8")
     log.info("[5/5]_txt_file_written", file_path=report_path)
 
-    shown = (
-        report_path.relative_to(PROJECT_ROOT)
-        if report_path.is_relative_to(PROJECT_ROOT)
-        else report_path
-    )
-    print(f"✅ Report → {shown}")
-
+    print(f"✅ Report → {display_path(report_path)}")
     return report_path
 
 
