@@ -11,6 +11,9 @@ UV ?= uv run
 PYTHON ?= $(UV) python
 PRE_COMMIT ?= $(UV) pre-commit
 
+RECON_OUT := $(CURDIR)/data_test_recontoy
+PARTICIPANTS ?= 50  # lets you run make docker-run PARTICIPANTS=200 without editing the file.
+
 SPELLER := courses/cs50_harvard/code/05_data_structures/speller/py_src
 CODE_PATHS := foundations scripts llm-api-smoke-test $(SPELLER)
 
@@ -84,12 +87,14 @@ test:  ## Run every workspace member's test suite
 docker-build:  ## Build the Docker image
 	docker build -f foundations/Dockerfile -t recon-toy .
 
-docker-run:  ## Run the Docker container
-	docker run --name recon-toy-container -v recon-data:/data recon-toy --participants 50
+docker-run:  ## Run recon-toy in Docker; results land in ./data_test_recontoy
+	mkdir -p "$(RECON_OUT)"
+	docker run --rm \
+	--mount type=bind,src="$(RECON_OUT)",dst=/data \
+	recon-toy --participants $(PARTICIPANTS)
 
 docker-stop:  ## Stop the Docker container
 	docker stop recon-toy
 
 docker-remove:  ## Remove the Docker image
-	docker rm recon-toy-container
 	docker rmi recon-toy
