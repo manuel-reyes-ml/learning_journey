@@ -77,3 +77,18 @@ test:  ## Run every workspace member's test suite
 	$(UV) pytest llm-api-smoke-test/tests
 	$(UV) pytest $(SPELLER)/tests
 	$(UV) pytest foundations/tests
+
+# --- Docker image -------------------------------------------------------------
+
+docker-build:  ## Build the Docker image
+	docker build -f foundations/Dockerfile -t recon-toy .
+
+docker-run:  ## Run the Docker container
+	docker run --name recon-toy-container -v recon-data:/data recon-toy --participants 50
+
+docker-stop:  ## Stop the Docker container
+	docker stop recon-toy
+
+docker-remove:  ## Remove the Docker image
+	docker rm recon-toy-container
+	docker rmi recon-toy
