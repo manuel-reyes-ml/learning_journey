@@ -17,7 +17,8 @@ CODE_PATHS := foundations scripts llm-api-smoke-test $(SPELLER)
 .DEFAULT_GOAL := help
 
 .PHONY: help sync hooks hooks-run hooks-update claude-agents claude-agents-check claude-rules \
-		claude-rules-check claude-rules-list lint format test claude-gen
+		claude-rules-check claude-rules-list lint format test claude-gen docker-build docker-run \
+		docker-stop docker-remove
 
 help:  ## Show the available targets
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) \
