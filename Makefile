@@ -84,6 +84,9 @@ test:  ## Run every workspace member's test suite
 
 # --- Docker image -------------------------------------------------------------
 
+# Your Macs build arm64 images, but most cloud servers and CI run amd64.
+# docker buildx build --platform linux/amd64
+
 docker-build:  ## Build the Docker image
 	docker build -f foundations/Dockerfile -t recon-toy .
 
