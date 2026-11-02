@@ -10,6 +10,10 @@
 #                                root — not to this file's folder. It has to be the root
 #                                because uv.lock and the workspace pyproject.toml live there.
 #
+# Your Macs build arm64 images, but most cloud servers and CI run amd64. Once per flagship,
+# build with docker buildx build --platform linux/amd64 (or multi-arch) and say so in the README.
+# That catches architecture bugs early and shows recruiters you're thinking about deployment.
+#
 # RUN:    docker run --rm recon-toy                  → default args (CMD: --help)
 #         docker run --rm recon-toy <args...>        → <args> replace CMD
 #   --rm  deletes the stopped container afterwards (the image stays).
