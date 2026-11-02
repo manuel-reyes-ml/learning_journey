@@ -187,6 +187,15 @@ def _find_env() -> None:
     log.info(".env_found", file_path=env_path, values=list(dotenv_values(env_path)))
 
 
+# Agent[object, str] is a generic type. The first slot says what dependencies
+# the agent needs; the second says what output it returns. So Agent[object, str]
+# means “this agent needs no dependencies and gives back plain text.”
+# - Dependencies (slot 1) are the things your agent's tools need at run time, like
+#   a database connection, an API client or a config object. You pass the dataclass
+#   type to deps_type, not an instance.
+# - Output (slot 2) is the type of data output by agent runs, used to validate the data
+#   returned by the model, and it defaults to str. If you pass a Pydantic model, the LLM's
+#   response must match that schema or Pydantic AI retries.
 def build_agent(settings: Settings, system_prompt: str) -> Agent[object, str]:
     """Build the reusable chat agent for Claude.
 
