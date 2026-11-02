@@ -187,7 +187,7 @@ def _find_env() -> None:
     log.info(".env_found", file_path=env_path, values=list(dotenv_values(env_path)))
 
 
-def build_agent(settings: Settings, system_prompt: str) -> Agent[None, str]:
+def build_agent(settings: Settings, system_prompt: str) -> Agent[object, str]:
     """Build the reusable chat agent for Claude.
 
     Parameters
