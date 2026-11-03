@@ -1,6 +1,7 @@
 # Docker for Beginners with Hands-on Labs
 
 ## Course Information
+
 - **Platform:** Coursera (Coursera Plus) — produced by KodeKloud
 - **Instructor:** Mumshad Mannambeth (KodeKloud)
 - **Duration:** 10 modules (~10 hours, ~1 week at 10 hrs/week)
@@ -8,7 +9,8 @@
 - **Roadmap row:** Stage 1 Core Course 1️⃣2️⃣ — feeds the Dockerfile in every flagship and the DataVault S2 gate (Docker → ECS)
 
 ## Progress
-- [ ] 01: Docker Introduction
+
+- [x] 01: Docker Introduction
 - [ ] 02: Docker Commands
 - [ ] 03: Docker Run
 - [ ] 04: Docker Images (ENV, CMD vs ENTRYPOINT)
@@ -20,7 +22,10 @@
 - [ ] 10: Course Conclusion and YAML Basics
 - [ ] 11: 🚀 Beyond the Course — Production Docker for the roadmap (self-study)
 
+
+
 ## Structure
+
 ```
 docker_kodekloud/
 ├── notes/
@@ -58,7 +63,10 @@ docker_kodekloud/
     └── ci/               # CI workflow, hadolint config, dev-loop compose, Makefile (Module 11)
 ```
 
+
+
 ## Notes
+
 Each module has a dedicated notes file in `/notes` following the format `XX_topic.md`, using the same template as CS50 and Python for Everybody, plus a **🚀 Beyond the Course** section with what the roadmap needs that the module skips.
 
 - **01–03** — containers vs VMs, lifecycle commands, every `docker run` flag
@@ -67,15 +75,22 @@ Each module has a dedicated notes file in `/notes` following the format `XX_topi
 - **09–10** — Swarm, Kubernetes and ECS concepts; YAML
 - **11** — production checklist: lint, scan, secrets, hardened runs, SHA-pinned CI
 
+
+
 ## Command Files
+
 One practice file per module in `/commands`, in the same style as the Mode SQL `queries/` files: header, table of contents, numbered sections with a `Signature:` line, then `1a / 1b` exercises.
 
 - Run from `courses/docker_kodekloud/`, **one block at a time** (VS Code: select → *Terminal: Run Selected Text in Active Terminal*) — never the whole file; some commands fail on purpose and are marked `EXPECTED`
 - Stock images only (alpine, nginx, postgres, python), pinned tags, synthetic data only
 - `lab_files/` holds the non-command artifacts the commands need (Dockerfiles, Compose files, manifests, YAML)
 
+
+
 ## Python in this course
+
 Only one Python project, kept because it *is* the roadmap's Python ↔ Docker skill: `lab_files/dist_loader` (validate + load a synthetic 1099-R CSV into Postgres). It's what Module 4 containerizes with the flagship Dockerfile standard (`uv sync --frozen` → `--locked`, multi-stage, non-root) and what Module 5 runs as the Compose `loader` service. Everything else is plain `docker` commands.
 
 ## Certificate
+
 [Add certificate link when completed]
