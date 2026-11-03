@@ -63,3 +63,6 @@ experiments/scratch.py
 **/.claude/settings.local.json
 **/CLAUDE.local.md
 **/.claude/agent-memory-local/
+
+# Docker bind-mount output (make docker-run)
+data_test_recontoy/
