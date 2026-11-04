@@ -16,7 +16,7 @@
 - [x] 04: Docker Images (ENV, CMD vs ENTRYPOINT)
 - [x] 05: Docker Compose
 - [x] 06: Docker Engine and Storage
-- [ ] 07: Docker Networking and Registry
+- [x] 07: Docker Networking and Registry
 - [ ] 08: Docker on Mac & Windows
 - [ ] 09: Container Orchestration — Docker Swarm & Kubernetes
 - [ ] 10: Course Conclusion and YAML Basics
