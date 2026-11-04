@@ -14,7 +14,7 @@
 - [x] 02: Docker Commands
 - [x] 03: Docker Run
 - [x] 04: Docker Images (ENV, CMD vs ENTRYPOINT)
-- [ ] 05: Docker Compose
+- [x] 05: Docker Compose
 - [ ] 06: Docker Engine and Storage
 - [ ] 07: Docker Networking and Registry
 - [ ] 08: Docker on Mac & Windows
