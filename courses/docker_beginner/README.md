@@ -11,7 +11,7 @@
 ## Progress
 
 - [x] 01: Docker Introduction
-- [ ] 02: Docker Commands
+- [x] 02: Docker Commands
 - [ ] 03: Docker Run
 - [ ] 04: Docker Images (ENV, CMD vs ENTRYPOINT)
 - [ ] 05: Docker Compose
