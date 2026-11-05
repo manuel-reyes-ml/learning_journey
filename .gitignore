@@ -72,3 +72,4 @@ courses/dbt_fundamentals/target/
 courses/dbt_fundamentals/dbt_packages/
 courses/dbt_fundamentals/logs/
 courses/dbt_fundamentals/profiles.yml
+courses/dbt_fundamentals/.vscode/
