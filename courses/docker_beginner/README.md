@@ -20,7 +20,7 @@
 - [x] 08: Docker on Mac & Windows
 - [x] 09: Container Orchestration — Docker Swarm & Kubernetes
 - [x] 10: Course Conclusion and YAML Basics
-- [ ] 11: 🚀 Beyond the Course — Production Docker for the roadmap (self-study)
+- [x] 11: 🚀 Beyond the Course — Production Docker for the roadmap (self-study)
 
 
 
