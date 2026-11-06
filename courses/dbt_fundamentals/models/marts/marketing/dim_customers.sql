@@ -1,11 +1,3 @@
--- Functions in dbt are defined wthin double curly braces
--- config in model takes precedence over configuratio in dbt_project.yml
-{{
-    config(
-        materialized = 'view'
-    )
-}}
-
 with customers as (
 
     select * from {{ ref('stg_joffle_shop_customers')}}
@@ -32,7 +24,6 @@ customer_orders as (
     group by 1
 
 ),
-
 
 final as (
 
