@@ -1,4 +1,11 @@
-""" """
+"""Day 36: LLM output you can TRUST — pydantic validation at the boundary.
+
+The problem: LLMs return text. Text that LOOKS like JSON usually is —
+until the one time it isn't, and your pipeline writes garbage downstream.
+The pattern: ask for JSON → parse → VALIDATE against a typed schema →
+only validated objects cross into your system. Same boundary rule as
+Day 4's float(input()), scaled up to AI.
+"""
 
 from __future__ import annotations
 
