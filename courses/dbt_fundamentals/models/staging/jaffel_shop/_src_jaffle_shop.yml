@@ -6,6 +6,7 @@ sources:
       - name: customers
       - name: orders
         config:
+          loaded_at_field: _etl_loaded_at
           # identify how old our newest record is
           # if the loader tool or warehouse have an issue
           freshness:
@@ -15,4 +16,3 @@ sources:
             error_after:
               count: 48
               period: hour
-          loaded_at_field: _etl_loaded_at
