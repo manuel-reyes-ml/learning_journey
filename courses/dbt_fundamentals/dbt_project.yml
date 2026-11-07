@@ -29,9 +29,13 @@ clean-targets:         # directories to be removed by `dbt clean`
 # In this example config, we tell dbt to build all models in the jaffle_shop project
 # as tables. These settings can be overridden in the individual model files
 # using the `{{ config(...) }}` macro.
-
+# Functions in dbt are defined wthin double curly braces
+# config in model takes precedence over configuratio in dbt_project.yml
 models:
   jaffle_shop:
-    +materialized: view
+    staging:
+      +materialized: view
+    marts:  # These queries are going to be run very often from BI users.
+      +materialized: table
 
     
