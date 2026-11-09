@@ -8,6 +8,10 @@ Tests ≠ evals. Whether the model explains code G *well* is an eval question
 (Weeks 9-10). These tests only prove the plumbing around the model is correct.
 """
 
+# =============================================================================
+# IMPORTS
+# =============================================================================
+
 from __future__ import annotations
 
 import json
