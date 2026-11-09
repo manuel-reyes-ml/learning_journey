@@ -487,7 +487,7 @@ if __name__ == "__main__":
     print(f"taxable={result.taxable_generally} confidence={result.confidence:.0%}")
 ```
 
-- [ ] 30 min — 🆕 **SQL rep** (v3.1): one CTE chain + one window function on `recon.db`, timed — the shape every dbt model and AE screen uses ~~· Claude API course continue~~
+- [x] 30 min — 🆕 **SQL rep** (v3.1): one CTE chain + one window function on `recon.db`, timed — the shape every dbt model and AE screen uses ~~· Claude API course continue~~
 - [ ] 20 min — Journal + commit (`feat: pydantic-validated structured llm output`)
 
 ### 📌 DAY 37 — Tuesday, August 25
@@ -500,7 +500,7 @@ if __name__ == "__main__":
 **Morning:** Claude API course.
 **Evening:**
 
-- [ ] 70 min — **Testing code that calls an API** ⭐ — without paying per test run. `tests/test_box7_explain.py`:
+- [x] 70 min — **Testing code that calls an API** ⭐ — without paying per test run. `tests/test_box7_explain.py`:
 
 ```python
 """Mocking: tests must be fast, free, deterministic — three things a live
