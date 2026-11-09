@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from collections.abc import Callable
 from types import SimpleNamespace
 from typing import Any, Final
@@ -11,12 +12,13 @@ import pytest
 from anthropic.types import TextBlock
 
 from learning_journey.claude import day36_structured
+from learning_journey.claude.day36_structured import Box7Explanation, explain_box7
 
 # =============================================================================
 # Test data
 # =============================================================================
 
-VALID: Final[dict[str, Any]] = {
+VALID_PAYLOAD: Final[dict[str, Any]] = {
     "code": "G",
     "meaning": "Direct rollover to another qualified plan.",
     "taxable_generally": False,
@@ -69,3 +71,27 @@ def respond_with(fake_client: MagicMock) -> Callable[..., None]:
 # =============================================================================
 # Happy path
 # =============================================================================
+
+
+def test_valid_payload_returns_validated_model(respond_with: Callable[..., None]) -> None:
+    respond_with(json.dumps(VALID_PAYLOAD))
+
+    result = day36_structured.explain_box7("G")
+
+    assert isinstance(result, Box7Explanation)
+    assert result == Box7Explanation(**VALID_PAYLOAD)  # every field, not just one
+
+
+def test_text_split_across_blocks_is_joined(respond_with: Callable[..., None]) -> None:
+    raw = json.dumps(VALID_PAYLOAD)
+    respond_with(raw[:25], raw[25:])  # the SDK may return several text blocks
+
+    assert explain_box7("G").code == "G"
+
+
+def test_non_text_blocks_are_ignored(fake_client: MagicMock) -> None:
+    other_block = SimpleNamespace(type="thinking", thinking="internal reasoning")
+    text_block = TextBlock(type="text", text=json.dumps(VALID_PAYLOAD))
+    fake_client.messages.create.return_value = SimpleNamespace(content=[other_block, text_block])
+
+    assert explain_box7("G").code == "G"
