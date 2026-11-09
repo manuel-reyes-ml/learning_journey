@@ -1,4 +1,12 @@
-""" """
+"""Unit tests for day36_structured.explain_box7 — the LLM → pydantic boundary.
+
+Tests must be fast, free and deterministic, so the Anthropic client is replaced
+with a fake. What we verify is OUR code: how the request is built, how the reply
+is parsed, and that anything off-contract is refused loudly.
+
+Tests ≠ evals. Whether the model explains code G *well* is an eval question
+(Weeks 9-10). These tests only prove the plumbing around the model is correct.
+"""
 
 from __future__ import annotations
 
