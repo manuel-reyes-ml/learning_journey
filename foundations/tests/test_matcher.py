@@ -3,14 +3,14 @@ from __future__ import annotations
 import csv
 import sqlite3
 
+from learning_journey.paths import DATA_DIR
 from learning_journey.projects.load_db import DB_PATH, load
-from learning_journey.projects.make_data import OUT_DIR
 from learning_journey.projects.matcher import match_records
 from learning_journey.projects.recon import missing_in_b
 
 
 def _read(name) -> list[dict]:
-    with (OUT_DIR / name).open(encoding="utf-8") as f:
+    with (DATA_DIR / name).open(encoding="utf-8") as f:
         return list(csv.DictReader(f))
 
 
