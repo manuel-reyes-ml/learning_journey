@@ -6,9 +6,11 @@ import json
 from collections.abc import Callable
 from types import SimpleNamespace
 from typing import Any, Final
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, create_autospec
 
+import anthropic
 import pytest
+from anthropic.resources import Messages
 from anthropic.types import TextBlock
 
 from learning_journey.claude import day36_structured
@@ -68,7 +70,17 @@ def fake_client(monkeypatch: pytest.MonkeyPatch, fake_settings: SimpleNamespace)
     """
     # MagicMock(name="anthropic_client") makes error messages say anthropic_client.messages.create,
     # not <MagicMock id=1404...>. It's free debugging help.
-    client = MagicMock(name="anthropic_client")
+    #
+    # spec=, limits the mock to the attributes the real class has.
+    client = MagicMock(spec=anthropic.Anthropic, name="anthropic_client")
+
+    # spec= only applies to the top level. client.mesages now raises an error,
+    # but client.messages.creat would still be accepted.
+    #
+    # create_autospec(Messages, instance=True) covers the next level. It copies the real messages resource,
+    # including the real signature of create. That catches both typos (creat → AttributeError) and wrong
+    # arguments (for example, a missing max_tokens → TypeError).
+    client.messages = create_autospec(Messages, instance=True)
 
     # A module is just an object, and its global names are its attributes.
     # .setatr() It raises AttributeError if the attribute does not exist, unless you pass raising=False
