@@ -12,6 +12,7 @@ import anthropic
 import pytest
 from anthropic.resources import Messages
 from anthropic.types import TextBlock
+from pydantic import ValidationError
 
 from learning_journey.claude import day36_structured
 from learning_journey.claude.day36_structured import SYSTEM, Box7Explanation, explain_box7
@@ -165,3 +166,55 @@ def test_request_is_built_from_settings_and_prompt(
 # =============================================================================
 # Boundary: off-contract output must be refused, for the RIGHT reason
 # =============================================================================
+
+
+@pytest.mark.parametrize(
+    "payload",
+    [
+        pytest.param(VALID_PAYLOAD | {"confidence": 1.7}, id="confidence-above-1"),
+        pytest.param(VALID_PAYLOAD | {"confidence": -0.1}, id="confidence-below-0"),
+        pytest.param(VALID_PAYLOAD | {"code": "GG"}, id="code-two-chars"),
+        pytest.param(VALID_PAYLOAD | {"code": "g"}, id="code-lowercase"),
+        pytest.param(VALID_PAYLOAD | {"taxable_generally": "maybe"}, id="bool-not-bool"),
+        pytest.param(
+            {k: v for k, v in VALID_PAYLOAD.items() if k != "meaning"},
+            id="missing-field",
+        ),
+    ],
+)
+def test_schema_violation_is_rejected(
+    respond_with: Callable[..., None], payload: dict[str, Any]
+) -> None:
+    respond_with(json.dumps(payload))
+
+    with pytest.raises(ValueError, match=r"invalid output for 'G'") as exc_info:
+        explain_box7("G")
+
+    # Proves the failure came from pydantic, not from some earlier accident.
+    assert isinstance(exc_info.value.__cause__, ValidationError)
+
+
+@pytest.mark.parametrize(
+    "raw",
+    [
+        pytest.param("Sure! Here's the JSON:", id="chatty-prose"),
+        pytest.param("", id="empty-reply"),
+        pytest.param('{"code": "G", "meaning": "Direct Roll', id="truncated-max-tokens"),
+    ],
+)
+def test_non_json_is_rejected(respond_with: Callable[..., None], raw: str) -> None:
+    respond_with(raw)
+
+    with pytest.raises(ValueError, match=r"invalid output for 'G") as exc_info:
+        explain_box7("G")
+
+    assert isinstance(exc_info.value.__cause__, json.JSONDecodeError)
+
+
+def test_error_message_includes_raw_output_for_debugging(
+    respond_with: Callable[..., None],
+) -> None:
+    respond_with("Sure! Here's the JSON:")
+
+    with pytest.raises(ValueError, match=r"Got: Sure! Here's the JSON:"):
+        explain_box7("G")
