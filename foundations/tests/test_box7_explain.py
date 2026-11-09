@@ -14,7 +14,7 @@ from anthropic.resources import Messages
 from anthropic.types import TextBlock
 
 from learning_journey.claude import day36_structured
-from learning_journey.claude.day36_structured import Box7Explanation, explain_box7
+from learning_journey.claude.day36_structured import SYSTEM, Box7Explanation, explain_box7
 
 # =============================================================================
 # Test data
@@ -99,7 +99,7 @@ def respond_with(fake_client: MagicMock) -> Callable[..., None]:
     def _respond(*texts: str) -> None:
         fake_client.messages.create.return_value = make_response(*texts)
         #  client  → .messages (child) → .create (child) → "when called, return this"
-        # return_value makes a mock return something.
+        # return_value makes a mock return something, after its set.
 
     return _respond
 
@@ -135,4 +135,33 @@ def test_non_text_blocks_are_ignored(fake_client: MagicMock) -> None:
 
 # =============================================================================
 # Request construction — the part of "prompt engineering" we CAN unit-test
+# =============================================================================
+
+
+def test_request_is_built_from_settings_and_prompt(
+    fake_client: MagicMock,
+    fake_settings: SimpleNamespace,
+    respond_with: Callable[..., None],
+) -> None:
+    respond_with(json.dumps(VALID_PAYLOAD))
+
+    explain_box7("G")
+
+    fake_client.messages.create.assert_called_once()
+
+    # .call_args returns a named call tuple with the arguments used in .create()
+    # .kwargs returns the call_args in a key-value dictionary ->
+    #   {'model': 'claude-test-model', 'max_tokens': 256, ...} from .create()
+    kwargs = fake_client.messages.create.call_args.kwargs
+    assert kwargs["model"] == fake_settings.claude_model
+    assert kwargs["max_tokens"] == fake_settings.default_max_tokens
+    assert kwargs["system"] == SYSTEM
+    assert kwargs["messages"][0] == {"role": "user", "content": "Code: G"}
+    # Prefill + stop sequence are what keep markdown fences out of the reply.
+    assert kwargs["messages"][-1] == {"role": "assistant", "content": "```json"}
+    assert kwargs["stop_sequences"] == ["```"]
+
+
+# =============================================================================
+# Boundary: off-contract output must be refused, for the RIGHT reason
 # =============================================================================
