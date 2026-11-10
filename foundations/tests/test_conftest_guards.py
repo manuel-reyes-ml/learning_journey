@@ -1,4 +1,8 @@
-""" """
+"""Tests for the safety guards in conftest.py — test infrastructure deserves tests too.
+
+If someone deletes or breaks the guard, these fail first, before a forgotten mock
+quietly starts spending API credits.
+"""
 
 # =============================================================================
 # IMPORTS
