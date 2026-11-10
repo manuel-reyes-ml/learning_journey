@@ -42,7 +42,7 @@ def test_specced_mock_still_works() -> None:
 
 @pytest.mark.live_api
 def test_live_marker_opts_out_of_the_guard() -> None:
-    # Only runs with RUN_LIVE_API=1. Building a client costs nothing; calls do.
+    # Only runs with `pytest --run-live`. Building a client costs nothing; calls do.
     client = anthropic.Anthropic(api_key="sk-ant-test-not-real")
 
     assert isinstance(client, anthropic.Anthropic)
