@@ -166,6 +166,7 @@ def test_request_is_built_from_settings_and_prompt(
     # .kwargs returns the call_args in a key-value dictionary ->
     #   {'model': 'claude-test-model', 'max_tokens': 256, ...} from .create()
     kwargs = fake_client.messages.create.call_args.kwargs
+
     assert kwargs["model"] == fake_settings.claude_model
     assert kwargs["max_tokens"] == fake_settings.default_max_tokens
     assert kwargs["system"] == SYSTEM
