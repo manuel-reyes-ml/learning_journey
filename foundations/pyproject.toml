@@ -73,6 +73,9 @@ where = ["src"]  # src/ layout: only code under src/ is packaged
 [tool.pytest.ini_options]
 minversion = "8.0"
 testpaths = ["tests"]
+markers = [
+    "live_api: calls the real Anthropic API (costs money); skipped unless RUN_LIVE_API=1",
+]
 # No `pythonpath = ["src"]` on purpose. The package is installed by `uv sync`, so the
 # import works the way it will for any real user. A pythonpath shim would hide exactly
 # the packaging bug that produced "No module named 'learning_journey'".
@@ -81,6 +84,8 @@ addopts = [
     "--strict-markers",         # typo in @pytest.mark.<name> fails instead of passing silently
     "--strict-config",          # typo in this table fails instead of being ignored
     "--import-mode=importlib",  # pytest's recommended mode for new projects; no unique-basename rule
+    "--durations=10",           # Show slow tests so you can spot regression.
+    "-v",                       # Show verbose: all Test Classes, functions and sub-functions(parametrize)
 ]
 
 [tool.coverage.run]
