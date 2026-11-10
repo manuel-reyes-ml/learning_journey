@@ -1,4 +1,16 @@
-""" """
+"""Shared pytest fixtures and hooks for the foundations test suite.
+
+Why a guard against real API clients?
+-------------------------------------
+Unit tests must be fast, free and deterministic. A test that forgets to mock
+``get_client()`` would build a real ``anthropic.Anthropic`` and, with a key in the
+environment (your laptop's .env, a CI secret), spend real credits on every run.
+
+The autouse fixture below makes that mistake LOUD: building a real client inside a
+test raises immediately, with a message that says how to fix it. Tests that really
+must call the API opt in with ``@pytest.mark.live_api`` and only run when
+``RUN_LIVE_API=1`` is set, so CI never runs them by accident.
+"""
 
 # =============================================================================
 # IMPORTS
@@ -27,7 +39,22 @@ _REAL_CLIENT_CLASSES: Final[tuple[type, ...]] = (anthropic.Anthropic, anthropic.
 # HOOKS
 # =============================================================================
 
+# How it works: at startup pytest loads every conftest.py and installed plugin.
+# It checks each function whose name starts with pytest_ against its list of known
+# hook names. A match is registered and called at its fixed point in the run.
+# A pytest_ name that doesn't match is reported as an error, so typos fail loudly.
+# Arguments are passed by name, just like fixtures.
+#
+# A hook is a function with a name pytest knows. Because it's in conftest.py,
+# pytest finds it and calls it at a fixed moment: after collecting all tests
+# and before running any. You don't call it. As with fixtures, pytest matches
+# the parameter names config and items and passes in the right objects.
 
+
+# - pytest.Config is the settings for the whole run: pyproject + CLI flags + plugins.
+# - pytest.Item is one collected test -> Each test case becomes one Item. Parametrized
+#   tests become several: your guard file has 3 test functions but collected 5 Items,
+#   because the parametrize became [sync], [async] and [sync-alias].
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
     """Skip every ``@pytest.mark.live_api`` test unless RUN_LIVE_API=1 is set."""
     if os.environ.get(LIVE_API_ENV_VAR) == "1":
@@ -35,7 +62,11 @@ def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item
     skip_live = pytest.mark.skip(reason=f"live API test: set {LIVE_API_ENV_VAR}=1 to run")
 
     for item in items:
+        # Returns the marker if the test has it, else None. That's the check in your hook.
         if item.get_closest_marker(LIVE_API_MARKER):
+            # Attaches a marker after collection. Look at the last line of the demo: 'skip'
+            # sits next to 'live_api'. That's your hook adding it. When pytest runs that Item,
+            # it sees skip and reports it as skipped instead of running it.
             item.add_marker(skip_live)
 
 
@@ -55,15 +86,23 @@ def _block_real_anthropic_clients(
     matter how it was imported: ``anthropic.Anthropic``, ``from anthropic import
     Anthropic``, or inside a third-party library such as pydantic-ai.
     """
+    # The hook checks it before the run (to skip), and the fixture checks it during
+    # the run (to let the test through)
     if request.node.get_closest_marker(LIVE_API_MARKER):
         return
 
     def _refuse(self: object, *args: Any, **kwargs: Any) -> NoReturn:
+        # .node.nodeid is its full address, tests/test_conftest_guards.py::test_…[sync].
+        # That's what -k filters and what the failure reports print.
         raise RuntimeError(
             f"{request.node.nodeid} tried to build a real {type(self).__name__}. "
             "Mock get_client() (see the fake_client fixture), "
             f"or mark the test @pytest.mark.{LIVE_API_MARKER} if it must call the API."
         )
 
-        for cls in _REAL_CLIENT_CLASSES:
-            monkeypatch.setattr(cls, "__init__", _refuse)
+    # Replacing all Anthropic and AsyncAnthropic classes __init__ therefore blocks every
+    # import style at once, including clients that pydantic-ai builds internally.
+    # MagicMock(spec=anthropic.Anthropic) still works, because spec= only reads the
+    # class's attributes and never calls __init__.
+    for cls in _REAL_CLIENT_CLASSES:
+        monkeypatch.setattr(cls, "__init__", _refuse)
