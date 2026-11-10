@@ -1,5 +1,5 @@
 with orders as (
-    select * from {{ref('stg_joffle_shop_orders')}}
+    select * from {{ref('stg_jaffle_shop_orders')}}
 ),
 
 payments as (
