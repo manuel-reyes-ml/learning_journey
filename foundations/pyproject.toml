@@ -74,7 +74,7 @@ where = ["src"]  # src/ layout: only code under src/ is packaged
 minversion = "8.0"
 testpaths = ["tests"]
 markers = [
-    "live_api: calls the real Anthropic API (costs money); skipped unless RUN_LIVE_API=1",
+    "live_api: calls the real Anthropic API (costs money); skipped unless pytest --run-live",
 ]
 # No `pythonpath = ["src"]` on purpose. The package is installed by `uv sync`, so the
 # import works the way it will for any real user. A pythonpath shim would hide exactly
