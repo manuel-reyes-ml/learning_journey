@@ -8,8 +8,8 @@ environment (your laptop's .env, a CI secret), spend real credits on every run.
 
 The autouse fixture below makes that mistake LOUD: building a real client inside a
 test raises immediately, with a message that says how to fix it. Tests that really
-must call the API opt in with ``@pytest.mark.live_api`` and only run when
-``RUN_LIVE_API=1`` is set, so CI never runs them by accident.
+must call the API opt in with ``@pytest.mark.live_api`` and only run when pytest
+is started with ``--run-live``, so CI never runs them by accident.
 """
 
 # =============================================================================
@@ -18,7 +18,6 @@ must call the API opt in with ``@pytest.mark.live_api`` and only run when
 
 from __future__ import annotations
 
-import os
 from typing import Any, Final, NoReturn
 
 import anthropic
@@ -29,7 +28,7 @@ import pytest
 # =============================================================================
 
 LIVE_API_MARKER: Final[str] = "live_api"  # registered in pyproject.toml [tool.pytest.ini_options]
-LIVE_API_ENV_VAR: Final[str] = "RUN_LIVE_API"
+RUN_LIVE_FLAG: Final[str] = "--run-live"
 
 # anthropic.Client / AsyncClient are aliases of these same class objects, so
 # patching these two covers every import style.
@@ -48,7 +47,20 @@ _REAL_CLIENT_CLASSES: Final[tuple[type, ...]] = (anthropic.Anthropic, anthropic.
 # A hook is a function with a name pytest knows. Because it's in conftest.py,
 # pytest finds it and calls it at a fixed moment: after collecting all tests
 # and before running any. You don't call it. As with fixtures, pytest matches
-# the parameter names config and items and passes in the right objects.
+# the parameter names parser, config and items and passes in the right objects.
+
+
+# pytest_addoption is a hook that runs at startup, before pytest reads the command line.
+# parser.addoption adds --run-live to the list of flags pytest accepts, the same way
+# Python's argparse works.
+def pytest_addoption(parser: pytest.Parser) -> None:
+    """Register ``--run-live`` so pytest accepts it (unknown flags are a usage error)."""
+    parser.addoption(
+        RUN_LIVE_FLAG,
+        action="store_true",  # flag present -> True, absent -> False
+        default=False,
+        help="run @pytest.mark.live_api tests that call the real Anthropic API (costs money)",
+    )
 
 
 # - pytest.Config is the settings for the whole run: pyproject + CLI flags + plugins.
@@ -56,10 +68,10 @@ _REAL_CLIENT_CLASSES: Final[tuple[type, ...]] = (anthropic.Anthropic, anthropic.
 #   tests become several: your guard file has 3 test functions but collected 5 Items,
 #   because the parametrize became [sync], [async] and [sync-alias].
 def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
-    """Skip every ``@pytest.mark.live_api`` test unless RUN_LIVE_API=1 is set."""
-    if os.environ.get(LIVE_API_ENV_VAR) == "1":
+    """Skip every ``@pytest.mark.live_api`` test unless pytest was run with --run-live."""
+    if config.getoption(RUN_LIVE_FLAG):  # was: os.environ.get("RUN_LIVE_API") == "1"
         return
-    skip_live = pytest.mark.skip(reason=f"live API test: set {LIVE_API_ENV_VAR}=1 to run")
+    skip_live = pytest.mark.skip(reason=f"live API test: pass {RUN_LIVE_FLAG} to run")
 
     for item in items:
         # Returns the marker if the test has it, else None. That's the check in your hook.
