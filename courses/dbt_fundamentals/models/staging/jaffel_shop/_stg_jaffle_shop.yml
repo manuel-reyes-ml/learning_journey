@@ -11,3 +11,18 @@ models:
         data_tests:
           - unique
           - not_null
+      - name: status
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: [
+                  'placed', 'shipped',
+                  'completed', 'returned',
+                  'return_pending',
+                ]
+      - name: customer_id
+        data_tests:
+          - relationships:
+              arguments:
+                to: ref('stg_jaffle_shop_customers')
+                field: customer_id
