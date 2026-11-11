@@ -1,0 +1,21 @@
+sources:
+  - name: market_raw
+    description: "Files written by scripts/gen_market:seed.py (synthetic, seeded)."
+    config:
+      meta:
+        external_location: "data/market_seed/{name}.csv"  # {name} becomes each table name
+    tables:
+      - name: bars_daily
+        columns:
+          - name: ticker
+            data_tests: [not_null]
+      - name: insider_events
+        columns:
+          - name: event_id
+            data_tests: [unique, not_null]
+          - name: ticker
+            data_tests: [not_null]
+      - name: gen_manifest
+
+# column_types exists only for seeds, because dbt loads seeds itself and so
+# decides their types. With a source, the file is read by DuckDB, not dbt.
