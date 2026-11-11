@@ -13,11 +13,12 @@ from datetime import date, datetime, time, timedelta
 from pathlib import Path
 from typing import Final
 
+from learning_journey.paths import DATA_DIR
+
 SEED: Final[int] = 41  # same seed -> same files, every run
 TICKERS: Final[list[str]] = ["ALFA", "BRVO", "CHRL", "DLTA", "ECHO"]
 N_SESSIONS: Final[int] = 120
 FIRST_DAY: Final[date] = date(2026, 1, 5)  # a monday
-PROJECT_ROOT: Final[Path] = Path(__file__).resolve().parents[1]  # foundations/
 
 
 def trading_days(first: date, n: int) -> list[date]:
@@ -102,7 +103,7 @@ def write_csv(path: Path, rows: list[dict]) -> Path:
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--out", type=Path, default=(PROJECT_ROOT / "data" / "market_seed"))
+    parser.add_argument("--out", type=Path, default=(DATA_DIR / "market_seed"))
     args = parser.parse_args()
 
     rng = random.Random(SEED)  # never the global random: reproducibility
