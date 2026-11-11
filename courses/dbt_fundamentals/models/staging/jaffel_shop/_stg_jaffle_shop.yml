@@ -1,17 +1,22 @@
 models:
   - name: stg_jaffle_shop_customers
+    description: Staged customer data from our jaffle shop app.
     columns:
       - name: customer_id  # use column alias from stage model
+        description: The primary key for customers.
         data_tests:
           - unique
           - not_null
   - name: stg_jaffle_shop_orders
+    description: Staged order data from our jaffle shop app.
     columns:
       - name: order_id
+        description: The primary key for orders.
         data_tests:
           - unique
           - not_null
       - name: status
+        description: "{{doc('order_status')}}"  # double quotes on YAML file
         data_tests:
           - accepted_values:
               arguments:
@@ -21,6 +26,7 @@ models:
                   'return_pending',
                 ]
       - name: customer_id
+        description: The foreign key to stg_customers.customer_id
         data_tests:
           - relationships:
               arguments:
