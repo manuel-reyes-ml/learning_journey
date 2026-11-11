@@ -1,9 +1,17 @@
 sources:
   - name: stripe
+    description: A clone of a Postgres database
     database: raw
     schema: stripe
     tables:
       - name: payment
+        description: Raw payments data
+        columns:
+          - name: id
+            description: Primary key
+            data_tests:
+              - unique
+              - not_null
         config:
           loaded_at_field: _batched_at
           freshness:
