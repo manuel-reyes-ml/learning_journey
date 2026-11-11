@@ -9,13 +9,18 @@ WITH flagged AS (   -- query_1
     SELECT
             ticker,
             session_date,
+            -- Make is_dry true only when the frame holds exactly 20 non-null volumes.
+            -- A rolling window doesn’t fail when it has too few rows; it quietly averages
+            -- fewer of them. Always check the window is full before trusting a rolling baseline.
             ROW_NUMBER() OVER (PARTITION BY ticker ORDER BY session_date) AS session_n,
-            volume < 0.5 * AVG(volume) OVER (
-                PARTITION BY ticker
-                ORDER BY session_date
-                ROWS BETWEEN 20 PRECEDING AND 1 PRECEDING
-            ) AS is_dry
+            COUNT(volume) OVER w = 20
+                AND volume < 0.5 * AVG(volume) OVER w AS is_dry
         FROM bars
+        WINDOW w AS (
+            PARTITION BY ticker
+            ORDER BY session_date
+            ROWS BETWEEN 20 PRECEDING AND 1 PRECEDING
+        )
 ),
 dry AS (            -- query_2
     -- consecutive dry sessions share one value of (session_n − row number among dry rows)
