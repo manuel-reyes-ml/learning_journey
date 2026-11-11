@@ -29,6 +29,13 @@ import pytest
     ],
 )
 def test_real_client_construction_is_blocked(client_cls: type) -> None:
+    # So .* means “any characters, any number of them, including none.”
+    # It's a wildcard for whatever text sits between the two fixed parts.
+    # The match argument is checked with re.search() against the exception's message.
+    # The .* keeps the test from breaking if someone rewords the middle of the error message.
+    #
+    # . is a wildcard everywhere in the pattern. If your message has a literal period or
+    # parentheses you want to match exactly, escape them \.
     with pytest.raises(RuntimeError, match=r"tried to build a real .*live_api"):
         client_cls(api_key="sk-ant-test-not-real")
 
