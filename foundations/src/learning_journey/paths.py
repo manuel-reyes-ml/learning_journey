@@ -9,7 +9,12 @@ from typing import Final
 
 __all__ = [
     "DATA_DIR",
+    "DATA_MARKET_DIR",
+    "DBT_DIR",
     "FOUNDATIONS_DIR",
+    "MARKET_DB",
+    "MARKET_DBT_DIR",
+    "MARKET_SEEDS_DIR",
     "OUTPUT_DIR",
     "PROJECT_ROOT",
     "SQL_DIR",
@@ -57,10 +62,19 @@ def project_root() -> Path:
 
 # This is the same “define paths once in a module, import everywhere” pattern
 PROJECT_ROOT: Final[Path] = project_root()
+
+# Foundations package
 FOUNDATIONS_DIR: Final[Path] = PROJECT_ROOT / "foundations"
 SQL_DIR: Final[Path] = FOUNDATIONS_DIR / "sql"
 DATA_DIR: Final[Path] = _env_dir("LJ_DATA_DIR", FOUNDATIONS_DIR / "data")
 OUTPUT_DIR: Final[Path] = _env_dir("LJ_OUTPUT_DIR", FOUNDATIONS_DIR / "outputs")
+
+# dbt project
+DBT_DIR: Final[Path] = FOUNDATIONS_DIR / "dbt"
+MARKET_DBT_DIR: Final[Path] = DBT_DIR / "market_rehearsal"
+MARKET_SEEDS_DIR: Final[Path] = MARKET_DBT_DIR / "seeds"
+DATA_MARKET_DIR: Final[Path] = _env_dir("LJ_DATA_MARKET_DIR", DATA_DIR / "market_seed")
+MARKET_DB: Final[Path] = _env_dir("LJ_MARKET_DB", MARKET_DBT_DIR / "market.duckdb")
 
 
 def display_path(path: Path) -> Path:
