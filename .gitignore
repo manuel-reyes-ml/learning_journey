@@ -67,9 +67,18 @@ experiments/scratch.py
 # Docker bind-mount output (make docker-run)
 data_test_recontoy/
 
-# dbt projects
+# dbt learning projects
 courses/dbt_fundamentals/target/
 courses/dbt_fundamentals/dbt_packages/
 courses/dbt_fundamentals/logs/
 courses/dbt_fundamentals/profiles.yml
 courses/dbt_fundamentals/.vscode/
+
+# dbt projects under foundations/
+foundations/dbt/*/target/
+foundations/dbt/*/dbt_packages/
+foundations/dbt/*/logs/
+foundations/dbt/*/.vscode/
+foundations/dbt/logs/
+*.duckdb
+*.duckdb.wal
