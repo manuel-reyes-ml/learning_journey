@@ -1,9 +1,9 @@
 sources:
-  - name: market_raw
+  - name: market
     description: "Files written by scripts/gen_market:seed.py (synthetic, seeded)."
+    schema: raw_market
     config:
-      meta:
-        external_location: "data/market_seed/{name}.csv"  # {name} becomes each table name
+      loaded_at_field: _loaded_at
     tables:
       - name: bars_daily
         columns:
@@ -19,3 +19,8 @@ sources:
 
 # column_types exists only for seeds, because dbt loads seeds itself and so
 # decides their types. With a source, the file is read by DuckDB, not dbt.
+
+# DuckDB can query a file by its path without loading it first. dbt-duckdb
+# exposes that through external_location. external_location can be a path
+# string (supporting f-string patterns like {name}) or a DuckDB function
+# call (e.g., read_parquet(...)).
