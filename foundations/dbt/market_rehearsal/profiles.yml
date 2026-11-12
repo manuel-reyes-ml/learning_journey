@@ -1,0 +1,14 @@
+market_rehearsal:
+  target: dev
+  outputs:
+    # Swtich between Dev and Prod by typing 'dbt build --target prod'
+    dev:
+      type: duckdb
+      path: market.duckdb      # resolved relative to this profiles.yml
+      schema: dbt_mreyes    # your personal dev schema, as in the course
+      threads: 4
+    prod:
+      type: duckdb
+      path: market.duckdb
+      schema: analytics
+      threads: 4
