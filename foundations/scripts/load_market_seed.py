@@ -1,4 +1,10 @@
-""" """
+"""Load the seeded market CSVs into DuckDB as typed raw tables.
+
+Python ingests, dbt decides: this script only lands the files as they are, with
+explicit types and load metadata. Every business rule lives in dbt.
+
+Run:  uv run python scripts/load_market_seed.py
+"""
 
 from __future__ import annotations
 
@@ -60,6 +66,27 @@ TABLES: Final[tuple[RawTable, ...]] = (
 )
 
 
+# Also we can use KW_ONLY from dataclasses to select if only some attributes
+# are keyword only while others are not '_: KW_ONLY'
+@dataclass(frozen=True, slots=True, kw_only=True)
+class LoaderArgs:
+    """Typed container for parsed CLI arguments.
+
+    Converts ``argparse.Namespace`` — whose attributes are typed as
+    ``Any`` — into a fully typed, immutable dataclass.  Pyright then
+    has complete static coverage for every ``args.*`` access in
+    ``main()`` and helper functions, catching typos and type
+    mismatches at analysis time rather than at runtime.
+
+    ``frozen=True`` prevents accidental mutation after construction.
+    Constructed once in ``main()`` immediately after ``parse_args()``;
+    passed by value to helper functions.
+    """
+
+    seed_dir: Path
+    db: Path
+
+
 def check_header(path: Path, expected: list[str]) -> None:
     """Fail fast if the generator's header drifted from the contract.
 
@@ -105,9 +132,9 @@ def load_all(seed_dir: Path, db_path: Path) -> dict[str, int]:
                 if counts[t.name] == 0:
                     raise ValueError(f"{t.file} loaded 0 rows")
             con.commit()
-        except Exception:
+        except Exception as exc:
             con.rollback()
-            raise
+            raise exc
 
     return counts
 
@@ -119,11 +146,19 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--seed-dir", type=Path, default=DEFAULT_SEED_DIR)
     parser.add_argument("--db", type=Path, default=DEFAULT_DB)
 
-    args = parser.parse_args(argv)
+    raw_args = parser.parse_args(argv)
+    args = LoaderArgs(seed_dir=raw_args.seed_dir, db=raw_args.db)
 
-    counts = load_all(args.seed_dir.resolve(), args.db.resolve())
-    for table, n in counts.items():
-        log.info("loaded", schema=RAW_SCHEMA, table=table, rows=n)
+    try:
+        counts = load_all(args.seed_dir.resolve(), args.db.resolve())
+        for table, n in counts.items():
+            log.info("loaded", schema=RAW_SCHEMA, table=table, rows=n)
+    except ValueError as e:
+        log.error("value_error", message=e)
+    except FileNotFoundError as e:
+        log.error("file_not_found_error", message=e)
+    except Exception as e:
+        log.error("other_error", message=e)
 
 
 if __name__ == "__main__":
