@@ -4,6 +4,7 @@ Python ingests, dbt decides: this script only lands the files as they are, with
 explicit types and load metadata. Every business rule lives in dbt.
 
 Run:  uv run python scripts/load_market_seed.py
+Same pipeline everywhere: your laptop, the extension and CI all run identical steps.
 """
 
 from __future__ import annotations
@@ -22,15 +23,13 @@ try:
     import structlog
     from structlog.typing import FilteringBoundLogger
 
-    from learning_journey.paths import DATA_DIR, FOUNDATIONS_DIR
+    from learning_journey.paths import DATA_MARKET_DIR, MARKET_DB
 except ImportError as e:
     sys.exit(f"ERROR: missing module. Details: {e}")
 
 
 log: FilteringBoundLogger = structlog.get_logger("load_market_seed")
 
-DEFAULT_SEED_DIR: Final[Path] = DATA_DIR / "market_seed"
-DEFAULT_DB: Final[Path] = FOUNDATIONS_DIR / "db" / "market_rehearsal" / "market.duckdb"
 # = profiles.yml path
 RAW_SCHEMA: Final[str] = "raw_market"
 
@@ -44,6 +43,7 @@ class RawTable:
     columns: dict[str, str]
 
 
+# Explicit column types are a data contract at the point where data enters the warehouse.
 TABLES: Final[tuple[RawTable, ...]] = (
     RawTable(
         name="bars_daily",
@@ -106,7 +106,7 @@ class LoaderArgs:
     passed by value to helper functions.
     """
 
-    seed_dir: Path
+    data_dir: Path
     db: Path
 
 
@@ -140,6 +140,10 @@ def load_all(seed_dir: Path, db_path: Path) -> dict[str, int]:
             for t in TABLES:
                 path = seed_dir / t.file
                 # Identifiers come from the TABLES constant (trusted); values are bound.
+                # Idempotent reloads: create or replace gives the same result every time
+                # you rerun it.
+                # _source_file and _loaded_at record where each row came from and when it was
+                # loaded, which also lets you add source freshness checks later.
                 con.execute(
                     f"""
                     create or replace table {RAW_SCHEMA}.{t.name} as
@@ -163,29 +167,31 @@ def load_all(seed_dir: Path, db_path: Path) -> dict[str, int]:
 
 
 def main(argv: list[str] | None = None) -> ExitCode:
-    parse_description = __doc__.splitlines()[0] if __doc__ else ""
-    parser = argparse.ArgumentParser(description=parse_description)
+    app_description = __doc__.splitlines()[0] if __doc__ else ""
+    parser = argparse.ArgumentParser(description=app_description)
 
     parser.add_argument(
-        "--seed-dir",
+        "--data-dir",
         type=Path,
-        default=DEFAULT_SEED_DIR,
-        help=f"Directory where CSV files are. Default: {DEFAULT_SEED_DIR}",
+        default=DATA_MARKET_DIR,
+        help=f"Directory where CSV files are. Default: {DATA_MARKET_DIR}",
     )
     parser.add_argument(
         "--db",
         type=Path,
-        default=DEFAULT_DB,
-        help=f"Directory where DuckDB database should be created at. Default: {DEFAULT_DB}",
+        default=MARKET_DB,
+        help=f"Directory where DuckDB database should be created at. Default: {MARKET_DB}",
     )
 
     raw_args = parser.parse_args(argv)
-    args = LoaderArgs(seed_dir=raw_args.seed_dir, db=raw_args.db)
+    args = LoaderArgs(data_dir=raw_args.data_dir, db=raw_args.db)
 
     try:
-        counts = load_all(args.seed_dir.resolve(), args.db.resolve())
+        counts = load_all(args.data_dir.resolve(), args.db.resolve())
+
+        log.info("database_created", database=args.db.name, path=args.db)
         for table, n in counts.items():
-            log.info("loaded", schema=RAW_SCHEMA, table=table, rows=n)
+            log.info("table_loaded", schema=RAW_SCHEMA, table=table, rows=n)
     except ValueError as e:
         log.error("value_error", message=e)
         return ExitCode.BAD_FILE
