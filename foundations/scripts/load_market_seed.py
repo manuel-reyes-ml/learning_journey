@@ -14,6 +14,7 @@ import sys
 try:
     import argparse
     import csv
+    from collections import defaultdict
     from dataclasses import dataclass
     from enum import IntEnum, unique
     from pathlib import Path
@@ -29,6 +30,10 @@ except ImportError as e:
 
 
 log: FilteringBoundLogger = structlog.get_logger("load_market_seed")
+
+# The oldest DuckDB that must open market.duckdb is the driver bundled in
+# dbt 2.0.11 (reads storage 64-68 = DuckDB ≤ 1.5.x). Remove when dbt ships a 2.0 driver.
+DUCKDB_STORAGE_VERSION: Final[str] = "v1.5.0"
 
 # = profiles.yml path
 RAW_SCHEMA: Final[str] = "raw_market"
@@ -108,6 +113,7 @@ class LoaderArgs:
 
     data_dir: Path
     db: Path
+    traceback: bool
 
 
 def check_header(path: Path, expected: list[str]) -> None:
@@ -122,7 +128,7 @@ def check_header(path: Path, expected: list[str]) -> None:
         raise ValueError(f"{path.name}: header {header} != contract {expected}")
 
 
-def load_all(seed_dir: Path, db_path: Path) -> dict[str, int]:
+def load_all(seed_dir: Path, db_path: Path) -> dict[str, list[int | str | None]]:
     """Load every table in ONE transaction: all three update, or none do."""
     for t in TABLES:  # validate everything before touching the database
         path = seed_dir / t.file
@@ -131,9 +137,14 @@ def load_all(seed_dir: Path, db_path: Path) -> dict[str, int]:
         check_header(path, list(t.columns))
 
     db_path.parent.mkdir(parents=True, exist_ok=True)
-    counts: dict[str, int] = {}
+    counts: dict[str, list[int | str | None]] = defaultdict(list)
 
-    with duckdb.connect(str(db_path)) as con:
+    # Python keeps DuckDB 2.0 and simply creates the file in the older format,
+    # so dbt's DuckDB 1.5 can read it.
+    with duckdb.connect(
+        str(db_path),
+        config={"storage_compatibility_version": DUCKDB_STORAGE_VERSION},
+    ) as con:
         con.begin()
         try:
             con.execute(f"create schema if not exists {RAW_SCHEMA}")
@@ -154,10 +165,18 @@ def load_all(seed_dir: Path, db_path: Path) -> dict[str, int]:
                     """,
                     {"path": str(path), "cols": t.columns, "file": t.file},
                 )
+
                 row = con.execute(f"select count(*) from {RAW_SCHEMA}.{t.name}").fetchone()
-                counts[t.name] = row[0] if row else 0
-                if counts[t.name] == 0:
+                counts[t.name].append(row[0] if row else 0)
+                if counts[t.name][0] == 0:
                     raise ValueError(f"{t.file} loaded 0 rows")
+
+                storage = con.execute(
+                    "select tags['storage_version'] from duckdb_databases() "
+                    "where database_name = current_database()"
+                ).fetchone()
+                counts[t.name].append(str(storage[0]) if storage else None)
+
             con.commit()
         except Exception as exc:
             con.rollback()
@@ -182,16 +201,22 @@ def main(argv: list[str] | None = None) -> ExitCode:
         default=MARKET_DB,
         help=f"Directory where DuckDB database should be created at. Default: {MARKET_DB}",
     )
+    parser.add_argument(
+        "--traceback",
+        action="store_true",
+        default=False,
+        help="Show complete traceback when 'other_error' Exception is catched.",
+    )
 
     raw_args = parser.parse_args(argv)
-    args = LoaderArgs(data_dir=raw_args.data_dir, db=raw_args.db)
+    args = LoaderArgs(data_dir=raw_args.data_dir, db=raw_args.db, traceback=raw_args.traceback)
 
     try:
         counts = load_all(args.data_dir.resolve(), args.db.resolve())
 
         log.info("database_created", database=args.db.name, path=args.db)
-        for table, n in counts.items():
-            log.info("table_loaded", schema=RAW_SCHEMA, table=table, rows=n)
+        for table, [n, v] in counts.items():
+            log.info("table_loaded", schema=RAW_SCHEMA, table=table, rows=n, storage_version=v)
     except ValueError as e:
         log.error("value_error", message=e)
         return ExitCode.BAD_FILE
@@ -199,7 +224,7 @@ def main(argv: list[str] | None = None) -> ExitCode:
         log.error("file_not_found_error", message=e)
         return ExitCode.FILE_NOT_FOUND
     except Exception as e:
-        log.error("other_error", message=e)
+        log.error("other_error", message=e, exc_info=e if args.traceback else None)
         return ExitCode.OTHER_EXCEPTION
 
     return ExitCode.SUCCESS
