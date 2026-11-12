@@ -8,17 +8,24 @@ Run:  uv run python scripts/load_market_seed.py
 
 from __future__ import annotations
 
-import argparse
-import csv
-from dataclasses import dataclass
-from pathlib import Path
-from typing import Final
+import sys
 
-import duckdb
-import structlog
-from structlog.typing import FilteringBoundLogger
+try:
+    import argparse
+    import csv
+    from dataclasses import dataclass
+    from enum import IntEnum, unique
+    from pathlib import Path
+    from typing import Final
 
-from learning_journey.paths import DATA_DIR, FOUNDATIONS_DIR
+    import duckdb
+    import structlog
+    from structlog.typing import FilteringBoundLogger
+
+    from learning_journey.paths import DATA_DIR, FOUNDATIONS_DIR
+except ImportError as e:
+    sys.exit(f"ERROR: missing module. Details: {e}")
+
 
 log: FilteringBoundLogger = structlog.get_logger("load_market_seed")
 
@@ -68,6 +75,22 @@ TABLES: Final[tuple[RawTable, ...]] = (
 
 # Also we can use KW_ONLY from dataclasses to select if only some attributes
 # are keyword only while others are not '_: KW_ONLY'
+
+
+@unique
+class ExitCode(IntEnum):
+    """POSIX-aligned process exit codes for the Loader CLI.
+
+    ``IntEnum`` values are passed directly to ``sys.exit()``.
+    ``@unique`` prevents accidental duplicate values at definition time.
+    """
+
+    SUCCESS = 0
+    BAD_FILE = 1
+    FILE_NOT_FOUND = 2
+    OTHER_EXCEPTION = 3
+
+
 @dataclass(frozen=True, slots=True, kw_only=True)
 class LoaderArgs:
     """Typed container for parsed CLI arguments.
@@ -139,12 +162,22 @@ def load_all(seed_dir: Path, db_path: Path) -> dict[str, int]:
     return counts
 
 
-def main(argv: list[str] | None = None) -> None:
+def main(argv: list[str] | None = None) -> ExitCode:
     parse_description = __doc__.splitlines()[0] if __doc__ else ""
     parser = argparse.ArgumentParser(description=parse_description)
 
-    parser.add_argument("--seed-dir", type=Path, default=DEFAULT_SEED_DIR)
-    parser.add_argument("--db", type=Path, default=DEFAULT_DB)
+    parser.add_argument(
+        "--seed-dir",
+        type=Path,
+        default=DEFAULT_SEED_DIR,
+        help=f"Directory where CSV files are. Default: {DEFAULT_SEED_DIR}",
+    )
+    parser.add_argument(
+        "--db",
+        type=Path,
+        default=DEFAULT_DB,
+        help=f"Directory where DuckDB database should be created at. Default: {DEFAULT_DB}",
+    )
 
     raw_args = parser.parse_args(argv)
     args = LoaderArgs(seed_dir=raw_args.seed_dir, db=raw_args.db)
@@ -155,11 +188,16 @@ def main(argv: list[str] | None = None) -> None:
             log.info("loaded", schema=RAW_SCHEMA, table=table, rows=n)
     except ValueError as e:
         log.error("value_error", message=e)
+        return ExitCode.BAD_FILE
     except FileNotFoundError as e:
         log.error("file_not_found_error", message=e)
+        return ExitCode.FILE_NOT_FOUND
     except Exception as e:
         log.error("other_error", message=e)
+        return ExitCode.OTHER_EXCEPTION
+
+    return ExitCode.SUCCESS
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
