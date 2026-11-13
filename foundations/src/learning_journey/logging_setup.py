@@ -1,4 +1,46 @@
-""" """
+"""Configure structlog on top of stdlib logging so every log shares one pipeline.
+
+Our events (structlog) and third-party events (stdlib ``logging``) end up in the
+same handlers, are shaped by the same processors, and are written in the same
+formats: aligned colors on the console, JSON lines in the optional log file.
+
+See Also
+--------
+learning_journey.cli.run : Binds ``run_id`` and logs each command's outcome.
+
+Notes
+-----
+How a log event travels::
+
+    log.info("table_loaded", rows=10)          logging.getLogger("duckdb").warning("...")
+            |  (our code, structlog)                     |  (third-party code, stdlib)
+            v                                            |
+    structlog processors                                 |
+    (filter_by_level -> SHARED -> wrap_for_formatter)    |
+            |                                            |
+            +--------------> stdlib logging <------------+
+                     (root logger: levels, handlers)
+                    +-----------+------------+
+                    v                        v
+            console handler (stderr)    file handler (--log-file, opt-in)
+            ProcessorFormatter:         ProcessorFormatter:
+              ConsoleRenderer             callsite -> dict traceback -> JSON
+              (aligned colors for         (one JSON object per line,
+               people)                     for machines)
+
+``wrap_for_formatter`` hands our event dict to stdlib *unrendered*, and each
+handler's ``ProcessorFormatter`` renders it its own way. Third-party records skip
+structlog's chain, so ``foreign_pre_chain`` runs the same SHARED processors on
+them first. That gives every line the same shape, whichever library wrote it.
+
+Call `configure_logging` once, from an entry point (a script's ``main()``). Never
+call it at import time or from library code: libraries only *emit* logs; the
+application decides where they go.
+
+The module is named ``logging_setup`` rather than ``logging`` because a file
+called ``logging.py`` can shadow the stdlib module when something is run from
+inside its folder.
+"""
 
 from __future__ import annotations
 
