@@ -1,4 +1,31 @@
-""" """
+"""Provide the human-facing side of every CLI: Rich output, shared flags, error boundary.
+
+Two audiences, two channels. Every message has exactly one owner:
+
+* **Rich** speaks to the person at the terminal: a summary table, or
+  ``error:`` / ``hint:`` lines. Short, readable, no internals.
+* **structlog** writes the record: every event with its fields and the run_id,
+  plus the full traceback when something crashes. It is kept on disk only
+  with ``--log-file``.
+
+Attributes
+----------
+out : rich.console.Console
+    Console bound to stdout, for the command's result.
+err : rich.console.Console
+    Console bound to stderr, for errors, hints and notices.
+
+See Also
+--------
+learning_journey.errors : The exceptions `run` turns into messages.
+learning_journey.logging_setup : Where the log records go.
+
+Notes
+-----
+Streams follow the Command Line Interface Guidelines (clig.dev): the command's
+result goes to stdout, so it can be piped or redirected. Errors, hints and logs
+go to stderr, so they never pollute that result.
+"""
 
 from __future__ import annotations
 
