@@ -1,4 +1,23 @@
-""" """
+"""Define exit codes and the expected-error hierarchy shared by every CLI.
+
+Two kinds of failure are handled differently:
+
+* **Expected** (`AppError` and its subclasses): bad input, a missing file, a
+  locked database. The user can fix it, so they get one clear message plus a
+  hint, and no traceback.
+* **Unexpected** (any other exception): a bug. The user gets a short notice,
+  and the full traceback goes to the log file.
+
+See Also
+--------
+learning_journey.cli.run : The error boundary that turns these into messages.
+
+Notes
+-----
+This module imports neither Rich nor logging on purpose. Exceptions are data:
+library code and tests can raise and inspect them without pulling in a terminal
+UI. Presentation lives in `learning_journey.cli`.
+"""
 
 from __future__ import annotations
 
