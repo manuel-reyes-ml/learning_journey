@@ -1,0 +1,43 @@
+models:
+  - name: stg_market__bars
+    description: >
+      One row per ticker per trading session. Typed copy of
+      raw_market.bars_daily (synthetic data from gen_market_seed.py).
+    config:
+      # The contract checks the model’s shape (column names and types)
+      # when dbt builds it, before anything uses it.
+      contract:
+        enforced: true
+    columns:
+      - name: ticker
+        description: "Exchange ticker symbol."
+        data_type: varchar
+        data_tests: [not_null]
+      - name: session_date
+        description: "Trading session date (NYSE calendar)."
+        data_type: date
+        data_tests: [not_null]
+      - name: open
+        description: "Opening price of the session."
+        data_type: decimal(18, 4)
+        data_tests: [not_null]
+      - name: high
+        description: "Highest traded price of the session."
+        data_type: decimal(18, 4)
+        data_tests: [not_null]
+      - name: low
+        description: "Lowest traded price of the session."
+        data_type: decimal(18, 4)
+        data_tests: [not_null]
+      - name: close
+        description: "Closing price of the session."
+        data_type: decimal(18, 4)
+        data_tests: [not_null]
+      - name: volume
+        description: "Shares traded in the session."
+        data_type: bigint
+        data_tests: [not_null]
+    data_tests:
+      - unique:
+          name: stg_market__bars_one_row_per_ticker_session
+          column_name: "ticker || '|' || session_date"
