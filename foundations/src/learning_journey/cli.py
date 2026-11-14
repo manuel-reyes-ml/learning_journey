@@ -44,6 +44,8 @@ from learning_journey.logging_setup import get_logger
 
 __all__ = [
     "add_observability_args",
+    "err",
+    "out",
     "print_error",
     "run",
 ]
@@ -154,7 +156,7 @@ def print_error(
       found:    ticker, date
     hint: Regenerate the seed files, then rerun this loader.
     """
-    label = f"error[{code}]" if code else "error"
+    label = f"error[{code}]" if code else "[error]"
     err.print(Text.assemble((label, "bold red"), ": ", message), soft_wrap=True)
     if details:
         width = max(len(key) for key in details) + 1
