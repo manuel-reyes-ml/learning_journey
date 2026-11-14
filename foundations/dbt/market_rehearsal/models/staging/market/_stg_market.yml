@@ -37,7 +37,19 @@ models:
         description: "Shares traded in the session."
         data_type: bigint
         data_tests: [not_null]
-    data_tests:
-      - unique:
-          name: stg_market__bars_one_row_per_ticker_session
-          column_name: "ticker || '|' || session_date"
+    data_tests: # list of tests on this model
+      - unique: # use dbt's built-in "unique" test
+          name: stg_market__bars_one_row_per_ticker_session # your own readable name for it
+          arguments:
+            column_name: "ticker || '|' || session_date"
+
+    # stg_market__bars_one_row_per_ticker_session it’s under the model itself, not under a column.
+    # The built-in unique test normally checks a single column. Here you need two columns together
+    # to be unique, so the test sits at the model level and you tell it what to check.
+    #
+    # column_name is a SQL expression, not a column: || is SQL string concatenation.
+    # ticker || '|' || session_date builds one key per row, like AAPL|2026-11-10, and
+    # the test checks that this combined key is unique.
+    #
+    # name: without it, dbt generates a long, hard-to-read name from the test type, model
+    # and arguments. Yours tells you what broke when it fails.
