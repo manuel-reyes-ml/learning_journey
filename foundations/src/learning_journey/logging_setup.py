@@ -54,6 +54,9 @@ from typing import Any, Final
 import structlog
 from structlog.typing import EventDict, Processor, WrappedLogger
 
+__all__ = ["configure_logging", "get_logger"]
+
+
 #: Root of our logger namespace. Name loggers ``learning_journey.<area>.<name>``.
 APP_LOGGER: Final[str] = "learning_journey"
 
@@ -79,39 +82,6 @@ _SENSITIVE_KEYS: Final[frozenset] = frozenset(
 )
 
 _VERBOSITY_TO_LEVEL: Final[dict[int, int]] = {0: logging.WARNING, 1: logging.INFO, 2: logging.DEBUG}
-
-
-def redact_sensitive(_logger: WrappedLogger, _method: str, event_dict: EventDict) -> EventDict:
-    """Mask the values of sensitive keys on every event.
-
-    A structlog processor. It sits in the shared chain, so it runs for our events
-    and for third-party records alike; no call site has to remember to mask.
-
-    Parameters
-    ----------
-    _logger : WrappedLogger
-        The wrapped logger. Required by the processor protocol; unused.
-    _method : str
-        The name of the log method called (``"info"``, ``"error"``, ...).
-        Required by the processor protocol; unused.
-    event_dict : EventDict
-        The event being processed. Modified in place.
-
-    Returns
-    -------
-    EventDict
-        The same event, with the value of every key in the sensitive-key set
-        (compared case-insensitively) replaced by `REDACTED`.
-
-    Examples
-    --------
-    >>> redact_sensitive(None, "info", {"event": "login", "SSN": "123-45-6789"})
-    {'event': 'login', 'SSN': '[REDACTED]'}
-    """
-    for key in event_dict:
-        if key.lower() in _SENSITIVE_KEYS:
-            event_dict[key] = REDACTED
-    return event_dict
 
 
 # numpydoc ignore=PR02 below: the linter cannot see the __init__ inherited from logging.Filter.
@@ -147,6 +117,39 @@ class OnlyThirdyParty(logging.Filter):  # numpydoc ignore=PR02
         return not (name == APP_LOGGER or name.startswith(f"{APP_LOGGER}."))
 
 
+def _redact_sensitive(_logger: WrappedLogger, _method: str, event_dict: EventDict) -> EventDict:
+    """Mask the values of sensitive keys on every event.
+
+    A structlog processor. It sits in the shared chain, so it runs for our events
+    and for third-party records alike; no call site has to remember to mask.
+
+    Parameters
+    ----------
+    _logger : WrappedLogger
+        The wrapped logger. Required by the processor protocol; unused.
+    _method : str
+        The name of the log method called (``"info"``, ``"error"``, ...).
+        Required by the processor protocol; unused.
+    event_dict : EventDict
+        The event being processed. Modified in place.
+
+    Returns
+    -------
+    EventDict
+        The same event, with the value of every key in the sensitive-key set
+        (compared case-insensitively) replaced by `REDACTED`.
+
+    Examples
+    --------
+    >>> redact_sensitive(None, "info", {"event": "login", "SSN": "123-45-6789"})
+    {'event': 'login', 'SSN': '[REDACTED]'}
+    """
+    for key in event_dict:
+        if key.lower() in _SENSITIVE_KEYS:
+            event_dict[key] = REDACTED
+    return event_dict
+
+
 def _shared_processors() -> list[Processor]:
     """Build the processors applied to every event, structlog or stdlib.
 
@@ -177,7 +180,7 @@ def _shared_processors() -> list[Processor]:
         structlog.stdlib.ExtraAdder(),  # third-party `extra={...}` becomes fields
         structlog.processors.TimeStamper(fmt="iso", utc=True),
         structlog.processors.StackInfoRenderer(),
-        redact_sensitive,  # our own processor
+        _redact_sensitive,  # our own processor
     ]
 
 
@@ -294,7 +297,7 @@ def configure_logging(
     >>> configure_logging(verbosity=1, log_file=Path("logs/run.jsonl"))  # doctest: +SKIP
     """
     console_level = _VERBOSITY_TO_LEVEL.get(verbosity, logging.DEBUG)
-    colors = sys.stderr.isatty() and not os.environ.get("NO_COLOR")
+    colors = sys.stderr.isatty() and not os.environ.get("NO_COLOR")  # TODO: what is isatty?
     shared = _shared_processors()
 
     handlers: dict[str, dict[str, Any]] = {
@@ -310,7 +313,7 @@ def configure_logging(
         log_file = log_file.expanduser().resolve()
         log_file.parent.mkdir(parents=True, exist_ok=True)
         handlers["file"] = {
-            "class": "logging.FileHandler",
+            "class": "logging.FileHandler",  # TODO why not RotatingFileHandler?
             "filename": str(log_file),
             "mode": "a",  # append: each run adds lines, the run_id tells runs apart
             "encoding": "utf-8",
@@ -323,10 +326,10 @@ def configure_logging(
         {
             "version": 1,
             "disable_existing_loggers": False,
-            "filters": {"only_third_party": {"()": OnlyThirdyParty}},
+            "filters": {"only_third_party": {"()": OnlyThirdyParty}},  # TODO: how does class work
             "formatters": {
                 "console": {
-                    "()": structlog.stdlib.ProcessorFormatter,
+                    "()": structlog.stdlib.ProcessorFormatter,  # TODO: how does () works
                     "foreign_pre_chain": shared,
                     "processors": [
                         structlog.stdlib.ProcessorFormatter.remove_processors_meta,
@@ -359,3 +362,35 @@ def configure_logging(
         wrapper_class=structlog.stdlib.BoundLogger,
         cache_logger_on_first_use=cache_loggers,
     )
+
+
+def get_logger(name: str | None = None) -> structlog.stdlib.BoundLogger:
+    """Return a structlog logger that writes through the stdlib pipeline.
+
+    Parameters
+    ----------
+    name : str or None, optional
+        Logger name. Package modules pass ``__name__``; scripts pass
+        ``"learning_journey.scripts.<command>"``, because ``__name__`` is
+        ``"__main__"`` there. Default is None: structlog uses the calling
+        module's name.
+
+    Returns
+    -------
+    structlog.stdlib.BoundLogger
+        A lazy logger; it picks up the configuration on first use, so it is safe
+        to create at import time, before `configure_logging` runs.
+
+    Notes
+    -----
+    ``None`` must not be passed through to structlog: ``get_logger(None)``
+    returns the root logger.
+
+    Examples
+    --------
+    >>> log = get_logger("learning_journey.scripts.load_market_seed")
+    >>> log.info("table_loaded", table="bars_daily", rows=2)  # doctest: +SKIP
+    """
+    if name is None:
+        return structlog.stdlib.get_logger()
+    return structlog.stdlib.get_logger(name)
