@@ -37,7 +37,7 @@ try:
     from typing import Final
 
     import duckdb
-    from rich.table import Table
+    from rich.text import Text
 
     from learning_journey import cli
     from learning_journey.errors import DataContractError, InputNotFoundError, ResourceBusyError
@@ -61,7 +61,7 @@ DUCKDB_STORAGE_VERSION: Final[str] = "v1.5.0"
 RAW_SCHEMA: Final[str] = "raw_market"
 
 # Shown in hints. Point this at your real generator command.
-GENERATE_SEED_HINT: Final[str] = "Runt he market seed generator first, then rerun this loader."
+GENERATE_SEED_HINT: Final[str] = "Run the market seed generator first, then rerun this loader."
 
 
 # `numpydoc ignore=PR02` on the dataclasses below: numpydoc's linter reads source code
@@ -430,16 +430,19 @@ def render_report(report: LoadReport) -> None:
     report : LoadReport
         The result of `load_all`.
     """
-    table = Table()
-    table.add_column(f"{RAW_SCHEMA} table")
-    table.add_column("rows", justify="right")
-    for t in report.tables:
-        table.add_row(t.table, f"{t.rows:,}")
-    cli.out.print(table)
     cli.out.print(
-        f"[green]✓ Loaded {len(report.tables)} tables into {report.db_path.name}[/] "
-        f"[green]in {report.duration_s:.2f}s (storage {report.storage_version})[/]"
+        Text.assemble(
+            (
+                f"[succeeded] Loaded {len(report.tables)} "
+                f"tables into {report.db_path.name} "
+                f"in {report.duration_s:.2f}s (storage {report.storage_version})",
+                "bold green",
+            ),
+        )
     )
+
+    for t in report.tables:
+        cli.out.print(f"     [green]loaded[/] table: {t.table}, rows: {t.rows:,} ")
 
 
 def _load_and_report(args: LoaderArgs) -> None:
@@ -514,6 +517,12 @@ def main(argv: list[str] | None = None) -> int:
 
     configure_logging(verbosity=args.verbose, log_file=args.log_file)
 
+    # partial(func, *args, **kwargs) returns a new function with some arguments
+    # already filled in. Calling it later calls func with those saved arguments
+    # plus any new ones.
+    #   p = functools.partial(load, "seed-dir", dry_run=True)
+    #   p()          # runs load("seed-dir", dry_run=True)
+    #   p.func, p.args, p.keywords   # -> load, ('seed-dir',), {'dry_run': True}
     return cli.run(
         functools.partial(_load_and_report, args),
         name=COMMAND,
@@ -524,3 +533,11 @@ def main(argv: list[str] | None = None) -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
+# Why one bundled function instead of run(func, *args): the separate style, as in
+# call_soon(callback, *args), works for positional arguments. But run has its own
+# keyword options (name, log_file, show_traceback), and those could clash with the
+# command's keywords. The asyncio docs give the same advice: If you want to pass
+# keywords to your callback, use functools.partial. With partial, run's own signature
+# stays clean: one function to call, plus run's settings.
