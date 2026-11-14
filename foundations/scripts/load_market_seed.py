@@ -3,8 +3,24 @@
 Python ingests, dbt decides: this script only lands the files as they are, with
 explicit types and load metadata. Every business rule lives in dbt.
 
-Run:  uv run python scripts/load_market_seed.py
 Same pipeline everywhere: your laptop, the extension and CI all run identical steps.
+
+See Also
+--------
+learning_journey.cli.run : The error boundary that maps failures to exit codes.
+learning_journey.logging_setup.configure_logging : Where the log events go.
+
+Notes
+-----
+Exit codes: 0 success, 2 bad flags, 65 bad data, 66 missing input, 75 database
+locked by another process, 130 Ctrl-C, 1 unexpected error.
+
+Examples
+--------
+Run from the repo root::
+
+    uv run python foundations/scripts/load_market_seed.py
+    uv run python foundations/scripts/load_market_seed.py -v --log-file logs/load_market_seed.jsonl
 """
 
 from __future__ import annotations
