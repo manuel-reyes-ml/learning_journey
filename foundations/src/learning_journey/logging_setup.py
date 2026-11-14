@@ -49,10 +49,13 @@ import logging.config
 import os
 import sys
 from pathlib import Path
-from typing import Any, Final
+from typing import TYPE_CHECKING, Any, Final
 
 import structlog
 from structlog.typing import EventDict, Processor, WrappedLogger
+
+if TYPE_CHECKING:
+    from logging.config import _DictConfigArgs
 
 __all__ = ["configure_logging", "get_logger", "redact_sensitive"]
 
@@ -167,12 +170,17 @@ def _shared_processors() -> list[Processor]:
     # Order matters. Each processor receives the event_dict and returns
     # a (possibly modified) event_dict passed to the next processor.
     #
-    # 1. merge_contextvars  → pull in any bind_contextvars() values
-    # 2. add_logger_name    → add "logger" field (e.g. "learning_journey.recon_toy")
-    # 3. add_log_level      → add "level" field ("info", "error", ...)
-    # 4. TimeStamper("iso") → add "timestamp" field in ISO-8601
-    # 5. StackInfoRenderer  → format stack_info if present
-    # 6. format_exc_info    → serialize exc_info tuples into "exception" field
+    # 1. merge_contextvars  -> pull in any bind_contextvars() values (run_id, command)
+    # 2. add_logger_name    -> add "logger" field (e.g. "learning_journey.scripts.load_market_seed")
+    # 3. add_log_level      -> add "level" field ("info", "error", ...)
+    # 4. ExtraAdder         -> turn a stdlib call's extra={...} into fields
+    # 5. TimeStamper("iso") -> add "timestamp" field in ISO-8601, UTC
+    # 6. StackInfoRenderer  -> format stack_info if present
+    # 7. redact_sensitive   -> mask sensitive keys; last, so nothing added after it skips the mask
+    #
+    # Exceptions are NOT formatted here: each handler renders them its own way
+    # (a Rich traceback on the console, a JSON field in the file):
+    #   8. format_exc_info    → serialize exc_info tuples into "exception" field
     return [
         structlog.contextvars.merge_contextvars,  # run_id, command, ... bound once per run
         structlog.stdlib.add_logger_name,
@@ -180,7 +188,7 @@ def _shared_processors() -> list[Processor]:
         structlog.stdlib.ExtraAdder(),  # third-party `extra={...}` becomes fields
         structlog.processors.TimeStamper(fmt="iso", utc=True),
         structlog.processors.StackInfoRenderer(),
-        redact_sensitive,  # our own processor
+        redact_sensitive,  # our own processor; last, so nothing added after it skips the mask
     ]
 
 
@@ -297,7 +305,11 @@ def configure_logging(
     >>> configure_logging(verbosity=1, log_file=Path("logs/run.jsonl"))  # doctest: +SKIP
     """
     console_level = _VERBOSITY_TO_LEVEL.get(verbosity, logging.DEBUG)
-    colors = sys.stderr.isatty() and not os.environ.get("NO_COLOR")  # TODO: what is isatty?
+
+    # isatty() returns True only when stderr is a real terminal. In CI, a pipe
+    # or a redirect to a file it's False, so colors are switched off there and
+    # the output isn't full of escape codes.
+    colors = sys.stderr.isatty() and not os.environ.get("NO_COLOR")
     shared = _shared_processors()
 
     handlers: dict[str, dict[str, Any]] = {
@@ -309,11 +321,15 @@ def configure_logging(
             "filters": ["only_third_party"] if verbosity == 0 else [],
         },
     }
+    # Why not RotatingFileHandler? A short CLI run that appends grows the file slowly.
+    # Rotation becomes unsafe if two runs write to the same file at once, and your
+    # roadmap leaves rotation to the environment (logrotate or Docker). If you add
+    # logrotate later, switch to WatchedFileHandler.
     if log_file is not None:
         log_file = log_file.expanduser().resolve()
         log_file.parent.mkdir(parents=True, exist_ok=True)
         handlers["file"] = {
-            "class": "logging.FileHandler",  # TODO why not RotatingFileHandler?
+            "class": "logging.FileHandler",
             "filename": str(log_file),
             "mode": "a",  # append: each run adds lines, the run_id tells runs apart
             "encoding": "utf-8",
@@ -322,33 +338,45 @@ def configure_logging(
             "formatter": "json",
         }
 
-    logging.config.dictConfig(
-        {
-            "version": 1,
-            "disable_existing_loggers": False,
-            "filters": {"only_third_party": {"()": OnlyThirdParty}},  # TODO: how does class work
-            "formatters": {
-                "console": {
-                    "()": structlog.stdlib.ProcessorFormatter,  # TODO: how does () works
-                    "foreign_pre_chain": shared,
-                    "processors": [
-                        structlog.stdlib.ProcessorFormatter.remove_processors_meta,
-                        _console_renderer(colors=colors),
-                    ],
-                },
-                "json": {
-                    "()": structlog.stdlib.ProcessorFormatter,
-                    "foreign_pre_chain": shared,
-                    "processors": _file_processor(),
-                },
+    # dictConfig wants a recipe it can build from, not the finished object, chose for two reasons:
+    #   - It's safe to call more than once. dictConfig closes and replaces the root logger's old
+    #     handlers. In the hand-built style, a second call without cleanup adds a second handler,
+    #     so every line prints twice.
+    #   - The whole setup is one data structure. You can read all handlers, levels and formatters
+    #     in one place, and later move them into a settings file. # TODO move to a settings file?
+    # "()" in dictConfig means “call this to build the object”. All the other keys in that dict are
+    # passed to it as keyword arguments, so {"()": ProcessorFormatter, "processors": [...]} runs
+    # ProcessorFormatter(processors=[...]). That's also why the "processor" typo didn't fail at
+    # setup: it's a real (old) argument of ProcessorFormatter.
+    config: _DictConfigArgs = {
+        "version": 1,
+        "disable_existing_loggers": False,
+        "filters": {"only_third_party": {"()": OnlyThirdParty}},
+        "formatters": {
+            "console": {
+                "()": structlog.stdlib.ProcessorFormatter,
+                "foreign_pre_chain": shared,
+                "processors": [
+                    structlog.stdlib.ProcessorFormatter.remove_processors_meta,
+                    _console_renderer(colors=colors),
+                ],
             },
-            "handlers": handlers,
-            "root": {
-                "level": logging.DEBUG if log_file else console_level,
-                "handlers": list(handlers),
+            "json": {
+                "()": structlog.stdlib.ProcessorFormatter,
+                "foreign_pre_chain": shared,
+                "processors": _file_processor(),
             },
-        }
-    )
+        },
+        "handlers": handlers,
+        "root": {
+            "level": logging.DEBUG if log_file else console_level,
+            "handlers": list(handlers),
+        },
+    }
+    # dictConfig doesn't check its keys, so typos fail silently.
+    # The type stubs that mypy and Pyright use describe dictConfig's settings as
+    # a typed dict called _DictConfigArgs. Annotate your config with it.
+    logging.config.dictConfig(config)
     logging.captureWarnings(True)
 
     structlog.configure(
