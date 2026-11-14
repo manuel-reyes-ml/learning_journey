@@ -54,7 +54,7 @@ from typing import Any, Final
 import structlog
 from structlog.typing import EventDict, Processor, WrappedLogger
 
-__all__ = ["configure_logging", "get_logger"]
+__all__ = ["configure_logging", "get_logger", "redact_sensitive"]
 
 
 #: Root of our logger namespace. Name loggers ``learning_journey.<area>.<name>``.
@@ -66,7 +66,7 @@ REDACTED: Final[str] = "[REDACTED]"
 # Keys whose values must never reach a log, compared case-insensitively.
 # This is a key-based safety net, not a full PII scanner: it complements value-level
 # checks (regex guardrails), it does not replace them.
-_SENSITIVE_KEYS: Final[frozenset] = frozenset(
+_SENSITIVE_KEYS: Final[frozenset[str]] = frozenset(
     {
         "password",
         "passwd",
@@ -85,7 +85,7 @@ _VERBOSITY_TO_LEVEL: Final[dict[int, int]] = {0: logging.WARNING, 1: logging.INF
 
 
 # numpydoc ignore=PR02 below: the linter cannot see the __init__ inherited from logging.Filter.
-class OnlyThirdyParty(logging.Filter):  # numpydoc ignore=PR02
+class OnlyThirdParty(logging.Filter):  # numpydoc ignore=PR02
     """Keep log records from other packages and drop our own.
 
     Attached to the console handler at default verbosity. Rich already shows the
@@ -117,7 +117,7 @@ class OnlyThirdyParty(logging.Filter):  # numpydoc ignore=PR02
         return not (name == APP_LOGGER or name.startswith(f"{APP_LOGGER}."))
 
 
-def _redact_sensitive(_logger: WrappedLogger, _method: str, event_dict: EventDict) -> EventDict:
+def redact_sensitive(_logger: WrappedLogger, _method: str, event_dict: EventDict) -> EventDict:
     """Mask the values of sensitive keys on every event.
 
     A structlog processor. It sits in the shared chain, so it runs for our events
@@ -180,7 +180,7 @@ def _shared_processors() -> list[Processor]:
         structlog.stdlib.ExtraAdder(),  # third-party `extra={...}` becomes fields
         structlog.processors.TimeStamper(fmt="iso", utc=True),
         structlog.processors.StackInfoRenderer(),
-        _redact_sensitive,  # our own processor
+        redact_sensitive,  # our own processor
     ]
 
 
@@ -241,7 +241,7 @@ def _file_processor() -> list[Processor]:
         structlog.processors.ExceptionRenderer(
             structlog.tracebacks.ExceptionDictTransformer(show_locals=False)
         ),
-        structlog.processors.JSONRenderer(defaul=str),
+        structlog.processors.JSONRenderer(default=str),
     ]
 
 
@@ -326,7 +326,7 @@ def configure_logging(
         {
             "version": 1,
             "disable_existing_loggers": False,
-            "filters": {"only_third_party": {"()": OnlyThirdyParty}},  # TODO: how does class work
+            "filters": {"only_third_party": {"()": OnlyThirdParty}},  # TODO: how does class work
             "formatters": {
                 "console": {
                     "()": structlog.stdlib.ProcessorFormatter,  # TODO: how does () works
@@ -339,13 +339,13 @@ def configure_logging(
                 "json": {
                     "()": structlog.stdlib.ProcessorFormatter,
                     "foreign_pre_chain": shared,
-                    "processor": _file_processor(),
+                    "processors": _file_processor(),
                 },
             },
             "handlers": handlers,
             "root": {
                 "level": logging.DEBUG if log_file else console_level,
-                "handler": list(handlers),
+                "handlers": list(handlers),
             },
         }
     )
