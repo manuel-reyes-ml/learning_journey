@@ -174,9 +174,9 @@ def print_error(
                 soft_wrap=True,
             )
     if hint:
-        err.print(Text.assemble(("hint", "bold cyan"), ": ", hint), soft_wrap=True)
+        err.print(Text.assemble(" ", ("hint", "bold cyan"), ": ", hint), soft_wrap=True)
     if note:
-        err.print(Text.assemble(("note", "bold"), ": ", note), soft_wrap=True)
+        err.print(Text.assemble(" ", ("note", "bold"), ": ", note), soft_wrap=True)
 
 
 def run(
