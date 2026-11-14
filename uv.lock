@@ -1846,7 +1846,6 @@ version = "0.1.0"
 source = { editable = "foundations" }
 dependencies = [
     { name = "anthropic" },
-    { name = "dbt" },
     { name = "duckdb" },
     { name = "prompt-toolkit" },
     { name = "pydantic" },
@@ -1858,7 +1857,11 @@ dependencies = [
 ]
 
 [package.dev-dependencies]
+dbt = [
+    { name = "dbt" },
+]
 dev = [
+    { name = "dbt" },
     { name = "pytest" },
     { name = "pytest-cov" },
     { name = "ruff" },
@@ -1871,7 +1874,6 @@ test = [
 [package.metadata]
 requires-dist = [
     { name = "anthropic", specifier = ">=1.5.0,<2.0.0" },
-    { name = "dbt", specifier = "==2.0.*" },
     { name = "duckdb", specifier = ">=2.0.0,<3.0.0" },
     { name = "prompt-toolkit", specifier = ">=3.0.53,<4.0.0" },
     { name = "pydantic", specifier = ">=2.14.1,<3.0.0" },
@@ -1883,7 +1885,9 @@ requires-dist = [
 ]
 
 [package.metadata.requires-dev]
+dbt = [{ name = "dbt", specifier = "==2.0.*" }]
 dev = [
+    { name = "dbt", specifier = "==2.0.*" },
     { name = "pytest", specifier = ">=8.0,<10.0" },
     { name = "pytest-cov", specifier = ">=5.0,<7.0" },
     { name = "ruff", specifier = ">=0.5,<1.0" },
