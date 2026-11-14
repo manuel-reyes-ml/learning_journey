@@ -30,7 +30,7 @@ go to stderr, so they never pollute that result.
 from __future__ import annotations
 
 import argparse
-import uuid
+import uuid  # uuid is a stdlib module that makes UUIDs: 128-bit IDs designed to be unique.
 from collections.abc import Callable, Mapping
 from pathlib import Path
 from typing import Final
@@ -111,11 +111,19 @@ def add_observability_args(parser: argparse.ArgumentParser) -> None:
     )
 
 
+# The rule is: accept the most general type you need, and return the most
+# specific one. For annotating parameters, it is preferred to use abstract
+# collection types such as Mapping.
+#   1. The function promises not to change your data. Mapping is read-only
+#   to the type checker. Writing details["x"] = 1 inside the function failed
+#   with Unsupported target for indexed assignment.
+#   2. Why object instead of Any: object means “any value, but check its type
+#   before you use it”. Any turns type checking off for that value.
 def print_error(
     message: str,
     *,
     code: str | None = None,
-    details: Mapping[str, object] | None = None,
+    details: Mapping[str, object] | None = None,  # accept anything dict-like, read-only
     hint: str | None = None,
     note: str | None = None,
 ) -> None:
@@ -172,7 +180,7 @@ def print_error(
 
 
 def run(
-    command: Callable[[], None],
+    command: Callable[[], None],  # expects a function that takes no arguments
     *,
     name: str,
     log_file: Path | None,
@@ -218,7 +226,15 @@ def run(
     * Unexpected errors are logged with ``log.exception``, which records the
       full traceback in the log file.
     """
-    run_id = uuid.uuid4().hex[:12]
+    # - uuid4() is the random kind. 122 of its 128 bits come from the operating
+    #   system's secure random number generator.
+    #   Python 3.14 adds uuid.uuid7(), which is random but also sorts by time.
+    # - .hex is the same ID as 32 hex characters without the dashes:
+    #   52df94f0-c597-4877-… becomes 52df94f0c5974877…
+    # - [:12] keeps the first 12 characters, which is 48 bits. The cut is
+    #   deliberate: character 13 is always 4 (the version marker), so the
+    #   first 12 characters are all random.
+    run_id = uuid.uuid7().hex[:12]
     with structlog.contextvars.bound_contextvars(run_id=run_id, command=name):
         log.debug("command_started")
         try:
