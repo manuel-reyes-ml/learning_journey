@@ -124,15 +124,19 @@ class AppError(Exception):
     'data-contract-violation'
     """
 
+    # ClassVar marks an attribute as belonging to the class, shared by every instance,
+    # rather than to each instance. The typing spec says it is used to annotate class
+    # variables that should not be set on class instances. This restriction is enforced
+    # by static checkers, but not at runtime.
     code: ClassVar[str] = "app-error"
-    exit_code: ClassVar[ExitCode] = ExitCode.FAILURE  # TODO what it ClassVar
+    exit_code: ClassVar[ExitCode] = ExitCode.FAILURE
 
     def __init__(
         self,
         message: str,
         *,
         hint: str | None = None,
-        details: Mapping[str, object] | None = None,  # TODO why Mapping here
+        details: Mapping[str, object] | None = None,
     ) -> None:
         super().__init__(message)
         self.message = message
@@ -157,6 +161,27 @@ class AppError(Exception):
             "hint": self.hint,
             **self.details,
         }
+
+
+# ClassVar gives you three things:
+#   1. The code that raises the error can't get it wrong. You write raise
+#   InputNotFoundError("…", hint="…"), with no exit_code= to forget or mistype.
+#   The exit code comes from the class itself.
+#
+#   2. cli.run stays generic. It reads exc.exit_code and exc.code. Python looks
+#   first on the instance, then on its class, then on the parent classes, so it finds
+#   the value the subclass set. In my test, vars(err) held only {'message': ...}: the
+#   constants aren't copied into each instance.
+#
+#   3. The log and the exit code can't disagree. Without ClassVar, a type checker would
+#   allow exc.code = "…" on one instance. That instance would then log one code under a
+#   class that exits with another; with ClassVar the checker blocks it.
+
+# WHy not Final?
+#   Final means “this value can never change, including in subclasses”. mypy rejected the
+#   override with Cannot assign to final name "code". Your error classes exist precisely
+#   so that each subclass can set its own code and exit_code. ClassVar allows overriding
+#   in subclasses but blocks changing it per instance, which is exactly the rule you want.
 
 
 class InputNotFoundError(AppError):
