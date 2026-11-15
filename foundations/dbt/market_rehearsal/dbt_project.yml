@@ -13,7 +13,7 @@ clean-targets: ["target", "dbt_packages"]
 seeds:
   # Builds seeds into '<your_schema_name>_raw'
   market_rehearsal:
-    +schema: raw
+    +schema: raw      # -> dbt_mreyes_raw
 
 models:
   market_rehearsal:
