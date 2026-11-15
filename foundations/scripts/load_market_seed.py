@@ -117,6 +117,9 @@ TABLES: Final[tuple[RawTable, ...]] = (
 )
 
 
+# The four dataclasses (RawTable, TableLoad, …) have only per-instance
+# data, so they have no ClassVar. If one ever needs a shared constant,
+# mark it ClassVar, or @dataclass will turn it into a constructor parameter.
 @dataclass(frozen=True, slots=True)
 class TableLoad:  # numpydoc ignore=PR02
     """Record what one table load produced.
