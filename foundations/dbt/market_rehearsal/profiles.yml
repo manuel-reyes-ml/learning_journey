@@ -4,11 +4,13 @@ market_rehearsal:
     # Swtich between Dev and Prod by typing 'dbt build --target prod'
     dev:
       type: duckdb
-      path: market.duckdb      # resolved relative to this profiles.yml
+      path: "{{ env_var('LJ_MARKET_DB', 'market.duckdb') }}"  # resolved relative to this profiles.yml
       schema: dbt_mreyes    # your personal dev schema, as in the course
       threads: 4
     prod:
       type: duckdb
-      path: market.duckdb
+      # Locally, nothing needs to be set. Docker later sets LJ_MARKET_DB=/data/market.duckdb,
+      # the same way you already handle LJ_DATA_DIR.
+      path: "{{ env_var('LJ_MARKET_DB', 'market.duckdb') }}"
       schema: analytics
       threads: 4
