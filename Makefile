@@ -110,7 +110,7 @@ market-gen:				## Generate bars + events CSVs and the gen_manifest seed
 	$(PYTHON) foundations/scripts/gen_market_seed.py
 
 market-load:			## Load bars + events into market.duckdb (raw_market schema)
-	$(PYTHON) foundations/scripts/load_market_seed.py
+	$(UV) load-market-seed
 
 market-build:			## dbt build from the project folder (the same folder the extension uses)
 	cd $(MARKET_DBT) && $(UV) dbt build --profiles-dir .
