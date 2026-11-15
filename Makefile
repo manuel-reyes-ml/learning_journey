@@ -14,6 +14,8 @@ PRE_COMMIT ?= $(UV) pre-commit
 RECON_OUT := $(CURDIR)/data_test_recontoy
 PARTICIPANTS ?= 50  # lets you run make docker-run PARTICIPANTS=200 without editing the file.
 
+MARKET_DBT := foundations/dbt/market_rehearsal
+
 SPELLER := courses/cs50_harvard/code/05_data_structures/speller/py_src
 CODE_PATHS := foundations scripts llm-api-smoke-test $(SPELLER)
 
@@ -21,43 +23,43 @@ CODE_PATHS := foundations scripts llm-api-smoke-test $(SPELLER)
 
 .PHONY: help sync hooks hooks-run hooks-update claude-agents claude-agents-check claude-rules \
 		claude-rules-check claude-rules-list lint format test claude-gen docker-build docker-run \
-		docker-stop docker-remove
+		docker-stop docker-remove market-gen market-load market-build market
 
-help:  ## Show the available targets
+help:  					## Show the available targets
 	@grep -E '^[a-zA-Z_-]+:.*?## ' $(MAKEFILE_LIST) \
 		| awk 'BEGIN {FS = ":.*?## "}; {printf "  \033[36m%-22s\033[0m %s\n", $$1, $$2}'
 
 # --- environment -------------------------------------------------------------
 
-sync:  ## Install every workspace member and every dependency group
+sync:  					## Install every workspace member and every dependency group
 	uv sync --all-packages --all-groups
 
 # --- git hooks ---------------------------------------------------------------
 
-hooks:  ## Install pre-commit into .git/hooks (pre-commit + commit-msg stages)
+hooks:  				## Install pre-commit into .git/hooks (pre-commit + commit-msg stages)
 	$(PRE_COMMIT) install --install-hooks
 
-hooks-run:  ## Run every hook against every file
+hooks-run:  			## Run every hook against every file
 	$(PRE_COMMIT) run --all-files
 
-hooks-update:  ## Refresh hook pins and freeze them to SHAs
+hooks-update:  			## Refresh hook pins and freeze them to SHAs
 	$(PRE_COMMIT) autoupdate --freeze
 
 # --- Claude Code harness -----------------------------------------------------
 
-claude-agents:  ## Regenerate .claude/agents/ and .claude/output-styles/ from shared prompts
+claude-agents:			## Regenerate .claude/agents/ and .claude/output-styles/ from shared prompts
 	$(PYTHON) scripts/build_claude_agents.py
 
-claude-agents-check:  ## Fail if any generated agent file is stale
+claude-agents-check:	## Fail if any generated agent file is stale
 	$(PYTHON) scripts/build_claude_agents.py --check
 
-claude-rules:  ## Rebuild .claude/rules/*.md from the canonical .cursor/rules/*.mdc bodies.
+claude-rules:  			## Rebuild .claude/rules/*.md from the canonical .cursor/rules/*.mdc bodies.
 	$(PYTHON) scripts/build_claude_rules.py
 
-claude-rules-check:  ## Fail if a generated rule file is out of date or orphaned (CI / pre-commit).
+claude-rules-check:		## Fail if a generated rule file is out of date or orphaned (CI / pre-commit).
 	$(PYTHON) scripts/build_claude_rules.py --check
 
-claude-rules-list:  ## Show which .mdc maps to which rule, and whether it is path-scoped.
+claude-rules-list:		## Show which .mdc maps to which rule, and whether it is path-scoped.
 	$(PYTHON) scripts/build_claude_rules.py --list
 
 claude-gen: claude-agents claude-rules  ## Regenerate both harness artifacts in one step.
@@ -66,10 +68,10 @@ claude-gen: claude-agents claude-rules  ## Regenerate both harness artifacts in 
 # Paths match the `files:` scope of the ruff hooks in .pre-commit-config.yaml.
 # If one changes, change the other.
 
-lint:  ## Lint the real code paths
+lint:					## Lint the real code paths
 	$(UV) ruff check $(CODE_PATHS)
 
-format:  ## Format the real code paths
+format:					## Format the real code paths
 	$(UV) ruff format $(CODE_PATHS)
 
 # --- tests -------------------------------------------------------------------
@@ -77,7 +79,7 @@ format:  ## Format the real code paths
 # config file per run, so a single root-level run would discard each member's
 # [tool.pytest.ini_options] and collide their identically-named `tests` packages.
 
-test:  ## Run every workspace member's test suite
+test:					## Run every workspace member's test suite
 	$(UV) pytest llm-api-smoke-test/tests
 	$(UV) pytest $(SPELLER)/tests
 	$(UV) pytest foundations/tests
@@ -87,17 +89,33 @@ test:  ## Run every workspace member's test suite
 # Your Macs build arm64 images, but most cloud servers and CI run amd64.
 # docker buildx build --platform linux/amd64
 
-docker-build:  ## Build the Docker image
+docker-build:			## Build the Docker image
 	docker build -f foundations/Dockerfile -t recon-toy .
 
-docker-run:  ## Run recon-toy in Docker; results land in ./data_test_recontoy
+docker-run:				## Run recon-toy in Docker; results land in ./data_test_recontoy
 	mkdir -p "$(RECON_OUT)"
 	docker run --rm \
 	--mount type=bind,src="$(RECON_OUT)",dst=/data \
 	recon-toy --participants $(PARTICIPANTS)
 
-docker-stop:  ## Stop the Docker container
+docker-stop:			## Stop the Docker container
 	docker stop recon-toy
 
-docker-remove:  ## Remove the Docker image
+docker-remove:  		## Remove the Docker image
 	docker rmi recon-toy
+
+# --- market rehearsal (dbt) ---------------------------------------------------
+
+market-gen:				## Generate bars + events CSVs and the gen_manifest seed
+	$(PYTHON) foundations/scripts/gen_market_seed.py
+
+market-load:			## Load bars + events into market.duckdb (raw_market schema)
+	$(PYTHON) foundations/scripts/load_market_seed.py
+
+market-build:			## dbt build from the project folder (the same folder the extension uses)
+	cd $(MARKET_DBT) && $(UV) dbt build --profiles-dir .
+
+market: 				## Full pipeline: generate -> load -> build (always in this order)
+	$(MAKE) market-gen
+	$(MAKE) market-load
+	$(MAKE) market-build
