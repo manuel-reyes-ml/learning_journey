@@ -34,7 +34,7 @@ try:
     import time
     from dataclasses import dataclass
     from pathlib import Path
-    from typing import Final
+    from typing import Final, NoReturn
 
     import duckdb
     from rich.text import Text
@@ -216,7 +216,7 @@ def _check_header(path: Path, expected: list[str]) -> None:
             hint="Regenerate the seed files, or update TABLES if the contract changed on purpose.",
             details={"expected": ", ".join(expected), "found": ", ".join(header) or "(empty file)"},
         )
-    log.debug("heder_checked", file=path.name, columns=len(header))
+    log.debug("header_checked", file=path.name, columns=len(header))
 
 
 def _validate_inputs(seed_dir: Path) -> None:
@@ -486,6 +486,7 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
+# Keeping main() separate (returning an int that tests can check) is the right pattern.
 def main(argv: list[str] | None = None) -> int:
     """Run the loader as a command-line program.
 
@@ -531,8 +532,25 @@ def main(argv: list[str] | None = None) -> int:
     )
 
 
-if __name__ == "__main__":
+# TODO implement projct.scripts in pyproject.toml
+def cli_entry() -> NoReturn:
+    """Console-script entry point. Calls main() and exits with its code.
+
+    Notes
+    -----
+    Declared as ``NoReturn`` because ``sys.exit`` always raises
+    ``SystemExit``. Referenced by ``[project.scripts]`` in
+    ``pyproject.toml``.
+    """
     sys.exit(main())
+    # # any code here would be flagged as unreachable by the type checker
+    # sys.exit() raises SystemExit — it never returns control. The NoReturn type tells
+    # the type checker (and human readers) "no code after this line will execute."
+
+
+# This block only runs when the module is executed directly. Not when is imported.
+if __name__ == "__main__":
+    cli_entry()
 
 
 # Why one bundled function instead of run(func, *args): the separate style, as in
