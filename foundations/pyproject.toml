@@ -40,6 +40,10 @@ dependencies = [
     "structlog>=26.1,<27",
 ]
 
+[project.scripts]
+load-market-seed = "learning_journey.scripts.load_market_seed:cli_entry"
+#  command name      module path (inside src/)        : function
+
 [dependency-groups]
 # Same split as llm-api-smoke-test: CI's test job needs only `test`; `dev` adds linting.
 # The pytest ceiling matches llm-api-smoke-test's (<10.0) so the workspace solver
