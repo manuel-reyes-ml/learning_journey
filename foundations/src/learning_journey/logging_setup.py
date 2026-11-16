@@ -56,6 +56,8 @@ from typing import TYPE_CHECKING, Any, Final, Literal
 import structlog
 from structlog.typing import EventDict, Processor, WrappedLogger
 
+from learning_journey.errors import ConfigError
+
 if TYPE_CHECKING:
     from logging.config import _DictConfigArgs
 
@@ -284,7 +286,7 @@ def _resolve_log_format(log_format: LogFormat | None) -> LogFormat:
 
     Raises
     ------
-    ValueError
+    ConfigError
         If ``LOG_FORMAT`` is set to anything other than ``console`` or ``json``
         (case and surrounding spaces are ignored).
 
@@ -292,18 +294,26 @@ def _resolve_log_format(log_format: LogFormat | None) -> LogFormat:
     -----
     A typo such as ``LOG_FORMAT=jsn`` fails at startup instead of silently
     falling back to text, which would leave a log collector with unparseable
-    lines and no warning.
+    lines and no warning. `ConfigError` is an expected, user-fixable error, so
+    the CLI shows it as ``error:`` plus ``hint:`` and exits with 78, not with a
+    traceback.
     """
     if log_format is not None:
         return log_format
-    value = os.environ.get(LOG_FORMAT_ENV, "console").strip().lower()
+
+    raw = os.environ.get(LOG_FORMAT_ENV, "console")
+    value = raw.strip().lower()
     match value:
         case "console":
             return "console"
         case "json":
             return "json"
 
-    raise ValueError(f"{LOG_FORMAT_ENV} must be 'console' or 'json', got {value!r}")
+    raise ConfigError(
+        f"{LOG_FORMAT_ENV} has an unknown value",
+        hint=f"Set {LOG_FORMAT_ENV} to 'console' or 'json', or unset it to use 'console'.",
+        details={LOG_FORMAT_ENV: repr(raw), "allowed": "console, json"},
+    )
 
 
 # (log_format=...) is a new parameter, either "console" or "json". When the code passes it,
@@ -315,7 +325,7 @@ def configure_logging(
     log_file: Path | None = None,
     log_format: LogFormat | None = None,
     cache_loggers: bool = True,
-) -> None:
+) -> LogFormat:
     """Configure structlog and stdlib logging for one process run.
 
     Parameters
@@ -340,10 +350,17 @@ def configure_logging(
         `structlog.testing.capture_logs`, pass False; otherwise loggers already
         used keep the old configuration. Default is True.
 
+    Returns
+    -------
+    LogFormat
+        The console format actually used, so the caller can adapt its own
+        output (`learning_journey.cli.run` silences Rich's stderr in JSON mode).
+
     Raises
     ------
-    ValueError
+    ConfigError
         If ``log_format`` is None and ``LOG_FORMAT`` holds an unknown value.
+        Nothing is configured in that case: the check runs before any change.
 
     See Also
     --------
@@ -384,7 +401,8 @@ def configure_logging(
         ENV LOG_FORMAT=json
     """
     # Optional JSON formatted stdout when env var is passed (for Docker, CI, etc)
-    json_console = _resolve_log_format(log_format) == "json"
+    resolved = _resolve_log_format(log_format)  # validate first: fail before changing anything
+    json_console = resolved == "json"
     console_level = _VERBOSITY_TO_LEVEL.get(verbosity, logging.DEBUG)
 
     # For console's json output always generate at least INFO level
@@ -475,6 +493,8 @@ def configure_logging(
         wrapper_class=structlog.stdlib.BoundLogger,
         cache_logger_on_first_use=cache_loggers,
     )
+
+    return resolved
 
 
 def get_logger(name: str | None = None) -> structlog.stdlib.BoundLogger:
