@@ -1,4 +1,13 @@
-""" """
+"""Test the market seed loader: exit codes, user messages and the log record.
+
+Notes
+-----
+If the loader lives in ``foundations/scripts/``, which is not a package. One line in
+``pyproject.toml`` makes it importable, with no ``sys.path`` hacks::
+
+    [tool.pytest.ini_options]
+    pythonpath = ["foundations/scripts"]
+"""
 
 import json
 from pathlib import Path
