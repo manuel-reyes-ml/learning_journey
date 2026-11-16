@@ -89,151 +89,165 @@ def read_jsonl(path: Path) -> list[dict[str, object]]:
     return [json.loads(line) for line in path.read_text(encoding="utf-8").splitlines()]
 
 
-def test_happy_path_loads_tables_and_prints_summary_on_stdout(
-    seed_dir: Path, tmp_path: Path, capsys: pytest.CaptureFixture[str]
-) -> None:
-    """Check a clean run: exit 0, summary on stdout, silent stderr, rows in DuckDB.
+class TestHappyPath:
+    """ """
 
-    Parameters
-    ----------
-    seed_dir : Path
-        Fixture with valid seed files.
-    tmp_path : Path
-        Per-test temporary directory provided by pytest.
-    capsys : pytest.CaptureFixture[str]
-        Built-in pytest fixture that captures stdout and stderr.
-    """
-    assert run(seed_dir, tmp_path) == ExitCode.SUCCESS
-
-    captured = capsys.readouterr()
-    assert "bars_daily" in captured.out
-    assert captured.err == ""  # nothing to report, so stderr stays silent
-
-    with duckdb.connect(str(tmp_path / "m.duckdb"), read_only=True) as con:
-        row = con.execute("select count(*)  from raw_market.bars_daily").fetchone()
-    assert row == (2,)
-
-
-def test_missing_file_exits_no_input_with_hint_on_stderr(
-    seed_dir: Path, tmp_path: Path, capsys: pytest.CaptureFixture[str]
-) -> None:
-    """Check a missing seed file: exit 66, error and hint on stderr, no traceback.
-
-    Parameters
-    ----------
-    seed_dir : Path
-        Fixture with valid seed files; one is deleted by the test.
-    tmp_path : Path
-        Per-test temporary directory provided by pytest.
-    capsys : pytest.CaptureFixture[str]
-        Built-in pytest fixture that captures stdout and stderr.
-    """
-    (seed_dir / "insider_events.csv").unlink()  # TODO: removes it from local disk?
-
-    assert run(seed_dir, tmp_path) == ExitCode.NO_INPUT
-
-    captured = capsys.readouterr()
-    assert captured.out == ""  # errors never pollute stdout
-    assert "error[input-not-found]" in captured.err
-    assert "hint:" in captured.err
-    assert "Traceback" not in captured.err  # expected errors get no traceback
-
-
-def test_header_drift_is_logged_as_structured_fields(
-    seed_dir: Path, tmp_path: Path, capsys: pytest.CaptureFixture[str]
-) -> None:
-    """Check header drift: exit 65 and one structured ``command_failed`` log event.
-
-    The event must carry the error code, the expected and found headers, and the
-    same ``run_id`` the user sees on stderr, and no traceback.
-
-    Parameters
-    ----------
-    seed_dir : Path
-        Fixture with valid seed files; one header is changed by the test.
-    tmp_path : Path
-        Per-test temporary directory provided by pytest.
-    capsys : pytest.CaptureFixture[str]
-        Built-in pytest fixture that captures stdout and stderr.
-    """
-    (seed_dir / "bars_daily.csv").write_text(BARS.replace("session_date", "date"), encoding="utf-8")
-    log_file = tmp_path / "logs" / "load.jsonl"  # TODO what is jsonl format?
-
-    assert run(seed_dir, tmp_path, "--log-file", str(log_file)) == ExitCode.DATA_ERROR
-
-    failed = [e for e in read_jsonl(log_file) if e["event"] == "command_failed"]
-    assert len(failed) == 1
-
-    event = failed[0]
-    assert event["error_code"] == "data-contract-violation"
-    assert event["exit_code"] == ExitCode.DATA_ERROR
-    assert "date" in str(event["found"])
-    assert str(event["run_id"]) in capsys.readouterr().err  # terminal <-> log file correlation
-    assert "exception" not in event  # expected error: fields, not a traceback
-
-
-def test_bad_value_maps_duckdb_error_to_data_error(seed_dir: Path, tmp_path: Path) -> None:
-    """Check that a value DuckDB cannot convert exits with 65, not as a crash.
-
-    Parameters
-    ----------
-    seed_dir : Path
-        Fixture with valid seed files; one value is corrupted by the test.
-    tmp_path : Path
-        Per-test temporary directory provided by pytest.
-    """
-    (seed_dir / "bars_daily.csv").write_text(BARS.replace("120000", "lots"), encoding="utf-8")
-
-    assert run(seed_dir, tmp_path) == ExitCode.DATA_ERROR
-
-
-def test_unexpected_error_logs_traceback_without_locals(
-    seed_dir: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
-) -> None:
-    """Check a crash: exit 1, structured traceback in the log, no local values.
-
-    Parameters
-    ----------
-    seed_dir : Path
-        Fixture with valid seed files.
-    tmp_path : Path
-        Per-test temporary directory provided by pytest.
-    monkeypatch : pytest.MonkeyPatch
-        Built-in pytest fixture, used to replace ``load_all`` with a function that fails.
-    """
-
-    def boom(_seed_dir: Path, _db_path: Path) -> None:
-        """Fail like a bug would, holding a sensitive local variable.
+    def test_happy_path_loads_tables_and_prints_summary_on_stdout(
+        self, seed_dir: Path, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        """Check a clean run: exit 0, summary on stdout, silent stderr, rows in DuckDB.
 
         Parameters
         ----------
-        _seed_dir : Path
-            Unused.
-        _db_path : Path
-            Unused.
-
-        Raises
-        ------
-        RuntimeError
-            Always.
+        seed_dir : Path
+            Fixture with valid seed files.
+        tmp_path : Path
+            Per-test temporary directory provided by pytest.
+        capsys : pytest.CaptureFixture[str]
+            Built-in pytest fixture that captures stdout and stderr.
         """
-        participant_ssn = "123-45-6789"  # a local that must never reach the log
+        assert run(seed_dir, tmp_path) == ExitCode.SUCCESS
 
-        raise RuntimeError(f"bug near {len(participant_ssn)} chars")
+        captured = capsys.readouterr()
+        assert "bars_daily" in captured.out
+        assert captured.err == ""  # nothing to report, so stderr stays silent
 
-    monkeypatch.setattr(loader, "load_all", boom)
-    log_file = tmp_path / "load.jsonl"
-
-    assert run(seed_dir, tmp_path, "--log-file", str(log_file)) == ExitCode.FAILURE
-
-    text = log_file.read_text(encoding="utf-8")
-    crashed = [e for e in read_jsonl(log_file) if e["event"] == "command_crashed"]
-    assert crashed
-    assert crashed[0]["exception"]  # full structured traceback recorded
-    assert "123-45-6789" not in text  # show_locals=False held
+        with duckdb.connect(str(tmp_path / "m.duckdb"), read_only=True) as con:
+            row = con.execute("select count(*)  from raw_market.bars_daily").fetchone()
+        assert row == (2,)
 
 
-def test_redaction_masks_sensitive_keys_case_insensitive() -> None:
-    """Check that the redaction processor masks ``SSN`` and leaves other keys alone."""
-    event = redact_sensitive(None, "info", {"event": "x", "SSN": "123-45-6789", "rows": 3})
-    assert event == {"event": "x", "SSN": REDACTED, "rows": 3}
+class TestNoInput:
+    """ """
+
+    def test_missing_file_exits_no_input_with_hint_on_stderr(
+        self, seed_dir: Path, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        """Check a missing seed file: exit 66, error and hint on stderr, no traceback.
+
+        Parameters
+        ----------
+        seed_dir : Path
+            Fixture with valid seed files; one is deleted by the test.
+        tmp_path : Path
+            Per-test temporary directory provided by pytest.
+        capsys : pytest.CaptureFixture[str]
+            Built-in pytest fixture that captures stdout and stderr.
+        """
+        (seed_dir / "insider_events.csv").unlink()  # TODO: removes it from local disk?
+
+        assert run(seed_dir, tmp_path) == ExitCode.NO_INPUT
+
+        captured = capsys.readouterr()
+        assert captured.out == ""  # errors never pollute stdout
+        assert "error[input-not-found]" in captured.err
+        assert "hint:" in captured.err
+        assert "Traceback" not in captured.err  # expected errors get no traceback
+
+
+class TestDataError:
+    """ """
+
+    def test_header_drift_is_logged_as_structured_fields(
+        self, seed_dir: Path, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+    ) -> None:
+        """Check header drift: exit 65 and one structured ``command_failed`` log event.
+
+        The event must carry the error code, the expected and found headers, and the
+        same ``run_id`` the user sees on stderr, and no traceback.
+
+        Parameters
+        ----------
+        seed_dir : Path
+            Fixture with valid seed files; one header is changed by the test.
+        tmp_path : Path
+            Per-test temporary directory provided by pytest.
+        capsys : pytest.CaptureFixture[str]
+            Built-in pytest fixture that captures stdout and stderr.
+        """
+        (seed_dir / "bars_daily.csv").write_text(
+            BARS.replace("session_date", "date"), encoding="utf-8"
+        )
+        log_file = tmp_path / "logs" / "load.jsonl"  # TODO what is jsonl format?
+
+        assert run(seed_dir, tmp_path, "--log-file", str(log_file)) == ExitCode.DATA_ERROR
+
+        failed = [e for e in read_jsonl(log_file) if e["event"] == "command_failed"]
+        assert len(failed) == 1
+
+        event = failed[0]
+        assert event["error_code"] == "data-contract-violation"
+        assert event["exit_code"] == ExitCode.DATA_ERROR
+        assert "date" in str(event["found"])
+        assert str(event["run_id"]) in capsys.readouterr().err  # terminal <-> log file correlation
+        assert "exception" not in event  # expected error: fields, not a traceback
+
+    def test_bad_value_maps_duckdb_error_to_data_error(
+        self, seed_dir: Path, tmp_path: Path
+    ) -> None:
+        """Check that a value DuckDB cannot convert exits with 65, not as a crash.
+
+        Parameters
+        ----------
+        seed_dir : Path
+            Fixture with valid seed files; one value is corrupted by the test.
+        tmp_path : Path
+            Per-test temporary directory provided by pytest.
+        """
+        (seed_dir / "bars_daily.csv").write_text(BARS.replace("120000", "lots"), encoding="utf-8")
+
+        assert run(seed_dir, tmp_path) == ExitCode.DATA_ERROR
+
+
+class TestTracebackNoLocals:
+    """ """
+
+    def test_unexpected_error_logs_traceback_without_locals(
+        self, seed_dir: Path, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    ) -> None:
+        """Check a crash: exit 1, structured traceback in the log, no local values.
+
+        Parameters
+        ----------
+        seed_dir : Path
+            Fixture with valid seed files.
+        tmp_path : Path
+            Per-test temporary directory provided by pytest.
+        monkeypatch : pytest.MonkeyPatch
+            Built-in pytest fixture, used to replace ``load_all`` with a function that fails.
+        """
+
+        def boom(_seed_dir: Path, _db_path: Path) -> None:
+            """Fail like a bug would, holding a sensitive local variable.
+
+            Parameters
+            ----------
+            _seed_dir : Path
+                Unused.
+            _db_path : Path
+                Unused.
+
+            Raises
+            ------
+            RuntimeError
+                Always.
+            """
+            participant_ssn = "123-45-6789"  # a local that must never reach the log
+
+            raise RuntimeError(f"bug near {len(participant_ssn)} chars")
+
+        monkeypatch.setattr(loader, "load_all", boom)
+        log_file = tmp_path / "load.jsonl"
+
+        assert run(seed_dir, tmp_path, "--log-file", str(log_file)) == ExitCode.FAILURE
+
+        text = log_file.read_text(encoding="utf-8")
+        crashed = [e for e in read_jsonl(log_file) if e["event"] == "command_crashed"]
+        assert crashed
+        assert crashed[0]["exception"]  # full structured traceback recorded
+        assert "123-45-6789" not in text  # show_locals=False held
+
+    def test_redaction_masks_sensitive_keys_case_insensitive(self) -> None:
+        """Check that the redaction processor masks ``SSN`` and leaves other keys alone."""
+        event = redact_sensitive(None, "info", {"event": "x", "SSN": "123-45-6789", "rows": 3})
+        assert event == {"event": "x", "SSN": REDACTED, "rows": 3}
