@@ -27,6 +27,7 @@ from typing import ClassVar
 
 __all__ = [
     "AppError",
+    "ConfigError",
     "DataContractError",
     "ExitCode",
     "InputNotFoundError",
@@ -57,6 +58,9 @@ class ExitCode(IntEnum):
     TEMP_FAIL : int
         75 (``EX_TEMPFAIL``). Temporary failure; retrying later may succeed,
         for example when another process holds a lock.
+    CONFIG : int
+        78 (``EX_CONFIG``). A configuration value, such as an environment
+        variable, is invalid.
     INTERRUPTED : int
         130 (128 + SIGINT). The user pressed Ctrl-C.
 
@@ -72,6 +76,7 @@ class ExitCode(IntEnum):
     DATA_ERROR = 65
     NO_INPUT = 66
     TEMP_FAIL = 75
+    CONFIG = 78
     INTERRUPTED = 130
 
 
@@ -108,6 +113,7 @@ class AppError(Exception):
     InputNotFoundError : A required input file or directory is missing.
     DataContractError : The input breaks its header, type or row contract.
     ResourceBusyError : Another process holds the resource; retry later.
+    ConfigError : A configuration value, such as an environment variable, is invalid.
 
     Notes
     -----
@@ -235,3 +241,26 @@ class ResourceBusyError(AppError):
 
     code: ClassVar[str] = "resource-busy"
     exit_code: ClassVar[ExitCode] = ExitCode.TEMP_FAIL
+
+
+class ConfigError(AppError):
+    """Raise when a configuration value, such as an environment variable, is invalid.
+
+    Exits with `ExitCode.CONFIG`. Takes the same parameters as `AppError`.
+
+    Attributes
+    ----------
+    code : str
+        ``"invalid-config"``.
+    exit_code : ExitCode
+        `ExitCode.CONFIG` (78).
+
+    Notes
+    -----
+    Configuration is read at startup, often before logging is configured, so
+    this error must be reportable without the log pipeline: `learning_journey.cli.run`
+    prints it with Rich and does not log it.
+    """
+
+    code: ClassVar[str] = "invalid-config"
+    exit_code: ClassVar[ExitCode] = ExitCode.CONFIG
