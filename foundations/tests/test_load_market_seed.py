@@ -134,7 +134,18 @@ class TestNoInput:
         capsys : pytest.CaptureFixture[str]
             Built-in pytest fixture that captures stdout and stderr.
         """
-        (seed_dir / "insider_events.csv").unlink()  # TODO: removes it from local disk?
+        # Path.unlink() deletes the file from your disk, permanently.
+        #   - A file on disk has two parts: the data, and a name in a folder that
+        #   points to that data. “Unlink” removes the name, which is what the
+        #   word means. Once nothing points to the data and no program has it
+        #   open, the operating system marks that space as free.
+        # Use rmdir() for an empty folder, or shutil.rmtree() for a folder with contents
+        # Use missing_ok=True when “already gone” is fine, such as cleanup code. Leave it
+        # off when a missing file means something is wrong.
+        #
+        # Never call unlink() on a path built from user input without first checking it's
+        # inside the folder you expect, e.g. path.resolve().is_relative_to(base).
+        (seed_dir / "insider_events.csv").unlink()
 
         assert run(seed_dir, tmp_path) == ExitCode.NO_INPUT
 
@@ -168,7 +179,7 @@ class TestDataError:
         (seed_dir / "bars_daily.csv").write_text(
             BARS.replace("session_date", "date"), encoding="utf-8"
         )
-        log_file = tmp_path / "logs" / "load.jsonl"  # TODO what is jsonl format?
+        log_file = tmp_path / "logs" / "load.jsonl"
 
         assert run(seed_dir, tmp_path, "--log-file", str(log_file)) == ExitCode.DATA_ERROR
 
