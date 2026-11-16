@@ -51,7 +51,7 @@ COMMAND: Final[str] = "load_market_seed"
 # A namespaced name (not __name__, which is "__main__" for a script) puts this
 # logger under learning_journey.*, so the console filter and the JSON file
 # treat it as part of the app.
-log = get_logger(f"learning_journey.scripts.{COMMAND}")
+log = get_logger(__name__)
 
 # The oldest DuckDB that must open market.duckdb is the driver bundled in
 # dbt 2.0.11 (reads storage 64-68 = DuckDB ≤ 1.5.x). Remove when dbt ships a 2.0 driver.
