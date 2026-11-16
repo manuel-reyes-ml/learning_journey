@@ -107,7 +107,7 @@ docker-remove:  		## Remove the Docker image
 # --- market rehearsal (dbt) ---------------------------------------------------
 
 market-gen:				## Generate bars + events CSVs and the gen_manifest seed
-	$(PYTHON) foundations/scripts/gen_market_seed.py
+	$(PYTHON) foundations/src/learning_journey/scripts/gen_market_seed.py
 
 market-load:			## Load bars + events into market.duckdb (raw_market schema)
 	$(UV) load-market-seed
