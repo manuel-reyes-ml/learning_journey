@@ -7,13 +7,14 @@ Same pipeline everywhere: your laptop, the extension and CI all run identical st
 
 See Also
 --------
-learning_journey.cli.run : The error boundary that maps failures to exit codes.
+learning_journey.cli.run : Sets up logging, then maps failures to exit codes.
 learning_journey.logging_setup.configure_logging : Where the log events go.
 
 Notes
 -----
 Exit codes: 0 success, 2 bad flags, 65 bad data, 66 missing input, 75 database
-locked by another process, 130 Ctrl-C, 1 unexpected error.
+locked by another process, 78 invalid configuration (e.g. ``LOG_FORMAT``),
+130 Ctrl-C, 1 unexpected error.
 
 Examples
 --------
@@ -41,7 +42,7 @@ try:
 
     from learning_journey import cli
     from learning_journey.errors import DataContractError, InputNotFoundError, ResourceBusyError
-    from learning_journey.logging_setup import configure_logging, get_logger
+    from learning_journey.logging_setup import get_logger
     from learning_journey.paths import DATA_MARKET_DIR, MARKET_DB
 except ImportError as e:
     sys.exit(f"ERROR: missing module. Details: {e}")
@@ -512,8 +513,8 @@ def main(argv: list[str] | None = None) -> int:
     Notes
     -----
     Order matters: parse arguments first (bad flags exit with 2 before anything
-    runs), then configure logging, then run the command inside the error
-    boundary.
+    runs), then hand over to `learning_journey.cli.run`, which configures
+    logging and runs the command inside the error boundary.
     """
     ns = build_parser().parse_args(argv)
     args = LoaderArgs(
@@ -524,8 +525,6 @@ def main(argv: list[str] | None = None) -> int:
         traceback=ns.traceback,
     )
 
-    configure_logging(verbosity=args.verbose, log_file=args.log_file)
-
     # partial(func, *args, **kwargs) returns a new function with some arguments
     # already filled in. Calling it later calls func with those saved arguments
     # plus any new ones.
@@ -535,6 +534,7 @@ def main(argv: list[str] | None = None) -> int:
     return cli.run(
         functools.partial(_load_and_report, args),
         name=COMMAND,
+        verbosity=args.verbose,
         log_file=args.log_file,
         show_traceback=args.traceback,
     )
