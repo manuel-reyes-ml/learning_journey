@@ -25,6 +25,11 @@ Notes
 Streams follow the Command Line Interface Guidelines (clig.dev): the command's
 result goes to stdout, so it can be piped or redirected. Errors, hints and logs
 go to stderr, so they never pollute that result.
+
+With ``LOG_FORMAT=json`` (containers) nobody reads stderr as text: a log
+collector parses it. `run` then silences `err`, so stderr carries only JSON
+lines. The JSON ``command_failed`` event already holds the same error, hint and
+run_id that Rich would have printed.
 """
 
 from __future__ import annotations
@@ -40,7 +45,7 @@ from rich.console import Console
 from rich.text import Text
 
 from learning_journey.errors import AppError, ExitCode
-from learning_journey.logging_setup import get_logger
+from learning_journey.logging_setup import configure_logging, get_logger
 
 __all__ = [
     "add_observability_args",
@@ -183,14 +188,15 @@ def run(
     command: Callable[[], None],  # expects a function that takes no arguments
     *,
     name: str,
+    verbosity: int,
     log_file: Path | None,
     show_traceback: bool,
 ) -> ExitCode:
-    """Run a command inside the error boundary and return its exit code.
+    """Configure logging, then run a command inside the error boundary.
 
-    This is the one place that turns exceptions into exit codes and messages.
-    The command itself only raises; it never prints errors or calls
-    ``sys.exit()``.
+    This is the one place that turns exceptions into exit codes and messages,
+    including configuration errors found while setting up logging. The command
+    itself only raises; it never prints errors or calls ``sys.exit()``.
 
     Parameters
     ----------
@@ -199,23 +205,37 @@ def run(
         `functools.partial`).
     name : str
         Command name, bound to every log event as ``command``.
+    verbosity : int
+        Number of ``-v`` flags, passed to `configure_logging`.
     log_file : Path or None
-        The ``--log-file`` path, used to tell the user where details are.
+        The ``--log-file`` path, passed to `configure_logging` and used to tell
+        the user where details are.
     show_traceback : bool
         On an unexpected error, also print a Rich traceback to stderr.
 
     Returns
     -------
     ExitCode
-        `ExitCode.SUCCESS`; the error's own ``exit_code`` for an `AppError`;
-        `ExitCode.INTERRUPTED` on Ctrl-C; `ExitCode.FAILURE` for anything else.
+        `ExitCode.SUCCESS`; the error's own ``exit_code`` for an `AppError`
+        (`ExitCode.CONFIG` for a bad ``LOG_FORMAT``); `ExitCode.INTERRUPTED` on
+        Ctrl-C; `ExitCode.FAILURE` for anything else.
 
     See Also
     --------
     learning_journey.errors.AppError : Base class of the expected errors.
+    learning_journey.logging_setup.configure_logging : The setup step run first.
 
     Notes
     -----
+    Setup runs inside this function, not before it, so a configuration error
+    gets the same ``error:`` / ``hint:`` treatment as any other expected error.
+    It is printed but not logged: logging is not configured yet, and an
+    unconfigured structlog would print a raw line to stdout.
+
+    In JSON mode `err` is silenced for the run, so stderr holds only JSON log
+    lines. It is reset at the start of every call, so one JSON run cannot
+    silence a later console run in the same process (as in tests).
+
     A random ``run_id`` is bound to the logging context for the whole run, so
     every event (ours and third-party) carries it. The user sees the same id
     in the ``note:`` line, which leads from the terminal to the matching lines
@@ -226,6 +246,16 @@ def run(
     * Unexpected errors are logged with ``log.exception``, which records the
       full traceback in the log file.
     """
+    err.quiet = False  # reset: a config error must always be visible
+
+    try:
+        log_format = configure_logging(verbosity=verbosity, log_file=log_file)
+    except AppError as exc:
+        print_error(exc.message, code=exc.code, details=exc.details, hint=exc.hint)
+        return exc.exit_code
+
+    err.quiet = log_format == "json"  # machines read stderr now: JSON lines only
+
     # - uuid4() is the random kind. 122 of its 128 bits come from the operating
     #   system's secure random number generator.
     #   Python 3.14 adds uuid.uuid7(), which is random but also sorts by time.
