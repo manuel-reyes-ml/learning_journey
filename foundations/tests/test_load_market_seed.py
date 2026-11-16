@@ -179,6 +179,11 @@ class TestDataError:
         (seed_dir / "bars_daily.csv").write_text(
             BARS.replace("session_date", "date"), encoding="utf-8"
         )
+
+        # Why use .jsonl = JSON Lines?
+        # One event per line, including errors. That's why the file handler turns the traceback into a JSON field.
+        # Use the .jsonl extension, so tools and people know the format.
+        # Write jsonl in plain text, never inside a file meant to be a JSON array.
         log_file = tmp_path / "logs" / "load.jsonl"
 
         assert run(seed_dir, tmp_path, "--log-file", str(log_file)) == ExitCode.DATA_ERROR
