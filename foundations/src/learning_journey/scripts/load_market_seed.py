@@ -393,18 +393,23 @@ def load_all(seed_dir: Path, db_path: Path) -> LoadReport:
     _validate_inputs(seed_dir)
     db_path.parent.mkdir(parents=True, exist_ok=True)
 
-    with _connect(db_path) as con:
-        con.begin()  # TODO what is begin()
+    # In DuckDB, statements are auto-committed by default. That means, for example,
+    # a standalone create table statement will be committed as soon as the statement
+    # finishes executing. To combine multiple statements in a transaction, you must
+    # explicitly begin a transaction.
+    with _connect(db_path) as con:  # opens the file; closes it at the end
+        con.begin()  # from here on, one all-or-nothing unit
         try:
+            # create schema + every table
             con.execute(f"create schema if not exists {RAW_SCHEMA}")
             loads = [_load_table(con, t, seed_dir / t.file) for t in TABLES]
             storage = con.execute(
                 "select tags['storage_version'] from duckdb_databases() "
                 "where database_name = current_database()"
             ).fetchone()
-            con.commit()
+            con.commit()  # save everything at once
         except BaseException:
-            con.rollback()
+            con.rollback()  # undo everything, Ctrl-C included
             raise
 
     report = LoadReport(
@@ -535,7 +540,6 @@ def main(argv: list[str] | None = None) -> int:
     )
 
 
-# TODO implement projct.scripts in pyproject.toml
 def cli_entry() -> NoReturn:
     """Console-script entry point. Calls main() and exits with its code.
 
