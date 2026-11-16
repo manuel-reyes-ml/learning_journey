@@ -54,7 +54,7 @@ __all__ = [
 out: Final[Console] = Console()
 err: Final[Console] = Console(stderr=True)
 
-log = get_logger("learning_journey.cli")
+log = get_logger(__name__)
 
 
 def _log_note(log_file: Path | None, run_id: str) -> str:
