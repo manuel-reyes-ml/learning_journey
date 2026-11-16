@@ -3,6 +3,7 @@
 Our events (structlog) and third-party events (stdlib ``logging``) end up in the
 same handlers, are shaped by the same processors, and are written in the same
 formats: aligned colors on the console, JSON lines in the optional log file.
+With ``LOG_FORMAT=json`` (containers), the console writes JSON lines too.
 
 See Also
 --------
@@ -26,7 +27,8 @@ How a log event travels::
             ProcessorFormatter:         ProcessorFormatter:
               ConsoleRenderer             callsite -> dict traceback -> JSON
               (aligned colors for         (one JSON object per line,
-               people)                     for machines)
+               people), or the JSON        for machines)
+               chain if LOG_FORMAT=json
 
 ``wrap_for_formatter`` hands our event dict to stdlib *unrendered*, and each
 handler's ``ProcessorFormatter`` renders it its own way. Third-party records skip
@@ -49,7 +51,7 @@ import logging.config
 import os
 import sys
 from pathlib import Path
-from typing import TYPE_CHECKING, Any, Final
+from typing import TYPE_CHECKING, Any, Final, Literal
 
 import structlog
 from structlog.typing import EventDict, Processor, WrappedLogger
@@ -57,8 +59,21 @@ from structlog.typing import EventDict, Processor, WrappedLogger
 if TYPE_CHECKING:
     from logging.config import _DictConfigArgs
 
-__all__ = ["configure_logging", "get_logger", "redact_sensitive"]
+__all__ = [
+    "REDACTED",
+    "LogFormat",
+    "configure_logging",
+    "get_logger",
+    "redact_sensitive",
+]
 
+
+#: How the console handler renders events: text for people, or JSON lines for
+#: machines (containers, log collectors).
+LogFormat = Literal["console", "json"]
+
+#: Environment variable read when `configure_logging` gets no ``log_format``.
+LOG_FORMAT_ENV: Final[str] = "LOG_FORMAT"
 
 #: Root of our logger namespace. Name loggers ``learning_journey.<area>.<name>``.
 APP_LOGGER: Final[str] = "learning_journey"
@@ -180,7 +195,7 @@ def _shared_processors() -> list[Processor]:
     #
     # Exceptions are NOT formatted here: each handler renders them its own way
     # (a Rich traceback on the console, a JSON field in the file):
-    #   8. format_exc_info    → serialize exc_info tuples into "exception" field
+    #   8. format_exc_info    → serialize exc_info tuples into "exception" field - one text string
     return [
         structlog.contextvars.merge_contextvars,  # run_id, command, ... bound once per run
         structlog.stdlib.add_logger_name,
@@ -253,10 +268,52 @@ def _file_processor() -> list[Processor]:
     ]
 
 
+def _resolve_log_format(log_format: LogFormat | None) -> LogFormat:
+    """Pick the console format: the argument, else ``LOG_FORMAT``, else console.
+
+    Parameters
+    ----------
+    log_format : LogFormat or None
+        The format passed to `configure_logging`. If not None it wins, so tests
+        and callers never depend on the environment.
+
+    Returns
+    -------
+    LogFormat
+        ``"console"`` or ``"json"``.
+
+    Raises
+    ------
+    ValueError
+        If ``LOG_FORMAT`` is set to anything other than ``console`` or ``json``
+        (case and surrounding spaces are ignored).
+
+    Notes
+    -----
+    A typo such as ``LOG_FORMAT=jsn`` fails at startup instead of silently
+    falling back to text, which would leave a log collector with unparseable
+    lines and no warning.
+    """
+    if log_format is not None:
+        return log_format
+    value = os.environ.get(LOG_FORMAT_ENV, "console").strip().lower()
+    match value:
+        case "console":
+            return "console"
+        case "json":
+            return "json"
+
+    raise ValueError(f"{LOG_FORMAT_ENV} must be 'console' or 'json', got {value!r}")
+
+
+# (log_format=...) is a new parameter, either "console" or "json". When the code passes it,
+# it wins; otherwise the LOG_FORMAT environment variable decides, and the default is "console".
+# That way tests never depend on your shell.
 def configure_logging(
     *,
     verbosity: int = 0,
     log_file: Path | None = None,
+    log_format: LogFormat | None = None,
     cache_loggers: bool = True,
 ) -> None:
     """Configure structlog and stdlib logging for one process run.
@@ -266,16 +323,27 @@ def configure_logging(
     verbosity : int, optional
         Console detail. 0 shows only third-party WARNING and above, because Rich
         speaks for our own code. 1 (``-v``) shows all INFO and above; 2 or more
-        (``-vv``) shows all DEBUG and above. Default is 0.
+        (``-vv``) shows all DEBUG and above. Default is 0. In JSON format the
+        console starts at INFO instead (see Notes).
     log_file : Path or None, optional
         If given, also append every DEBUG-and-above event to this file as JSON
         lines; parent folders are created. Default is None: nothing is written
         to disk.
+    log_format : {"console", "json"} or None, optional
+        How the console handler renders events. ``"console"``: aligned text for
+        people. ``"json"``: one JSON object per line, for containers and log
+        collectors. Default is None, which reads the ``LOG_FORMAT`` environment
+        variable and falls back to ``"console"``.
     cache_loggers : bool, optional
         Cache each logger's configuration on first use. Keep True in
         production (faster). Tests that reconfigure structlog, for example with
         `structlog.testing.capture_logs`, pass False; otherwise loggers already
         used keep the old configuration. Default is True.
+
+    Raises
+    ------
+    ValueError
+        If ``log_format`` is None and ``LOG_FORMAT`` holds an unknown value.
 
     See Also
     --------
@@ -286,11 +354,18 @@ def configure_logging(
     Safe to call more than once: `logging.config.dictConfig` closes and replaces
     the previous handlers instead of stacking new ones on top.
 
+    In JSON format the console stream *is* the record (a container has no log
+    file), so two console rules change:
+
+    * Our own events are kept: the third-party-only filter is not applied.
+    * The console starts at INFO even at verbosity 0; ``-vv`` still adds DEBUG.
+
     Settings worth knowing in the configuration below:
 
     * ``disable_existing_loggers=False`` keeps loggers that libraries created at
       import time working. The default (True) silently mutes them.
     * Console logs go to stderr, never stdout, because they are diagnostics.
+      Docker collects stderr too, so JSON mode needs no other stream.
     * The root level is the lowest level any handler needs; each handler then
       applies its own threshold.
     * ``logging.captureWarnings(True)`` turns ``warnings.warn(...)`` calls into
@@ -303,8 +378,18 @@ def configure_logging(
     --------
     >>> from pathlib import Path
     >>> configure_logging(verbosity=1, log_file=Path("logs/run.jsonl"))  # doctest: +SKIP
+
+    In a container, set the format once in the Dockerfile instead::
+
+        ENV LOG_FORMAT=json
     """
+    # Optional JSON formatted stdout when env var is passed (for Docker, CI, etc)
+    json_console = _resolve_log_format(log_format) == "json"
     console_level = _VERBOSITY_TO_LEVEL.get(verbosity, logging.DEBUG)
+
+    # For console's json output always generate at least INFO level
+    if json_console:
+        console_level = min(console_level, logging.INFO)
 
     # isatty() returns True only when stderr is a real terminal. In CI, a pipe
     # or a redirect to a file it's False, so colors are switched off there and
@@ -317,8 +402,8 @@ def configure_logging(
             "class": "logging.StreamHandler",
             "stream": "ext://sys.stderr",
             "level": console_level,
-            "formatter": "console",
-            "filters": ["only_third_party"] if verbosity == 0 else [],
+            "formatter": "json" if json_console else "console",
+            "filters": ["only_third_party"] if verbosity == 0 and not json_console else [],
         },
     }
     # Why not RotatingFileHandler? A short CLI run that appends grows the file slowly.
