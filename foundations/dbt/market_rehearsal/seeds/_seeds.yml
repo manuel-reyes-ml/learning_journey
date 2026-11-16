@@ -1,0 +1,15 @@
+seeds:
+  - name: gen_manifest
+    description: "Control totals the generator writes; dbt tests must agree with them."
+    config:
+      column_types:         # every column set by hand; nothing guessed
+        seed: integer
+        n_events: integer
+        expected_unmatched: integer
+    columns:
+      - name: seed
+        data_tests: [not_null]
+      - name: n_events
+        data_tests: [not_null]
+      - name: expected_unmatched
+        data_tests: [not_null]
