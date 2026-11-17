@@ -45,7 +45,7 @@ models:
   - name: stg_market__insider_events
     description: >
       One row per insider event. Typed copy of raw_market.insider_events
-      (synthetic data from gen_market_seed.py)
+      (synthetic data from gen_market_seed.py).
     config:
       contract:
         enforced: true
@@ -77,6 +77,31 @@ models:
       - name: boundary_case
         description: "Confirm if insider event filed before, during, or after session."
         data_type: varchar
+  - name: stg_market__session_opens
+    description: >
+      One row per ticker per session: the moment that session opened (09:30 ET, naive)
+      derived from stg_market__bars, so a session exists only if a bar exists.
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: ticker
+        description: "Exchange ticker symbol. From stg_market__bars."
+        data_type: varchar
+        data_tests: [not_null]
+      - name: session_date
+        description: "Trading session date (NYSE calendar). From stg_market__bars."
+        data_type: date
+        data_tests: [not_null]
+      - name: session_open_at
+        description: "Trading session date (NYSE calendar) + session open time 09:30 ET."
+        data_type: timestamp
+        data_tests: [not_null]
+    data_tests:
+      - unique:
+          name: "stg_market__sessions_opens_one_row_per_ticker_session"
+          arguments:
+            column_name: "ticker || '|' || session_date || '|' || session_open_at"
 
     # stg_market__bars_one_row_per_ticker_session it’s under the model itself, not under a column.
     # The built-in unique test normally checks a single column. Here you need two columns together
