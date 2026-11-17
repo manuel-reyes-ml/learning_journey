@@ -617,7 +617,7 @@ Expected: DLTA's planted 5-session run tops the list. Count sessions, not calend
   - structlog events per document (tokens in/out, validation pass/fail); settings via pydantic-settings; failures logged and skipped, never crashing the batch
   - Report written to `output/` · 6+ mocked tests · ruff clean · README section in ①Production/③Architecture order (Cost omitted honestly — or included if you note real token costs: your call, defend it in the ADR)
   - ADR 0003: one real decision you made and its trade-off
-- [ ] 30 min — 🆕 **dbt Fundamentals — final quiz → certificate into** `evidence.md`**.**
+- [x] 30 min — 🆕 **dbt Fundamentals — final quiz → certificate into** `evidence.md`**.**
 
 ⏭️ **Python 3.14 retrofit — reference only in the v3.0 template** (every repo starts on 3.14 at setup; keep this for any repo created on an older floor)
 
