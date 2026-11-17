@@ -835,12 +835,12 @@ wheels = [
 
 [[package]]
 name = "dbt"
-version = "2.0.11"
+version = "2.0.12"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "mashumaro", extra = ["msgpack"] },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/30/85/9c3f3ee2f58a182b89dd1c308af5f10634fe81645c9c0d35aa10338baa4a/dbt-2.0.11.tar.gz", hash = "sha256:8e8ce5d08237137667b24f9a1331a9a480b9c6b41f76c0bfe223ec1106a36371", size = 3291, upload-time = "2026-11-03T20:27:01.627Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/17/6a/e92066c6293a06835155ccd13d15bf0b7a47b4e1c0b4739d3c7d4ab42ce8/dbt-2.0.12.tar.gz", hash = "sha256:b12c71e1fb10734f310b002892a2a44a98db5c09e9d8671b60b5eb34c235e239", size = 3292, upload-time = "2026-11-16T16:19:28.983Z" }
 
 [[package]]
 name = "debugpy"
