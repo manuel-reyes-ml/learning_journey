@@ -1,6 +1,6 @@
 sources:
   - name: market
-    description: "Files written by scripts/gen_market:seed.py (synthetic, seeded)."
+    description: "Files written by scripts/gen_market_seed.py (synthetic, seeded)."
     schema: raw_market
     config:
       loaded_at_field: _loaded_at
@@ -15,7 +15,6 @@ sources:
             data_tests: [unique, not_null]
           - name: ticker
             data_tests: [not_null]
-      - name: gen_manifest
 
 # column_types exists only for seeds, because dbt loads seeds itself and so
 # decides their types. With a source, the file is read by DuckDB, not dbt.
