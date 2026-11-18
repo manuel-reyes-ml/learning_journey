@@ -315,6 +315,7 @@ nine commands already carry them as `@` references; see §4.0.
 | **Claude Code — review** | VS Code | Fresh session on a dirty tree | Diff review against the Issue and brief | ❌ No |
 | **OpenCode — `build`** | Cursor terminal | Default build agent | Multi-file refactors; gates **after** the write via `git diff` | ✅ **Sole writer** |
 | **OpenCode — `build-gated`** | Cursor terminal | Explicit selection | Unfamiliar libraries, single-file work; gates **before** each write | ✅ **Sole writer** |
+| **OpenCode — `build-hard`** *(trial, Nov 2026)* | Cursor terminal | Explicit selection | Hard multi-file tasks, run side by side with `build` (§3.2) | ✅ **Sole writer** |
 | **Claude (browser project)** | claude.ai | — | Roadmap governance, corrections, cross-project strategy | ❌ No repo access |
 
 ### `build` vs `build-gated` — the selection rule (CORRECTION 39 §6, restated)
@@ -326,6 +327,38 @@ approval hides the whole-change picture, and long prompt chains produce reflex a
 **a gate that feels real but is not.**
 
 **Precondition binding on both:** start every session on a clean tree.
+
+### 3.2 `build-hard` trial — GLM-5.3 vs the GLM-5.2 default (Nov 2026)
+
+`build-hard` has the **same permissions as `build`**; only the model differs (GLM-5.3).
+The built-in `general` and `explore` helpers are pinned to GLM-5.2, so both agents
+delegate to identical helpers. That keeps the model the only variable.
+
+**Run each hard task twice, isolated:**
+
+```bash
+git switch main && git pull                      # clean, current tree
+git worktree add -b trial/<issue>-build      ../lj-build      HEAD
+git worktree add -b trial/<issue>-build-hard ../lj-build-hard HEAD
+# OpenCode in ../lj-build → Tab to `build`;  OpenCode in ../lj-build-hard → Tab to `build-hard`
+# Same prompt in both: "Execute the task brief at <path>…"
+```
+
+Two worktrees mean two working trees, so the two agents never write to the same files
+and each `git diff` shows exactly one model's work.
+
+**Log per task** (one row each):
+
+| Issue | Agent | Checks pass first try? (`make test` / `make lint` / mypy) | Review fixes you made | Minutes | Go usage % (Console) |
+|---|---|---|---|---|---|
+
+**Fairness rules:** same brief, same starting commit, same effort setting. Don't compare a
+session that hit context compaction against one that didn't; note it and rerun.
+
+**Decide after ~10 hard tasks:** keep `build-hard` only if it needs **clearly fewer review
+fixes** than `build` and the shared Go pool holds; otherwise remove the agent. Record the
+result as a roadmap correction. Clean up with `git worktree remove ../lj-build` (and
+`../lj-build-hard`) once each comparison is reviewed.
 
 ### 3.1 Learning mode — orthogonal to the cycle, not a step in it
 
@@ -578,7 +611,7 @@ longer exists thirty seconds later. **Read-only does not mean concurrency-safe.*
 Open Cursor. OpenCode runs in the **integrated terminal** — detection relies on terminal
 environment variables, so an external terminal will not work (CORRECTION 39 §1).
 
-Select `build` or `build-gated` per §3.
+Select `build` or `build-gated` per §3 — or, during the trial, run `build` and `build-hard` side by side per §3.2.
 
 ```
 Execute the task brief at <path>. Follow the execution steps in order.
