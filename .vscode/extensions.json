@@ -1,0 +1,7 @@
+{
+    "recommendations": ["dbtLabsInc.dbt"],
+    "unwantedRecommendations": [
+        "innoverio.vscode-dbt-power-user",
+        "bastienboutonnet.vscode-dbt"
+    ]
+}
