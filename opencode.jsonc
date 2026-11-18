@@ -19,10 +19,11 @@
   //   { action, resource, effect } — the LAST MATCHING RULE WINS, so every list
   //   below goes: broad rule first → exceptions → hard stops last.
   //
-  // PROVIDER STRATEGY: OpenCode Go = primary (flat $10/mo, hard-capped);
-  // OpenRouter = overflow (metered, only bills when used). Same model slugs on
-  // both so F2 switching is seamless when a Go window blocks. Keep "Use balance"
-  // OFF in the Zen console so Go BLOCKS at its limits instead of billing through.
+  // PROVIDER STRATEGY: OpenCode Go = primary (flat $10/mo, hard-capped; the
+  // $5 first month ended Aug 24, 2026); OpenRouter = overflow (metered, only
+  // bills when used). Same model slugs on both so F2 switching is seamless when
+  // a Go window blocks. Keep "Extra Usage" (formerly "Use balance") OFF on the
+  // Console Go page so Go BLOCKS at its limits instead of billing your credit.
   //
   // LOCAL MODELS REMOVED (Nov 2026): Ollama / LM Studio Qwen3.5 9B fell short for
   // planning and analysis (the C41 §7 falsifier fired). Consequence: NO agent in
@@ -57,21 +58,28 @@
     //   Go          opencode-go/glm-5.2
     //
     // TIER = list-price VALUE allowance, not request volume. Counter-intuitively a
-    // cheap reduced-tier model can buy MORE requests than a costly full-tier one:
-    //   minimax-m3       FULL $60  ~16,000 req/mo   (~150/hr @ 25 hr/wk)
-    //   deepseek-v4-pro  RED  $15  ~ 5,200 req/mo   (~49/hr)  <- beats glm-5.2!
+    // cheap reduced-tier model can buy MORE requests than a costly full-tier one.
+    // Checked Nov 18, 2026. The Go docs table and the Go page estimates differ by
+    // ~10%, so treat these as planning numbers (/hr assumes ~108 hr/mo):
+    //   minimax-m3       FULL $60  ~16,000 req/mo   (~149/hr)
+    //   deepseek-v4-pro  RED  $15  ~ 5,200 req/mo   (~48/hr)  <- beats glm-5.2!
     //   glm-5.2          FULL $60  ~ 4,300 req/mo   (~40/hr)
-    //   kimi-k3          RED  $15  ~   490 req/mo   (~4.6/hr) <- scarce, ration it
+    //   glm-5.3          RED  $15  ~ 1,080 req/mo   (~10/hr)  same token price as 5.2
+    //   kimi-k3.1-pro    RED  $15  ~   735 req/mo   (~6.8/hr) <- scarce, ration it
+    //   (kimi-k3, replaced Nov 18: ~490 req/mo)
     //
-    // UNVERIFIED: whether $15 and $60 are separate per-model allowances or
-    // proportional draws on one shared $60 pool. Watch the console — if mixed
-    // usage drains faster than expected, it is a shared pool.
+    // VERIFIED (was the open question): ONE SHARED allowance. A model's monthly
+    // limit is how much of the pool it would use if used alone — $1.50 on a $15
+    // model = 10% of the month; $1.50 on a $60 model = 2.5%. Windows: 20% of the
+    // pool per 5 h, 50% per week (resets Mon 00:00 UTC). Limits change often —
+    // re-check the Console before relying on these numbers.
     "opencode-go": {
       "models": {
         "glm-5.2":         { "name": "GLM-5.2 (build · plan · DEFAULT) [FULL $60]" },
         "minimax-m3":      { "name": "MiniMax M3 (session titles · bulk) [FULL $60]" },
         "deepseek-v4-pro": { "name": "DeepSeek V4 Pro (build · alt) [RED $15]" },
-        "kimi-k3":         { "name": "Kimi K3 (hard / frontend ONLY) [RED $15]" }
+        "kimi-k3.1-pro":   { "name": "Kimi K3.1 Pro (hard plan / review ONLY) [RED $15]" },
+        "glm-5.3":         { "name": "GLM-5.3 (build-hard · TRIAL) [RED $15]" }
       }
     },
 
@@ -84,7 +92,8 @@
         "z-ai/glm-5.2":               { "name": "GLM-5.2 (overflow · build default)" },
         "minimax/minimax-m3":         { "name": "MiniMax M3 (overflow · bulk)" },
         "deepseek/deepseek-v4-pro":   { "name": "DeepSeek V4 Pro (overflow · build alt)" },
-        "moonshotai/kimi-k3":         { "name": "Kimi K3 (overflow · hard/frontend)" },
+        "moonshotai/kimi-k3.1-pro":   { "name": "Kimi K3.1 Pro (overflow · hard plan/review)" },
+        "z-ai/glm-5.3":               { "name": "GLM-5.3 (overflow · build-hard trial)" },
         "deepseek/deepseek-v4-flash": { "name": "DeepSeek V4 Flash (CHEAP overflow $0.14/$0.28)" },
         "qwen/qwen3.7-max":           { "name": "Qwen3.7 Max (overflow · legacy alt)" }
       }
@@ -99,9 +108,24 @@
     // title call spends the least scarce budget.
     "title": { "model": "opencode-go/minimax-m3" },
 
-    // === PLAN — built-in, overridden (default planner, Tab-selectable) ======
-    // Absorbs the old `plan-cloud` agent: with the local model gone, `plan` and
-    // `plan-cloud` would be identical, so one agent, one home (ADR-001 §5a).
+    // === HELPER SUBAGENTS — built-in, model pinned ===========================
+    // A subagent with no model of its own INHERITS its parent's model. Pinning
+    // these two does two jobs: (1) a scarce $15 model never leaks into helper
+    // work, and (2) `build` and `build-hard` delegate to the SAME helpers, so the
+    // trial below compares the main model only. No change for existing agents —
+    // every agent that may launch them already runs GLM-5.2.
+    "general": { "model": "opencode-go/glm-5.2" },
+    "explore": { "model": "opencode-go/glm-5.2" },
+
+    // === PLAN — built-in, DISABLED =========================================
+    // The built-in `plan` was the local-only privacy boundary. With local
+    // models removed it has no job left, and V2's built-in default would let
+    // it run shell freely (the base policy allows everything). One planner, one
+    // home (ADR-001 §5a): `plan-cloud` below. All 8 commands route there.
+    "plan": { "disabled": true },
+
+    // === PLAN-CLOUD — default planner (Tab-selectable) ======================
+    // Synthetic/public repos only — which is now every repo OpenCode may open.
     //
     // WHY GLM-5.2 AND NOT MINIMAX M3: plan output is the architecture every later
     // build depends on, and a bad plan propagates silently where a bad diff does
@@ -112,8 +136,9 @@
     // NOT DeepSeek V4 Pro: tied with M3 at AA 44, and it can look frozen in Plan
     // mode (reasoning-MoE + ai-sdk thinking-stream). That is not a hang, but it is
     // a poor fit for an interactive planning loop.
-    "plan": {
-      "description": "Default planner. Read-only against all source; may write only the Gate 1 task brief under .github/plans/.",
+    "plan-cloud": {
+      "mode": "primary",
+      "description": "Default planner. Read-only against all source; may write only the Gate 1 task brief under .github/plans/. Synthetic/public repos only.",
       "model": "opencode-go/glm-5.2",
       "permissions": [
         // ADR-0002: read-only against ALL source; the Gate 1 task brief is the
@@ -137,26 +162,27 @@
       ]
       // ADR-0003: this gates the agent's shell TOOL, not command-template `!`,
       // which the .github/scripts context loaders rely on. Verified on 1.17.9
-      // only — RE-VERIFY on 2.x (run /test once from `plan`).
+      // only — RE-VERIFY on 2.x (run /test once from `plan-cloud`).
     },
 
     // === PLAN — HARD ARCHITECTURE (Tab-selectable) ==========================
-    // Kimi K3: AA Index 57, GPQA 93.5 — the strongest reasoning available on Go.
-    // RED tier, ~490 req/mo (~4.6/hr). Planning is low-volume enough that this is
+    // Kimi K3.1 Pro: AA Index v5 46 (top open-weight model), Terminal-Bench 4.0
+    // 67.2% on AA's harness. RED tier, ~735 req/mo (~6.8/hr) — the scarcest model
+    // in this config. Planning is low-volume enough that this is
     // affordable IF reserved for genuinely hard calls:
     //   - ADR-worthy decisions where a real rejected alternative is the content
     //   - cross-cutting architecture (ingestion topology, eval-gate design)
     //   - anything you expect to defend in an interview
-    // Do NOT use for routine session planning — that is `plan`'s job.
-    "plan-hard": {
+    // Do NOT use for routine session planning — that is `plan-cloud`'s job.
+    "plan-cloud-hard": {
       "mode": "primary",
-      "description": "Hard architecture planning on Kimi K3 for ADR-worthy and cross-cutting decisions. Scarce allowance; use sparingly.",
-      "model": "opencode-go/kimi-k3",
+      "description": "Hard architecture planning on Kimi K3.1 Pro for ADR-worthy and cross-cutting decisions. Scarce allowance; use sparingly.",
+      "model": "opencode-go/kimi-k3.1-pro",
       "permissions": [
         { "action": "edit",  "resource": "*", "effect": "deny" },
         { "action": "shell", "resource": "*", "effect": "deny" },
         // No subagents at all: a subagent with no model of its own INHERITS the
-        // parent's model, so `explore` would quietly burn Kimi K3 allowance.
+        // parent's model, so `explore` would quietly burn Kimi K3.1 Pro allowance.
         { "action": "subagent", "resource": "*", "effect": "deny" }
       ]
       // Read-only for AGENT-INITIATED actions only. Command-template `!` is NOT
@@ -167,18 +193,75 @@
     // BUILD LADDER (F2 / /models to switch mid-session):
     //   1. opencode-go/glm-5.2         DEFAULT — FULL tier, MIT, fastest (~168 tok/s),
     //                                  81% Terminal-Bench, beats GPT-5.5 on SWE-bench Pro
-    //   2. opencode-go/deepseek-v4-pro ALT — 80.6% SWE-bench Verified (top open score),
-    //                                  cheapest per task ($0.04 vs Kimi K3's $0.94)
-    //   3. opencode-go/kimi-k3         HARD / FRONTEND ONLY — #3 AA Index, #1 Arena
-    //                                  Frontend Code Arena. ~490 req/mo = ~1 per 13 min
-    //                                  of work. Ration it.
+    //                                  ⚠ AA lists GLM-5.2 as deprecated by Z.ai (Nov 2026)
+    //                                  and has no v5 score for it — plan a successor.
+    //   2. opencode-go/deepseek-v4-pro ALT — V4 Pro 0813, MIT. AA v5 cost per task
+    //                                  $0.85 (high) / $1.77 (max); cache hits $0.044/M
+    //   3. opencode-go/glm-5.3         HARD BUILD — TRIAL via the `build-hard` agent
+    //                                  below (Nov 18 →). Not a default: $15 tier.
     //   overflow: same slugs under openrouter/*, or deepseek-v4-flash for cheap bulk.
     //
-    // GLM-5.3 deliberately EXCLUDED: reduced $15 tier, first-party benchmarks only,
-    // weights promised not shipped — while GLM-5.2 sits on FULL tier with ~4x the
-    // requests. Revisit only as an experiment, not in the standing ladder.
+    // NOT a build model: opencode-go/kimi-k3.1-pro. It stays on hard PLANNING and
+    // /review — short, low-volume calls, where it is strongest. In long build
+    // sessions it is slower and costs more (see `build-hard` below).
     "build": {
       "model": "opencode-go/glm-5.2",
+      "permissions": [
+        // Looser: apply edits without a per-diff prompt. Your gate is the
+        // git-diff review + manual commit.
+        { "action": "edit",  "resource": "*", "effect": "allow" },
+
+        // Shell: ask by default, then allow-list read-only git + quality gates.
+        // A pattern ending in ` *` also matches the bare command (`git status`).
+        { "action": "shell", "resource": "*",               "effect": "ask" },
+        { "action": "shell", "resource": "git status *",    "effect": "allow" },
+        { "action": "shell", "resource": "git diff *",      "effect": "allow" },
+        { "action": "shell", "resource": "git log *",       "effect": "allow" },
+        { "action": "shell", "resource": "git add *",       "effect": "allow" },
+        { "action": "shell", "resource": "make test",       "effect": "allow" },
+        { "action": "shell", "resource": "make lint",       "effect": "allow" },
+        { "action": "shell", "resource": "make eval",       "effect": "allow" },
+        { "action": "shell", "resource": "make diagrams",   "effect": "allow" },
+        { "action": "shell", "resource": "uv run pytest *", "effect": "allow" },
+        { "action": "shell", "resource": "uv run ruff *",   "effect": "allow" },
+        { "action": "shell", "resource": "uv run mypy *",   "effect": "allow" },
+        { "action": "shell", "resource": "pytest *",        "effect": "allow" },
+        { "action": "shell", "resource": "ruff *",          "effect": "allow" },
+        { "action": "shell", "resource": "mypy *",          "effect": "allow" },
+
+        // Hard stops LAST so nothing above can re-allow them. You ALWAYS commit
+        // manually. V2 splits compound commands (`a && b`) and any deny wins.
+        { "action": "shell", "resource": "git commit *",    "effect": "deny" },
+        { "action": "shell", "resource": "git push *",      "effect": "deny" }
+      ]
+    },
+
+    // === BUILD-HARD — TRIAL (Tab-selectable) ================================
+    // Same permissions as `build` (copied verbatim) so the ONLY variable in the
+    // trial is the model. Use it for the hard tasks you would otherwise give to
+    // `build`: multi-file changes, cross-module refactors, tricky test failures.
+    //
+    // WHY GLM-5.3 AND NOT KIMI K3.1 PRO (decided Nov 18):
+    //   - Benchmarks favour Kimi (AA v5 46 vs 32; Terminal-Bench 4.0 67.2% vs 41.9%)
+    //     and Kimi wins SHORT hard sessions (Bito: 60.3% vs 51.2%).
+    //   - Long agentic sessions — which is what build work is — favour GLM-5.3
+    //     (Bito 20-turn: 74.0% vs 54.8%), at a quarter to a third of Kimi's
+    //     session cost and ~3x its speed. Kimi resends ~0.5–1M tokens of context
+    //     per request.
+    //   - Both sit on the $15 Go tier; GLM-5.3 is cheaper per token ($1.40/$4.40
+    //     vs $2/$10) and gets ~1.5x the requests per 5 h.
+    //
+    // HOW TO RUN THE TRIAL (details: getting_started/agentic-worklow/
+    // dual_harness_workflow.md §3.2): same task brief, same commit, two git
+    // worktrees — `build` in one, `build-hard` in the other. Log per task: checks
+    // pass first try (make test / lint / mypy), review fixes you had to make,
+    // minutes, and Go usage % from the Console.
+    // DECIDE after ~10 hard tasks: keep `build-hard` only if it needs clearly
+    // fewer review fixes AND the shared Go pool holds; otherwise delete this block.
+    "build-hard": {
+      "mode": "primary",
+      "description": "TRIAL: build on GLM-5.3 for hard multi-file tasks, A/B-tested against `build` (GLM-5.2). Same permissions as build. Scarce $15 Go allowance.",
+      "model": "opencode-go/glm-5.3",
       "permissions": [
         // Looser: apply edits without a per-diff prompt. Your gate is the
         // git-diff review + manual commit.
@@ -286,16 +369,21 @@
   //   pattern-scout.md    -> ai-sdk-patterns.mdc
   //   learn.md            -> learning-mode.mdc            (mode: primary, Tab-selectable)
   //
-  // V2 FOLLOW-UPS (not done here):
-  //   - These Markdown agents still use V1 frontmatter (`permission:` object).
-  //     V2 reads V1 fields, but migrate each file whole to `permissions:` (array)
-  //     — never mix formats inside one agent entry.
-  //   - The V2 docs do not mention `{file:...}`; it was already an open probe
-  //     whether those imports resolve. Settle it on 2.x before relying on it.
-  //   - Command files: V1 `subtask:` is `subagent:` in V2.
+  // V2 STATUS of the Markdown agents/commands (migrated in the same patch):
+  //   - Agents use `permissions:` arrays; `temperature` removed (V2 no longer
+  //     sends agent-level temperature to the model).
+  //   - OPEN PROBE, now critical: the V2 docs do not mention `{file:...}` in an
+  //     agent body. If it is not expanded, every specialist agent silently loses
+  //     its rules. Test: ask @docs-sync to quote the first line of its rules —
+  //     if it prints "{file:./.cursor/...", the imports are dead and the
+  //     generator script must inline the rule text instead.
+  //   - Commands: `subtask` → `subagent`. V2 docs say subtask currently has no
+  //     effect (commands run in the current session), so verify that context
+  //     isolation still happens before relying on it.
   //
   // `streamlit-patterns.mdc` is narrow enough to reference ad hoc with @ when
-  // working in `app/` — it does not need a standing route.
+  // working in `app/` — it does not need a standing route. NOTE: V2 commands do
+  // not expand @path inside stored templates; @ still works when typed in chat.
   //
   // NOTE: observability.mdc is in `instructions` AND routed to security-auditor.
   // That is intentional and harmless — a subagent runs in its own context, so
