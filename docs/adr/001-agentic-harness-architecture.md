@@ -440,5 +440,27 @@ One head-to-head found OpenCode **78% longer** than Claude Code on identical tas
 
 ---
 
+## 14. Amendment — 2026-11-18
+
+**Additive record. §1–§13 stay as decided on 2026-08-18; this section records what changed since then.**
+
+| # | Change | Supersedes |
+|:---:|:---|:---|
+| 1 | **Config moved to OpenCode 2.x format** (`providers`, `agents`, ordered `permissions` arrays, last match wins) | §5a file shape |
+| 2 | **Local models removed** (Ollama, LM Studio). Built-in `plan` disabled; `plan-cloud` is the only standard planner; `learn` on GLM-5.2; session titles on MiniMax M3 | §5 rows *Plan — regulated* and *Learn*; §10 local guarantee |
+| 3 | **`kimi-k3` → `kimi-k3.1-pro`** in `plan-cloud-hard`, `eval-guardian`, `pattern-scout`, `/review`. Same $15 Go tier, ~735 vs ~490 requests/month; AA Index v5 46 (top open model); Terminal-Bench 4.0 67.2% on AA's harness | §5 rows *Plan — hard*, *Hard / frontend*, *Review* |
+| 4 | **§4 open question settled:** paid Go models draw on **one shared allowance**; each model's monthly limit is how much of it that model would use alone | §4 ❓ |
+| 5 | **$5 first month ended 2026-08-24**; "Use balance" is now **"Extra Usage"** (keep it OFF) | §12 checklist wording |
+| 6 | **Security-auditor corrected** — it runs on cloud GLM-5.2 (0-day retention), not a local model | §6 subagent description |
+| 7 | **`build-hard` added as a TRIAL** — GLM-5.3, same permissions as `build`, A/B-tested against `build` (GLM-5.2). Kimi K3.1 Pro was considered and kept on planning/review: it wins short hard sessions but costs more and is slower in long build sessions. Built-in `general` and `explore` pinned to GLM-5.2 so helpers never inherit a $15 model | §5 *Build* rows; §6 agent count (12 agents during the trial) |
+
+**Recorded but not decided:**
+- ⚠️ Artificial Analysis lists **GLM-5.2 as deprecated by Z.ai** and has no Index v5 score for it. The build default stands until a successor is chosen.
+- The §5 **GLM-5.3 falsifier** ("adopt only on independent benchmarks plus published weights") has now fired on both conditions: weights shipped 2026-08-25 under a custom licence (not MIT) and independent AA v5 scores exist. Adoption is being decided **by trial, not by benchmark** — see row 7. Decision rule: after ~10 hard tasks, keep `build-hard` only if it needs clearly fewer review fixes than `build` and the shared Go pool holds.
+
+**Verification date:** 2026-11-18. Re-verify Go tiers before relying on any figure.
+
+---
+
 > **Legend:** ✅ full tier · ⚠️ reduced tier / caveat · 🔒 binding · ❓ open
 > **Verification date:** 2026-08-18. AI tooling pricing and model rosters move monthly — **re-verify tier tables before treating any figure here as current.**
