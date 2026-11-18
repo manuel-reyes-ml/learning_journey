@@ -546,13 +546,15 @@ DeepSeek peak hours: 01:00–04:00 and 06:00–10:00 UTC, Monday–Friday; peak 
 | `gpt-6-luna` | $15 | 4,230 | $0.10 / $0.50 | AA v5 28 | ⚠️ 30 days |
 | Gemini 4 Argon | $30 | 566 | $2 → $4 / $10 → $20 | AA v5 50 | ⚠️ 55 days |
 
+Request estimates come from the Go page; the Go docs table runs ~10% higher (GLM-5.2 880, GLM-5.3 220, Kimi K3 110 per 5 hr). Treat both as planning numbers. ⚠️
+
 \* DeepSeek's zero-retention agreement is renewed monthly; currently valid through **Nov 30, 2026**. DeepSeek models also require Global region access. ⚠️
 
 **How the allowance actually works (resolves v3.2's open question):** paid Go models draw on **one shared allowance**. A model's monthly limit is how much of that allowance it would use if it were the only model you used — so $1.50 on a $15-limit model uses 10% of the month, while $1.50 on a $60-limit model uses 2.5%. Windows: 20% of the allowance per 5 hours, 50% per week (resets Monday 00:00 UTC). At the limit, requests block unless **Extra Usage** (the setting formerly called "Use balance") is on — then they bill your Console credit. ✅ (OpenCode Go docs)
 
 **Three observations:**
 
-1. **GLM-5.2 is still a defensible default on allowance, but it is now unbenchmarked on v5** and has ~4× fewer requests per window than MiniMax M3 and ~55× fewer than DeepSeek V4.1 Flash. Its case rests on v4-era evidence.
+1. **GLM-5.2 is still a defensible default on allowance, but it is now unbenchmarked on v5 — and AA lists it as deprecated by Z.ai, pointing users to GLM-5.3** — and it has ~4× fewer requests per window than MiniMax M3 and ~55× fewer than DeepSeek V4.1 Flash. Its case rests on v4-era evidence.
 2. **Kimi K3.1 Pro strictly dominates Kimi K3 on Go** — same $15 limit, ~50% more requests per window, and the strongest open result on both AA v5 and TB4. Anywhere a config names `kimi-k3`, `kimi-k3.1-pro` is the like-for-like swap (confirm the slug with `/models`).
 3. **Retention now varies by Go model.** Every model in a privacy-sensitive path should be a 0-day row; Haiku 5.5, GPT-6 Luna, Grok 4.7 (30 days) and Gemini 4 Argon (55 days) should not be.
 
