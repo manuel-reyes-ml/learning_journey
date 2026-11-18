@@ -24,7 +24,7 @@ __pycache__
 .ruff_cache/
 
 # IDEs
-.vscode/
+.vscode/settings.json
 .idea/
 *.swp
 *.swo
