@@ -37,6 +37,14 @@
 
   // === Default model =========================================================
   // Primary agents use this unless they override it.
+  //
+  // ⚠ V2 MODEL RULE — the FOOTER is the truth, not this file. A session stores
+  // its model separately from its agent. A model you pick by hand (/models, F2)
+  // for an agent in a tab wins over that agent's `model` key here, and Tab
+  // restores each agent's last-used model. Several open issues report agents'
+  // configured models not applying at all. Check the footer
+  // ("Plan-Cloud · <model>") before work that depends on the model. Subagents
+  // are not affected: they always run their own configured model.
   "model": "opencode-go/glm-5.2",
 
   // === Global permissions — apply to EVERY agent, before its own rules =======
@@ -153,12 +161,17 @@
 
         { "action": "shell", "resource": "*", "effect": "deny" },
 
-        // NEW in this version: a read-only agent that can launch `general` is not
-        // read-only — V2 subagents run on THEIR OWN permissions, not the parent's.
-        // Only the read-only built-in `explore` is allowed. Add a read-only custom
-        // subagent (e.g. pattern-scout) by its ID if planning needs it.
-        { "action": "subagent", "resource": "*",       "effect": "deny" },
-        { "action": "subagent", "resource": "explore", "effect": "allow" }
+        // Subagents: READ-ONLY ones only. A read-only agent that can launch an
+        // editing agent is not read-only — V2 subagents run on THEIR OWN
+        // permissions, not the parent's. Denied here: `general` (edits + shell),
+        // `docs-fix` (edits docs), `eval-guardian` (runs test commands).
+        // A denied subagent is invisible to this agent: "@docs-fix" from here
+        // makes the planner improvise instead of delegating (seen Nov 18).
+        { "action": "subagent", "resource": "*",                "effect": "deny" },
+        { "action": "subagent", "resource": "explore",          "effect": "allow" },
+        { "action": "subagent", "resource": "docs-sync",        "effect": "allow" },
+        { "action": "subagent", "resource": "security-auditor", "effect": "allow" },
+        { "action": "subagent", "resource": "pattern-scout",    "effect": "allow" }
       ]
       // ADR-0003: this gates the agent's shell TOOL, not command-template `!`,
       // which the .github/scripts context loaders rely on. Verified on 1.17.9
@@ -181,9 +194,14 @@
       "permissions": [
         { "action": "edit",  "resource": "*", "effect": "deny" },
         { "action": "shell", "resource": "*", "effect": "deny" },
-        // No subagents at all: a subagent with no model of its own INHERITS the
-        // parent's model, so `explore` would quietly burn Kimi K3.1 Pro allowance.
-        { "action": "subagent", "resource": "*", "effect": "deny" }
+        // Same read-only subagents as `plan-cloud`. Safe for the Kimi allowance
+        // now: `explore` is pinned to GLM-5.2 and each custom subagent names its
+        // own model, so nothing here inherits Kimi K3.1 Pro.
+        { "action": "subagent", "resource": "*",                "effect": "deny" },
+        { "action": "subagent", "resource": "explore",          "effect": "allow" },
+        { "action": "subagent", "resource": "docs-sync",        "effect": "allow" },
+        { "action": "subagent", "resource": "security-auditor", "effect": "allow" },
+        { "action": "subagent", "resource": "pattern-scout",    "effect": "allow" }
       ]
       // Read-only for AGENT-INITIATED actions only. Command-template `!` is NOT
       // gated here (ADR-0003, verified on 1.17.9 — re-verify on 2.x).
@@ -253,7 +271,9 @@
     //
     // HOW TO RUN THE TRIAL (details: getting_started/agentic-worklow/
     // dual_harness_workflow.md §3.2): same task brief, same commit, two git
-    // worktrees — `build` in one, `build-hard` in the other. Log per task: checks
+    // worktrees — `build` in one, `build-hard` in the other. CONFIRM THE FOOTER
+    // shows GLM-5.2 vs GLM-5.3 before each run (see the V2 model rule at the
+    // top); if not, pick it with /models. Log per task: footer model, checks
     // pass first try (make test / lint / mypy), review fixes you had to make,
     // minutes, and Go usage % from the Console.
     // DECIDE after ~10 hard tasks: keep `build-hard` only if it needs clearly
@@ -358,9 +378,14 @@
   ]
 
   // === Specialist rules — routed per agent ===================================
-  // Each specialist rule is loaded via {file:...} at the top of its agent prompt in
-  // `.opencode/agents/`. That is OpenCode's native equivalent of Cursor's glob
-  // scoping: the rule loads only when that agent runs, not on every session.
+  // Each specialist rule is INLINED into its agent's prompt, so it loads only when
+  // that agent runs, not on every session (the per-agent equivalent of Cursor's
+  // glob scoping). OpenCode 2.x does NOT expand {file:...} in agent files (probed
+  // 2026-11-18, ADR-001 §14 row 8), so `.opencode/agents/` is GENERATED:
+  //   edit   .github/docs/prompts/opencode-agents/<name>.md  (template)
+  //   run    make opencode-agents                            (or make harness-gen)
+  //   never  edit .opencode/agents/*.md by hand — pre-commit and CI reject drift.
+  // The `instructions` list above is different: it DOES load in 2.x (same probe).
   //
   //   eval-guardian.md    -> testing-and-eval.mdc
   //   docs-sync.md        -> architecture-docs.mdc
@@ -372,11 +397,9 @@
   // V2 STATUS of the Markdown agents/commands (migrated in the same patch):
   //   - Agents use `permissions:` arrays; `temperature` removed (V2 no longer
   //     sends agent-level temperature to the model).
-  //   - OPEN PROBE, now critical: the V2 docs do not mention `{file:...}` in an
-  //     agent body. If it is not expanded, every specialist agent silently loses
-  //     its rules. Test: ask @docs-sync to quote the first line of its rules —
-  //     if it prints "{file:./.cursor/...", the imports are dead and the
-  //     generator script must inline the rule text instead.
+  //   - RESOLVED 2026-11-18: `{file:...}` in an agent body is NOT expanded in
+  //     2.x — docs-sync quoted its import lines verbatim. Fixed by generation
+  //     (scripts/build_opencode_agents.py), see the specialist-rules note above.
   //   - Commands: `subtask` → `subagent`. V2 docs say subtask currently has no
   //     effect (commands run in the current session), so verify that context
   //     isolation still happens before relying on it.
