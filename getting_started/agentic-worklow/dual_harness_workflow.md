@@ -328,38 +328,6 @@ approval hides the whole-change picture, and long prompt chains produce reflex a
 
 **Precondition binding on both:** start every session on a clean tree.
 
-### 3.2 `build-hard` trial — GLM-5.3 vs the GLM-5.2 default (Nov 2026)
-
-`build-hard` has the **same permissions as `build`**; only the model differs (GLM-5.3).
-The built-in `general` and `explore` helpers are pinned to GLM-5.2, so both agents
-delegate to identical helpers. That keeps the model the only variable.
-
-**Run each hard task twice, isolated:**
-
-```bash
-git switch main && git pull                      # clean, current tree
-git worktree add -b trial/<issue>-build      ../lj-build      HEAD
-git worktree add -b trial/<issue>-build-hard ../lj-build-hard HEAD
-# OpenCode in ../lj-build → Tab to `build`;  OpenCode in ../lj-build-hard → Tab to `build-hard`
-# Same prompt in both: "Execute the task brief at <path>…"
-```
-
-Two worktrees mean two working trees, so the two agents never write to the same files
-and each `git diff` shows exactly one model's work.
-
-**Log per task** (one row each):
-
-| Issue | Agent | Checks pass first try? (`make test` / `make lint` / mypy) | Review fixes you made | Minutes | Go usage % (Console) |
-|---|---|---|---|---|---|
-
-**Fairness rules:** same brief, same starting commit, same effort setting. Don't compare a
-session that hit context compaction against one that didn't; note it and rerun.
-
-**Decide after ~10 hard tasks:** keep `build-hard` only if it needs **clearly fewer review
-fixes** than `build` and the shared Go pool holds; otherwise remove the agent. Record the
-result as a roadmap correction. Clean up with `git worktree remove ../lj-build` (and
-`../lj-build-hard`) once each comparison is reviewed.
-
 ### 3.1 Learning mode — orthogonal to the cycle, not a step in it
 
 `learn` is the same body in both harnesses and a **different mechanism in each.**
@@ -425,6 +393,11 @@ Note the limit: **a user can always invoke any subagent directly via the `@` aut
 menu, even when task permissions would deny it.** Agent permissions restrict the *model*,
 not you.
 
+> ⚠️ **Correction for OpenCode 2.x (2026-11-18).** That was V1 behaviour. In 2.x, `@name`
+> asks the *current* agent to delegate, so the current agent's `subagent` permissions
+> apply. From `learn`, only `@explore` works; any other `@` quietly becomes an answer from
+> `learn` itself. See §3.3.
+
 #### Where it sits in the cycle
 
 **Learn mode is not a step. It is a lane you step into and back out of.**
@@ -446,6 +419,88 @@ but not yet chosen the approach. That is exactly when `learn.md`'s ADR trigger f
 prompt for an ADR while the reasoning is fresh — the rejected option is the content."*
 **Learn mode is where ADRs are born.** Deferring it until after the build means writing
 the ADR from memory, which is when the rejected alternative quietly goes missing.
+
+### 3.2 `build-hard` trial — GLM-5.3 vs the GLM-5.2 default (Nov 2026)
+
+`build-hard` has the **same permissions as `build`**; only the model differs (GLM-5.3).
+The built-in `general` and `explore` helpers are pinned to GLM-5.2, so both agents
+delegate to identical helpers. That keeps the model the only variable.
+
+**Run each hard task twice, isolated:**
+
+```bash
+git switch main && git pull                      # clean, current tree
+git worktree add -b trial/<issue>-build      ../lj-build      HEAD
+git worktree add -b trial/<issue>-build-hard ../lj-build-hard HEAD
+# OpenCode in ../lj-build → Tab to `build`;  OpenCode in ../lj-build-hard → Tab to `build-hard`
+# Same prompt in both: "Execute the task brief at <path>…"
+```
+
+Two worktrees mean two working trees, so the two agents never write to the same files
+and each `git diff` shows exactly one model's work.
+
+**Log per task** (one row each):
+
+| Issue | Agent | Model in footer | Checks pass first try? (`make test` / `make lint` / mypy) | Review fixes you made | Minutes | Go usage % (Console) |
+|---|---|---|---|---|---|---|
+
+**Fairness rules:** same brief, same starting commit, same effort setting. Don't compare a
+session that hit context compaction against one that didn't; note it and rerun.
+
+**⚠️ Confirm the model before every run.** In OpenCode 2.x the session keeps its own model:
+a model picked by hand for an agent beats that agent's configured `model`, and Tab
+restores each agent's last-used model. Read the footer (`Build-Hard · GLM-5.3`). If it
+shows anything else, pick the right model with `/models` first. A run on the wrong model
+doesn't count. Example from 18 Nov: the footer read `Plan-Cloud · DeepSeek V4.1 Flash` because that
+model had been picked by hand. The footer was right; the config's `model` was not what ran.
+
+**Decide after ~10 hard tasks:** keep `build-hard` only if it needs **clearly fewer review
+fixes** than `build` and the shared Go pool holds; otherwise remove the agent. Record the
+result as a roadmap correction. Clean up with `git worktree remove ../lj-build` (and
+`../lj-build-hard`) once each comparison is reviewed.
+
+### 3.3 Calling subagents in OpenCode 2.x (added 2026-11-18)
+
+A subagent never runs on its own. In 2.x it runs only in a **child session** that the
+current agent starts with its `subagent` tool, so every call is a request to the agent you
+are talking to, and **that agent's permissions decide** whether it happens.
+
+| Way | Example | Use it for | What actually happens |
+|---|---|---|---|
+| `@` mention | `@docs-sync check docs/adr and README.md against src for drift` | Everyday, one-off | The current agent is asked to delegate. It writes the subagent's brief **in its own words**. Pick the name from the `@` pop-up list so it becomes a real mention. |
+| Plain English | `Use the security-auditor subagent on the staged diff` | Same, when you'd rather describe the job | The current agent picks the subagent from its `description`. |
+| Slash command | `/eval` | Anything you repeat | `agent: <subagent>` + `subagent: true` runs that subagent **directly** in a background child session. No delegation decision, and your arguments arrive unchanged through `$ARGUMENTS`. |
+
+⚠️ **Verify once:** run `/eval` and confirm a separate session opens. Older 2.x docs said
+`subagent: true` had no effect; the current docs say it runs a background child session.
+
+**Who can call whom** (rules in `opencode.jsonc` and agent frontmatter):
+
+| Current agent | May launch | Why |
+|---|---|---|
+| `plan-cloud`, `plan-cloud-hard` | `explore`, `docs-sync`, `security-auditor`, `pattern-scout` | Read-only helpers only, so a planner can never reach a writer through a helper |
+| `learn` | `explore` | Teaching mode stays unable to write |
+| `build`, `build-hard`, `build-gated` | any (2.x default) | Already writers; this is where `docs-fix` is called from |
+
+🔴 **A subagent the current agent may not launch is invisible to it.** `@docs-fix` from
+`plan-cloud` does not fail with an error: the planner answers by itself instead (seen
+2026-11-18). To use `docs-fix`, switch to a `build` agent first.
+
+**Extra wording — normally none.** Add it only when needed:
+- *"Don't answer it yourself."* — if the reply comes back without a `↳ <Name> finished`
+  line. Cheap planner models sometimes skip the hand-off.
+- *"Pass it the request word for word."* — when exact wording matters (a test, a precise
+  checklist). Otherwise the planner rewords your request, which is fine.
+
+**How to tell it really ran:** the planner's reply shows `↳ <Name> finished` and links the
+child session. Open it: the footer shows the **subagent's own model** (subagents always
+run their configured model, so the hand-picked-model caveat in §3.2 does not apply to
+them), and the session lists every tool call it made.
+
+**Why the subagents know their job:** OpenCode 2.x does not expand `{file:...}` in agent
+files, so each `.opencode/agents/*.md` body is **generated** from the shared prompt, its
+Cursor rules and an optional `.opencode-delta.md` (`make opencode-agents`). The
+frontmatter stays hand-edited. See §7 and ADR-001 §14 row 8.
 
 ---
 
@@ -941,14 +996,14 @@ repo-root/
 │       └── testing-and-eval.md
 │
 ├── .opencode/                         # OpenCode — BUILD, sole writer
-│   ├── agents/
-│   │   ├── docs-fix.md
-│   │   ├── docs-sync.md
+│   ├── agents/                        # frontmatter HAND-EDITED · body GENERATED (§3.3)
+│   │   ├── docs-fix.md                #   body = .opencode-delta + rules + shared prompt
+│   │   ├── docs-sync.md               #   `make opencode-agents`; drift fails pre-commit/CI
 │   │   ├── eval-guardian.md
 │   │   ├── learn.md
 │   │   ├── pattern-scout.md
 │   │   └── security-auditor.md
-│   └── commands/                      # @ live imports → .github/docs/prompts/
+│   └── commands/                      # !`cat` lines → .github/docs/prompts/commands/
 │       ├── commit-msg.md   draft-issue.md   eval.md      labels.md
 │       ├── pr-prep.md      readme.md        review.md    task-brief.md
 │       └── test.md
@@ -956,8 +1011,8 @@ repo-root/
 ├── .github/
 │   ├── docs/
 │   │   ├── prompts/                   # ⭐ SINGLE SOURCE — the nine command bodies, once
-│   │   ├── agents/                    # claude-delta overlays — Claude-Code-only deltas,
-│   │   │                              #   consumed by scripts/build_claude_agents.py
+│   │   ├── agents/                    # shared agent bodies + .claude-delta / .opencode-delta
+│   │   │                              #   overlays — read by BOTH agent generators
 │   │   ├── templates/
 │   │   │   ├── MODEL_CARD.md
 │   │   │   ├── README_template.md
@@ -977,7 +1032,10 @@ repo-root/
 │   └── pull_request_template.md       # at .github/ root, not under templates/
 │
 ├── scripts/
-│   └── build_claude_agents.py         # generator — Claude Code has no native subagent import
+│   ├── build_claude_agents.py         # generator — Claude Code has no native subagent import
+│   ├── build_claude_rules.py          # generator — .cursor/rules → .claude/rules
+│   ├── build_opencode_agents.py       # generator — OpenCode 2.x ignores {file:} in agents
+│   └── tests/                         # tests for the generators (`make test`, CI)
 ├── .pre-commit-config.yaml            # Tier A/B/C per CORRECTION 21
 └── docs/adr/                          # Nygard template
 ```
@@ -1138,6 +1196,12 @@ Current architecture (unchanged and correct): bodies live once in
 `.github/docs/prompts/`; OpenCode uses live `@` imports; Claude Code commands use
 `` !`cat` `` stubs. `build_claude_agents.py` regenerates the Claude Code side;
 `claude-agents-check` enforces it at the commit boundary.
+
+> ⚠️ **Correction (2026-11-18).** OpenCode does not use live `@` imports. Its commands use
+> `` !`cat` `` lines too, which 2.x runs. Its agents used `{file:...}` imports, which 2.x
+> never expanded, so their bodies are now generated by `build_opencode_agents.py` from the
+> same shared prompts, enforced by `opencode-agents-check`. Both harnesses now read one
+> body per agent from `.github/docs/prompts/agents/`.
 
 **What v2.0 breaks:** the `review` prompt is no longer harness-neutral. The OpenCode
 version reviews its own work in-context; the Claude Code version reviews a foreign diff
