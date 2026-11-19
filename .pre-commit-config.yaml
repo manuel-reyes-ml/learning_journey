@@ -183,7 +183,7 @@ repos:
   # ---------------------------------------------------------------------------
   - repo: local
     hooks:
-      - id: opencode_agents-check
+      - id: opencode-agents-check
         name: opencode agent bodies in sync with prompts and rules
         entry: python3 scripts/build_opencode_agents.py --check
         language: system
