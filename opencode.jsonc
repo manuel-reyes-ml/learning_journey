@@ -122,8 +122,8 @@
     // work, and (2) `build` and `build-hard` delegate to the SAME helpers, so the
     // trial below compares the main model only. No change for existing agents —
     // every agent that may launch them already runs GLM-5.2.
-    "general": { "model": "opencode-go/glm-5.2" },
-    "explore": { "model": "opencode-go/glm-5.2" },
+    "general": { "model": "opencode-go/glm-5.2#high" },
+    "explore": { "model": "opencode-go/glm-5.2#high" },
 
     // === PLAN — built-in, DISABLED =========================================
     // The built-in `plan` was the local-only privacy boundary. With local
@@ -147,7 +147,7 @@
     "plan-cloud": {
       "mode": "primary",
       "description": "Default planner. Read-only against all source; may write only the Gate 1 task brief under .github/plans/. Synthetic/public repos only.",
-      "model": "opencode-go/glm-5.2",
+      "model": "opencode-go/glm-5.2#high",
       "permissions": [
         // ADR-0002: read-only against ALL source; the Gate 1 task brief is the
         // single exception. Broad deny first, exception after (last match wins).
@@ -190,7 +190,7 @@
     "plan-cloud-hard": {
       "mode": "primary",
       "description": "Hard architecture planning on Kimi K3.1 Pro for ADR-worthy and cross-cutting decisions. Scarce allowance; use sparingly.",
-      "model": "opencode-go/kimi-k3.1-pro",
+      "model": "opencode-go/kimi-k3.1-pro#high",
       "permissions": [
         { "action": "edit",  "resource": "*", "effect": "deny" },
         { "action": "shell", "resource": "*", "effect": "deny" },
@@ -223,7 +223,7 @@
     // /review — short, low-volume calls, where it is strongest. In long build
     // sessions it is slower and costs more (see `build-hard` below).
     "build": {
-      "model": "opencode-go/glm-5.2",
+      "model": "opencode-go/glm-5.2#high",
       "permissions": [
         // Looser: apply edits without a per-diff prompt. Your gate is the
         // git-diff review + manual commit.
@@ -281,7 +281,7 @@
     "build-hard": {
       "mode": "primary",
       "description": "TRIAL: build on GLM-5.3 for hard multi-file tasks, A/B-tested against `build` (GLM-5.2). Same permissions as build. Scarce $15 Go allowance.",
-      "model": "opencode-go/glm-5.3",
+      "model": "opencode-go/glm-5.3#high",
       "permissions": [
         // Looser: apply edits without a per-diff prompt. Your gate is the
         // git-diff review + manual commit.
@@ -334,7 +334,7 @@
     "build-gated": {
       "mode": "primary",
       "description": "Build with a pre-write diff gate on every edit. For unfamiliar code, new patterns, and learning sessions. Prefer plain `build` for multi-file refactors.",
-      "model": "opencode-go/glm-5.2",
+      "model": "opencode-go/glm-5.2#high",
       "permissions": [
         // Gate BEFORE the write, not after.
         { "action": "edit",  "resource": "*", "effect": "ask" },
@@ -381,10 +381,13 @@
   // Each specialist rule is INLINED into its agent's prompt, so it loads only when
   // that agent runs, not on every session (the per-agent equivalent of Cursor's
   // glob scoping). OpenCode 2.x does NOT expand {file:...} in agent files (probed
-  // 2026-11-18, ADR-001 §14 row 8), so `.opencode/agents/` is GENERATED:
-  //   edit   .github/docs/prompts/opencode-agents/<name>.md  (template)
-  //   run    make opencode-agents                            (or make harness-gen)
-  //   never  edit .opencode/agents/*.md by hand — pre-commit and CI reject drift.
+  // 2026-11-18, ADR-001 §14 row 8), so each agent file is half generated:
+  //   frontmatter  (model, mode, permissions) -> edit in .opencode/agents/<name>.md
+  //   body         -> edit the sources, then `make opencode-agents`:
+  //                   .github/docs/prompts/agents/<name>.md (shared with Claude),
+  //                   <name>.opencode-delta.md (OpenCode-only note, optional),
+  //                   .cursor/rules/*.mdc (which rules: RULES table in the script)
+  //   Never edit a body by hand — pre-commit and CI reject drift.
   // The `instructions` list above is different: it DOES load in 2.x (same probe).
   //
   //   eval-guardian.md    -> testing-and-eval.mdc
