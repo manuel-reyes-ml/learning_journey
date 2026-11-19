@@ -5,7 +5,9 @@ WHY THIS SCRIPT EXISTS
 ----------------------
 Claude Code subagent files have no import mechanism. The markdown body *is* the
 system prompt, parsed once, and `@path` does not expand there (open requests
-anthropics/claude-code#5914 and #6899). OpenCode agents *do* support `{file:...}`.
+anthropics/claude-code#5914 and #6899). OpenCode 2.x does not expand `{file:...}` in
+agent files either (probed 2026-11-18, ADR-001 §14) — its agents are generated too, by
+`build_opencode_agents.py`.
 
 So agents cannot share a body by reference the way commands can. They share it by
 **generation** instead — the same shape as `architecture.dsl` → Mermaid via
