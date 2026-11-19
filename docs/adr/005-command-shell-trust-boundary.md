@@ -117,6 +117,12 @@ share the single-pass ceiling, the six specialist rule routes (`eval-guardian` �
 been running on the three `instructions` rules alone. **This is the highest-value
 untested item in the harness and should be probed before the next build session.**
 
+> **Resolved 2026-11-18 (additive note).** Probed: the imports do **not** resolve in
+> OpenCode 2.x, so the six specialist routes had indeed never loaded. As predicted, the
+> agents were running on the `instructions` rules alone — confirmed in the same session,
+> where those rules *do* load. Fixed by generating `.opencode/agents/` — see ADR-001 §14
+> row 8.
+
 ## Falsifier
 
 Reverse if OpenCode gates command-template `!` through the agent `permission` map in a
