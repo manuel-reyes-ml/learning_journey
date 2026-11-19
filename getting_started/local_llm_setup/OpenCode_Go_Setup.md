@@ -5,6 +5,14 @@
 **Verified against:** `opencode.ai/docs/go` (page last updated **16 Aug 2026**)
 **Version:** 1.0 (17 Aug 2026)
 
+> 🗓️ **Update — 18 Nov 2026 (read before §2–§7).** Five facts below are now out of date:
+> (1) the **$5 first month ended 24 Aug 2026** — Go is $10 from the first charge;
+> (2) **"Use balance" is now "Extra Usage"** on the Console Go page — same rule, keep it OFF;
+> (3) the §4 open question is settled — paid models draw on **one shared allowance**;
+> (4) this repo's config replaced **Kimi K3 with Kimi K3.1 Pro** (same $15 tier, more requests);
+> (5) the repo config is now **OpenCode 2.x format with no local models** — the §7 local-plan
+> pattern describes the old setup. See `opencode.jsonc` and ADR-001 §14 for the current state.
+
 > ⚠️ Go's model roster, pricing tiers and limits change as OpenCode negotiates provider deals. The docs page carries a "limits may change" notice. **Re-verify the tier table (§6) before making it a default in a project config.**
 
 ---
@@ -86,7 +94,7 @@ A 5-hour session   = ~$2.80 budget   (vs the $12 cap — huge headroom)
 
 **Conclusion for this profile: the 5-hour cap will essentially never bind. Only the monthly cap matters.** Budget by the month, not the session.
 
-Translated into requests on a full-tier model: GLM-5.2 at ~4,300 requests/month ÷ 107 hrs ≈ **40 requests/hour**. For a plan-first workflow where every diff is reviewed by a human, that is comfortable. On a reduced-tier model like Kimi K3 (~490/month), it's ~4.5/hour — tight.
+Translated into requests on a full-tier model: GLM-5.2 at ~4,300 requests/month ÷ 107 hrs ≈ **40 requests/hour**. For a plan-first workflow where every diff is reviewed by a human, that is comfortable. On a reduced-tier model like Kimi K3.1 Pro (~735/month), it's ~6.8/hour — tight (Kimi K3, which it replaced, was ~490/month, ~4.5/hour).
 
 ---
 
@@ -152,7 +160,7 @@ If you get a `404 / model not found`, the model ID prefix is wrong — see §6.
 
 ## 6. Model IDs and the tier table
 
-**ID format:** `opencode-go/<model-id>` — e.g. `opencode-go/kimi-k3`, `opencode-go/glm-5.2`.
+**ID format:** `opencode-go/<model-id>` — e.g. `opencode-go/kimi-k3.1-pro`, `opencode-go/glm-5.2`.
 
 > Same prefix discipline as OpenRouter: the provider prefix is mandatory. `glm-5.2` alone will 404.
 
@@ -163,7 +171,7 @@ For some models OpenCode hasn't secured a bulk discount, so those carry a **$15/
 | **Full tier — $60/month** | **Reduced tier — $15/month** |
 |---|---|
 | `glm-5.2` · `glm-5.1` | `glm-5.3` |
-| `kimi-k2.7-code` · `kimi-k2.6` | `kimi-k3` |
+| `kimi-k2.7-code` · `kimi-k2.6` | `kimi-k3.1-pro` · `kimi-k3` |
 | `minimax-m3` · `minimax-m2.7` | `grok-4.5` |
 | `qwen3.7-max` · `qwen3.7-plus` · `qwen3.6-plus` | `qwen3.8-max` |
 | `mimo-v2.5` · `hy3` | `mimo-v2.5-pro` |
@@ -190,6 +198,7 @@ For some models OpenCode hasn't secured a bulk discount, so those carry a **$15/
 | GLM-5.3 ⚠️ | 220 | 540 | 1,080 |
 | Grok 4.5 ⚠️ | 120 | 300 | 600 |
 | Kimi K3 ⚠️ | 110 | 250 | **490** |
+| Kimi K3.1 Pro ⚠️ *(added Nov 2026)* | ~147 | ~367 | **~735** |
 
 ✅ full tier · ⚠️ reduced tier. Counts are OpenCode's estimates from observed request patterns, not guarantees — heavy-context sessions burn faster.
 
