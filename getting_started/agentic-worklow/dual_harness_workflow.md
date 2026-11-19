@@ -471,8 +471,14 @@ are talking to, and **that agent's permissions decide** whether it happens.
 | Plain English | `Use the security-auditor subagent on the staged diff` | Same, when you'd rather describe the job | The current agent picks the subagent from its `description`. |
 | Slash command | `/eval` | Anything you repeat | `agent: <subagent>` + `subagent: true` runs that subagent **directly** in a background child session. No delegation decision, and your arguments arrive unchanged through `$ARGUMENTS`. |
 
-⚠️ **Verify once:** run `/eval` and confirm a separate session opens. Older 2.x docs said
-`subagent: true` had no effect; the current docs say it runs a background child session.
+✅ **Verified 2026-11-19:** `/eval` opened its own `eval-guardian` session, so
+`subagent: true` works (older 2.x docs said it had no effect).
+
+🔴 **Comments in a command file are not inert.** The same run showed the harness executing
+text from the HTML comment: a bang right before a backtick, anywhere in the file, runs as
+shell. That had silently disabled every command's context script since 2026-11-17.
+`scripts/tests/test_command_templates.py` now fails if any command or skill would run
+anything except its one `bash .github/scripts/…` line and its one `cat` line.
 
 **Who can call whom** (rules in `opencode.jsonc` and agent frontmatter):
 
