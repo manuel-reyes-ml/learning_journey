@@ -22,7 +22,8 @@ CODE_PATHS := foundations scripts llm-api-smoke-test $(SPELLER)
 .DEFAULT_GOAL := help
 
 .PHONY: help sync hooks hooks-run hooks-update claude-agents claude-agents-check claude-rules \
-		claude-rules-check claude-rules-list lint format test claude-gen docker-build docker-run \
+		claude-rules-check claude-rules-list lint format test claude-gen opencode-agents \
+		opencode-agents-check opencode-agents-list harness-gen docker-build docker-run \
 		docker-stop docker-remove market-gen market-load market-build market
 
 help:  					## Show the available targets
@@ -64,6 +65,21 @@ claude-rules-list:		## Show which .mdc maps to which rule, and whether it is pat
 
 claude-gen: claude-agents claude-rules  ## Regenerate both harness artifacts in one step.
 
+# --- OpenCode harness ----------------------------------------------------------
+# OpenCode 2.x does not expand {file:...} in agent files (ADR-001 §14), so the
+# agents are generated from templates the same way the Claude agents are.
+
+opencode-agents:		## Regenerate the BODY of .opencode/agents/*.md (frontmatter is hand-edited)
+	$(PYTHON) scripts/build_opencode_agents.py
+
+opencode-agents-chek:	## Fail if any generated OpenCode agent is stale or orphaned
+	$(PYTHON) scripts/build_opencode_agents.py --check
+
+opencode-agents-list:	## Show each OpenCode agent and the files its body is built from
+	$(PYTHON) scripts/build_opencode_agents.py --list
+
+harness-gen: claude-gen opencode-agents	  ## Regenerate every harness artifact (Claude + OpenCode)
+
 # --- quality -----------------------------------------------------------------
 # Paths match the `files:` scope of the ruff hooks in .pre-commit-config.yaml.
 # If one changes, change the other.
@@ -83,6 +99,7 @@ test:					## Run every workspace member's test suite
 	$(UV) pytest llm-api-smoke-test/tests
 	$(UV) pytest $(SPELLER)/tests
 	$(UV) pytest foundations/tests
+	$(UV) pytest scripts/tests
 
 # --- Docker image -------------------------------------------------------------
 
