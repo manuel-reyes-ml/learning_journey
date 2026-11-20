@@ -25,6 +25,8 @@ minimum_pre_commit_version: "3.2.0"
 # is actually installed rather than silently skipped.
 default_install_hook_types: [pre-commit, commit-msg]
 
+# Add expluc here so other hooks are not touching this subfolder
+exclude: ^docs/dbt-docs/
 repos:
   # ---------------------------------------------------------------------------
   # Tier A — basics + secret boundary. Applies to every repo in the portfolio.
