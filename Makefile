@@ -72,13 +72,13 @@ claude-gen: claude-agents claude-rules  ## Regenerate both harness artifacts in 
 opencode-agents:		## Regenerate the BODY of .opencode/agents/*.md (frontmatter is hand-edited)
 	$(PYTHON) scripts/build_opencode_agents.py
 
-opencode-agents-chek:	## Fail if any generated OpenCode agent is stale or orphaned
+opencode-agents-check:	## Fail if any generated OpenCode agent is stale or orphaned
 	$(PYTHON) scripts/build_opencode_agents.py --check
 
 opencode-agents-list:	## Show each OpenCode agent and the files its body is built from
 	$(PYTHON) scripts/build_opencode_agents.py --list
 
-harness-gen: claude-gen opencode-agents	  ## Regenerate every harness artifact (Claude + OpenCode)
+harness-gen: claude-gen opencode-agents	 ## Regenerate every harness artifact (Claude + OpenCode)
 
 # --- quality -----------------------------------------------------------------
 # Paths match the `files:` scope of the ruff hooks in .pre-commit-config.yaml.
