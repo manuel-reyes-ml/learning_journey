@@ -59,7 +59,9 @@ from structlog.typing import EventDict, Processor, WrappedLogger
 from learning_journey.errors import ConfigError
 
 if TYPE_CHECKING:
-    from logging.config import _DictConfigArgs
+    from logging.config import (
+        _DictConfigArgs as DictConfigArgs,  # pyright: ignore[reportPrivateUsage]
+    )
 
 __all__ = [
     "REDACTED",
@@ -308,12 +310,12 @@ def _resolve_log_format(log_format: LogFormat | None) -> LogFormat:
             return "console"
         case "json":
             return "json"
-
-    raise ConfigError(
-        f"{LOG_FORMAT_ENV} has an unknown value",
-        hint=f"Set {LOG_FORMAT_ENV} to 'console' or 'json', or unset it to use 'console'.",
-        details={LOG_FORMAT_ENV: repr(raw), "allowed": "console, json"},
-    )
+        case _:
+            raise ConfigError(
+                f"{LOG_FORMAT_ENV} has an unknown value",
+                hint=f"Set {LOG_FORMAT_ENV} to 'console' or 'json', or unset it to use 'console'.",
+                details={LOG_FORMAT_ENV: repr(raw), "allowed": "console, json"},
+            )
 
 
 # (log_format=...) is a new parameter, either "console" or "json". When the code passes it,
@@ -451,7 +453,7 @@ def configure_logging(
     # passed to it as keyword arguments, so {"()": ProcessorFormatter, "processors": [...]} runs
     # ProcessorFormatter(processors=[...]). That's also why the "processor" typo didn't fail at
     # setup: it's a real (old) argument of ProcessorFormatter.
-    config: _DictConfigArgs = {
+    config: DictConfigArgs = {
         "version": 1,
         "disable_existing_loggers": False,
         "filters": {"only_third_party": {"()": OnlyThirdParty}},
