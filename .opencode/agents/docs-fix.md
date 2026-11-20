@@ -51,11 +51,15 @@ permissions:
 <!-- GENERATED BODY — DO NOT EDIT BELOW THE FRONTMATTER.
      Edit the frontmatter above freely; it is the source for this agent's settings.
      Edit the body at its sources, then run `make opencode-agents`:
+       .github/docs/prompts/agents/docs-fix.opencode-delta.md
        .cursor/rules/architecture-docs.mdc
        .cursor/rules/git-workflow.mdc
        .github/docs/prompts/agents/docs-fix.md
      OpenCode 2.x does not expand {file:...} in agent files (ADR-001 §14).
 -->
+
+> 🔒 **OpenCode note:** your write boundary is enforced by the `permissions` edit rules
+> in the frontmatter above — it is architecture, not persuasion.
 
 # Architecture Documentation & Presentation
 
