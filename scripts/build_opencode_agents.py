@@ -1,4 +1,50 @@
-""" """
+#!/usr/bin/env python3
+"""Generate the BODY of each `.opencode/agents/*.md` from shared prompts and rules.
+
+WHY THIS SCRIPT EXISTS
+----------------------
+OpenCode 2.x does **not** expand `{file:...}` inside a Markdown agent body. Probed
+directly on 2026-11-18 (ADR-001 §14): `docs-sync`, launched as a real subagent and
+told not to read any files, quoted both of its import lines back verbatim and could
+name neither its own role nor its rule's globs. A non-empty body also *replaces*
+OpenCode's base prompt, so every custom agent was running on `AGENTS.md` plus its
+one-line description and nothing else. Permissions were unaffected: OpenCode
+enforces them itself, so no agent gained any power, it just lost its instructions.
+
+The config `instructions` list *does* load (same probe day), but it applies to every
+agent, so it cannot carry a rule that belongs to one agent. The text has to be in
+the agent file itself — hence generation.
+
+ONE FILE PER AGENT, TWO OWNERS
+------------------------------
+Each agent file has a hand-edited top and a generated bottom:
+
+  .opencode/agents/<name>.md
+    ---
+    frontmatter            <- YOU edit this (model, mode, permissions). It is the
+    ---                       only copy of these settings; the script never changes it.
+    <!-- GENERATED ... -->
+    body                   <- this script writes everything below the frontmatter
+
+  Body sources, in order:
+    OpenCode-only note  ->  .github/docs/prompts/agents/<name>.opencode-delta.md  (optional)
+    Specialist rules    ->  .cursor/rules/<rule>.mdc, routed by the RULES table below
+    Instructions        ->  .github/docs/prompts/agents/<name>.md  (shared with Claude)
+
+This mirrors `build_claude_agents.py`: same shared prompts, same `-delta.md` idea,
+same `--check`. The one difference is where settings live. Claude's frontmatter is a
+few lines, so it sits in that script's table; OpenCode's permission arrays are long
+YAML, so they stay in the agent file where OpenCode's own docs and examples apply.
+
+Fails closed: a missing agent file, frontmatter, rule or prompt, or an empty source,
+stops the build and nothing is written. (OpenCode would turn a missing `{file:...}`
+into an empty string without a word.)
+
+Usage:
+    python3 scripts/build_opencode_agents.py            # rewrite the bodies
+    python3 scripts/build_opencode_agents.py --check    # fail if any body is stale (CI, pre-commit)
+    python3 scripts/build_opencode_agents.py --list     # show each agent and its sources
+"""
 
 # =============================================================================
 # IMPORTS
@@ -9,6 +55,7 @@ from __future__ import annotations
 import argparse
 import re
 import sys
+from collections.abc import Mapping
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Final
@@ -21,44 +68,57 @@ from typing import Final
 # =====================================================
 
 ROOT: Final[Path] = Path(__file__).resolve().parents[1]
-TEMPLATE_DIR: Final[Path] = ROOT / ".github" / "docs" / "prompts" / "opencode-agents"
-OUTPUT_DIR: Final[Path] = ROOT / ".opencode" / "agents"
+AGENTS_DIR: Final[Path] = ROOT / ".opencode" / "agents"
+PROMPTS_DIR: Final[Path] = ROOT / ".github" / "docs" / "prompts" / "agents"
+RULES_DIR: Final[Path] = ROOT / ".cursor" / "rules"
 
-# One marker string, used both to stamp files and to recognise them later. Keeping it
-# in a single constant means the orphan check can never drift from the banner text.
-GENERATED_MARK: Final[str] = "GENERATED FILE - DO NOT EDIT"
+# Which specialist rules each agent carries. This is the per-agent equivalent of
+# Cursor's glob scoping: a rule loads only when its agent runs. To add an agent,
+# create `.opencode/agents/<name>.md` with frontmatter, write its instructions in
+# `.github/docs/prompts/agents/<name>.md`, add a line here, then `make opencode-agents`.
+RULES: Final[Mapping[str, tuple[str, ...]]] = {
+    "docs-fix": ("architecture-docs", "git-workflow"),
+    "docs-sync": ("architecture-docs",),
+    "eval-guardian": ("testing-and-eval",),
+    "learn": ("learning-mode",),
+    "pattern-scout": ("ai-sdk-patterns",),
+    "security-auditor": ("observability", "ai-sdk-patterns"),
+}
+
+# One marker string, used both to stamp bodies and to recognise them later, so the
+# "generated but unlisted" check can never drift from the banner text.
+GENERATED_MARK: Final[str] = "GENERATED BODY — DO NOT EDIT BELOW THE FRONTMATTER"
 
 BANNER: Final[str] = (
     "<!-- " + GENERATED_MARK + ".\n"
-    "     Template: .github/docs/prompts/opencode-agents/{name}.md\n"
-    "     Rebuild:  make opencode-agents\n"
-    "     OpenCode 2.x does not expand {{file:...}} in agent files (ADR-001 §14),\n"
-    "     so the included text below is a full copy, not a reference.\n"
+    "     Edit the frontmatter above freely; it is the source for this agent's settings.\n"
+    "     Edit the body at its sources, then run `make opencode-agents`:\n"
+    "{sources}"
+    "     OpenCode 2.x does not expand {{file:...}} in agent files (ADR-001 §14).\n"
     "-->\n"
 )
 
-# A whole line that is only an include, e.g. `{file:./.cursor/rules/x.mdc}`.
-# An include written mid-sentence is left alone on purpose: prose may *mention* the
-# syntax, and only a line of its own was ever meant as an import.
-INCLUDE_LINE: Final[re.Pattern[str]] = re.compile(r"^\{file:(?P<path>[^{}\s]+)\}$")
-
 # `---` + YAML + `---` at the very top of a file. DOTALL lets `.` cross newlines;
-# the lazy `.*?` stops at the FIRST closing fence, not the last one in the file.
+# the lazy `.*?` stops at the FIRST closing fence, not at a `---` rule in the body.
 FRONTMATTER: Final[re.Pattern[str]] = re.compile(r"\A---\n(?P<yaml>.*?)\n---\n", re.DOTALL)
+
+# A line that is only `{file:...}`: the import syntax OpenCode ignores in agent files.
+# Used by the tests and the verifier to prove no generated body still relies on it.
+INCLUDE_LINE: Final[re.Pattern[str]] = re.compile(r"^\{file:[^{}\s]+\}$")
 
 
 class AgentBuildError(Exception):
-    """A template or one of its includes cannot be rendered."""
+    """An agent file or one of its sources cannot be rendered."""
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)
 class Rendered:
-    """One finished output file, ready to be written or compared."""
+    """One finished agent file, ready to be written or compared."""
 
-    template: Path
-    output: Path
+    name: str
+    path: Path
     content: str
-    includes: tuple[Path, ...]
+    sources: tuple[Path, ...]
 
 
 # =============================================================================
@@ -66,78 +126,40 @@ class Rendered:
 # =============================================================================
 
 
-def strip_frontmatter(text: str) -> str:
-    """Return `text` without a leading YAML frontmatter block, if it has one.
+def split_frontmatter(text: str, where: str) -> tuple[str, str]:
+    """Split a file into its YAML frontmatter and everything after it.
 
-    Parameters
-    ----------
-    text : str
-        Full contents of an included file.
-
-    Returns
-    -------
-    str
-        The body only. Cursor's `description:` / `globs:` / `alwaysApply:` fields
-        steer Cursor's own loader; inside an OpenCode prompt they are noise.
+    Raises
+    ------
+    AgentBuildError
+        If the file does not start with a `---` fenced block.
     """
     match = FRONTMATTER.match(text)
-    return text[match.end() :] if match else text
+    if not match:
+        raise AgentBuildError(f"{where}: must start with --- frontmatter")
+    return match.group("yaml"), text[match.end() :]
 
 
-def resolve_include(raw: str, root: Path, template: Path) -> Path:
-    """Turn the path inside `{file:...}` into a checked file path.
+def read_source(path: Path, *, strip_header: bool = False) -> str:
+    """Read one body source, optionally dropping a Cursor frontmatter header.
 
-    Parameters
-    ----------
-    raw : str
-        The path exactly as written in the template, e.g. `./.cursor/rules/x.mdc`.
-    root : Path
-        Repository root. Includes are resolved against it, not against the template's
-        own folder, so a template can move without its includes breaking.
-    template : Path
-        Template being rendered; used in error messages only.
-
-    Returns
-    -------
-    Path
-        Absolute path to an existing file inside `root`.
+    Cursor's `description:` / `globs:` / `alwaysApply:` steer Cursor's own loader;
+    inside an OpenCode prompt they are noise, so rules lose their header.
 
     Raises
     ------
     AgentBuildError
-        If the path is absolute, home-relative, escapes the repo, or is not a file.
+        If the file is missing or has no text left.
     """
-    if raw.startswith(("/", "~")):
-        raise AgentBuildError(f"{template.name}: include must be repo-relative: {raw}")
-
-    path = (root / raw).resolve()
-    # `is_relative_to` is the cheap containment test: `../../etc/passwd` resolves
-    # outside the root and is rejected before anything is read.
-    if not path.is_relative_to(root.resolve()):
-        raise AgentBuildError(f"{template.name} include escapes the repository: {raw}")
     if not path.is_file():
-        raise AgentBuildError(f"{template.name}: include not found: {raw}")
-    return path
-
-
-def load_include(path: Path, template: Path) -> str:
-    """Read one included file and return the text to inline.
-
-    Raises
-    ------
-    AgentBuildError
-        If the file is empty after its frontmatter is removed, or itself contains an
-        include line (nesting is unsupported, so it fails instead of half-working).
-    """
-    body = strip_frontmatter(path.read_text(encoding="utf-8")).strip()
-    if not body:
-        raise AgentBuildError(f"{template.name}: include is empty: {path.name}")
-    for line in body.splitlines():
-        if INCLUDE_LINE.match(line.strip()):
-            raise AgentBuildError(
-                f"{template.name}: nested include in {path.name} is no supported: {line.strip()}"
-            )
-    return body
+        raise AgentBuildError(f"source not found: {path}")
+    text = path.read_text(encoding="utf-8")
+    if strip_header and (match := FRONTMATTER.match(text)):
+        text = text[match.end() :]
+    text = text.strip()
+    if not text:
+        raise AgentBuildError(f"source is empty: {path}")
+    return text
 
 
 # =============================================================================
@@ -145,104 +167,120 @@ def load_include(path: Path, template: Path) -> str:
 # =============================================================================
 
 
-def render(template: Path, root: Path, output_dir: Path) -> Rendered:
-    """Render one template into the content of its generated agent file.
+def render(
+    name: str,
+    rules: tuple[str, ...],
+    root: Path,
+    agents_dir: Path,
+    prompts_dir: Path,
+    rules_dir: Path,
+) -> Rendered:
+    """Build one agent file: its own frontmatter, then a freshly generated body.
 
     Parameters
     ----------
-    template : Path
-        Template file; its name becomes the agent ID.
+    name : str
+        Agent ID; also the file stem of the agent and of its shared prompt.
+    rules : tuple[str, ...]
+        Rule stems to inline from `rules_dir`, in order.
     root : Path
-        Repository root for resolving includes and for display paths.
-    output_dir : Path
-        Folder the generated file belongs in.
+        Repository root, used for display paths in the banner.
+    agents_dir, prompts_dir, rules_dir : Path
+        Where agent files, shared prompts and Cursor rules live.
 
     Returns
     -------
     Rendered
-        Output path, full file content and the files that were inlined.
+        Path, full new content and the sources that went into the body.
 
     Raises
     ------
     AgentBuildError
-        If the template has no frontmatter or any include fails a check.
+        If the agent file, its frontmatter or any required source is missing or empty.
     """
-    text = template.read_text(encoding="utf-8")
-    match = FRONTMATTER.match(text)
-    if not match:
-        raise AgentBuildError(f"{template.name}: template must start with --- frontmatter")
+    path = agents_dir / f"{name}.md"
+    if not path.is_file():
+        raise AgentBuildError(
+            f"{name}: {path} not found - create it with frontmatter first, then rebuild"
+        )
+    # Only the frontmatter survives; whatever was below it is replaced. That is what
+    # makes a hand edit to the body show up as drift in --check.
+    frontmatter, _old_body = split_frontmatter(path.read_text(encoding="utf-8"), path.name)
 
-    frontmatter = match.group("yaml")
-    body_lines: list[str] = []
-    includes: list[Path] = []
+    sources: list[Path] = []
+    parts: list[str] = []
 
-    for line in text[match.end() :].splitlines():
-        include = INCLUDE_LINE.match(line.strip())
-        if include is None:
-            body_lines.append(line)
-            continue
-        path = resolve_include(include.group("path"), root, template)
-        shown = path.relative_to(root.resolve()).as_posix()
-        includes.append(path)
-        # Provenance markers: when an agent quotes a rule, these say where it lives.
-        body_lines.append(f"<!-- begin include: {shown} -->")
-        body_lines.append(load_include(path, template))
-        body_lines.append(f"<!-- end include: {shown} -->")
+    delta = prompts_dir / f"{name}.opencode-delta.md"
+    if delta.exists():
+        parts.append(read_source(delta))
+        sources.append(delta)
 
-    body = "\n".join(body_lines).strip()
-    content = f"---\n{frontmatter}\n---\n" + BANNER.format(name=template.stem) + "\n" + body + "\n"
+    for rule in rules:
+        rule_path = rules_dir / f"{rule}.mdc"
+        parts.append(read_source(rule_path, strip_header=True))
+        sources.append(rule_path)
+
+    shared = prompts_dir / f"{name}.md"
+    parts.append(read_source(shared))
+    sources.append(shared)
+
+    shown = "".join(
+        f"       {p.resolve().relative_to(root.resolve()).as_posix()}\n" for p in sources
+    )
+    content = (
+        f"---\n{frontmatter}\n---\n"
+        + BANNER.format(sources=shown)
+        + "\n"
+        + "\n\n".join(parts)
+        + "\n"
+    )
     return Rendered(
-        template=template,
-        output=output_dir / template.name,
+        name=name,
+        path=path,
         content=content,
-        includes=tuple(includes),
+        sources=tuple(sources),
     )
 
 
-def templates(template_dir: Path) -> list[Path]:
-    """Return every template, sorted so output order is stable across machines."""
-    if not template_dir.is_dir():
-        raise AgentBuildError(f"template folder not found: {template_dir}")
-    found = sorted(template_dir.glob("*.md"))
-    if not found:
-        raise AgentBuildError(f"not templates in {template_dir}")
-    return found
+def unlisted(routes: Mapping[str, tuple[str, ...]], agents_dir: Path) -> list[Path]:
+    """Return agent files with a generated body but no entry in the routing table.
 
-
-def orphans(expected: set[Path], output_dir: Path) -> list[Path]:
-    """Return generated agent files whose template no longer exists.
-
-    Only files carrying GENERATED_MARK are reported, so a hand-written agent kept
-    directly in `.opencode/agents/` is never flagged.
+    Such a body can never be refreshed, so it would silently go stale. Agent files
+    without the banner are hand-written and left alone.
     """
-    if not output_dir.is_dir():
+    if not agents_dir.is_dir():
         return []
     return [
         path
-        for path in sorted(output_dir.glob("*.md"))
-        if path not in expected and GENERATED_MARK in path.read_text(encoding="utf-8")
+        for path in sorted(agents_dir.glob("*.md"))
+        if path.stem not in routes and GENERATED_MARK in path.read_text(encoding="utf-8")
     ]
 
 
 def build(
     root: Path,
-    template_dir: Path,
-    output_dir: Path,
     *,
+    agents_dir: Path,
+    prompts_dir: Path,
+    rules_dir: Path,
+    routes: Mapping[str, tuple[str, ...]],
     check: bool = False,
     show: bool = False,
 ) -> int:
-    """Render all templates, then write, verify or list them.
+    """Render every routed agent, then write, verify or list them.
 
     Returns
     -------
     int
-        Process exit code: 0 on success, 1 on any error, stale file or orphan.
+        Process exit code: 0 on success, 1 on any error, stale body or unlisted agent.
     """
-    # Render everything before writing anything: one broken include must not leave
+    # Render everything before writing anything: one broken source must not leave
     # half the agents regenerated and half stale.
     try:
-        rendered = [render(t, root, output_dir) for t in templates(template_dir)]
+        rendered = [
+            render(name, rules, root, agents_dir, prompts_dir, rules_dir)
+            for name, rules in sorted(routes.items())
+        ]
     except AgentBuildError as exc:
         print(f"ERROR: {exc}", file=sys.stderr)
         print("nothing was written", file=sys.stderr)
@@ -253,41 +291,38 @@ def build(
 
     if show:
         for item in rendered:
-            print(f"{rel(item.template)} -> {rel(item.output)}")
-            for include in item.includes:
-                print(f"     + {rel(include)}")
+            print(rel(item.path))
+            for source in item.sources:
+                print(f"    + {rel(source)}")
         return 0
 
-    left_over = orphans({r.output for r in rendered}, output_dir)
+    stray = unlisted(routes, agents_dir)
 
     if check:
-        stale = [
-            rel(r.output)
-            for r in rendered
-            if (r.output.read_text(encoding="utf-8") if r.output.exists() else "") != r.content
-        ]
+        stale = [rel(r.path) for r in rendered if r.path.read_text(encoding="utf-8") != r.content]
         if stale:
             print("STALE - run `make opencode-agents`:", file=sys.stderr)
             for stale_path in stale:
-                print(f"    {stale_path}", file=sys.stderr)
-        if left_over:
-            # An orphan still loads as a live agent, so it fails rather than warns.
-            print("ORPHANED - generated agents with no template. Delete them:", file=sys.stderr)
-            for orphan_path in left_over:
-                print(f"    {rel(orphan_path)}", file=sys.stderr)
-        if stale or left_over:
+                print(f"  {stale_path}", file=sys.stderr)
+        if stray:
+            print(
+                "UNLISTED - generated body but no RULES entry in build_opencode_agents.py:",
+                file=sys.stderr,
+            )
+            for stray_path in stray:
+                print(f"  {rel(stray_path)}", file=sys.stderr)
+        if stale or stray:
             return 1
-        print("all generated OpenCode agent files are up to date")
+        print("all generated OpenCode agent bodies are up to date")
         return 0
 
-    output_dir.mkdir(parents=True, exist_ok=True)
     for item in rendered:
-        item.output.write_text(item.content, encoding="utf-8")
-        print(f"wrote {rel(item.output)}")
-    if left_over:
-        print("WARNING: generated agents with no template (delete by hand):", file=sys.stderr)
-        for orphan_path in left_over:
-            print(f"    {rel(orphan_path)}", file=sys.stderr)
+        item.path.write_text(item.content, encoding="utf-8")
+        print(f"wrote {rel(item.path)}")
+    if stray:
+        print("WARNING: generated bodies with no RULES entry (add one or delete):", file=sys.stderr)
+        for stray_path in stray:
+            print(f"  {rel(stray_path)}", file=sys.stderr)
     return 0
 
 
@@ -299,18 +334,20 @@ def build(
 def main(argv: list[str] | None = None) -> int:
     """Parse arguments and run the build against the real repository."""
     parser = argparse.ArgumentParser(
-        description="Build .opencode/agents/ from templates by inlining {file:...} lines."
+        description="Generate .opencode/agents/ bodies from shared prompts and Cursor rules."
     )
     mode = parser.add_mutually_exclusive_group()
-    mode.add_argument("--check", action="store_true", help="exit 1 if any file is stale")
-    mode.add_argument("--list", action="store_true", help="print template -> output + includes")
+    mode.add_argument("--check", action="store_true", help="exit 1 if any body is stale")
+    mode.add_argument("--list", action="store_true", help="print each agent and its sources")
     args = parser.parse_args(argv)
     return build(
         ROOT,
-        TEMPLATE_DIR,
-        OUTPUT_DIR,
+        agents_dir=AGENTS_DIR,
+        prompts_dir=PROMPTS_DIR,
+        rules_dir=RULES_DIR,
+        routes=RULES,
         check=args.check,
-        show=args.show,
+        show=args.list,
     )
 
 
