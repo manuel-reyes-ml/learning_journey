@@ -1,5 +1,5 @@
 name: market_rehearsal
-profile: market_rehearsal       # must match the top key in profiles.yml
+profile: market_rehearsal # must match the top key in profiles.yml
 version: "1.0.0"
 
 model-paths: ["models"]
@@ -13,13 +13,17 @@ clean-targets: ["target", "dbt_packages"]
 seeds:
   # Builds seeds into '<your_schema_name>_raw'
   market_rehearsal:
-    +schema: raw      # -> dbt_mreyes_raw
+    +static_analysis: "{{ env_var('DBT_ENV_STATIC_ANALYSIS', 'baseline') }}"
+    +schema: raw # -> dbt_mreyes_raw in dev, raw in prod
 
 models:
   market_rehearsal:
+    # '+' marks the line as a setting rather than a folder name.
     +static_analysis: "{{ env_var('DBT_ENV_STATIC_ANALYSIS', 'baseline') }}"
     # Materialize staging models as views, and marts as tables
     staging:
       +materialized: view
+      +schema: staging # -> db_mreyes_staging in dev, staging in prod
     marts:
       +materialized: table
+      +schema: marts # -> db_mreyes_marts in dev, marts in prod
