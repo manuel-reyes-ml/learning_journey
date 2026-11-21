@@ -6,7 +6,7 @@ with acc_volume as (
         count(*) over prev_20 as n_prev_sessions,
         case when count(*) over prev_20 = 20
             then cast(sum(volume) over prev_20 as bigint)
-            else null end as vol_last_20_sessions,
+            end as vol_last_20_sessions  -- no explicit else clause, so when false this will be NULL
     from {{ ref('stg_market__bars') }}
     window prev_20 as (
         partition by ticker
