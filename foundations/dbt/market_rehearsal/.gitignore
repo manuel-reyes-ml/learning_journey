@@ -5,3 +5,5 @@ target/
 .env
 *.duckdb
 *.duckdb.wal
+site/
+site_*/
