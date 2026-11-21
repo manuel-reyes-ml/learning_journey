@@ -1,0 +1,12 @@
+seeds:
+  - name: employees
+    description: "A seed file containing employee assignments to customers."
+    columns:
+      - name: employee_id
+        description: "The unique identifier for each employee."
+        data_tests: [unique, not_null]
+      - name: email
+        description: "Unique email account per employee."
+        data_tests: [unique, not_null]
+      - name: customer_id
+        description: "The unique identifier for each customer assigned to an employee."
