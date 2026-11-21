@@ -1,0 +1,20 @@
+macros:
+  - name: generate_schema_name
+    description: >
+      Overrides dbt's default schema naming. Dev/CI: <target schema>_<custom schema>
+      (isolated per developer). Prod: the custom schema as-is. Never returns an
+      empty schema: fails at compile time instead.
+    arguments:
+      - name: custom_schema_name
+        # optional[string] for custom_schema_name, because it’s none for every model without a custom schema.
+        type: optional[string]
+        description: "The node's +schema config, or none when it has no custom schema."
+      - name: node
+        type: any
+        description: "The node being built (model, seed, snapshot...)."
+  - name: to_price
+    description: "Casts a column to the project's price type, DECIMAL(18,4)."
+    arguments:
+      - name: column_name
+        type: string
+        description: "Column (or SQL expression) to cast."
