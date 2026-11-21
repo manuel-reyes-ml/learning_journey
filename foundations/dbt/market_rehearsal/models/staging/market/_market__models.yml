@@ -29,7 +29,7 @@ models:
         description: "Lowest traded price of the session."
         data_type: decimal(18, 4)
         data_tests: [not_null]
-      - name: close
+      - name: closed
         description: "Closing price of the session."
         data_type: decimal(18, 4)
         data_tests: [not_null]
@@ -100,8 +100,10 @@ models:
     data_tests:
       - unique:
           name: "stg_market__sessions_opens_one_row_per_ticker_session"
-          arguments:
+          arguments: # what the test checks
             column_name: "ticker || '|' || session_date || '|' || session_open_at"
+          # config:                                         # how the test behaves (severity, where…)
+          #   severity: error
 
     # stg_market__bars_one_row_per_ticker_session it’s under the model itself, not under a column.
     # The built-in unique test normally checks a single column. Here you need two columns together
