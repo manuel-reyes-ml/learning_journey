@@ -18,10 +18,12 @@ is started with ``--run-live``, so CI never runs them by accident.
 
 from __future__ import annotations
 
-from typing import Any, Final, NoReturn
+from typing import Any, Final, NoReturn, cast
 
 import anthropic
 import pytest
+
+from learning_journey.logging_setup import LOG_FORMAT_ENV
 
 # =============================================================================
 # CONSTANTS
@@ -100,14 +102,15 @@ def _block_real_anthropic_clients(
     """
     # The hook checks it before the run (to skip), and the fixture checks it during
     # the run (to let the test through)
-    if request.node.get_closest_marker(LIVE_API_MARKER):
+    node = cast(pytest.Item, request.node)  # pyright: ignore[reportUnknownMemberType]
+    if node.get_closest_marker(LIVE_API_MARKER):
         return
 
     def _refuse(self: object, *args: Any, **kwargs: Any) -> NoReturn:
         # .node.nodeid is its full address, tests/test_conftest_guards.py::test_…[sync].
         # That's what -k filters and what the failure reports print.
         raise RuntimeError(
-            f"{request.node.nodeid} tried to build a real {type(self).__name__}. "
+            f"{node.nodeid} tried to build a real {type(self).__name__}. "
             "Mock get_client() (see the fake_client fixture), "
             f"or mark the test @pytest.mark.{LIVE_API_MARKER} if it must call the API."
         )
@@ -118,3 +121,16 @@ def _block_real_anthropic_clients(
     # class's attributes and never calls __init__.
     for cls in _REAL_CLIENT_CLASSES:
         monkeypatch.setattr(cls, "__init__", _refuse)
+
+
+@pytest.fixture(autouse=True)
+def _isolate_log_format(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Remove ``LOG_FORMAT`` so a value exported in your shell cannot change results.
+
+    Parameters
+    ----------
+    monkeypatch : pytest.MonkeyPatch
+        Built-in pytest fixture; the variable is restored after each test.
+    """
+    # raising=False avoids .delenv() to raise error if env var is not found
+    monkeypatch.delenv(LOG_FORMAT_ENV, raising=False)
