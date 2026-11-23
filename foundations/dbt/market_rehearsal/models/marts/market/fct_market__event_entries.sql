@@ -10,7 +10,7 @@ select
     o.session_date as entry_session,
     o.session_open_at
 from {{ ref('stg_market__insider_events') }} as e
-asof left join {{ ref('int_session_opens') }} as o
+asof left join {{ ref('int_bars_mapped_to_session_opens') }} as o
     on
         e.ticker = o.ticker
         and e.accepted_at < o.session_open_at
