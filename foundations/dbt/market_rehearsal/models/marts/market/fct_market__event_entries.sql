@@ -10,9 +10,10 @@ select
     o.session_date as entry_session,
     o.session_open_at
 from {{ ref('stg_market__insider_events') }} as e
-asof left join {{ ref('stg_market__session_opens') }} as o
-on e.ticker = o.ticker
-and e.accepted_at < o.session_open_at
+asof left join {{ ref('int_session_opens') }} as o
+    on
+        e.ticker = o.ticker
+        and e.accepted_at < o.session_open_at
 
 -- ASOF LEFT matches each left row to the closest row on the right by an ordering column
 -- (usually a timestamp), not to a row with an exact match.
