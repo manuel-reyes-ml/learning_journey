@@ -1,3 +1,3 @@
-{%- macro cents_to_dollars(column_name, round=2) -%}
-    round({{ column_name }} / 100, {{ round }})
+{%- macro cents_to_dollars(column_name, decimal_places=2) -%}
+    round({{ column_name }} / 100, {{ decimal_places }})
 {%- endmacro %}
