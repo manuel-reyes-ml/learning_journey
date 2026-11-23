@@ -1,0 +1,10 @@
+models:
+  - name: all_dates
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: date_day
+        description: "Individual dates."
+        data_type: date
+        data_tests: [unique, not_null]
