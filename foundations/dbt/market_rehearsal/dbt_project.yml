@@ -24,6 +24,9 @@ models:
     staging:
       +materialized: view
       +schema: staging # -> db_mreyes_staging in dev, staging in prod
+    intermediate:
+      +materialized: view
+      +schema: int # -> db_mreyes_int in dev, int in prod
     marts:
       +materialized: table
       +schema: marts # -> db_mreyes_marts in dev, marts in prod
