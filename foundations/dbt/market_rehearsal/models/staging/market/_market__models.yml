@@ -1,11 +1,29 @@
+# models/staging/market/_market__models.yml
+# -----------------------------------------------------------------------------
+# STAGING: one model per source table (1-to-1), the only layer that calls
+# source(). Rename, cast, clean. No joins, no business logic.
+# Naming (dbt guide): _[directory]__models.yml, one per folder. Data tests
+# (and unit tests, if any) for these models live in this same file.
+#
+# Inherited from dbt_project.yml, so NOT repeated here:
+#   materialized: view · schema: staging · group: market · access: private
+#   docs.node_color: green
+#
+# meta at this layer:
+#   owner        -> comes from the `market` group, not meta
+#   maturity     -> not used: private models have no outside consumers to warn
+#   contains_pii -> only on a column that holds PII (none in market data)
+# -----------------------------------------------------------------------------
 models:
   - name: stg_market__bars
     description: >
       One row per ticker per trading session. Typed copy of
       raw_market.bars_daily (synthetic data from gen_market_seed.py).
     config:
-      # The contract checks the model’s shape (column names and types)
-      # when dbt builds it, before anything uses it.
+      # The contract checks the model's shape (column names and types)
+      # when dbt builds it, before anything uses it. At staging it catches a
+      # type change in the raw data at the door. Views support names and
+      # types; constraints need a table.
       contract:
         enforced: true
     columns:
@@ -42,6 +60,7 @@ models:
           name: stg_market__bars_one_row_per_ticker_session # your own readable name for it
           arguments:
             column_name: "ticker || '|' || session_date"
+
   - name: stg_market__insider_events
     description: >
       One row per insider event. Typed copy of raw_market.insider_events
@@ -77,41 +96,22 @@ models:
       - name: boundary_case
         description: "Confirm if insider event filed before, during, or after session."
         data_type: varchar
-  - name: stg_market__session_opens
-    description: >
-      One row per ticker per session: the moment that session opened (09:30 ET, naive)
-      derived from stg_market__bars, so a session exists only if a bar exists.
-    config:
-      contract:
-        enforced: true
-    columns:
-      - name: ticker
-        description: "Exchange ticker symbol. From stg_market__bars."
-        data_type: varchar
-        data_tests: [not_null]
-      - name: session_date
-        description: "Trading session date (NYSE calendar). From stg_market__bars."
-        data_type: date
-        data_tests: [not_null]
-      - name: session_open_at
-        description: "Trading session date (NYSE calendar) + session open time 09:30 ET."
-        data_type: timestamp
-        data_tests: [not_null]
-    data_tests:
-      - unique:
-          name: "stg_market__sessions_opens_one_row_per_ticker_session"
-          arguments: # what the test checks
-            column_name: "ticker || '|' || session_date || '|' || session_open_at"
-          # config:                                         # how the test behaves (severity, where…)
-          #   severity: error
+        data_tests:
+          - accepted_values: # nulls pass: the test only checks non-null values
+              arguments:
+                values: ["after_close_1800", "at_open_0930"]
 
-    # stg_market__bars_one_row_per_ticker_session it’s under the model itself, not under a column.
-    # The built-in unique test normally checks a single column. Here you need two columns together
-    # to be unique, so the test sits at the model level and you tell it what to check.
-    #
-    # column_name is a SQL expression, not a column: || is SQL string concatenation.
-    # ticker || '|' || session_date builds one key per row, like AAPL|2026-11-10, and
-    # the test checks that this combined key is unique.
-    #
-    # name: without it, dbt generates a long, hard-to-read name from the test type, model
-    # and arguments. Yours tells you what broke when it fails.
+# stg_market__session_opens moved to the intermediate layer (as
+# int_bars_mapped_to_session_opens): it reads another staging model, not a
+# source, so it is not a staging model.
+
+# stg_market__bars_one_row_per_ticker_session it’s under the model itself, not under a column.
+# The built-in unique test normally checks a single column. Here you need two columns together
+# to be unique, so the test sits at the model level and you tell it what to check.
+#
+# column_name is a SQL expression, not a column: || is SQL string concatenation.
+# ticker || '|' || session_date builds one key per row, like AAPL|2026-11-10, and
+# the test checks that this combined key is unique.
+#
+# name: without it, dbt generates a long, hard-to-read name from the test type, model
+# and arguments. Yours tells you what broke when it fails.
