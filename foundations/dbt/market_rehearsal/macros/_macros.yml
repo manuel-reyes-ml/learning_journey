@@ -1,20 +1,55 @@
 macros:
   - name: generate_schema_name
-    description: >
-      Overrides dbt's default schema naming. Dev/CI: <target schema>_<custom schema>
-      (isolated per developer). Prod: the custom schema as-is. Never returns an
-      empty schema: fails at compile time instead.
+    description: "{{ doc('generate_schema_name') }}"
+    config:
+      docs:
+        show: true # it's the default.
+      meta:
+        owner: manuel-reyes-ml
+        output_type: schema_name
+        return_data_type: string
     arguments:
       - name: custom_schema_name
-        # optional[string] for custom_schema_name, because it’s none for every model without a custom schema.
+        # optional[...] because dbt passes none for every node without a +schema config.
         type: optional[string]
         description: "The node's +schema config, or none when it has no custom schema."
       - name: node
         type: any
         description: "The node being built (model, seed, snapshot...)."
   - name: to_price
-    description: "Casts a column to the project's price type, DECIMAL(18,4)."
+    # `|` keeps every line break, so the markdown code fence survives.
+    # `>` would fold the fence and the SQL onto one line.
+    # {% raw %} stops dbt from running the example: in dbt v2, YAML values
+    # can call custom macros, so {{ to_price(...) }} would really execute.
+    description: |
+      Casts a column or SQL expression to the project's single price type,
+      `decimal(18, 4)`, so every model and contract shares one definition of a price.
+
+      **Returns:** a SQL expression (text that dbt pastes into the query), not a value.
+
+      **Example:**
+      {% raw %}
+      ```sql
+      select {{ to_price('open') }} as open
+      -- compiles to: cast(open as decimal(18, 4)) as open
+      ```
+      {% endraw %}
+    config:
+      docs:
+        show: true
+      meta:
+        owner: manuel-reyes-ml
+        # Custom metadata keys to track return behavior
+        output_type: sql_expression
+        return_data_type: numeric
     arguments:
       - name: column_name
         type: string
         description: "Column (or SQL expression) to cast."
+
+# because dbt evaluates all {{ ... }} expressions inside YAML files at parse time, we need to
+# use 'raw' in Jinja braces in your description so dbt treats them as plain text instead of
+# trying to run the macro.
+
+# The > style turns line breaks into spaces, so the fence and the SQL collapse onto one line.
+# The | style, keeps every line break.
