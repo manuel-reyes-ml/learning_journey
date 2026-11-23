@@ -1,10 +1,9 @@
-
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'jaffle_shop'
+name: "jaffle_shop"
 profile: default # This setting configures which "profile" dbt uses for this project.
-version: '1.0.0'
+version: "1.0.0"
 config-version: 2
 
 # These configurations specify where dbt should look for different types of files.
@@ -17,11 +16,10 @@ seed-paths: ["seeds"]
 macro-paths: ["macros"]
 snapshot-paths: ["snapshots"]
 
-target-path: "target"  # directory which will store compiled SQL files
-clean-targets:         # directories to be removed by `dbt clean`
-    - "target"
-    - "dbt_modules"
-
+target-path: "target" # directory which will store compiled SQL files
+clean-targets: # directories to be removed by `dbt clean`
+  - "target"
+  - "dbt_modules"
 
 # Configuring models
 # Full documentation: https://docs.getdbt.com/docs/configuring-models
@@ -35,7 +33,7 @@ models:
   jaffle_shop:
     staging:
       +materialized: view
-    marts:  # These queries are going to be run very often from BI users.
+    marts: # These queries are going to be run very often from BI users.
       +materialized: table
-
-    
+    utilities:
+      +materialized: table
