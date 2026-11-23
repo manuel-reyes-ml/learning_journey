@@ -1,20 +1,72 @@
+# models/staging/market/_market__sources.yml
+# -----------------------------------------------------------------------------
+# SOURCES: the raw tables dbt reads but does not build. Only staging models may
+# call source(); everything downstream uses ref().
+# Naming (dbt guide): _[directory]__sources.yml, one per staging folder. The
+# leading underscore sorts YAML files to the top of the folder.
+#
+# What a source can and cannot take:
+#   meta  ✅ at source, table and column level
+#   docs  ❌ not supported for sources (no show / node_color)
+#   group ❌ sources can't join a group, so the owner lives in meta here
+# -----------------------------------------------------------------------------
 sources:
   - name: market
-    description: "Files written by scripts/gen_market_seed.py (synthetic, seeded)."
+    description: >
+      Raw market tables landed in DuckDB by load_market_seed.py from the CSVs
+      written by gen_market_seed.py (synthetic, seeded: no vendor data).
     schema: raw_market
+
+    # Source-level config is inherited by every table below; a table can
+    # override any key with its own config block.
     config:
+      # Column the freshness check reads. load_market_seed.py writes it.
       loaded_at_field: _loaded_at
+      # Freshness only runs if warn_after or error_after is set. It runs with
+      # `dbt source freshness` (not with `dbt build`). In a real pipeline, set
+      # these from the load schedule; here: warn after a day, fail after 3.
+      freshness:
+        warn_after: { count: 24, period: hour }
+        error_after: { count: 72, period: hour }
+      meta:
+        # Who answers for this raw data. Same value style everywhere so a check
+        # (dbt-bouncer check_source_has_meta_keys) can require it.
+        owner: manuel-reyes-ml
+        # Table-level PII classification: "reviewed, no personal data".
+        # Inherited by both tables. Only columns that DO hold PII get a
+        # column-level `contains_pii: true` (see the commented example below).
+        contains_pii: false
+
     tables:
       - name: bars_daily
+        description: "One row per ticker per trading session: daily OHLCV bars."
         columns:
           - name: ticker
             data_tests: [not_null]
       - name: insider_events
+        description: "One row per synthetic Form 4 purchase (txn_code P)."
         columns:
           - name: event_id
             data_tests: [unique, not_null]
           - name: ticker
             data_tests: [not_null]
+
+# --- What a PII column looks like (DataVault, not this project) ---------------
+#   tables:
+#     - name: distributions
+#       config:
+#         meta:
+#           contains_pii: true        # this table has at least one PII column
+#       columns:
+#         - name: ssn
+#           config:
+#             meta:
+#               contains_pii: true    # the column itself
+#         - name: gross_amt           # no meta: not PII
+#
+# dbt does not copy column meta downstream. Repeat `contains_pii: true` on the
+# same column in every model that still carries it (staging, intermediate,
+# marts), or remove/mask the column in staging so marts never carry it.
 
 # column_types exists only for seeds, because dbt loads seeds itself and so
 # decides their types. With a source, the file is read by DuckDB, not dbt.
