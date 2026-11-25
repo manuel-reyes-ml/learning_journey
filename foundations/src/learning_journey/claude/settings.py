@@ -6,19 +6,17 @@ Install:  uv add pydantic-settings
 from __future__ import annotations
 
 from functools import cache
-from pathlib import Path
-from typing import Final
 
 from pydantic import SecretStr, ValidationError, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+from learning_journey.paths import PROJECT_ROOT  # /learning_journey
 
 __all__ = [
     "ConfigError",
     "Settings",
     "get_settings",
 ]
-
-PROJECT_ROOT: Final[Path] = Path(__file__).resolve().parents[4]  # /learning_journey
 
 
 class ConfigError(RuntimeError):
@@ -47,7 +45,7 @@ class Settings(BaseSettings):
 
     anthropic_api_key: SecretStr  # <- no default = REQUIRED
     claude_model: str = "claude-haiku-4-5"
-    default_max_tokens: int = 500
+    default_max_tokens: int = 1000
     system_prompt: str = (
         "You are chatting in a terminal. Reply conversationally in short plain-text "
         "paragraphs, like a text message. No headings, bullet lists, bold, or tables "
