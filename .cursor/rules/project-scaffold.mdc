@@ -132,6 +132,8 @@ touch src/py.typed
 - **Generated ≠ edited.** `.claude/agents/`, `.claude/output-styles/` and `.claude/rules/`
   are build outputs — edit the source (`.github/docs/prompts/agents/`, `.cursor/rules/`),
   then `make claude-gen`. Drift is blocked by pre-commit and re-checked in CI.
+  In `.opencode/agents/` only the body is generated (same prompts + `.cursor/rules/`);
+  the frontmatter stays hand-edited. `make opencode-agents`; `make harness-gen` does both.
 - **Enforcement lives in config.** `.claude/settings.json` permissions + `hooks/guard.py`.
   Prose in `CLAUDE.md` or a rule is guidance, not a boundary (CORRECTION 39 §11).
 - **Commit:** `settings.json`, `hooks/`, `skills/`, `agents/`, `rules/`, `output-styles/`.
