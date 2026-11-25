@@ -1,0 +1,54 @@
+# models/intermediate/market/_int_market__models.yml
+# -----------------------------------------------------------------------------
+# INTERMEDIATE: reshapes staging models for the marts (joins, pivots,
+# re-graining, derived rows). Input: staging or other intermediate models.
+# Never read directly by a dashboard.
+# Naming (dbt guide):
+#   file   -> _int_[directory]__models.yml (the int_ prefix tells it apart from
+#             the staging and marts files of the same folder name)
+#   models -> int_[entity]s_[verb]s, e.g. int_bars_mapped_to_session_opens
+#             (verbs: joined, pivoted, aggregated_to_..., mapped_to_...)
+# Tests: yes, data tests (and unit tests) for these models live here too.
+#
+# Inherited from dbt_project.yml, so NOT repeated here:
+#   materialized: view · schema: intermediate · group: market · access: private
+#   docs.node_color: amber
+#
+# Contract: not used here. dbt recommends contracts for public models that
+# others rely on; this one is private and only your own marts read it, and the
+# marts' contracts check the final shape. Tests guard the grain instead.
+# (If you switch this layer to ephemeral, contracts are not supported anyway.)
+# -----------------------------------------------------------------------------
+models:
+  - name: int_bars_mapped_to_session_opens
+    description: |
+      **Grain:** one row per ticker per trading session.
+
+      The moment each session opened (09:30 ET, naive timestamp), derived from
+      `stg_market__bars`, so a session exists only if a bar exists. Feeds the
+      ASOF join in `fct_market__event_entries`.
+    config:
+      contract:
+        enforced: true
+    columns:
+      - name: ticker
+        description: "Exchange ticker symbol. From stg_market__bars."
+        data_type: varchar
+        data_tests: [not_null]
+      - name: session_date
+        description: "Trading session date (NYSE calendar). From stg_market__bars."
+        data_type: date
+        data_tests: [not_null]
+      - name: session_open_at
+        description: "Trading session date (NYSE calendar) + session open time 09:30 ET."
+        data_type: timestamp
+        data_tests: [not_null]
+    data_tests:
+      - unique:
+          name: int_bars_mapped_to_session_opens_one_row_per_ticker_session
+          arguments: # what the test checks
+            # The grain is ticker + session. session_open_at is computed from
+            # session_date, so adding it to the key would test nothing extra.
+            column_name: "ticker || '|' || session_date"
+          # config:                                         # how the test behaves (severity, where…)
+          #   severity: error
