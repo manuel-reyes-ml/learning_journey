@@ -213,7 +213,9 @@ def _check_header(path: Path, expected: list[str]) -> None:
     reordered or renamed column would load silently into the wrong field.
     """
     with path.open(encoding="utf-8", newline="") as f:
-        header = next(csv.reader(f), [])
+        # list[str] is just list with a type label attached,
+        # and the ()-constructor- calls it, just like list().
+        header = next(csv.reader(f), list[str]())
     if header != expected:
         raise DataContractError(
             f"{path.name} does not match its column contract",
