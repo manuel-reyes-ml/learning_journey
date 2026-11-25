@@ -324,25 +324,37 @@ nine commands already carry them as `@` references; see §4.0.
 |---|---|---|
 | **What it is** | **Output style** — rewrites the system prompt | **Agent** — its own prompt + permissions |
 | **Lives at** | `.claude/output-styles/learn.md` | `.opencode/agents/learn.md` |
-| **How to enter** | `/config` → **Output style** → `learn`, or set `"outputStyle": "learn"` in a settings file | **Tab** to cycle primary agents, or `@learn` if `mode: subagent` |
-| **Takes effect** | 🔴 **Only after `/clear` or a new session** | Immediately, mid-session |
-| **Scope** | 🔴 **Main conversation only** | The agent's own session |
+| **How to enter** | VS Code `/` → **Output styles** → `learn` (v2.1.257+) · `/output-style learn` (v2.1.269+) · terminal `/config` → **Output style** · or set `"outputStyle"` in a settings file | **Tab** to cycle primary agents, or `@learn` if `mode: subagent` |
+| **Takes effect** | From your **next message** (v2.1.251+). A created or edited style **file** needs a restart | Immediately, mid-session |
+| **Scope** | 🔴 **Main conversation only** (plus a full conversation fork) | The agent's own session |
 
-**🔴 `/output-style` no longer exists.** It was deprecated in v2.1.73 and removed in
-v2.1.91. Many guides and cheat sheets still tell you to type it; that instruction is
-dead. Use `/config` → Output style, or set the `outputStyle` key directly — **the key
-outlived the command.** `/config` writes your choice to `.claude/settings.local.json`,
-which is gitignored, so the selection is machine-local and does not travel with the repo.
+**`/output-style` works** *(corrected 2026-11-25 — see §12)*. Current Claude Code docs list
+three ways to pick a style: `/output-style <style>` (v2.1.269+; with no argument it lists
+the styles and marks the current one), the VS Code `/` menu → **Output styles**, which
+includes custom styles (v2.1.257+), and the terminal `/config` → Output style menu. You can
+also set the `outputStyle` key directly — the value is **case-sensitive** and must match
+the style's `name:` (or its file name); a value that matches nothing gives you Default with
+no error. All of these write your choice to `.claude/settings.local.json`, which is
+gitignored, so the selection is machine-local and does not travel with the repo.
+🔴 **It also persists:** the next session opens in the same style, so switch back to
+`default` before a review session. **Do not set `outputStyle` in the committed
+`.claude/settings.json`** — every session, planning and review included, would start in
+learn mode.
 
-**🔴 An output style is part of the system prompt, and Claude Code builds the system
-prompt once at session start.** A change made mid-session is saved but **not applied** —
-the running session keeps sending the prompt it built at startup. `/clear` or start a new
-session. If it still hasn't applied, `/status` shows which settings source won.
+**A style switch applies from your next message** *(corrected 2026-11-25)*. Before
+v2.1.251 it applied only after `/clear` or a new session; that is no longer true. **What
+still needs a restart is the file:** Claude Code reads style files when it starts, so if
+you create or edit `learn.md` during a running session, restart Claude Code to pick up the
+change. If a style still hasn't applied, `/status` shows which settings source won.
 
 #### 🔴 The interaction nobody planned for: **learn mode does not reach forked skills**
 
-Output styles apply to the **main conversation only** — a subagent runs its own system
-prompt, so styles do not change how subagents respond.
+Output styles apply to the **main conversation** and to a **full fork of the
+conversation** (which inherits the parent's system prompt). Every other subagent runs its
+own system prompt, so styles do not change how it responds. **A skill with `context: fork`
+is not a conversation fork, despite the name:** it starts a new subagent of the type in its
+`agent` field, and that agent type supplies the system prompt. *(Confirmed against current
+docs, 2026-11-25.)*
 
 Under §8.1, **seven of the nine skills use `context: fork`**, which means they run as
 subagents. **Learn mode therefore has no effect inside `/review`, `/test`, `/eval`,
@@ -396,10 +408,13 @@ Step 7 (merged)          →  [ LEARN — retrospective on what you just shipped
 ```
 
 **Never between Gate 1.5 and Gate 3.** Two reasons, both structural rather than
-stylistic. In Claude Code, entering learn mode requires `/clear` — which **destroys the
-review session** you are in the middle of. And the jobs are incompatible: learn explains
-so you can act; review reports so you can decide. Conflating them yields a session that
-teaches you about the code instead of telling you what is wrong with it.
+stylistic. The jobs are incompatible: learn explains so you can act; review reports so you
+can decide. Conflating them yields a session that teaches you about the code instead of
+telling you what is wrong with it. And the choice persists: a style left on in
+`.claude/settings.local.json` opens the next session in learn mode too, so switch back to
+`default` before Gate 1.5. *(Corrected 2026-11-25: the earlier reason — that entering learn
+mode required `/clear`, which destroyed the review session — no longer holds since
+v2.1.251.)*
 
 **The highest-value slot is between Gate 0 and Step 1** — you have committed to the work
 but not yet chosen the approach. That is exactly when `learn.md`'s ADR trigger fires:
@@ -584,16 +599,16 @@ repo-root/
 │   │   ├── eval-guardian.md
 │   │   ├── pattern-scout.md
 │   │   └── security-auditor.md
-│   ├── commands/                      # ⚠️ PROPOSED: was skills/ — see §8.1
-│   │   ├── commit-msg.md              # !`cat` stubs → .github/docs/prompts/
-│   │   ├── draft-issue.md
-│   │   ├── eval.md
-│   │   ├── labels.md
-│   │   ├── pr-prep.md
-│   │   ├── readme.md
-│   │   ├── review.md
-│   │   ├── task-brief.md
-│   │   └── test.md
+│   ├── skills/                        # the nine — one <name>/SKILL.md each — see §8.1
+│   │   ├── commit-msg/SKILL.md        # !`cat` stubs → .github/docs/prompts/
+│   │   ├── draft-issue/SKILL.md
+│   │   ├── eval/SKILL.md
+│   │   ├── labels/SKILL.md
+│   │   ├── pr-prep/SKILL.md
+│   │   ├── readme/SKILL.md
+│   │   ├── review/SKILL.md
+│   │   ├── task-brief/SKILL.md
+│   │   └── test/SKILL.md
 │   ├── hooks/
 │   │   └── guard.py                   # PreToolUse — commit gate, secrets, PII, write vectors
 │   ├── output-styles/
@@ -718,13 +733,17 @@ model-driven loading. Put plainly by the same source: **a slash command is now a
 with no extra features.** Auto-invocation is governed by one field —
 `disable-model-invocation: true` — not by the directory.
 
-**Skills is the correct surface, and the deciding argument is `context: fork`.**
+**Skills is the correct surface.** *(Corrected 2026-11-25: this line originally named
+`context: fork` as the deciding argument — see below.)*
 
 CORRECTION 39 §11 already records that `subtask: true` plus a `model:` override
 **decouples a command from the active session**. Skills reproduce that field-for-field:
 `context: fork` runs the skill in an isolated subagent, and `agent:`, `model:` and
-`effort:` pin who runs it and how hard. `.claude/commands/` has no documented equivalent.
-So the skills surface is the one that keeps the two harnesses semantically identical —
+`effort:` pin who runs it and how hard. *(Corrected 2026-11-25:)* command files in
+`.claude/commands/` now accept the same frontmatter except `name` and `paths`, so
+`context: fork` works there too. The deciding facts are that the docs recommend skills for
+new work, and that **a skill wins over a command of the same name** — so never keep a copy
+in both. The skills surface keeps the two harnesses semantically identical —
 **a single-source-no-drift argument, not merely a context-budget one.** Uniformity across
 all nine is the right call for the same reason: two shapes would mean
 `build_claude_agents.py` emits to two paths and `claude-agents-check` validates two
@@ -991,6 +1010,10 @@ revising.
 | Template rename | `cursor_task_brief.md` → `task_brief.md` | ✅ **ALREADY DONE on disk.** Only the reference in `task-brief.md` lags | Screenshot |
 | Plan directory | `.cursor/plans/` | `.github/plans/` — ⚠️ **still proposed; does not exist** | This document |
 | v1.0 Step 4 heading | "Self-Review" | "Cross-harness review" — the point is that it is **not** self-review | §4 |
+| This file's §3.1 *(corrected 2026-11-25)* | *"`/output-style` no longer exists"* · a style change applies *"only after `/clear` or a new session"* | `/output-style` works (v2.1.269+), plus the VS Code `/` → Output styles menu (v2.1.257+). A switch applies from the next message since v2.1.251; only a created or edited style **file** needs a restart | Claude Code docs, *Output styles* |
+| This file's §3.1 *(confirmed 2026-11-25)* | *"learn mode does not reach forked skills"* | ✅ **Correct as written.** A `context: fork` skill starts a new subagent whose system prompt comes from its agent type; styles reach only the main conversation and full conversation forks | Claude Code docs, *Skills* · *Output styles* |
+| This file's §8.1 *(corrected 2026-11-25)* | *"`.claude/commands/` has no documented equivalent"* of `context: fork` | Command files accept the same frontmatter except `name` and `paths`. **Conclusion unchanged — stay on skills:** the docs prefer skills for new work, and a skill wins over a same-name command | Claude Code docs, *Skills* |
+| This file's §7 tree and status footer *(corrected 2026-11-25)* | `.claude/commands/  # ⚠️ PROPOSED: was skills/` · *"Not executed here: … the §8.1 skills→commands move"* | ❌ **Leftovers from the withdrawn first-draft proposal — removed.** The tree now shows `.claude/skills/<name>/SKILL.md` | §8.1 |
 
 **Three rows are 🔴 and can be fixed today, independent of Correction 42:** the
 `task-brief.md` path, the duplicate Codex template, and the `%s`/`%d` inversion wherever
@@ -1039,4 +1062,4 @@ agent in the same context.** That is the single change this document exists to m
 **Blocking before ratification:** §11 Q1–Q6 answered by observation · §12 path audit ·
 CORRECTION 42 written and signed off
 **Not executed here:** scope-document propagation · `.cursor/` removal · the two renames
-in §12 · the §8.1 skills→commands move
+in §12
