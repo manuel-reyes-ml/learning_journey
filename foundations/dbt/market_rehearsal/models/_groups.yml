@@ -1,0 +1,22 @@
+# models/_groups.yml
+# -----------------------------------------------------------------------------
+# GROUPS: a named set of nodes with ONE owner.
+# - dbt's guide keeps groups in a single _groups.yml at the root of models/.
+# - A node belongs to at most one group. Members can be models, tests, seeds,
+#   snapshots, analyses and metrics, but NOT sources or exposures (so sources
+#   carry their owner in meta instead).
+# - Joining a group is done with +group in dbt_project.yml (whole folders) or
+#   `config: group:` on one model.
+# - Groups are what make `access: private` mean something: a private model can
+#   only be ref()'d by models in its own group. With one group, as here, nothing
+#   is blocked yet; it starts to matter when the project has two or more groups
+#   (e.g. DataVault: distributions, corrections, reconciliation).
+# -----------------------------------------------------------------------------
+groups:
+  - name: market
+    description: "Market-data rehearsal: daily bars, insider events, entry sessions and relative volume."
+    owner:
+      # owner needs `name` or `email` (or both); dbt says other keys will stop
+      # being allowed, so put anything else in config.meta below.
+      name: Manuel Reyes
+      email: manuelreyesv410@gmail.com
