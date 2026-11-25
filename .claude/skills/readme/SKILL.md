@@ -1,4 +1,5 @@
 ---
+name: readme
 description: Draft a production-grade README from the repo and the flagship template. Outputs Markdown; does not write files.
 argument-hint: "[optional]"
 allowed-tools: Read, Grep, Glob, Bash(cat:*), Bash(bash .github/scripts/readme_context.sh:*), Bash(git log:*), Bash(find:*), Bash(ls:*), Bash(head:*)
@@ -12,13 +13,16 @@ disable-model-invocation: true
 <!-- STUB. Instructions live once at .github/docs/prompts/commands/readme.md and are
      shared with OpenCode. Edit the prompt body, not this file.
      NO CLAUDE_PROJECT_DIR ANYWHERE (no dollar-brace form) — DELIBERATE (ADR-0006). Claude Code statically
-     analyses every `!` command and REFUSES any containing shell expansion
+     analyses every bang-backtick command and REFUSES any containing shell expansion
      ("Contains simple_expansion"), command substitution or brace expansion
      (anthropics/claude-code#43713, #11645). that variable in dollar-brace form is an expansion, so
      every stub that used it was refused before running. Relative paths only.
-     Verified on this harness: expansion-free `!` DOES execute at level 1.
+     Verified on this harness: expansion-free bang-backtick lines DO execute at level 1.
      `agent: Plan`, not Explore: this command judges output against project
-     standards, and Explore deliberately skips CLAUDE.md to stay cheap (ADR-0004). -->
+     standards, and Explore deliberately skips CLAUDE.md to stay cheap (ADR-0004).
+     NEVER put a bang right before a backtick anywhere in this comment: the harness runs
+     that as shell, comments included (found 2026-11-19; guarded by
+     scripts/tests/test_command_templates.py). -->
 
 !`bash .github/scripts/readme_context.sh`
 
