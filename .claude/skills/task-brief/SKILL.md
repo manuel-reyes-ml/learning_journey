@@ -1,4 +1,5 @@
 ---
+name: task-brief
 description: Generate a complete Agent Task Brief for a GitHub Issue number — Gate 1, no implementation.
 argument-hint: "[issue-number]"
 allowed-tools: Read, Grep, Glob, Write, Bash(cat:*), Bash(bash .github/scripts/task_brief_context.sh:*)
@@ -10,12 +11,12 @@ disable-model-invocation: true
      shared with OpenCode. Edit the prompt body, not this file.
 
      NO CLAUDE_PROJECT_DIR ANYWHERE (no dollar-brace form) — DELIBERATE (ADR-0006). Claude Code statically
-     analyses every `!` command and REFUSES any containing shell expansion
+     analyses every bang-backtick command and REFUSES any containing shell expansion
      ("Contains simple_expansion"), command substitution or brace expansion
      (anthropics/claude-code#43713, #11645). that variable in dollar-brace form is an expansion, so
      every stub that used it was refused before running. Relative paths only.
 
-     Verified on this harness: expansion-free `!` DOES execute at level 1.
+     Verified on this harness: expansion-free bang-backtick lines DO execute at level 1.
 
      NO `context: fork` AND NO `agent:` — DELIBERATE (ADR-0005). This command WRITES the
      brief to .github/plans/. Plan and Explore are both read-only, and `agent:` is
@@ -24,8 +25,11 @@ disable-model-invocation: true
          { "permissions": { "allow": ["Write(.github/plans/**)"] } }
      Verified: that write succeeds silently.
 
-     THE ARGUMENT CANNOT GO IN THE `!` LINE — it would be an expansion and be refused.
-     The body is loaded by `!`; the context script is invoked by YOU, below. -->
+     THE ARGUMENT CANNOT GO IN THE BANG-BACKTICK LINE — it would be an expansion and be refused.
+     The body is loaded by the bang-backtick line; the context script is invoked by YOU, below.
+     NEVER put a bang right before a backtick anywhere in this comment: the harness runs
+     that as shell, comments included (found 2026-11-19; guarded by
+     scripts/tests/test_command_templates.py). -->
 
 !`cat .github/docs/prompts/commands/task-brief.md`
 
