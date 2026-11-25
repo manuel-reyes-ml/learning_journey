@@ -1,0 +1,155 @@
+# models/marts/market/_market__models.yml
+# -----------------------------------------------------------------------------
+# MARTS: the business-facing models (facts and dimensions) that people, BI
+# tools and other projects read. This is the output boundary of the project,
+# so it gets the strictest config.
+# Naming (dbt guide): _[directory]__models.yml. Yes, staging/market has a file
+# with the same name: YAML names don't have to be unique, the folder tells
+# them apart. Data tests and unit tests for these models live here too.
+#
+# Inherited from dbt_project.yml, so NOT repeated here:
+#   materialized: table · schema: marts · group: market · access: public
+#   docs.node_color: blue · meta.maturity: low
+#
+# Per model, here:
+#   description -> starts with the GRAIN (Kimball step 2: what one row means)
+#   contract    -> required: public models are relied on downstream
+#   meta        -> only what differs from the folder default (maturity)
+# -----------------------------------------------------------------------------
+models:
+  - name: fct_market__event_entries
+    description: |
+      **Grain:** one row per insider event (every event is kept).
+
+      For each filing, the first session that opened strictly AFTER its SEC
+      acceptance time (DuckDB `ASOF LEFT JOIN`). Filings with no later session
+      keep their row, with `entry_session` and `session_open_at` null.
+    config:
+      # Same syntax as staging: contract.enforced, not "enforced_contract".
+      # On a table, a mismatch in any column name or type fails the build
+      # BEFORE the table is replaced, so readers never see a broken shape.
+      # Every column must be listed with its data_type.
+      contract:
+        enforced: true
+      meta:
+        # Promoted from the folder default `low`: it has a contract, a test on
+        # every column, singular tests on the no-lookahead rule, and the unit
+        # test below. Only the maturity key is set here; any other folder-level
+        # meta keys still apply (shallow merge).
+        maturity: medium
+    columns:
+      - name: event_id
+        description: "Insider event id. One row per event."
+        data_type: varchar
+        data_tests:
+          - unique
+          - not_null
+          - relationships:
+              arguments: # every row traces back to a staged event
+                to: ref('stg_market__insider_events')
+                field: event_id
+      - name: ticker
+        description: "Exchange ticker symbol."
+        data_type: varchar
+        data_tests: [not_null]
+      - name: filing_date
+        description: "Date the event was filed with the SEC."
+        data_type: date
+        data_tests: [not_null]
+      - name: accepted_at
+        description: "SEC acceptance time (ET, naive). The time the entry must come after."
+        data_type: timestamp
+        data_tests: [not_null]
+      - name: boundary_case
+        description: "Planted edge case label, or null."
+        data_type: varchar
+        data_tests:
+          - accepted_values:
+              arguments:
+                values: ["after_close_1800", "at_open_0930"]
+      - name: entry_session
+        description: "First session that opened after accepted_at. Null when none exists yet."
+        data_type: date
+      - name: session_open_at
+        description: "Open time of entry_session (09:30 ET, naive). Null when entry_session is null."
+        data_type: timestamp
+
+  - name: fct_market__rvol
+    description: |
+      **Grain:** one row per ticker per trading session.
+
+      Relative volume: the session's volume divided by the average volume of
+      the 20 sessions before it. Null until a ticker has 20 prior sessions.
+    config:
+      contract:
+        enforced: true
+      # No meta here: it inherits maturity `low` from dbt_project.yml. It stays
+      # low until it has a unit test for the 20-session window; then set
+      # `meta: maturity: medium` as above.
+    columns:
+      - name: ticker
+        description: "Exchange ticker symbol."
+        data_type: varchar
+        data_tests: [not_null]
+      - name: session_date
+        description: "Trading session date (NYSE calendar)."
+        data_type: date
+        data_tests: [not_null]
+      - name: volume
+        description: "Shares traded in the session."
+        data_type: bigint
+        data_tests: [not_null]
+      - name: avg_vol_last_20_sessions
+        description: "Average volume of the 20 previous sessions. Null until 20 exist."
+        data_type: bigint
+      - name: relative_vol
+        description: "volume / avg_vol_last_20_sessions, round to 2 decimals. Null when the average is null."
+        # DuckDB's `/` on two bigints returns double (`//` is integer division).
+        data_type: double
+    data_tests:
+      - unique:
+          name: fct_market__rvol_one_row_per_ticker_session
+          arguments:
+            column_name: "ticker || '|' || session_date"
+
+# -----------------------------------------------------------------------------
+# UNIT TESTS: check the SQL logic on small hand-made inputs, before the model
+# is built (data tests check the built data AFTER). Same file as the model, so
+# the logic and its proof sit together. Only the columns the model uses need
+# values; dbt fills the others with null. `expect` lists only the columns you
+# want compared.
+# -----------------------------------------------------------------------------
+unit_tests:
+  - name: fct_market__event_entries_picks_first_session_after_acceptance
+    description: "After-close, exactly-at-open, pre-market and no-later-session cases."
+    model: fct_market__event_entries
+    given:
+      - input: ref('stg_market__insider_events')
+        rows:
+          - { event_id: E1, ticker: ALFA, accepted_at: "2026-01-05 18:00:00" } # after close -> next day
+          - { event_id: E2, ticker: ALFA, accepted_at: "2026-01-06 09:30:00" } # at the open -> NOT that open
+          - { event_id: E3, ticker: ALFA, accepted_at: "2026-01-05 08:00:00" } # pre-market -> same day
+          - { event_id: E4, ticker: ALFA, accepted_at: "2026-01-07 16:30:00" } # no later session -> null
+      - input: ref('int_bars_mapped_to_session_opens')
+        rows:
+          - {
+              ticker: ALFA,
+              session_date: "2026-01-05",
+              session_open_at: "2026-01-05 09:30:00",
+            }
+          - {
+              ticker: ALFA,
+              session_date: "2026-01-06",
+              session_open_at: "2026-01-06 09:30:00",
+            }
+          - {
+              ticker: ALFA,
+              session_date: "2026-01-07",
+              session_open_at: "2026-01-07 09:30:00",
+            }
+    expect:
+      rows:
+        - { event_id: E1, entry_session: "2026-01-06" }
+        - { event_id: E2, entry_session: "2026-01-07" }
+        - { event_id: E3, entry_session: "2026-01-05" }
+        - { event_id: E4, entry_session: null }
