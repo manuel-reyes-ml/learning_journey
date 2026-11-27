@@ -1,0 +1,81 @@
+[
+  {
+    "prompt_inputs": {
+      "height": "185",
+      "weight": "68",
+      "goal": "marathon training",
+      "restrictions": "none"
+    },
+    "solution_criteria": [
+      "Meal plan is compact and fits within a single day format",
+      "Calorie intake supports endurance training for a 68kg athlete",
+      "Carbohydrate-focused macronutrient distribution (55-65% of calories)",
+      "All meals and snacks are practical and listed concisely"
+    ],
+    "task_description": "Write a compact, consise 1 day meal plan for a single athlete",
+    "scenario": "Testing with a tall, lightweight endurance athlete (e.g., 185cm, 68kg) with a marathon training goal and no dietary restrictions to verify calorie-dense, carb-focused meal planning"
+  },
+  {
+    "prompt_inputs": {
+      "height": "170",
+      "weight": "105",
+      "goal": "weight loss",
+      "restrictions": "none"
+    },
+    "solution_criteria": [
+      "Meal plan contains appropriate calorie deficit (approximately 500-750 kcal below maintenance for sustainable weight loss)",
+      "Meals feature high protein content and nutrient-dense foods to support athletic performance and satiety",
+      "Portion sizes are realistic and actionable for a single day without excessive detail"
+    ],
+    "task_description": "Write a compact, consise 1 day meal plan for a single athlete",
+    "scenario": "Testing with an overweight athlete (170cm, 105kg) with a weight loss goal and no restrictions to confirm portion control, nutrient density, and sustainable calorie deficit"
+  },
+  {
+    "prompt_inputs": {
+      "height": "160",
+      "weight": "55",
+      "goal": "Recovery and rehabilitation with adequate micronutrient intake",
+      "restrictions": "Nut allergy"
+    },
+    "solution_criteria": [
+      "Meal plan is compact and formatted for a single day with clear meal divisions",
+      "All meals are safe for nut allergy and include balanced macronutrients appropriate for underweight athlete recovery",
+      "Micronutrient-rich foods (iron, calcium, vitamins) are included across meals to support rehabilitation",
+      "Caloric and portion sizes are suitable for a 55kg athlete focused on recovery"
+    ],
+    "task_description": "Write a compact, consise 1 day meal plan for a single athlete",
+    "scenario": "Testing with an underweight young athlete (160cm, 55kg) focused on recovery/rehabilitation with a nut allergy to ensure adequate micronutrients and safe, balanced meal progression"
+  },
+  {
+    "prompt_inputs": {
+      "height": "165",
+      "weight": "95",
+      "goal": "muscle gain",
+      "restrictions": "vegan"
+    },
+    "solution_criteria": [
+      "Meal plan covers one full day with 4-5 meals",
+      "Total daily protein meets or exceeds 150g from vegan sources (legumes, tofu, tempeh, nuts, seeds, plant-based protein)",
+      "Caloric intake supports muscle gain (approximately 2800-3200 calories for this athlete profile)",
+      "All meals and ingredients comply with vegan dietary restrictions"
+    ],
+    "task_description": "Write a compact, consise 1 day meal plan for a single athlete",
+    "scenario": "Testing with a short, heavyweight strength athlete (e.g., 165cm, 95kg) focused on muscle gain with vegan dietary restrictions to ensure adequate protein alternatives and meal density"
+  },
+  {
+    "prompt_inputs": {
+      "height": "175",
+      "weight": "75",
+      "goal": "competition preparation",
+      "restrictions": "gluten-free, lactose-intolerant"
+    },
+    "solution_criteria": [
+      "Meal plan is exactly 1 day with clear meal times (breakfast, lunch, dinner, and optional snacks)",
+      "All meals and snacks are gluten-free and lactose-intolerant friendly with no prohibited ingredients",
+      "Provides appropriate caloric and macronutrient content for a 75kg athlete preparing for competition",
+      "Plan is compact and concise (easy to scan and implement)"
+    ],
+    "task_description": "Write a compact, consise 1 day meal plan for a single athlete",
+    "scenario": "Testing with a moderate-sized athlete (175cm, 75kg) preparing for competition with multiple restrictions (gluten-free, lactose-intolerant) to verify adaptability and nutritional balance"
+  }
+]
